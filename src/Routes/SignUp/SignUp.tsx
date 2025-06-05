@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
@@ -11,6 +11,7 @@ import {
 import {
   lightGreyColor,
   primaryColor,
+  secondaryColor,
   textPrimaryColorContrast,
 } from "../../Styles/Styles";
 
@@ -18,6 +19,8 @@ import { InputFieldSignUp } from "./SignUpAssets/SignUp.Styled";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { Link } from "react-router-dom";
+import { generateUsername } from "../NewStudentAsaas/NewStudentAsaas";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function SignUp() {
   const [newName, setNewName] = useState<string>("");
@@ -30,6 +33,8 @@ export function SignUp() {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [address, setAddress] = useState<string>("");
+  const [addressNum, setAddressNum] = useState<string>("");
+  const [CEP, setCEP] = useState<string>("");
   const [upload, setUpload] = useState<boolean>(true);
   const [button, setButton] = useState<any>("Cadastrar");
 
@@ -62,6 +67,7 @@ export function SignUp() {
       dateOfBirth: newDateOfBirth,
       doc: newCPF,
       address: address,
+      feeUpToDate: false,
     };
     if (newPassword === confirmPassword) {
       setNewPassword(newPassword);
@@ -76,20 +82,62 @@ export function SignUp() {
         `${backDomain}/api/v1/signupstudent`,
         newStudent
       );
-      alert("Cadastro realizado com sucesso! Faça seu login!");
+      alert("Cadastro realizado com sucesso! Fale com o professor!");
       window.location.assign("/login");
     } catch (error) {
       setButton("...");
       alert(error);
       setButton("Cadastrar");
-      // reset();
+      reset();
     }
   };
+
+  const generate = () => {
+    const newUsername = generateUsername(newName, newLastName, newDateOfBirth);
+    setNewUsername(newUsername);
+  };
+  useEffect(() => {
+    if (newName && newLastName && newDateOfBirth && newUsername.trim() === "") {
+      generate();
+    }
+    console.log("Username gerado");
+  }, [newName, newLastName, newDateOfBirth]);
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const cleanCep = CEP.replace(/\D/g, "");
+      if (cleanCep.length !== 8) return;
+
+      try {
+        const response = await axios.get(
+          `https://viacep.com.br/ws/${cleanCep}/json/`
+        );
+
+        if (response.data.erro) {
+          notifyError("CEP não encontrado.");
+          return;
+        }
+
+        const { logradouro, bairro, localidade, uf } = response.data;
+        const log = logradouro;
+        const bair = bairro;
+        const local = localidade;
+        const estado = uf;
+        setAddress(
+          log + ", " + addressNum + ", " + bair + ", " + local + " - " + estado
+        );
+      } catch (error) {
+        notifyError("Erro ao buscar endereço.");
+        console.error("Erro ViaCEP:", error);
+      }
+    };
+
+    fetchAddress();
+  }, [addressNum, CEP]);
 
   return (
     <RouteSizeControlBox
       style={{
-        maxWidth: "25rem",
+        width: "50rem",
         margin: "2rem auto",
       }}
     >
@@ -131,12 +179,28 @@ export function SignUp() {
             type="text"
           />
           <InputFieldSignUp
-            value={newUsername}
-            onChange={(event) => setNewUsername(event.target.value)}
-            placeholder="Username"
-            id="username"
-            type="text"
+            value={newDateOfBirth}
+            onChange={(event) => setNewDateOfBirth(event.target.value)}
+            placeholder="Data de Nascimento"
+            id="nasciment"
+            type="date"
           />
+          {newUsername !== "" && (
+            <div
+              style={{
+                padding: "10px",
+                borderRadius: "1rem",
+                display: "inline",
+                color: "white",
+                margin: "auto",
+                maxWidth: "fit-content",
+                backgroundColor: secondaryColor(),
+              }}
+              onClick={generate}
+            >
+              Username: {newUsername}
+            </div>
+          )}
           <InputFieldSignUp
             value={newPhone}
             onChange={(event) => setNewPhone(event.target.value)}
@@ -151,13 +215,7 @@ export function SignUp() {
             id="email"
             type="email"
           />
-          <InputFieldSignUp
-            value={newDateOfBirth}
-            onChange={(event) => setNewDateOfBirth(event.target.value)}
-            placeholder="Data de Nascimento"
-            id="nasciment"
-            type="date"
-          />
+
           <InputFieldSignUp
             value={newCPF}
             onChange={(event) => setNewCPF(event.target.value)}
@@ -166,12 +224,28 @@ export function SignUp() {
             type="number"
           />
           <InputFieldSignUp
-            value={address}
-            onChange={(event) => setAddress(event.target.value)}
-            placeholder="Endereço"
+            value={CEP}
+            onChange={(event) => setCEP(event.target.value)}
+            placeholder="CEP"
             id="address"
             type="text"
           />
+          <span style={{ display: "grid", gridTemplateColumns: "1fr 0.5fr" }}>
+            <InputFieldSignUp
+              value={address}
+              onChange={(event) => setAddress(event.target.value)}
+              placeholder="Endereço"
+              id="address"
+              type="text"
+            />
+            <InputFieldSignUp
+              value={addressNum}
+              onChange={(event) => setAddressNum(event.target.value)}
+              placeholder="Número do Endereço"
+              id="addressNum"
+              type="number"
+            />
+          </span>
           <div
             style={{
               backgroundColor: lightGreyColor(),
