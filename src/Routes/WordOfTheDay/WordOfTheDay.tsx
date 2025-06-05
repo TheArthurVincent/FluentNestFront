@@ -259,18 +259,6 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                 </div>
               </>
             )}
-
-            <a
-              href="/words-of-the-day"
-              style={{
-                marginTop: "10px",
-                fontSize: "10px",
-                color: "#999",
-                textDecoration: "none",
-              }}
-            >
-              Previous Words of the Day
-            </a>
           </div>
         ))}
       </div>

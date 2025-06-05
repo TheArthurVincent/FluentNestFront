@@ -14,7 +14,7 @@ import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Countdown from "../../Ranking/RankingComponents/Countdown";
 import Voice from "../../../Resources/Voice";
 import { HThree } from "../../MyClasses/MyClasses.Styled";
-import { HTwo } from "../../../Resources/Components/RouteBox";
+import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 
 interface FlashCardsPropsRv {
@@ -341,8 +341,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   return (
     <section id="review">
+      <HOne>Review Flashcards</HOne>
       <WordOfTheDay change={change} onChange={onChange} headers={headers} />
-      <HTwo>Review Flashcards</HTwo>
       {see && (
         <div>
           {loading ? (
@@ -638,6 +638,17 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         </select>
       </div>
       <ProgressCounter flashcardsToday={flashcardsToday} />
+      <a
+        href="/words-of-the-day"
+        style={{
+          marginTop: "10px",
+          fontSize: "10px",
+          color: "#999",
+          textDecoration: "none",
+        }}
+      >
+        Previous Words of the Day
+      </a>
     </section>
   );
 };
