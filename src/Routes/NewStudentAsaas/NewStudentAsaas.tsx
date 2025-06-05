@@ -455,6 +455,14 @@ export default function Cadastro() {
                   onChange={handleChange}
                   required
                   style={styles.input}
+                />   <input
+                  type="number"
+                  name="addressNumber"
+                  placeholder="Número do Endereço"
+                  value={form.addressNumber}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
                 />
                 <input
                   type="text"
