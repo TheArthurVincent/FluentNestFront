@@ -5,6 +5,25 @@ import { backDomain } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
+export const generateUsername = (
+  name: string,
+  lastname: string,
+  dateOfBirth: string
+) => {
+  const sanitize = (str: string) =>
+    str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z]/g, "");
+
+  const first = sanitize(name);
+  const last = sanitize(lastname).slice(0, 3);
+  const year = dateOfBirth ? new Date(dateOfBirth).getDate() : "";
+  const month = dateOfBirth ? new Date(dateOfBirth).getFullYear() : "";
+
+  return `${first}${year}${last}${month}`;
+};
 export default function Cadastro() {
   const [form, setForm] = useState({
     name: "",
@@ -64,24 +83,6 @@ export default function Cadastro() {
   };
   const [usernameEdited, setUsernameEdited] = useState<string>("");
 
-  const generateUsername = (
-    name: string,
-    lastname: string,
-    dateOfBirth: string
-  ) => {
-    const sanitize = (str: string) =>
-      str
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .replace(/[^a-z]/g, "");
-
-    const first = sanitize(name).slice(0, 3);
-    const last = sanitize(lastname).slice(0, 3);
-    const year = dateOfBirth ? new Date(dateOfBirth).getFullYear() : "";
-
-    return `${last}${year}${first}`;
-  };
   useEffect(() => {
     if (
       form.name &&

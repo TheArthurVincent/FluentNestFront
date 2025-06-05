@@ -80,7 +80,7 @@ function App() {
     { path: "/message", element: verifyToken() ? <MessageDrive /> : <Login /> },
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },
     { path: "/signup", element: <NewStudentAsaas /> },
-    { path: "/vhsd524vs64ths98vs8", element: <SignUp /> },
+    { path: "/signup-privatestudent", element: <SignUp /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
     { path: "/reset-password/*", element: <ResetPasswordFinalChange /> },
   ];
