@@ -1,4 +1,6 @@
-const notifyError = (message: string) => {
+import { textFont } from "../../../../Styles/Styles";
+
+export const notifyError = (message: string, color?: string) => {
   const existing = document.getElementById("voice-error-toast");
   if (existing) existing.remove();
 
@@ -6,24 +8,54 @@ const notifyError = (message: string) => {
 
   toast.id = "voice-error-toast";
   toast.innerText = message;
+
+  // Estilos visuais
   toast.style.position = "fixed";
   toast.style.top = "20px";
   toast.style.left = "50%";
   toast.style.transform = "translateX(-50%)";
-  toast.style.background = "#f44336";
+  toast.style.background = color || "red";
   toast.style.color = "white";
   toast.style.padding = "10px 20px";
   toast.style.borderRadius = "8px";
-  toast.style.boxShadow = "0 4px 8px rgba(0,0,0,0.2)";
+  toast.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.6)";
   toast.style.zIndex = "9999";
-  toast.style.fontFamily = "sans-serif";
+  toast.style.fontFamily = textFont();
+  toast.style.fontWeight = "500";
+  toast.style.opacity = "0.5";
+
+  // Animação
+  const animationName = "slide-in";
+  const style = document.createElement("style");
+  style.textContent = `
+    @keyframes ${animationName} {
+      0% {
+        transform: translateX(-150%) scale(0.95);
+        opacity: 0;
+      }
+      100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
+
+  toast.style.animation = `${animationName} 0.3s ease-out forwards`;
 
   document.body.appendChild(toast);
 
   setTimeout(() => {
     toast.remove();
-  }, 3000);
+    style.remove();
+  }, 2500);
 };
+
+
+
+
+
+
 export const readText = (
   text: string,
   restart: boolean,
@@ -40,7 +72,6 @@ export const readText = (
     localStorage.getItem("loggedIn") || "{}"
   ).flashCardsReviewsToday;
   const ehPar = (nm: number) => nm % 2 === 0;
-  const isEven = ehPar(numberReviewsToday);
   const synth = window.speechSynthesis;
 
   if (!synth) {

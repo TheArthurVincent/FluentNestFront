@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { readText } from "../Functions/FunctionLessons";
+import { notifyError, readText } from "../Functions/FunctionLessons";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import {
@@ -49,11 +49,14 @@ export default function SentenceLessonModel({
         { headers: actualHeaders }
       );
       const showThis =
-        "cards adicionados:" +
-        response.data.addedNewFlashcards +
-        ", cards não adicionados:" +
-        response.data.invalidNewCards;
-      alert(showThis);
+        `${
+          response.data.addedNewFlashcards
+            ? response.data.addedNewFlashcards
+            : ""
+        }` +
+        `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
+
+      notifyError(showThis, "green");
     } catch (error) {
       alert("Erro ao enviar cards");
       onLoggOut();

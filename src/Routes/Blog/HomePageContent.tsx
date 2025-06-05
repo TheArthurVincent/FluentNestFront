@@ -21,6 +21,7 @@ import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import WordOfTheDay from "../WordOfTheDay/WordOfTheDay";
 import Countdown from "../Ranking/RankingComponents/Countdown";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 interface BlogProps {
   headers: MyHeadersType | null;
@@ -77,7 +78,7 @@ export function Blog({
       setNextTutoring(tt);
       setLoading(false);
     } catch (error) {
-      console.log(error, "erro ao listar homework");
+      console.log(error, "erro ao listar itens");
     }
   };
 
@@ -86,6 +87,9 @@ export function Blog({
   var [lesson, setLesson] = useState<String>("");
   var [img, setImg] = useState("");
   var [loadingLESSON, setLoadingLESSON] = useState<Boolean>(true);
+
+
+
   const fetchLastClassId = async (classid: string) => {
     setLoadingLESSON(true);
 
@@ -107,9 +111,18 @@ export function Blog({
       setImg(imgg);
       setLoadingLESSON(false);
     } catch (error) {
-      console.log(error, "erro ao listar homework");
+      console.log(error, "Erro ao encontrar aula");
     }
   };
+
+
+
+
+
+
+
+
+
   useEffect(() => {
     const theuser = JSON.parse(localStorage.getItem("loggedIn") || "");
     if (user) {
@@ -125,7 +138,7 @@ export function Blog({
     fetchClasses(getLoggedUser.id);
     setTimeout(() => {
       fetchLastClassId(getLoggedUser.lastClassId);
-    }, 1000);
+    }, 2000);
   }, []);
 
   const handleSeeModal = () => {
@@ -240,9 +253,11 @@ export function Blog({
         setLoading(false);
       }, 300);
     } catch (error: any) {
-      alert(error.response.data.error);
-      window.location.assign("/login");
-      setLoading(false);
+      notifyError(error.response.data.error);
+      setTimeout(() => {
+        window.location.assign("/login");
+        setLoading(false);
+      }, 2500);
     }
   }
 

@@ -10,7 +10,10 @@ import {
 } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain } from "../../Resources/UniversalComponents";
-import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import {
+  notifyError,
+  readText,
+} from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import {
   darkGreyColor,
@@ -155,7 +158,10 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         { newCards },
         { headers: actualHeaders }
       );
-      alert("Card adicionado: " + response.data.addedNewFlashcards);
+      notifyError(
+        "Card adicionado: " + response.data.addedNewFlashcards,
+        "green"
+      );
       onChange(!change);
       setSentences((prevSentences) =>
         prevSentences.map((sentence, i) =>

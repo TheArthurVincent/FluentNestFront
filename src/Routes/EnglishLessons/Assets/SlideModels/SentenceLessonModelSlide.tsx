@@ -10,6 +10,7 @@ import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { Tooltip } from "@mui/material";
+import { notifyError } from "../Functions/FunctionLessons";
 
 interface SentenceLessonModelProps {
   element: any;
@@ -49,7 +50,7 @@ export default function SentenceLessonModelSlide({
         { newCards },
         { headers: actualHeaders }
       );
-      alert("Card adicionado ao baralho");
+      notifyError("Card adicionado", "green");
     } catch (error) {
       alert("Erro ao enviar cards");
     }
@@ -79,8 +80,8 @@ export default function SentenceLessonModelSlide({
         element.sentences.map((sentence: any, i: number) => (
           <li
             style={{
-        margin: "1rem",
-        listStyle: "none",
+              margin: "1rem",
+              listStyle: "none",
             }}
             key={i}
           >

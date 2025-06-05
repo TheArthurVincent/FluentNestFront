@@ -14,6 +14,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 import { levels } from "../Routes/Ranking/RankingComponents/RankingLevelsList";
+import { notifyError } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
 
 const items = levels();
 
@@ -798,14 +799,14 @@ export const onLoggOut = () => {
   if (auth) {
     localStorage.removeItem("authorization");
   }
-  alert("Faça login novamente");
+  notifyError("Faça login novamente");
   window.location.assign("/login");
 };
 
 export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
   localStorage.removeItem("loggedIn");
-  alert("Sua mensalidade está atrasada. Fale com o professor. :)");
+  notifyError("Sua mensalidade está atrasada. Fale com o professor. :)");
   window.location.assign("/login");
 };
 

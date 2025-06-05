@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import React from "react";
 import { backDomain } from "../../Resources/UniversalComponents";
-import { secondaryColor, textTitleFont } from "../../Styles/Styles";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function Cadastro() {
   const [form, setForm] = useState({
@@ -12,12 +11,17 @@ export default function Cadastro() {
     lastname: "",
     username: "",
     phoneNumber: "",
-    cpfCnpj: "",
+    doc: "",
     email: "",
     dateOfBirth: "",
-    doc: "",
-    address: "",
+    address: "", // logradouro
+    neighborhood: "", // bairro
+    city: "", // cidade
+    state: "", // estado
+    addressNumber: "",
+    zip: "",
     password: "",
+    confirmPassword: "",
     creditCardNumber: "",
     creditCardHolderName: "",
     creditCardExpiryMonth: "",
@@ -27,29 +31,103 @@ export default function Cadastro() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
+
+  const login = async () => {
+    try {
+      const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
+        email: form.email,
+        password: form.password,
+      });
+      const { token, loggedIn, notifications } = response.data;
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+
+      if (localStorage.getItem("authorization")) {
+        localStorage.removeItem("authorization");
+      }
+
+      if (localStorage.getItem("loggedIn")) {
+        localStorage.removeItem("loggedIn");
+      }
+
+      localStorage.setItem("authorization", `${token}`);
+      localStorage.setItem("notifications", JSON.stringify(notifications));
+      localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
+      window.location.assign("/");
+    } catch (error) {
+      window.location.assign("/login");
+    }
+  };
+  const [usernameEdited, setUsernameEdited] = useState<string>("");
+
+  const generateUsername = (
+    name: string,
+    lastname: string,
+    dateOfBirth: string
+  ) => {
+    const sanitize = (str: string) =>
+      str
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z]/g, "");
+
+    const first = sanitize(name).slice(0, 3);
+    const last = sanitize(lastname).slice(0, 3);
+    const year = dateOfBirth ? new Date(dateOfBirth).getFullYear() : "";
+
+    return `${last}${year}${first}`;
+  };
+  useEffect(() => {
+    if (
+      form.name &&
+      form.lastname &&
+      form.dateOfBirth &&
+      form.username.trim() === ""
+    ) {
+      const newUsername = generateUsername(
+        form.name,
+        form.lastname,
+        form.dateOfBirth
+      );
+      setUsernameEdited(newUsername);
+      setForm((prev) => ({ ...prev, username: newUsername }));
+    }
+    console.log("Username gerado:", form.username, usernameEdited);
+  }, [form]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
+    if (form.password !== form.confirmPassword) {
+      setLoading(false);
+      setError("As senhas não coincidem.");
+      return;
+    }
+
     try {
       const response = await axios.post(`${backDomain}/api/v1/cadastro`, form);
-      const { customer, subscription } = response.data;
 
-      alert(`Pagamento aprovado! 
-      ID da Assinatura: ${subscription.id} 
-      Próxima Fatura: ${subscription.nextDueDate} 
-      Status: ${subscription.status}`);
+      notifyError(`Pagamento aprovado!`, "green");
 
       console.log("Dados completos:", response.data);
-    } catch (err) {
+
+      setTimeout(() => {
+        login();
+      }, 1000);
+    } catch (err: any) {
       setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
+      const errorMessage = err.response
+        ? err.response.data.message
+        : "Tente novamente";
+      notifyError(errorMessage);
+      console.log(errorMessage, err);
     } finally {
       setLoading(false);
     }
@@ -76,7 +154,7 @@ export default function Cadastro() {
     },
     grid2: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
+      gridTemplateColumns: "1fr 1fr 1fr",
       gap: "20px",
     },
     column: {
@@ -113,6 +191,79 @@ export default function Cadastro() {
       gap: "20px",
     },
   };
+
+  const [booleanLeadsCapture, setLeadsCapture] = useState<boolean>(true);
+  const leadsCapture = async () => {
+    if (
+      booleanLeadsCapture &&
+      form.name !== "" &&
+      form.lastname !== "" &&
+      form.phoneNumber !== "" &&
+      form.email !== ""
+    ) {
+      try {
+        const theContent = {
+          name: form.name,
+          lastname: form.lastname,
+          phoneNumber: form.phoneNumber,
+          email: form.email,
+        };
+        const response = await axios.post(
+          `${backDomain}/api/v1/leads`,
+          theContent
+        );
+        console.log("Foi pro banco!", response);
+        setLeadsCapture(false);
+      } catch (error) {
+        console.error("Erro ao capturar lead", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    const allFilled =
+      form.name.trim() !== "" &&
+      form.lastname.trim() !== "" &&
+      form.phoneNumber.trim().length >= 11 && // opcional: checagem mínima
+      form.email.trim().includes("@");
+
+    if (booleanLeadsCapture && allFilled) {
+      leadsCapture();
+    }
+  }, [form.name, form.lastname, form.phoneNumber, form.email]);
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      const cleanCep = form.zip.replace(/\D/g, "");
+      if (cleanCep.length !== 8) return;
+
+      try {
+        const response = await axios.get(
+          `https://viacep.com.br/ws/${cleanCep}/json/`
+        );
+
+        if (response.data.erro) {
+          notifyError("CEP não encontrado.");
+          return;
+        }
+
+        const { logradouro, bairro, localidade, uf } = response.data;
+
+        setForm((prev) => ({
+          ...prev,
+          address: logradouro,
+          neighborhood: bairro,
+          city: localidade,
+          state: uf,
+        }));
+      } catch (error) {
+        notifyError("Erro ao buscar endereço.");
+        console.error("Erro ViaCEP:", error);
+      }
+    };
+
+    fetchAddress();
+  }, [form.zip]);
 
   return (
     <div style={styles.container}>
@@ -151,10 +302,19 @@ export default function Cadastro() {
                 style={styles.input}
               />
               <input
+                type="number"
+                name="phoneNumber"
+                placeholder="Número de telefone com DDD"
+                value={form.phoneNumber}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
                 type="text"
-                name="cpfCnpj"
+                name="doc"
                 placeholder="CPF ou CNPJ"
-                value={form.cpfCnpj}
+                value={form.doc}
                 onChange={handleChange}
                 required
                 style={styles.input}
@@ -164,18 +324,12 @@ export default function Cadastro() {
                 name="username"
                 placeholder="Nome de usuário"
                 value={form.username}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-              <input
-                type="tel"
-                name="phoneNumber"
-                placeholder="Número de telefone"
-                value={form.phoneNumber}
-                onChange={handleChange}
-                required
-                style={styles.input}
+                readOnly
+                style={{
+                  ...styles.input,
+                  backgroundColor: "#f0f0f0",
+                  color: "#555",
+                }}
               />
               <input
                 type="date"
@@ -195,24 +349,21 @@ export default function Cadastro() {
                 required
                 style={styles.input}
               />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirme sua senha"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
             </div>
           </div>
+        </div>
 
-          {/* 📌 COLUNA 2 - ENDEREÇO */}
-          <div style={styles.column}>
-            <HTwo>Endereço</HTwo>
-            <input
-              type="text"
-              name="address"
-              placeholder="Endereço completo"
-              value={form.address}
-              onChange={handleChange}
-              required
-              style={styles.input}
-            />
-          </div>
-
-          {/* 📌 COLUNA 3 - DADOS DO CARTÃO */}
+        {/* 📌 COLUNA 2 - ENDEREÇO */}
+        <div style={styles.column}>
           <div style={styles.column}>
             <HTwo>Dados do Cartão</HTwo>
             <div style={styles.grid2}>
@@ -228,7 +379,7 @@ export default function Cadastro() {
               <input
                 type="text"
                 name="creditCardHolderName"
-                placeholder="Nome no Cartão"
+                placeholder="Nome Impresso no Cartão"
                 value={form.creditCardHolderName}
                 onChange={handleChange}
                 required
@@ -242,6 +393,9 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 style={styles.input}
+                inputMode="numeric"
+                pattern="\d{1,2}"
+                maxLength={2}
               />
               <input
                 type="text"
@@ -251,12 +405,70 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 style={styles.input}
+                inputMode="numeric"
+                pattern="\d{4}"
+                maxLength={4}
               />
               <input
                 type="text"
                 name="creditCardCcv"
                 placeholder="CVV"
                 value={form.creditCardCcv}
+                onChange={handleChange}
+                required
+                style={styles.input}
+                inputMode="numeric"
+                pattern="\d{3}"
+                maxLength={3}
+              />
+              <input
+                type="text"
+                name="zip"
+                placeholder="CEP"
+                value={form.zip}
+                onChange={(e) => {
+                  const value = e.target.value.replace(/\D/g, ""); // só números
+                  if (value.length <= 8) {
+                    setForm({ ...form, zip: value });
+                  }
+                }}
+                required
+                style={styles.input}
+                inputMode="numeric"
+                maxLength={8}
+              />
+              <input
+                type="text"
+                name="address"
+                placeholder="Rua (ex: Av. Paulista)"
+                value={form.address}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="neighborhood"
+                placeholder="Bairro"
+                value={form.neighborhood}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="city"
+                placeholder="Cidade"
+                value={form.city}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="state"
+                placeholder="Estado (UF)"
+                value={form.state}
                 onChange={handleChange}
                 required
                 style={styles.input}

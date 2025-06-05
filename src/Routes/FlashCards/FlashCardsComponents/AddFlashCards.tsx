@@ -13,6 +13,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { secondaryColor } from "../../../Styles/Styles";
+import { notifyError } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 interface Student {
   id: string;
@@ -135,15 +136,18 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
       );
 
       const showThis =
-        "cards adicionados:" +
-        response.data.addedNewFlashcards +
-        ", cards não adicionados:" +
-        response.data.invalidNewCards;
-      alert(showThis);
+        `${
+          response.data.addedNewFlashcards
+            ? response.data.addedNewFlashcards
+            : ""
+        }` +
+        `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
+
+      notifyError(showThis, "green");
       setCards([]);
     } catch (error) {
-      alert("Erro ao enviar cards");
-      onLoggOut()
+      notifyError("Erro ao enviar cards");
+      onLoggOut();
     }
   };
 
@@ -175,7 +179,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
             >
               <Box sx={{ display: "flex" }}>
                 {loading ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                  <CircularProgress style={{ color: secondaryColor() }} />
                 ) : (
                   <FormControl sx={{ width: "250px" }}>
                     <InputLabel id="student-select-label">

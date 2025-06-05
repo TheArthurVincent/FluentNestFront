@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { readText } from "../Functions/FunctionLessons";
+import { notifyError, readText } from "../Functions/FunctionLessons";
 import {
   ImgLesson,
   LiGridImageLessons,
@@ -52,9 +52,17 @@ export default function ImageLessonModel({
         { newCards },
         { headers: actualHeaders }
       );
-      alert("Card enviado");
+      const showThis =
+        `${
+          response.data.addedNewFlashcards
+            ? response.data.addedNewFlashcards
+            : ""
+        }` +
+        `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
+
+      notifyError(showThis, "green");
     } catch (error) {
-      alert("Erro ao enviar cards");
+      notifyError("Erro ao enviar cards");
       onLoggOut();
     }
   };
