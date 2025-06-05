@@ -155,8 +155,6 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
     <CircularProgress />
   ) : (
     <section style={{ padding: 0, margin: "auto", maxWidth: "600px" }}>
-      {showInfo && <></>}
-
       <div>
         {sentences.map((sentence, index) => (
           <div
