@@ -143,6 +143,7 @@ export default function Cadastro() {
     },
     form: {
       display: "flex",
+      gap: "10px",
       flexDirection: "column",
       width: "100%",
       maxWidth: "900px",
@@ -152,9 +153,14 @@ export default function Cadastro() {
       gridTemplateColumns: "1fr",
       gap: "20px",
     },
+    grid3: {
+      display: "grid",
+      gridTemplateColumns: " 1fr 1fr 1fr",
+      gap: "20px",
+    },
     grid2: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
+      gridTemplateColumns: "1fr 1fr",
       gap: "20px",
     },
     column: {
@@ -224,7 +230,7 @@ export default function Cadastro() {
     const allFilled =
       form.name.trim() !== "" &&
       form.lastname.trim() !== "" &&
-      form.phoneNumber.trim().length >= 11 && // opcional: checagem mínima
+      form.phoneNumber.trim().length >= 11 &&
       form.email.trim().includes("@");
 
     if (booleanLeadsCapture && allFilled) {
@@ -363,116 +369,120 @@ export default function Cadastro() {
         </div>
 
         {/* 📌 COLUNA 2 - ENDEREÇO */}
-        <div style={styles.column}>
+        <div style={styles.grid}>
           <div style={styles.column}>
             <HTwo>Dados do Cartão</HTwo>
-            <div style={styles.grid2}>
-              <input
-                type="text"
-                name="creditCardNumber"
-                placeholder="Número do Cartão"
-                value={form.creditCardNumber}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-              <input
-                type="text"
-                name="creditCardHolderName"
-                placeholder="Nome Impresso no Cartão"
-                value={form.creditCardHolderName}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-              <input
-                type="text"
-                name="creditCardExpiryMonth"
-                placeholder="Mês de Expiração (MM)"
-                value={form.creditCardExpiryMonth}
-                onChange={handleChange}
-                required
-                style={styles.input}
-                inputMode="numeric"
-                pattern="\d{1,2}"
-                maxLength={2}
-              />
-              <input
-                type="text"
-                name="creditCardExpiryYear"
-                placeholder="Ano de Expiração (AAAA)"
-                value={form.creditCardExpiryYear}
-                onChange={handleChange}
-                required
-                style={styles.input}
-                inputMode="numeric"
-                pattern="\d{4}"
-                maxLength={4}
-              />
-              <input
-                type="text"
-                name="creditCardCcv"
-                placeholder="CVV"
-                value={form.creditCardCcv}
-                onChange={handleChange}
-                required
-                style={styles.input}
-                inputMode="numeric"
-                pattern="\d{3}"
-                maxLength={3}
-              />
-              <input
-                type="text"
-                name="zip"
-                placeholder="CEP"
-                value={form.zip}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, ""); // só números
-                  if (value.length <= 8) {
-                    setForm({ ...form, zip: value });
-                  }
-                }}
-                required
-                style={styles.input}
-                inputMode="numeric"
-                maxLength={8}
-              />
-              <input
-                type="text"
-                name="address"
-                placeholder="Rua (ex: Av. Paulista)"
-                value={form.address}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-              <input
-                type="text"
-                name="neighborhood"
-                placeholder="Bairro"
-                value={form.neighborhood}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-              <input
-                type="text"
-                name="city"
-                placeholder="Cidade"
-                value={form.city}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
-              <input
-                type="text"
-                name="state"
-                placeholder="Estado (UF)"
-                value={form.state}
-                onChange={handleChange}
-                required
-                style={styles.input}
-              />
+            <div style={styles.grid}>
+              <div style={styles.grid3}>
+                <input
+                  type="text"
+                  name="creditCardNumber"
+                  placeholder="Número do Cartão"
+                  value={form.creditCardNumber}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="creditCardHolderName"
+                  placeholder="Nome Impresso no Cartão"
+                  value={form.creditCardHolderName}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="creditCardExpiryMonth"
+                  placeholder="Mês de Expiração (MM)"
+                  value={form.creditCardExpiryMonth}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  pattern="\d{1,2}"
+                  maxLength={2}
+                />
+                <input
+                  type="text"
+                  name="creditCardExpiryYear"
+                  placeholder="Ano de Expiração (AAAA)"
+                  value={form.creditCardExpiryYear}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  pattern="\d{4}"
+                  maxLength={4}
+                />
+                <input
+                  type="text"
+                  name="creditCardCcv"
+                  placeholder="CVV"
+                  value={form.creditCardCcv}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  pattern="\d{3}"
+                  maxLength={3}
+                />
+                <input
+                  type="text"
+                  name="zip"
+                  placeholder="CEP"
+                  value={form.zip}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, ""); // só números
+                    if (value.length <= 8) {
+                      setForm({ ...form, zip: value });
+                    }
+                  }}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  maxLength={8}
+                />
+              </div>
+              <div style={styles.grid2}>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Rua (ex: Av. Paulista)"
+                  value={form.address}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="neighborhood"
+                  placeholder="Bairro"
+                  value={form.neighborhood}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="Cidade"
+                  value={form.city}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="state"
+                  placeholder="Estado (UF)"
+                  value={form.state}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </div>
             </div>
           </div>
         </div>
