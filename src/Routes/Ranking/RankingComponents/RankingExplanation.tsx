@@ -92,7 +92,7 @@ export default function RankingExplanation() {
       </div>
       <RankingExplanationComponent />
 
-      <HThree
+      {/* <HThree
         style={{
           textAlign: "center",
           color: primaryColor(),
@@ -142,9 +142,9 @@ export default function RankingExplanation() {
         >
           {UniversalTexts.t3rd}
         </li>
-      </ul>
+      </ul> */}
       <div style={{ display: "grid", gap: "1rem", padding: "3px" }}>
-        <HThree
+        {/* <HThree
           style={{
             textAlign: "center",
             color: primaryColor(),
@@ -153,7 +153,7 @@ export default function RankingExplanation() {
           }}
         >
           {UniversalTexts.uplevel}
-        </HThree>
+        </HThree> */}
         <RankingList />
       </div>
     </div>

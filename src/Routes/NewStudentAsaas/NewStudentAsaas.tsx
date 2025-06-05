@@ -502,6 +502,9 @@ export default function Cadastro() {
         </button>
         {error && <p style={styles.error}>{error}</p>}
       </form>
+      <button onClick={handleSubmit} style={styles.button}>
+        chamar
+      </button>
     </div>
   );
 }

@@ -44,20 +44,17 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
   }, [selectedVoice, changeB]);
 
   return (
-    <div
-      style={{
-        backgroundColor: "#fff",
-        display: "grid",
-        margin: "10px",
-        padding: "10px",
-        borderRadius: "8px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-        zIndex: 1000,
-      }}
-    >
+    <div style={{ margin: "1rem 0", fontFamily: "Lato, sans-serif" }}>
       {voices.length > 0 && (
-        <div>
-          <label htmlFor="voice-select">🗣️ Voice:</label>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            margin: "auto",
+          }}
+        >
+       
           <select
             id="voice-select"
             value={selectedVoice}
@@ -65,7 +62,20 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
               setSelectedVoice(e.target.value);
               setChangeB(!changeB);
             }}
-            style={{ marginLeft: "8px" }}
+            style={{
+              padding: "6px 12px",
+              maxWidth:"15rem",
+              borderRadius: "6px",
+              marginRight:"20px",
+              border: "1px solid #ccc",
+              backgroundColor: "#f9f9f9",
+              fontSize: "0.9rem",
+              color: "#333",
+              outline: "none",
+              transition: "border-color 0.3s",
+            }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#1a73e8")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "#ccc")}
           >
             {voices.map((voice, index) => (
               <option key={index} value={voice.name}>

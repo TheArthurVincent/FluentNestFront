@@ -22,6 +22,8 @@ import Helmets from "../../Resources/Helmets";
 import WordOfTheDay from "../WordOfTheDay/WordOfTheDay";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import FlashCards from "../FlashCards/FlashCards";
+import ReviewFlashCards from "../FlashCards/FlashCardsComponents/ReviewFlashCards";
 
 interface BlogProps {
   headers: MyHeadersType | null;
@@ -88,8 +90,6 @@ export function Blog({
   var [img, setImg] = useState("");
   var [loadingLESSON, setLoadingLESSON] = useState<Boolean>(true);
 
-
-
   const fetchLastClassId = async (classid: string) => {
     setLoadingLESSON(true);
 
@@ -114,14 +114,6 @@ export function Blog({
       console.log(error, "Erro ao encontrar aula");
     }
   };
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     const theuser = JSON.parse(localStorage.getItem("loggedIn") || "");
@@ -162,13 +154,13 @@ export function Blog({
         .replace(/[^\w\-]+/g, "")}/${classId}`,
     },
 
-    {
-      id: "calendar",
-      title: UniversalTexts.nextGroupClasses,
-      description: UniversalTexts.nextGroupClasses,
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/actions.jpg?updatedAt=1720616041429",
-      link: "/my-calendar",
-    },
+    // {
+    //   id: "calendar",
+    //   title: UniversalTexts.nextGroupClasses,
+    //   description: UniversalTexts.nextGroupClasses,
+    //   img: "https://ik.imagekit.io/vjz75qw96/assets/icons/actions.jpg?updatedAt=1720616041429",
+    //   link: "/my-calendar",
+    // },
     {
       id: "flash-cards",
       title: "Flashcards",
@@ -190,13 +182,13 @@ export function Blog({
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mining.png?updatedAt=1742402051850",
       link: "/sentence-mining",
     },
-    {
-      id: "my-lessons",
-      title: UniversalTexts.myClasses,
-      description: UniversalTexts.myClasses,
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/future.jpg?updatedAt=1720527411882",
-      link: "/my-classes",
-    },
+    // {
+    //   id: "my-lessons",
+    //   title: UniversalTexts.myClasses,
+    //   description: UniversalTexts.myClasses,
+    //   img: "https://ik.imagekit.io/vjz75qw96/assets/icons/future.jpg?updatedAt=1720527411882",
+    //   link: "/my-classes",
+    // },
   ];
 
   const editPost = async (id: string): Promise<void> => {
@@ -296,7 +288,7 @@ export function Blog({
         <DivFlex>
           <div className="grid-flex-2">
             <DivMarginBorder>
-              <WordOfTheDay
+              <ReviewFlashCards
                 change={change}
                 onChange={setChange}
                 headers={headers}

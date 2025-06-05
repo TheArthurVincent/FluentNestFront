@@ -3,7 +3,10 @@ import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
-import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import {
+  notifyError,
+  readText,
+} from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { HTwo } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
@@ -83,7 +86,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
       setNowGo(nowGo);
       setLoading(false);
     } catch (error: any) {
-      alert(error.response?.data?.error || "Error adding flashcard.");
+      notifyError(error.response?.data?.error || "Error adding flashcard.");
     }
   };
   const [showInfo, setShowInfo] = useState<boolean>(false);
@@ -112,11 +115,14 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
         { headers: actualHeaders }
       );
 
-      alert("Card adicionado: " + response.data.addedNewFlashcards);
+      notifyError(
+        "Card adicionado: " + response.data.addedNewFlashcards,
+        "green"
+      );
       fetchObjectUniv();
       onChange(!change);
     } catch (error: any) {
-      alert(error.response?.data?.error || "Error adding flashcard.");
+      notifyError(error.response?.data?.error || "Error adding flashcard.");
     }
   };
 
@@ -149,72 +155,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
     <CircularProgress />
   ) : (
     <section style={{ padding: 0, margin: "auto", maxWidth: "600px" }}>
-      {showInfo && (
-        <div onClick={() => setShowInfo(!showInfo)}>
-          <div
-            style={{
-              width: "10000000000000000000px",
-              position: "fixed",
-              height: "10000000000000000000px",
-              display: "block",
-              top: "-20vh",
-              left: "-20vw",
-              zIndex: "100",
-              backgroundColor: transparentWhite(),
-            }}
-          />
-          <div
-            style={{
-              backgroundColor: "#ffebcc",
-              borderRadius: "8px",
-              border: "2px solid #ff9900",
-              padding: "15px",
-              zIndex: "200",
-              position: "fixed",
-              top: "20vh",
-              left: "8vw",
-              marginBottom: "20px",
-              textAlign: "center",
-            }}
-          >
-            <h2 style={{ color: "#d35400" }}>📢 PALAVRA DO DIA! 🎉</h2>
-            {UniversalTexts.wordOfTheDay} - {formatDateBr(new Date())}
-            <br />
-            <a href="/words-of-the-day">{UniversalTexts.seePreviousWords}</a>
-            <br />
-            <br />
-            <p>
-              Agora temos a sessão <strong>Word of the Day</strong>! 📖✨
-            </p>
-            <ul style={{ listStyleType: "none", padding: 0 }}>
-              <li>
-                🔹 <strong>De segunda a sexta-feira</strong>, uma nova palavra
-                será disponibilizada para você aprender.
-              </li>
-              <li>
-                🔹 Se você adicionar a palavra do dia aos{" "}
-                <strong>flashcards</strong>, ganha <strong>100 pontos</strong>!
-                🏆
-              </li>
-              <li>
-                🔹 <strong>Bônus Semanal</strong>: Se no sábado você enviar{" "}
-                <strong>todas as palavras do dia da última semana</strong>, com
-                suas frases <strong>escritas no caderno</strong> e{" "}
-                <strong>adicionadas aos flashcards</strong>, ganha{" "}
-                <strong>500 pontos</strong>! 🚀
-              </li>
-            </ul>
-            <p>
-              <strong>⚠ Atenção:</strong> todas as palavras da semana precisam
-              estar nos flashcards para garantir os pontos!
-            </p>
-            <p>
-              💡 Aproveite essa nova oportunidade para turbinar seu vocabulário
-              e acumular recompensas! 🔥
-            </p>
-          </div>
-        </div>
-      )}
+      {showInfo && <></>}
 
       <div>
         {sentences.map((sentence, index) => (
@@ -225,20 +166,23 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
               flexDirection: "column",
               alignItems: "center",
               textAlign: "center",
-              marginBottom: "10px",
+              padding: "10px 14px",
+              borderRadius: "12px",
+              maxWidth: "500px",
+              marginInline: "auto",
             }}
           >
-            <div style={{ width: "100%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textAlign: "center",
-                }}
-              >
-                {see ? (
+            {see && (
+              <>
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "8px",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    marginBottom: "6px",
+                  }}
+                >
                   <Tooltip
                     title={
                       !heardSentences[index]
@@ -247,6 +191,11 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                     }
                   >
                     <ArvinButton
+                      style={{
+                        padding: "4px 8px",
+                        borderRadius: "6px",
+                        fontSize: "12px",
+                      }}
                       disabled={disabled}
                       color={
                         !heardSentences[index] || disabled ? "white" : "green"
@@ -259,87 +208,68 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                       onClick={() => {
                         setDisabled(true);
                         !heardSentences[index]
-                          ? alert("Listen first!")
+                          ? notifyError("Listen first!")
                           : addNewCards();
                       }}
                     >
-                      <i className="fa fa-files-o" aria-hidden="true" />
+                      <i className="fa fa-files-o" />
                     </ArvinButton>
                   </Tooltip>
-                ) : (
+                  <span style={{ fontSize: "14px", color: "#333" }}>
+                    <strong>{theWord}</strong> ({sentences[0].translation})
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                  }}
+                >
                   <i
-                    style={{
-                      color: !see ? "green" : "orange",
-                      marginRight: "10px",
-                    }}
-                    className={`fa fa-${!see ? "check-circle" : "ellipsis-h"}`}
+                    onClick={() => handleReadText(index, sentence.text, "en")}
+                    className="fa fa-volume-up"
                     aria-hidden="true"
-                  />
-                )}
-                <HTwo>
-                  {/* // style={{ */}
-                  {/* //   cursor: "pointer", */}
-                  {/* // }} */}
-                  {/* // onClick={() => window.location.assign(youglishBaseUrl)} */}
-                  {theWord} ({sentences[0].translation}){" "}
-                </HTwo>
-              </div>
-              <span
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                <i
-                  style={{
-                    cursor: "pointer",
-                  }}
-                  onClick={() => handleReadText(index, sentence.text, "en")}
-                  className="fa fa-volume-up"
-                  aria-hidden="true"
-                />
-                <span>
-                  <span
                     style={{
-                      fontWeight: "bold",
-                      fontSize: "16px",
-                      display: "block",
-                    }}
-                    dangerouslySetInnerHTML={{
-                      __html: sentence.text,
-                    }}
-                  />
-                  <span
-                    style={{
-                      fontSize: "15px",
+                      cursor: "pointer",
                       color: "#666",
-                      display: "block",
-                      marginTop: "5px",
+                      fontSize: "16px",
                     }}
-                    dangerouslySetInnerHTML={{ __html: sentence.translation }}
                   />
-                </span>
-                <i
-                  style={{
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setShowInfo(!showInfo)}
-                  className="fa fa-info"
-                  aria-hidden="true"
-                />
-              </span>
-            </div>
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        color: "#222",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: sentence.text }}
+                    />
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: "#777",
+                        marginTop: "2px",
+                      }}
+                      dangerouslySetInnerHTML={{ __html: sentence.translation }}
+                    />
+                  </div>
+                </div>
+              </>
+            )}
+
             <a
-              style={{
-                marginTop: "7px",
-                fontSize: "9px",
-              }}
               href="/words-of-the-day"
+              style={{
+                marginTop: "10px",
+                fontSize: "10px",
+                color: "#999",
+                textDecoration: "none",
+              }}
             >
-              Previous words
+              Previous Words of the Day
             </a>
           </div>
         ))}

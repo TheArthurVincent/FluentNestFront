@@ -13,6 +13,9 @@ import { secondaryColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Countdown from "../../Ranking/RankingComponents/Countdown";
 import Voice from "../../../Resources/Voice";
+import { HThree } from "../../MyClasses/MyClasses.Styled";
+import { HTwo } from "../../../Resources/Components/RouteBox";
+import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -338,7 +341,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   return (
     <section id="review">
-      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+      <WordOfTheDay change={change} onChange={onChange} headers={headers} />
+      <HTwo>Review Flashcards</HTwo>
       {see && (
         <div>
           {loading ? (
@@ -349,7 +353,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                 margin: "auto",
                 textAlign: "center",
                 color: "black",
-                marginBottom: "2rem",
+                marginBottom: "1rem",
               }}
             >
               <div>
@@ -370,6 +374,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         <span>{answer ? "Back" : "Answer"}</span>
                       )}
                     </ArvinButton>
+                    <br />
                     <br />
                     {answer && (
                       <div>
@@ -534,8 +539,17 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                   <p>
                     <b>No flashcards</b>
                     <br />
-                    <br />
                     Nenhum flashcard
+                    <br />
+                    <a
+                      style={{
+                        marginTop: "7px",
+                        fontSize: "9px",
+                      }}
+                      href="/sentence-mining"
+                    >
+                      Adicione palavras em seus flashcards!
+                    </a>
                   </p>
                 )}
               </div>
@@ -543,14 +557,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           )}
         </div>
       )}
-
-      <div
-        style={{
-          display: "flex",
-          gap: "5px",
-          alignItems: "center",
-        }}
-      />
       <div
         style={{
           display: !isDisabled ? "none" : "grid",
@@ -572,15 +578,25 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         style={{
           display: "flex",
           justifyContent: "center",
-          margin: "10px",
           alignItems: "center",
         }}
       >
+        <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
         <select
           id="category-select"
           value={category}
           onChange={(e) => {
             setCategory(e.target.value);
+          }}
+          style={{
+            padding: "6px 12px",
+            borderRadius: "6px",
+            border: "1px solid #ccc",
+            backgroundColor: "#f9f9f9",
+            fontSize: "0.9rem",
+            color: "#333",
+            outline: "none",
+            transition: "border-color 0.3s",
           }}
         >
           <option value="nofilter">Ver todos os cards</option>

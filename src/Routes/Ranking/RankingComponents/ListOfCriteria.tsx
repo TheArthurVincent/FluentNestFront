@@ -60,31 +60,31 @@ export const listOfCriteria = [
         nobutton: true,
         color: "green",
       },
-
       {
         color: "green",
         score: 250,
         description: "Recomendação de aluno (a) particular fechada",
         text: "Recomendação",
       },
-      {
-        color: "green",
-        score: 50,
-        description: "Recomendação de usuário da plataforma fechada",
-        text: "Recomendação",
-      },
+      // {
+      //   color: "green",
+      //   score: 50,
+      //   description: "Recomendação de usuário da plataforma fechada",
+      //   text: "Recomendação",
+      // },
       {
         color: "Green",
         score: 500,
-        description: "Adicionou todas as palavras da semana (Words of the week) aos flashcards e mandou a foto de todas anotadas no caderno.",
+        description:
+          "Adicionou todas as palavras da semana (Words of the week) aos flashcards e mandou a foto de todas anotadas no caderno.",
         text: "Adicionou todas as palavras da semana (Words of the week) aos flashcards e mandou a foto de todas anotadas no caderno.",
       },
-      {
-        color: "red",
-        score: -150,
-        description: "AWOL Faltou na aula e não avisou",
-        text: "Faltou na aula e não avisou",
-      },
+      // {
+      //   color: "red",
+      //   score: -150,
+      //   description: "AWOL Faltou na aula e não avisou",
+      //   text: "Faltou na aula e não avisou",
+      // },
     ],
   },
 ];
