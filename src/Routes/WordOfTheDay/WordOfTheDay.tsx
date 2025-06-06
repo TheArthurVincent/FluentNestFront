@@ -154,113 +154,118 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
   return loading ? (
     <CircularProgress />
   ) : (
-    <section style={{ padding: 0, margin: "auto", maxWidth: "600px" }}>
-      <div>
-        {sentences.map((sentence, index) => (
-          <div
-            key={index}
-            style={{
-              display: index === 0 ? "none" : "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              padding: "10px 14px",
-              borderRadius: "12px",
-              maxWidth: "500px",
-              marginInline: "auto",
-            }}
-          >
-            {see && (
-              <>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "8px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginBottom: "6px",
-                  }}
-                >
-                  <Tooltip
-                    title={
-                      !heardSentences[index]
-                        ? "Listen first!"
-                        : "Add to flashcards"
-                    }
-                  >
-                    <ArvinButton
-                      style={{
-                        padding: "4px 8px",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                      }}
-                      disabled={disabled}
-                      color={
-                        !heardSentences[index] || disabled ? "white" : "green"
-                      }
-                      cursor={
-                        !heardSentences[index] || disabled
-                          ? "not-allowed"
-                          : "pointer"
-                      }
-                      onClick={() => {
-                        setDisabled(true);
-                        !heardSentences[index]
-                          ? notifyError("Listen first!")
-                          : addNewCards();
-                      }}
-                    >
-                      <i className="fa fa-files-o" />
-                    </ArvinButton>
-                  </Tooltip>
-                  <span style={{ fontSize: "14px", color: "#333" }}>
-                    <strong>{theWord}</strong> ({sentences[0].translation})
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "10px",
-                  }}
-                >
-                  <i
-                    onClick={() => handleReadText(index, sentence.text, "en")}
-                    className="fa fa-volume-up"
-                    aria-hidden="true"
+    <>
+      {see && (
+        <section style={{ padding: 0, margin: "auto", maxWidth: "600px" }}>
+          <div>
+            {sentences.map((sentence, index) => (
+              <div
+                key={index}
+                style={{
+                  display: index === 0 ? "none" : "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  textAlign: "center",
+                  padding: "10px 14px",
+                  borderRadius: "12px",
+                  maxWidth: "500px",
+                  marginInline: "auto",
+                }}
+              >
+                <>
+                  <div
                     style={{
-                      cursor: "pointer",
-                      color: "#666",
-                      fontSize: "16px",
+                      display: "flex",
+                      gap: "8px",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "6px",
                     }}
-                  />
-                  <div>
-                    <div
-                      style={{
-                        fontWeight: 500,
-                        fontSize: "15px",
-                        color: "#222",
-                      }}
-                      dangerouslySetInnerHTML={{ __html: sentence.text }}
-                    />
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        color: "#777",
-                        marginTop: "2px",
-                      }}
-                      dangerouslySetInnerHTML={{ __html: sentence.translation }}
-                    />
+                  >
+                    <Tooltip
+                      title={
+                        !heardSentences[index]
+                          ? "Listen first!"
+                          : "Add to flashcards"
+                      }
+                    >
+                      <ArvinButton
+                        style={{
+                          padding: "4px 8px",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                        }}
+                        disabled={disabled}
+                        color={
+                          !heardSentences[index] || disabled ? "white" : "green"
+                        }
+                        cursor={
+                          !heardSentences[index] || disabled
+                            ? "not-allowed"
+                            : "pointer"
+                        }
+                        onClick={() => {
+                          setDisabled(true);
+                          !heardSentences[index]
+                            ? notifyError("Listen first!")
+                            : addNewCards();
+                        }}
+                      >
+                        <i className="fa fa-files-o" />
+                      </ArvinButton>
+                    </Tooltip>
+                    <span style={{ fontSize: "14px", color: "#333" }}>
+                      <strong>{theWord}</strong> ({sentences[0].translation})
+                    </span>
                   </div>
-                </div>
-              </>
-            )}
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "10px",
+                    }}
+                  >
+                    <i
+                      onClick={() => handleReadText(index, sentence.text, "en")}
+                      className="fa fa-volume-up"
+                      aria-hidden="true"
+                      style={{
+                        cursor: "pointer",
+                        color: "#666",
+                        fontSize: "16px",
+                      }}
+                    />
+                    <div>
+                      <div
+                        style={{
+                          fontWeight: 500,
+                          fontSize: "15px",
+                          color: "#222",
+                        }}
+                        dangerouslySetInnerHTML={{ __html: sentence.text }}
+                      />
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          color: "#777",
+                          marginTop: "2px",
+                        }}
+                        dangerouslySetInnerHTML={{
+                          __html: sentence.translation,
+                        }}
+                      />
+                    </div>
+                  </div>
+                </>
+                )
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </section>
+        </section>
+      )}
+    </>
   );
 };
 
