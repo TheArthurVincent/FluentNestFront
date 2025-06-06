@@ -33,10 +33,10 @@ export default function Cadastro() {
     doc: "",
     email: "",
     dateOfBirth: "",
-    address: "", // logradouro
-    neighborhood: "", // bairro
-    city: "", // cidade
-    state: "", // estado
+    address: "",
+    neighborhood: "",
+    city: "",
+    state: "",
     addressNumber: "",
     zip: "",
     password: "",
@@ -435,7 +435,7 @@ export default function Cadastro() {
                   placeholder="CEP"
                   value={form.zip}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, ""); // só números
+                    const value = e.target.value.replace(/\D/g, "");
                     if (value.length <= 8) {
                       setForm({ ...form, zip: value });
                     }
@@ -455,7 +455,8 @@ export default function Cadastro() {
                   onChange={handleChange}
                   required
                   style={styles.input}
-                />   <input
+                />{" "}
+                <input
                   type="number"
                   name="addressNumber"
                   placeholder="Número do Endereço"
@@ -501,6 +502,9 @@ export default function Cadastro() {
         </button>
         {error && <p style={styles.error}>{error}</p>}
       </form>
+      <button onClick={handleSubmit} style={styles.button}>
+        chamar
+      </button>
     </div>
   );
 }

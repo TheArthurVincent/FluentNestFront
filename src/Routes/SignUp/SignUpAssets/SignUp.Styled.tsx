@@ -21,7 +21,7 @@ export function InputFieldSignUp({
       <p
         style={{
           margin: 0,
-          fontSize:"15px",
+          fontSize: "15px",
           paddingBottom: "2px",
           fontWeight: 500,
           fontFamily: textTitleFont(),

@@ -73,6 +73,22 @@ export function MyProfile({ headers }: HeadersProps) {
     { title: UniversalTexts.dateOfBirth, data: formatDateBr(user.dateOfBirth) },
   ];
 
+  const [showModal, setShowModal] = useState(false);
+
+  const cancelSubscription = async () => {
+    try {
+      await axios.delete(
+        `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
+      );
+      alert("Assinatura cancelada com sucesso.");
+      setShowModal(false);
+      onLoggOut();
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao cancelar a assinatura.");
+    }
+  };
+
   return (
     <>
       {headers ? (
@@ -162,6 +178,81 @@ export function MyProfile({ headers }: HeadersProps) {
                       >
                         Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
                       </li>
+                      {!user.tutoree && (
+                        <ArvinButton
+                          onClick={() => setShowModal(true)}
+                          style={{
+                            backgroundColor: "#d32f2f",
+                            color: "#fff",
+                            padding: "0.5rem 1rem",
+                            borderRadius: "6px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          Cancelar Minha Assinatura
+                        </ArvinButton>
+                        
+
+                        
+                      )}
+                      {showModal && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+    }}
+  >
+    <div
+      style={{
+        background: "#fff",
+        padding: "2rem",
+        borderRadius: "8px",
+        width: "90%",
+        maxWidth: "400px",
+        textAlign: "center",
+      }}
+    >
+      <h2 style={{ marginBottom: "1.5rem", color: "#d32f2f" }}>
+        Tem certeza que deseja cancelar sua assinatura?
+      </h2>
+      <div style={{ display: "flex", justifyContent: "space-around" }}>
+        <Button
+          variant="outlined"
+          onClick={() => setShowModal(false)}
+          style={{
+            borderColor: "#555",
+            color: "#555",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "6px",
+          }}
+        >
+          Não
+        </Button>
+        <Button
+          variant="contained"
+          onClick={cancelSubscription}
+          style={{
+            backgroundColor: "#d32f2f",
+            color: "#fff",
+            padding: "0.5rem 1.5rem",
+            borderRadius: "6px",
+          }}
+        >
+          Sim
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
+
                       {user.tutoree && (
                         <li
                           style={{
