@@ -24,6 +24,84 @@ export const generateUsername = (
 
   return `${first}${year}${last}${month}`;
 };
+
+function useWindowWidth() {
+  const [width, setWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  return width;
+}
+const width = useWindowWidth();
+const isMobile = width < 768;
+
+const styles: any = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
+  },
+  form: {
+    display: "flex",
+    gap: "10px",
+    flexDirection: "column",
+    width: "100%",
+    maxWidth: "900px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "1fr",
+    gap: "20px",
+  },
+  grid2: {
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+    gap: "20px",
+  },
+  grid3: {
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+    gap: "20px",
+  },
+  responsiveGrid: {
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+    gap: "20px",
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    background: "#f9f9f9",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+  },
+  input: {
+    marginBottom: "10px",
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  button: {
+    padding: "10px",
+    fontSize: "16px",
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    marginTop: "20px",
+  },
+  error: {
+    color: "red",
+    marginTop: "10px",
+  },
+};
+
 export default function Cadastro() {
   const [form, setForm] = useState({
     name: "",
