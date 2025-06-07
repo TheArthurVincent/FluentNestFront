@@ -259,7 +259,6 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                     </div>
                   </div>
                 </>
-                )
               </div>
             ))}
           </div>
