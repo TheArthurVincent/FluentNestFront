@@ -25,18 +25,6 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-function useWindowWidth() {
-  const [width, setWidth] = useState(window.innerWidth);
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  return width;
-}
-const width = useWindowWidth();
-const isMobile = width < 768;
-
 const styles: any = {
   container: {
     display: "flex",
@@ -54,22 +42,22 @@ const styles: any = {
   },
   grid: {
     display: "grid",
-    gridTemplateColumns: isMobile ? "1fr" : "1fr",
+    gridTemplateColumns: "1fr",
     gap: "20px",
   },
   grid2: {
     display: "grid",
-    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+    gridTemplateColumns: "1fr",
     gap: "20px",
   },
   grid3: {
     display: "grid",
-    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr",
+    gridTemplateColumns: "1fr",
     gap: "20px",
   },
   responsiveGrid: {
     display: "grid",
-    gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+    gridTemplateColumns: "1fr",
     gap: "20px",
   },
   column: {
