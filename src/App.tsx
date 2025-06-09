@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
-import { SignUp } from "./Routes/SignUp/SignUp";
 import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
@@ -13,6 +12,7 @@ import NotFound from "./Routes/NotFound/NotFound";
 import RequestResetPassword from "./Routes/ChangePassword/RequestResetPassword";
 import ResetPasswordFinalChange from "./Routes/ChangePassword/ResetPasswordFinalChange";
 import NewStudentAsaas from "./Routes/NewStudentAsaas/NewStudentAsaas";
+import SignUp from "./Routes/SignUp/SignUp";
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");

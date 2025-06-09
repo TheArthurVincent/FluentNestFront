@@ -104,7 +104,9 @@ export function Blog({
       var cour = response.data.course.title;
       var mod = response.data.module.title;
       var less = response.data.classDetails.title;
-      var imgg = response.data.classDetails.image;
+      var imgg = response.data.classDetails.image
+        ? response.data.classDetails.image
+        : "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512";
       setCourse(cour);
       setModule(mod);
       setLesson(less);
