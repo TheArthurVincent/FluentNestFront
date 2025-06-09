@@ -32,23 +32,24 @@ function ResetPasswordFinalChange() {
     }
   };
   return (
-    <RouteDiv>
+    <div
+      style={{
+        backgroundColor: "white",
+        overflow: "hidden",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <div
         style={{
-          overflow: "hidden",
-          height: "100vh",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          display: "grid",
+          gap: "10px",
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gap: "10px",
-          }}
-        >
-          <Helmets text={"Reset Password"} />
+        <Helmets text={"Reset Password"} />
+        <form onSubmit={handleSendPassword}>
           <InputField
             value={Password}
             onChange={(event: any) => setPassword(event.target.value)}
@@ -64,18 +65,18 @@ function ResetPasswordFinalChange() {
             type="password"
           />
           <ArvinButton
+            type="submit"
             style={{
               display: "flex",
               marginLeft: "auto",
             }}
-            onClick={handleSendPassword}
             disabled={Password1 !== Password}
           >
             Alterar Senha
           </ArvinButton>
-        </div>
+        </form>
       </div>
-    </RouteDiv>
+    </div>
   );
 }
 
