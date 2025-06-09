@@ -1,110 +1,313 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import React from "react";
 import { backDomain } from "../../Resources/UniversalComponents";
-import { CircularProgress } from "@mui/material";
-import {
-  HOne,
-  RouteDiv,
-  RouteSizeControlBox,
-} from "../../Resources/Components/RouteBox";
-
-import {
-  lightGreyColor,
-  primaryColor,
-  secondaryColor,
-  textPrimaryColorContrast,
-} from "../../Styles/Styles";
-
-import { InputFieldSignUp } from "./SignUpAssets/SignUp.Styled";
-import Helmets from "../../Resources/Helmets";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { Link } from "react-router-dom";
-import { generateUsername } from "../NewStudentAsaas/NewStudentAsaas";
+import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
-export function SignUp() {
-  const [newName, setNewName] = useState<string>("");
-  const [newLastName, setNewLastName] = useState<string>("");
-  const [newUsername, setNewUsername] = useState<string>("");
-  const [newPhone, setNewPhone] = useState<string>("");
-  const [newEmail, setNewEmail] = useState<string>("");
-  const [newDateOfBirth, setNewDateOfBirth] = useState<string>("");
-  const [newCPF, setNewCPF] = useState<string>("");
-  const [newPassword, setNewPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [addressNum, setAddressNum] = useState<string>("");
-  const [CEP, setCEP] = useState<string>("");
-  const [upload, setUpload] = useState<boolean>(true);
-  const [button, setButton] = useState<any>("Cadastrar");
+export const generateUsername = (
+  name: string,
+  lastname: string,
+  dateOfBirth: string
+) => {
+  const sanitize = (str: string) =>
+    str
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z]/g, "");
 
-  const reset = () => {
-    setNewName("");
-    setNewLastName("");
-    setNewUsername("");
-    setNewPhone("");
-    setNewEmail("");
-    setNewDateOfBirth("");
-    setNewCPF("");
-    setNewPassword("");
-    setAddress("");
-    setConfirmPassword("");
-    setButton("Sucesso");
-    setUpload(!upload);
-    setButton("Cadastrar");
+  const first = sanitize(name);
+  const last = sanitize(lastname).slice(0, 3);
+  const year = dateOfBirth ? new Date(dateOfBirth).getDate() : "";
+  const month = dateOfBirth ? new Date(dateOfBirth).getFullYear() : "";
+
+  return `${first}${year}${last}${month}`;
+};
+
+const styles: any = {
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "20px",
+  },
+  form: {
+    display: "flex",
+    gap: "10px",
+    flexDirection: "column",
+    width: "100%",
+    maxWidth: "900px",
+  },
+  grid: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "20px",
+  },
+  grid2: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "20px",
+  },
+  grid3: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "20px",
+  },
+  responsiveGrid: {
+    display: "grid",
+    gridTemplateColumns: "1fr",
+    gap: "20px",
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    background: "#f9f9f9",
+    padding: "20px",
+    borderRadius: "10px",
+    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+  },
+  input: {
+    marginBottom: "10px",
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ccc",
+  },
+  button: {
+    padding: "10px",
+    fontSize: "16px",
+    backgroundColor: "#007BFF",
+    color: "#fff",
+    border: "none",
+    cursor: "pointer",
+    marginTop: "20px",
+  },
+  error: {
+    color: "red",
+    marginTop: "10px",
+  },
+};
+
+export default function SignUp() {
+  const [form, setForm] = useState({
+    name: "",
+    lastname: "",
+    username: "",
+    phoneNumber: "",
+    doc: "",
+    email: "",
+    dateOfBirth: "",
+    address: "",
+    neighborhood: "",
+    city: "",
+    state: "",
+    addressNumber: "",
+    zip: "",
+    password: "",
+    confirmPassword: "",
+    creditCardNumber: "",
+    creditCardHolderName: "",
+    creditCardExpiryMonth: "",
+    creditCardExpiryYear: "",
+    creditCardCcv: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const handleSubmit = async (event: any) => {
-    event.preventDefault();
-    setButton(<CircularProgress style={{ color: primaryColor() }} />);
-    let newStudent = {
-      name: newName,
-      lastname: newLastName,
-      username: newUsername,
-      password: newPassword,
-      phoneNumber: newPhone,
-      email: newEmail,
-      googleDriveLink: "https://portal.arthurvincent.com.br/message",
-      dateOfBirth: newDateOfBirth,
-      doc: newCPF,
-      address: address,
-      feeUpToDate: false,
-    };
-    if (newPassword === confirmPassword) {
-      setNewPassword(newPassword);
-    } else {
-      alert("As senhas são diferentes");
-      event.preventDefault();
-      setButton("Cadastrar");
+
+  const login = async () => {
+    try {
+      const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
+        email: form.email,
+        password: form.password,
+      });
+      const { token, loggedIn, notifications } = response.data;
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+
+      if (localStorage.getItem("authorization")) {
+        localStorage.removeItem("authorization");
+      }
+
+      if (localStorage.getItem("loggedIn")) {
+        localStorage.removeItem("loggedIn");
+      }
+
+      localStorage.setItem("authorization", `${token}`);
+      localStorage.setItem("notifications", JSON.stringify(notifications));
+      localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
+      window.location.assign("/");
+    } catch (error) {
+      window.location.assign("/login");
+    }
+  };
+  const [usernameEdited, setUsernameEdited] = useState<string>("");
+
+  useEffect(() => {
+    if (
+      form.name &&
+      form.lastname &&
+      form.dateOfBirth &&
+      form.username.trim() === ""
+    ) {
+      const newUsername = generateUsername(
+        form.name,
+        form.lastname,
+        form.dateOfBirth
+      );
+      setUsernameEdited(newUsername);
+      setForm((prev) => ({ ...prev, username: newUsername }));
+    }
+    console.log("Username gerado:", form.username, usernameEdited);
+  }, [form]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (form.password !== form.confirmPassword) {
+      setLoading(false);
+      setError("As senhas não coincidem.");
       return;
     }
+
     try {
-      const response = await axios.post(
-        `${backDomain}/api/v1/signupstudent`,
-        newStudent
-      );
-      alert("Cadastro realizado com sucesso! Fale com o professor!");
-      window.location.assign("/login");
-    } catch (error) {
-      setButton("...");
-      alert(error);
-      setButton("Cadastrar");
-      reset();
+      const response = await axios.post(`${backDomain}/api/v1/cadastro`, form);
+
+      notifyError(`Pagamento aprovado!`, "green");
+
+      console.log("Dados completos:", response.data);
+
+      setTimeout(() => {
+        login();
+      }, 1000);
+    } catch (err: any) {
+      setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
+      const errorMessage = err.response
+        ? err.response.data.message
+        : "Tente novamente";
+      notifyError(errorMessage);
+      console.log(errorMessage, err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const generate = () => {
-    const newUsername = generateUsername(newName, newLastName, newDateOfBirth);
-    setNewUsername(newUsername);
+  const styles: any = {
+    container: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: "20px",
+    },
+    form: {
+      display: "flex",
+      gap: "10px",
+      flexDirection: "column",
+      width: "100%",
+      maxWidth: "900px",
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "20px",
+    },
+    grid3: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "20px",
+    },
+    grid2: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "20px",
+    },
+    column: {
+      display: "flex",
+      flexDirection: "column",
+      background: "#f9f9f9",
+      padding: "20px",
+      borderRadius: "10px",
+      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+    },
+    input: {
+      marginBottom: "10px",
+      padding: "10px",
+      fontSize: "16px",
+      borderRadius: "5px",
+      border: "1px solid #ccc",
+    },
+    button: {
+      padding: "10px",
+      fontSize: "16px",
+      backgroundColor: "#007BFF",
+      color: "#fff",
+      border: "none",
+      cursor: "pointer",
+      marginTop: "20px",
+    },
+    error: {
+      color: "red",
+      marginTop: "10px",
+    },
+    responsiveGrid: {
+      display: "grid",
+      gridTemplateColumns: "1fr",
+      gap: "20px",
+    },
   };
-  useEffect(() => {
-    if (newName && newLastName && newDateOfBirth && newUsername.trim() === "") {
-      generate();
+
+  const [booleanLeadsCapture, setLeadsCapture] = useState<boolean>(true);
+  const leadsCapture = async () => {
+    if (
+      booleanLeadsCapture &&
+      form.name !== "" &&
+      form.lastname !== "" &&
+      form.phoneNumber !== "" &&
+      form.email !== ""
+    ) {
+      try {
+        const theContent = {
+          name: form.name,
+          lastname: form.lastname,
+          phoneNumber: form.phoneNumber,
+          email: form.email,
+        };
+        const response = await axios.post(
+          `${backDomain}/api/v1/leads`,
+          theContent
+        );
+        console.log("Foi pro banco!", response);
+        setLeadsCapture(false);
+      } catch (error) {
+        console.error("Erro ao capturar lead", error);
+      }
     }
-    console.log("Username gerado");
-  }, [newName, newLastName, newDateOfBirth]);
+  };
+
+  useEffect(() => {
+    const allFilled =
+      form.name.trim() !== "" &&
+      form.lastname.trim() !== "" &&
+      form.phoneNumber.trim().length >= 11 &&
+      form.email.trim().includes("@");
+
+    if (booleanLeadsCapture && allFilled) {
+      leadsCapture();
+    }
+  }, [form.name, form.lastname, form.phoneNumber, form.email]);
+
   useEffect(() => {
     const fetchAddress = async () => {
-      const cleanCep = CEP.replace(/\D/g, "");
+      const cleanCep = form.zip.replace(/\D/g, "");
       if (cleanCep.length !== 8) return;
 
       try {
@@ -118,13 +321,14 @@ export function SignUp() {
         }
 
         const { logradouro, bairro, localidade, uf } = response.data;
-        const log = logradouro;
-        const bair = bairro;
-        const local = localidade;
-        const estado = uf;
-        setAddress(
-          log + ", " + addressNum + ", " + bair + ", " + local + " - " + estado
-        );
+
+        setForm((prev) => ({
+          ...prev,
+          address: logradouro,
+          neighborhood: bairro,
+          city: localidade,
+          state: uf,
+        }));
       } catch (error) {
         notifyError("Erro ao buscar endereço.");
         console.error("Erro ViaCEP:", error);
@@ -132,159 +336,241 @@ export function SignUp() {
     };
 
     fetchAddress();
-  }, [addressNum, CEP]);
+  }, [form.zip]);
 
   return (
-    <RouteSizeControlBox
-      style={{
-        width: "50rem",
-        margin: "2rem auto",
-      }}
-    >
-      <Helmets text="Sign Up" />
-      <Link to="/login">
-        <span
-          style={{
-            padding: "1rem",
-            backgroundColor: primaryColor(),
-            color: textPrimaryColorContrast(),
-            margin: "1rem",
-          }}
-        >
-          Já tenho cadastro - Página Inicial
-        </span>
-      </Link>
-      <RouteDiv style={{ maxWidth: "25rem", margin: "2rem auto" }}>
-        <HOne>Cadastro de Aluno</HOne>
-        <form
-          style={{
-            padding: "5px",
-            display: "grid",
-            gap: "10px",
-          }}
-          onSubmit={handleSubmit}
-        >
-          <InputFieldSignUp
-            value={newName}
-            onChange={(event) => setNewName(event.target.value)}
-            id="name"
-            placeholder="Nome"
-            type="text"
-          />
-          <InputFieldSignUp
-            value={newLastName}
-            onChange={(event) => setNewLastName(event.target.value)}
-            id="lastname"
-            placeholder="Sobrenome"
-            type="text"
-          />
-          <InputFieldSignUp
-            value={newDateOfBirth}
-            onChange={(event) => setNewDateOfBirth(event.target.value)}
-            placeholder="Data de Nascimento"
-            id="nasciment"
-            type="date"
-          />
-          {newUsername !== "" && (
-            <div
-              style={{
-                padding: "10px",
-                borderRadius: "1rem",
-                display: "inline",
-                color: "white",
-                margin: "auto",
-                maxWidth: "fit-content",
-                backgroundColor: secondaryColor(),
-              }}
-              onClick={generate}
-            >
-              Username: {newUsername}
+    <div style={styles.container}>
+      <HOne>Cadastro</HOne>
+      <form onSubmit={handleSubmit} style={styles.form}>
+        <div style={styles.grid}>
+          {/* 📌 COLUNA 1 - DADOS PESSOAIS */}
+          <div style={styles.column}>
+            <HTwo>Dados Pessoais</HTwo>
+            <div style={styles.grid2}>
+              <input
+                type="text"
+                name="name"
+                placeholder="Nome"
+                value={form.name}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="lastname"
+                placeholder="Sobrenome"
+                value={form.lastname}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="E-mail"
+                value={form.email}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="number"
+                name="phoneNumber"
+                placeholder="Número de telefone com DDD"
+                value={form.phoneNumber}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="doc"
+                placeholder="CPF ou CNPJ"
+                value={form.doc}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="text"
+                name="username"
+                placeholder="Nome de usuário"
+                value={form.username}
+                readOnly
+                style={{
+                  ...styles.input,
+                  backgroundColor: "#f0f0f0",
+                  color: "#555",
+                }}
+              />
+              <input
+                type="date"
+                name="dateOfBirth"
+                placeholder="Data de nascimento"
+                value={form.dateOfBirth}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="password"
+                name="password"
+                placeholder="Senha"
+                value={form.password}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirme sua senha"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
             </div>
-          )}
-          <InputFieldSignUp
-            value={newPhone}
-            onChange={(event) => setNewPhone(event.target.value)}
-            placeholder="Número de celular"
-            id="num"
-            type="number"
-          />
-          <InputFieldSignUp
-            value={newEmail}
-            onChange={(event) => setNewEmail(event.target.value)}
-            placeholder="E-mail"
-            id="email"
-            type="email"
-          />
-
-          <InputFieldSignUp
-            value={newCPF}
-            onChange={(event) => setNewCPF(event.target.value)}
-            placeholder="CPF"
-            id="cpf"
-            type="number"
-          />
-          <InputFieldSignUp
-            value={CEP}
-            onChange={(event) => setCEP(event.target.value)}
-            placeholder="CEP"
-            id="address"
-            type="text"
-          />
-          <span style={{ display: "grid", gridTemplateColumns: "1fr 0.5fr" }}>
-            <InputFieldSignUp
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-              placeholder="Endereço"
-              id="address"
-              type="text"
-            />
-            <InputFieldSignUp
-              value={addressNum}
-              onChange={(event) => setAddressNum(event.target.value)}
-              placeholder="Número do Endereço"
-              id="addressNum"
-              type="number"
-            />
-          </span>
-          <div
-            style={{
-              backgroundColor: lightGreyColor(),
-              padding: "1rem",
-            }}
-          >
-            <InputFieldSignUp
-              value={newPassword}
-              onChange={(event) => setNewPassword(event.target.value)}
-              placeholder="Escolha uma senha"
-              type="password"
-              id="password"
-            />
-            <InputFieldSignUp
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              placeholder="Confirme a Senha"
-              type="password"
-              id="confirmpassword"
-            />
           </div>
-          <ArvinButton color="green" type="submit">
-            {button}
-          </ArvinButton>
-        </form>
-      </RouteDiv>
-      <Link to="/login">
-        <span
-          style={{
-            padding: "1rem",
-            backgroundColor: primaryColor(),
-            color: textPrimaryColorContrast(),
-          }}
-        >
-          Já tenho cadastro - Página Inicial
-        </span>
-      </Link>
-    </RouteSizeControlBox>
+        </div>
+
+        {/* 📌 COLUNA 2 - ENDEREÇO */}
+        <div style={styles.grid}>
+          <div style={styles.column}>
+            <HTwo>Dados do Cartão</HTwo>
+            <div style={styles.grid}>
+              <div style={styles.grid3}>
+                <input
+                  type="text"
+                  name="creditCardNumber"
+                  placeholder="Número do Cartão"
+                  value={form.creditCardNumber}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="creditCardHolderName"
+                  placeholder="Nome Impresso no Cartão"
+                  value={form.creditCardHolderName}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="creditCardExpiryMonth"
+                  placeholder="Mês de Expiração (MM)"
+                  value={form.creditCardExpiryMonth}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  pattern="\d{1,2}"
+                  maxLength={2}
+                />
+                <input
+                  type="text"
+                  name="creditCardExpiryYear"
+                  placeholder="Ano de Expiração (AAAA)"
+                  value={form.creditCardExpiryYear}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  pattern="\d{4}"
+                  maxLength={4}
+                />
+                <input
+                  type="text"
+                  name="creditCardCcv"
+                  placeholder="CVV"
+                  value={form.creditCardCcv}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  pattern="\d{3}"
+                  maxLength={3}
+                />
+                <input
+                  type="text"
+                  name="zip"
+                  placeholder="CEP"
+                  value={form.zip}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    if (value.length <= 8) {
+                      setForm({ ...form, zip: value });
+                    }
+                  }}
+                  required
+                  style={styles.input}
+                  inputMode="numeric"
+                  maxLength={8}
+                />
+              </div>
+              <div style={styles.grid2}>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Rua (ex: Av. Paulista)"
+                  value={form.address}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />{" "}
+                <input
+                  type="number"
+                  name="addressNumber"
+                  placeholder="Número do Endereço"
+                  value={form.addressNumber}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="neighborhood"
+                  placeholder="Bairro"
+                  value={form.neighborhood}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="city"
+                  placeholder="Cidade"
+                  value={form.city}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+                <input
+                  type="text"
+                  name="state"
+                  placeholder="Estado (UF)"
+                  value={form.state}
+                  onChange={handleChange}
+                  required
+                  style={styles.input}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" style={styles.button} disabled={loading}>
+          {loading ? "Cadastrando..." : "Cadastrar"}
+        </button>
+        {error && <p style={styles.error}>{error}</p>}
+      </form>
+      <button onClick={handleSubmit} style={styles.button}>
+        chamar
+      </button>
+    </div>
   );
 }
-
-export default SignUp;

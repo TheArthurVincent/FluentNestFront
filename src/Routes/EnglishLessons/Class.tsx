@@ -402,7 +402,6 @@ export default function EnglishClassCourse2({
   return (
     <div>
       <Helmets text={classTitle} />
-      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
 
       {loading ? (
         <CircularProgress />
@@ -546,6 +545,50 @@ export default function EnglishClassCourse2({
               handleCurrentClass
             </div>
           )}
+          <span id="voicesss">
+            <div
+              className="box-shadow-white"
+              style={{
+                height: "3rem",
+                padding: "0 10px ",
+                backgroundColor: alwaysWhite(),
+                position: "fixed",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                minWidth: "100px",
+                bottom: 60,
+                left: showCourses ? -338 : 3,
+                borderRadius: "6px",
+              }}
+            >
+              <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+              <span
+                style={{
+                  margin: "5px",
+                  marginLeft: "80px",
+                  fontSize: "16px",
+                }}
+              >
+                <i
+                  className="fa fa-microphone"
+                  aria-hidden="true"
+                  style={{
+                    margin: "5px",
+                    marginRight: "15px",
+                    fontSize: "16px",
+                  }}
+                  onClick={handleShowCourses}
+                  aria-hidden="true"
+                />
+                <i
+                  className={`fa fa-arrow-${arrow ? "left" : "right"}`}
+                  onClick={handleShowCourses}
+                  aria-hidden="true"
+                />
+              </span>
+            </div>
+          </span>
           {thePermissions === "superadmin" && (
             <div
               className="box-shadow-white"
