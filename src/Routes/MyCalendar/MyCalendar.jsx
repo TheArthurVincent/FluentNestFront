@@ -1481,7 +1481,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                                 color: status == "Canceled" ? "red" : "grey",
                               }}
                             />{" "}
-                            {status !== "desmarcado" &&
+                            {/* {status !== "desmarcado" &&
                               thePermissions == "superadmin" && (
                                 <i
                                   className="fa fa-envelope-o"
@@ -1493,7 +1493,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                                     color: "grey",
                                   }}
                                 />
-                              )}
+                              )} */}
                           </div>
                           <form
                             style={{
