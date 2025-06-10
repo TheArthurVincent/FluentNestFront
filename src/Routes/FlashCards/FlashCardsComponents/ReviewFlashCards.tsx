@@ -579,6 +579,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           alignItems: "center",
         }}
       >
+    
         <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
         <select
           id="category-select"
