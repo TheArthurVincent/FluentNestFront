@@ -11,9 +11,7 @@ import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons"
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { secondaryColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
-import Countdown from "../../Ranking/RankingComponents/Countdown";
 import Voice from "../../../Resources/Voice";
-import { HThree } from "../../MyClasses/MyClasses.Styled";
 import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 
@@ -590,6 +588,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           }}
           style={{
             padding: "6px 12px",
+            maxWidth: "9rem",
             borderRadius: "6px",
             border: "1px solid #ccc",
             backgroundColor: "#f9f9f9",

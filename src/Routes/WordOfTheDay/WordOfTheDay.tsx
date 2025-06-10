@@ -8,9 +8,7 @@ import {
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { HTwo } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { transparentWhite } from "../../Styles/Styles";
 
 interface WordOfTheDayRv {
   headers: MyHeadersType | null;
@@ -40,8 +38,6 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
     translationWordOfTheDay: "",
     wordOfTheDay: "",
   });
-
-  const youglishBaseUrl = `https://youglish.com/pronounce/${sentences[0].text}/english/us`;
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
@@ -89,7 +85,6 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
       notifyError(error.response?.data?.error || "Error adding flashcard.");
     }
   };
-  const [showInfo, setShowInfo] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(false);
 
   const addNewCards = async () => {
@@ -168,7 +163,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                   textAlign: "center",
                   padding: "10px 14px",
                   borderRadius: "12px",
-                  maxWidth: "500px",
+                  maxWidth: "400px",
                   marginInline: "auto",
                 }}
               >
