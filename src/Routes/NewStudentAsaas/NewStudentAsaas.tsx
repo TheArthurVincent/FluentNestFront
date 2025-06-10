@@ -182,13 +182,16 @@ export default function Cadastro() {
       border: "1px solid #ccc",
     },
     button: {
+      marginLeft: "auto",
       padding: "10px",
       fontSize: "16px",
       backgroundColor: secondaryColor(),
       color: "#fff",
       border: "none",
       cursor: "pointer",
+      borderRadius: "5px",
       marginTop: "20px",
+      textDecoration: "none",
     },
     error: {
       color: "red",
@@ -281,6 +284,13 @@ export default function Cadastro() {
         <div style={styles.grid}>
           {/* 📌 COLUNA 1 - DADOS PESSOAIS */}
           <div style={styles.column}>
+            <a
+              style={styles.button}
+              href="https://portal.arthurvincent.com.br/"
+              target="_blank"
+            >
+              Já sou aluno
+            </a>
             <span style={{ margin: "auto" }}>{myLogo}</span>
 
             <HTwo>Dados Pessoais</HTwo>
@@ -498,12 +508,12 @@ export default function Cadastro() {
                 />
               </div>
             </div>
+            <button type="submit" style={styles.button} disabled={loading}>
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </button>
           </div>
         </div>
 
-        <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? "Cadastrando..." : "Cadastrar"}
-        </button>
         {error && <p style={styles.error}>{error}</p>}
       </form>
     </div>
