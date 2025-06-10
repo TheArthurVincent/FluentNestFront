@@ -54,7 +54,6 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
             margin: "auto",
           }}
         >
-       
           <select
             id="voice-select"
             value={selectedVoice}
@@ -64,9 +63,9 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
             }}
             style={{
               padding: "6px 12px",
-              maxWidth:"9rem",
+              maxWidth: "9rem",
               borderRadius: "6px",
-              marginRight:"20px",
+              marginRight: "20px",
               border: "1px solid #ccc",
               backgroundColor: "#f9f9f9",
               fontSize: "0.9rem",
