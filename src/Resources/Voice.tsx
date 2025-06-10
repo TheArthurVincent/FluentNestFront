@@ -63,7 +63,6 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
             }}
             style={{
               padding: "6px 12px",
-              maxWidth: "9rem",
               borderRadius: "6px",
               marginRight: "20px",
               border: "1px solid #ccc",

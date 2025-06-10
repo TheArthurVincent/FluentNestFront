@@ -331,7 +331,13 @@ const ListeningExercise = ({
 
   return (
     <section id="review">
-      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+      <span
+        style={{
+          maxWidth: "9rem",
+        }}
+      >
+        <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+      </span>{" "}
       {see && (
         <div>
           {loading ? (
