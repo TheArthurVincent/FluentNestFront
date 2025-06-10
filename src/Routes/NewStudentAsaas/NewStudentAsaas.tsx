@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
-import { backDomain } from "../../Resources/UniversalComponents";
+import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { primaryColor, secondaryColor } from "../../Styles/Styles";
 
 export const generateUsername = (
   name: string,
@@ -23,71 +24,6 @@ export const generateUsername = (
   const month = dateOfBirth ? new Date(dateOfBirth).getFullYear() : "";
 
   return `${first}${year}${last}${month}`;
-};
-
-const styles: any = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "20px",
-  },
-  form: {
-    display: "flex",
-    gap: "10px",
-    flexDirection: "column",
-    width: "100%",
-    maxWidth: "900px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  grid2: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  grid3: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  responsiveGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  column: {
-    display: "flex",
-    flexDirection: "column",
-    background: "#f9f9f9",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  input: {
-    marginBottom: "10px",
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    padding: "10px",
-    fontSize: "16px",
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    marginTop: "20px",
-  },
-  error: {
-    color: "red",
-    marginTop: "10px",
-  },
 };
 
 export default function Cadastro() {
@@ -206,11 +142,11 @@ export default function Cadastro() {
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
-      padding: "20px",
+      padding: "10px",
     },
     form: {
       display: "flex",
-      gap: "10px",
+      gap: "5px",
       flexDirection: "column",
       width: "100%",
       maxWidth: "900px",
@@ -218,17 +154,17 @@ export default function Cadastro() {
     grid: {
       display: "grid",
       gridTemplateColumns: "1fr",
-      gap: "20px",
+      gap: "5px",
     },
     grid3: {
       display: "grid",
-      gridTemplateColumns: " 1fr 1fr 1fr",
-      gap: "20px",
+      gridTemplateColumns: " 1fr",
+      gap: "5px",
     },
     grid2: {
       display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "20px",
+      gridTemplateColumns: "1fr",
+      gap: "5px",
     },
     column: {
       display: "flex",
@@ -246,13 +182,16 @@ export default function Cadastro() {
       border: "1px solid #ccc",
     },
     button: {
+      marginLeft: "auto",
       padding: "10px",
       fontSize: "16px",
-      backgroundColor: "#007BFF",
+      backgroundColor: secondaryColor(),
       color: "#fff",
       border: "none",
       cursor: "pointer",
+      borderRadius: "5px",
       marginTop: "20px",
+      textDecoration: "none",
     },
     error: {
       color: "red",
@@ -261,7 +200,7 @@ export default function Cadastro() {
     responsiveGrid: {
       display: "grid",
       gridTemplateColumns: "1fr",
-      gap: "20px",
+      gap: "5px",
     },
   };
 
@@ -337,14 +276,23 @@ export default function Cadastro() {
 
     fetchAddress();
   }, [form.zip]);
+  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 3);
 
   return (
     <div style={styles.container}>
-      <HOne>Cadastro</HOne>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.grid}>
           {/* 📌 COLUNA 1 - DADOS PESSOAIS */}
           <div style={styles.column}>
+            <a
+              style={styles.button}
+              href="https://portal.arthurvincent.com.br/"
+              target="_blank"
+            >
+              Já sou aluno
+            </a>
+            <span style={{ margin: "auto" }}>{myLogo}</span>
+
             <HTwo>Dados Pessoais</HTwo>
             <div style={styles.grid2}>
               <input
@@ -560,17 +508,14 @@ export default function Cadastro() {
                 />
               </div>
             </div>
+            <button type="submit" style={styles.button} disabled={loading}>
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </button>
           </div>
         </div>
 
-        <button type="submit" style={styles.button} disabled={loading}>
-          {loading ? "Cadastrando..." : "Cadastrar"}
-        </button>
         {error && <p style={styles.error}>{error}</p>}
       </form>
-      <button onClick={handleSubmit} style={styles.button}>
-        chamar
-      </button>
     </div>
   );
 }
