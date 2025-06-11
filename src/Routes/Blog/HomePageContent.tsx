@@ -248,8 +248,14 @@ export function Blog({
       }, 300);
     } catch (error: any) {
       notifyError(error.response.data.error);
+      console.log(error.response.data.error);
+
       setTimeout(() => {
-        window.location.assign("/login");
+        if (error.response.data.feeUpToDate == false) {
+          window.location.assign("/feenotuptodate");
+        } else {
+          window.location.assign("/login");
+        }
         setLoading(false);
       }, 2500);
     }

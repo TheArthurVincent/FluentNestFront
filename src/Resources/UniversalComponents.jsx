@@ -803,11 +803,14 @@ export const onLoggOut = () => {
   window.location.assign("/login");
 };
 
+// export const onLoggOutFee = () => {
+//   notifyError("Sua mensalidade está atrasada. Fale com o professor. :)");
+//   window.location.assign("/login");
+// };
 export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
   localStorage.removeItem("loggedIn");
-  notifyError("Sua mensalidade está atrasada. Fale com o professor. :)");
-  window.location.assign("/login");
+  window.location.assign("/feenotuptodate");
 };
 
 const socket = io(backDomain);

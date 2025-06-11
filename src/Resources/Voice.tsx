@@ -49,6 +49,7 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
         <div
           style={{
             display: "flex",
+            maxWidth: "9rem",
             alignItems: "center",
             gap: "0.5rem",
             margin: "auto",

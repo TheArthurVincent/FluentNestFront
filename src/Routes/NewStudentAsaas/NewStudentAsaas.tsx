@@ -5,6 +5,7 @@ import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { HThree } from "../MyClasses/MyClasses.Styled";
 
 export const generateUsername = (
   name: string,
@@ -52,6 +53,10 @@ export default function Cadastro() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
+    "CREDIT_CARD"
+  );
+  const [installments, setInstallments] = useState(1);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -59,9 +64,14 @@ export default function Cadastro() {
 
   const login = async () => {
     try {
-      const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
-        email: form.email,
-        password: form.password,
+      const response = await axios.post(`${backDomain}/api/v1/cadastro`, {
+        ...form,
+        planType: selectedPlan, // monthly | yearly
+        paymentMethod, // CREDIT_CARD | PIX
+        installments:
+          selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
+            ? installments
+            : 1,
       });
       const { token, loggedIn, notifications } = response.data;
       localStorage.removeItem("authorization");
@@ -103,38 +113,44 @@ export default function Cadastro() {
     console.log("Username gerado:", form.username, usernameEdited);
   }, [form]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-    if (form.password !== form.confirmPassword) {
-      setLoading(false);
-      setError("As senhas não coincidem.");
+  if (form.password !== form.confirmPassword) {
+    setLoading(false);
+    setError("As senhas não coincidem.");
+    return;
+  }
+
+  try {
+    const response = await axios.post(`${backDomain}/api/v1/cadastro`, {
+      ...form,
+      planType: selectedPlan,
+      paymentMethod,
+      installments:
+        selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
+          ? installments
+          : 1,
+    });
+
+    if (paymentMethod === "PIX") {
+      window.location.assign("/finalize-pix"); // ✅ página personalizada
       return;
     }
 
-    try {
-      const response = await axios.post(`${backDomain}/api/v1/cadastro`, form);
-
-      notifyError(`Pagamento aprovado!`, "green");
-
-      console.log("Dados completos:", response.data);
-
-      setTimeout(() => {
-        login();
-      }, 1000);
-    } catch (err: any) {
-      setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
-      const errorMessage = err.response
-        ? err.response.data.message
-        : "Tente novamente";
-      notifyError(errorMessage);
-      console.log(errorMessage, err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    notifyError(`Pagamento aprovado!`, "green");
+    setTimeout(() => {
+      window.location.assign("/verify-email");
+    }, 1000);
+  } catch (err: any) {
+    setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
+    notifyError(err.response?.data?.message || "Tente novamente");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const styles: any = {
     container: {
@@ -143,6 +159,21 @@ export default function Cadastro() {
       alignItems: "center",
       justifyContent: "center",
       padding: "10px",
+    },
+    planContainer: {
+      display: "flex",
+      gap: "20px",
+      marginBottom: "30px",
+      justifyContent: "center",
+    },
+    planCard: {
+      flex: 1,
+      padding: "20px",
+      borderRadius: "10px",
+      textAlign: "center",
+      cursor: "pointer",
+      transition: "all 0.3s ease",
+      backgroundColor: "#fafafa",
     },
     form: {
       display: "flex",
@@ -277,7 +308,40 @@ export default function Cadastro() {
     fetchAddress();
   }, [form.zip]);
   const myLogo = LogoSVG(primaryColor(), secondaryColor(), 3);
+  const [selectedPlan, setSelectedPlan] = useState("monthly");
 
+  const handlePlanSelect = (plan: string) => {
+    setSelectedPlan(plan);
+  };
+
+  const planCardBase = {
+    flex: 1,
+    padding: "20px",
+    borderRadius: "10px",
+    textAlign: "center",
+    cursor: "pointer",
+    transition: "all 0.3s ease",
+  };
+
+  const selectedStyle = {
+    border: "2px solid #007bff",
+    backgroundColor: "#f0f8ff",
+  };
+
+  const unselectedStyle = {
+    border: "1px solid #ccc",
+    backgroundColor: "#fafafa",
+  };
+
+  const isSelected = (plan: string) =>
+    selectedPlan === plan
+      ? {
+          border: "2px solid #007bff",
+          backgroundColor: "#f0f8ff",
+        }
+      : {
+          border: "1px solid #ccc",
+        };
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
@@ -386,128 +450,211 @@ export default function Cadastro() {
         {/* 📌 COLUNA 2 - ENDEREÇO */}
         <div style={styles.grid}>
           <div style={styles.column}>
-            <HTwo>Dados do Cartão</HTwo>
-            <div style={styles.grid}>
-              <div style={styles.grid3}>
-                <input
-                  type="text"
-                  name="creditCardNumber"
-                  placeholder="Número do Cartão"
-                  value={form.creditCardNumber}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="creditCardHolderName"
-                  placeholder="Nome Impresso no Cartão"
-                  value={form.creditCardHolderName}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="creditCardExpiryMonth"
-                  placeholder="Mês de Expiração (MM)"
-                  value={form.creditCardExpiryMonth}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  pattern="\d{1,2}"
-                  maxLength={2}
-                />
-                <input
-                  type="text"
-                  name="creditCardExpiryYear"
-                  placeholder="Ano de Expiração (AAAA)"
-                  value={form.creditCardExpiryYear}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  pattern="\d{4}"
-                  maxLength={4}
-                />
-                <input
-                  type="text"
-                  name="creditCardCcv"
-                  placeholder="CVV"
-                  value={form.creditCardCcv}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  pattern="\d{3}"
-                  maxLength={3}
-                />
-                <input
-                  type="text"
-                  name="zip"
-                  placeholder="CEP"
-                  value={form.zip}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 8) {
-                      setForm({ ...form, zip: value });
-                    }
-                  }}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  maxLength={8}
-                />
+            <HTwo>Plano</HTwo>
+            {/* Plan Selection Cards */}
+            <div style={styles.planContainer}>
+              <div
+                style={{ ...styles.planCard, ...isSelected("monthly") }}
+                onClick={() => {
+                  handlePlanSelect("monthly");
+                  setPaymentMethod("CREDIT_CARD");
+                }}
+              >
+                <HThree>89,99/mês (Cartão de Crédito)</HThree>
               </div>
-              <div style={styles.grid2}>
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Rua (ex: Av. Paulista)"
-                  value={form.address}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />{" "}
-                <input
-                  type="number"
-                  name="addressNumber"
-                  placeholder="Número do Endereço"
-                  value={form.addressNumber}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="neighborhood"
-                  placeholder="Bairro"
-                  value={form.neighborhood}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="Cidade"
-                  value={form.city}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="state"
-                  placeholder="Estado (UF)"
-                  value={form.state}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
+              <div
+                style={{ ...styles.planCard, ...isSelected("yearly") }}
+                onClick={() => handlePlanSelect("yearly")}
+              >
+                <HThree>749,99/ano (à vista!)</HThree>
               </div>
             </div>
+            {selectedPlan === "yearly" && (
+              <>
+                <HTwo>Método de Pagamento</HTwo>
+                <div style={styles.planContainer}>
+                  <div
+                    //@ts-ignore
+                    style={{
+                      ...planCardBase,
+                      ...(paymentMethod === "CREDIT_CARD"
+                        ? selectedStyle
+                        : unselectedStyle),
+                    }}
+                    onClick={() => setPaymentMethod("CREDIT_CARD")}
+                  >
+                    <HThree>Cartão (parcelável)</HThree>
+                  </div>
+                  <div
+                    //@ts-ignore
+                    style={{
+                      ...planCardBase,
+                      ...(paymentMethod === "PIX"
+                        ? selectedStyle
+                        : unselectedStyle),
+                    }}
+                    onClick={() => setPaymentMethod("PIX")}
+                  >
+                    <HThree>Pix à vista</HThree>
+                  </div>
+                </div>
+              </>
+            )}
+
+            {selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD" && (
+              <div style={{ marginBottom: "20px" }}>
+                <label htmlFor="installments">Parcelas:</label>
+                <input
+                  type="number"
+                  id="installments"
+                  name="installments"
+                  value={installments}
+                  onChange={(e) =>
+                    setInstallments(
+                      Math.min(Math.max(Number(e.target.value), 1), 12)
+                    )
+                  }
+                  min={1}
+                  max={12}
+                  style={styles.input}
+                />
+                <p
+                  style={{ fontSize: "14px", color: "#333", marginTop: "5px" }}
+                >
+                  {installments}x de{" "}
+                  <strong>
+                    {Intl.NumberFormat("pt-BR", {
+                      style: "currency",
+                      currency: "BRL",
+                    }).format(749.99 / installments)}
+                  </strong>
+                </p>
+              </div>
+            )}
+
+            {paymentMethod === "CREDIT_CARD" && (
+              <div style={styles.grid}>
+                <div style={styles.grid3}>
+                  <input
+                    type="text"
+                    name="creditCardNumber"
+                    placeholder="Número do Cartão"
+                    value={form.creditCardNumber}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />
+                  <input
+                    type="text"
+                    name="creditCardHolderName"
+                    placeholder="Nome Impresso no Cartão"
+                    value={form.creditCardHolderName}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />
+                  <input
+                    type="text"
+                    name="creditCardExpiryMonth"
+                    placeholder="Mês de Expiração (MM)"
+                    value={form.creditCardExpiryMonth}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                    inputMode="numeric"
+                    pattern="\d{1,2}"
+                    maxLength={2}
+                  />
+                  <input
+                    type="text"
+                    name="creditCardExpiryYear"
+                    placeholder="Ano de Expiração (AAAA)"
+                    value={form.creditCardExpiryYear}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                    inputMode="numeric"
+                    pattern="\d{4}"
+                    maxLength={4}
+                  />
+                  <input
+                    type="text"
+                    name="creditCardCcv"
+                    placeholder="CVV"
+                    value={form.creditCardCcv}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                    inputMode="numeric"
+                    pattern="\d{3}"
+                    maxLength={3}
+                  />
+                  <input
+                    type="text"
+                    name="zip"
+                    placeholder="CEP"
+                    value={form.zip}
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      if (value.length <= 8) {
+                        setForm({ ...form, zip: value });
+                      }
+                    }}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                    inputMode="numeric"
+                    maxLength={8}
+                  />
+                </div>
+                <div style={styles.grid2}>
+                  <input
+                    type="text"
+                    name="address"
+                    placeholder="Rua (ex: Av. Paulista)"
+                    value={form.address}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />{" "}
+                  <input
+                    type="number"
+                    name="addressNumber"
+                    placeholder="Número do Endereço"
+                    value={form.addressNumber}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />
+                  <input
+                    type="text"
+                    name="neighborhood"
+                    placeholder="Bairro"
+                    value={form.neighborhood}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="Cidade"
+                    value={form.city}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />
+                  <input
+                    type="text"
+                    name="state"
+                    placeholder="Estado (UF)"
+                    value={form.state}
+                    onChange={handleChange}
+                    required={paymentMethod === "CREDIT_CARD" ? true : false}
+                    style={styles.input}
+                  />
+                </div>
+              </div>
+            )}
             <button type="submit" style={styles.button} disabled={loading}>
               {loading ? "Cadastrando..." : "Cadastrar"}
             </button>
