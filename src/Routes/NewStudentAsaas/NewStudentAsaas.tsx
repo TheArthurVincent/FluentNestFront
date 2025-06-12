@@ -388,7 +388,7 @@ export default function Cadastro() {
                   type="promoCode"
                   value={form.promoCode}
                   onChange={handleChange}
-                  required
+                  required={false}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
