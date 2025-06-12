@@ -270,7 +270,8 @@ export function MyProfile({ headers }: HeadersProps) {
                   </div>
                 )}
                 {new Date(user.limitCancelDate) > new Date() &&
-                !user.subscriptionAsaas ? (
+                !user.subscriptionAsaas &&
+                !user.tutoree ? (
                   <div style={styles.container}>
                     {/* @ts-ignore */}
                     <div style={styles.card}>
