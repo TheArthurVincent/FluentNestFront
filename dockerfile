@@ -1,16 +1,30 @@
-FROM node:18.18
-# Create app directory
+FROM node:20
+
+# Cria o diretório da aplicação
 WORKDIR /usr/src/app
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+
+# Copia os arquivos de dependência
 COPY package*.json ./
+
+# Ajusta configurações de rede para evitar timeout
+RUN npm config set fetch-retries 5 \
+ && npm config set fetch-retry-mintimeout 20000 \
+ && npm config set fetch-retry-maxtimeout 120000
+
+# Instala as dependências
 RUN npm install
+
+# Instala o "serve" globalmente
 RUN npm install --global serve
+
+# Copia o restante do código
 COPY . .
+
+# Cria o build de produção do React
 RUN npm run build
-# If you are building your code for production
-# RUN npm ci --omit=dev
-# Bundle app source
+
+# Expõe a porta padrão do "serve"
 EXPOSE 3000
-CMD [ "npm", "start" ]
+
+# Inicia o app
+CMD ["npm", "start" ,"serve", "-s", "build"]

@@ -10,7 +10,7 @@ import {
   secondaryColor2,
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
-import { TextField, Grid } from "@mui/material";
+import { TextField, Grid, CircularProgress } from "@mui/material";
 
 export const generateUsername = (
   name: string,
@@ -35,6 +35,7 @@ export const generateUsername = (
 export default function Cadastro() {
   const [form, setForm] = useState({
     name: "",
+    promoCode: "",
     lastname: "",
     username: "",
     phoneNumber: "",
@@ -379,6 +380,38 @@ export default function Cadastro() {
                   }}
                 />
               </Grid>
+              
+              <Grid item xs={12}>
+                <TextField
+                  label="Código de recomentação"
+                  name="promoCode"
+                  type="promoCode"
+                  value={form.promoCode}
+                  onChange={handleChange}
+                  required
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+
 
               <Grid item xs={12}>
                 <TextField
@@ -440,8 +473,6 @@ export default function Cadastro() {
                   }}
                 />
               </Grid>
-
-
 
               <Grid item xs={12}>
                 <TextField
@@ -999,7 +1030,7 @@ export default function Cadastro() {
               </Grid>
             )}
             <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? "Cadastrando..." : "Cadastrar"}
+              {loading ? <CircularProgress/>: "Cadastrar"}
             </button>
           </div>
         </div>

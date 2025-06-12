@@ -50,6 +50,15 @@ const styles = {
 };
 
 export function MyProfile({ headers }: HeadersProps) {
+  //@ts-ignore
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(user.username).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
   const { UniversalTexts } = useUserContext();
   useEffect(() => {
     console.log("fileInputRef.current:", fileInputRef.current);
@@ -246,6 +255,54 @@ export function MyProfile({ headers }: HeadersProps) {
                 className="box-shadow-white"
               >
                 <ul>
+                  <li
+                    style={{
+                      listStyle: "none",
+                      padding: "1rem",
+                      margin: "1rem 0",
+                      backgroundColor: "#f9f9f9",
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      lineHeight: "1.6",
+                      color: "#333",
+                      position: "relative",
+                    }}
+                  >
+                    <strong>🎁 Seu código promocional:</strong>{" "}
+                    <button
+                      onClick={copyToClipboard}
+                      style={{
+                        marginLeft: "1rem",
+                        padding: "0.3rem 0.6rem",
+                        fontSize: "0.9rem",
+                        cursor: "pointer",
+                        border: "none",
+                        borderRadius: "4px",
+                        backgroundColor: secondaryColor(),
+                        color: "#fff",
+                      }}
+                    >
+                      {user.username}
+                    </button>
+                    {copied && (
+                      <span
+                        style={{
+                          marginLeft: "0.5rem",
+                          fontSize: "0.9rem",
+                          color: "green",
+                        }}
+                      >
+                        Copiado!
+                      </span>
+                    )}
+                    <br />
+                    <span style={{ display: "block", marginTop: "0.5rem" }}>
+                      Recomende a plataforma a um amigo e ganhe{" "}
+                      <strong>R$ 50,00 de desconto</strong> na sua próxima
+                      mensalidade!
+                    </span>
+                  </li>
                   {myProfileList.map((item, index) => (
                     <li
                       key={index}
