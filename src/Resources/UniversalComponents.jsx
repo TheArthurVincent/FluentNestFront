@@ -192,7 +192,7 @@ export const SpinLoading = () => {
   );
 };
 
-export function InputField({ value, onChange, id, placeholder, type }) {
+export function InputField({ value, onChange, id, placeholder, type,required }) {
   return (
     <div
       style={{
@@ -228,7 +228,7 @@ export function InputField({ value, onChange, id, placeholder, type }) {
         id={id}
         placeholder={placeholder}
         type={type}
-        required
+        required={required}
       />
     </div>
   );
