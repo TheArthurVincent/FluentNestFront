@@ -1,16 +1,26 @@
-FROM node:20.10
-# Create app directory
+# Usa a versão mínima necessária que evita os warnings de engine
+FROM node:20.17.0
+
+# Define o diretório de trabalho
 WORKDIR /usr/src/app
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
+
+# Copia os arquivos de dependência
 COPY package*.json ./
-RUN npm install
+
+# Instala as dependências
+RUN npm install --legacy-peer-deps
+
+# Instala globalmente o servidor estático
 RUN npm install --global serve
+
+# Copia o restante da aplicação
 COPY . .
+
+# Constrói a aplicação (ex: React, Vue)
 RUN npm run build
-# If you are building your code for production
-# RUN npm ci --omit=dev
-# Bundle app source
+
+# Expõe a porta do app
 EXPOSE 3000
-CMD [ "npm", "start" ]
+
+# Comando final para servir a pasta build (ideal para React)
+CMD ["serve", "-s", "build", "-l", "3000"]
