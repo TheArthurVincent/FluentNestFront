@@ -397,19 +397,9 @@ export function MyProfile({ headers }: HeadersProps) {
                       fontSize: "1rem",
                     }}
                   />
-                  <Button
-                    style={{
-                      color: "#fff",
-                      backgroundColor: "#138017",
-                      padding: "0.75rem 2rem",
-                      borderRadius: "6px",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => editStudentPassword()}
-                  >
+                  <ArvinButton onClick={() => editStudentPassword()}>
                     {UniversalTexts.save}
-                  </Button>
+                  </ArvinButton>
                 </form>
               </div>
             </>
