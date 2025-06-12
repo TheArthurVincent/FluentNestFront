@@ -7,9 +7,16 @@ import {
 } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { Alert, Button, CircularProgress } from "@mui/material";
+import {
+  Alert,
+  Button,
+  CircularProgress,
+  Grid,
+  TextField,
+} from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { NavLink } from "react-router-dom";
+import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 
 export function Login() {
   const [email, setEmail] = useState<string>("");
@@ -80,9 +87,7 @@ export function Login() {
       }}
     >
       <Helmets text={"Login"} />
-
       <div style={{ width: "100vw" }}>
-        {/* <button onClick={handleCheckout}>Assinar por R$ 89,90/mês</button> */}
         <div style={{ margin: "auto" }}>
           <div style={{ alignItems: "center", display: "grid" }}>
             <form
@@ -100,21 +105,69 @@ export function Login() {
               }}
               className="box-shadow-white"
             >
-              <div style={{ margin: "0 auto" }}>{myLogo}</div>
-              <InputField
-                value={email}
-                onChange={(event: any) => setEmail(event.target.value)}
-                id="name"
-                placeholder="E-mail"
-                type="text"
-              />
-              <InputField
-                value={password}
-                onChange={(event: any) => setPassword(event.target.value)}
-                id="password"
-                placeholder="Senha"
-                type={passwordVisible ? "text" : "password"}
-              />
+              {myLogo}
+              <Grid item xs={12}>
+                <Grid item xs={12}>
+                  <TextField
+                    label="E-mail"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(event: any) => setEmail(event.target.value)}
+                    required
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: secondaryColor(), // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: secondaryColor(), // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: secondaryColor(), // quando focado
+                        },
+                        "& label": {
+                          color: secondaryColor(), // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: secondaryColor(), // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>
+                <br />
+                <TextField
+                  label="Senha"
+                  name="password"
+                  type="password"
+                  value={password}
+                  onChange={(event: any) => setPassword(event.target.value)}
+                  required
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+
               <div
                 style={{
                   textAlign: "center",
@@ -131,35 +184,18 @@ export function Login() {
                   alignItems: "center",
                 }}
               >
-                <p
-                  onClick={handlePasswordVisible}
+                <ArvinButton
                   style={{
-                    fontSize: "1.2rem",
-                    display: "block",
-                    cursor: "pointer",
+                    backgroundColor: "#eee",
+                    color: primaryColor(),
+                  }}
+                  onClick={() => {
+                    window.location.assign("/signup");
                   }}
                 >
-                  {passwordVisible ? (
-                    <i
-                      style={{
-                        fontSize: "1.2rem",
-                        display: "block",
-                        cursor: "pointer",
-                      }}
-                      className="fa fa-eye-slash"
-                    />
-                  ) : (
-                    <i
-                      style={{
-                        fontSize: "1.2rem",
-                        display: "block",
-                        cursor: "pointer",
-                      }}
-                      className="fa fa-eye"
-                    />
-                  )}
-                </p>
-                <Button
+                  Cadastre-se
+                </ArvinButton>
+                <ArvinButton
                   style={{
                     backgroundColor: "#eee",
                     color: primaryColor(),
@@ -167,7 +203,7 @@ export function Login() {
                   type="submit"
                 >
                   {button}
-                </Button>
+                </ArvinButton>
               </div>
             </form>
             <Alert
