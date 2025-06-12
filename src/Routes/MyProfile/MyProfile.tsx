@@ -18,6 +18,7 @@ import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../Blog/Blog.Styled";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
+import { AvatarUpload } from "./Pic";
 const styles = {
   container: {
     display: "flex",
@@ -228,97 +229,11 @@ export function MyProfile({ headers }: HeadersProps) {
                     <i className="fa fa-refresh" aria-hidden="true" />
                   </ArvinButton>
                   <HOne>{UniversalTexts.myProfile}</HOne>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1.5rem",
-                      alignItems: "center",
-                      paddingBottom: "1.5rem",
-                    }}
-                  >
-                    <div style={{ display: "grid", gap: "1rem" }}>
-                      <img
-                        style={{
-                          width: "8rem",
-                          height: "8rem",
-
-                          zIndex: 100,
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                        }}
-                        className="box-shadow-white"
-                        src={user.picture}
-                        alt="Profile"
-                        onClick={() => {
-                          console.log(fileInputRef.current);
-                          fileInputRef.current?.click();
-                        }}
-                      />
-
-                      <input
-                        type="file"
-                        accept="image/*"
-                        ref={fileInputRef}
-                        style={{
-                          padding: "0.5rem",
-                          fontSize: "1rem",
-                          cursor: "pointer",
-                          zIndex: 9999,
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                        }}
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (file) {
-                            try {
-                              const url = await uploadStudentPhoto(file);
-                              setUser((prev) => ({ ...prev, picture: url }));
-                            } catch (error) {
-                              notifyError("Erro ao fazer upload da foto.");
-                              console.error(error);
-                            }
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>{" "}
-                  <ArvinButton
-                    onClick={() => {
-                      console.log("Ref atual:", fileInputRef.current);
-                      fileInputRef.current?.click();
-                    }}
-                  >
-                    Nova foto
-                  </ArvinButton>
-                  <div
-                    style={{
-                      marginTop: "2rem",
-                      padding: "1rem",
-                      background: "#eee",
-                    }}
-                  >
-                    <h3>TESTE INPUT FIXO</h3>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      onChange={() => alert("Arquivo selecionado!")}
-                      style={{
-                        border: "2px solid green",
-                        padding: "1rem",
-                        display: "block",
-                        width: "100%",
-                      }}
-                    />
-                    <button
-                      onClick={() => {
-                        console.log("CLIQUE ->", fileInputRef.current);
-                        fileInputRef.current?.click();
-                      }}
-                    >
-                      Abrir input manualmente
-                    </button>
-                  </div>
+                  <AvatarUpload
+                    user={user}
+                    setUser={setUser}
+                    uploadStudentPhoto={uploadStudentPhoto}
+                  />
                 </div>
               </div>
               <div
