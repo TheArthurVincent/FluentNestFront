@@ -183,7 +183,9 @@ export function MyProfile({ headers }: HeadersProps) {
         );
         notifyError("Assinatura cancelada com sucesso.");
         updateInfo(user.id, headers);
-        window.location.reload();
+        setTimeout(() => {
+          window.location.reload();
+        }, 200);
         setShowModal(false);
       } catch (err) {
         console.error(err);
