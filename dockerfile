@@ -1,26 +1,24 @@
-# Usa a versão mínima necessária que evita os warnings de engine
 FROM node:20.17.0
 
-# Define o diretório de trabalho
 WORKDIR /usr/src/app
 
-# Copia os arquivos de dependência
 COPY package*.json ./
 
-# Instala as dependências
-RUN npm install --legacy-peer-deps
+# Configura o npm para conexões mais resilientes
+RUN npm config set registry https://registry.npmmirror.com \
+    && npm config set fetch-retries 5 \
+    && npm config set fetch-retry-mintimeout 20000 \
+    && npm config set fetch-retry-maxtimeout 120000
 
-# Instala globalmente o servidor estático
+# Instala as dependências com segurança
+RUN npm ci --legacy-peer-deps
+
 RUN npm install --global serve
 
-# Copia o restante da aplicação
 COPY . .
 
-# Constrói a aplicação (ex: React, Vue)
 RUN npm run build
 
-# Expõe a porta do app
 EXPOSE 3000
 
-# Comando final para servir a pasta build (ideal para React)
 CMD ["serve", "-s", "build", "-l", "3000"]
