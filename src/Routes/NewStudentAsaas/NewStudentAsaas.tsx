@@ -684,7 +684,7 @@ export default function Cadastro() {
                         },
                       },
                     }}
-                    inputProps={{ maxLength: 16, inputMode: "numeric" }}
+                    inputProps={{ maxLength: 19, inputMode: "numeric" }}
                   />
                 </Grid>
 
