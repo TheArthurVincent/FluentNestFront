@@ -383,7 +383,7 @@ export default function Cadastro() {
               
               <Grid item xs={12}>
                 <TextField
-                  label="Código de recomentação"
+                  label="Código de recomentação (opcional)"
                   name="promoCode"
                   type="promoCode"
                   value={form.promoCode}
