@@ -168,9 +168,9 @@ export function MyProfile({ headers }: HeadersProps) {
         await axios.delete(
           `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
         );
-        notifyError("Assinatura cancelada com sucesso.");
+        alert("Assinatura cancelada com sucesso.");
         setShowModal(false);
-        updateInfo(user.id, headers);
+        updateInfo();
       } catch (err) {
         console.error(err);
         alert("Erro ao cancelar a assinatura.");
