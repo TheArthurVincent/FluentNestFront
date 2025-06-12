@@ -108,7 +108,7 @@ export default function Cadastro() {
       });
 
       if (paymentMethod === "PIX") {
-        window.location.assign("/finalize-pix"); // ✅ página personalizada
+        window.location.assign("/feenotuptodate"); // ✅ página personalizada
         return;
       }
 

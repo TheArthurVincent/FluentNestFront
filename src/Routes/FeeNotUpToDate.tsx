@@ -1,35 +1,5 @@
-import React, { useEffect, useState } from "react";
-import Ranking from "./Ranking/Ranking";
-import GroupClasses from "./GroupClasses/GroupClasses";
-import { Login } from "@mui/icons-material";
-import { verifyToken } from "../App";
-import { Outlet, Route, Routes } from "react-router-dom";
-import {
-  onLoggOut,
-  pathGenerator,
-  updateInfo,
-} from "../Resources/UniversalComponents";
-import MyProfile from "./MyProfile/MyProfile";
-import Faq from "./Faq/Faq";
-import MyClasses from "./MyClasses/MyClasses";
-import MyCalendar from "./MyCalendar/MyCalendar";
-import Adm from "./Adm/Adm";
-import Blog from "./Blog/HomePageContent";
-import { LevelCard } from "./LevelCard/LevelCard";
-import {
-  BlogRouteSizeControlBox,
-  HOne,
-} from "../Resources/Components/RouteBox";
-import { HeadersProps } from "../Resources/types.universalInterfaces";
-import { TopBar } from "../Application/TopBar/TopBar";
-import FlashCards from "./FlashCards/FlashCards";
-import Homework from "./Homework/Homework";
-import AppFooter from "../Application/Footer/Footer";
-import EnglishCourses from "./EnglishLessons/Courses";
-import Listening from "./ListeningExercise/Listening";
-import SentenceMining from "./SentenceMining/SentenceMining";
-import BlogPosts from "./Blog/BlogPosts";
-import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
+import React from "react";
+import { HOne } from "../Resources/Components/RouteBox";
 import { secondaryColor } from "../Styles/Styles";
 import { myLogoDone } from "./NewStudentAsaas/EmailCheck";
 
