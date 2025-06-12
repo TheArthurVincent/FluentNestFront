@@ -182,8 +182,9 @@ export function MyProfile({ headers }: HeadersProps) {
           `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
         );
         notifyError("Assinatura cancelada com sucesso.");
-        setShowModal(false);
         updateInfo(user.id, headers);
+        window.location.reload();
+        setShowModal(false);
       } catch (err) {
         console.error(err);
         alert("Erro ao cancelar a assinatura.");
