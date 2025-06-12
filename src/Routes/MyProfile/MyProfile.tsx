@@ -55,7 +55,7 @@ export function MyProfile({ headers }: HeadersProps) {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  const fileInputRef = React.useRef<any>(null);
 
   const resizeAndConvertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -251,7 +251,7 @@ export function MyProfile({ headers }: HeadersProps) {
                           fileInputRef.current?.click();
                         }}
                       />
-                    
+                      ..
                       <input
                         type="file"
                         accept="image/*"
@@ -260,6 +260,7 @@ export function MyProfile({ headers }: HeadersProps) {
                           padding: "0.5rem",
                           fontSize: "1rem",
                           cursor: "pointer",
+                          zIndex: 9999,
                           border: "1px solid #ccc",
                           borderRadius: "4px",
                         }}
