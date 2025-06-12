@@ -802,7 +802,6 @@ export const onLoggOut = () => {
   notifyError("Faça login novamente");
   window.location.assign("/login");
 };
-
 // export const onLoggOutFee = () => {
 //   notifyError("Sua mensalidade está atrasada. Fale com o professor. :)");
 //   window.location.assign("/login");
