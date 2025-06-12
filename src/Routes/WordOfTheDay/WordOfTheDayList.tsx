@@ -12,13 +12,27 @@ import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { textTitleFont } from "../../Styles/Styles";
+import { textTitleFont, transparentBlack } from "../../Styles/Styles";
+import { Modal, Box, Typography, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
 
 interface WordOfTheDayListRv {
   headers: MyHeadersType | null;
 }
 
 const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
+  const [open, setOpen] = useState(false);
+  const [selectedWord, setSelectedWord] = useState<any>(null);
+
+  const handleOpen = (word: any) => {
+    setSelectedWord(word);
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
+
+  const [thePermissions, setPermissions] = useState<string>("");
   const [myId, setId] = useState<string>("");
   const [words, setWords] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -26,7 +40,8 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
-      const { id } = JSON.parse(user);
+      const { permissions, id } = JSON.parse(user);
+      setPermissions(permissions);
       setId(id);
     }
   }, []);
@@ -125,6 +140,73 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
               <i className="fa fa-volume-up" aria-hidden="true" /> Hear Linguee
             </a>
           </div>
+          <ArvinButton onClick={() => handleOpen(wordItem)}>
+            Ver no Card
+          </ArvinButton>
+          <Modal open={open} onClose={handleClose}>
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: { xs: "90%", sm: 400 },
+                bgcolor: "rgba(255, 255, 255, 0.85)",
+                backdropFilter: "blur(10px)",
+                borderRadius: 4,
+                boxShadow:transparentBlack(),
+                p: 4,
+                color: "#333",
+              }}
+            >
+              <IconButton
+                onClick={handleClose}
+                sx={{ position: "absolute", top: 8, right: 8, color: "#444" }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              {selectedWord && (
+                <div
+                  style={{
+                    fontSize: "1.5rem",
+                    display: "flex",
+                    textAlign: "center",
+                    alignItems: "center",
+                    flexDirection: "column",
+                    padding: "2rem",
+                    justifyContent: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <HOne
+                    style={{
+                      margin: 0,
+                      fontSize: "2.5rem",
+                    }}
+                  >
+                    {selectedWord.word} - {selectedWord.translatedWord}
+                  </HOne>
+                  {myLogoDone}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      fontFamily: "Lato",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontWeight: "800",
+                      }}
+                    >
+                      {selectedWord.sentence}
+                    </p>
+                    <p>{selectedWord.translatedSentence}</p>
+                  </div>
+                </div>
+              )}
+            </Box>
+          </Modal>
           <div
             style={{
               display: "flex",
