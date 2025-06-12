@@ -274,7 +274,20 @@ export function MyProfile({ headers }: HeadersProps) {
                         }}
                       />
                     </div>
-                    <ul>
+          
+                  </div>
+                </div>
+              </div>
+               <div
+                style={{
+                  padding: "2rem",
+                  backgroundColor: "#fff",
+                  borderRadius: "6px",
+                  marginTop: "2rem",
+                }}
+                className="box-shadow-white"
+              >
+                        <ul>
                       {myProfileList.map((item, index) => (
                         <li
                           key={index}
@@ -321,9 +334,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         </li>
                       )}
                     </ul>
-                  </div>
-                </div>
-              </div>
+                    </div>
               <div
                 style={{
                   padding: "2rem",
