@@ -202,7 +202,6 @@ export function MyProfile({ headers }: HeadersProps) {
                     display: "grid",
                     gap: "10px",
                     color: alwaysBlack(),
-                    cursor: "pointer",
                     padding: "1rem",
                     backgroundColor: "#f7f9fc",
                     borderRadius: "6px",
@@ -234,42 +233,47 @@ export function MyProfile({ headers }: HeadersProps) {
                       paddingBottom: "1.5rem",
                     }}
                   >
-                    <img
-                      style={{
-                        width: "8rem",
-                        height: "8rem",
-                        cursor: "pointer",
-                        zIndex: 100,
-                        borderRadius: "50%",
-                        objectFit: "cover",
-                      }}
-                      className="box-shadow-white"
-                      src={user.picture}
-                      alt="Profile"
-                      onClick={() => {
-                        console.log(fileInputRef.current);
-                        fileInputRef.current?.click();
-                      }}
-                    />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      style={{ display: "none" }}
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          try {
-                            const url = await uploadStudentPhoto(file);
-                            setUser((prev) => ({ ...prev, picture: url }));
-                          } catch (error) {
-                            notifyError("Erro ao fazer upload da foto.");
-                            console.error(error);
-                          }
-                        }
-                      }}
-                    />
+                    <div style={{ display: "grid", gap: "1rem" }}>
+                      <img
+                        style={{
+                          width: "8rem",
+                          height: "8rem",
+                          
+                          zIndex: 100,
+                          borderRadius: "50%",
+                          objectFit: "cover",
+                        }}
+                        className="box-shadow-white"
+                        src={user.picture}
+                        alt="Profile"
+                        onClick={() => {
+                          console.log(fileInputRef.current);
+                          fileInputRef.current?.click();
+                        }}
+                      />
+                      <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        // style={{
 
+                        //   display: "none"
+
+                        // }}
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            try {
+                              const url = await uploadStudentPhoto(file);
+                              setUser((prev) => ({ ...prev, picture: url }));
+                            } catch (error) {
+                              notifyError("Erro ao fazer upload da foto.");
+                              console.error(error);
+                            }
+                          }
+                        }}
+                      />
+                    </div>
                     <ul>
                       {myProfileList.map((item, index) => (
                         <li
