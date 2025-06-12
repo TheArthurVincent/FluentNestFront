@@ -35,7 +35,7 @@ function App() {
       window.location.hostname === "arvin-staging.9kwq6c.easypanel.host" ||
       window.location.hostname.includes("easypanel")
     ) {
-      document.body.style.backgroundColor = "#f0f0f0";
+      document.body.style.backgroundColor = "#000";
     }
   };
   useEffect(() => {
