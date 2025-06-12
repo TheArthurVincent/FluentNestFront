@@ -98,7 +98,6 @@ export function MyProfile({ headers }: HeadersProps) {
     const base64 = await resizeAndConvertToBase64(file);
 
     try {
-
       const response = await axios.post(
         `${backDomain}/api/v1/upload-picture/${user.id}`,
         { file: base64 }
@@ -203,6 +202,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     display: "grid",
                     gap: "10px",
                     color: alwaysBlack(),
+                    cursor: "pointer",
                     padding: "1rem",
                     backgroundColor: "#f7f9fc",
                     borderRadius: "6px",
@@ -220,7 +220,6 @@ export function MyProfile({ headers }: HeadersProps) {
                       color: "#fff",
                       padding: "0.5rem 1rem",
                       borderRadius: "6px",
-                      cursor: "pointer",
                       transition: "opacity 0.3s ease",
                     }}
                   >
@@ -246,7 +245,10 @@ export function MyProfile({ headers }: HeadersProps) {
                       className="box-shadow-white"
                       src={user.picture}
                       alt="Profile"
-                      onClick={() => fileInputRef.current?.click()}
+                      onClick={() => {
+                        console.log(fileInputRef.current);
+                        fileInputRef.current?.click();
+                      }}
                     />
                     <input
                       type="file"
