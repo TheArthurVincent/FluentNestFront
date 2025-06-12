@@ -278,7 +278,15 @@ export function MyProfile({ headers }: HeadersProps) {
                         }}
                       />
                     </div>
-                  </div>
+                  </div>{" "}
+                  <ArvinButton
+                    onClick={() => {
+                      console.log("Ref atual:", fileInputRef.current);
+                      fileInputRef.current?.click();
+                    }}
+                  >
+                    Nova foto
+                  </ArvinButton>
                 </div>
               </div>
               <div
