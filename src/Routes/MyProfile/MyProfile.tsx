@@ -9,7 +9,7 @@ import {
 } from "../../Resources/UniversalComponents";
 import { alwaysBlack, secondaryColor } from "../../Styles/Styles";
 import { NavLink } from "react-router-dom";
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { User } from "./types.MyProfile";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
@@ -18,6 +18,7 @@ import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../Blog/Blog.Styled";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
+import { AvatarUpload } from "./Pic";
 const styles = {
   container: {
     display: "flex",
@@ -49,13 +50,25 @@ const styles = {
 };
 
 export function MyProfile({ headers }: HeadersProps) {
+  //@ts-ignore
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(user.username).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
   const { UniversalTexts } = useUserContext();
+  useEffect(() => {
+    console.log("fileInputRef.current:", fileInputRef.current);
+  }, []);
 
   const [user, setUser] = useState<User>({} as User);
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+  const fileInputRef = React.useRef<any>(null);
 
   const resizeAndConvertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -168,9 +181,9 @@ export function MyProfile({ headers }: HeadersProps) {
         await axios.delete(
           `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
         );
-        alert("Assinatura cancelada com sucesso.");
+        notifyError("Assinatura cancelada com sucesso.");
         setShowModal(false);
-        updateInfo();
+        updateInfo(user.id, headers);
       } catch (err) {
         console.error(err);
         alert("Erro ao cancelar a assinatura.");
@@ -203,7 +216,6 @@ export function MyProfile({ headers }: HeadersProps) {
                     display: "grid",
                     gap: "10px",
                     color: alwaysBlack(),
-                    cursor: "pointer",
                     padding: "1rem",
                     backgroundColor: "#f7f9fc",
                     borderRadius: "6px",
@@ -227,99 +239,117 @@ export function MyProfile({ headers }: HeadersProps) {
                     <i className="fa fa-refresh" aria-hidden="true" />
                   </ArvinButton>
                   <HOne>{UniversalTexts.myProfile}</HOne>
-                  <div
+                  <AvatarUpload
+                    user={user}
+                    setUser={setUser}
+                    uploadStudentPhoto={uploadStudentPhoto}
+                  />
+                </div>
+              </div>
+              <div
+                style={{
+                  padding: "2rem",
+                  backgroundColor: "#fff",
+                  borderRadius: "6px",
+                  marginTop: "2rem",
+                }}
+                className="box-shadow-white"
+              >
+                <ul>
+                  <li
                     style={{
-                      display: "flex",
-                      gap: "1.5rem",
-                      alignItems: "center",
-                      paddingBottom: "1.5rem",
+                      listStyle: "none",
+                      padding: "1rem",
+                      margin: "1rem 0",
+                      backgroundColor: "#f9f9f9",
+                      border: "1px solid #ddd",
+                      borderRadius: "8px",
+                      fontSize: "1rem",
+                      lineHeight: "1.6",
+                      color: "#333",
+                      position: "relative",
                     }}
                   >
-                    <img
+                    <strong>🎁 Seu código promocional:</strong>{" "}
+                    <button
+                      onClick={copyToClipboard}
                       style={{
-                        width: "8rem",
-                        height: "8rem",
+                        marginLeft: "1rem",
+                        padding: "0.3rem 0.6rem",
+                        fontSize: "0.9rem",
                         cursor: "pointer",
-                        zIndex: 100,
-                        borderRadius: "50%",
-                        objectFit: "cover",
+                        border: "none",
+                        borderRadius: "4px",
+                        backgroundColor: secondaryColor(),
+                        color: "#fff",
                       }}
-                      className="box-shadow-white"
-                      src={user.picture}
-                      alt="Profile"
-                      onClick={() => {
-                        console.log(fileInputRef.current);
-                        fileInputRef.current?.click();
-                      }}
-                    />
-                    <input
-                      type="file"
-                      accept="image/*"
-                      ref={fileInputRef}
-                      style={{ display: "none" }}
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          try {
-                            const url = await uploadStudentPhoto(file);
-                            setUser((prev) => ({ ...prev, picture: url }));
-                          } catch (error) {
-                            notifyError("Erro ao fazer upload da foto.");
-                            console.error(error);
-                          }
-                        }
-                      }}
-                    />
-
-                    <ul>
-                      {myProfileList.map((item, index) => (
-                        <li
-                          key={index}
-                          style={{
-                            listStyle: "none",
-                            padding: "0.5rem 0",
-                            fontSize: "1rem",
-                            lineHeight: "1.5",
-                            color: "#333",
-                          }}
-                        >
-                          <SpanDisapear>
-                            <b>{item.title}: </b>
-                          </SpanDisapear>
-
-                          <span>{item.data}</span>
-                        </li>
-                      ))}
-                      <li
+                    >
+                      {user.username}
+                    </button>
+                    {copied && (
+                      <span
                         style={{
-                          listStyle: "none",
-                          padding: "0.5rem 0",
-                          fontSize: "1rem",
-                          lineHeight: "1.5",
-                          color: "#333",
+                          marginLeft: "0.5rem",
+                          fontSize: "0.9rem",
+                          color: "green",
                         }}
                       >
-                        Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
-                      </li>
+                        Copiado!
+                      </span>
+                    )}
+                    <br />
+                    <span style={{ display: "block", marginTop: "0.5rem" }}>
+                      Recomende a plataforma a um amigo e ganhe{" "}
+                      <strong>R$ 50,00 de desconto</strong> na sua próxima
+                      mensalidade!
+                    </span>
+                  </li>
+                  {myProfileList.map((item, index) => (
+                    <li
+                      key={index}
+                      style={{
+                        listStyle: "none",
+                        padding: "0.5rem 0",
+                        fontSize: "1rem",
+                        lineHeight: "1.5",
+                        color: "#333",
+                      }}
+                    >
+                      <SpanDisapear>
+                        <b>{item.title}: </b>
+                      </SpanDisapear>
 
-                      {user.tutoree && (
-                        <li
-                          style={{
-                            listStyle: "none",
-                            padding: "0.5rem 0",
-                            fontSize: "1rem",
-                            lineHeight: "1.5",
-                            color: "#333",
-                          }}
-                        >
-                          <NavLink to={user.googleDriveLink} target="blank">
-                            {UniversalTexts.googleDriveLink}
-                          </NavLink>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
+                      <span>{item.data}</span>
+                    </li>
+                  ))}
+                  <li
+                    style={{
+                      listStyle: "none",
+                      padding: "0.5rem 0",
+                      fontSize: "1rem",
+                      lineHeight: "1.5",
+                      color: "#333",
+                    }}
+                  >
+                    Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
+                  </li>
+
+                  {user.tutoree && (
+                    <li
+                      style={{
+                        listStyle: "none",
+                        padding: "0.5rem 0",
+                        fontSize: "1rem",
+                        lineHeight: "1.5",
+                        color: "#333",
+                      }}
+                    >
+                      <NavLink to={user.googleDriveLink} target="blank">
+                        {UniversalTexts.googleDriveLink}
+                      </NavLink>
+                    </li>
+                  )}
+                </ul>
               </div>
               <div
                 style={{
