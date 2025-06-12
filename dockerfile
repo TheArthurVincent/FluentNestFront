@@ -1,27 +1,16 @@
-# Usa uma versão mais recente e compatível do Node.js
-FROM node:20
-
-# Define diretório de trabalho no container
+FROM node:18.18
+# Create app directory
 WORKDIR /usr/src/app
-
-# Copia apenas os arquivos de dependência
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
 COPY package*.json ./
-
-# Limpa cache e instala as dependências com mais segurança
-RUN npm cache clean --force && npm install
-
-# Copia o restante dos arquivos do projeto
+RUN npm install
+RUN npm install --global serve
 COPY . .
-
-# Constrói a aplicação para produção (caso use React ou similar)
 RUN npm run build
-
-# Expõe a porta (ajuste se for diferente)
+# If you are building your code for production
+# RUN npm ci --omit=dev
+# Bundle app source
 EXPOSE 3000
-
-# Usa um servidor estático leve para servir o front (como serve ou http-server)
-# Instale serve globalmente e use isso como entrypoint
-RUN npm install -g serve
-
-# Serve a aplicação do diretório de build (ajuste se necessário)
-CMD ["npm", "start" ,"serve",  "-s", "build", "-l", "3000"]
+CMD [ "npm", "start" ]
