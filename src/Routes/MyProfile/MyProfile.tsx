@@ -239,6 +239,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         width: "8rem",
                         height: "8rem",
                         cursor: "pointer",
+                        zIndex: 100,
                         borderRadius: "50%",
                         objectFit: "cover",
                       }}
