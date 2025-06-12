@@ -98,8 +98,6 @@ export function MyProfile({ headers }: HeadersProps) {
     const base64 = await resizeAndConvertToBase64(file);
 
     try {
-      console.log("Base64:", base64.slice(0, 100), "...", base64.slice(-100));
-      console.log("Tipo de base64:", typeof base64);
 
       const response = await axios.post(
         `${backDomain}/api/v1/upload-picture/${user.id}`,
