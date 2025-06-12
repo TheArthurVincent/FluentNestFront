@@ -4,13 +4,13 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-# Configura o npm para conexões mais resilientes
-RUN npm config set registry https://registry.npmmirror.com \
+# Usa o registry oficial para evitar erro com pacotes específicos como styled-components
+RUN npm config set registry https://registry.npmjs.org \
     && npm config set fetch-retries 5 \
     && npm config set fetch-retry-mintimeout 20000 \
     && npm config set fetch-retry-maxtimeout 120000
 
-# Instala as dependências com segurança
+# Instala com segurança e compatibilidade
 RUN npm ci --legacy-peer-deps
 
 RUN npm install --global serve
