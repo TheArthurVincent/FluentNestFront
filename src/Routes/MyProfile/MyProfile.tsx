@@ -55,6 +55,63 @@ export function MyProfile({ headers }: HeadersProps) {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
+  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  const resizeAndConvertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        img.src = e.target?.result as string;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+
+        const MAX_WIDTH = 600;
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject("Erro no canvas");
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Converte com qualidade reduzida (de 0.5 a 0.9 é razoável)
+        const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7); // 70% da qualidade
+        const base64WithoutPrefix = resizedBase64.replace(
+          /^data:image\/jpeg;base64,/,
+          ""
+        );
+
+        resolve(base64WithoutPrefix);
+      };
+
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const uploadStudentPhoto = async (file: File): Promise<string> => {
+    const base64 = await resizeAndConvertToBase64(file);
+
+    try {
+      console.log("Base64:", base64.slice(0, 100), "...", base64.slice(-100));
+      console.log("Tipo de base64:", typeof base64);
+
+      const response = await axios.post(
+        `${backDomain}/api/v1/upload-picture/${user.id}`,
+        { file: base64 }
+      );
+
+      return response.data.pictureUrl;
+    } catch (error) {
+      console.error("Erro ao fazer upload da foto:", error);
+      throw error;
+    }
+  };
 
   const actualHeaders = headers || {};
 
@@ -184,13 +241,34 @@ export function MyProfile({ headers }: HeadersProps) {
                       style={{
                         width: "8rem",
                         height: "8rem",
+                        cursor: "pointer",
                         borderRadius: "50%",
                         objectFit: "cover",
                       }}
                       className="box-shadow-white"
                       src={user.picture}
                       alt="Profile"
+                      onClick={() => fileInputRef.current?.click()}
                     />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      style={{ display: "none" }}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          try {
+                            const url = await uploadStudentPhoto(file);
+                            setUser((prev) => ({ ...prev, picture: url }));
+                          } catch (error) {
+                            notifyError("Erro ao fazer upload da foto.");
+                            console.error(error);
+                          }
+                        }
+                      }}
+                    />
+
                     <ul>
                       {myProfileList.map((item, index) => (
                         <li
@@ -397,19 +475,9 @@ export function MyProfile({ headers }: HeadersProps) {
                       fontSize: "1rem",
                     }}
                   />
-                  <Button
-                    style={{
-                      color: "#fff",
-                      backgroundColor: "#138017",
-                      padding: "0.75rem 2rem",
-                      borderRadius: "6px",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => editStudentPassword()}
-                  >
+                  <ArvinButton onClick={() => editStudentPassword()}>
                     {UniversalTexts.save}
-                  </Button>
+                  </ArvinButton>
                 </form>
               </div>
             </>
