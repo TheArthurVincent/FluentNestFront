@@ -50,6 +50,9 @@ const styles = {
 
 export function MyProfile({ headers }: HeadersProps) {
   const { UniversalTexts } = useUserContext();
+  useEffect(() => {
+    console.log("fileInputRef.current:", fileInputRef.current);
+  }, []);
 
   const [user, setUser] = useState<User>({} as User);
   const [newPassword, setNewPassword] = useState<string>("");
@@ -251,7 +254,7 @@ export function MyProfile({ headers }: HeadersProps) {
                           fileInputRef.current?.click();
                         }}
                       />
-                      ..
+
                       <input
                         type="file"
                         accept="image/*"
@@ -287,6 +290,35 @@ export function MyProfile({ headers }: HeadersProps) {
                   >
                     Nova foto
                   </ArvinButton>
+                  <div
+                    style={{
+                      marginTop: "2rem",
+                      padding: "1rem",
+                      background: "#eee",
+                    }}
+                  >
+                    <h3>TESTE INPUT FIXO</h3>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      ref={fileInputRef}
+                      onChange={() => alert("Arquivo selecionado!")}
+                      style={{
+                        border: "2px solid green",
+                        padding: "1rem",
+                        display: "block",
+                        width: "100%",
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        console.log("CLIQUE ->", fileInputRef.current);
+                        fileInputRef.current?.click();
+                      }}
+                    >
+                      Abrir input manualmente
+                    </button>
+                  </div>
                 </div>
               </div>
               <div
