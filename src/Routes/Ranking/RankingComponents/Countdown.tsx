@@ -58,8 +58,8 @@ export default function Countdown({ text, targetDate }: CountDownProps) {
       <p
         style={{
           margin: "10px",
-          fontSize:"11px",
-          fontWeight:700
+          fontSize: "11px",
+          fontWeight: 700,
         }}
       >
         {textToUse} {formatDate(targetDate)}
