@@ -21,8 +21,6 @@ interface ArvinButtonProps {
 }
 
 export const ArvinButton = styled.button<ArvinButtonProps>`
-  min-width: 30px;
-  margin: 0 3px;
   background: ${(props) =>
     props.color === "red"
       ? "red"
@@ -46,12 +44,15 @@ export const ArvinButton = styled.button<ArvinButtonProps>`
 
   color: ${(props) => (props.color === "white" ? "black" : alwaysWhite())};
   padding: 10px;
-  font-family: ${textFont()};
-  border-radius: 6px;
-  border: none;
+  min-width: 30px;
+  margin: 0 3px;
+  
   cursor: ${(props) =>
     props.cursor === "not-allowed" ? "not-allowed" : "pointer"};
   display: inline;
+  font-family: ${textFont()};
+  border-radius: 6px;
+  border: none;
   max-width: fit-content;
 
   &:hover {

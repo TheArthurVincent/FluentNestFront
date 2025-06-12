@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { primaryColor, secondaryColor, textFont } from "../../Styles/Styles";
 import {
   InputField,
   LogoSVG,
@@ -167,15 +167,24 @@ export function Login() {
                   }}
                 />
               </Grid>
-
               <div
                 style={{
-                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "right",
                 }}
               >
-                <NavLink to="/request-reset-password">
-                  Esqueci minha senha
-                </NavLink>
+                <ArvinButton
+                  style={{
+                    marginLeft: "auto",
+                    marginBottom: "2rem",
+                    backgroundColor: "#eee",
+                    color: primaryColor(),
+                  }}
+                  type="submit"
+                >
+                  {button}
+                </ArvinButton>
               </div>
               <div
                 style={{
@@ -184,26 +193,42 @@ export function Login() {
                   alignItems: "center",
                 }}
               >
-                <ArvinButton
+                <NavLink
                   style={{
+                    padding: "10px",
+                    minWidth: "30px",
+                    margin: "0 3px",
                     backgroundColor: "#eee",
                     color: primaryColor(),
+                    fontFamily: textFont(),
+                    fontSize: "10px",
+                    textDecoration: "none",
+                    borderRadius: " 6px",
+                    border: "none",
+                    maxWidth: "fit-content",
                   }}
-                  onClick={() => {
-                    window.location.assign("/signup");
+                  to="/request-reset-password"
+                >
+                  Esqueci minha senha
+                </NavLink>
+                <NavLink
+                  style={{
+                    padding: "10px",
+                    minWidth: "30px",
+                    textDecoration: "none",
+                    margin: "0 3px",
+                    backgroundColor: "#eee",
+                    color: primaryColor(),
+                    fontFamily: textFont(),
+                    fontSize: "10px",
+                    borderRadius: " 6px",
+                    border: "none",
+                    maxWidth: "fit-content",
                   }}
+                  to="/signup"
                 >
                   Cadastre-se
-                </ArvinButton>
-                <ArvinButton
-                  style={{
-                    backgroundColor: "#eee",
-                    color: primaryColor(),
-                  }}
-                  type="submit"
-                >
-                  {button}
-                </ArvinButton>
+                </NavLink>
               </div>
             </form>
             <Alert
