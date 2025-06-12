@@ -2,6 +2,8 @@ import React from "react";
 import { HOne } from "../Resources/Components/RouteBox";
 import { secondaryColor } from "../Styles/Styles";
 import { myLogoDone } from "./NewStudentAsaas/EmailCheck";
+import { ArvinButton } from "../Resources/Components/ItemsLibrary";
+import { onLoggOut } from "../Resources/UniversalComponents";
 
 export function FeeNotUpToDate() {
   return (
@@ -22,6 +24,7 @@ export function FeeNotUpToDate() {
         textAlign: "center",
       }}
     >
+      <ArvinButton onClick={onLoggOut}>Sair</ArvinButton>
       {myLogoDone}
       <HOne>Falta pouco para utilizar a plataforma!</HOne>
       <p style={{ fontSize: "18px", marginTop: "20px" }}>

@@ -83,7 +83,7 @@ export default function Cadastro() {
       setUsernameEdited(newUsername);
       setForm((prev) => ({ ...prev, username: newUsername }));
     }
-  }, [form.name, form.lastname, form.dateOfBirth]);
+  }, [form]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -441,37 +441,7 @@ export default function Cadastro() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
-                <TextField
-                  label="Nome de usuário"
-                  name="username"
-                  value={form.username}
-                  fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
-                      },
-                      "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
-                      },
-                      "& label": {
-                        color: secondaryColor(), // cor padrão do label
-                      },
-                      "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
-                      },
-                    },
-                  }}
-                  InputProps={{
-                    readOnly: true,
-                    style: { backgroundColor: "#f0f0f0", color: "#555" },
-                  }}
-                />
-              </Grid>
+
 
               <Grid item xs={12}>
                 <TextField
@@ -504,7 +474,37 @@ export default function Cadastro() {
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
-
+              <Grid item xs={12}>
+                <TextField
+                  label="Nome de usuário"
+                  name="username"
+                  value={form.username}
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                  InputProps={{
+                    readOnly: true,
+                    style: { backgroundColor: "#f0f0f0", color: "#555" },
+                  }}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   label="Senha"
@@ -583,13 +583,13 @@ export default function Cadastro() {
                   setPaymentMethod("CREDIT_CARD");
                 }}
               >
-                <HThree>89,99/mês (Cartão de Crédito)</HThree>
+                <HThree>89,99/mês</HThree>
               </div>
               <div
                 style={{ ...styles.planCard, ...isSelected("yearly") }}
                 onClick={() => handlePlanSelect("yearly")}
               >
-                <HThree>749,99/ano (à vista!)</HThree>
+                <HThree>749,99/ano</HThree>
               </div>
             </div>
             {selectedPlan === "yearly" && (
@@ -684,7 +684,7 @@ export default function Cadastro() {
                         },
                       },
                     }}
-                    inputProps={{ maxLength: 16, inputMode: "numeric" }}
+                    inputProps={{ maxLength: 19, inputMode: "numeric" }}
                   />
                 </Grid>
 

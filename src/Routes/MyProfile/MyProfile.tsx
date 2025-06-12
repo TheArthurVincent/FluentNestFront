@@ -16,6 +16,37 @@ import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../Blog/Blog.Styled";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import Countdown from "../Ranking/RankingComponents/Countdown";
+const styles = {
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "40px",
+  },
+  card: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "16px",
+    padding: "24px",
+    backgroundColor: "#f9f9f9",
+    borderRadius: "16px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    maxWidth: "400px",
+    textAlign: "center",
+  },
+  button: {
+    padding: "12px 24px",
+    fontSize: "16px",
+    backgroundColor: "#25D366", // cor do WhatsApp
+    color: "#fff",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    transition: "transform 0.2s ease",
+  },
+};
 
 export function MyProfile({ headers }: HeadersProps) {
   const { UniversalTexts } = useUserContext();
@@ -57,6 +88,8 @@ export function MyProfile({ headers }: HeadersProps) {
         localStorage.getItem("loggedIn") || ""
       );
       setUser(getLoggedUser);
+      console.log(getLoggedUser);
+      console.log(user);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -76,16 +109,27 @@ export function MyProfile({ headers }: HeadersProps) {
   const [showModal, setShowModal] = useState(false);
 
   const cancelSubscription = async () => {
-    try {
-      await axios.delete(
-        `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
+    if (user.subscriptionAsaas) {
+      try {
+        await axios.delete(
+          `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
+        );
+        alert("Assinatura cancelada com sucesso.");
+        setShowModal(false);
+        updateInfo();
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao cancelar a assinatura.");
+      }
+      console.log("user.paymentId", user.paymentId, "cancel payment refund");
+    } else if (user.paymentId) {
+      notifyError(
+        "Fale comigo por WhatsApp, e prosseguiei com seu cancelamento. :)"
       );
-      alert("Assinatura cancelada com sucesso.");
-      setShowModal(false);
-      onLoggOut();
-    } catch (err) {
-      console.error(err);
-      alert("Erro ao cancelar a assinatura.");
+      setTimeout(() => {
+        window.location.assign("https://wa.me/5511915857807");
+      }, 2000);
+      console.log("user.paymentId", user.paymentId, "cancel payment refund");
     }
   };
 
@@ -118,7 +162,6 @@ export function MyProfile({ headers }: HeadersProps) {
                     }}
                     color="navy"
                     style={{
-                      backgroundColor: "#1a73e8",
                       color: "#fff",
                       padding: "0.5rem 1rem",
                       borderRadius: "6px",
@@ -178,80 +221,6 @@ export function MyProfile({ headers }: HeadersProps) {
                       >
                         Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
                       </li>
-                      {!user.tutoree && (
-                        <ArvinButton
-                          onClick={() => setShowModal(true)}
-                          style={{
-                            backgroundColor: "#d32f2f",
-                            color: "#fff",
-                            padding: "0.5rem 1rem",
-                            borderRadius: "6px",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Cancelar Minha Assinatura
-                        </ArvinButton>
-                        
-
-                        
-                      )}
-                      {showModal && (
-  <div
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: "rgba(0, 0, 0, 0.5)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1000,
-    }}
-  >
-    <div
-      style={{
-        background: "#fff",
-        padding: "2rem",
-        borderRadius: "8px",
-        width: "90%",
-        maxWidth: "400px",
-        textAlign: "center",
-      }}
-    >
-      <h2 style={{ marginBottom: "1.5rem", color: "#d32f2f" }}>
-        Tem certeza que deseja cancelar sua assinatura?
-      </h2>
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <Button
-          variant="outlined"
-          onClick={() => setShowModal(false)}
-          style={{
-            borderColor: "#555",
-            color: "#555",
-            padding: "0.5rem 1.5rem",
-            borderRadius: "6px",
-          }}
-        >
-          Não
-        </Button>
-        <Button
-          variant="contained"
-          onClick={cancelSubscription}
-          style={{
-            backgroundColor: "#d32f2f",
-            color: "#fff",
-            padding: "0.5rem 1.5rem",
-            borderRadius: "6px",
-          }}
-        >
-          Sim
-        </Button>
-      </div>
-    </div>
-  </div>
-)}
 
                       {user.tutoree && (
                         <li
@@ -271,6 +240,120 @@ export function MyProfile({ headers }: HeadersProps) {
                     </ul>
                   </div>
                 </div>
+              </div>
+              <div
+                style={{
+                  padding: "2rem",
+                  backgroundColor: "#fff",
+                  borderRadius: "6px",
+                  marginTop: "2rem",
+                }}
+                className="box-shadow-white"
+              >
+                {user.askedToCancel && (
+                  <div style={styles.container}>
+                    {/* @ts-ignore */}
+                    <div style={styles.card}>
+                      <Countdown
+                        text="Você ainda pode usar a plataforma até."
+                        targetDate={new Date(user.limitDate)}
+                      />
+                      <ArvinButton
+                        onClick={() =>
+                          window.location.assign("https://wa.me/5511915857807")
+                        }
+                        style={styles.button}
+                      >
+                        Solicite a reativação do seu cadastro
+                      </ArvinButton>
+                    </div>
+                  </div>
+                )}
+                {new Date(user.limitCancelDate) > new Date() &&
+                !user.subscriptionAsaas ? (
+                  <div style={styles.container}>
+                    {/* @ts-ignore */}
+                    <div style={styles.card}>
+                      <Countdown
+                        text="Você ainda pode solicitar seu reembolso."
+                        targetDate={new Date(user.limitCancelDate)}
+                      />
+                      <ArvinButton
+                        onClick={() =>
+                          window.location.assign("https://wa.me/5511915857807")
+                        }
+                        style={styles.button}
+                      >
+                        💬 Solicitar Reembolso via WhatsApp
+                      </ArvinButton>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {!user.askedToCancel && !user.tutoree && (
+                      <>
+                        <ArvinButton
+                          onClick={() => setShowModal(true)}
+                          color="red"
+                        >
+                          Cancelar Minha Assinatura
+                        </ArvinButton>
+                      </>
+                    )}
+                  </>
+                )}
+                {showModal && (
+                  <div
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 1000,
+                    }}
+                  >
+                    <div
+                      style={{
+                        background: "#fff",
+                        padding: "2rem",
+                        borderRadius: "8px",
+                        width: "90%",
+                        maxWidth: "400px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <h2
+                        style={{
+                          marginBottom: "1.5rem",
+                          color: "#d32f2f",
+                        }}
+                      >
+                        Tem certeza que deseja cancelar sua assinatura?
+                      </h2>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-around",
+                        }}
+                      >
+                        <ArvinButton
+                          onClick={() => setShowModal(false)}
+                          color="green"
+                        >
+                          Não
+                        </ArvinButton>
+                        <ArvinButton onClick={cancelSubscription} color="red">
+                          Sim
+                        </ArvinButton>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div
                 style={{
