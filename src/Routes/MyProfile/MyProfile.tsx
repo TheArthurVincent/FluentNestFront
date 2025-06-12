@@ -238,7 +238,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         style={{
                           width: "8rem",
                           height: "8rem",
-                          
+
                           zIndex: 100,
                           borderRadius: "50%",
                           objectFit: "cover",
@@ -251,15 +251,18 @@ export function MyProfile({ headers }: HeadersProps) {
                           fileInputRef.current?.click();
                         }}
                       />
+                    
                       <input
                         type="file"
                         accept="image/*"
                         ref={fileInputRef}
-                        // style={{
-
-                        //   display: "none"
-
-                        // }}
+                        style={{
+                          padding: "0.5rem",
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                          border: "1px solid #ccc",
+                          borderRadius: "4px",
+                        }}
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
@@ -274,11 +277,10 @@ export function MyProfile({ headers }: HeadersProps) {
                         }}
                       />
                     </div>
-          
                   </div>
                 </div>
               </div>
-               <div
+              <div
                 style={{
                   padding: "2rem",
                   backgroundColor: "#fff",
@@ -287,54 +289,54 @@ export function MyProfile({ headers }: HeadersProps) {
                 }}
                 className="box-shadow-white"
               >
-                        <ul>
-                      {myProfileList.map((item, index) => (
-                        <li
-                          key={index}
-                          style={{
-                            listStyle: "none",
-                            padding: "0.5rem 0",
-                            fontSize: "1rem",
-                            lineHeight: "1.5",
-                            color: "#333",
-                          }}
-                        >
-                          <SpanDisapear>
-                            <b>{item.title}: </b>
-                          </SpanDisapear>
+                <ul>
+                  {myProfileList.map((item, index) => (
+                    <li
+                      key={index}
+                      style={{
+                        listStyle: "none",
+                        padding: "0.5rem 0",
+                        fontSize: "1rem",
+                        lineHeight: "1.5",
+                        color: "#333",
+                      }}
+                    >
+                      <SpanDisapear>
+                        <b>{item.title}: </b>
+                      </SpanDisapear>
 
-                          <span>{item.data}</span>
-                        </li>
-                      ))}
-                      <li
-                        style={{
-                          listStyle: "none",
-                          padding: "0.5rem 0",
-                          fontSize: "1rem",
-                          lineHeight: "1.5",
-                          color: "#333",
-                        }}
-                      >
-                        Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
-                      </li>
+                      <span>{item.data}</span>
+                    </li>
+                  ))}
+                  <li
+                    style={{
+                      listStyle: "none",
+                      padding: "0.5rem 0",
+                      fontSize: "1rem",
+                      lineHeight: "1.5",
+                      color: "#333",
+                    }}
+                  >
+                    Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
+                  </li>
 
-                      {user.tutoree && (
-                        <li
-                          style={{
-                            listStyle: "none",
-                            padding: "0.5rem 0",
-                            fontSize: "1rem",
-                            lineHeight: "1.5",
-                            color: "#333",
-                          }}
-                        >
-                          <NavLink to={user.googleDriveLink} target="blank">
-                            {UniversalTexts.googleDriveLink}
-                          </NavLink>
-                        </li>
-                      )}
-                    </ul>
-                    </div>
+                  {user.tutoree && (
+                    <li
+                      style={{
+                        listStyle: "none",
+                        padding: "0.5rem 0",
+                        fontSize: "1rem",
+                        lineHeight: "1.5",
+                        color: "#333",
+                      }}
+                    >
+                      <NavLink to={user.googleDriveLink} target="blank">
+                        {UniversalTexts.googleDriveLink}
+                      </NavLink>
+                    </li>
+                  )}
+                </ul>
+              </div>
               <div
                 style={{
                   padding: "2rem",
