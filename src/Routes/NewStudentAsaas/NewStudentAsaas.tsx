@@ -380,7 +380,6 @@ export default function Cadastro() {
                   }}
                 />
               </Grid>
-              
               <Grid item xs={12}>
                 <TextField
                   label="Código de recomentação (opcional)"
@@ -411,7 +410,6 @@ export default function Cadastro() {
                   }}
                 />
               </Grid>
-
 
               <Grid item xs={12}>
                 <TextField
@@ -1030,7 +1028,7 @@ export default function Cadastro() {
               </Grid>
             )}
             <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? <CircularProgress/>: "Cadastrar"}
+              {loading ? <CircularProgress /> : "Cadastrar"}
             </button>
           </div>
         </div>

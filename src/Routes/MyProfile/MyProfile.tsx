@@ -9,7 +9,7 @@ import {
 } from "../../Resources/UniversalComponents";
 import { alwaysBlack, secondaryColor } from "../../Styles/Styles";
 import { NavLink } from "react-router-dom";
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { User } from "./types.MyProfile";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
