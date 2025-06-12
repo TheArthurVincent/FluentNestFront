@@ -43,26 +43,25 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
     }
   }, [selectedVoice, changeB]);
 
-function sanitizeVoiceName(voiceName: any) {
-  if (!voiceName) return "";
+  function sanitizeVoiceName(voiceName: any) {
+    if (!voiceName) return "";
 
-  let name = voiceName.trim();
+    let name = voiceName.trim();
 
-  // Remove "Google" ou "Microsoft" do início
-  name = name.replace(/^(Google|Microsoft)\s+/i, "");
+    // Remove "Google" ou "Microsoft" do início
+    name = name.replace(/^(Google|Microsoft)\s+/i, "");
 
-  // Remove "Online" e qualquer coisa entre parênteses
-  name = name.replace(/\bOnline\b/gi, "").replace(/\s*\(.*?\)/g, "");
-  name = name.replace(/\English\b/gi, "").replace(/\s*\(.*?\)/g, "");
-  name = name.replace(/\UK \b/gi, "").replace(/\s*\(.*?\)/g, "");
-  name = name.replace(/\US \b/gi, "").replace(/\s*\(.*?\)/g, "");
+    // Remove "Online" e qualquer coisa entre parênteses
+    name = name.replace(/\bOnline\b/gi, "").replace(/\s*\(.*?\)/g, "");
+    name = name.replace(/\English\b/gi, "").replace(/\s*\(.*?\)/g, "");
+    name = name.replace(/\UK \b/gi, "").replace(/\s*\(.*?\)/g, "");
+    name = name.replace(/\US \b/gi, "").replace(/\s*\(.*?\)/g, "");
 
-  // Remove espaços duplicados gerados
-  name = name.trim().replace(/\s{2,}/g, " ");
+    // Remove espaços duplicados gerados
+    name = name.trim().replace(/\s{2,}/g, " ");
 
-  return name;
-}
-
+    return name;
+  }
 
   return (
     <div style={{ margin: "1rem 0", fontFamily: "Lato, sans-serif" }}>

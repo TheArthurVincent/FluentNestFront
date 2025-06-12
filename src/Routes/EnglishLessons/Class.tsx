@@ -545,51 +545,8 @@ export default function EnglishClassCourse2({
               handleCurrentClass
             </div>
           )}
-          <span id="voicesss">
-            <div
-              className="box-shadow-white"
-              style={{
-                height: "3rem",
-                padding: "0 10px ",
-                backgroundColor: alwaysWhite(),
-                position: "fixed",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                minWidth: "100px",
-                bottom: 60,
-                left: showCourses ? -338 : 3,
-                borderRadius: "6px",
-              }}
-            >
-              <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
-              <span
-                style={{
-                  margin: "5px",
-                  marginLeft: "80px",
-                  fontSize: "16px",
-                }}
-              >
-                <i
-                  className="fa fa-microphone"
-                  aria-hidden="true"
-                  style={{
-                    margin: "5px",
-                    marginRight: "15px",
-                    fontSize: "16px",
-                  }}
-                  onClick={handleShowCourses}
-                  aria-hidden="true"
-                />
-                <i
-                  className={`fa fa-arrow-${arrow ? "left" : "right"}`}
-                  onClick={handleShowCourses}
-                  aria-hidden="true"
-                />
-              </span>
-            </div>
-          </span>
-          {thePermissions === "superadmin" && (
+
+          {
             <div
               className="box-shadow-white"
               style={{
@@ -602,23 +559,31 @@ export default function EnglishClassCourse2({
                 alignItems: "center",
                 minWidth: "100px",
                 bottom: 5,
-                left: showCourses ? -338 : 3,
+                left: showCourses ? -250 : 3,
                 borderRadius: "6px",
               }}
             >
-              <select
-                onChange={(e) => handleStudentChange(e)}
-                value={studentID}
+              <span
+                style={{
+                  display: thePermissions === "superadmin" ? "block" : "none",
+                  // display:  "none"
+                }}
               >
-                {studentsList.map((student: any, index: number) => (
-                  <option key={index} value={student.id}>
-                    {student.name + " " + student.lastname}
-                  </option>
-                ))}
-              </select>
-              <ArvinButton color="green" onClick={fetchStudents}>
-                <i className="fa fa-refresh" aria-hidden="true" />
-              </ArvinButton>
+                <select
+                  onChange={(e) => handleStudentChange(e)}
+                  value={studentID}
+                >
+                  {studentsList.map((student: any, index: number) => (
+                    <option key={index} value={student.id}>
+                      {student.name + " " + student.lastname}
+                    </option>
+                  ))}
+                </select>
+                <ArvinButton color="green" onClick={fetchStudents}>
+                  <i className="fa fa-refresh" aria-hidden="true" />
+                </ArvinButton>
+              </span>
+              <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
 
               <span
                 style={{
@@ -636,8 +601,9 @@ export default function EnglishClassCourse2({
                   aria-hidden="true"
                 />
               </span>
+
             </div>
-          )}
+          }
           {theclass.image && (
             <ImgLesson src={theclass.image} alt={theclass.subtitle} />
           )}
