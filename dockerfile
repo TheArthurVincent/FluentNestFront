@@ -1,30 +1,27 @@
+# Usa uma versão mais recente e compatível do Node.js
 FROM node:20
 
-# Cria o diretório da aplicação
+# Define diretório de trabalho no container
 WORKDIR /usr/src/app
 
-# Copia os arquivos de dependência
+# Copia apenas os arquivos de dependência
 COPY package*.json ./
 
-# Ajusta configurações de rede para evitar timeout
-RUN npm config set fetch-retries 5 \
- && npm config set fetch-retry-mintimeout 20000 \
- && npm config set fetch-retry-maxtimeout 120000
+# Limpa cache e instala as dependências com mais segurança
+RUN npm cache clean --force && npm install
 
-# Instala as dependências
-RUN npm install
-
-# Instala o "serve" globalmente
-RUN npm install --global serve
-
-# Copia o restante do código
+# Copia o restante dos arquivos do projeto
 COPY . .
 
-# Cria o build de produção do React
+# Constrói a aplicação para produção (caso use React ou similar)
 RUN npm run build
 
-# Expõe a porta padrão do "serve"
+# Expõe a porta (ajuste se for diferente)
 EXPOSE 3000
 
-# Inicia o app
-CMD ["npm", "start" ,"serve", "-s", "build"]
+# Usa um servidor estático leve para servir o front (como serve ou http-server)
+# Instale serve globalmente e use isso como entrypoint
+RUN npm install -g serve
+
+# Serve a aplicação do diretório de build (ajuste se necessário)
+CMD ["npm", "start" ,"serve",  "-s", "build", "-l", "3000"]
