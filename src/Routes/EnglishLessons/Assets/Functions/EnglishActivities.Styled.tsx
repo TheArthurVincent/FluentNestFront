@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { alwaysBlack, alwaysWhite } from "../../../../Styles/Styles";
 
 export const ImgLesson = styled.img`

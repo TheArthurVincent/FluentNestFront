@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { alwaysWhite, lightGreyColor, primaryColor } from "../../Styles/Styles";
 
 export const DivModal = styled.div`

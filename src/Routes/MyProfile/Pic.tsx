@@ -190,7 +190,6 @@ export function MyProfile({ headers }: HeadersProps) {
   return (
     <>
       {headers ? (
-        // @ts-ignore
         <RouteDiv className="grid-flex">
           <Helmets text="My Profile" />
           {loading ? (
