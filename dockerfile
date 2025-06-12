@@ -1,24 +1,16 @@
-FROM node:20.17.0
-
+FROM node:18.18
+# Create app directory
 WORKDIR /usr/src/app
-
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
 COPY package*.json ./
-
-# Usa o registry oficial para evitar erro com pacotes específicos como styled-components
-RUN npm config set registry https://registry.npmjs.org \
-    && npm config set fetch-retries 5 \
-    && npm config set fetch-retry-mintimeout 20000 \
-    && npm config set fetch-retry-maxtimeout 120000
-
-# Instala com segurança e compatibilidade
-RUN npm ci --legacy-peer-deps
-
+RUN npm install
 RUN npm install --global serve
-
 COPY . .
-
 RUN npm run build
-
+# If you are building your code for production
+# RUN npm ci --omit=dev
+# Bundle app source
 EXPOSE 3000
-
-CMD ["npm", "start"]
+CMD [ "npm", "start" ]
