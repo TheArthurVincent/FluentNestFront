@@ -1,4 +1,4 @@
-FROM node:18.18
+FROM node:20
 
 # Cria o diretório da aplicação
 WORKDIR /usr/src/app
@@ -6,25 +6,25 @@ WORKDIR /usr/src/app
 # Copia os arquivos de dependência
 COPY package*.json ./
 
-# Ajustes de rede para evitar timeout durante o npm install
+# Ajusta configurações de rede para evitar timeout
 RUN npm config set fetch-retries 5 \
  && npm config set fetch-retry-mintimeout 20000 \
  && npm config set fetch-retry-maxtimeout 120000
 
-# Instala as dependências ignorando conflitos de versões
-RUN npm install --legacy-peer-deps
+# Instala as dependências
+RUN npm install
 
-# Instala o servidor estático
+# Instala o "serve" globalmente
 RUN npm install --global serve
 
-# Copia o restante da aplicação
+# Copia o restante do código
 COPY . .
 
-# Cria o build de produção (React)
+# Cria o build de produção do React
 RUN npm run build
 
-# Expõe a porta padrão
+# Expõe a porta padrão do "serve"
 EXPOSE 3000
 
-# Serve a aplicação estática do React
+# Inicia o app
 CMD ["npm", "start" ,"serve", "-s", "build"]
