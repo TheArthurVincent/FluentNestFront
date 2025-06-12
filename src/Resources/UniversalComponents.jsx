@@ -192,7 +192,7 @@ export const SpinLoading = () => {
   );
 };
 
-export function InputField({ value, onChange, id, placeholder, type }) {
+export function InputField({ value, onChange, id, placeholder, type,required }) {
   return (
     <div
       style={{
@@ -228,7 +228,7 @@ export function InputField({ value, onChange, id, placeholder, type }) {
         id={id}
         placeholder={placeholder}
         type={type}
-        required
+        required={required}
       />
     </div>
   );
@@ -802,12 +802,14 @@ export const onLoggOut = () => {
   notifyError("Faça login novamente");
   window.location.assign("/login");
 };
-
+// export const onLoggOutFee = () => {
+//   notifyError("Sua mensalidade está atrasada. Fale com o professor. :)");
+//   window.location.assign("/login");
+// };
 export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
   localStorage.removeItem("loggedIn");
-  notifyError("Sua mensalidade está atrasada. Fale com o professor. :)");
-  window.location.assign("/login");
+  window.location.assign("/feenotuptodate");
 };
 
 const socket = io(backDomain);

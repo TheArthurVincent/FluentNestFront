@@ -13,6 +13,8 @@ import RequestResetPassword from "./Routes/ChangePassword/RequestResetPassword";
 import ResetPasswordFinalChange from "./Routes/ChangePassword/ResetPasswordFinalChange";
 import NewStudentAsaas from "./Routes/NewStudentAsaas/NewStudentAsaas";
 import SignUp from "./Routes/SignUp/SignUp";
+import EmailCheck from "./Routes/NewStudentAsaas/EmailCheck";
+import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");
@@ -80,9 +82,11 @@ function App() {
     { path: "/message", element: verifyToken() ? <MessageDrive /> : <Login /> },
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },
     { path: "/signup", element: <NewStudentAsaas /> },
+    { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
     { path: "/reset-password/*", element: <ResetPasswordFinalChange /> },
+    { path: "/feenotuptodate", element: <FeeNotUpToDate /> },
   ];
 
   return (
