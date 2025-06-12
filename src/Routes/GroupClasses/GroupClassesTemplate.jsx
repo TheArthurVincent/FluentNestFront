@@ -13,7 +13,7 @@ import {
   primaryColor,
 } from "../../Styles/Styles";
 import CoursesSideBar from "../../Application/CoursesSideBar/CoursesSideBar";
-import { styled } from "styled-components";
+import styled from "styled-components";
 import TopBar from "../../Application/TopBar/TopBar";
 import axios from "axios";
 import { Link } from "react-router-dom";

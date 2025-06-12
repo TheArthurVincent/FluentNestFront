@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import styled from "styled-components";
 import { primaryColor, textSecondaryColorContrast } from "../../Styles/Styles";
 
 export const CoursesList = styled.div`
