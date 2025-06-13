@@ -374,7 +374,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               onChange={(e) => {
                 setLanguage(e.target.value);
                 setDisabledButton(false);
-                setWord("");
               }}
             >
               <FormControlLabel
