@@ -367,7 +367,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             </RadioGroup>
           </FormControl>
 
-          {/* <FormControl>
+          <FormControl>
             <RadioGroup
               row
               value={language}
@@ -401,7 +401,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                 label="Pt → En"
               />
             </RadioGroup>
-          </FormControl> */}
+          </FormControl>
           <ArvinButton
             disabled={word == "" || disabledButton}
             cursor={word == "" || disabledButton ? "not-allowed" : "pointer"}
