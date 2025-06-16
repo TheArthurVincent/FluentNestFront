@@ -386,7 +386,9 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     }}
                   />
                 }
-                label="En → Pt "
+
+                label="En → Pt"
+
               />
               <FormControlLabel
                 value="pt"

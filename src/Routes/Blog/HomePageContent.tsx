@@ -88,6 +88,7 @@ export function Blog({
   var [module, setModule] = useState<String>("");
   var [lesson, setLesson] = useState<String>("");
   var [img, setImg] = useState("");
+  var [NO, setNo] = useState(true);
   var [loadingLESSON, setLoadingLESSON] = useState<Boolean>(true);
 
   const fetchLastClassId = async (classid: string) => {
@@ -102,17 +103,16 @@ export function Blog({
       );
 
       var cour = response.data.course.title;
-      var mod = response.data.module.title;
       var less = response.data.classDetails.title;
       var imgg = response.data.classDetails.image
         ? response.data.classDetails.image
         : "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512";
       setCourse(cour);
-      setModule(mod);
       setLesson(less);
       setImg(imgg);
       setLoadingLESSON(false);
     } catch (error) {
+      setNo(false);
       console.log(error, "Erro ao encontrar aula");
     }
   };
@@ -147,22 +147,18 @@ export function Blog({
   const sessions = [
     {
       id: "current-lesson",
-      title: `${UniversalTexts.currentLesson}  - ${lesson}`,
+      title: NO
+        ? `${UniversalTexts.currentLesson}  - ${lesson}`
+        : "Begin your journey!",
       description: UniversalTexts.retome,
       img: img,
-      link: `/english-courses/${course
-        .toLowerCase()
-        .replace(/\s+/g, "-")
-        .replace(/[^\w\-]+/g, "")}/${classId}`,
+      link: NO
+        ? `/english-courses/${course
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w\-]+/g, "")}/${classId}`
+        : "/english-courses/english-grammar/667ac39b4b4d6245dc8f385b",
     },
-
-    // {
-    //   id: "calendar",
-    //   title: UniversalTexts.nextGroupClasses,
-    //   description: UniversalTexts.nextGroupClasses,
-    //   img: "https://ik.imagekit.io/vjz75qw96/assets/icons/actions.jpg?updatedAt=1720616041429",
-    //   link: "/my-calendar",
-    // },
     {
       id: "flash-cards",
       title: "Flashcards",
@@ -184,13 +180,6 @@ export function Blog({
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mining.png?updatedAt=1742402051850",
       link: "/sentence-mining",
     },
-    // {
-    //   id: "my-lessons",
-    //   title: UniversalTexts.myClasses,
-    //   description: UniversalTexts.myClasses,
-    //   img: "https://ik.imagekit.io/vjz75qw96/assets/icons/future.jpg?updatedAt=1720527411882",
-    //   link: "/my-classes",
-    // },
   ];
 
   const editPost = async (id: string): Promise<void> => {
