@@ -385,11 +385,19 @@ export const ContainerClass = styled.div`
     height: 100%;
   }
 `;
+
 export const IFrameVideoClass = styled.iframe`
   min-width: 98%;
   min-height: 100%;
   border: none;
 `;
+
+export const IFrameVideoClass2 = styled.iframe`
+  min-width: 98%;
+  height: 100%;
+  border: none;
+`;
+
 export const abreviateName = (word) => {
   const words = word.split(" ");
   const lastWord = words[words.length - 1];

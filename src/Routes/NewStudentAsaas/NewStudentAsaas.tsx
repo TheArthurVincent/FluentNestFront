@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
-import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
+import {
+  backDomain,
+  IFrameVideoClass,
+  IFrameVideoClass2,
+  LogoSVG,
+} from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import {
@@ -11,6 +16,7 @@ import {
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress } from "@mui/material";
+import { IFrameVideoPannel } from "../Blog/Blog.Styled";
 
 export const generateUsername = (
   name: string,
@@ -289,7 +295,8 @@ export default function Cadastro() {
               Já sou aluno
             </a>
             <span style={{ margin: "auto" }}>{myLogo}</span>
-            <HTwo>Dados Pessoais</HTwo>
+            <IFrameVideoPannel src="https://www.youtube.com/embed/qUiHhLsyiIw" />
+            <HTwo>Inicie sua jornada!</HTwo>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
                 <TextField
