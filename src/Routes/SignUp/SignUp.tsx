@@ -25,71 +25,6 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-const styles: any = {
-  container: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "20px",
-  },
-  form: {
-    display: "flex",
-    gap: "10px",
-    flexDirection: "column",
-    width: "100%",
-    maxWidth: "900px",
-  },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  grid2: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  grid3: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  responsiveGrid: {
-    display: "grid",
-    gridTemplateColumns: "1fr",
-    gap: "20px",
-  },
-  column: {
-    display: "flex",
-    flexDirection: "column",
-    background: "#f9f9f9",
-    padding: "20px",
-    borderRadius: "10px",
-    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-  },
-  input: {
-    marginBottom: "10px",
-    padding: "10px",
-    fontSize: "16px",
-    borderRadius: "5px",
-    border: "1px solid #ccc",
-  },
-  button: {
-    padding: "10px",
-    fontSize: "16px",
-    backgroundColor: "#007BFF",
-    color: "#fff",
-    border: "none",
-    cursor: "pointer",
-    marginTop: "20px",
-  },
-  error: {
-    color: "red",
-    marginTop: "10px",
-  },
-};
-
 export default function SignUp() {
   const [form, setForm] = useState({
     name: "",
@@ -99,19 +34,8 @@ export default function SignUp() {
     doc: "",
     email: "",
     dateOfBirth: "",
-    address: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    addressNumber: "",
-    zip: "",
     password: "",
     confirmPassword: "",
-    creditCardNumber: "",
-    creditCardHolderName: "",
-    creditCardExpiryMonth: "",
-    creditCardExpiryYear: "",
-    creditCardCcv: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -179,9 +103,9 @@ export default function SignUp() {
     }
 
     try {
-      const response = await axios.post(`${backDomain}/api/v1/cadastro`, form);
+      const response = await axios.post(`${backDomain}/api/v1/students`, form);
 
-      notifyError(`Pagamento aprovado!`, "green");
+      notifyError(`Registrado!`, "green");
 
       console.log("Dados completos:", response.data);
 
@@ -305,39 +229,6 @@ export default function SignUp() {
     }
   }, [form.name, form.lastname, form.phoneNumber, form.email]);
 
-  useEffect(() => {
-    const fetchAddress = async () => {
-      const cleanCep = form.zip.replace(/\D/g, "");
-      if (cleanCep.length !== 8) return;
-
-      try {
-        const response = await axios.get(
-          `https://viacep.com.br/ws/${cleanCep}/json/`
-        );
-
-        if (response.data.erro) {
-          notifyError("CEP não encontrado.");
-          return;
-        }
-
-        const { logradouro, bairro, localidade, uf } = response.data;
-
-        setForm((prev) => ({
-          ...prev,
-          address: logradouro,
-          neighborhood: bairro,
-          city: localidade,
-          state: uf,
-        }));
-      } catch (error) {
-        notifyError("Erro ao buscar endereço.");
-        console.error("Erro ViaCEP:", error);
-      }
-    };
-
-    fetchAddress();
-  }, [form.zip]);
-
   return (
     <div style={styles.container}>
       <HOne>Cadastro</HOne>
@@ -435,142 +326,11 @@ export default function SignUp() {
           </div>
         </div>
 
-        {/* 📌 COLUNA 2 - ENDEREÇO */}
-        <div style={styles.grid}>
-          <div style={styles.column}>
-            <HTwo>Dados do Cartão</HTwo>
-            <div style={styles.grid}>
-              <div style={styles.grid3}>
-                <input
-                  type="text"
-                  name="creditCardNumber"
-                  placeholder="Número do Cartão"
-                  value={form.creditCardNumber}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="creditCardHolderName"
-                  placeholder="Nome Impresso no Cartão"
-                  value={form.creditCardHolderName}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="creditCardExpiryMonth"
-                  placeholder="Mês de Expiração (MM)"
-                  value={form.creditCardExpiryMonth}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  pattern="\d{1,2}"
-                  maxLength={2}
-                />
-                <input
-                  type="text"
-                  name="creditCardExpiryYear"
-                  placeholder="Ano de Expiração (AAAA)"
-                  value={form.creditCardExpiryYear}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  pattern="\d{4}"
-                  maxLength={4}
-                />
-                <input
-                  type="text"
-                  name="creditCardCcv"
-                  placeholder="CVV"
-                  value={form.creditCardCcv}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  pattern="\d{3}"
-                  maxLength={3}
-                />
-                <input
-                  type="text"
-                  name="zip"
-                  placeholder="CEP"
-                  value={form.zip}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    if (value.length <= 8) {
-                      setForm({ ...form, zip: value });
-                    }
-                  }}
-                  required
-                  style={styles.input}
-                  inputMode="numeric"
-                  maxLength={8}
-                />
-              </div>
-              <div style={styles.grid2}>
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Rua (ex: Av. Paulista)"
-                  value={form.address}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />{" "}
-                <input
-                  type="number"
-                  name="addressNumber"
-                  placeholder="Número do Endereço"
-                  value={form.addressNumber}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="neighborhood"
-                  placeholder="Bairro"
-                  value={form.neighborhood}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="city"
-                  placeholder="Cidade"
-                  value={form.city}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-                <input
-                  type="text"
-                  name="state"
-                  placeholder="Estado (UF)"
-                  value={form.state}
-                  onChange={handleChange}
-                  required
-                  style={styles.input}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
         <button type="submit" style={styles.button} disabled={loading}>
           {loading ? "Cadastrando..." : "Cadastrar"}
         </button>
         {error && <p style={styles.error}>{error}</p>}
       </form>
-      <button onClick={handleSubmit} style={styles.button}>
-        chamar
-      </button>
     </div>
   );
 }
