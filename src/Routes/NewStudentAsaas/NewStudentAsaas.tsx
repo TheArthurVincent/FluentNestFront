@@ -16,7 +16,7 @@ import {
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress } from "@mui/material";
-import { IFrameVideoPannel } from "../Blog/Blog.Styled";
+import { IFrameAsaas, IFrameVideoBlog, IFrameVideoPannel } from "../Blog/Blog.Styled";
 
 export const generateUsername = (
   name: string,
@@ -38,7 +38,7 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-export default function Cadastro() {
+export default function Subscription() {
   const [form, setForm] = useState({
     name: "",
     promoCode: "",
@@ -115,7 +115,7 @@ export default function Cadastro() {
       });
 
       if (paymentMethod === "PIX") {
-        window.location.assign("/feenotuptodate"); // ✅ página personalizada
+        window.location.assign("/feenotuptodate");
         return;
       }
 
@@ -284,8 +284,6 @@ export default function Cadastro() {
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.grid}>
-          {/* 📌 COLUNA 1 - DADOS PESSOAIS */}
           <div style={styles.column}>
             <a
               style={styles.button}
@@ -294,8 +292,9 @@ export default function Cadastro() {
             >
               Já sou aluno
             </a>
-            <span style={{ margin: "auto" }}>{myLogo}</span>
-            <IFrameVideoPannel src="https://www.youtube.com/embed/qUiHhLsyiIw" />
+            <IFrameAsaas
+             src="https://www.youtube.com/embed/qUiHhLsyiIw" />
+            {/* <span style={{ margin: "auto" }}>{myLogo}</span> */}
             <HTwo>Inicie sua jornada!</HTwo>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
@@ -604,13 +603,8 @@ export default function Cadastro() {
               </Grid>
             </Grid>
           </div>
-        </div>
-
-        {/* 📌 COLUNA 2 - ENDEREÇO */}
-        <div style={styles.grid}>
           <div style={styles.column}>
             <HTwo>Plano</HTwo>
-            {/* Plan Selection Cards */}
             <div style={styles.planContainer}>
               <div
                 style={{ ...styles.planCard, ...isSelected("monthly") }}
@@ -1038,7 +1032,6 @@ export default function Cadastro() {
               {loading ? <CircularProgress /> : "Cadastrar"}
             </button>
           </div>
-        </div>
 
         {error && <p style={styles.error}>{error}</p>}
       </form>

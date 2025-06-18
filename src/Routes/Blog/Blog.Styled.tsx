@@ -149,6 +149,40 @@ export const IFrameVideoBlog = styled.iframe`
     min-height: 189px;
   }
 `;
+export const IFrameAsaas = styled.iframe`
+  min-width: 800px;
+  min-height: 420px;
+  margin-top: 1rem;
+  margin-right: auto;
+  box-sizing: border-box;
+  margin-left: auto;
+  position: relative;
+  border: none;
+  @media (max-width: 860px) {
+    min-width: 700px;
+    min-height: 360px;
+  }
+  @media (max-width: 780px) {
+    min-width: 660px;
+    min-height: 340px;
+  }
+  @media (max-width: 720px) {
+    min-width: 610px;
+    min-height: 315px;
+  }
+  @media (max-width: 700px) {
+    min-width: 550px;
+    min-height: 285px;
+  }
+  @media (max-width: 600px) {
+    min-width: 525px;
+    min-height: 265px;
+  }
+  @media (max-width: 500px) {
+    min-width: 350px;
+    min-height: 200px;
+  }
+`;
 
 export const IFrameVideoPannel = styled.iframe`
   min-width: 37vw;
