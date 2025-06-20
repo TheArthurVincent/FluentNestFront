@@ -90,17 +90,15 @@ function App() {
   ];
 
   return (
-    <div>
-      <UserProvider>
-        <Router>
-          <Routes>
-            {routes.map((route, index) => (
-              <Route key={index} path={route.path} element={route.element} />
-            ))}
-          </Routes>
-        </Router>
-      </UserProvider>
-    </div>
+    <UserProvider>
+      <Router>
+        <Routes>
+          {routes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
+        </Routes>
+      </Router>
+    </UserProvider>
   );
 }
 
