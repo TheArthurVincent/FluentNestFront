@@ -63,8 +63,10 @@ const AllCards = ({ headers }: HeadersProps) => {
         setCards((prev) => (isReset ? newCards : [...prev, ...newCards]));
         setPage((prev) => (isReset ? 1 : prev + 1));
       }
+      setLoading(false);
     } catch (error) {
       console.error("Erro ao carregar flashcards", error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -86,22 +88,6 @@ const AllCards = ({ headers }: HeadersProps) => {
     setLoading(false);
   };
 
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     const isBottom =
-  //       window.innerHeight + document.documentElement.scrollTop + 1 >=
-  //       document.documentElement.scrollHeight;
-
-  //     if (isBottom && !loading && hasMore) {
-  //       console.log("Fetching more cards...");
-  //       fetchMoreCards();
-  //     }
-  //   };
-
-  //   window.addEventListener("scroll", handleScroll);
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, [loading, hasMore]);
-
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     const { id, permissions } = JSON.parse(user || "");
@@ -115,7 +101,6 @@ const AllCards = ({ headers }: HeadersProps) => {
       setCards([]);
       setPage(0);
       setHasMore(true);
-      // getNewCards(id);
       fetchMoreCards();
     }
   }, []);

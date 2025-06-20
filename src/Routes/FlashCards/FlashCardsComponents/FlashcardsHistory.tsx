@@ -19,21 +19,10 @@ interface GroupedHistory {
 
 const FlashcardsHistory = ({ headers }: HeadersProps) => {
   const [flashcardHistory, setFlashcardHistory] = useState<FlashcardItem[]>([]);
-  const [listeningFlashcardHistory, setListeningFlashcardHistory] = useState<
-    FlashcardItem[]
-  >([]);
-  const [QAReviewHistory, setQAReviewHistory] = useState<FlashcardItem[]>([]);
-
   const [expandedFlashcardsDays, setExpandedFlashcardsDays] = useState<
     Record<string, boolean>
   >({});
-  const [expandedListeningDays, setExpandedListeningDays] = useState<
-    Record<string, boolean>
-  >({});
-  const [expandedQADays, setExpandedQADays] = useState<Record<string, boolean>>(
-    {}
-  );
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const toggleFlashcardDay = (date: string) => {
     setExpandedFlashcardsDays((prevState) => ({
@@ -42,36 +31,22 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
     }));
   };
 
-  const toggleListeningDay = (date: string) => {
-    setExpandedListeningDays((prevState) => ({
-      ...prevState,
-      [date]: !prevState[date],
-    }));
-  };
-
+  const [days, setDays] = useState<number>(3);
   const actualHeaders = headers || {};
-  const getNewCards = async (id?: string) => {
+  const getNewCards = async (id?: string, days?: number) => {
+    setLoading(true);
+
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/flashcardscore/${id}`,
         {
-          // @ts-ignore
+          params: { days: days ? days : 3 },
           headers: actualHeaders,
         }
       );
       setFlashcardHistory(
         Array.isArray(response.data.flashcardReviewHistory)
           ? response.data.flashcardReviewHistory
-          : []
-      );
-      setListeningFlashcardHistory(
-        Array.isArray(response.data.listeningReviewHistory)
-          ? response.data.listeningReviewHistory
-          : []
-      );
-      setQAReviewHistory(
-        Array.isArray(response.data.QAReviewHistory)
-          ? response.data.QAReviewHistory
           : []
       );
       setLoading(false);
@@ -81,6 +56,7 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
       setLoading(false);
       onLoggOut();
     }
+    setLoading(false);
   };
 
   const groupByDay2 = (data: FlashcardItem[]) => {
@@ -96,10 +72,12 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
     }, {} as Record<string, GroupedHistory>);
   };
 
+  const [studentId, setStudentId] = useState<string>("");
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     const parsedUser = user ? JSON.parse(user) : null;
     const id = parsedUser?.id;
+    setStudentId(id || "");
     if (id) {
       getNewCards(id);
     }
@@ -110,48 +88,56 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
   }
 
   const groupedHistory = groupByDay2(flashcardHistory);
-  const groupedListeningHistory = groupByDay2(listeningFlashcardHistory);
 
   return (
     <div className="flashcard-history-upper">
-      {/* Flashcard Reviews */}
-      <div>
-        <HOne>Flashcard Reviews</HOne>
-        {flashcardHistory.length > 0 ? (
-          <div className="flashcard-history-list">
-            {Object.entries(groupedHistory).map(([date, group]) => (
-              <div key={date} className="flashcard-day">
-                <h2
-                  className="flashcard-date"
-                  onClick={() => toggleFlashcardDay(date)}
-                >
-                  {date} - Total Points: {group.totalScore}
-                </h2>
-                {expandedFlashcardsDays[date] && (
-                  <div className="flashcard-items">
-                    {group.items.map((item) => (
-                      <div key={item._id} className="flashcard-item">
-                        <p>
-                          <strong>Description:</strong> {item.description}
-                        </p>
-                        <p>
-                          <strong>Score:</strong> {item.score}
-                        </p>
-                        <p>
-                          <strong>Date:</strong>{" "}
-                          {new Date(item.date).toLocaleString()}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>No flashcard history found.</p>
-        )}
-      </div>
+      <select
+        value={days}
+        onChange={(e) => {
+          setDays(parseInt(e.target.value));
+          getNewCards(studentId, parseInt(e.target.value));
+        }}
+      >
+        <option value={3}>Últimos 3 dias</option>
+        <option value={10}>Últimos 10 dias</option>
+        <option value={15}>Últimos 15 dias</option>
+        <option value={30}>Últimos 30 dias</option>
+      </select>
+      <HOne>Flashcard Reviews</HOne>
+      {flashcardHistory.length > 0 ? (
+        <div className="flashcard-history-list">
+          {Object.entries(groupedHistory).map(([date, group]) => (
+            <div key={date} className="flashcard-day">
+              <h2
+                className="flashcard-date"
+                onClick={() => toggleFlashcardDay(date)}
+              >
+                {date} - Total Points: {group.totalScore}
+              </h2>
+              {expandedFlashcardsDays[date] && (
+                <div className="flashcard-items">
+                  {group.items.map((item) => (
+                    <div key={item._id} className="flashcard-item">
+                      <p>
+                        <strong>Description:</strong> {item.description}
+                      </p>
+                      <p>
+                        <strong>Score:</strong> {item.score}
+                      </p>
+                      <p>
+                        <strong>Date:</strong>{" "}
+                        {new Date(item.date).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>No flashcard history found.</p>
+      )}
     </div>
   );
 };
