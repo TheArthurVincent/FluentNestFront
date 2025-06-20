@@ -47,27 +47,21 @@ const TimelineComponent = (headers) => {
   }
 
   return (
-    <Timeline position="alternate">
+    <div className="timeline">
       {timelineData.map((item) => (
-        <TimelineItem key={item._id}>
-          <TimelineOppositeContent color="text.secondary">
-            {formatDate(new Date(item.date))}
-          </TimelineOppositeContent>
-          <TimelineSeparator>
-            <TimelineDot color="primary" />
-            <TimelineConnector />
-          </TimelineSeparator>
-          <TimelineContent>
-            <Paper elevation={3} sx={{ padding: "6px 16px" }}>
-              <Typography variant="h6" component="span">
-                {item.type.toUpperCase()}
-              </Typography>
-              <Typography>{item.description}</Typography>
-            </Paper>
-          </TimelineContent>
-        </TimelineItem>
+        <div className="timeline-item" key={item._id}>
+          <div className="timeline-date">{formatDate(new Date(item.date))}</div>
+          <div className="timeline-marker">
+            <div className={`dot ${item.type}`} />
+            <div className="line" />
+          </div>
+          <div className="timeline-content">
+            <h3 className="type">{item.type.toUpperCase()}</h3>
+            <p>{item.description}</p>
+          </div>
+        </div>
       ))}
-    </Timeline>
+    </div>
   );
 };
 

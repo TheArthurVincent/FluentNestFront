@@ -93,6 +93,83 @@ h4 {
   animation: piscar2 5s infinite;
 }
 
+.timeline {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  max-width: 800px;
+  margin: auto;
+  position: relative;
+}
+
+.timeline-item {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.timeline-date {
+  font-family: 'Athiti', sans-serif;
+  color: #888;
+  min-width: 100px;
+  text-align: right;
+  padding-right: 20px;
+}
+
+.timeline-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: black;
+}
+
+.dot.flashcards {
+  background-color: #54bf08;
+}
+
+.dot.cadastro {
+  background-color: #0088cc;
+}
+
+.dot.outros {
+  background-color: #f39c12;
+}
+
+.line {
+  flex-grow: 1;
+  width: 2px;
+  background-color: #ccc;
+  margin-top: 2px;
+}
+
+.timeline-content {
+  background: #f9f9f9;
+  border-left: 4px solid #54bf08;
+  padding: 10px 15px;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.type {
+  margin: 0 0 5px;
+  font-family: 'Athiti', sans-serif;
+  color: black;
+}
+
+.loading {
+  text-align: center;
+  padding: 40px;
+  font-family: 'Lato', sans-serif;
+  color: #444;
+}
+
 @keyframes piscar2 {
   0% {
     background: #777;
