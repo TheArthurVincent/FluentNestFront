@@ -15,6 +15,7 @@ import Contract from "./AdmComponents/Contract/Contract";
 import Invoice from "./AdmComponents/Invoice/Invoice";
 import Manual from "./AdmComponents/Manual/Manual";
 import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
+import TimelineComponent from "./AdmComponents/Timeline/Timeline";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
@@ -63,6 +64,12 @@ export function Adm({ headers }: HeadersProps) {
       value: "7",
       tooltip: "Manual do aluno.",
       component: <Manual />,
+    },
+    {
+      title: "Timeline",
+      value: "8",
+      tooltip: "O que está acontecendo com seu negócio",
+      component: <TimelineComponent headers={headers} />,
     },
   ];
 

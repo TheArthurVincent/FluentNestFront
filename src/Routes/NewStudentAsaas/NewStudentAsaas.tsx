@@ -11,6 +11,7 @@ import {
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress } from "@mui/material";
+import { IFrameAsaas } from "../Blog/Blog.Styled";
 import Helmets from "../../Resources/Helmets";
 
 export const generateUsername = (
@@ -312,6 +313,7 @@ export default function Subscription() {
           >
             Já sou aluno
           </a>
+          <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
           <HTwo>Inicie sua jornada!</HTwo>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

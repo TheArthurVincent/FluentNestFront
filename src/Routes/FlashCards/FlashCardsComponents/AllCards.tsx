@@ -1,35 +1,23 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   backDomain,
-  formatDateBr,
   onLoggOut,
   Xp,
 } from "../../../Resources/UniversalComponents";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  MenuItem,
-  Modal,
-  Paper,
-  Select,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { languages } from "./AddFlashONEFlashCard";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { Close, Delete, Edit, Refresh, VolumeUp } from "@mui/icons-material";
 import { secondaryColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
 
 const AllCards = ({ headers }: HeadersProps) => {
-  const [myId, setId] = useState<string>("");
+  const actualHeaders = headers || {};
+
   const [addCardVisible, setAddCardVisible] = useState<boolean>(false);
-  const [cards, setCards] = useState([]);
-  const [fCards, setFCards] = useState([]);
+  const [cards, setCards] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingStudents, setLoadingStudents] = useState<boolean>(true);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -42,6 +30,63 @@ const AllCards = ({ headers }: HeadersProps) => {
   const [studentsList, setStudentsList] = useState<any>([]);
   const [perm, setPermissions] = useState<string>("");
   const [studentID, setStudentID] = useState<string>("");
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchMoreCards = async (
+    isReset: boolean = false,
+    customId?: string
+  ): Promise<void> => {
+    const currentPage = isReset ? 0 : page;
+    const id = customId ?? studentID;
+
+    if (!id) return; // segurança extra
+    if (!hasMore && !isReset) return;
+
+    if (isReset) {
+      setCards([]);
+      setHasMore(true);
+      setPage(0);
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/cards/${id}?skip=${currentPage * 10}&limit=10`,
+        { headers: actualHeaders }
+      );
+
+      const newCards = response.data.allFlashCards;
+      if (newCards.length === 0) {
+        setHasMore(false);
+      } else {
+        setCards((prev) => (isReset ? newCards : [...prev, ...newCards]));
+        setPage((prev) => (isReset ? 1 : prev + 1));
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Erro ao carregar flashcards", error);
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    const element = scrollRef.current;
+    if (!element || loading || !hasMore) return;
+
+    const isBottom =
+      element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
+
+    if (isBottom) {
+      console.log("🔁 Fetching more cards...");
+      fetchMoreCards();
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
@@ -52,51 +97,20 @@ const AllCards = ({ headers }: HeadersProps) => {
     }
 
     if (user) {
-      setId(id);
       setStudentID(id);
-      getNewCards(id);
+      setCards([]);
+      setPage(0);
+      setHasMore(true);
+      fetchMoreCards();
     }
   }, []);
 
-  const actualHeaders = headers || {};
-
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setStudentID(event.target.value);
-    getNewCards(event.target.value);
+    const newID = event.target.value;
+    setStudentID(newID);
+    fetchMoreCards(true, newID);
   };
 
-  const getNewCards = async (id?: any) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${backDomain}/api/v1/cards/${id}`, {
-        headers: actualHeaders,
-      });
-      const list = response.data.allFlashCards;
-      setCards(list);
-      setFCards(list);
-      setLoading(false);
-    } catch (error) {
-      console.log("Erro ao obter cards");
-      setLoading(false);
-      onLoggOut();
-    }
-  };
-
-  const getNewCardsNoLoading = async (id?: any) => {
-    try {
-      const response = await axios.get(`${backDomain}/api/v1/cards/${id}`, {
-        headers: actualHeaders,
-      });
-      const list = response.data.allFlashCards;
-      setCards(list);
-      setFCards(list);
-    } catch (error) {
-      console.log("Erro ao obter cards");
-      onLoggOut();
-    }
-  };
-
-  const [category, setCategory] = useState("");
   const fetchStudents = async () => {
     setLoadingStudents(true);
     setAddCardVisible(!addCardVisible);
@@ -107,10 +121,19 @@ const AllCards = ({ headers }: HeadersProps) => {
       setStudentsList(response.data.listOfStudents);
       setLoadingStudents(false);
     } catch (error) {
-      onLoggOut();
+      // onLoggOut();
     }
   };
 
+  /////////////////
+  /////////////////
+  /////////////////
+  /////////////////
+  /////////////////
+  /////////////////
+  /////////////////
+  /////////////////
+  /////////////////
   /////////////////
 
   const handleSeeModal = async (cardId: string) => {
@@ -158,7 +181,7 @@ const AllCards = ({ headers }: HeadersProps) => {
           headers: actualHeaders,
         }
       );
-      getNewCardsNoLoading(studentID);
+      fetchMoreCards(true);
       setShowModal(false);
     } catch (error) {
       console.log(error, "Erro ao obter cards");
@@ -175,7 +198,8 @@ const AllCards = ({ headers }: HeadersProps) => {
           headers: actualHeaders,
         }
       );
-      getNewCardsNoLoading(studentID);
+      fetchMoreCards(true);
+
       setShowModal(false);
     } catch (error) {
       console.log(error, "Erro ao apagar cards");
@@ -208,7 +232,7 @@ const AllCards = ({ headers }: HeadersProps) => {
             justifyContent: "space-between",
           }}
         >
-          <ArvinButton onClick={() => getNewCards(studentID)}>
+          <ArvinButton onClick={() => fetchMoreCards(true)}>
             <i className="fa fa-refresh" aria-hidden="true" />
           </ArvinButton>
           {perm === "superadmin" && (
@@ -233,6 +257,8 @@ const AllCards = ({ headers }: HeadersProps) => {
           <CircularProgress style={{ color: secondaryColor() }} />
         ) : (
           <div
+            ref={scrollRef}
+            onScroll={handleScroll}
             style={{
               padding: "5px",
               overflowX: "auto",
