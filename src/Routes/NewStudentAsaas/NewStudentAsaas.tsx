@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
-import { HOne, HTwo } from "../../Resources/Components/RouteBox";
+import { HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import {
   primaryColor,
@@ -11,7 +11,7 @@ import {
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress } from "@mui/material";
-import { IFrameVideoPannel } from "../Blog/Blog.Styled";
+import Helmets from "../../Resources/Helmets";
 
 export const generateUsername = (
   name: string,
@@ -33,7 +33,7 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-export default function Cadastro() {
+export default function Subscription() {
   const [form, setForm] = useState({
     name: "",
     promoCode: "",
@@ -58,6 +58,29 @@ export default function Cadastro() {
     creditCardCcv: "",
   });
 
+  // const [form, setForm] = useState({
+  //   name: "",
+  //   promoCode: "123",
+  //   lastname: "Doe",
+  //   username: "",
+  //   phoneNumber: "11930303030",
+  //   doc: "",
+  //   email: "d@cristout.com",
+  //   dateOfBirth: "10/10/2025",
+  //   address: "Rua Nelia",
+  //   neighborhood: "Embu",
+  //   city: "Embu das Artes",
+  //   state: "SP",
+  //   addressNumber: "123",
+  //   zip: "06703794",
+  //   password: "123456789",
+  //   confirmPassword: "123456789",
+  //   creditCardNumber: "5397 2566 6440 3902",
+  //   creditCardHolderName: "John Doe",
+  //   creditCardExpiryMonth: "01",
+  //   creditCardExpiryYear: "2026",
+  //   creditCardCcv: "420",
+  // });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
@@ -110,7 +133,7 @@ export default function Cadastro() {
       });
 
       if (paymentMethod === "PIX") {
-        window.location.assign("/feenotuptodate"); // ✅ página personalizada
+        window.location.assign("/feenotuptodate");
         return;
       }
 
@@ -121,6 +144,7 @@ export default function Cadastro() {
     } catch (err: any) {
       setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
       notifyError(err.response?.data?.message || "Tente novamente");
+      console.log(err.response?.data?.message || "Tente novamente");
     } finally {
       setLoading(false);
     }
@@ -278,28 +302,413 @@ export default function Cadastro() {
         };
   return (
     <div style={styles.container}>
+      <Helmets text="Cadastre-se" />
       <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.grid}>
-          {/* 📌 COLUNA 1 - DADOS PESSOAIS */}
-          <div style={styles.column}>
-            <a
-              style={styles.button}
-              href="https://portal.arthurvincent.com.br/"
-              target="_blank"
+        <div style={styles.column}>
+          <a
+            style={styles.button}
+            href="https://portal.arthurvincent.com.br/"
+            target="_blank"
+          >
+            Já sou aluno
+          </a>
+          <HTwo>Inicie sua jornada!</HTwo>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Nome"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Sobrenome"
+                name="lastname"
+                value={form.lastname}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="E-mail"
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Código de recomentação (opcional)"
+                name="promoCode"
+                type="promoCode"
+                value={form.promoCode}
+                onChange={handleChange}
+                required={false}
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="Número de telefone com DDD"
+                name="phoneNumber"
+                value={form.phoneNumber}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+                inputProps={{ inputMode: "numeric" }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="CPF ou CNPJ"
+                name="doc"
+                value={form.doc}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="Data de nascimento"
+                name="dateOfBirth"
+                type="date"
+                value={form.dateOfBirth}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Nome de usuário"
+                name="username"
+                value={form.username}
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+                InputProps={{
+                  readOnly: true,
+                  style: { backgroundColor: "#f0f0f0", color: "#555" },
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Senha"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                label="Confirme sua senha"
+                name="confirmPassword"
+                type="password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
+              />
+            </Grid>
+          </Grid>
+        </div>
+        <div style={styles.column}>
+          <HTwo>Plano</HTwo>
+          <div style={styles.planContainer}>
+            <div
+              style={{ ...styles.planCard, ...isSelected("monthly") }}
+              onClick={() => {
+                handlePlanSelect("monthly");
+                setPaymentMethod("CREDIT_CARD");
+              }}
             >
-              Já sou aluno
-            </a>
-            <span style={{ margin: "auto" }}>{myLogo}</span>
-            <IFrameVideoPannel src="https://www.youtube.com/embed/qUiHhLsyiIw" />
-            <HTwo>Inicie sua jornada!</HTwo>
+              <HThree>89,99/mês</HThree>
+            </div>
+            <div
+              style={{ ...styles.planCard, ...isSelected("yearly") }}
+              onClick={() => handlePlanSelect("yearly")}
+            >
+              <HThree>749,99/ano</HThree>
+            </div>
+          </div>
+          {selectedPlan === "yearly" && (
+            <>
+              <HTwo>Método de Pagamento</HTwo>
+              <div style={styles.planContainer}>
+                <div
+                  //@ts-ignore
+                  style={{
+                    ...planCardBase,
+                    ...(paymentMethod === "CREDIT_CARD"
+                      ? selectedStyle
+                      : unselectedStyle),
+                  }}
+                  onClick={() => setPaymentMethod("CREDIT_CARD")}
+                >
+                  <HThree>Cartão (parcelável)</HThree>
+                </div>
+                <div
+                  //@ts-ignore
+                  style={{
+                    ...planCardBase,
+                    ...(paymentMethod === "PIX"
+                      ? selectedStyle
+                      : unselectedStyle),
+                  }}
+                  onClick={() => setPaymentMethod("PIX")}
+                >
+                  <HThree>Pix à vista</HThree>
+                </div>
+              </div>
+            </>
+          )}
+
+          {selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD" && (
+            <div style={{ marginBottom: "20px" }}>
+              <label htmlFor="installments">Parcelas:</label>
+              <input
+                type="number"
+                id="installments"
+                name="installments"
+                value={installments}
+                onChange={(e) =>
+                  setInstallments(
+                    Math.min(Math.max(Number(e.target.value), 1), 12)
+                  )
+                }
+                min={1}
+                max={12}
+                style={styles.input}
+              />
+              <p style={{ fontSize: "14px", color: "#333", marginTop: "5px" }}>
+                {installments}x de{" "}
+                <strong>
+                  {Intl.NumberFormat("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  }).format(749.99 / installments)}
+                </strong>
+              </p>
+            </div>
+          )}
+
+          {paymentMethod === "CREDIT_CARD" && (
             <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
-                  label="Nome"
-                  name="name"
-                  value={form.name}
+                  label="Número do Cartão"
+                  name="creditCardNumber"
+                  value={form.creditCardNumber}
                   onChange={handleChange}
-                  required
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -320,15 +729,17 @@ export default function Cadastro() {
                       },
                     },
                   }}
+                  inputProps={{ maxLength: 19, inputMode: "numeric" }}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+
+              <Grid item xs={12}>
                 <TextField
-                  label="Sobrenome"
-                  name="lastname"
-                  value={form.lastname}
+                  label="Nome Impresso no Cartão"
+                  name="creditCardHolderName"
+                  value={form.creditCardHolderName}
                   onChange={handleChange}
-                  required
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -352,14 +763,13 @@ export default function Cadastro() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
-                  label="E-mail"
-                  name="email"
-                  type="email"
-                  value={form.email}
+                  label="Mês de Expiração (MM)"
+                  name="creditCardExpiryMonth"
+                  value={form.creditCardExpiryMonth}
                   onChange={handleChange}
-                  required
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -380,16 +790,115 @@ export default function Cadastro() {
                       },
                     },
                   }}
+                  inputProps={{ maxLength: 2, inputMode: "numeric" }}
                 />
               </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  label="Ano de Expiração (AAAA)"
+                  name="creditCardExpiryYear"
+                  value={form.creditCardExpiryYear}
+                  onChange={handleChange}
+                  required={paymentMethod === "CREDIT_CARD"}
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                  inputProps={{ maxLength: 4, inputMode: "numeric" }}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  label="CVV"
+                  name="creditCardCcv"
+                  value={form.creditCardCcv}
+                  onChange={handleChange}
+                  required={paymentMethod === "CREDIT_CARD"}
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                  inputProps={{ maxLength: 4, inputMode: "numeric" }}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  label="CEP"
+                  name="zip"
+                  value={form.zip}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    if (value.length <= 8) {
+                      setForm({ ...form, zip: value });
+                    }
+                  }}
+                  required={paymentMethod === "CREDIT_CARD"}
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                  inputProps={{ maxLength: 8, inputMode: "numeric" }}
+                />
+              </Grid>
+
               <Grid item xs={12}>
                 <TextField
-                  label="Código de recomentação (opcional)"
-                  name="promoCode"
-                  type="promoCode"
-                  value={form.promoCode}
+                  label="Rua"
+                  name="address"
+                  value={form.address}
                   onChange={handleChange}
-                  required={false}
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -413,44 +922,13 @@ export default function Cadastro() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
-                  label="Número de telefone com DDD"
-                  name="phoneNumber"
-                  value={form.phoneNumber}
+                  label="Número"
+                  name="addressNumber"
+                  value={form.addressNumber}
                   onChange={handleChange}
-                  required
-                  fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
-                      },
-                      "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
-                      },
-                      "& label": {
-                        color: secondaryColor(), // cor padrão do label
-                      },
-                      "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
-                      },
-                    },
-                  }}
-                  inputProps={{ inputMode: "numeric" }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <TextField
-                  label="CPF ou CNPJ"
-                  name="doc"
-                  value={form.doc}
-                  onChange={handleChange}
-                  required
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -474,76 +952,13 @@ export default function Cadastro() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
-                  label="Data de nascimento"
-                  name="dateOfBirth"
-                  type="date"
-                  value={form.dateOfBirth}
+                  label="Bairro"
+                  name="neighborhood"
+                  value={form.neighborhood}
                   onChange={handleChange}
-                  required
-                  fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
-                      },
-                      "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
-                      },
-                      "& label": {
-                        color: secondaryColor(), // cor padrão do label
-                      },
-                      "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
-                      },
-                    },
-                  }}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Nome de usuário"
-                  name="username"
-                  value={form.username}
-                  fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
-                      },
-                      "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
-                      },
-                      "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
-                      },
-                      "& label": {
-                        color: secondaryColor(), // cor padrão do label
-                      },
-                      "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
-                      },
-                    },
-                  }}
-                  InputProps={{
-                    readOnly: true,
-                    style: { backgroundColor: "#f0f0f0", color: "#555" },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  label="Senha"
-                  name="password"
-                  type="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  required
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -567,14 +982,43 @@ export default function Cadastro() {
                 />
               </Grid>
 
-              <Grid item xs={12}>
+              <Grid item xs={6}>
                 <TextField
-                  label="Confirme sua senha"
-                  name="confirmPassword"
-                  type="password"
-                  value={form.confirmPassword}
+                  label="Cidade"
+                  name="city"
+                  value={form.city}
                   onChange={handleChange}
-                  required
+                  required={paymentMethod === "CREDIT_CARD"}
+                  fullWidth
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": {
+                        borderColor: secondaryColor(), // cor normal
+                      },
+                      "&:hover fieldset": {
+                        borderColor: secondaryColor(), // ao passar o mouse
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: secondaryColor(), // quando focado
+                      },
+                      "& label": {
+                        color: secondaryColor(), // cor padrão do label
+                      },
+                      "& label.Mui-focused": {
+                        color: secondaryColor(), // cor quando o label está flutuando
+                      },
+                    },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  label="Estado (UF)"
+                  name="state"
+                  value={form.state}
+                  onChange={handleChange}
+                  required={paymentMethod === "CREDIT_CARD"}
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
@@ -598,441 +1042,10 @@ export default function Cadastro() {
                 />
               </Grid>
             </Grid>
-          </div>
-        </div>
-
-        {/* 📌 COLUNA 2 - ENDEREÇO */}
-        <div style={styles.grid}>
-          <div style={styles.column}>
-            <HTwo>Plano</HTwo>
-            {/* Plan Selection Cards */}
-            <div style={styles.planContainer}>
-              <div
-                style={{ ...styles.planCard, ...isSelected("monthly") }}
-                onClick={() => {
-                  handlePlanSelect("monthly");
-                  setPaymentMethod("CREDIT_CARD");
-                }}
-              >
-                <HThree>89,99/mês</HThree>
-              </div>
-              <div
-                style={{ ...styles.planCard, ...isSelected("yearly") }}
-                onClick={() => handlePlanSelect("yearly")}
-              >
-                <HThree>749,99/ano</HThree>
-              </div>
-            </div>
-            {selectedPlan === "yearly" && (
-              <>
-                <HTwo>Método de Pagamento</HTwo>
-                <div style={styles.planContainer}>
-                  <div
-                    //@ts-ignore
-                    style={{
-                      ...planCardBase,
-                      ...(paymentMethod === "CREDIT_CARD"
-                        ? selectedStyle
-                        : unselectedStyle),
-                    }}
-                    onClick={() => setPaymentMethod("CREDIT_CARD")}
-                  >
-                    <HThree>Cartão (parcelável)</HThree>
-                  </div>
-                  <div
-                    //@ts-ignore
-                    style={{
-                      ...planCardBase,
-                      ...(paymentMethod === "PIX"
-                        ? selectedStyle
-                        : unselectedStyle),
-                    }}
-                    onClick={() => setPaymentMethod("PIX")}
-                  >
-                    <HThree>Pix à vista</HThree>
-                  </div>
-                </div>
-              </>
-            )}
-
-            {selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD" && (
-              <div style={{ marginBottom: "20px" }}>
-                <label htmlFor="installments">Parcelas:</label>
-                <input
-                  type="number"
-                  id="installments"
-                  name="installments"
-                  value={installments}
-                  onChange={(e) =>
-                    setInstallments(
-                      Math.min(Math.max(Number(e.target.value), 1), 12)
-                    )
-                  }
-                  min={1}
-                  max={12}
-                  style={styles.input}
-                />
-                <p
-                  style={{ fontSize: "14px", color: "#333", marginTop: "5px" }}
-                >
-                  {installments}x de{" "}
-                  <strong>
-                    {Intl.NumberFormat("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    }).format(749.99 / installments)}
-                  </strong>
-                </p>
-              </div>
-            )}
-
-            {paymentMethod === "CREDIT_CARD" && (
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="Número do Cartão"
-                    name="creditCardNumber"
-                    value={form.creditCardNumber}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 19, inputMode: "numeric" }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    label="Nome Impresso no Cartão"
-                    name="creditCardHolderName"
-                    value={form.creditCardHolderName}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="Mês de Expiração (MM)"
-                    name="creditCardExpiryMonth"
-                    value={form.creditCardExpiryMonth}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 2, inputMode: "numeric" }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="Ano de Expiração (AAAA)"
-                    name="creditCardExpiryYear"
-                    value={form.creditCardExpiryYear}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 4, inputMode: "numeric" }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="CVV"
-                    name="creditCardCcv"
-                    value={form.creditCardCcv}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 4, inputMode: "numeric" }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="CEP"
-                    name="zip"
-                    value={form.zip}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "");
-                      if (value.length <= 8) {
-                        setForm({ ...form, zip: value });
-                      }
-                    }}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 8, inputMode: "numeric" }}
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <TextField
-                    label="Rua"
-                    name="address"
-                    value={form.address}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="Número"
-                    name="addressNumber"
-                    value={form.addressNumber}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="Bairro"
-                    name="neighborhood"
-                    value={form.neighborhood}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="Cidade"
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={6}>
-                  <TextField
-                    label="Estado (UF)"
-                    name="state"
-                    value={form.state}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-              </Grid>
-            )}
-            <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? <CircularProgress /> : "Cadastrar"}
-            </button>
-          </div>
+          )}
+          <button type="submit" style={styles.button} disabled={loading}>
+            {loading ? <CircularProgress /> : "Cadastrar"}
+          </button>
         </div>
 
         {error && <p style={styles.error}>{error}</p>}
