@@ -25,10 +25,6 @@ export function Login() {
   const [button, setButton] = useState<any>("Entrar");
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
-  const handlePasswordVisible = () => {
-    setPasswordVisible(!passwordVisible);
-  };
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setFail(false);

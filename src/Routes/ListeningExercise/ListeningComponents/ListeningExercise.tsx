@@ -312,7 +312,7 @@ const ListeningExercise = ({
   recognition.onspeechend = () => {
     setTimeout(() => {
       stopListening();
-    }, 4000);
+    }, 2000);
   };
   recognition.onerror = () => {
     stopListening();
@@ -483,7 +483,9 @@ const ListeningExercise = ({
                               cards[0]?.front?.language,
                               selectedVoice
                             );
-                            setEnableVoice(true);
+                            setTimeout(() => {
+                              setEnableVoice(true);
+                            }, 2000);
                           }}
                           color={!playingAudio ? "blue" : "grey"}
                           style={{
