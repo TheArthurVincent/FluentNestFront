@@ -790,12 +790,9 @@ textarea.inputs-style:focus {
   width: 95%;
   margin-top: 10px;
   margin-bottom: 10px;
-  border: none;
-
 }
 
 .comments2:focus {
-  border: none;
   border-bottom: 1px solid black;
 }
 
