@@ -33,6 +33,37 @@ export const generateUsername = (
 
   return `${first}${year}${last}${month}`;
 };
+function formatPhoneNumber(value: string): string {
+  const cleaned = value.replace(/\D/g, "").slice(0, 11);
+  const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}.${match[3]}-${match[4]}`;
+  }
+  if (cleaned.length <= 2) return cleaned;
+  if (cleaned.length <= 3) return `(${cleaned.slice(0, 2)}) ${cleaned[2]}`;
+  if (cleaned.length <= 7)
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)}.${cleaned.slice(
+      3
+    )}`;
+  if (cleaned.length <= 11)
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)}.${cleaned.slice(
+      3,
+      7
+    )}-${cleaned.slice(7)}`;
+  return value;
+}
+
+function formatCPF(value: string): string {
+  const cleaned = value.replace(/\D/g, "").slice(0, 11);
+  if (cleaned.length <= 3) return cleaned;
+  if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
+  if (cleaned.length <= 9)
+    return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
+  return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(
+    6,
+    9
+  )}-${cleaned.slice(9)}`;
+}
 
 export default function Subscription() {
   const [form, setForm] = useState({
@@ -89,8 +120,19 @@ export default function Subscription() {
   );
   const [installments, setInstallments] = useState(1);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "phoneNumber") {
+      const formattedPhone = formatPhoneNumber(value);
+      setForm((prev) => ({ ...prev, [name]: formattedPhone }));
+    } else if (name === "doc") {
+      const formattedDoc = formatCPF(value);
+      setForm((prev) => ({ ...prev, [name]: formattedDoc }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
+
   const [usernameEdited, setUsernameEdited] = useState<string>("");
 
   useEffect(() => {
@@ -301,6 +343,7 @@ export default function Subscription() {
       : {
           border: "1px solid #ccc",
         };
+
   return (
     <div style={styles.container}>
       <Helmets text="Cadastre-se" />
@@ -473,6 +516,7 @@ export default function Subscription() {
                 name="doc"
                 value={form.doc}
                 onChange={handleChange}
+                inputProps={{ inputMode: "numeric" }}
                 required
                 fullWidth
                 sx={{
