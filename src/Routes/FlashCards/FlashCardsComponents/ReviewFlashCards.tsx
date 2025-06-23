@@ -519,7 +519,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                   readText(
                                     cards[0].back.text,
                                     true,
-                                    cards[0].back.language
+                                    cards[0].back.language,
+                                    selectedVoice
                                   )
                                 }
                               >
