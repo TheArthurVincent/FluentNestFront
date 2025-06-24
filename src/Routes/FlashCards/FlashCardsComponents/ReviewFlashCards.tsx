@@ -575,7 +575,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       </div>
       <div
         style={{
-          display: "flex",
+          display: "grid",
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -588,10 +588,11 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             setCategory(e.target.value);
           }}
           style={{
-            padding: "6px 12px",
+            // padding: "6px 12px",
             maxWidth: "9rem",
             borderRadius: "6px",
             border: "1px solid #ccc",
+            margin: "auto",
             backgroundColor: "#f9f9f9",
             fontSize: "0.9rem",
             color: "#333",

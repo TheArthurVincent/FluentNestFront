@@ -23,6 +23,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
   const [theWord, setTheWord] = useState<string>("");
   const [nowGo, setNowGo] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [showWord, setShowWord] = useState(false);
   const [sentences, setSentences] = useState([
     { text: "", translation: "", added: false },
     { text: "", translation: "", added: false },
@@ -144,120 +145,134 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
     setHeardSentences(newHeardSentences);
   };
 
-  const { UniversalTexts } = useUserContext();
-
   return loading ? (
     <CircularProgress />
   ) : (
     <>
       {see && (
-        <section style={{ padding: 0, margin: "auto", maxWidth: "600px" }}>
-          <div>
-            {sentences.map((sentence, index) => (
+        <>
+          <span>
+            {!showWord ? (
               <div
-                key={index}
                 style={{
-                  display: index === 0 ? "none" : "flex",
+                  display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   textAlign: "center",
-                  padding: "10px 14px",
-                  borderRadius: "12px",
-                  maxWidth: "400px",
-                  marginInline: "auto",
+                  paddingBottom: "15px",
                 }}
               >
-                <>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "8px",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      marginBottom: "6px",
-                    }}
-                  >
-                    <Tooltip
-                      title={
-                        !heardSentences[index]
-                          ? "Listen first!"
-                          : "Add to flashcards"
-                      }
-                    >
-                      <ArvinButton
-                        style={{
-                          padding: "4px 8px",
-                          borderRadius: "6px",
-                          fontSize: "12px",
-                        }}
-                        disabled={disabled}
-                        color={
-                          !heardSentences[index] || disabled ? "white" : "green"
-                        }
-                        cursor={
-                          !heardSentences[index] || disabled
-                            ? "not-allowed"
-                            : "pointer"
-                        }
-                        onClick={() => {
-                          setDisabled(true);
-                          !heardSentences[index]
-                            ? notifyError("Listen first!")
-                            : addNewCards();
-                        }}
-                      >
-                        <i className="fa fa-files-o" />
-                      </ArvinButton>
-                    </Tooltip>
-                    <span style={{ fontSize: "14px", color: "#333" }}>
-                      <strong>{theWord}</strong> ({sentences[0].translation})
-                    </span>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "10px",
-                    }}
-                  >
-                    <i
-                      onClick={() => handleReadText(index, sentence.text, "en")}
-                      className="fa fa-volume-up"
-                      aria-hidden="true"
-                      style={{
-                        cursor: "pointer",
-                        color: "#666",
-                        fontSize: "16px",
-                      }}
-                    />
-                    <div>
-                      <div
-                        style={{
-                          fontWeight: 500,
-                          fontSize: "15px",
-                          color: "#222",
-                        }}
-                        dangerouslySetInnerHTML={{ __html: sentence.text }}
-                      />
-                      <div
-                        style={{
-                          fontSize: "13px",
-                          color: "#777",
-                          marginTop: "2px",
-                        }}
-                        dangerouslySetInnerHTML={{
-                          __html: sentence.translation,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </>
+                <button
+                  onClick={() => setShowWord(!showWord)}
+                  className="pulse-button"
+                >
+                  Word of the Day
+                </button>
               </div>
-            ))}
-          </div>
-        </section>
+            ) : (
+              <section
+                style={{
+                  margin: "auto",
+                  maxWidth: "600px",
+                  backgroundColor: "#fff",
+                  borderRadius: "10px",
+                  padding: "1rem",
+                  marginBottom: "1rem",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                }}
+              >
+                <div>
+                  {sentences.map((sentence, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: index === 0 ? "none" : "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        textAlign: "center",
+                        padding: "10px 14px",
+                        borderRadius: "12px",
+                        maxWidth: "400px",
+                        marginInline: "auto",
+                      }}
+                    >
+                      <>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            marginBottom: "6px",
+                          }}
+                        >
+                          <Tooltip title={"Add to flashcards"}>
+                            <button
+                              className="pulse-button"
+                              onClick={() => {
+                                addNewCards();
+                              }}
+                            >
+                              <i className="fa fa-files-o" />
+                            </button>
+                          </Tooltip>
+                          <span style={{ fontSize: "14px", color: "#333" }}>
+                            <strong>{theWord}</strong> (
+                            {sentences[0].translation})
+                          </span>
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "10px",
+                          }}
+                        >
+                          <i
+                            onClick={() =>
+                              handleReadText(index, sentence.text, "en")
+                            }
+                            className="fa fa-volume-up"
+                            aria-hidden="true"
+                            style={{
+                              cursor: "pointer",
+                              color: "#666",
+                              fontSize: "16px",
+                            }}
+                          />
+                          <div>
+                            <div
+                              style={{
+                                fontWeight: 500,
+                                fontSize: "15px",
+                                color: "#222",
+                              }}
+                              dangerouslySetInnerHTML={{
+                                __html: sentence.text,
+                              }}
+                            />
+                            <div
+                              style={{
+                                fontSize: "13px",
+                                color: "#777",
+                                marginTop: "2px",
+                              }}
+                              dangerouslySetInnerHTML={{
+                                __html: sentence.translation,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </span>
+        </>
       )}
     </>
   );
