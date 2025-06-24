@@ -22,6 +22,7 @@ export const verifyToken = () => {
   const token = localStorage.getItem("authorization");
   return token;
 };
+
 const authorization: string = authorizationToken();
 const headers: MyHeadersType = {
   Authorization: authorization,
@@ -73,6 +74,34 @@ function App() {
         console.error("Erro ao fazer parse do JSON:", error);
       }
     }
+  }, []);
+
+  const isOriginal = (): boolean => {
+    const currentUrl = window.location.href;
+
+    if (currentUrl.includes("portal.arthurvincent")) {
+      // if (currentUrl.includes("localhost:51")) {
+      // Remove apenas chaves relacionadas ao portal
+      Object.keys(localStorage).forEach((key) => {
+        if (key.includes("portal") || key === "authorization") {
+          localStorage.removeItem(key);
+          console.log(`Removed key: ${key}`);
+        } else {
+          console.log(`Not key: ${key}`);
+        }
+      });
+      return true;
+    }
+
+    return false;
+  };
+
+  useEffect(() => {
+    if (isOriginal()) window.location.assign("http://arthurvincent.com.br/ ");
+    else
+      console.log(
+        "Non-original portal detected. Keys removed from localStorage."
+      );
   }, []);
 
   const routes = [
