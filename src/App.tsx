@@ -97,7 +97,8 @@ function App() {
   };
 
   useEffect(() => {
-    if (isOriginal()) window.location.assign("http://arthurvincent.com.br/ ");
+    if (isOriginal())
+      window.location.assign("http://arthurvincent.com.br/login");
     else
       console.log(
         "Non-original portal detected. Keys removed from localStorage."
