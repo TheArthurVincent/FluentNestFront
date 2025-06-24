@@ -283,6 +283,16 @@ export default function SignUp() {
                 required
                 style={styles.input}
               />
+
+              <input
+                type="date"
+                name="dateOfBirth"
+                placeholder="Data de nascimento"
+                value={form.dateOfBirth}
+                onChange={handleChange}
+                required
+                style={styles.input}
+              />
               <input
                 type="text"
                 name="username"
@@ -294,15 +304,6 @@ export default function SignUp() {
                   backgroundColor: "#f0f0f0",
                   color: "#555",
                 }}
-              />
-              <input
-                type="date"
-                name="dateOfBirth"
-                placeholder="Data de nascimento"
-                value={form.dateOfBirth}
-                onChange={handleChange}
-                required
-                style={styles.input}
               />
               <input
                 type="password"
