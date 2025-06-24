@@ -64,7 +64,7 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
   }
 
   return (
-    <div style={{ margin: "1rem 0", fontFamily: "Lato, sans-serif" }}>
+    <div style={{ margin: "5px 0", fontFamily: "Lato, sans-serif" }}>
       {voices.length > 0 && (
         <div
           style={{
@@ -83,12 +83,13 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
               setChangeB(!changeB);
             }}
             style={{
-              padding: "6px 12px",
               borderRadius: "6px",
-              marginRight: "20px",
+              // padding: "6px 12px",
+              // marginRight: "20px",
               border: "1px solid #ccc",
               backgroundColor: "#f9f9f9",
               fontSize: "0.9rem",
+              margin: "auto",
               color: "#333",
               outline: "none",
               transition: "border-color 0.3s",

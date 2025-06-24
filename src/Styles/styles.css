@@ -8,6 +8,7 @@
   width: 11px;
   height: 11px;
 }
+
 html {
   scroll-behavior: smooth;
 }
@@ -652,10 +653,10 @@ input.inputs-style:focus {
   grid-template-columns: 1fr 1fr;
 }
 
-@media (max-width: 1000px) {
-  .flashcard-history-upper {
-    grid-template-columns: 1fr;
-  }
+.grid-flex-style {
+  display: grid;
+  align-items: center;
+  justify-content: center;
 }
 
 .flashcard-history-container {
