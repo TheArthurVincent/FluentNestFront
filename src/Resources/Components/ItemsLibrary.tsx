@@ -110,6 +110,27 @@ export const ArvinButton = styled.button<ArvinButtonProps>`
   }
 `;
 
+export function formatCPF(cpf: string): string {
+  const cleaned = cpf.replace(/\D/g, ""); // remove tudo que não é número
+  const match = cleaned.match(/^(\d{3})(\d{3})(\d{3})(\d{2})$/);
+
+  if (match) {
+    return `${match[1]}.${match[2]}.${match[3]}-${match[4]}`;
+  }
+
+  return cpf; // retorna original se não for válido
+}
+export function formatPhoneNumber(phone: string): string {
+  const cleaned = phone.replace(/\D/g, ""); // Remove tudo que não for número
+  const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
+
+  if (match) {
+    return `(${match[1]}) ${match[2]}.${match[3]}-${match[4]}`;
+  }
+
+  return phone; // Retorna original se não bater com o padrão
+}
+
 export const MyButton = styled.button<ButtonProps>`
   background: linear-gradient(
     to left,

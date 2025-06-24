@@ -15,6 +15,8 @@ import NewStudentAsaas from "./Routes/NewStudentAsaas/NewStudentAsaas";
 import SignUp from "./Routes/SignUp/SignUp";
 import EmailCheck from "./Routes/NewStudentAsaas/EmailCheck";
 import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
+import LandingPage from "./Routes/LandingPage/LandingPage";
+import Redirect from "./Redirect";
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");
@@ -74,10 +76,17 @@ function App() {
   }, []);
 
   const routes = [
-    { path: "/login", element: <Login /> },
+    {
+      path: "/login",
+      element: verifyToken() ? <Redirect /> : <Login />,
+    },
     {
       path: "/*",
-      element: verifyToken() ? <HomePage headers={headers} /> : <Login />,
+      element: verifyToken() ? <HomePage headers={headers} /> : <LandingPage />,
+    },
+    {
+      path: "/cadastre-se",
+      element: <LandingPage />,
     },
     { path: "/message", element: verifyToken() ? <MessageDrive /> : <Login /> },
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },

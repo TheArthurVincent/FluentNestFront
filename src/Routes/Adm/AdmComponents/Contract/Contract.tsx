@@ -6,7 +6,11 @@ import {
   formatDateBrContract,
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
-import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
+import {
+  formatCPF,
+  formatPhoneNumber,
+  MyButton,
+} from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
@@ -141,13 +145,13 @@ export function Contract({ headers }: HeadersProps) {
             {formatDateBrContract(dateOfBirth)}
           </p>
           <p>
-            <strong>Telefone:</strong> {phoneNumber}
+            <strong>Telefone:</strong> {formatPhoneNumber(phoneNumber)}
           </p>
           <p>
             <strong>E-mail:</strong> {email}
           </p>
           <p>
-            <strong>CPF:</strong> {doc}
+            <strong>CPF:</strong> {formatCPF(doc)}
           </p>{" "}
         </div>
         <HTwo

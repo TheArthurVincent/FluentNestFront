@@ -283,18 +283,7 @@ export default function SignUp() {
                 required
                 style={styles.input}
               />
-              <input
-                type="text"
-                name="username"
-                placeholder="Nome de usuário"
-                value={form.username}
-                readOnly
-                style={{
-                  ...styles.input,
-                  backgroundColor: "#f0f0f0",
-                  color: "#555",
-                }}
-              />
+
               <input
                 type="date"
                 name="dateOfBirth"
@@ -303,6 +292,18 @@ export default function SignUp() {
                 onChange={handleChange}
                 required
                 style={styles.input}
+              />
+              <input
+                type="text"
+                name="username"
+                placeholder="Nome de usuário (Gerado automaticamente)"
+                value={form.username}
+                readOnly
+                style={{
+                  ...styles.input,
+                  backgroundColor: "#f0f0f0",
+                  color: "#555",
+                }}
               />
               <input
                 type="password"

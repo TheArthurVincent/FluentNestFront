@@ -12,7 +12,7 @@ import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { secondaryColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
-import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
+import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 
 interface FlashCardsPropsRv {
@@ -519,7 +519,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                   readText(
                                     cards[0].back.text,
                                     true,
-                                    cards[0].back.language
+                                    cards[0].back.language,
+                                    selectedVoice
                                   )
                                 }
                               >

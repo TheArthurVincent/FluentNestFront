@@ -55,6 +55,7 @@ const AllCards = ({ headers }: HeadersProps) => {
         `${backDomain}/api/v1/cards/${id}?skip=${currentPage * 10}&limit=10`,
         { headers: actualHeaders }
       );
+      setLoading(false);
 
       const newCards = response.data.allFlashCards;
       if (newCards.length === 0) {
@@ -219,6 +220,17 @@ const AllCards = ({ headers }: HeadersProps) => {
     setSelectedVoice(storedVoice);
     console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
+  useEffect(() => {
+    const element = scrollRef.current;
+    if (element && element.scrollHeight <= element.clientHeight) {
+      fetchMoreCards();
+    }
+  }, [cards]);
+  useEffect(() => {
+    if (studentID) {
+      fetchMoreCards(true);
+    }
+  }, [studentID]);
 
   return (
     <>
@@ -261,7 +273,7 @@ const AllCards = ({ headers }: HeadersProps) => {
             onScroll={handleScroll}
             style={{
               padding: "5px",
-              overflowX: "auto",
+              overflowY: "auto", // ou apenas "overflow: 'auto'"
               backgroundColor: "#eee",
               maxHeight: "50vh",
             }}

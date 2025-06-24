@@ -1,6 +1,10 @@
 import { textFont } from "../../../../Styles/Styles";
 
-export const notifyError = (message: string, color?: string) => {
+export const notifyError = (
+  message: string,
+  color?: string,
+  timeEstablished?: number
+) => {
   const existing = document.getElementById("voice-error-toast");
   if (existing) existing.remove();
 
@@ -45,16 +49,14 @@ export const notifyError = (message: string, color?: string) => {
 
   document.body.appendChild(toast);
 
-  setTimeout(() => {
-    toast.remove();
-    style.remove();
-  }, 2500);
+  setTimeout(
+    () => {
+      toast.remove();
+      style.remove();
+    },
+    timeEstablished ? timeEstablished : 2500
+  );
 };
-
-
-
-
-
 
 export const readText = (
   text: string,

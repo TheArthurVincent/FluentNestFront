@@ -48,6 +48,7 @@ import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
 import TextAreaLesson from "./Assets/Functions/TextAreaLessons";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import Voice from "../../Resources/Voice";
+import { notifyError } from "./Assets/Functions/FunctionLessons";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -354,7 +355,7 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      window.alert("Comentário enviado. Você será respondido em breve!");
+      notifyError("Comentário enviado. Você será respondido em breve!", secondaryColor());
       setComment("");
       getComments();
     } catch (error) {
@@ -841,6 +842,7 @@ export default function EnglishClassCourse2({
                 }}
                 type="text"
                 className="comments2"
+                placeholder="Type your comment here..."
                 value={comment}
               />
             </div>

@@ -7,9 +7,9 @@ import {
   onLoggOut,
   updateInfo,
 } from "../../Resources/UniversalComponents";
-import { alwaysBlack, secondaryColor } from "../../Styles/Styles";
+import { alwaysBlack, primaryColor, secondaryColor } from "../../Styles/Styles";
 import { NavLink } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
 import { User } from "./types.MyProfile";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
@@ -139,12 +139,12 @@ export function MyProfile({ headers }: HeadersProps) {
         { newPassword },
         { headers: actualHeaders }
       );
+      notifyError("Senha editada com sucesso!", primaryColor());
       setConfirmPassword("");
       setNewPassword("");
-      alert("Senha editada com sucesso!");
     } catch (error) {
       onLoggOut();
-      alert("Erro ao editar senha");
+      notifyError("Erro ao editar senha");
     }
   };
 
@@ -478,42 +478,69 @@ export function MyProfile({ headers }: HeadersProps) {
                 }}
                 className="box-shadow-white"
               >
-                <form style={{ textAlign: "center" }}>
+                <div style={{ textAlign: "center" }}>
                   <HOne>{UniversalTexts.newPassword}</HOne>
-                  <input
+
+                  <TextField
                     value={newPassword}
                     onChange={(event) => setNewPassword(event.target.value)}
                     placeholder={UniversalTexts.newPassword}
                     type="password"
-                    className="inputs-style"
-                    style={{
-                      marginBottom: "1rem",
-                      padding: "0.75rem",
-                      width: "100%",
-                      borderRadius: "6px",
-                      border: "1px solid #ccc",
-                      fontSize: "1rem",
+                    required
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: secondaryColor(), // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: secondaryColor(), // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: secondaryColor(), // quando focado
+                        },
+                        "& label": {
+                          color: secondaryColor(), // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: secondaryColor(), // cor quando o label está flutuando
+                        },
+                      },
                     }}
                   />
-                  <input
+                  <br />
+                  <br />
+                  <TextField
                     value={confirmPassword}
                     onChange={(event) => setConfirmPassword(event.target.value)}
                     placeholder={UniversalTexts.confirmNewPassword}
                     type="password"
-                    className="inputs-style"
-                    style={{
-                      marginBottom: "1rem",
-                      padding: "0.75rem",
-                      width: "100%",
-                      borderRadius: "6px",
-                      border: "1px solid #ccc",
-                      fontSize: "1rem",
+                    required
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: secondaryColor(), // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: secondaryColor(), // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: secondaryColor(), // quando focado
+                        },
+                        "& label": {
+                          color: secondaryColor(), // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: secondaryColor(), // cor quando o label está flutuando
+                        },
+                      },
                     }}
                   />
                   <ArvinButton onClick={() => editStudentPassword()}>
                     {UniversalTexts.save}
                   </ArvinButton>
-                </form>
+                </div>
               </div>
             </>
           )}

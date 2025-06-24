@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
-import { HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import {
   primaryColor,
@@ -10,7 +9,7 @@ import {
   secondaryColor2,
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
-import { TextField, Grid, CircularProgress } from "@mui/material";
+import { TextField, Grid, CircularProgress, Alert } from "@mui/material";
 import { IFrameAsaas } from "../Blog/Blog.Styled";
 import Helmets from "../../Resources/Helmets";
 
@@ -33,6 +32,37 @@ export const generateUsername = (
 
   return `${first}${year}${last}${month}`;
 };
+function formatPhoneNumber(value: string): string {
+  const cleaned = value.replace(/\D/g, "").slice(0, 11);
+  const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
+  if (match) {
+    return `(${match[1]}) ${match[2]}.${match[3]}-${match[4]}`;
+  }
+  if (cleaned.length <= 2) return cleaned;
+  if (cleaned.length <= 3) return `(${cleaned.slice(0, 2)}) ${cleaned[2]}`;
+  if (cleaned.length <= 7)
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)}.${cleaned.slice(
+      3
+    )}`;
+  if (cleaned.length <= 11)
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)}.${cleaned.slice(
+      3,
+      7
+    )}-${cleaned.slice(7)}`;
+  return value;
+}
+
+function formatCPF(value: string): string {
+  const cleaned = value.replace(/\D/g, "").slice(0, 11);
+  if (cleaned.length <= 3) return cleaned;
+  if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
+  if (cleaned.length <= 9)
+    return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
+  return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(
+    6,
+    9
+  )}-${cleaned.slice(9)}`;
+}
 
 export default function Subscription() {
   const [form, setForm] = useState({
@@ -89,8 +119,19 @@ export default function Subscription() {
   );
   const [installments, setInstallments] = useState(1);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "phoneNumber") {
+      const formattedPhone = formatPhoneNumber(value);
+      setForm((prev) => ({ ...prev, [name]: formattedPhone }));
+    } else if (name === "doc") {
+      const formattedDoc = formatCPF(value);
+      setForm((prev) => ({ ...prev, [name]: formattedDoc }));
+    } else {
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
   };
+
   const [usernameEdited, setUsernameEdited] = useState<string>("");
 
   useEffect(() => {
@@ -301,9 +342,11 @@ export default function Subscription() {
       : {
           border: "1px solid #ccc",
         };
+
   return (
     <div style={styles.container}>
       <Helmets text="Cadastre-se" />
+
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
           <a
@@ -314,7 +357,7 @@ export default function Subscription() {
             Já sou aluno
           </a>
           <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
-          <HTwo>Inicie sua jornada!</HTwo>
+          <h2>Inicie sua jornada!</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -473,6 +516,7 @@ export default function Subscription() {
                 name="doc"
                 value={form.doc}
                 onChange={handleChange}
+                inputProps={{ inputMode: "numeric" }}
                 required
                 fullWidth
                 sx={{
@@ -623,7 +667,7 @@ export default function Subscription() {
           </Grid>
         </div>
         <div style={styles.column}>
-          <HTwo>Plano</HTwo>
+          <h2>Plano</h2>
           <div style={styles.planContainer}>
             <div
               style={{ ...styles.planCard, ...isSelected("monthly") }}
@@ -643,7 +687,7 @@ export default function Subscription() {
           </div>
           {selectedPlan === "yearly" && (
             <>
-              <HTwo>Método de Pagamento</HTwo>
+              <h2>Método de Pagamento</h2>
               <div style={styles.planContainer}>
                 <div
                   //@ts-ignore

@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import "font-awesome/css/font-awesome.min.css";
 import Helmets from "../../Resources/Helmets";
-import { backDomain, InputField } from "../../Resources/UniversalComponents";
+import { backDomain } from "../../Resources/UniversalComponents";
 import axios from "axios";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
+import { secondaryColor } from "../../Styles/Styles";
+import { TextField } from "@mui/material";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 function ResetPasswordFinalChange() {
   const [Password, setPassword] = useState<string>("");
@@ -17,66 +20,120 @@ function ResetPasswordFinalChange() {
     console.log(id);
 
     try {
-      const response = await axios.put(
+      var response = await axios.put(
         `${backDomain}/api/v1/resetpasswordfinal/${id}`,
         {
           newPassword: Password,
         }
       );
       setTimeout(() => {
-        alert("Senha alterada");
-        window.location.assign("/login");
+        notifyError(response.data.message, secondaryColor());
+        setTimeout(() => {
+          window.location.assign("/login");
+        }, 1000);
       }, 500);
-    } catch (error) {
-      console.log(error, "Erro ao atualizar dados");
+    } catch (error: any) {
+      console.log(error);
+      notifyError(error.response.data.message);
     }
   };
   return (
-    <div
+    <RouteDiv
       style={{
-        backgroundColor: "white",
-        overflow: "hidden",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
+        maxWidth: "20rem",
+        margin: "auto",
       }}
     >
       <div
         style={{
-          display: "grid",
-          gap: "10px",
+          backgroundColor: "white",
+          overflow: "hidden",
+          height: "100vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <Helmets text={"Reset Password"} />
-        <form onSubmit={handleSendPassword}>
-          <InputField
+        <div
+          style={{
+            display: "grid",
+            gap: "10px",
+          }}
+        >
+          <Helmets text={"Reset Password"} />
+          <TextField
+            label="Nova senha"
+            name="Nova senha"
+            type="password"
             value={Password}
             onChange={(event: any) => setPassword(event.target.value)}
-            id="name"
-            placeholder="Nova Senha"
-            type="password"
-          />{" "}
-          <InputField
+            required
+            fullWidth
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: secondaryColor(),
+                },
+                "&:hover fieldset": {
+                  borderColor: secondaryColor(),
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: secondaryColor(),
+                },
+                "& label": {
+                  color: secondaryColor(),
+                },
+                "& label.Mui-focused": {
+                  color: secondaryColor(),
+                },
+              },
+            }}
+          />
+          <TextField
             value={Password1}
             onChange={(event: any) => setPassword1(event.target.value)}
             id="name"
             placeholder="Confirmar Nova Senha"
             type="password"
+            fullWidth
+            required
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": {
+                  borderColor: secondaryColor(),
+                },
+                "&:hover fieldset": {
+                  borderColor: secondaryColor(),
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: secondaryColor(),
+                },
+                "& label": {
+                  color: secondaryColor(),
+                },
+                "& label.Mui-focused": {
+                  color: secondaryColor(),
+                },
+              },
+            }}
           />
+
           <ArvinButton
-            type="submit"
             style={{
               display: "flex",
               marginLeft: "auto",
+              cursor: Password1 !== Password ? "not-allowed" : "pointer",
+              backgroundColor:
+                Password1 !== Password ? "gray" : secondaryColor(),
             }}
             disabled={Password1 !== Password}
+            onClick={handleSendPassword}
           >
             Alterar Senha
           </ArvinButton>
-        </form>
+        </div>
       </div>
-    </div>
+    </RouteDiv>
   );
 }
 

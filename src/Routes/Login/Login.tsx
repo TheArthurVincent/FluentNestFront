@@ -1,19 +1,9 @@
 import React, { useState } from "react";
 import { primaryColor, secondaryColor, textFont } from "../../Styles/Styles";
-import {
-  InputField,
-  LogoSVG,
-  backDomain,
-} from "../../Resources/UniversalComponents";
+import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { Alert, CircularProgress, Grid, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { NavLink } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
@@ -23,11 +13,6 @@ export function Login() {
   const [password, setPassword] = useState<string>("");
   const [fail, setFail] = useState<boolean>(false);
   const [button, setButton] = useState<any>("Entrar");
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-
-  const handlePasswordVisible = () => {
-    setPasswordVisible(!passwordVisible);
-  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();

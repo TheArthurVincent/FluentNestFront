@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import { primaryColor, secondaryColor } from "../../Styles/Styles";
-import {
-  InputField,
-  LogoSVG,
-  backDomain,
-} from "../../Resources/UniversalComponents";
+import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
-import { Button } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { HOne } from "../../Resources/Components/RouteBox";
 import { NavLink } from "react-router-dom";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 function RequestResetPassword() {
   const [email, setEmail] = useState<string>("");
@@ -20,8 +17,11 @@ function RequestResetPassword() {
       const response = await axios.put(
         `${backDomain}/api/v1/resetpassword/${email}`
       );
-      alert("Verifique seu email");
-      window.location.assign("/login");
+
+      notifyError(response.data.message, secondaryColor());
+      setTimeout(() => {
+        window.location.assign("/login");
+      }, 2500);
     } catch (error: any) {
       window.alert(error.response.data.message);
       console.log(error.response.data.message);
@@ -61,12 +61,33 @@ function RequestResetPassword() {
             >
               <div style={{ margin: "0 auto" }}>{myLogo}</div>
               <HOne>Altere sua senha</HOne>
-              <InputField
+              <TextField
+                label="E-mail"
+                name="email"
+                type="email"
                 value={email}
                 onChange={(event: any) => setEmail(event.target.value)}
-                id="name"
-                placeholder="E-mail"
-                type="text"
+                required
+                fullWidth
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": {
+                      borderColor: secondaryColor(), // cor normal
+                    },
+                    "&:hover fieldset": {
+                      borderColor: secondaryColor(), // ao passar o mouse
+                    },
+                    "&.Mui-focused fieldset": {
+                      borderColor: secondaryColor(), // quando focado
+                    },
+                    "& label": {
+                      color: secondaryColor(), // cor padrão do label
+                    },
+                    "& label.Mui-focused": {
+                      color: secondaryColor(), // cor quando o label está flutuando
+                    },
+                  },
+                }}
               />
               <div
                 style={{
