@@ -97,12 +97,11 @@ function App() {
   };
 
   useEffect(() => {
-    if (isOriginal())
-      window.location.assign("http://arthurvincent.com.br/login");
-    else
-      console.log(
-        "Non-original portal detected. Keys removed from localStorage."
-      );
+    if (isOriginal()) {
+      const currentPath = window.location.pathname;
+      window.location.assign(`http://arthurvincent.com.br${currentPath}`);
+      console.log(`http://arthurvincent.com.br${currentPath}`);
+    }
   }, []);
 
   const routes = [
