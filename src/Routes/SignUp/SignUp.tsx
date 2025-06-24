@@ -296,7 +296,7 @@ export default function SignUp() {
               <input
                 type="text"
                 name="username"
-                placeholder="Nome de usuário"
+                placeholder="Nome de usuário (Gerado automaticamente)"
                 value={form.username}
                 readOnly
                 style={{

@@ -28,6 +28,7 @@ import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./Blog/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 
+
 export function HomePage({ headers }: HeadersProps) {
   const [thePermissions, setPermissions] = useState<string>("");
   const [admin, setAdmin] = useState<boolean>(false);

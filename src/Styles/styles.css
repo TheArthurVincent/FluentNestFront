@@ -8,6 +8,9 @@
   width: 11px;
   height: 11px;
 }
+html {
+  scroll-behavior: smooth;
+}
 
 *::-webkit-scrollbar-track {
   background: #ddd;

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
-import { HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import {
   primaryColor,
@@ -10,7 +9,7 @@ import {
   secondaryColor2,
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
-import { TextField, Grid, CircularProgress } from "@mui/material";
+import { TextField, Grid, CircularProgress, Alert } from "@mui/material";
 import { IFrameAsaas } from "../Blog/Blog.Styled";
 import Helmets from "../../Resources/Helmets";
 
@@ -66,53 +65,53 @@ function formatCPF(value: string): string {
 }
 
 export default function Subscription() {
-  // const [form, setForm] = useState({
-  //   name: "",
-  //   promoCode: "",
-  //   lastname: "",
-  //   username: "",
-  //   phoneNumber: "",
-  //   doc: "",
-  //   email: "",
-  //   dateOfBirth: "",
-  //   address: "",
-  //   neighborhood: "",
-  //   city: "",
-  //   state: "",
-  //   addressNumber: "",
-  //   zip: "",
-  //   password: "",
-  //   confirmPassword: "",
-  //   creditCardNumber: "",
-  //   creditCardHolderName: "",
-  //   creditCardExpiryMonth: "",
-  //   creditCardExpiryYear: "",
-  //   creditCardCcv: "",
-  // });
-
   const [form, setForm] = useState({
     name: "",
-    promoCode: "123",
-    lastname: "Doe",
+    promoCode: "",
+    lastname: "",
     username: "",
-    phoneNumber: "11930303030",
+    phoneNumber: "",
     doc: "",
-    email: "d@cristout.com",
-    dateOfBirth: "10/10/2025",
-    address: "Rua Nelia",
-    neighborhood: "Embu",
-    city: "Embu das Artes",
-    state: "SP",
-    addressNumber: "123",
-    zip: "06703794",
-    password: "123456789",
-    confirmPassword: "123456789",
-    creditCardNumber: "5397 2566 6440 3902",
-    creditCardHolderName: "John Doe",
-    creditCardExpiryMonth: "01",
-    creditCardExpiryYear: "2026",
-    creditCardCcv: "420",
+    email: "",
+    dateOfBirth: "",
+    address: "",
+    neighborhood: "",
+    city: "",
+    state: "",
+    addressNumber: "",
+    zip: "",
+    password: "",
+    confirmPassword: "",
+    creditCardNumber: "",
+    creditCardHolderName: "",
+    creditCardExpiryMonth: "",
+    creditCardExpiryYear: "",
+    creditCardCcv: "",
   });
+
+  // const [form, setForm] = useState({
+  //   name: "",
+  //   promoCode: "123",
+  //   lastname: "Doe",
+  //   username: "",
+  //   phoneNumber: "11930303030",
+  //   doc: "",
+  //   email: "d@cristout.com",
+  //   dateOfBirth: "10/10/2025",
+  //   address: "Rua Nelia",
+  //   neighborhood: "Embu",
+  //   city: "Embu das Artes",
+  //   state: "SP",
+  //   addressNumber: "123",
+  //   zip: "06703794",
+  //   password: "123456789",
+  //   confirmPassword: "123456789",
+  //   creditCardNumber: "5397 2566 6440 3902",
+  //   creditCardHolderName: "John Doe",
+  //   creditCardExpiryMonth: "01",
+  //   creditCardExpiryYear: "2026",
+  //   creditCardCcv: "420",
+  // });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
@@ -347,6 +346,7 @@ export default function Subscription() {
   return (
     <div style={styles.container}>
       <Helmets text="Cadastre-se" />
+
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
           <a
@@ -357,7 +357,7 @@ export default function Subscription() {
             Já sou aluno
           </a>
           <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
-          <HTwo>Inicie sua jornada!</HTwo>
+          <h2>Inicie sua jornada!</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -667,7 +667,7 @@ export default function Subscription() {
           </Grid>
         </div>
         <div style={styles.column}>
-          <HTwo>Plano</HTwo>
+          <h2>Plano</h2>
           <div style={styles.planContainer}>
             <div
               style={{ ...styles.planCard, ...isSelected("monthly") }}
@@ -687,7 +687,7 @@ export default function Subscription() {
           </div>
           {selectedPlan === "yearly" && (
             <>
-              <HTwo>Método de Pagamento</HTwo>
+              <h2>Método de Pagamento</h2>
               <div style={styles.planContainer}>
                 <div
                   //@ts-ignore

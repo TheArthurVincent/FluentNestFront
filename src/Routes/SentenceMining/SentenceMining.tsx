@@ -387,7 +387,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                   />
                 }
 
-                label="En → Pt"
+                label="English → Portuguese"
 
               />
               <FormControlLabel
@@ -400,7 +400,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     }}
                   />
                 }
-                label="Pt → En"
+                label="Portuguese → English"
               />
             </RadioGroup>
           </FormControl>
