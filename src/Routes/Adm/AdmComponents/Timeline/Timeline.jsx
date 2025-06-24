@@ -14,6 +14,7 @@ import {
   backDomain,
   formatDate,
 } from "../../../../Resources/UniversalComponents";
+import { secondaryColor } from "../../../../Styles/Styles";
 
 const TimelineComponent = (headers) => {
   const [timelineData, setTimelineData] = useState([]);
@@ -41,7 +42,7 @@ const TimelineComponent = (headers) => {
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" mt={4}>
-        <CircularProgress />
+        <CircularProgress style={{ color: secondaryColor() }} />
       </Box>
     );
   }

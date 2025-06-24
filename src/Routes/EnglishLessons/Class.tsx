@@ -355,7 +355,10 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      notifyError("Comentário enviado. Você será respondido em breve!", secondaryColor());
+      notifyError(
+        "Comentário enviado. Você será respondido em breve!",
+        secondaryColor()
+      );
       setComment("");
       getComments();
     } catch (error) {
@@ -405,7 +408,7 @@ export default function EnglishClassCourse2({
       <Helmets text={classTitle} />
 
       {loading ? (
-        <CircularProgress />
+        <CircularProgress style={{ color: secondaryColor() }} />
       ) : (
         <>
           <div
@@ -602,7 +605,6 @@ export default function EnglishClassCourse2({
                   aria-hidden="true"
                 />
               </span>
-
             </div>
           }
           {theclass.image && (

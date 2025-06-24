@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
+import { secondaryColor } from "../../../../Styles/Styles";
 
 export function AllComments({ headers }) {
   const [comments, setComments] = useState([]);
@@ -75,7 +76,7 @@ export function AllComments({ headers }) {
     <Box sx={{ padding: 2 }}>
       <HOne>Comentários Pendentes</HOne>
       {loading ? (
-        <CircularProgress />
+        <CircularProgress style={{ color: secondaryColor() }} />
       ) : (
         comments.map((comment, index) => (
           <Paper key={index} sx={{ padding: 2, marginBottom: 2 }} elevation={3}>

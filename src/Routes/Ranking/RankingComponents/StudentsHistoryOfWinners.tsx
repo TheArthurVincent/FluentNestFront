@@ -3,7 +3,7 @@ import { AnimatedLi, HOne } from "../../../Resources/Components/RouteBox";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
-import { lightGreyColor } from "../../../Styles/Styles";
+import { lightGreyColor, secondaryColor } from "../../../Styles/Styles";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { monthInQuestion } from "./RankingComponents";
 
@@ -159,7 +159,7 @@ export default function StudentsHistoryOfWinners({ headers, monthNow }) {
         </ArvinButton>
       )}
       {loading ? (
-        <CircularProgress />
+        <CircularProgress style={{ color: secondaryColor() }} />
       ) : (
         history.map((month, index) => (
           <ul
