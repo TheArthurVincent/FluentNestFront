@@ -652,6 +652,47 @@ input.inputs-style:focus {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+.pulse-button {
+  border: 1px solid #54bf08;
+  color: #ffffff;
+  padding: 5px 10px;
+  border-radius: 25px;
+  font-size: 10px;
+  cursor: pointer;
+  background: linear-gradient(-45deg, #54bf08, #aacd99, #54bf08, #aacd99);
+  background-size: 400% 400%;
+  animation: waterFlow 4s linear infinite, pulseGlow 2s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(84, 191, 8, 0.5);
+  transition: transform 0.2s ease;
+}
+
+.pulse-button:hover {
+  transform: scale(1.05);
+}
+
+@keyframes waterFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes pulseGlow {
+  0% {
+    box-shadow: 0 0 8px rgba(84, 191, 8, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(84, 191, 8, 0.9);
+  }
+  100% {
+    box-shadow: 0 0 8px rgba(84, 191, 8, 0.4);
+  }
+}
 
 .grid-flex-style {
   display: grid;
