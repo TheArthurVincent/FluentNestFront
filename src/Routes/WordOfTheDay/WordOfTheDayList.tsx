@@ -12,7 +12,7 @@ import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { textTitleFont, transparentBlack } from "../../Styles/Styles";
+import { secondaryColor, textTitleFont, transparentBlack } from "../../Styles/Styles";
 import { Modal, Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
@@ -64,7 +64,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return <CircularProgress style={{ color: secondaryColor() }} />;
   }
 
   return (

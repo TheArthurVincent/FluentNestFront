@@ -1090,7 +1090,11 @@ export default function Subscription() {
             </Grid>
           )}
           <button type="submit" style={styles.button} disabled={loading}>
-            {loading ? <CircularProgress /> : "Cadastrar"}
+            {loading ? (
+              <CircularProgress style={{ color: secondaryColor() }} />
+            ) : (
+              "Cadastrar"
+            )}
           </button>
         </div>
 

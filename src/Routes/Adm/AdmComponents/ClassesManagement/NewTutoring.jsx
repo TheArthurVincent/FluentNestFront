@@ -103,7 +103,7 @@ export function NewTutoring({ headers }) {
     <>
       <HTwo>Postar aula particular dada</HTwo>
       {loadingS ? (
-        <CircularProgress />
+        <CircularProgress style={{ color: secondaryColor() }} />
       ) : (
         <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleSubmit}>
           <div

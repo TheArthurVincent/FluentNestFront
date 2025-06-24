@@ -4,6 +4,7 @@ import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import { CircularProgress } from "@mui/material";
 import { HOne } from "../../../Resources/Components/RouteBox";
+import { secondaryColor } from "../../../Styles/Styles";
 
 interface FlashcardItem {
   _id: string;
@@ -82,7 +83,7 @@ const ListeningHistory = ({ headers }: HeadersProps) => {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return <CircularProgress style={{ color: secondaryColor() }} />;
   }
 
   const groupedListeningHistory = groupByDay2(listeningFlashcardHistory);
