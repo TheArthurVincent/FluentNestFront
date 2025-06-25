@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  RouteDiv,
   BlogPostTitle,
   BackgroundClickBlog,
   HTwo,
@@ -17,13 +16,7 @@ import {
 } from "../../Resources/UniversalComponents";
 import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
-import {
-  DivModal,
-  IFrameAsaas,
-  IFrameVideoPannel,
-  ImgBlog,
-  InternDivModal,
-} from "./Blog.Styled";
+import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 
@@ -40,7 +33,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
   const [newText, setNewText] = useState<string>("");
   const [newImg, setNewImg] = useState<string>("");
   const [newUrlVideo, setNewUrlVideo] = useState<string>("");
-  const [name, setName] = useState<string>("");
   const [permissions, setPermissions] = useState<string>("");
   // Booleans
   const [seeConfirmDelete, setSeeConfirmDelete] = useState<boolean>(false);
@@ -64,7 +56,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
     }
     let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "");
     fetchData();
-    setName(getLoggedUser.name);
     setStudentId(getLoggedUser.id || _StudentId);
     setPermissions(getLoggedUser.permissions);
   }, []);
@@ -160,11 +151,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
 
   return (
     <>
-      <div
-        style={{
-          maxWidth: "900px",
-        }}
-      >
+      <div style={{ maxWidth: "900px" }}>
         <Helmets text="Blog Posts" />
         <div
           style={{
@@ -187,7 +174,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                   maxWidth: "100%",
                   alignItems: "center",
                   justifyContent: "center",
-                  padding: "10px",
                   textDecoration: "none",
                 }}
               >
@@ -232,10 +218,14 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                 ) : null}
                 <div
                   style={{
-                    margin: "1rem",
-                    fontSize: "1.1rem",
-                    display: "block",
-                    padding: "1rem 0",
+                    margin: "1rem auto",
+                    fontSize: "0.8rem",
+                    padding: "1rem",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "10px",
+                    maxWidth: "800px",
+                    lineHeight: "1",
+                    color: "#222",
                   }}
                   className="limited-text"
                 >

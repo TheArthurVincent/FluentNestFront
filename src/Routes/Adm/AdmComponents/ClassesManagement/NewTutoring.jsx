@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
 import { DivGrid, backDomain } from "../../../../Resources/UniversalComponents";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 import { lightGreyColor, secondaryColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
@@ -14,10 +14,17 @@ export function NewTutoring({ headers }) {
   const [newAttachments, setAttachments] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [seeHW, setSeeHW] = useState(false);
+  const [loadingHW, setLoadingHW] = useState(false);
+  const [loadingFlashcards, setLoadingFlashcards] = useState(false);
+  const [newFlashcards, setNewFlashcardsList] = useState("");
 
   const [newHWDescription, setNewHWDescription] = useState("");
   const handleHWDescriptionChange = (htmlContent) => {
     setNewHWDescription(htmlContent);
+  };
+  const handleFC = (htmlContent) => {
+    setNewFlashcardsList(htmlContent);
+    console.log(htmlContent);
   };
 
   const [selectedStudentID, setSelectedStudentID] = useState("");
@@ -60,7 +67,7 @@ export function NewTutoring({ headers }) {
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/tutoring/`,
-        { tutorings, description: newHWDescription, dueDate },
+        { tutorings, description: newHWDescription, dueDate, newFlashcards },
         {
           headers,
         }
@@ -77,6 +84,8 @@ export function NewTutoring({ headers }) {
   };
 
   const postHW = async () => {
+    setLoadingHW(true);
+    setLoadingHW(true);
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/homework/${selectedStudentID}`,
@@ -88,7 +97,9 @@ export function NewTutoring({ headers }) {
       alert("HW criado com sucesso!");
       setTutorings([]);
       setNewHWDescription("");
+      setLoadingHW(false);
     } catch (error) {
+      setLoadingHW(false);
       alert("Erro ao salvar aulas");
       setStandardValue("Aluno");
     }
@@ -99,54 +110,78 @@ export function NewTutoring({ headers }) {
     setDisabled(false);
   };
 
+  useEffect(() => {
+    console.log("New Flashcards:", newFlashcards);
+  }, [newFlashcards]);
+
+  const postFC = async () => {
+    setLoadingFlashcards(true);
+  };
   return (
-    <>
-      <HTwo>Postar aula particular dada</HTwo>
+    <div
+      style={{
+        maxWidth: 700,
+        margin: "2rem auto",
+        background: "#fff",
+        borderRadius: 12,
+        boxShadow: "0 2px 16px #0002",
+        padding: "2rem",
+        fontFamily: "inherit",
+      }}
+    >
+      <HTwo style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
+        Postar aula particular dada
+      </HTwo>
       {loadingS ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <div style={{ textAlign: "center", padding: "2rem 0" }}>
+          <CircularProgress style={{ color: secondaryColor() }} />
+        </div>
       ) : (
-        <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleSubmit}>
+        <form
+          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+          onSubmit={handleSubmit}
+        >
           <div
             style={{
-              display: "grid",
+              display: "flex",
               gap: "1rem",
-              gridTemplateColumns: "1fr 0.1fr",
+              alignItems: "center",
             }}
           >
             <select
               required
               style={{
-                minWidth: "4.5rem",
-                padding: "0.3rem",
+                flex: 1,
+                padding: "0.6rem",
+                borderRadius: 8,
+                border: `1px solid ${lightGreyColor()}`,
                 fontSize: "1rem",
-                cursor: "pointer",
+                background: "#f5f6fa",
               }}
               onChange={(e) => setStudentList(e.target.value)}
+              value={selectedStudentID}
             >
-              <option
-                style={{ cursor: "pointer" }}
-                value={standardValue}
-                hidden
-              >
+              <option value={standardValue} hidden>
                 Escolha o aluno
               </option>
-              {student.map((option, index) => {
-                return (
-                  <option
-                    style={{ cursor: "pointer" }}
-                    key={index}
-                    value={option.id}
-                  >
-                    {option.fullname}
-                  </option>
-                );
-              })}
+              {student.map((option, index) => (
+                <option key={index} value={option.id}>
+                  {option.fullname}
+                </option>
+              ))}
             </select>
             <div
               style={{
                 cursor: "pointer",
-                borderRadius: "6px",
-                backgroundColor: lightGreyColor(),
+                borderRadius: "8px",
+                backgroundColor: secondaryColor(),
+                color: "#fff",
+                padding: "0.6rem 1.2rem",
+                fontWeight: 600,
+                fontSize: "1rem",
+                textAlign: "center",
+                transition: "background 0.2s",
+                userSelect: "none",
               }}
               onClick={handleAddTutoring}
             >
@@ -154,16 +189,23 @@ export function NewTutoring({ headers }) {
             </div>
           </div>
           {tutorings.map((tutoring, index) => (
-            <div key={index}>
+            <div
+              key={index}
+              style={{
+                marginBottom: 16,
+                border: `1px solid ${lightGreyColor()}`,
+                borderRadius: 8,
+                padding: 16,
+                background: "#fafbfc",
+              }}
+            >
               <DivGrid>
                 <input
                   style={{
-                    alignItems: "center",
-                    justifyContent: "space-around",
                     padding: "0.5rem",
-                    margin: "0",
-                    fontSize: "1.1rem",
-                    fontWeight: 500,
+                    borderRadius: 6,
+                    border: `1px solid ${lightGreyColor()}`,
+                    fontSize: "1rem",
                   }}
                   required
                   type="text"
@@ -177,12 +219,10 @@ export function NewTutoring({ headers }) {
                 />
                 <input
                   style={{
-                    alignItems: "center",
-                    justifyContent: "space-around",
                     padding: "0.5rem",
-                    margin: "0",
-                    fontSize: "1.1rem",
-                    fontWeight: 500,
+                    borderRadius: 6,
+                    border: `1px solid ${lightGreyColor()}`,
+                    fontSize: "1rem",
                   }}
                   required
                   type="text"
@@ -204,12 +244,44 @@ export function NewTutoring({ headers }) {
                     setTutorings(newTutorings);
                   }}
                   required
+                  style={{
+                    padding: "0.5rem",
+                    borderRadius: 6,
+                    border: `1px solid ${lightGreyColor()}`,
+                    fontSize: "1rem",
+                  }}
                 />
+                <div style={{ minWidth: 180 }}>
+                  <strong style={{ fontSize: 15 }}>Flashcards</strong>
+                  <div
+                    style={{
+                      border: `1px solid ${lightGreyColor()}`,
+                      borderRadius: 6,
+                      background: "#fff",
+                      padding: 6,
+                    }}
+                  >
+                    <TextField
+                      multiline
+                      minRows={2}
+                      maxRows={6}
+                      fullWidth
+                      variant="outlined"
+                      placeholder="Escreva os flashcards aqui"
+                      value={newFlashcards}
+                      onChange={(e) => setNewFlashcardsList(e.target.value)}
+                    />
+                  </div>
+                </div>
                 <div
                   style={{
                     cursor: "pointer",
-                    padding: "1rem",
-                    backgroundColor: lightGreyColor(),
+                    padding: "0.7rem 1.2rem",
+                    borderRadius: 8,
+                    backgroundColor: "#eaeaea",
+                    fontWeight: 600,
+                    textAlign: "center",
+                    userSelect: "none",
                   }}
                   onClick={() => {
                     setDueDate("");
@@ -223,6 +295,7 @@ export function NewTutoring({ headers }) {
               <div
                 style={{
                   display: seeHW ? "block" : "none",
+                  marginTop: 12,
                 }}
               >
                 <HThree>Homework</HThree>
@@ -231,16 +304,17 @@ export function NewTutoring({ headers }) {
                     display: "grid",
                     padding: "1rem",
                     border: `solid 2px ${lightGreyColor()}`,
+                    borderRadius: 8,
+                    background: "#fff",
                   }}
                 >
                   <input
                     style={{
-                      alignItems: "center",
-                      justifyContent: "space-around",
                       padding: "0.5rem",
-                      margin: "0",
-                      fontSize: "1.1rem",
-                      fontWeight: 500,
+                      borderRadius: 6,
+                      border: `1px solid ${lightGreyColor()}`,
+                      fontSize: "1rem",
+                      marginBottom: 12,
                     }}
                     type="date"
                     placeholder="Data"
@@ -249,15 +323,10 @@ export function NewTutoring({ headers }) {
                       setDueDate(e.target.value);
                     }}
                   />
-
-                  <div
-                    style={{
-                      marginBottom: "3rem",
-                    }}
-                  >
+                  <div style={{ marginBottom: "1rem" }}>
                     <HTMLEditor onChange={handleHWDescriptionChange} />
                   </div>
-                </div>{" "}
+                </div>
               </div>
             </div>
           ))}
@@ -266,6 +335,11 @@ export function NewTutoring({ headers }) {
             style={{
               marginLeft: "auto",
               cursor: disabled ? "not-allowed" : "pointer",
+              minWidth: 120,
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: 16,
+              padding: "0.7rem 2rem",
             }}
             type="submit"
           >
@@ -273,34 +347,98 @@ export function NewTutoring({ headers }) {
           </ArvinButton>
         </form>
       )}
-
-      <div>
-        <HTwo>Homework</HTwo>
-        <div>
-          <input
-            style={{
-              padding: "0.5rem",
-            }}
-            type="date"
-            placeholder="Data"
-            value={dueDate}
-            onChange={(e) => {
-              setDueDate(e.target.value);
-            }}
-          />
-
-          <div
-            style={{
-              marginBottom: "3rem",
-            }}
-          >
-            <HTMLEditor onChange={handleHWDescriptionChange} />
+      <div
+        style={{
+          marginTop: 32,
+          padding: "1.5rem",
+          background: "#fafbfc",
+          borderRadius: 10,
+          boxShadow: "0 1px 8px #0001",
+        }}
+      >
+        {loadingHW ? (
+          <div style={{ textAlign: "center" }}>
+            <CircularProgress style={{ color: secondaryColor() }} />
           </div>
-        </div>{" "}
-        <ArvinButton onClick={postHW}>Postar só HW -</ArvinButton>
+        ) : (
+          <div>
+            <HTwo style={{ marginBottom: 12 }}>Homework</HTwo>
+            <div>
+              <input
+                style={{
+                  padding: "0.5rem",
+                  borderRadius: 6,
+                  border: `1px solid ${lightGreyColor()}`,
+                  fontSize: "1rem",
+                  marginBottom: 12,
+                }}
+                type="date"
+                placeholder="Data"
+                value={dueDate}
+                onChange={(e) => {
+                  setDueDate(e.target.value);
+                }}
+              />
+              <div
+                style={{
+                  marginBottom: "1.5rem",
+                  border: `1px solid ${lightGreyColor()}`,
+                  borderRadius: 6,
+                  background: "#fff",
+                  padding: 8,
+                }}
+              >
+                <HTMLEditor onChange={handleHWDescriptionChange} />
+              </div>
+            </div>
+            <ArvinButton
+              style={{ borderRadius: 8, fontWeight: 600 }}
+              onClick={postHW}
+            >
+              Postar só HW -
+            </ArvinButton>
+          </div>
+        )}
       </div>
-    </>
+      <div
+        style={{
+          marginTop: 32,
+          padding: "1.5rem",
+          background: "#fafbfc",
+          borderRadius: 10,
+          boxShadow: "0 1px 8px #0001",
+        }}
+      >
+        {loadingFlashcards ? (
+          <div style={{ textAlign: "center" }}>
+            <CircularProgress style={{ color: secondaryColor() }} />
+          </div>
+        ) : (
+          <div>
+            <HTwo style={{ marginBottom: 12 }}>Flashcards</HTwo>
+            <div
+              style={{
+                border: `1px solid ${lightGreyColor()}`,
+                borderRadius: 6,
+                background: "#fff",
+                padding: 8,
+                marginBottom: 12,
+              }}
+            >
+              <HTMLEditor onChange={handleHWDescriptionChange} />
+            </div>
+            <ArvinButton
+              style={{ borderRadius: 8, fontWeight: 600 }}
+              onClick={postFC}
+            >
+              Postar só Flashcards -
+            </ArvinButton>
+          </div>
+        )}
+      </div>
+    </div>
   );
+  // ...existing code...
 }
 
 export default NewTutoring;
