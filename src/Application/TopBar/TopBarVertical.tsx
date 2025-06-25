@@ -17,7 +17,7 @@ import { useUserContext } from "../SelectLanguage/SelectLanguage";
 import { primaryColor, secondaryColor } from "../../Styles/Styles";
 import { ItemSideBarProps, ItemTopBarProps, LinkItem } from "./TopBarTypes";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { SpanDisapear } from "../../Routes/Blog/Blog.Styled";
+import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 
 export const TopBarVertical: FC<ItemSideBarProps> = ({
   theGoogleDriveLink,

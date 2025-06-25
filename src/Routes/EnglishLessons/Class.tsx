@@ -23,7 +23,7 @@ import {
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
 import { ImgLesson } from "./Assets/Functions/EnglishActivities.Styled";
-import { IFrameVideoBlog } from "../Blog/Blog.Styled";
+import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
 import VideoLessonModel from "./Assets/LessonsModels/VideoLessonModel";
 import SentenceLessonModel from "./Assets/LessonsModels/SentenceLessonModel";
 import TextLessonModel from "./Assets/LessonsModels/TextLessonModel";

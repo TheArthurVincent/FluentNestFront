@@ -20,7 +20,7 @@ import { useUserContext } from "../SelectLanguage/SelectLanguage";
 import { primaryColor, secondaryColor } from "../../Styles/Styles";
 import { LinkItem } from "./TopBarTypes";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { SpanDisapear } from "../../Routes/Blog/Blog.Styled";
+import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 import axios from "axios";
 import { Box, Modal } from "@mui/material";
 import { HThree, HTwo } from "../../Resources/Components/RouteBox";

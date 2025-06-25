@@ -19,7 +19,7 @@ import {
 import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { IFrameVideoBlog } from "../Blog/Blog.Styled";
+import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
 
 export function MyClasses({ headers }) {
   const [loading, setLoading] = useState(false);

@@ -15,7 +15,7 @@ import { User } from "./types.MyProfile";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { SpanDisapear } from "../Blog/Blog.Styled";
+import { SpanDisapear } from "../HomePage/Blog.Styled";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";

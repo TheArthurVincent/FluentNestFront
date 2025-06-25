@@ -11,7 +11,7 @@ import { DivAppear, H3FAQ } from "../MyClasses/MyClasses.Styled";
 import { Input } from "@mui/material";
 import { contentFaq } from "./FaqContent";
 import Helmets from "../../Resources/Helmets";
-import { IFrameVideoBlog } from "../Blog/Blog.Styled";
+import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 
 function Faq({ headers }: HeadersProps) {
