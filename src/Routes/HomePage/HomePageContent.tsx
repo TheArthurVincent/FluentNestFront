@@ -19,11 +19,9 @@ import { Button, CircularProgress } from "@mui/material";
 import { DivModal, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
-import WordOfTheDay from "../WordOfTheDay/WordOfTheDay";
-import Countdown from "../Ranking/RankingComponents/Countdown";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import FlashCards from "../FlashCards/FlashCards";
 import ReviewFlashCards from "../FlashCards/FlashCardsComponents/ReviewFlashCards";
+import BlogPosts from "./BlogPosts";
 
 interface BlogProps {
   headers: MyHeadersType | null;
@@ -322,6 +320,12 @@ export function Blog({
                   </div>
                 </div>
               )}
+            </DivMarginBorder>
+          </div>
+          <div className="grid-flex-2">
+            <DivMarginBorder>
+              {/* @ts-ignore */}
+              <BlogPosts headers={actualHeaders} />
             </DivMarginBorder>
           </div>
         </DivFlex>

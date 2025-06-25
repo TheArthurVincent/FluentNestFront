@@ -160,7 +160,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
 
   return (
     <>
-      <RouteDiv
+      <div
         style={{
           maxWidth: "900px",
         }}
@@ -245,7 +245,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             ))}
           </div>
         </div>
-      </RouteDiv>
+      </div>
 
       <DivModal
         className="modal"
