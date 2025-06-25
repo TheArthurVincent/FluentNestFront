@@ -576,11 +576,19 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       <div
         style={{
           display: "grid",
-          justifyContent: "center",
+          gridTemplateColumns: "1fr 1fr",
+          gap: "10px",
+          maxWidth: "fit-content",
+          margin: "auto",
+          justifyContent: "space-evenly",
           alignItems: "center",
         }}
       >
-        <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+        <Voice
+          maxW="6rem"
+          changeB={changeNumber}
+          setChangeB={setChangeNumber}
+        />
         <select
           id="category-select"
           value={category}
@@ -588,8 +596,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             setCategory(e.target.value);
           }}
           style={{
-            // padding: "6px 12px",
-            maxWidth: "9rem",
+            maxWidth: "6rem",
             borderRadius: "6px",
             border: "1px solid #ccc",
             margin: "auto",
@@ -600,7 +607,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             transition: "border-color 0.3s",
           }}
         >
-          <option value="nofilter">Ver todos os cards</option>
+          <option value="nofilter">All cards</option>
           <option value="vocabulary">Vocabulary</option>
           <option value="be">To be</option>
           <option value="possessive">Possessivos</option>
