@@ -563,19 +563,30 @@ export default function EnglishClassCourse2({
                 alignItems: "center",
                 minWidth: "100px",
                 bottom: 5,
-                left: showCourses ? -250 : 3,
+                left: 0,
                 borderRadius: "6px",
               }}
             >
               <span
                 style={{
                   display: thePermissions === "superadmin" ? "block" : "none",
-                  // display:  "none"
+                  marginRight: "10px",
                 }}
               >
                 <select
                   onChange={(e) => handleStudentChange(e)}
                   value={studentID}
+                  style={{
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    backgroundColor: "#f9f9f9",
+                    fontSize: "0.9rem",
+                    maxWidth: "8rem",
+                    margin: "auto",
+                    color: "#333",
+                    outline: "none",
+                    transition: "border-color 0.3s",
+                  }}
                 >
                   {studentsList.map((student: any, index: number) => (
                     <option key={index} value={student.id}>
@@ -583,13 +594,17 @@ export default function EnglishClassCourse2({
                     </option>
                   ))}
                 </select>
-                <ArvinButton color="green" onClick={fetchStudents}>
+                {/* <ArvinButton color="green" onClick={fetchStudents}>
                   <i className="fa fa-refresh" aria-hidden="true" />
-                </ArvinButton>
+                </ArvinButton> */}
               </span>
-              <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+              <Voice
+                maxW="8rem"
+                changeB={changeNumber}
+                setChangeB={setChangeNumber}
+              />
 
-              <span
+              {/* <span
                 style={{
                   fontSize: "10px",
                   marginLeft: "16px",
@@ -604,7 +619,7 @@ export default function EnglishClassCourse2({
                   onClick={handleShowCourses}
                   aria-hidden="true"
                 />
-              </span>
+              </span> */}
             </div>
           }
           {theclass.image && (

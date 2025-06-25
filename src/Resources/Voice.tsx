@@ -2,10 +2,12 @@ import React, { FC, useEffect, useState } from "react";
 
 interface VoiceTypes {
   changeB: boolean;
+  maxW?: string;
+  // Optional maxW prop to control the maximum width of the select box
   setChangeB: (value: boolean) => void;
 }
 
-const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
+const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [selectedVoice, setSelectedVoice] = useState<string>("");
 
@@ -69,7 +71,6 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
         <div
           style={{
             display: "flex",
-            maxWidth: "15rem",
             alignItems: "center",
             gap: "0.5rem",
             margin: "auto",
@@ -84,8 +85,7 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB }) => {
             }}
             style={{
               borderRadius: "6px",
-              // padding: "6px 12px",
-              // marginRight: "20px",
+            maxWidth: maxW ? maxW : "15rem",
               border: "1px solid #ccc",
               backgroundColor: "#f9f9f9",
               fontSize: "0.9rem",
