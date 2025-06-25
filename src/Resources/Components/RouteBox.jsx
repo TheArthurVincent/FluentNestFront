@@ -68,11 +68,11 @@ export const BlogRouteSizeControlBox = styled.div`
   margin-right: auto;
   margin-top: 60px;
   margin-bottom: 22px;
-  max-width: 80vw;
+  max-width: 60vw;
   gap: 0.2rem;
   @media (max-width: 1200px) {
     display: flex;
-    max-width: 80vw;
+    max-width: 70vw;
     margin-right: auto;
     margin-left: auto;
     flex-direction: column-reverse;
@@ -80,7 +80,7 @@ export const BlogRouteSizeControlBox = styled.div`
     align-items: center;
   }
   @media (max-width: 600px) {
-    max-width: 70vw;
+    max-width: 68vw;
   }
   &.smooth {
     animation-name: slideInLeft;

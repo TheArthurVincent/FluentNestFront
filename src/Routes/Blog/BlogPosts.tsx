@@ -19,6 +19,7 @@ import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import {
   DivModal,
+  IFrameAsaas,
   IFrameVideoPannel,
   ImgBlog,
   InternDivModal,
@@ -224,7 +225,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                       margin: "auto",
                     }}
                   >
-                    <IFrameVideoPannel src={getVideoEmbedUrl(post.videoUrl)} />
+                    <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
                   </div>
                 ) : post.img ? (
                   <ImgBlog src={post.img} alt="logo" />
