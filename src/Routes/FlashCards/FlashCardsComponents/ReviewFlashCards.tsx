@@ -640,7 +640,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           <option value="numbers">Números</option>
           <option value="transportation">Transporte</option>
           <option value="office">Escritório</option>
-          <option value="diseases">Doenças</option>
           <option value="professions">Profissões</option>
           <option value="weather">Clima</option>
         </select>
