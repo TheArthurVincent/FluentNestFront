@@ -13,6 +13,7 @@ import {
   getVideoEmbedUrl,
   Xp,
   UniversalButtonsDivFlex,
+  onLoggOut,
 } from "../../Resources/UniversalComponents";
 import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
@@ -144,7 +145,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
       console.log(response.data.listOfPosts);
     } catch (error: any) {
       notifyError(error.response.data.error);
-      window.location.assign("/login");
+      onLoggOut();
       setLoading(false);
     }
   }
