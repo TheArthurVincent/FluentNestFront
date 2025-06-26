@@ -80,7 +80,7 @@ function App() {
     const currentUrl = window.location.href;
 
     if (currentUrl.includes("portal.arthurvincent")) {
-      // if (currentUrl.includes("localhost:51")) {
+      // if (currentUrl.includes("localhost:51")) { // teste local
       // Remove apenas chaves relacionadas ao portal
       Object.keys(localStorage).forEach((key) => {
         if (key.includes("portal") || key === "authorization") {
