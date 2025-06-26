@@ -120,11 +120,8 @@ export function NewTutoring({ headers }) {
   return (
     <div
       style={{
-        maxWidth: 700,
         margin: "2rem auto",
         background: "#fff",
-        borderRadius: 12,
-        boxShadow: "0 2px 16px #0002",
         padding: "2rem",
         fontFamily: "inherit",
       }}
