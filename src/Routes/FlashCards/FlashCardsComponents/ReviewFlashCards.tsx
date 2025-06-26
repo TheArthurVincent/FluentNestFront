@@ -14,6 +14,7 @@ import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
+import { a } from "framer-motion/dist/types.d-B_QPEvFK";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -49,7 +50,9 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     updateInfo(id, actualHeaders);
   }, [change]);
 
+
   useEffect(() => {
+    /// oiii
     setTimeout(() => {
       var flashcardsTodayLocalStorage = localStorage.getItem("flashcardsToday");
       // @ts-ignore

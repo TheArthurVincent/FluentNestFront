@@ -18,7 +18,6 @@ import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import Helmets from "../../Resources/Helmets";
 
 interface BlogPostsProps {
   headers: MyHeadersType | null;

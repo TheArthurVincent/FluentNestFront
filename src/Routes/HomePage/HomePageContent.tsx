@@ -164,7 +164,8 @@ export function Blog({
               {loadingLESSON ? (
                 <CircularProgress style={{ color: secondaryColor() }} />
               ) : (
-                <div className="study-container">
+                <div className="study-container"
+                >
                   <HOne>{UniversalTexts.studyEnglish}</HOne>
                   <div className="grid-container">
                     {sessions.map((session) => (
