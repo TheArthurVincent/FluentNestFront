@@ -12,7 +12,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
 import ReviewFlashCards from "./FlashCardsComponents/ReviewFlashCards";
 import AllCards from "./FlashCardsComponents/AllCards";
-import { onLoggOut } from "../../Resources/UniversalComponents";
+import { mascotNormal, onLoggOut } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 
@@ -76,7 +76,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
   ];
 
   const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
-
   return (
     <RouteDiv
       style={{
