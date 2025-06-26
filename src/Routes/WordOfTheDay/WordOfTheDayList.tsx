@@ -53,7 +53,8 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
       setWords(response.data.words);
       console.log(response.data.words);
     } catch (error: any) {
-      alert(error.response?.data?.error || "Error.");
+      // alert(error.response?.data?.error || "Error.");
+      console.log(error.response?.data?.error || "Error.");
     } finally {
       setLoading(false);
     }
