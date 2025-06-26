@@ -349,13 +349,7 @@ export default function Subscription() {
 
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
-          <a
-            style={styles.button}
-            href="https://portal.arthurvincent.com.br/"
-            target="_blank"
-          >
-            Já sou aluno
-          </a>
+     
           <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
           <h2>Inicie sua jornada!</h2>
           <Grid container spacing={2}>

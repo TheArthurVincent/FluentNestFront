@@ -4,8 +4,7 @@ import AppFooter from "../../Application/Footer/Footer";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import "./styles.lp.css";
 import Subscription from "../NewStudentAsaas/NewStudentAsaas";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { Alert, CircularProgress, TextField } from "@mui/material";
+import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
 
 import { useMediaQuery } from "@mui/material"; // Adicione isso
@@ -105,7 +104,7 @@ function LandingPage() {
             borderRadius: "5px",
             textDecoration: "none",
           }}
-          href="https://portal.arthurvincent.com.br/"
+          href="https://arthurvincent.com.br/login"
           target="_blank"
         >
           Já sou aluno
