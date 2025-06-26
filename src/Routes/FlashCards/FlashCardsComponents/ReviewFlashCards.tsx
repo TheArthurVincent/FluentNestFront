@@ -376,31 +376,45 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   const [MESSAGE, setMESSAGE] = useState<string>("How are you?");
   const [mascot, setMascot] = useState<any>(null);
+const [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
+
+useEffect(() => {
+  const handleResize = () => {
+    setSize(window.innerWidth <= 600 ? 2 : 4);
+  };
+  window.addEventListener("resize", handleResize);
+  // Atualiza no mount também
+  handleResize();
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+useEffect(() => {
+  setMascot(mascotCelebrate(colorOfTheTShirt, size));
+}, [size, colorOfTheTShirt]);
 
   useEffect(() => {
     if (flashcardsToday >= 25 && streak < 50) {
-      setMascot(mascotCelebrate(colorOfTheTShirt, 3));
+      setMascot(mascotCelebrate(colorOfTheTShirt, size));
       setMESSAGE(
         `Congratulations for reviewing ${flashcardsToday} cards today! Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
       );
     } else if (flashcardsToday >= 25 && streak >= 50) {
-      setMascot(mascotCelebrate(colorOfTheTShirt, 3));
+      setMascot(mascotCelebrate(colorOfTheTShirt, size));
       setMESSAGE(
         `Congratulations for reviewing ${flashcardsToday} cards today! I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
       );
     } else if (lastR !== null && lastR <= 3) {
-      setMascot(mascotThinking(colorOfTheTShirt, 3));
+      setMascot(mascotThinking(colorOfTheTShirt, size));
       setMESSAGE(`I'm worried about you, you haven't studied in ${lastR} days`);
     } else if (lastR !== null && lastR > 3) {
-      setMascot(mascotWeak(colorOfTheTShirt, 3));
+      setMascot(mascotWeak(colorOfTheTShirt, size));
       setMESSAGE(`I'm dying, you haven't studied in ${lastR} days`);
     } else if (streak >= 50) {
-      setMascot(mascotStrong(colorOfTheTShirt, 3));
+      setMascot(mascotStrong(colorOfTheTShirt, size));
       setMESSAGE(
         `I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
       );
     } else if (streak < 50 && streak > lastR) {
-      setMascot(mascotSkinny(colorOfTheTShirt, 3));
+      setMascot(mascotSkinny(colorOfTheTShirt, size));
       setMESSAGE(
         `Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
       );
@@ -648,7 +662,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       </>
                     ) : (
                       <p>
-                        <b>No flashcards</b>
+                        No flashcards
                         <br />
                         Nenhum flashcard
                         <br />

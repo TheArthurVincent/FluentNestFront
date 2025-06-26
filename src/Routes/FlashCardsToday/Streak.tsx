@@ -44,7 +44,14 @@ export const Streak: React.FC<StreakProps> = ({ streak, message }) => {
           fontStyle: "italic",
         }}
       >
-        {message}
+        <div
+          style={{
+            padding: "10px",
+          }}
+          dangerouslySetInnerHTML={{
+            __html: message,
+          }}
+        />
       </p>
     </div>
   );
