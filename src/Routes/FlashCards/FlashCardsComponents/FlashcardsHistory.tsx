@@ -84,10 +84,6 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
     }
   }, []);
 
-  if (loading) {
-    return <CircularProgress style={{ color: secondaryColor() }} />;
-  }
-
   const groupedHistory = groupByDay2(flashcardHistory);
 
   return (
@@ -107,34 +103,40 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
       <HOne>Flashcard Reviews</HOne>
       {flashcardHistory.length > 0 ? (
         <div className="flashcard-history-list">
-          {Object.entries(groupedHistory).map(([date, group]) => (
-            <div key={date} className="flashcard-day">
-              <h2
-                className="flashcard-date"
-                onClick={() => toggleFlashcardDay(date)}
-              >
-                {date} - Total Points: {group.totalScore}
-              </h2>
-              {expandedFlashcardsDays[date] && (
-                <div className="flashcard-items">
-                  {group.items.map((item) => (
-                    <div key={item._id} className="flashcard-item">
-                      <p>
-                        <strong>Description:</strong> {item.description}
-                      </p>
-                      <p>
-                        <strong>Score:</strong> {item.score}
-                      </p>
-                      <p>
-                        <strong>Date:</strong>{" "}
-                        {new Date(item.date).toLocaleString()}
-                      </p>
+          {loading ? (
+            <CircularProgress style={{ color: secondaryColor() }} />
+          ) : (
+            <>
+              {Object.entries(groupedHistory).map(([date, group]) => (
+                <div key={date} className="flashcard-day">
+                  <h2
+                    className="flashcard-date"
+                    onClick={() => toggleFlashcardDay(date)}
+                  >
+                    {date} - Total Points: {group.totalScore}
+                  </h2>
+                  {expandedFlashcardsDays[date] && (
+                    <div className="flashcard-items">
+                      {group.items.map((item) => (
+                        <div key={item._id} className="flashcard-item">
+                          <p>
+                            <strong>Description:</strong> {item.description}
+                          </p>
+                          <p>
+                            <strong>Score:</strong> {item.score}
+                          </p>
+                          <p>
+                            <strong>Date:</strong>{" "}
+                            {new Date(item.date).toLocaleString()}
+                          </p>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              )}
-            </div>
-          ))}
+              ))}
+            </>
+          )}
         </div>
       ) : (
         <p>No flashcard history found.</p>
