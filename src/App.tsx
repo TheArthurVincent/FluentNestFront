@@ -119,7 +119,7 @@ function App() {
     },
     { path: "/message", element: verifyToken() ? <MessageDrive /> : <Login /> },
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },
-    { path: "/signup", element: <NewStudentAsaas /> },
+    { path: "/signup", element: <LandingPage /> },
     { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
