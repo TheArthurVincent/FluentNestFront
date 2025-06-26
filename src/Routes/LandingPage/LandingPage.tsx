@@ -84,7 +84,7 @@ function LandingPage() {
       <div
         style={{
           width: "100%",
-          backgroundColor: "#23232",
+          backgroundColor: "#222",
           display: "flex",
           justifyContent: "center",
           marginRight: "1rem",
