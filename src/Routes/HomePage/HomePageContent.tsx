@@ -53,7 +53,7 @@ export function Blog({
   const [seeConfirmDelete, setSeeConfirmDelete] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [nextTutoring, setNextTutoring] = useState<any>();
+  // const [nextTutoring, setNextTutoring] = useState<any>();
 
   // Loading
   const [posts, setPosts] = useState<any>([
@@ -64,26 +64,25 @@ export function Blog({
 
   const [user, setUser] = useState<any>({});
 
-  const fetchClasses = async (studentId: string) => {
-    setLoading(true);
+  // const fetchClasses = async (studentId: string) => {
+  //   setLoading(true);
 
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/homeworknext/${studentId}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-      const tt = response.data.tutoringHomeworkList;
-      setNextTutoring(tt);
-      setLoading(false);
-    } catch (error) {
-      console.log(error, "erro ao listar itens");
-    }
-  };
+  //   try {
+  //     const response = await axios.get(
+  //       `${backDomain}/api/v1/homeworknext/${studentId}`,
+  //       {
+  //         headers: actualHeaders,
+  //       }
+  //     );
+  //     const tt = response.data.tutoringHomeworkList;
+  //     setNextTutoring(tt);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     console.log(error, "erro ao listar itens");
+  //   }
+  // };
 
   var [course, setCourse] = useState<String>("");
-  var [module, setModule] = useState<String>("");
   var [lesson, setLesson] = useState<String>("");
   var [img, setImg] = useState("");
   var [NO, setNo] = useState(true);
@@ -122,12 +121,12 @@ export function Blog({
     } else {
     }
     let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "");
-    fetchData();
+    // fetchData();
     setClassId(getLoggedUser.lastClassId);
     setName(getLoggedUser.name);
     setStudentId(getLoggedUser.id || _StudentId);
     setPermissions(getLoggedUser.permissions);
-    fetchClasses(getLoggedUser.id);
+    // fetchClasses(getLoggedUser.id);
     setTimeout(() => {
       fetchLastClassId(getLoggedUser.lastClassId);
     }, 2000);
