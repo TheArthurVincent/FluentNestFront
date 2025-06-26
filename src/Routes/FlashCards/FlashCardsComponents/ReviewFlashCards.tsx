@@ -433,7 +433,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               `Hi ${theName}, I'm Arvin! ${MESSAGE}`,
               false,
               "en",
-              selectedVoice
+              selectedVoice,
+              1.2
             );
           }}
         >
@@ -569,8 +570,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                         cards[0].front.text,
                                         true,
                                         cards[0].front.language,
-                                        selectedVoice,
-                                        
+                                        selectedVoice
                                       )
                                     }
                                   >

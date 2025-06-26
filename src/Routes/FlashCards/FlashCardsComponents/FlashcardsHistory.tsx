@@ -36,12 +36,12 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
   const actualHeaders = headers || {};
   const getNewCards = async (id?: string, days?: number) => {
     setLoading(true);
-
+    console.log(days);
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/flashcardscore/${id}`,
         {
-          params: { days: days ? days : 3 },
+          params: { days },
           headers: actualHeaders,
         }
       );
@@ -55,7 +55,7 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
       console.log("Erro ao obter cards", error);
       setFlashcardHistory([]);
       setLoading(false);
-      onLoggOut();
+      // onLoggOut();
     }
     setLoading(false);
   };
@@ -80,7 +80,7 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
     const id = parsedUser?.id;
     setStudentId(id || "");
     if (id) {
-      getNewCards(id);
+      getNewCards(id, days);
     }
   }, []);
 
