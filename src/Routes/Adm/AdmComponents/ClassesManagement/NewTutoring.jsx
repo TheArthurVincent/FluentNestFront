@@ -114,9 +114,30 @@ export function NewTutoring({ headers }) {
     console.log("New Flashcards:", newFlashcards);
   }, [newFlashcards]);
 
-  const postFC = async () => {
-    setLoadingFlashcards(true);
+
+
+  const postHW = async () => {
+    setLoadingHW(true);
+    setLoadingHW(true);
+    try {
+      const response = await axios.post(
+        `${backDomain}/api/v1/homework/${selectedStudentID}`,
+        { description: newHWDescription, dueDate },
+        {
+          headers,
+        }
+      );
+      alert("HW criado com sucesso!");
+      setTutorings([]);
+      setNewHWDescription("");
+      setLoadingHW(false);
+    } catch (error) {
+      setLoadingHW(false);
+      alert("Erro ao salvar aulas");
+      setStandardValue("Aluno");
+    }
   };
+
   return (
     <div
       style={{
@@ -332,6 +353,7 @@ export function NewTutoring({ headers }) {
             style={{
               marginLeft: "auto",
               cursor: disabled ? "not-allowed" : "pointer",
+              backgroundColor: disabled ? "grey" : secondaryColor(),
               minWidth: 120,
               borderRadius: 8,
               fontWeight: 600,
