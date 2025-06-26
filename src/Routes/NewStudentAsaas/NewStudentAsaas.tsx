@@ -10,7 +10,7 @@ import {
 } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress, Alert } from "@mui/material";
-import { IFrameAsaas } from "../Blog/Blog.Styled";
+import { IFrameAsaas } from "../HomePage/Blog.Styled";
 import Helmets from "../../Resources/Helmets";
 
 export const generateUsername = (

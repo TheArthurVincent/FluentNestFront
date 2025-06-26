@@ -1,26 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { motion } from "framer-motion";
-import Confetti from "react-confetti";
 import { secondaryColor } from "../../Styles/Styles";
 
-interface ProgressCounterProps {
-  flashcardsToday: number;
-  see: boolean;
+interface StreakProps {
+  streak: number;
+  message: string;
 }
 
-export const ProgressCounter: React.FC<ProgressCounterProps> = ({
-  flashcardsToday,
-  see,
-}) => {
-  const [showConfetti, setShowConfetti] = useState(false);
-
-  useEffect(() => {
-    if ((flashcardsToday = 25)) {
-      setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 2000);
-    }
-  }, [see]);
-
+export const Streak: React.FC<StreakProps> = ({ streak, message }) => {
   return (
     <div
       style={{
@@ -29,7 +16,6 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
         alignItems: "center",
       }}
     >
-      {showConfetti && <Confetti numberOfPieces={200} />}
       <div
         style={{
           width: "100%",
@@ -47,7 +33,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
             borderRadius: "12px",
           }}
           initial={{ width: "0%" }}
-          animate={{ width: `${(flashcardsToday / 25) * 100}%` }}
+          animate={{ width: `${(streak / 400) * 100}%` }}
           transition={{ duration: 0.5 }}
         />
       </div>
@@ -58,9 +44,14 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
           fontStyle: "italic",
         }}
       >
-        {flashcardsToday < 25
-          ? `${25 - flashcardsToday} flashcards left to review today!`
-          : `${flashcardsToday} flashcards already reviewed today!`}
+        <div
+          style={{
+            padding: "10px",
+          }}
+          dangerouslySetInnerHTML={{
+            __html: message,
+          }}
+        />
       </p>
     </div>
   );

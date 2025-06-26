@@ -104,7 +104,6 @@ export function LevelCard({
   const theItems = levels();
 
   const levelNumber = updateScore(totalScore, FC, assignmentsDone).level - 1;
-  const nextLevel = theItems[levelNumber + 1] || {};
   const { UniversalTexts } = useUserContext();
 
   return (

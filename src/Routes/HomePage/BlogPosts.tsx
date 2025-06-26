@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-  RouteDiv,
+  BlogPostTitle,
   BackgroundClickBlog,
   HTwo,
   HOne,
@@ -8,38 +8,24 @@ import {
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import axios from "axios";
 import {
+  formatDate,
   backDomain,
+  getVideoEmbedUrl,
   Xp,
   UniversalButtonsDivFlex,
-  DivFlex,
-  DivMarginBorder,
+  onLoggOut,
 } from "../../Resources/UniversalComponents";
 import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
-import { DivModal, InternDivModal } from "./Blog.Styled";
+import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import Helmets from "../../Resources/Helmets";
-import WordOfTheDay from "../WordOfTheDay/WordOfTheDay";
-import Countdown from "../Ranking/RankingComponents/Countdown";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import FlashCards from "../FlashCards/FlashCards";
-import ReviewFlashCards from "../FlashCards/FlashCardsComponents/ReviewFlashCards";
 
-interface BlogProps {
+interface BlogPostsProps {
   headers: MyHeadersType | null;
-  studentIdd: string;
-  picture: string;
-  change: boolean;
-  setChange: any;
 }
 
-export function Blog({
-  headers,
-  studentIdd,
-  picture,
-  change,
-  setChange,
-}: BlogProps) {
+export function BlogPosts({ headers }: BlogPostsProps) {
   const { UniversalTexts } = useUserContext();
   // Strings
   const [newTitle, setNewTitle] = useState<string>("");
@@ -48,14 +34,11 @@ export function Blog({
   const [newText, setNewText] = useState<string>("");
   const [newImg, setNewImg] = useState<string>("");
   const [newUrlVideo, setNewUrlVideo] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [classId, setClassId] = useState<string>("");
   const [permissions, setPermissions] = useState<string>("");
   // Booleans
   const [seeConfirmDelete, setSeeConfirmDelete] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
-  const [nextTutoring, setNextTutoring] = useState<any>();
 
   // Loading
   const [posts, setPosts] = useState<any>([
@@ -66,57 +49,6 @@ export function Blog({
 
   const [user, setUser] = useState<any>({});
 
-  const fetchClasses = async (studentId: string) => {
-    setLoading(true);
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/homeworknext/${studentId}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-      const tt = response.data.tutoringHomeworkList;
-      setNextTutoring(tt);
-      setLoading(false);
-    } catch (error) {
-      console.log(error, "erro ao listar itens");
-    }
-  };
-
-  var [course, setCourse] = useState<String>("");
-  var [module, setModule] = useState<String>("");
-  var [lesson, setLesson] = useState<String>("");
-  var [img, setImg] = useState("");
-  var [NO, setNo] = useState(true);
-  var [loadingLESSON, setLoadingLESSON] = useState<Boolean>(true);
-
-  const fetchLastClassId = async (classid: string) => {
-    setLoadingLESSON(true);
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/lesson/${classid}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-
-      var cour = response.data.course.title;
-      var less = response.data.classDetails.title;
-      var imgg = response.data.classDetails.image
-        ? response.data.classDetails.image
-        : "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512";
-      setCourse(cour);
-      setLesson(less);
-      setImg(imgg);
-      setLoadingLESSON(false);
-    } catch (error) {
-      setNo(false);
-      console.log(error, "Erro ao encontrar aula");
-    }
-  };
-
   useEffect(() => {
     const theuser = JSON.parse(localStorage.getItem("loggedIn") || "");
     if (user) {
@@ -125,14 +57,8 @@ export function Blog({
     }
     let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "");
     fetchData();
-    setClassId(getLoggedUser.lastClassId);
-    setName(getLoggedUser.name);
     setStudentId(getLoggedUser.id || _StudentId);
     setPermissions(getLoggedUser.permissions);
-    fetchClasses(getLoggedUser.id);
-    setTimeout(() => {
-      fetchLastClassId(getLoggedUser.lastClassId);
-    }, 2000);
   }, []);
 
   const handleSeeModal = () => {
@@ -144,43 +70,23 @@ export function Blog({
   };
 
   const actualHeaders = headers || {};
-  const sessions = [
-    {
-      id: "current-lesson",
-      title: NO
-        ? `${UniversalTexts.currentLesson}  - ${lesson}`
-        : "Begin your journey!",
-      description: UniversalTexts.retome,
-      img: img,
-      link: NO
-        ? `/english-courses/${course
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w\-]+/g, "")}/${classId}`
-        : "/english-courses/english-grammar/667ac39b4b4d6245dc8f385b",
-    },
-    {
-      id: "flash-cards",
-      title: "Flashcards",
-      description: UniversalTexts.revise,
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcards.png?updatedAt=1742402052092",
-      link: "/flash-cards",
-    },
-    {
-      id: "listening",
-      title: UniversalTexts.listening,
-      description: UniversalTexts.pratique,
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/list.png?updatedAt=1742402052061",
-      link: "/listening",
-    },
-    {
-      id: "sentence-mining",
-      title: UniversalTexts.vocabulary,
-      description: UniversalTexts.enriqueça,
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mining.png?updatedAt=1742402051850",
-      link: "/sentence-mining",
-    },
-  ];
+
+  const seeEdition = async (id: string): Promise<void> => {
+    handleSeeModal();
+    try {
+      const response = await axios.get(`${backDomain}/api/v1/blogpost/${id}`, {
+        headers: actualHeaders,
+      });
+      setID(response.data.formattedBlogPost.id);
+      setNewTitle(response.data.formattedBlogPost.title);
+      setNewUrlVideo(response.data.formattedBlogPost.videoUrl);
+      setNewText(response.data.formattedBlogPost.text);
+      setNewImg(response.data.formattedBlogPost.img);
+    } catch (error) {
+      alert(error);
+      console.error(error);
+    }
+  };
 
   const editPost = async (id: string): Promise<void> => {
     try {
@@ -225,7 +131,7 @@ export function Blog({
   async function fetchData(): Promise<void> {
     setLoading(true);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/blogpost`, {
+      const response = await axios.get(`${backDomain}/api/v1/blogposts`, {
         headers: actualHeaders,
       });
       setTimeout(() => {
@@ -235,26 +141,19 @@ export function Blog({
         setPosts(filteredPosts);
         setLoading(false);
       }, 300);
+
+      console.log(response.data.listOfPosts);
     } catch (error: any) {
       notifyError(error.response.data.error);
-      console.log(error.response.data.error);
-
-      setTimeout(() => {
-        if (error.response.data.feeUpToDate == false) {
-          window.location.assign("/feenotuptodate");
-        } else {
-          window.location.assign("/login");
-        }
-        setLoading(false);
-      }, 2500);
+      onLoggOut();
+      setLoading(false);
     }
   }
 
   return (
     <>
-      <RouteDiv>
-        <Helmets text="Home Page" />
-
+      <div style={{ maxWidth: "900px" }}>
+        {/* <Helmets text="Blog Posts" /> */}
         <div
           style={{
             margin: "1rem 0.5rem 0 0",
@@ -264,68 +163,80 @@ export function Blog({
             alignItems: "center",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginLeft: "1rem",
-              maxWidth: "100%",
-              gap: "1rem",
-            }}
-          >
-            <i className="fa fa-user " aria-hidden="true" />
-            <p>
-              {UniversalTexts.hello}
-              {name}!
-            </p>
-          </div>
           <div style={{ display: "flex", gap: "5px" }}></div>
         </div>
-        <DivFlex>
-          <div className="grid-flex-2">
-            <DivMarginBorder>
-              <ReviewFlashCards
-                change={change}
-                onChange={setChange}
-                headers={headers}
-              />
-            </DivMarginBorder>
-          </div>
-          <div className="grid-flex-2">
-            <DivMarginBorder>
-              {loadingLESSON ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
-              ) : (
-                <div className="study-container">
-                  <HOne>{UniversalTexts.studyEnglish}</HOne>
-                  <div className="grid-container">
-                    {sessions.map((session) => (
-                      <a
-                        key={session.id}
-                        href={session.link}
-                        className="grid-item"
-                      >
-                        <span className="session-title">{session.title}</span>
-                        <div
-                          className="image-background"
-                          style={{ backgroundImage: `url(${session.img})` }}
-                        />
-
-                        <div className="overlay">
-                          <p className="session-description">
-                            {session.description}
-                          </p>
-                        </div>
-                      </a>
-                    ))}
+        <div>
+          <HOne>{UniversalTexts.mural}</HOne>
+          <div>
+            {posts.map((post: any, index: number) => (
+              <div
+                key={index}
+                style={{
+                  maxWidth: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                }}
+              >
+                {post.title && (
+                  <BlogPostTitle>
+                    <span
+                      style={{
+                        maxWidth: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      {!loading && (
+                        <button
+                          style={{
+                            cursor: "pointer",
+                            display:
+                              permissions == "superadmin" ? "grid" : "none",
+                          }}
+                          onClick={() => seeEdition(post._id)}
+                        >
+                          <i className="fa fa-edit" aria-hidden="true" />
+                        </button>
+                      )}
+                      <HTwo> {post.title}</HTwo>
+                    </span>
+                    {post.createdAt && (
+                      <span>{formatDate(post.createdAt)}</span>
+                    )}
+                  </BlogPostTitle>
+                )}
+                {post.videoUrl ? (
+                  <div
+                    style={{
+                      margin: "auto",
+                    }}
+                  >
+                    <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
                   </div>
+                ) : post.img ? (
+                  <ImgBlog src={post.img} alt="logo" />
+                ) : null}
+                <div
+                  style={{
+                    margin: "1rem auto",
+                    fontSize: "0.8rem",
+                    padding: "1rem",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "10px",
+                    maxWidth: "800px",
+                    lineHeight: "1",
+                    color: "#222",
+                  }}
+                  className="limited-text"
+                >
+                  <div dangerouslySetInnerHTML={{ __html: post.text }} />
                 </div>
-              )}
-            </DivMarginBorder>
+              </div>
+            ))}
           </div>
-        </DivFlex>
-      </RouteDiv>
+        </div>
+      </div>
 
       <DivModal
         className="modal"
@@ -450,4 +361,4 @@ export function Blog({
   );
 }
 
-export default Blog;
+export default BlogPosts;

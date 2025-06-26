@@ -7,16 +7,19 @@ import {
   Typography,
   Box,
   Paper,
+  CircularProgress,
 } from "@mui/material";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
+import { secondaryColor } from "../../../../Styles/Styles";
 
 export function NewPost({ headers }) {
   const [newTitle, setNewTitle] = useState("");
   const [newVideoUrl, setNewVideoUrl] = useState("");
   const [newImg, setNewImg] = useState("");
   const [newText, setNewText] = useState("");
+  const [loading, setLoading] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Nenhum");
 
   const handleChooseOption = (event) => {
@@ -24,6 +27,7 @@ export function NewPost({ headers }) {
   };
 
   const handleSubmit = async (event) => {
+    setLoading(true);
     event.preventDefault();
     let newPost = {
       title: newTitle,
@@ -35,12 +39,16 @@ export function NewPost({ headers }) {
       await axios.post(`${backDomain}/api/v1/blogposts/`, newPost, { headers });
       alert("Post criado com sucesso!");
       window.location.href = "/";
+      setLoading(false);
     } catch (error) {
       alert("Erro ao fazer post");
+      setLoading(false);
     }
   };
 
-  return (
+  return loading ? (
+    <CircularProgress style={{ color: secondaryColor() }} />
+  ) : (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
       <HOne>Nova Postagem</HOne>
       <Paper sx={{ padding: 3 }} elevation={3}>

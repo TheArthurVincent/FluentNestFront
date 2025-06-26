@@ -24,7 +24,7 @@ import {
   textSecondaryColorContrast,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
-import { IFrameVideoBlog } from "../Blog/Blog.Styled";
+import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
 
 export default function GroupClasses({ headers }) {
   const { UniversalTexts } = useUserContext();

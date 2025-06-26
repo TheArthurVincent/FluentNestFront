@@ -63,17 +63,13 @@ export const readText = (
   restart: boolean,
   lang?: string,
   chosenVoice?: string,
-  voiceBoolean?: boolean
+  rate?: number
 ) => {
   if (!("speechSynthesis" in window)) {
     notifyError("Seu navegador não suporta a síntese de fala!");
     return;
   }
 
-  const numberReviewsToday = JSON.parse(
-    localStorage.getItem("loggedIn") || "{}"
-  ).flashCardsReviewsToday;
-  const ehPar = (nm: number) => nm % 2 === 0;
   const synth = window.speechSynthesis;
 
   if (!synth) {
@@ -104,7 +100,7 @@ export const readText = (
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = getLanguageCode(lang);
-    utterance.rate = 0.9;
+    utterance.rate = rate || 0.9;
     utterance.pitch = 0.9;
     utterance.volume = 1;
 

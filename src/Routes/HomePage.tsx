@@ -14,7 +14,7 @@ import Faq from "./Faq/Faq";
 import MyClasses from "./MyClasses/MyClasses";
 import MyCalendar from "./MyCalendar/MyCalendar";
 import Adm from "./Adm/Adm";
-import Blog from "./Blog/HomePageContent";
+import Blog from "./HomePage/HomePageContent";
 import { LevelCard } from "./LevelCard/LevelCard";
 import { BlogRouteSizeControlBox } from "../Resources/Components/RouteBox";
 import { HeadersProps } from "../Resources/types.universalInterfaces";
@@ -25,7 +25,7 @@ import AppFooter from "../Application/Footer/Footer";
 import EnglishCourses from "./EnglishLessons/Courses";
 import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
-import BlogPosts from "./Blog/BlogPosts";
+import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 
 

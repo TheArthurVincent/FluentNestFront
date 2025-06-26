@@ -44,7 +44,7 @@ export const SpanDisapear = styled.span`
   font-size: 1rem;
   font-weight: 400;
   padding: "0.2rem 0.6rem";
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     display: none;
   }
 `;
@@ -198,7 +198,7 @@ export const IFrameVideoPannel = styled.iframe`
     min-height: 50vh;
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     min-width: 90vw;
     min-height: 60vh;
   }
