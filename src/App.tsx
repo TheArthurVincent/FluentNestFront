@@ -111,7 +111,7 @@ function App() {
     },
     {
       path: "/*",
-      element: verifyToken() ? <HomePage headers={headers} /> : <Login />,
+      element: verifyToken() ? <HomePage headers={headers} /> : <LandingPage />,
     },
     {
       path: "/cadastre-se",
