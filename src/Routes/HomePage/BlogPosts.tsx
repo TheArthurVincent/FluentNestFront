@@ -18,6 +18,7 @@ import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 interface BlogPostsProps {
   headers: MyHeadersType | null;
@@ -142,7 +143,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
 
       console.log(response.data.listOfPosts);
     } catch (error: any) {
-      alert(error.response.data.error);
+      notifyError(error.response.data.error);
       window.location.assign("/login");
       setLoading(false);
     }
