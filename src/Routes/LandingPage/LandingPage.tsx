@@ -84,7 +84,7 @@ function LandingPage() {
       <div
         style={{
           width: "100%",
-          backgroundColor: "#fff",
+          backgroundColor: "#23232",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -93,74 +93,23 @@ function LandingPage() {
           zIndex: 10,
         }}
       >
-        <form
-          onSubmit={handleSubmit}
+        <a
           style={{
-            display: "flex",
-            flexDirection: isMobile ? "column" : "row",
-            gap: isMobile ? "5px" : "1rem",
-            padding: isMobile ? "1rem" : "0",
-            alignItems: isMobile ? "stretch" : "center",
-            width: isMobile ? "100%" : "auto",
-            maxWidth: "1380px",
+            marginLeft: "auto",
+            padding: "5px",
+            fontSize: "12px",
+            backgroundColor: secondaryColor(),
+            color: "#fff",
+            border: "none",
+            cursor: "pointer",
+            borderRadius: "5px",
+            textDecoration: "none",
           }}
+          href="https://portal.arthurvincent.com.br/"
+          target="_blank"
         >
-          <TextField
-            label="E-mail"
-            name="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            size="small"
-            fullWidth={isMobile}
-            sx={{ minWidth: isMobile ? "auto" : "200px" }}
-          />
-          <TextField
-            label="Senha"
-            name="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            size="small"
-            fullWidth={isMobile}
-            sx={{ minWidth: isMobile ? "auto" : "200px" }}
-          />
-
-          <span
-            style={
-              isMobile
-                ? {
-                    marginLeft: "auto",
-                  }
-                : undefined
-            }
-          >
-            <ArvinButton
-              type="submit"
-              style={{
-                backgroundColor: secondaryColor(),
-                color: "#fff",
-                width: isMobile ? "100%" : "auto",
-              }}
-            >
-              {button}
-            </ArvinButton>
-            <ArvinButton
-              onClick={() => window.location.assign("/request-reset-password")}
-              style={{
-                backgroundColor: "#eee",
-                color: primaryColor(),
-                marginRight: isMobile ? "0" : "1rem",
-                width: isMobile ? "100%" : "auto",
-              }}
-            >
-              Esqueci a senha
-            </ArvinButton>
-          </span>
-        </form>
-
+          Já sou aluno
+        </a>
         {fail && (
           <Alert
             severity="error"
@@ -285,3 +234,73 @@ function LandingPage() {
 }
 
 export default LandingPage;
+
+{
+  /* <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: isMobile ? "5px" : "1rem",
+            padding: isMobile ? "1rem" : "0",
+            alignItems: isMobile ? "stretch" : "center",
+            width: isMobile ? "100%" : "auto",
+            maxWidth: "1380px",
+          }}
+        >
+          <TextField
+            label="E-mail"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            size="small"
+            fullWidth={isMobile}
+            sx={{ minWidth: isMobile ? "auto" : "200px" }}
+          />
+          <TextField
+            label="Senha"
+            name="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            size="small"
+            fullWidth={isMobile}
+            sx={{ minWidth: isMobile ? "auto" : "200px" }}
+          />
+
+          <span
+            style={
+              isMobile
+                ? {
+                    marginLeft: "auto",
+                  }
+                : undefined
+            }
+          >
+            <ArvinButton
+              type="submit"
+              style={{
+                backgroundColor: secondaryColor(),
+                color: "#fff",
+                width: isMobile ? "100%" : "auto",
+              }}
+            >
+              {button}
+            </ArvinButton>
+            <ArvinButton
+              onClick={() => window.location.assign("/request-reset-password")}
+              style={{
+                backgroundColor: "#eee",
+                color: primaryColor(),
+                marginRight: isMobile ? "0" : "1rem",
+                width: isMobile ? "100%" : "auto",
+              }}
+            >
+              Esqueci a senha
+            </ArvinButton>
+          </span>
+        </form> */
+}
