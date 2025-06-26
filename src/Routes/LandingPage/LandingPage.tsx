@@ -87,6 +87,7 @@ function LandingPage() {
           backgroundColor: "#23232",
           display: "flex",
           justifyContent: "center",
+          marginRight: "1rem",
           alignItems: "center",
           padding: "0.5rem",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
