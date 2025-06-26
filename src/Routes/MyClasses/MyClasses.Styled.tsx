@@ -13,7 +13,7 @@ export const EventsCardsContainer = styled.div`
   justify-content: center;
   grid-template-columns: 1fr 1fr;
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     grid-template-columns: 1fr;
   }
 `;
@@ -110,7 +110,7 @@ export const TransectionMenu = styled.div`
   align-items: center;
   margin: 1rem;
   justify-content: space-between;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     flex-direction: column;
     gap: 0.5rem;
   }

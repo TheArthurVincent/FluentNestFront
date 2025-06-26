@@ -31,7 +31,7 @@ export const RouteDiv = styled.div.attrs({
   padding: 0.5rem;
   width: 90vw;
   height: 100%;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     width: 95vw;
   }
 `;
@@ -47,7 +47,7 @@ export const RouteDivCourses = styled.div.attrs({
   margin-left: auto;
   height: 100%;
   width: 1000px;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     width: 95vw;
   }
 `;
@@ -70,7 +70,7 @@ export const BlogRouteSizeControlBox = styled.div`
   margin-bottom: 22px;
   max-width: 60vw;
   gap: 0.2rem;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     display: flex;
     max-width: 70vw;
     margin-right: auto;

@@ -38,7 +38,7 @@ export const TopBarVerticalContainer = styled.header`
   padding: 1px;
   height: 100%;
   width: 90px;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     display: none;
   }
   @media print {
@@ -126,7 +126,7 @@ export const LinkItem = styled.li`
 
 export const LogoStyle = styled.div`
   display: block;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     display: none;
   }
 `;
@@ -140,7 +140,7 @@ export const Hamburguer = styled.div`
   &:hover {
     color: ${primaryColor()};
   }
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     display: block;
   }
 `;

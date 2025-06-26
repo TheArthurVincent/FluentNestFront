@@ -23,7 +23,7 @@ export const StyledDiv = styled.div`
   height: 61vh;
   overflow-y: auto;
   overflow-x: hidden;
-  @media (max-width: 1200px) {
+  @media (max-width: 1380px) {
     min-width: 20vw;
   }
   @media (max-width: 900px) {

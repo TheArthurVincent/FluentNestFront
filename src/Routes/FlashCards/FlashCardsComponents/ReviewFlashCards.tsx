@@ -5,13 +5,13 @@ import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import {
   backDomain,
   colorOfTheTShirt,
-  mascot,
-  mascotNormal,
-  mascotQuestioning,
-  mascotSee,
+  mascotStrong,
+  mascotSkinny,
+  mascotCelebrate,
   mascotThinking,
   onLoggOut,
   updateInfo,
+  mascotWeak,
 } from "../../../Resources/UniversalComponents";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
@@ -21,6 +21,7 @@ import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 import { color } from "framer-motion";
+import { Streak } from "../../FlashCardsToday/Streak";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -38,6 +39,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [answer, setAnswer] = useState<boolean>(false);
   const [cardsLength, setCardsLength] = useState<boolean>(true);
   const [see, setSee] = useState<boolean>(false);
+  const [seeConf, setSeeConf] = useState<boolean>(false);
   const [count, setCount] = useState<number>(4);
   const [backCardVisible, setBackCardVisible] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("nofilter");
@@ -70,6 +72,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         );
         setFlashcardsToday(flashcardsTodayNumber);
       }
+      setSeeConf(seeConf);
     }, 1000);
   }, [change]);
 
@@ -338,6 +341,30 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
+  var [streak, setStreak] = useState<any>(0);
+  var [lastR, setLastR] = useState<any>(0);
+  const getHistory = async (id: string) => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/flashcardhistory/${id}`,
+        { headers: actualHeaders }
+      );
+      var st = response.data.streak;
+      var lr = response.data.diasDesdeUltimaRevisao;
+      setStreak(st);
+      setLastR(lr);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      getHistory(myId);
+    }, 1000);
+  }, [myId]);
+
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
 
@@ -347,12 +374,38 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
-  const mascotQuestioningEmbed = mascotQuestioning(colorOfTheTShirt, 3);
-  // const mascotQuestioningEmbed = mascotNormal(colorOfTheTShirt, 3);
-  // const mascotQuestioningEmbed = mascotThinking(colorOfTheTShirt, 3);
-  // const mascotQuestioningEmbed = mascotSee(colorOfTheTShirt, 3);
-  // const mascotQuestioningEmbed = mascot(colorOfTheTShirt, 3);
-  // const mascotNormalEmbed = mascotNormal(colorOfTheTShirt, 3);
+  const [MESSAGE, setMESSAGE] = useState<string>("How are you?");
+  const [mascot, setMascot] = useState<any>(null);
+
+  useEffect(() => {
+    if (flashcardsToday >= 25 && streak < 50) {
+      setMascot(mascotCelebrate(colorOfTheTShirt, 3));
+      setMESSAGE(
+        `Congratulations for reviewing ${flashcardsToday} cards today! Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
+      );
+    } else if (flashcardsToday >= 25 && streak >= 50) {
+      setMascot(mascotCelebrate(colorOfTheTShirt, 3));
+      setMESSAGE(
+        `Congratulations for reviewing ${flashcardsToday} cards today! I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
+      );
+    } else if (lastR !== null && lastR <= 3) {
+      setMascot(mascotThinking(colorOfTheTShirt, 3));
+      setMESSAGE(`I'm worried about you, you haven't studied in ${lastR} days`);
+    } else if (lastR !== null && lastR > 3) {
+      setMascot(mascotWeak(colorOfTheTShirt, 3));
+      setMESSAGE(`I'm dying, you haven't studied in ${lastR} days`);
+    } else if (streak >= 50) {
+      setMascot(mascotStrong(colorOfTheTShirt, 3));
+      setMESSAGE(
+        `I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
+      );
+    } else if (streak < 50 && streak > lastR) {
+      setMascot(mascotSkinny(colorOfTheTShirt, 3));
+      setMESSAGE(
+        `Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
+      );
+    }
+  }, [flashcardsToday, lastR, streak]);
 
   return (
     <section id="review">
@@ -376,10 +429,15 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             justifyContent: "center",
           }}
           onClick={() => {
-            readText(`Hi ${theName}, I'm Arvin!`, false, "en", selectedVoice);
+            readText(
+              `Hi ${theName}, I'm Arvin! ${MESSAGE}`,
+              false,
+              "en",
+              selectedVoice
+            );
           }}
         >
-          {!loading && mascotQuestioningEmbed}
+          {!loading && mascot}
         </div>
         <div
           style={{
@@ -511,7 +569,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                         cards[0].front.text,
                                         true,
                                         cards[0].front.language,
-                                        selectedVoice
+                                        selectedVoice,
+                                        
                                       )
                                     }
                                   >
@@ -703,7 +762,9 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           </div>
         </div>
       </div>
-      <ProgressCounter flashcardsToday={flashcardsToday} />
+      <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
+      <br />
+      <Streak message={MESSAGE} streak={lastR ? 0 : streak} />
       <a
         href="/words-of-the-day"
         style={{
