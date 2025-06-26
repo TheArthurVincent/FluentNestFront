@@ -87,16 +87,16 @@ function LandingPage() {
           backgroundColor: "#222",
           display: "flex",
           justifyContent: "center",
-          marginRight: "1rem",
           alignItems: "center",
           padding: "0.5rem",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           zIndex: 10,
         }}
-      >
+        >
         <a
           style={{
             marginLeft: "auto",
+            marginRight: "1rem",
             padding: "5px",
             fontSize: "12px",
             backgroundColor: secondaryColor(),
