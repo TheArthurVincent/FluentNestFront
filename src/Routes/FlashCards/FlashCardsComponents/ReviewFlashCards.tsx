@@ -5,7 +5,11 @@ import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import {
   backDomain,
   colorOfTheTShirt,
+  mascot,
   mascotNormal,
+  mascotQuestioning,
+  mascotSee,
+  mascotThinking,
   onLoggOut,
   updateInfo,
 } from "../../../Resources/UniversalComponents";
@@ -16,6 +20,7 @@ import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
+import { color } from "framer-motion";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -342,7 +347,12 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
-  const mascotsad = mascotNormal(colorOfTheTShirt, 3);
+  const mascotQuestioningEmbed = mascotQuestioning(colorOfTheTShirt, 3);
+  // const mascotQuestioningEmbed = mascotNormal(colorOfTheTShirt, 3);
+  // const mascotQuestioningEmbed = mascotThinking(colorOfTheTShirt, 3);
+  // const mascotQuestioningEmbed = mascotSee(colorOfTheTShirt, 3);
+  // const mascotQuestioningEmbed = mascot(colorOfTheTShirt, 3);
+  // const mascotNormalEmbed = mascotNormal(colorOfTheTShirt, 3);
 
   return (
     <section id="review">
@@ -369,7 +379,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             readText(`Hi ${theName}, I'm Arvin!`, false, "en", selectedVoice);
           }}
         >
-          {mascotsad}
+          {!loading && mascotQuestioningEmbed}
         </div>
         <div
           style={{
