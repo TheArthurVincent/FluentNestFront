@@ -124,7 +124,9 @@ export function SendMail() {
               style={{
                 marginLeft: "auto",
               }}
-              type="submit"
+              onClick={() => {
+                window.location.assign("/cadastre-se");
+              }}
               disabled={loading}
             >
               {"Cadastrar-me na plataforma"}
