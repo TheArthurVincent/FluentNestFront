@@ -12,7 +12,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
 import ReviewFlashCards from "./FlashCardsComponents/ReviewFlashCards";
 import AllCards from "./FlashCardsComponents/AllCards";
-import { mascotNormal, onLoggOut } from "../../Resources/UniversalComponents";
+import { onLoggOut } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 

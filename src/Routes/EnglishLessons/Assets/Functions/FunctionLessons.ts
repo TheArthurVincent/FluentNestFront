@@ -1,3 +1,5 @@
+import axios from "axios";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 import { textFont } from "../../../../Styles/Styles";
 
 export const notifyError = (
@@ -58,94 +60,136 @@ export const notifyError = (
   );
 };
 
-export const readText = (
+// export const readText = (
+//   text: string,
+//   restart: boolean,
+//   lang?: string,
+//   chosenVoice?: string,
+//   rate?: number
+// ) => {
+//   if (!("speechSynthesis" in window)) {
+//     notifyError("Seu navegador não suporta a síntese de fala!");
+//     return;
+//   }
+
+//   const synth = window.speechSynthesis;
+
+//   if (!synth) {
+//     console.error("speechSynthesis não está disponível.");
+//     return;
+//   }
+
+//   if (restart) {
+//     synth.cancel();
+//   }
+
+//   const loadVoices = (): Promise<SpeechSynthesisVoice[]> => {
+//     return new Promise((resolve) => {
+//       let voices = synth.getVoices();
+//       if (voices.length !== 0) {
+//         resolve(voices);
+//       } else {
+//         synth.addEventListener("voiceschanged", () => {
+//           voices = synth.getVoices();
+//           resolve(voices);
+//         });
+//       }
+//     });
+//   };
+
+//   const speak = async () => {
+//     const voices = await loadVoices();
+
+//     const utterance = new SpeechSynthesisUtterance(text);
+//     utterance.lang = getLanguageCode(lang);
+//     utterance.rate = rate || 0.9;
+//     utterance.pitch = 0.9;
+//     utterance.volume = 1;
+
+//     const detectBrowser = () => {
+//       var ua = navigator.userAgent;
+
+//       if (/Edg/.test(ua)) return "Edge";
+//       if (/OPR/.test(ua)) return "Opera";
+//       if (/Chrome/.test(ua) && !/Edg/.test(ua)) return "Chrome";
+//       if (/Safari/.test(ua) && !/Chrome/.test(ua)) return "Safari";
+//       if (/Firefox/.test(ua)) return "Firefox";
+//       if (/MSIE|Trident/.test(ua)) return "Internet Explorer";
+
+//       return "Desconhecido";
+//     };
+//     const userAgent = detectBrowser();
+//     let selectedVoice;
+
+//     if (chosenVoice) {
+//       selectedVoice = voices.find((v) => v.name === chosenVoice);
+//     }
+
+//     if (selectedVoice) {
+//       utterance.voice = selectedVoice;
+//     } else {
+//       if (userAgent === "Opera") {
+//         notifyError(
+//           "Seu navegador não suporta este recurso de voz. Tente o Edge ou o Chrome"
+//         );
+//         return;
+//       }
+//     }
+//     utterance.onerror = (e) => {
+//       synth.speak(e.utterance);
+//     };
+//     synth.speak(utterance);
+//   };
+
+//   speak();
+// };
+
+export const readText = async (
   text: string,
   restart: boolean,
   lang?: string,
   chosenVoice?: string,
   rate?: number
 ) => {
-  if (!("speechSynthesis" in window)) {
-    notifyError("Seu navegador não suporta a síntese de fala!");
-    return;
+  if (restart && window?.speechSynthesis) {
+    window.speechSynthesis.cancel();
   }
 
-  const synth = window.speechSynthesis;
+  // ✅ Verifica e define valores padrão se necessário
+  let voiceLang = localStorage.getItem("voiceLang");
+  let voiceGender = localStorage.getItem("voiceGender");
 
-  if (!synth) {
-    console.error("speechSynthesis não está disponível.");
-    return;
+  if (!voiceLang || !voiceGender) {
+    voiceLang = "en-US";
+    voiceGender = "MALE";
+    localStorage.setItem("voiceLang", voiceLang);
+    localStorage.setItem("voiceGender", voiceGender);
+    localStorage.setItem("voiceOption", "male-us");
   }
 
-  if (restart) {
-    synth.cancel();
-  }
-
-  const loadVoices = (): Promise<SpeechSynthesisVoice[]> => {
-    return new Promise((resolve) => {
-      let voices = synth.getVoices();
-      if (voices.length !== 0) {
-        resolve(voices);
-      } else {
-        synth.addEventListener("voiceschanged", () => {
-          voices = synth.getVoices();
-          resolve(voices);
-        });
-      }
+  try {
+    const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
+      text,
+      languageCode: lang || voiceLang,
+      gender: voiceGender,
+      pitch: 0,
+      speakingRate: rate || 0.9,
     });
-  };
 
-  const speak = async () => {
-    const voices = await loadVoices();
-
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = getLanguageCode(lang);
-    utterance.rate = rate || 0.9;
-    utterance.pitch = 0.9;
-    utterance.volume = 1;
-
-    const detectBrowser = () => {
-      var ua = navigator.userAgent;
-
-      if (/Edg/.test(ua)) return "Edge";
-      if (/OPR/.test(ua)) return "Opera";
-      if (/Chrome/.test(ua) && !/Edg/.test(ua)) return "Chrome";
-      if (/Safari/.test(ua) && !/Chrome/.test(ua)) return "Safari";
-      if (/Firefox/.test(ua)) return "Firefox";
-      if (/MSIE|Trident/.test(ua)) return "Internet Explorer";
-
-      return "Desconhecido";
-    };
-    const userAgent = detectBrowser();
-    let selectedVoice;
-
-    if (chosenVoice) {
-      selectedVoice = voices.find((v) => v.name === chosenVoice);
-    }
-
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-    } else {
-      if (userAgent === "Opera") {
-        notifyError(
-          "Seu navegador não suporta este recurso de voz. Tente o Edge ou o Chrome"
-        );
-        return;
-      }
-    }
-    utterance.onerror = (e) => {
-      synth.speak(e.utterance);
-    };
-    synth.speak(utterance);
-  };
-
-  speak();
+    const audioBase64 = response.data.audio;
+    const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+    audio.play();
+  } catch (error) {
+    notifyError("Erro ao gerar áudio");
+    console.error("Erro TTS:", error);
+  }
 };
-
 const getLanguageCode = (lang?: string): string => {
   switch (lang) {
     case "en":
       return "en-US";
+    case "en-UK":
+      return "en-UK";
     case "pt":
       return "pt-BR";
     case "fr":
