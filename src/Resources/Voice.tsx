@@ -82,7 +82,7 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
             </option>
           ))}
         </select>
-          🗣️
+        {selectedOption !== "male-us" ? "🧏‍♀️🗣️" : "🧏‍♂️🗣️"}
       </div>
     </div>
   );
