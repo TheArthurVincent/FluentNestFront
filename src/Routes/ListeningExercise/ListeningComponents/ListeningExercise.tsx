@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
@@ -7,7 +7,10 @@ import {
   onLoggOut,
   updateInfo,
 } from "../../../Resources/UniversalComponents";
-import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import {
+  notifyError,
+  readText,
+} from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 
 import { secondaryColor, textTitleFont } from "../../../Styles/Styles";
@@ -144,8 +147,8 @@ const ListeningExercise = ({
       setLoading(false);
       seeCardsToReview();
     } catch (error) {
-      alert("Erro ao enviar cards");
-      onLoggOut();
+      notifyError("Erro ao enviar cards");
+      // onLoggOut();
     }
   };
 
@@ -274,50 +277,115 @@ const ListeningExercise = ({
       setCardsLength(thereAreCards);
       setLoading(false);
     } catch (error) {
-      alert("Erro ao carregar cards");
+      notifyError("Erro ao carregar cards");
     }
     setIsShow(true);
   };
 
-  // Controle do reconhecimento de fala
-  const SpeechRecognition =
-    // @ts-ignore
-    window.SpeechRecognition || window.webkitSpeechRecognition;
-  const recognition = new SpeechRecognition();
-  recognition.lang = cards[0]?.front?.language == "en" ? "en-US" : "fr-FR";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+  // // Controle do reconhecimento de fala
+  // const SpeechRecognition =
+  //   // @ts-ignore
+  //   window.SpeechRecognition || window.webkitSpeechRecognition;
+  // const recognition = new SpeechRecognition();
+  // recognition.lang = cards[0]?.front?.language == "en" ? "en-US" : "fr-FR";
+  // recognition.interimResults = false;
+  // recognition.maxAlternatives = 1;
 
-  const startListening = () => {
-    setListening(true);
-    recognition.start();
+  // const startListening = () => {
+  //   setListening(true);
+  //   recognition.start();
+  // };
+
+  // const stopListening = () => {
+  //   setListening(false);
+  //   recognition.stop();
+  // };
+  // recognition.onresult = (event: any) => {
+  //   const speechToText = event.results[0][0].transcript;
+  //   setTranscript(cleanString(speechToText));
+  //   setSeeProgress(true);
+  //   setTimeout(() => {
+  //     isCorrectAnswer(speechToText);
+  //     setIsDisabled(false);
+  //     setSeeProgress(false);
+  //   }, 2000);
+  //   setEnableVoice(false);
+  // };
+
+  // recognition.onspeechend = () => {
+  //   setTimeout(() => {
+  //     stopListening();
+  //   }, 2000);
+  // };
+  // recognition.onerror = () => {
+  //   stopListening();
+  //   notifyError("Erro no reconhecimento de voz");
+  //   window.location.reload();
+  // };
+  // Reconhecimento com MediaRecorder + envio para backend Google Cloud
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunks: BlobPart[] = [];
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: "audio/webm",
+      });
+
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunks.length = 0;
+      mediaRecorder.start();
+      setListening(true);
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "audio.webm");
+
+        setSeeProgress(true);
+        try {
+          const response = await axios.post(
+            `${backDomain}/api/v1/speech-listening`,
+            formData
+            // {
+            //   headers: {
+            //     "Content-Type": "multipart/form-data",
+            //   },
+            // }
+          );
+
+          const speechToText = response.data.transcript;
+          setTranscript(speechToText); // mantém para exibir ao aluno
+          isCorrectAnswer(speechToText); // calcula similarity e score
+          setIsDisabled(false);
+
+          // Se quiser já pontuar automaticamente, chame:
+          // ponctuate(speechToText);
+          // Ou deixe o botão "Next" para fazer isso
+        } catch (error) {
+          notifyError(" 1 Erro ao transcrever áudio");
+          console.log(" 1 Erro ao transcrever áudio", error);
+        } finally {
+          setSeeProgress(false);
+          setEnableVoice(false);
+          setListening(false);
+        }
+      };
+    } catch (error) {
+      notifyError(" 2 Erro ao transcrever áudio");
+      console.log(" 2 Erro ao transcrever áudio");
+    }
   };
 
-  const stopListening = () => {
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
     setListening(false);
-    recognition.stop();
-  };
-  recognition.onresult = (event: any) => {
-    const speechToText = event.results[0][0].transcript;
-    setTranscript(cleanString(speechToText));
-    setSeeProgress(true);
-    setTimeout(() => {
-      isCorrectAnswer(speechToText);
-      setIsDisabled(false);
-      setSeeProgress(false);
-    }, 2000);
-    setEnableVoice(false);
-  };
-
-  recognition.onspeechend = () => {
-    setTimeout(() => {
-      stopListening();
-    }, 2000);
-  };
-  recognition.onerror = () => {
-    stopListening();
-    alert("Erro no reconhecimento de voz");
-    window.location.reload();
   };
 
   const [selectedVoice, setSelectedVoice] = useState<any>("");
@@ -474,11 +542,11 @@ const ListeningExercise = ({
 
                             readText(
                               cards[0]?.front?.language == "en"
-                                ? `Listen: ${cards[0]?.front?.text.replace(
+                                ? `${cards[0]?.front?.text.replace(
                                     /\s+/g,
                                     " "
                                   )}`
-                                : `Listen: ${cards[0]?.front?.text}`,
+                                : `${cards[0]?.front?.text}`,
                               false,
                               cards[0]?.front?.language,
                               selectedVoice
@@ -507,7 +575,7 @@ const ListeningExercise = ({
                             margin: "0 5px",
                           }}
                           disabled={!enableVoice}
-                          onClick={!listening ? startListening : stopListening}
+                          onClick={!listening ? startRecording : stopRecording}
                           color={
                             !enableVoice
                               ? "grey"

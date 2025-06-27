@@ -5,7 +5,7 @@ import { secondaryColor } from "../../Styles/Styles";
 
 interface ProgressCounterProps {
   flashcardsToday: number;
-  see: boolean;
+  see?: boolean;
 }
 
 export const ProgressCounter: React.FC<ProgressCounterProps> = ({
