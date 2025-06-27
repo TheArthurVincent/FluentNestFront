@@ -127,7 +127,7 @@ export function NewTutoring({ headers }) {
     //   alert("HW criado com sucesso!");
     //   setTutorings([]);
     //   setNewHWDescription("");
-      setLoadingHW(false);
+    setLoadingHW(false);
     // } catch (error) {
     //   setLoadingHW(false);
     //   alert("Erro ao salvar aulas");
@@ -280,6 +280,17 @@ export function NewTutoring({ headers }) {
                       minRows={2}
                       maxRows={6}
                       fullWidth
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: secondaryColor() },
+                          "&:hover fieldset": { borderColor: secondaryColor() },
+                          "&.Mui-focused fieldset": {
+                            borderColor: secondaryColor(),
+                          },
+                        },
+                        "& label": { color: secondaryColor() },
+                        "& label.Mui-focused": { color: secondaryColor() },
+                      }}
                       variant="outlined"
                       placeholder="Escreva os flashcards aqui"
                       value={newFlashcards}

@@ -167,6 +167,17 @@ export function ManageGroupClasses({ headers }) {
           <TextField
             id="outlined-basic"
             label="Nome da nova aula"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: secondaryColor() },
+                "&:hover fieldset": { borderColor: secondaryColor() },
+                "&.Mui-focused fieldset": {
+                  borderColor: secondaryColor(),
+                },
+              },
+              "& label": { color: secondaryColor() },
+              "& label.Mui-focused": { color: secondaryColor() },
+            }}
             variant="outlined"
             value={newClassName}
             onChange={(e) => setNewClassName(e.target.value)}
@@ -176,12 +187,34 @@ export function ManageGroupClasses({ headers }) {
             label="URL do Vídeo da nova aula"
             variant="outlined"
             value={newVideoUrl}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: secondaryColor() },
+                "&:hover fieldset": { borderColor: secondaryColor() },
+                "&.Mui-focused fieldset": {
+                  borderColor: secondaryColor(),
+                },
+              },
+              "& label": { color: secondaryColor() },
+              "& label.Mui-focused": { color: secondaryColor() },
+            }}
             onChange={(e) => setNewVideoUrl(e.target.value)}
           />
           <TextField
             id="outlined-basic"
             label="Pasta da nova aula"
             variant="outlined"
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: secondaryColor() },
+                "&:hover fieldset": { borderColor: secondaryColor() },
+                "&.Mui-focused fieldset": {
+                  borderColor: secondaryColor(),
+                },
+              },
+              "& label": { color: secondaryColor() },
+              "& label.Mui-focused": { color: secondaryColor() },
+            }}
             value={newGoogleDriveLink}
             onChange={(e) => setNewGoogleDriveLink(e.target.value)}
           />
