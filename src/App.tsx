@@ -124,7 +124,7 @@ function App() {
     { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
-    { path: "/getmail", element: <SendMail /> },
+    { path: "/material-do-video", element: <SendMail /> },
     { path: "/reset-password/*", element: <ResetPasswordFinalChange /> },
     { path: "/feenotuptodate", element: <FeeNotUpToDate /> },
   ];
