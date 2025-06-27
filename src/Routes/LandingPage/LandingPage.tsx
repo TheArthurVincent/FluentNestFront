@@ -104,7 +104,7 @@ function LandingPage() {
             borderRadius: "5px",
             textDecoration: "none",
           }}
-          href="https://arthurvincent.com.br/login"
+          href="/login"
           target="_blank"
         >
           Já sou aluno
