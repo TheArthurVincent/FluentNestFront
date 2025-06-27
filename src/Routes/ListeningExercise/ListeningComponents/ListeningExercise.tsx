@@ -352,7 +352,7 @@ const ListeningExercise = ({
         try {
           const response = await axios.post(
             `${backDomain}/api/v1/speech-listening`,
-            formData,
+            formData
             // {
             //   headers: {
             //     "Content-Type": "multipart/form-data",
@@ -542,11 +542,11 @@ const ListeningExercise = ({
 
                             readText(
                               cards[0]?.front?.language == "en"
-                                ? `Listen: ${cards[0]?.front?.text.replace(
+                                ? `${cards[0]?.front?.text.replace(
                                     /\s+/g,
                                     " "
                                   )}`
-                                : `Listen: ${cards[0]?.front?.text}`,
+                                : `${cards[0]?.front?.text}`,
                               false,
                               cards[0]?.front?.language,
                               selectedVoice
