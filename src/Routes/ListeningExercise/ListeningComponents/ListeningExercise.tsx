@@ -7,7 +7,7 @@ import {
   onLoggOut,
   updateInfo,
 } from "../../../Resources/UniversalComponents";
-import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyError, readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 
 import { secondaryColor, textTitleFont } from "../../../Styles/Styles";
@@ -144,8 +144,8 @@ const ListeningExercise = ({
       setLoading(false);
       seeCardsToReview();
     } catch (error) {
-      alert("Erro ao enviar cards");
-      onLoggOut();
+      notifyError("Erro ao enviar cards");
+      // onLoggOut();
     }
   };
 
@@ -274,7 +274,7 @@ const ListeningExercise = ({
       setCardsLength(thereAreCards);
       setLoading(false);
     } catch (error) {
-      alert("Erro ao carregar cards");
+      notifyError("Erro ao carregar cards");
     }
     setIsShow(true);
   };
@@ -316,7 +316,7 @@ const ListeningExercise = ({
   };
   recognition.onerror = () => {
     stopListening();
-    alert("Erro no reconhecimento de voz");
+    notifyError("Erro no reconhecimento de voz");
     window.location.reload();
   };
 
