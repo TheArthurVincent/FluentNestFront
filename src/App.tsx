@@ -17,6 +17,7 @@ import EmailCheck from "./Routes/NewStudentAsaas/EmailCheck";
 import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
 import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
+import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");
@@ -123,6 +124,7 @@ function App() {
     { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
+    { path: "/material-do-video", element: <SendMail /> },
     { path: "/reset-password/*", element: <ResetPasswordFinalChange /> },
     { path: "/feenotuptodate", element: <FeeNotUpToDate /> },
   ];

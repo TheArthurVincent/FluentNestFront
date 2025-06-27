@@ -126,6 +126,17 @@ export function AllComments({ headers }) {
             fullWidth
             multiline
             rows={4}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: secondaryColor() },
+                "&:hover fieldset": { borderColor: secondaryColor() },
+                "&.Mui-focused fieldset": {
+                  borderColor: secondaryColor(),
+                },
+              },
+              "& label": { color: secondaryColor() },
+              "& label.Mui-focused": { color: secondaryColor() },
+            }}
             variant="outlined"
             value={responseText}
             onChange={(e) => setResponseText(e.target.value)}

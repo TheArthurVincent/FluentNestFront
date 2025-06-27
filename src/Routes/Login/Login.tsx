@@ -103,22 +103,14 @@ export function Login() {
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: secondaryColor(), // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: secondaryColor(), // ao passar o mouse
-                        },
+                        "& fieldset": { borderColor: secondaryColor() },
+                        "&:hover fieldset": { borderColor: secondaryColor() },
                         "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(), // quando focado
-                        },
-                        "& label": {
-                          color: secondaryColor(), // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: secondaryColor(), // cor quando o label está flutuando
+                          borderColor: secondaryColor(),
                         },
                       },
+                      "& label": { color: secondaryColor() },
+                      "& label.Mui-focused": { color: secondaryColor() },
                     }}
                   />
                 </Grid>
@@ -133,22 +125,14 @@ export function Login() {
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
-                      },
-                      "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
-                      },
+                      "& fieldset": { borderColor: secondaryColor() },
+                      "&:hover fieldset": { borderColor: secondaryColor() },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
-                      },
-                      "& label": {
-                        color: secondaryColor(), // cor padrão do label
-                      },
-                      "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        borderColor: secondaryColor(),
                       },
                     },
+                    "& label": { color: secondaryColor() },
+                    "& label.Mui-focused": { color: secondaryColor() },
                   }}
                 />
               </Grid>
