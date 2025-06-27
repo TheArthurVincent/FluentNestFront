@@ -22,6 +22,7 @@ import {
 } from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
+import Voice from "../../Resources/Voice";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -113,6 +114,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       alert(error.response?.data?.error || "Error fetching flashcards.");
     }
   };
+  const [changeNumber, setChangeNumber] = useState<boolean>(true);
 
   const editWordOfTheDay = async () => {
     const newWord = [
@@ -224,6 +226,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     }}
                   />
                 </div>
+
                 <div style={{ textAlign: "center", padding: "20px" }}>
                   <p>
                     <a
@@ -234,6 +237,12 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       Ver mais exemplos em vídeos
                     </a>
                   </p>
+                  <br />
+                  <Voice
+                    maxW="12rem"
+                    changeB={changeNumber}
+                    setChangeB={setChangeNumber}
+                  />
                 </div>
                 <div style={{ margin: "auto", padding: "10px" }}>
                   {sentences.map((sentence, index) => (
@@ -386,9 +395,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     }}
                   />
                 }
-
                 label="English → Portuguese"
-
               />
               <FormControlLabel
                 value="pt"
@@ -404,6 +411,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               />
             </RadioGroup>
           </FormControl>
+
           <ArvinButton
             disabled={word == "" || disabledButton}
             cursor={word == "" || disabledButton ? "not-allowed" : "pointer"}
