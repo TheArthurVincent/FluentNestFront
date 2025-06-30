@@ -154,8 +154,7 @@ export const readText = async (
   if (restart && window?.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
-
-  // ✅ Verifica e define valores padrão se necessário
+  console.log(text);
   let voiceLang = localStorage.getItem("voiceLang");
   let voiceGender = localStorage.getItem("voiceGender");
 
@@ -172,8 +171,8 @@ export const readText = async (
       text,
       languageCode: lang || voiceLang,
       gender: voiceGender,
-      pitch: 0,
-      speakingRate: rate || 0.9,
+      pitch: 0.5,
+      speakingRate: 1,
     });
 
     const audioBase64 = response.data.audio;
