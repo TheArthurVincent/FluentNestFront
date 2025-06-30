@@ -154,6 +154,7 @@ export const readText = async (
   if (restart && window?.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
+  console.log(text);
 
   // ✅ Verifica e define valores padrão se necessário
   let voiceLang = localStorage.getItem("voiceLang");
