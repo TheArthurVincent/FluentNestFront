@@ -160,13 +160,13 @@ export const readText = async (
   let voiceLang = localStorage.getItem("voiceLang");
   let voiceGender = localStorage.getItem("voiceGender");
 
-  if (!voiceLang || !voiceGender) {
-    voiceLang = "en-US";
-    voiceGender = "MALE";
-    localStorage.setItem("voiceLang", voiceLang);
-    localStorage.setItem("voiceGender", voiceGender);
-    localStorage.setItem("voiceOption", "male-us");
-  }
+  // if (!voiceLang || !voiceGender) {
+  //   voiceLang = "en-US";
+  //   voiceGender = "MALE";
+  //   localStorage.setItem("voiceLang", voiceLang);
+  //   localStorage.setItem("voiceGender", voiceGender);
+  //   localStorage.setItem("voiceOption", "male-us");
+  // }
 
   try {
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
