@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  onLoggOut,
-  updateInfo,
-} from "../../../Resources/UniversalComponents";
+import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import {
   notifyError,
   readText,
@@ -377,9 +373,9 @@ const ListeningExercise = ({
           setListening(false);
         }
       };
-    } catch (error) {
-      notifyError(" 2 Erro ao transcrever áudio");
-      console.log(" 2 Erro ao transcrever áudio");
+    } catch (error: any) {
+      notifyError(" 2 Erro ao transcrever áudio", error);
+      console.log(" 2 Erro ao transcrever áudio", error);
     }
   };
 

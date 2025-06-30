@@ -156,25 +156,16 @@ export const readText = async (
   }
   console.log(text);
 
-  // ✅ Verifica e define valores padrão se necessário
   let voiceLang = localStorage.getItem("voiceLang");
   let voiceGender = localStorage.getItem("voiceGender");
-
-  // if (!voiceLang || !voiceGender) {
-  //   voiceLang = "en-US";
-  //   voiceGender = "MALE";
-  //   localStorage.setItem("voiceLang", voiceLang);
-  //   localStorage.setItem("voiceGender", voiceGender);
-  //   localStorage.setItem("voiceOption", "male-us");
-  // }
 
   try {
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
       text,
       languageCode: lang || voiceLang,
       gender: voiceGender,
-      pitch: 0,
-      speakingRate: rate || 0.9,
+      pitch: 0.5,
+      speakingRate: 1,
     });
 
     const audioBase64 = response.data.audio;

@@ -302,9 +302,8 @@ export function MyProfile({ headers }: HeadersProps) {
                     )}
                     <br />
                     <span style={{ display: "block", marginTop: "0.5rem" }}>
-                      Recomende a plataforma a um amigo e ganhe{" "}
-                      <strong>R$ 50,00 de desconto</strong> na sua próxima
-                      mensalidade!
+                      Recomende a plataforma a alguém para que a pessoa ganhe
+                      <strong>20% de desconto</strong>nos 3 primeiros meses!
                     </span>
                   </li>
                   {myProfileList.map((item, index) => (
@@ -321,7 +320,6 @@ export function MyProfile({ headers }: HeadersProps) {
                       <SpanDisapear>
                         <b>{item.title}: </b>
                       </SpanDisapear>
-
                       <span>{item.data}</span>
                     </li>
                   ))}
@@ -489,14 +487,16 @@ export function MyProfile({ headers }: HeadersProps) {
                     required
                     fullWidth
                     sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
-                "&.Mui-focused fieldset": { borderColor: secondaryColor() },
-              },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
-            }}
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: secondaryColor() },
+                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "&.Mui-focused fieldset": {
+                          borderColor: secondaryColor(),
+                        },
+                      },
+                      "& label": { color: secondaryColor() },
+                      "& label.Mui-focused": { color: secondaryColor() },
+                    }}
                   />
                   <br />
                   <br />
@@ -508,14 +508,16 @@ export function MyProfile({ headers }: HeadersProps) {
                     required
                     fullWidth
                     sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
-                "&.Mui-focused fieldset": { borderColor: secondaryColor() },
-              },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
-            }}
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: secondaryColor() },
+                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "&.Mui-focused fieldset": {
+                          borderColor: secondaryColor(),
+                        },
+                      },
+                      "& label": { color: secondaryColor() },
+                      "& label.Mui-focused": { color: secondaryColor() },
+                    }}
                   />
                   <ArvinButton onClick={() => editStudentPassword()}>
                     {UniversalTexts.save}
