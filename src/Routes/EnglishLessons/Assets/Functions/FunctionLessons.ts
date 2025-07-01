@@ -176,26 +176,6 @@ export const readText = async (
     console.error("Erro TTS:", error);
   }
 };
-const getLanguageCode = (lang?: string): string => {
-  switch (lang) {
-    case "en":
-      return "en-US";
-    case "en-UK":
-      return "en-UK";
-    case "pt":
-      return "pt-BR";
-    case "fr":
-      return "fr-FR";
-    case "it":
-      return "it-IT";
-    case "de":
-      return "de-DE";
-    case "en":
-    default:
-      return "en-US";
-  }
-};
-
 export const listVoices = () => {
   if ("speechSynthesis" in window) {
     const voices = window.speechSynthesis.getVoices();

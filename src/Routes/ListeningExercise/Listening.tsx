@@ -6,7 +6,9 @@ import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
   primaryColor,
+  secondaryColor,
   textPrimaryColorContrast,
+  textTitleFont,
 } from "../../Styles/Styles";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { onLoggOut } from "../../Resources/UniversalComponents";
@@ -78,9 +80,23 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
         >
           <TabList
             onChange={handleChange}
-            variant="scrollable"
+             variant="scrollable"
             scrollButtons="auto"
             aria-label="scrollable auto tabs example"
+           sx={{
+              fontFamily: textTitleFont(),
+              color: secondaryColor(),
+              "& .MuiTab-root": {
+                fontFamily: textTitleFont(),
+                color: secondaryColor(),
+              },
+              "& .Mui-selected": {
+                color: secondaryColor(),
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: secondaryColor(),
+              },
+            }}
           >
             {componentsToRender.map((component, index) => {
               return (

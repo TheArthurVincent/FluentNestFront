@@ -5,7 +5,9 @@ import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
   primaryColor,
+  secondaryColor,
   textPrimaryColorContrast,
+  textTitleFont,
 } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
@@ -100,6 +102,20 @@ export default function Ranking({ headers }: HeadersProps) {
             variant="scrollable"
             scrollButtons="auto"
             aria-label="scrollable auto tabs example"
+            sx={{
+              fontFamily: textTitleFont(),
+              color: secondaryColor(),
+              "& .MuiTab-root": {
+                fontFamily: textTitleFont(),
+                color: secondaryColor(),
+              },
+              "& .Mui-selected": {
+                color: secondaryColor(),
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: secondaryColor(),
+              },
+            }}
           >
             {componentsToRender.map((component, index) => {
               return (
