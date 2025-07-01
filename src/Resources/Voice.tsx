@@ -53,6 +53,7 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
           alignItems: "center",
           gap: "0.5rem",
           margin: "auto",
+          maxWidth: "10rem",
         }}
       >
         <select

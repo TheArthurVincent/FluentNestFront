@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { RouteDiv } from "../../Resources/Components/RouteBox";
+import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Box, Tab } from "@mui/material";
@@ -53,12 +53,12 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
         />
       ),
     },
-    {
-      title: UniversalTexts.history,
-      value: "2",
-      adm: false,
-      component: <ListeningHistory headers={headers} />,
-    },
+    // {
+    //   title: UniversalTexts.history,
+    //   value: "2",
+    //   adm: false,
+    //   component: <ListeningHistory headers={headers} />,
+    // },
   ];
 
   const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
@@ -66,7 +66,7 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
   return (
     <RouteDiv>
       <Helmets text="Listening Exercise" />
-      <TabContext value={value}>
+      {/* <TabContext value={value}>
         <Box
           style={{
             display: "flex",
@@ -113,7 +113,13 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
             </TabPanel>
           );
         })}
-      </TabContext>
+      </TabContext> */}
+      <HOne>Listening Exercise</HOne>
+      <ListeningExercise
+        onChange={onChange}
+        change={change}
+        headers={headers}
+      />
     </RouteDiv>
   );
 };
