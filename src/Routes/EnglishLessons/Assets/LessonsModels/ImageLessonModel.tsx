@@ -31,7 +31,11 @@ export default function ImageLessonModel({
 }: ImageLessonModelProps) {
   const actualHeaders = headers || {};
 
-  const addNewCardsInverted = async (frontText: string, backText: string) => {
+  const addNewCardsInverted = async (
+    frontText: string,
+    backText: string,
+    img: string
+  ) => {
     const newCards = [
       {
         back: {
@@ -42,6 +46,7 @@ export default function ImageLessonModel({
           text: backText,
           language: "pt",
         },
+        img,
         tags: [mainTag ? mainTag : ""],
       },
     ];
@@ -86,7 +91,11 @@ export default function ImageLessonModel({
                 <ArvinButton
                   color="white"
                   onClick={() =>
-                    addNewCardsInverted(image.english, image.portuguese)
+                    addNewCardsInverted(
+                      image.english,
+                      image.portuguese,
+                      image.img
+                    )
                   }
                 >
                   <i className="fa fa-folder" aria-hidden="true" />
