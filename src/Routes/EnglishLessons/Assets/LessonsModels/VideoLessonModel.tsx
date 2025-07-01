@@ -6,5 +6,15 @@ interface VideoLessonModelProps {
 }
 
 export default function VideoLessonModel({ element }: VideoLessonModelProps) {
-  return <IFrameVideoBlog src={getVideoEmbedUrl(element.video)} />;
+  return (
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        marginTop: "1rem",
+      }}
+    >
+      <IFrameVideoBlog src={getVideoEmbedUrl(element.video)} />
+    </div>
+  );
 }

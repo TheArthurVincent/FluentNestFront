@@ -209,7 +209,9 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                 {post.videoUrl ? (
                   <div
                     style={{
-                      margin: "auto",
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "1rem",
                     }}
                   >
                     <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />

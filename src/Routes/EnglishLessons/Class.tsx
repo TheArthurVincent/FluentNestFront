@@ -594,39 +594,25 @@ export default function EnglishClassCourse2({
                     </option>
                   ))}
                 </select>
-                {/* <ArvinButton color="green" onClick={fetchStudents}>
-                  <i className="fa fa-refresh" aria-hidden="true" />
-                </ArvinButton> */}
               </span>
               <Voice
                 maxW="8rem"
                 changeB={changeNumber}
                 setChangeB={setChangeNumber}
               />
-
-              {/* <span
-                style={{
-                  fontSize: "10px",
-                  marginLeft: "16px",
-                }}
-              >
-                <i
-                  className={`fa fa-arrow-${arrow ? "left" : "right"}`}
-                  style={{
-                    margin: "5px",
-                    fontSize: "16px",
-                  }}
-                  onClick={handleShowCourses}
-                  aria-hidden="true"
-                />
-              </span> */}
             </div>
           }
           {theclass.image && (
             <ImgLesson src={theclass.image} alt={theclass.subtitle} />
           )}
           {theclass.video && (
-            <div style={{ margin: "1rem auto 0 auto" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "1rem",
+              }}
+            >
               <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
             </div>
           )}

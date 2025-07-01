@@ -80,7 +80,13 @@ function Faq({ headers }: HeadersProps) {
             {expandedItem === index && (
               <DivAppear>
                 {item.url && (
-                  <div style={{ textAlign: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "1rem",
+                    }}
+                  >
                     <IFrameVideoBlog
                       src={getVideoEmbedUrl(item.url)}
                       frameBorder="0"
