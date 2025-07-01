@@ -302,8 +302,8 @@ export function MyProfile({ headers }: HeadersProps) {
                     )}
                     <br />
                     <span style={{ display: "block", marginTop: "0.5rem" }}>
-                      Recomende a plataforma a alguém para que a pessoa ganhe
-                      <strong>20% de desconto</strong>nos 3 primeiros meses!
+                      Recomende a plataforma a alguém para que a pessoa ganhe{" "}
+                      <strong>20% de desconto {" "}</strong>nos 3 primeiros meses!
                     </span>
                   </li>
                   {myProfileList.map((item, index) => (
