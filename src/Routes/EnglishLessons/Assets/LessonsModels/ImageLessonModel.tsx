@@ -97,7 +97,7 @@ export default function ImageLessonModel({
     <CircularProgress />
   ) : (
     <span>
-      <button onClick={handleAddImages}>test</button>
+      {/* <button onClick={handleAddImages}>test</button> */}
       <div
         className="sentences"
         style={{
