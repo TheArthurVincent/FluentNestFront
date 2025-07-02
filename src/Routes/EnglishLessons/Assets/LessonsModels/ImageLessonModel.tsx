@@ -13,6 +13,7 @@ import {
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
+import { CircularProgress } from "@mui/material";
 interface ImageLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
@@ -31,7 +32,11 @@ export default function ImageLessonModel({
 }: ImageLessonModelProps) {
   const actualHeaders = headers || {};
 
-  const addNewCardsInverted = async (frontText: string, backText: string) => {
+  const addNewCardsInverted = async (
+    frontText: string,
+    backText: string,
+    img: string
+  ) => {
     const newCards = [
       {
         back: {
@@ -42,10 +47,10 @@ export default function ImageLessonModel({
           text: backText,
           language: "pt",
         },
+        img,
         tags: [mainTag ? mainTag : ""],
       },
     ];
-
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${studentId}`,
@@ -66,55 +71,85 @@ export default function ImageLessonModel({
       onLoggOut();
     }
   };
-
-  return (
-    <div
-      className="sentences"
-      style={{
-        display: "flex",
-        padding: "5px",
-        margin: "10px 0",
-        justifyContent: "center",
-        width: "100%",
-      }}
-    >
-      <UlGridImageLessons>
-        {element.images &&
-          element.images.map((image: any, i: number) => (
-            <LiGridImageLessons key={i}>
-              <div>
-                <ArvinButton
-                  color="white"
-                  onClick={() =>
-                    addNewCardsInverted(image.english, image.portuguese)
-                  }
+  const [loa,SetLoa] = useState(false)
+  const handleAddImages = async () => {
+    console.log(element.images);
+    SetLoa(true)
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/flashcard/add-images`,
+        { refs: element.images },
+        { headers: actualHeaders }
+      );
+      notifyError(
+        `Atualizados: ${response.data.updatedCount} flashcards`,
+        "green"
+      );
+      console.log(response.data);
+    SetLoa(false)
+    
+    } catch (e) {
+      notifyError("Erro ao atualizar imagens nos flashcards");
+      console.log(e, "Erro ao atualizar imagens nos flashcards");
+    }
+  };
+  return loa ? (
+    <CircularProgress />
+  ) : (
+    <span>
+      <button onClick={handleAddImages}>test</button>
+      <div
+        className="sentences"
+        style={{
+          display: "flex",
+          padding: "5px",
+          margin: "10px 0",
+          justifyContent: "center",
+          width: "100%",
+        }}
+      >
+        <UlGridImageLessons>
+          {element.images &&
+            element.images.map((image: any, i: number) => (
+              <LiGridImageLessons key={i}>
+                <div>
+                  <ArvinButton
+                    color="white"
+                    onClick={() =>
+                      addNewCardsInverted(
+                        image.english,
+                        image.portuguese,
+                        image.img
+                      )
+                    }
+                  >
+                    <i className="fa fa-folder" aria-hidden="true" />
+                  </ArvinButton>
+                </div>
+                <ImgLesson src={image.img} />
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    fontStyle: "italic",
+                    marginTop: "1.3rem",
+                  }}
                 >
-                  <i className="fa fa-folder" aria-hidden="true" />
-                </ArvinButton>
-              </div>
-              <ImgLesson src={image.img} />
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  fontStyle: "italic",
-                  marginTop: "1.3rem",
-                }}
-              >
-                <button
-                  className="audio-button"
-                  onClick={() =>
-                    readText(image.text, true, "en", selectedVoice)
-                  }
-                >
-                  <i className="fa fa-volume-up" aria-hidden="true" />
-                </button>
-                <span>{image.text}</span>
-              </span>
-              <TextAreaLesson />
-            </LiGridImageLessons>
-          ))}
-      </UlGridImageLessons>
-    </div>
+                  <button
+                    className="audio-button"
+                    onClick={() =>
+                      readText(image.text, true, "en", selectedVoice)
+                    }
+                  >
+                    <i className="fa fa-volume-up" aria-hidden="true" />
+                  </button>
+                  <span>{image.text}</span>
+                </span>
+                <TextAreaLesson />
+              </LiGridImageLessons>
+            ))}
+        </UlGridImageLessons>
+      </div>
+    </span>
   );
 }

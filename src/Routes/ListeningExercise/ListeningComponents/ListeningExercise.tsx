@@ -323,6 +323,17 @@ const ListeningExercise = ({
   const audioChunks: BlobPart[] = [];
 
   const startRecording = async () => {
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    if (isIOS || isSafari) {
+      notifyError(
+        "Seu dispositivo ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
+      );
+      return;
+    }
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -349,24 +360,15 @@ const ListeningExercise = ({
           const response = await axios.post(
             `${backDomain}/api/v1/speech-listening`,
             formData
-            // {
-            //   headers: {
-            //     "Content-Type": "multipart/form-data",
-            //   },
-            // }
           );
 
           const speechToText = response.data.transcript;
-          setTranscript(speechToText); // mantém para exibir ao aluno
-          isCorrectAnswer(speechToText); // calcula similarity e score
+          setTranscript(speechToText);
+          isCorrectAnswer(speechToText);
           setIsDisabled(false);
-
-          // Se quiser já pontuar automaticamente, chame:
-          // ponctuate(speechToText);
-          // Ou deixe o botão "Next" para fazer isso
         } catch (error) {
-          notifyError(" 1 Erro ao transcrever áudio");
-          console.log(" 1 Erro ao transcrever áudio", error);
+          notifyError("Erro ao transcrever áudio");
+          console.log("Erro ao transcrever áudio", error);
         } finally {
           setSeeProgress(false);
           setEnableVoice(false);
@@ -374,8 +376,8 @@ const ListeningExercise = ({
         }
       };
     } catch (error: any) {
-      notifyError(" 2 Erro ao transcrever áudio", error);
-      console.log(" 2 Erro ao transcrever áudio", error);
+      notifyError("Erro ao acessar microfone", error);
+      console.log("Erro ao acessar microfone", error);
     }
   };
 

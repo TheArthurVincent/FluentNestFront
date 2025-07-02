@@ -116,7 +116,7 @@ export default function GroupClassesTemplate({
       {/* <CoursesSideBar courses={courses} /> */}
       <TopBar />
       <RouteSizeControlBox>
-        <RouteDiv >
+        <RouteDiv>
           <div>
             <HOne>{title}</HOne>
             <HTwo>{chosenTitle}</HTwo>
@@ -145,12 +145,20 @@ export default function GroupClassesTemplate({
                           </p>
                         )}{" "}
                         {videoItem.url && (
-                          <IFrameVideo
+                          <div
                             style={{
-                              border: "solid 1px black",
+                              display: "flex",
+                              justifyContent: "center",
+                              marginTop: "1rem",
                             }}
-                            src={getVideoEmbedUrl(videoItem.url)}
-                          />
+                          >
+                            <IFrameVideo
+                              style={{
+                                border: "solid 1px black",
+                              }}
+                              src={getVideoEmbedUrl(videoItem.url)}
+                            />
+                          </div>
                         )}
                         {videoItem.description && (
                           <p

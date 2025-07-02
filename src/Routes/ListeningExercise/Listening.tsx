@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { RouteDiv } from "../../Resources/Components/RouteBox";
+import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
   primaryColor,
+  secondaryColor,
   textPrimaryColorContrast,
+  textTitleFont,
 } from "../../Styles/Styles";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { onLoggOut } from "../../Resources/UniversalComponents";
@@ -53,12 +55,12 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
         />
       ),
     },
-    {
-      title: UniversalTexts.history,
-      value: "2",
-      adm: false,
-      component: <ListeningHistory headers={headers} />,
-    },
+    // {
+    //   title: UniversalTexts.history,
+    //   value: "2",
+    //   adm: false,
+    //   component: <ListeningHistory headers={headers} />,
+    // },
   ];
 
   const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
@@ -66,7 +68,7 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
   return (
     <RouteDiv>
       <Helmets text="Listening Exercise" />
-      <TabContext value={value}>
+      {/* <TabContext value={value}>
         <Box
           style={{
             display: "flex",
@@ -78,9 +80,23 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
         >
           <TabList
             onChange={handleChange}
-            variant="scrollable"
+             variant="scrollable"
             scrollButtons="auto"
             aria-label="scrollable auto tabs example"
+           sx={{
+              fontFamily: textTitleFont(),
+              color: secondaryColor(),
+              "& .MuiTab-root": {
+                fontFamily: textTitleFont(),
+                color: secondaryColor(),
+              },
+              "& .Mui-selected": {
+                color: secondaryColor(),
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: secondaryColor(),
+              },
+            }}
           >
             {componentsToRender.map((component, index) => {
               return (
@@ -113,7 +129,13 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
             </TabPanel>
           );
         })}
-      </TabContext>
+      </TabContext> */}
+      <HOne>Listening Exercise</HOne>
+      <ListeningExercise
+        onChange={onChange}
+        change={change}
+        headers={headers}
+      />
     </RouteDiv>
   );
 };

@@ -153,7 +153,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
   return (
     <>
       <div style={{ maxWidth: "900px" }}>
-        {/* <Helmets text="Blog Posts" /> */}
         <div
           style={{
             margin: "1rem 0.5rem 0 0",
@@ -209,7 +208,9 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                 {post.videoUrl ? (
                   <div
                     style={{
-                      margin: "auto",
+                      display: "flex",
+                      justifyContent: "center",
+                      marginTop: "1rem",
                     }}
                   >
                     <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
