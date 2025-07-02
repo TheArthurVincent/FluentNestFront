@@ -151,94 +151,84 @@ export function BlogPosts({ headers }: BlogPostsProps) {
   }
 
   return (
-    <>
-      <div style={{ maxWidth: "900px" }}>
-        <div
-          style={{
-            margin: "1rem 0.5rem 0 0",
-            display: "flex",
-            maxWidth: "100%",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", gap: "5px" }}></div>
-        </div>
+    <div
+      style={{
+        maxWidth: "1000px",
+        display: "flex",
+        justifyContent: "center",
+      }}
+    >
+      <div>
+        <HOne>{UniversalTexts.mural}</HOne>
         <div>
-          <HOne>{UniversalTexts.mural}</HOne>
-          <div>
-            {posts.map((post: any, index: number) => (
-              <div
-                key={index}
-                style={{
-                  maxWidth: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  textDecoration: "none",
-                }}
-              >
-                {post.title && (
-                  <BlogPostTitle>
-                    <span
-                      style={{
-                        maxWidth: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      {!loading && (
-                        <button
-                          style={{
-                            cursor: "pointer",
-                            display:
-                              permissions == "superadmin" ? "grid" : "none",
-                          }}
-                          onClick={() => seeEdition(post._id)}
-                        >
-                          <i className="fa fa-edit" aria-hidden="true" />
-                        </button>
-                      )}
-                      <HTwo> {post.title}</HTwo>
-                    </span>
-                    {post.createdAt && (
-                      <span>{formatDate(post.createdAt)}</span>
-                    )}
-                  </BlogPostTitle>
-                )}
-                {post.videoUrl ? (
-                  <div
+          {posts.map((post: any, index: number) => (
+            <div
+              key={index}
+              style={{
+                maxWidth: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                textDecoration: "none",
+              }}
+            >
+              {post.title && (
+                <BlogPostTitle>
+                  <span
                     style={{
+                      maxWidth: "100%",
                       display: "flex",
-                      justifyContent: "center",
-                      marginTop: "1rem",
+                      alignItems: "center",
                     }}
                   >
-                    <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
-                  </div>
-                ) : post.img ? (
-                  <ImgBlog src={post.img} alt="logo" />
-                ) : null}
+                    {!loading && (
+                      <button
+                        style={{
+                          cursor: "pointer",
+                          display:
+                            permissions == "superadmin" ? "grid" : "none",
+                        }}
+                        onClick={() => seeEdition(post._id)}
+                      >
+                        <i className="fa fa-edit" aria-hidden="true" />
+                      </button>
+                    )}
+                    <HTwo> {post.title}</HTwo>
+                  </span>
+                  {post.createdAt && <span>{formatDate(post.createdAt)}</span>}
+                </BlogPostTitle>
+              )}
+              {post.videoUrl ? (
                 <div
                   style={{
-                    margin: "1rem auto",
-                    fontSize: "0.8rem",
-                    padding: "1rem",
-                    backgroundColor: "#ffffff",
-                    borderRadius: "10px",
-                    maxWidth: "800px",
-                    lineHeight: "1",
-                    color: "#222",
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "1rem",
                   }}
-                  className="limited-text"
                 >
-                  <div dangerouslySetInnerHTML={{ __html: post.text }} />
+                  <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
                 </div>
+              ) : post.img ? (
+                <ImgBlog src={post.img} alt="logo" />
+              ) : null}
+              <div
+                style={{
+                  margin: "1rem auto",
+                  fontSize: "0.8rem",
+                  padding: "1rem",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "10px",
+                  maxWidth: "800px",
+                  lineHeight: "1",
+                  color: "#222",
+                }}
+                className="limited-text"
+              >
+                <div dangerouslySetInnerHTML={{ __html: post.text }} />
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </div>
-
       <DivModal
         className="modal"
         style={{
@@ -358,7 +348,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
         onClick={() => handleSeeModal()}
         style={{ display: !isVisible ? "none" : "flex" }}
       />
-    </>
+    </div>
   );
 }
 
