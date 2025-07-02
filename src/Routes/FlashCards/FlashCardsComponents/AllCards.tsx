@@ -350,6 +350,22 @@ const AllCards = ({ headers }: HeadersProps) => {
                     />
                   </div>
                 </div>
+                {card.img && (
+                  <img
+                    style={{
+                      width: "100%",
+                      maxWidth: "8rem",
+                      aspectRatio: "1 / 1",
+                      objectFit: "cover",
+                      display: "block",
+                      objectPosition: "center",
+                      borderRadius: "6px",
+                      boxShadow: "1px 1px 12px 3px #bbb",
+                    }}
+                    src={card.img}
+                    alt={card.front?.text}
+                  />
+                )}
                 <div style={{ padding: "0.5rem" }}>
                   <ul
                     style={{
