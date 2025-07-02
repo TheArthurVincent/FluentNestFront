@@ -550,7 +550,7 @@ export function FindStudent({ uploadStatus, headers }) {
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <TabList
-              onChange={handleChangeEdit} // <-- Troque aqui!
+              onChange={handleChangeEdit}
               variant="scrollable"
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
