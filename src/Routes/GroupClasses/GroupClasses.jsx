@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  HOne,
-  HTwo,
-  RouteDiv,
-} from "../../Resources/Components/RouteBox";
+import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
 import {
   DivFlex,
@@ -36,10 +32,9 @@ export default function GroupClasses({ headers }) {
   async function fetchMonthYear() {
     setLoading(true);
     try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/allgroupclasses`,
-        { headers }
-      );
+      const response = await axios.get(`${backDomain}/api/v1/allgroupclasses`, {
+        headers,
+      });
       setClasses(response.data);
       setLoading(false);
     } catch (error) {
@@ -203,7 +198,15 @@ export default function GroupClasses({ headers }) {
                         </Link>
                       )}
                     </DivFlex>{" "}
-                    <IFrameVideoBlog src={getVideoEmbedUrl(item.videoUrl)} />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <IFrameVideoBlog src={getVideoEmbedUrl(item.videoUrl)} />
+                    </div>
                   </div>
                 </ClassBox>
               </div>

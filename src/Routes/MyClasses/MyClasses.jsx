@@ -299,7 +299,15 @@ export function MyClasses({ headers }) {
                     Arquivos da aula
                   </Link>
                 )}
-                <IFrameVideoBlog src={getVideoEmbedUrl(classItem.videoUrl)} />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <IFrameVideoBlog src={getVideoEmbedUrl(classItem.videoUrl)} />
+                </div>
               </div>
             </ClassBox>
           ))}

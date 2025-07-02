@@ -164,8 +164,7 @@ export function Blog({
               {loadingLESSON ? (
                 <CircularProgress style={{ color: secondaryColor() }} />
               ) : (
-                <div className="study-container"
-                >
+                <div className="study-container">
                   <HOne>{UniversalTexts.studyEnglish}</HOne>
                   <div className="grid-container">
                     {sessions.map((session) => (
@@ -193,7 +192,12 @@ export function Blog({
             </DivMarginBorder>
           </div>
           <div className="grid-flex-2">
-            <DivMarginBorder>
+            <DivMarginBorder
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               {/* @ts-ignore */}
               <BlogPosts headers={actualHeaders} />
             </DivMarginBorder>

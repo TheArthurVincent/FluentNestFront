@@ -56,7 +56,7 @@ const ListeningHistory = ({ headers }: HeadersProps) => {
     } catch (error) {
       console.log("Erro ao obter cards", error);
       setLoading(false);
-      onLoggOut();
+      // onLoggOut();
     }
   };
 

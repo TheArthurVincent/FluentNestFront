@@ -16,7 +16,10 @@ import MyCalendar from "./MyCalendar/MyCalendar";
 import Adm from "./Adm/Adm";
 import Blog from "./HomePage/HomePageContent";
 import { LevelCard } from "./LevelCard/LevelCard";
-import { BlogRouteSizeControlBox } from "../Resources/Components/RouteBox";
+import {
+  BlogRouteSizeControlBox,
+  RouteDiv,
+} from "../Resources/Components/RouteBox";
 import { HeadersProps } from "../Resources/types.universalInterfaces";
 import { TopBar } from "../Application/TopBar/TopBar";
 import FlashCards from "./FlashCards/FlashCards";
@@ -141,7 +144,11 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "Posts",
-      component: <BlogPosts headers={headers} />,
+      component: (
+        <RouteDiv>
+          <BlogPosts headers={headers} />
+        </RouteDiv>
+      ),
     },
     {
       path: "/adm-businessmanagement",

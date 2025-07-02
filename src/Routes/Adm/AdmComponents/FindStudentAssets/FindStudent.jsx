@@ -24,6 +24,7 @@ import {
   primaryColor,
   secondaryColor,
   textPrimaryColorContrast,
+  textTitleFont,
 } from "../../../../Styles/Styles";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
@@ -116,7 +117,7 @@ export function FindStudent({ uploadStatus, headers }) {
           ? response.data.formattedStudentData.id
           : ""
       );
-  
+
       setGoogleDriveLink(
         response.data.formattedStudentData.googleDriveLink
           ? response.data.formattedStudentData.googleDriveLink
@@ -551,8 +552,22 @@ export function FindStudent({ uploadStatus, headers }) {
             <TabList
               onChange={handleChangeEdit}
               variant="scrollable"
-              scrollMyButtons="auto"
+              scrollButtons="auto"
               aria-label="scrollable auto tabs example"
+              sx={{
+                fontFamily: textTitleFont(),
+                color: secondaryColor(),
+                "& .MuiTab-root": {
+                  fontFamily: textTitleFont(),
+                  color: secondaryColor(),
+                },
+                "& .Mui-selected": {
+                  color: secondaryColor(),
+                },
+                "& .MuiTabs-indicator": {
+                  backgroundColor: secondaryColor(),
+                },
+              }}
             >
               <Tab label="Dados gerais" value="1" />
               <Tab label="Permissões" value="2" />

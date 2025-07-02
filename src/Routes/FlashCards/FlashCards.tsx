@@ -6,7 +6,10 @@ import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
   primaryColor,
+  secondaryColor,
+  textFont,
   textPrimaryColorContrast,
+  textTitleFont,
 } from "../../Styles/Styles";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
@@ -98,6 +101,20 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             variant="scrollable"
             scrollButtons="auto"
             aria-label="scrollable auto tabs example"
+            sx={{
+              fontFamily: textTitleFont(),
+              color: secondaryColor(),
+              "& .MuiTab-root": {
+                fontFamily: textTitleFont(),
+                color: secondaryColor(),
+              },
+              "& .Mui-selected": {
+                color: secondaryColor(),
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: secondaryColor(),
+              },
+            }}
           >
             {componentsToRender.map((component, index) => {
               return (

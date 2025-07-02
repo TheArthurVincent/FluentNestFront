@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
@@ -376,20 +376,20 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   const [MESSAGE, setMESSAGE] = useState<string>("How are you?");
   const [mascot, setMascot] = useState<any>(null);
-const [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
+  const [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
 
-useEffect(() => {
-  const handleResize = () => {
-    setSize(window.innerWidth <= 600 ? 2 : 4);
-  };
-  window.addEventListener("resize", handleResize);
-  // Atualiza no mount também
-  handleResize();
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
-useEffect(() => {
-  setMascot(mascotCelebrate(colorOfTheTShirt, size));
-}, [size, colorOfTheTShirt]);
+  useEffect(() => {
+    const handleResize = () => {
+      setSize(window.innerWidth <= 600 ? 2 : 4);
+    };
+    window.addEventListener("resize", handleResize);
+    // Atualiza no mount também
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  useEffect(() => {
+    setMascot(mascotCelebrate(colorOfTheTShirt, size));
+  }, [size, colorOfTheTShirt]);
 
   useEffect(() => {
     if (flashcardsToday >= 25 && streak < 50) {
@@ -420,6 +420,15 @@ useEffect(() => {
       );
     }
   }, [flashcardsToday, lastR, streak]);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [cardHeight, setCardHeight] = useState<number>(0);
+
+  useEffect(() => {
+    if (cardRef.current) {
+      setCardHeight(cardRef.current.offsetHeight);
+    }
+  }, [cards, answer, backCardVisible, loading, see]);
+  // ...existing code...
 
   return (
     <section id="review">
@@ -466,7 +475,7 @@ useEffect(() => {
         >
           <WordOfTheDay change={change} onChange={onChange} headers={headers} />
           {see && (
-            <div>
+            <div ref={cardRef}>
               {loading ? (
                 <CircularProgress style={{ color: secondaryColor() }} />
               ) : (
@@ -594,6 +603,24 @@ useEffect(() => {
                                     />
                                   </button>
                                 )}
+                              {cards[0]?.img &&
+                                cards[0]?.front?.language == "pt" && (
+                                  <img
+                                    style={{
+                                      width: "100%",
+                                      maxWidth: "8rem",
+                                      aspectRatio: "1 / 1",
+                                      objectFit: "cover",
+                                      display: "block",
+                                      margin: "1rem auto",
+                                      objectPosition: "center",
+                                      borderRadius: "6px",
+                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                    }}
+                                    src={cards[0]?.img}
+                                    alt={cards[0]?.front?.text}
+                                  />
+                                )}
                             </div>
                           </div>
                           <div
@@ -657,6 +684,24 @@ useEffect(() => {
                                   </button>
                                 )}
                             </div>
+                            {cards[0]?.img &&
+                              cards[0]?.back?.language == "pt" && (
+                                <img
+                                  style={{
+                                    width: "100%",
+                                    maxWidth: "8rem",
+                                    aspectRatio: "1 / 1",
+                                    objectFit: "cover",
+                                    display: "block",
+                                    margin: "1rem auto",
+                                    objectPosition: "center",
+                                    borderRadius: "6px",
+                                    boxShadow: "1px 1px 12px 3px #bbb",
+                                  }}
+                                  src={cards[0]?.img}
+                                  alt={cards[0]?.front?.text}
+                                />
+                              )}
                           </div>
                         </div>
                       </>
@@ -705,6 +750,7 @@ useEffect(() => {
           </div>
           <div
             style={{
+              marginTop: cardHeight ? cardHeight / 3 : "1rem",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gap: "10px",
@@ -778,6 +824,7 @@ useEffect(() => {
       </div>
       <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       <br />
+
       <Streak message={MESSAGE} streak={lastR ? 0 : streak} />
       <a
         href="/words-of-the-day"
