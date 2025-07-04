@@ -61,7 +61,7 @@ h4 {
 }
 
 h1 {
-  font-size: 1.4rem;
+  font-size: 1.1rem;
   font-weight: 800;
 }
 
@@ -654,6 +654,7 @@ input.inputs-style:focus {
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
+
 .pulse-button {
   border: 1px solid #54bf08;
   color: #ffffff;
@@ -676,9 +677,11 @@ input.inputs-style:focus {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -688,9 +691,11 @@ input.inputs-style:focus {
   0% {
     box-shadow: 0 0 8px rgba(84, 191, 8, 0.4);
   }
+
   50% {
     box-shadow: 0 0 16px rgba(84, 191, 8, 0.9);
   }
+
   100% {
     box-shadow: 0 0 8px rgba(84, 191, 8, 0.4);
   }
