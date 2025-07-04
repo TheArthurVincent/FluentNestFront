@@ -13,7 +13,12 @@ import {
   updateInfo,
   mascotWeak,
 } from "../../../Resources/UniversalComponents";
-import { notifyError, readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+
+import {
+  notifyError,
+  readText,
+} from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { secondaryColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
