@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   CircularProgress,
-  FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
@@ -42,8 +41,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [theAdaptedWord, setAdaptedWord] = useState<string>("");
   const [language, setLanguage] = useState<string>("");
   const [thePermissions, setThePermissions] = useState<string>("");
-  const [theDivArticles, setTheDivArticles] = useState<string>("");
-
   const [sentence1, setSentence1] = useState<string>("");
   const [transation1, setTransation1] = useState<string>("");
   const [sentence2, setSentence2] = useState<string>("");
@@ -82,7 +79,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setAdaptedWord(response.data.adaptedWord);
       setSentence1(response.data.adaptedWord);
       setTransation1(response.data.translatedWord);
-      setTheDivArticles(response.data.theDivArticles);
       if (response.data.examples.length >= 1) {
         setSentence2(response.data.examples[0].sentence);
         setTransation2(response.data.examples[0].translation);
@@ -175,7 +171,26 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   return (
     <RouteDiv>
       <Helmets text="Sentence Mining" />
-      <HOne>Sentence Mining</HOne>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <HOne>Sentence Mining</HOne>
+        <a
+          style={{
+            fontSize: "13px",
+            color: "#0066cc",
+            textDecoration: "none",
+          }}
+          href="/flash-cards"
+        >
+          Revise seus flashcards!
+        </a>
+      </div>
       <section
         id="review"
         style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}

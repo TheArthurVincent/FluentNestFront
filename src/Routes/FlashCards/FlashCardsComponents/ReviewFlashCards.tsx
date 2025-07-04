@@ -432,7 +432,26 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   return (
     <section id="review">
-      <HOne style={{ textAlign: "center" }}>Review Flashcards</HOne>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <HOne style={{ textAlign: "center" }}>Review Flashcards</HOne>
+        <a
+          style={{
+            fontSize: "13px",
+            color: "#0066cc",
+            textDecoration: "none",
+          }}
+          href="/sentence-mining"
+        >
+          Adicione palavras em seus flashcards!
+        </a>
+      </div>
       <div
         style={{
           display: "flex",
@@ -710,16 +729,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         No flashcards
                         <br />
                         Nenhum flashcard
-                        <br />
-                        <a
-                          style={{
-                            marginTop: "7px",
-                            fontSize: "9px",
-                          }}
-                          href="/sentence-mining"
-                        >
-                          Adicione palavras em seus flashcards!
-                        </a>
                       </p>
                     )}
                   </div>

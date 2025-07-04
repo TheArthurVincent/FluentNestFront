@@ -18,6 +18,7 @@ import AllCards from "./FlashCardsComponents/AllCards";
 import { onLoggOut } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import SentenceMining from "../SentenceMining/SentenceMining";
 
 interface FlashCardsProps {
   headers: MyHeadersType | null;
@@ -75,7 +76,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       value: "4",
       adm: true,
       component: <AddFlashCards display="block" headers={headers} />,
-    },
+    }
   ];
 
   const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
