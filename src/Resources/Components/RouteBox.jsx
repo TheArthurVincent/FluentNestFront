@@ -91,6 +91,7 @@ export const BlogRouteSizeControlBox = styled.div`
 
 export const HOne = styled.h1`
   text-align: center;
+  font-size: 1.1rem;
   color: ${primaryColor()};
   font-family: ${textTitleFont()};
 `;

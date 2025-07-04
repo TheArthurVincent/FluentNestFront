@@ -38,8 +38,6 @@ export default function Modules({
   const [filtered, setFiltered] = useState([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-    const { UniversalTexts } = useUserContext();
-  
   const actualHeaders = headers || {};
 
   const getModules = async () => {
@@ -64,7 +62,6 @@ export default function Modules({
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
-    const { id } = JSON.parse(user || "");
     getModules();
   }, []);
 
