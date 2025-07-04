@@ -33,7 +33,6 @@ import moment from "moment";
 import { StyledDiv } from "./MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function MyCalendar({ headers, thePermissions }) {
   // states
@@ -139,10 +138,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       setEvents(eventsLoop);
       setLoading(false);
     } catch (error) {
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -169,10 +166,8 @@ export default function MyCalendar({ headers, thePermissions }) {
         });
         setEvents(eventsLoop);
       } catch (error) {
-        setTimeout(() => {
-          onLoggOut();
-        }, 1000);
-        notifyError(error);
+        console.log(error);
+        // onLoggOut();
       }
     } else {
       null;
@@ -205,10 +200,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }, 200);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const handleChangeWeek = async (sum) => {
@@ -241,10 +234,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }, 100);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const handleBackToToday = async () => {
@@ -277,10 +268,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }, 100);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const fetchOneEvent = async (id) => {
@@ -322,10 +311,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       setLoadingModalInfo(false);
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const fetchOneSetOfTutorings = async (studentId) => {
@@ -343,10 +330,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const fetchOneSetOfTutoringsInside = (e) => {
@@ -378,10 +363,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       setDate("");
       fetchGeneralEvents();
     } catch (error) {
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
       console.log(error, "Erro ao criar evento");
     }
   };
@@ -404,10 +387,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao excluir evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const deleteOneMaterialInside = () => {
@@ -442,10 +423,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao criar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const editInside = () => {
@@ -468,10 +447,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
   const updateUnscheduled = async (id) => {
@@ -488,10 +465,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       setStatus("Canceled");
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -505,10 +480,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       alert("E-mail lembrete enviado");
     } catch (error) {
       console.log(error, "Erro ao enviar e-mail");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -526,10 +499,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       setStatus("Realized");
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -553,10 +524,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneSetOfTutorings(newStudentId);
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -581,10 +550,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -624,10 +591,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -846,10 +811,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -862,10 +825,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -878,10 +839,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -894,10 +853,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -910,10 +867,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
     }
   };
 
@@ -1052,10 +1007,8 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchGeneralEvents();
       handleCloseModal();
     } catch (error) {
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-      notifyError(error);
+      console.log(error);
+      // onLoggOut();
       console.error(error);
     }
   };
