@@ -13,7 +13,7 @@ import {
   updateInfo,
   mascotWeak,
 } from "../../../Resources/UniversalComponents";
-import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyError, readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { secondaryColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
@@ -317,9 +317,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      alert("Erro ao enviar cards");
+      notifyError("Erro ao enviar cards");
       onLoggOut();
-      console.log(error);
     }
   };
 
