@@ -198,6 +198,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }, 200);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
+      onLoggOut();
     }
   };
   const handleChangeWeek = async (sum) => {
@@ -230,6 +231,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }, 100);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
+      onLoggOut();
     }
   };
   const handleBackToToday = async () => {
@@ -262,6 +264,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }, 100);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
+      onLoggOut();
     }
   };
   const fetchOneEvent = async (id) => {
@@ -303,6 +306,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       setLoadingModalInfo(false);
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
+      onLoggOut();
     }
   };
   const fetchOneSetOfTutorings = async (studentId) => {
@@ -320,6 +324,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
+      onLoggOut();
     }
   };
   const fetchOneSetOfTutoringsInside = (e) => {
@@ -374,6 +379,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao excluir evento");
+      onLoggOut();
     }
   };
   const deleteOneMaterialInside = () => {
@@ -408,6 +414,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao criar evento");
+      onLoggOut();
     }
   };
   const editInside = () => {
@@ -430,6 +437,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
+      onLoggOut();
     }
   };
   const updateUnscheduled = async (id) => {
@@ -446,6 +454,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       setStatus("Canceled");
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
+      onLoggOut();
     }
   };
 
@@ -459,6 +468,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       alert("E-mail lembrete enviado");
     } catch (error) {
       console.log(error, "Erro ao enviar e-mail");
+      onLoggOut();
     }
   };
 
@@ -476,6 +486,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       setStatus("Realized");
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
+      onLoggOut();
     }
   };
 
@@ -499,6 +510,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneSetOfTutorings(newStudentId);
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
+      onLoggOut();
     }
   };
 
@@ -523,6 +535,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
+      onLoggOut();
     }
   };
 
@@ -562,6 +575,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
+      onLoggOut();
     }
   };
 
@@ -780,6 +794,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
+      onLoggOut();
     }
   };
 
@@ -792,6 +807,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
+      onLoggOut();
     }
   };
 
@@ -804,6 +820,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
+      onLoggOut();
     }
   };
 
@@ -816,6 +833,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
+      onLoggOut();
     }
   };
 
@@ -828,6 +846,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
+      onLoggOut();
     }
   };
 
@@ -966,7 +985,7 @@ export default function MyCalendar({ headers, thePermissions }) {
       fetchGeneralEvents();
       handleCloseModal();
     } catch (error) {
-      // onLoggOut()
+      onLoggOut();
       console.error(error);
     }
   };

@@ -333,8 +333,15 @@ export default function EnglishClassCourse2({
         `${backDomain}/api/v1/comments/${classId}/${myId}`,
         { headers: actualHeaders }
       );
-      const com = response.data.comments;
-      const myCom = response.data.myComments;
+      var com = [];
+      var myCom = [];
+      if (response.data.comments.length > 0) {
+        com = response.data.comments;
+      } else {
+      }
+      if (response.data.myComments.length > 0) {
+        myCom = response.data.myComments;
+      }
       setComments(com);
       setMyComments(myCom);
     } catch (error) {
