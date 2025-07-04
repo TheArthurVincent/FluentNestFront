@@ -13,21 +13,49 @@ import { secondaryColor, textTitleFont } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 
-function highlightDifferences(original: string, userInput: string): string {
-  const originalWords = original.split(" ");
-  const userWords = userInput.split(" ");
-  const highlightedWords = userWords.map((word, index) => {
-    if (originalWords[index] && originalWords[index] !== word) {
-      return `<span style="color: red; font-weight: 400;">${word}</span>`;
-    }
-    return `<span style="color: green">${word}</span>`;
-  });
+function highlightDifferences(
+  original: string,
+  userInput: string,
+  similarity: number
+): string {
+  const originalWords = normalizeText(original).split(" ");
+  const userWords = normalizeText(userInput).split(" ");
 
-  return highlightedWords.join(" ");
+  const output: string[] = [];
+  const len = Math.max(originalWords.length, userWords.length);
+
+  for (let i = 0; i < len; i++) {
+    const userWord = userWords[i];
+    const originalWord = originalWords[i];
+    if (!userWord && originalWord) {
+      if (similarity >= 40) {
+        output.push(`<span style="color: red;">-</span>`);
+      } else {
+        output.push("");
+      }
+      console.log(userWord, originalWord, `<span style="color: red;">-</span>`);
+    } else if (userWord === originalWord) {
+      output.push(`<span style="color: green;">${userWord}</span>`);
+      console.log(`<span style="color: green;">${userWord}</span>`);
+    } else {
+      output.push(
+        `<span style="color: red; font-weight: 400;">${
+          userWord || "(extra)"
+        }</span>`
+      );
+      console.log(
+        `<span style="color: red; font-weight: 400;">${
+          userWord || "(extra)"
+        }</span>`
+      );
+    }
+  }
+
+  return output.join(" ");
 }
-// Função para contar o número de palavras
+
 function wordCount(str: string): number {
-  return str.trim().split(/\s+/).length;
+  return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
 // Função para normalizar o texto
@@ -69,16 +97,15 @@ function levenshteinDistance(str1: string, str2: string): number {
 
   return dp[len1][len2];
 }
-
-// Função para calcular a porcentagem de similaridade
 function similarityPercentage(str1: string, str2: string): number {
-  const maxLen = Math.max(str1.length, str2.length);
-  if (maxLen === 0) return 100; // Se ambas as strings estiverem vazias
+  const clean1 = normalizeText(str1);
+  const clean2 = normalizeText(str2);
 
-  const distance = levenshteinDistance(cleanString(str1), cleanString(str2));
-  const similarity = ((maxLen - distance) / maxLen) * 100;
+  const maxLen = Math.max(clean1.length, clean2.length);
+  if (maxLen === 0) return 100;
 
-  return Math.round(similarity); // Retorna a similaridade como um número inteiro
+  const distance = levenshteinDistance(clean1, clean2);
+  return Math.round(((maxLen - distance) / maxLen) * 100);
 }
 
 interface FlashCardsPropsRv {
@@ -99,6 +126,7 @@ const ListeningExercise = ({
   const [see, setSee] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
+  const [readyToListen, setReadyToListen] = useState(false);
   const [seeProgress, setSeeProgress] = useState(false);
   const [enableVoice, setEnableVoice] = useState(false);
   const [similarity, setSimilarity] = useState<number>(0);
@@ -112,6 +140,7 @@ const ListeningExercise = ({
   const [isShow, setIsShow] = useState<boolean>(false);
 
   const [listening, setListening] = useState<boolean>(false);
+  var cardTextRef = useRef<string>("");
 
   const actualHeaders = headers || {};
 
@@ -147,72 +176,51 @@ const ListeningExercise = ({
       // onLoggOut();
     }
   };
-
   const isCorrectAnswer = (transcription: string | null) => {
-    readText(
-      cards[0]?.front?.text.replace(/\s+/g, " "), // Substitui múltiplos espaços por um espaço
-      false,
-      cards[0]?.front?.language
-    );
-    const cardText = normalizeText(
-      cleanString(
-        cards[0]?.front?.text.replace(/\s+/g, " ") || // Substitui múltiplos espaços por um espaço
-          ""
-      )
-    );
-    const userTranscript = normalizeText(cleanString(transcription || ""));
-    const wordCountInCard = wordCount(
-      cards[0]?.front?.text.replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
-    );
+    console.log("SPEECHisCorrectAnswer:", transcription);
+    console.log("CARDisCorrectAnswer:", cards[0]?.front?.text);
 
-    const highlightedText = highlightDifferences(cardText, userTranscript);
-    setTranscriptHighLighted(highlightedText);
-    setSimilarity(similarityPercentage(userTranscript, cardText));
-    setWords(wordCount(cardText));
+    const cardTextRaw = cardTextRef.current;
 
-    if (userTranscript === "") {
-      setSimilarity(0);
+    if (!cardTextRaw) {
+      notifyError("Erro: Card text está vazio ou indefinido.");
+      return;
+    }
+
+    const correct = normalizeText(cardTextRaw);
+    const user = normalizeText(transcription || "");
+
+    const wc = wordCount(correct);
+    const sim = similarityPercentage(user, correct);
+
+    setTranscriptHighLighted(highlightDifferences(correct, user, sim));
+    setSimilarity(sim);
+    setWords(wc);
+
+    if (!user) {
       setScore(0);
-      setWords(0);
       return;
     }
 
-    if (cleanString(cardText) === cleanString(userTranscript)) {
-      setSimilarity(100);
-      setWords(wordCountInCard);
-      setScore(wordCountInCard * 3);
-      return;
-    }
-
-    const simC = similarityPercentage(
-      userTranscript,
-      cards[0]?.front?.text.replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
-    );
-
-    if (simC >= 98) {
-      setSimilarity(simC);
-      setWords(wordCountInCard);
-      setScore(wordCountInCard * 3);
-    } else if (simC >= 40 && simC < 98) {
-      setSimilarity(98);
-      setWords(wordCountInCard);
-      setScore(wordCountInCard * 2);
-      return;
-    } else if (simC < 40) {
-      setSimilarity(simC);
-      setWords(wordCountInCard);
+    if (user === correct || sim >= 98) {
+      setScore(wc * 3);
+    } else if (sim >= 40) {
+      setScore(wc * 2);
+    } else {
       setScore(0);
     }
   };
 
   const ponctuate = (transcription: string | null) => {
     setLoading(true);
-    const cardText = normalizeText(
-      cleanString(
-        cards[0]?.front?.text.replace(/\s+/g, " ") || // Substitui múltiplos espaços por um espaço
-          ""
-      )
-    );
+    const raw = cards[0]?.front?.text;
+    if (!raw) {
+      notifyError("Erro: Card text está vazio.");
+      return;
+    }
+
+    const cardText = normalizeText(cleanString(raw.replace(/\s+/g, " ")));
+
     const userTranscript = normalizeText(cleanString(transcription || ""));
     const wordCountInCard = wordCount(
       cards[0]?.front?.text.replace(/\s+/g, " ") || // Substitui múltiplos espaços por um espaço
@@ -256,6 +264,7 @@ const ListeningExercise = ({
   };
 
   const seeCardsToReview = async () => {
+    setReadyToListen(false);
     setLoading(true);
     setTranscript("");
     setIsDisabled(true);
@@ -270,13 +279,91 @@ const ListeningExercise = ({
       );
       const thereAreCards = response.data.dueFlashcards.length === 0;
       setCards(response.data.dueFlashcards);
+      cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
+
       setCardsLength(thereAreCards);
       setLoading(false);
+      setIsShow(true);
+      setTimeout(() => {
+        setReadyToListen(true);
+        setEnableVoice(true); // Ativa só após cards estarem prontos
+      }, 300);
     } catch (error) {
       notifyError("Erro ao carregar cards");
     }
     setIsShow(true);
   };
+
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(
+    navigator.userAgent.toLowerCase()
+  );
+
+  useEffect(() => {
+    // if (isIOS || isSafari) {
+    if (!isIOS && !isSafari) {
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        notifyError("Reconhecimento de voz não suportado.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = (event: any) => {
+        if (!cardTextRef.current) {
+          notifyError("Erro: Nenhuma frase carregada para comparar.");
+          return;
+        }
+
+        const speechToText = event.results[0][0].transcript;
+        const cleaned = speechToText.trim();
+        setTranscript(cleaned);
+
+        console.log("SPEECH:", cleaned);
+        console.log("CARD:", cardTextRef.current);
+        setSeeProgress(true);
+        setTimeout(() => {
+          isCorrectAnswer(cleaned); // 🔧 envia versão limpa
+          setIsDisabled(false);
+          setSeeProgress(false);
+        }, 2000);
+        setEnableVoice(false);
+      };
+
+      recognition.onerror = () => {
+        notifyError("Erro no reconhecimento de voz");
+        setEnableVoice(false);
+        setListening(false);
+      };
+
+      recognition.onspeechend = () => {
+        recognition.stop();
+      };
+
+      // Ative ao clicar no botão
+      const startSpeechRecognition = () => {
+        setListening(true);
+        recognition.start();
+      };
+
+      const stopSpeechRecognition = () => {
+        setListening(false);
+        recognition.stop();
+      };
+
+      // Torna acessível no escopo
+      (window as any).startSpeechRecognition = startSpeechRecognition;
+      (window as any).stopSpeechRecognition = stopSpeechRecognition;
+    }
+  }, []);
 
   // // Controle do reconhecimento de fala
   // const SpeechRecognition =
@@ -549,9 +636,16 @@ const ListeningExercise = ({
                               cards[0]?.front?.language,
                               selectedVoice
                             );
+                            const wordsInSentence =
+                              cards[0]?.front?.text.split(" ").length || 0;
+                            const estimatedTime = Math.min(
+                              6000,
+                              wordsInSentence * 350
+                            ); // máximo 6s, 350ms por palavra
+
                             setTimeout(() => {
                               setEnableVoice(true);
-                            }, 2000);
+                            }, estimatedTime);
                           }}
                           color={!playingAudio ? "blue" : "grey"}
                           style={{
@@ -573,18 +667,41 @@ const ListeningExercise = ({
                             margin: "0 5px",
                           }}
                           disabled={!enableVoice}
-                          onClick={!listening ? startRecording : stopRecording}
+                          onClick={() => {
+                            if (
+                              !enableVoice ||
+                              !readyToListen ||
+                              !cards[0]?.front?.text
+                            )
+                              return;
+                            // if (isIOS || isSafari) {
+                            if (!isIOS && !isSafari) {
+                              // Só inicia, não para
+                              if (!listening) {
+                                cardTextRef.current =
+                                  cards[0]?.front?.text || "";
+
+                                (window as any).startSpeechRecognition();
+                                setListening(true);
+                                setTimeout(() => setListening(false), 4000); // desliga o estado de listening visualmente
+                              }
+                            } else {
+                              !listening ? startRecording() : stopRecording();
+                            }
+                          }}
                           color={
                             !enableVoice
-                              ? "grey"
-                              : !listening && enableVoice
-                              ? "green"
-                              : "red"
+                              ? "lightgrey" // Bloqueado: esperando leitura terminar
+                              : listening
+                              ? "red" // Gravando
+                              : "green" // Pronto para gravar
                           }
                         >
                           <i
                             className={
-                              !listening ? "fa fa-microphone" : "fa fa-stop"
+                              isIOS || isSafari || !listening
+                                ? "fa fa-microphone"
+                                : "fa fa-stop"
                             }
                             aria-hidden="true"
                           />
