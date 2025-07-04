@@ -301,8 +301,8 @@ const ListeningExercise = ({
   );
 
   useEffect(() => {
-    // if (isIOS || isSafari) {
-    if (!isIOS && !isSafari) {
+    if (isIOS || isSafari) {
+    // if (!isIOS && !isSafari) {
       const SpeechRecognition =
         (window as any).SpeechRecognition ||
         (window as any).webkitSpeechRecognition;
@@ -674,8 +674,8 @@ const ListeningExercise = ({
                               !cards[0]?.front?.text
                             )
                               return;
-                            // if (isIOS || isSafari) {
-                            if (!isIOS && !isSafari) {
+                            if (isIOS || isSafari) {
+                            // if (!isIOS && !isSafari) {
                               // Só inicia, não para
                               if (!listening) {
                                 cardTextRef.current =
