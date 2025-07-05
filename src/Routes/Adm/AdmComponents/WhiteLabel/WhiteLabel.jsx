@@ -156,12 +156,20 @@ export default function WhiteLabelPreview({ headers }) {
         </div>
         <div className="form-group" style={{ marginBottom: "15px" }}>
           <label>Contraste da cor primária: </label>
-          <input
-            type="color"
+
+          <select
             name="color1Contrast"
             value={formData.color1Contrast}
             onChange={handleChange}
-          />
+            style={{ marginLeft: "10px", width: "220px" }}
+          >
+            <option key="black" value="black">
+              Preto
+            </option>{" "}
+            <option key="white" value="white">
+              Branco
+            </option>
+          </select>
         </div>
 
         <div className="form-group" style={{ marginBottom: "15px" }}>
@@ -184,12 +192,19 @@ export default function WhiteLabelPreview({ headers }) {
         </div>
         <div className="form-group" style={{ marginBottom: "15px" }}>
           <label>Contraste da cor secundária: </label>
-          <input
-            type="color"
+          <select
             name="color2Contrast"
             value={formData.color2Contrast}
             onChange={handleChange}
-          />
+            style={{ marginLeft: "10px", width: "220px" }}
+          >
+            <option key="black" value="black">
+              Preto
+            </option>{" "}
+            <option key="white" value="white">
+              Branco
+            </option>
+          </select>
         </div>
 
         {/* Fontes */}
@@ -275,6 +290,7 @@ export default function WhiteLabelPreview({ headers }) {
           <ArvinButton
             color={formData.color1}
             colorContrast={formData.color1Contrast}
+            colorGradient={formData.color1Gradient}
           >
             Botão de exemplo
           </ArvinButton>

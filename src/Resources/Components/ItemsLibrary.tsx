@@ -31,19 +31,22 @@ export const ArvinButton = styled.button<ArvinButtonProps>`
   margin: 0 3px;
   cursor: ${(props) =>
     props.cursor === "not-allowed" ? "not-allowed" : "pointer"};
-  display: inline;
+  display: inline-block;
   font-family: ${textGeneralFont()};
   border-radius: 6px;
   border: none;
   max-width: fit-content;
+  transition: all 0.3s ease; /* 🔁 boa prática para hover */
+
   &:hover {
     background: linear-gradient(
       to left,
-      ${(props) => (props.colorGradient ? props.colorGradient : props.color)} 0%,
-      ${(props) => (props.color ? props.color : secondaryColor())} 100%
+      ${(props) => props.colorGradient || props.color || secondaryColor()} 0%,
+      ${(props) => props.color || secondaryColor()} 100%
     );
     border-radius: 6px;
   }
+
   &:active {
     font-weight: 500;
     box-shadow: inset 1px 1px 10px 1px #ddd;
