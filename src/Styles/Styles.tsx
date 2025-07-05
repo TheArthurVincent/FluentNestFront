@@ -3,16 +3,19 @@
 // export const primaryColor2 = (): string => "#DF3D39";
 // export const secondaryColor = (): string => "#555";
 // export const secondaryColor2 = (): string => "#666";
-// export const textFont = (): string => "Roboto";
+// export const textGeneralFont = (): string => "Roboto";
 // export const textTitleFont = (): string => "Bitter";
 
 export const primaryColor = (): string => "#000";
 export const primaryColor2 = (): string => "#5c5c5c";
 export const secondaryColor = (): string => "#54bf08";
 export const secondaryColor2 = (): string => "#84DE08";
-export const textFont = (): string => "Lato";
+export const textGeneralFont = (): string => "Lato";
 export const textTitleFont = (): string => "Athiti";
-
+export const backgroundImage = (): string =>
+  "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769";
+export const logoPartner = (): string =>
+  "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin.png?updatedAt=1751674257307";
 export const textPrimaryColorContrast = (): string => "#fff";
 export const textSecondaryColorContrast = (): string => "#f2f2f2";
 

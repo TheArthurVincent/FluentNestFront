@@ -5,7 +5,7 @@ import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
 import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
-import { textFont, textTitleFont } from "./Styles/Styles";
+import { textGeneralFont, textTitleFont } from "./Styles/Styles";
 import Login from "./Routes/Login/Login";
 import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
@@ -49,12 +49,12 @@ function App() {
 
     const textElement = document.querySelector("div");
     if (textElement) {
-      textElement.style.fontFamily = textFont();
+      textElement.style.fontFamily = textGeneralFont();
     }
 
     const inputElement = document.querySelector("input");
     if (inputElement) {
-      inputElement.style.fontFamily = textFont();
+      inputElement.style.fontFamily = textGeneralFont();
     }
 
     const selectElement = document.querySelector("select");

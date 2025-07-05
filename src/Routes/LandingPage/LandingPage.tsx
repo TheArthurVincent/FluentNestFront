@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { primaryColor, secondaryColor, textFont } from "../../Styles/Styles";
+import { primaryColor, secondaryColor, textGeneralFont } from "../../Styles/Styles";
 import AppFooter from "../../Application/Footer/Footer";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import "./styles.lp.css";

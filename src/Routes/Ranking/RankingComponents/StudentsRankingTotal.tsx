@@ -11,7 +11,7 @@ import axios from "axios";
 import { levels } from "./RankingLevelsList";
 import {
   secondaryColor,
-  textFont,
+  textGeneralFont,
   textTitleFont,
 } from "../../../Styles/Styles";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
@@ -204,7 +204,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textFont(),
+                          fontFamily: textGeneralFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}
@@ -244,7 +244,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textFont(),
+                          fontFamily: textGeneralFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}
@@ -285,7 +285,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textFont(),
+                          fontFamily: textGeneralFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { primaryColor, secondaryColor, textFont } from "../../Styles/Styles";
+import { primaryColor, secondaryColor, textGeneralFont } from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -169,7 +169,7 @@ export function Login() {
                     margin: "0 3px",
                     backgroundColor: "#eee",
                     color: primaryColor(),
-                    fontFamily: textFont(),
+                    fontFamily: textGeneralFont(),
                     fontSize: "10px",
                     textDecoration: "none",
                     borderRadius: " 6px",
@@ -188,7 +188,7 @@ export function Login() {
                     margin: "0 3px",
                     backgroundColor: "#eee",
                     color: primaryColor(),
-                    fontFamily: textFont(),
+                    fontFamily: textGeneralFont(),
                     fontSize: "10px",
                     borderRadius: " 6px",
                     border: "none",

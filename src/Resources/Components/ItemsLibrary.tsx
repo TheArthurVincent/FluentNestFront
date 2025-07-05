@@ -5,7 +5,7 @@ import {
   primaryColor2,
   secondaryColor,
   secondaryColor2,
-  textFont,
+  textGeneralFont,
   textTitleFont,
 } from "../../Styles/Styles";
 
@@ -17,93 +17,33 @@ interface ButtonProps {
 
 interface ArvinButtonProps {
   color?: string;
+  colorContrast?: string;
+  colorGradient?: string;
   cursor?: string;
 }
 
 export const ArvinButton = styled.button<ArvinButtonProps>`
-  background: ${(props) =>
-    props.color === "red"
-      ? "red"
-      : props.color === "green"
-      ? secondaryColor()
-      : props.color === "blue"
-      ? "blue"
-      : props.color === "orange"
-      ? "orange"
-      : props.color === "purple"
-      ? "purple"
-      : props.color === "yellow"
-      ? "#FFD700"
-      : props.color === "pink"
-      ? "#FF69B4"
-      : props.color === "grey"
-      ? "#eee"
-      : props.color === "white"
-      ? "white"
-      : secondaryColor()};
-
-  color: ${(props) => (props.color === "white" ? "black" : alwaysWhite())};
+  background: ${(props) => (props.color ? props.color : secondaryColor())};
+  color: ${(props) =>
+    props.colorContrast === "white" ? "black" : alwaysWhite()};
   padding: 10px;
   min-width: 30px;
   margin: 0 3px;
-  
   cursor: ${(props) =>
     props.cursor === "not-allowed" ? "not-allowed" : "pointer"};
   display: inline;
-  font-family: ${textFont()};
+  font-family: ${textGeneralFont()};
   border-radius: 6px;
   border: none;
   max-width: fit-content;
-
   &:hover {
     background: linear-gradient(
       to left,
-      ${(props) =>
-          props.color === "red"
-            ? "red"
-            : props.color === "green"
-            ? secondaryColor()
-            : props.color === "blue"
-            ? "blue"
-            : props.color === "white"
-            ? "white"
-            : props.color === "orange"
-            ? "orange"
-            : props.color === "purple"
-            ? "purple"
-            : props.color === "grey"
-            ? "grey"
-            : props.color === "yellow"
-            ? "#FFD700" // Yellow darker shade
-            : props.color === "pink"
-            ? "#FF69B4" // Pink darker shade
-            : secondaryColor()}
-        0%,
-      ${(props) =>
-          props.color === "red"
-            ? "#FA7A71"
-            : props.color === "white"
-            ? "grey"
-            : props.color === "green"
-            ? secondaryColor2()
-            : props.color === "blue"
-            ? "#87CEFA"
-            : props.color === "orange"
-            ? "#FFA500"
-            : props.color === "purple"
-            ? "#DDA0DD"
-            : props.color === "grey"
-            ? "grey"
-            : props.color === "yellow"
-            ? "#B8860B" // Yellow darker gradient
-            : props.color === "pink"
-            ? "#C71585" // Pink darker gradient
-            : secondaryColor2()}
-        100%
+      ${(props) => (props.colorGradient ? props.colorGradient : props.color)} 0%,
+      ${(props) => (props.color ? props.color : secondaryColor())} 100%
     );
     border-radius: 6px;
   }
-
   &:active {
     font-weight: 500;
     box-shadow: inset 1px 1px 10px 1px #ddd;

@@ -5,7 +5,7 @@ import { backDomain } from "../../Resources/UniversalComponents";
 import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
 import { Alert, Box, Grid, TextField } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import { primaryColor, secondaryColor, textFont } from "../../Styles/Styles";
+import { primaryColor, secondaryColor, textGeneralFont } from "../../Styles/Styles";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import Helmets from "../../Resources/Helmets";
 

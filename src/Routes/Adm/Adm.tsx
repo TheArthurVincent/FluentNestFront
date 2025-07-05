@@ -20,11 +20,18 @@ import Invoice from "./AdmComponents/Invoice/Invoice";
 import Manual from "./AdmComponents/Manual/Manual";
 import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
 import TimelineComponent from "./AdmComponents/Timeline/Timeline";
+import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
 
   const componentsToRender = [
+    {
+      title: "WhiteLabel",
+      value: "0",
+      tooltip: "Marque uma aula particular.",
+      component: <WhiteLabelPreview headers={headers} />,
+    },
     {
       title: "Gestão de Aulas",
       value: "1",

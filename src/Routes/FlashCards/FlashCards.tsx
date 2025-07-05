@@ -7,7 +7,7 @@ import {
   alwaysWhite,
   primaryColor,
   secondaryColor,
-  textFont,
+  textGeneralFont,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
