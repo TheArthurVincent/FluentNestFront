@@ -141,8 +141,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
         setPosts(filteredPosts);
         setLoading(false);
       }, 300);
-
-      console.log(response.data.listOfPosts);
     } catch (error: any) {
       notifyError(error.response.data.error);
       onLoggOut();

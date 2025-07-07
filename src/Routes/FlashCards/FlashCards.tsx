@@ -7,7 +7,6 @@ import {
   alwaysWhite,
   primaryColor,
   secondaryColor,
-  textGeneralFont,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
@@ -18,7 +17,6 @@ import AllCards from "./FlashCardsComponents/AllCards";
 import { onLoggOut } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import SentenceMining from "../SentenceMining/SentenceMining";
 
 interface FlashCardsProps {
   headers: MyHeadersType | null;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   alwaysBlack,
@@ -13,44 +13,282 @@ import {
   textTitleFont,
 } from "../../../../Styles/Styles";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
-import { HOne } from "../../../../Resources/Components/RouteBox";
+import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
+import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
+import { NavLink } from "react-router-dom";
+import { SpanHover } from "../../../../Resources/UniversalComponents";
+import { HThree } from "../../../MyClasses/MyClasses.Styled";
+import AppFooter from "../../../../Application/Footer/Footer";
+import { Box, Tab, Tabs } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 
 export default function WhiteLabelPreview({ headers }) {
   const [studentID, setid] = useState("");
+  const [previewLogo, setPreviewLogo] = useState(logoPartner());
+  const [previewBackground, setPreviewBackground] = useState(backgroundImage());
+  const [tabValue, setTabValue] = useState("1");
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
+
   useEffect(() => {
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     setid(getLoggedUser.id);
   }, []);
+  const logoInputRef = React.useRef(null);
+  const backgroundInputRef = React.useRef(null);
+  const resizeAndConvertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
 
+      reader.onload = (e) => {
+        img.src = e.target?.result;
+      };
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+
+        const MAX_WIDTH = 800;
+        const scaleSize = MAX_WIDTH / img.width;
+        canvas.width = MAX_WIDTH;
+        canvas.height = img.height * scaleSize;
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return reject("Erro no canvas");
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        const resizedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+        const base64WithoutPrefix = resizedBase64.replace(
+          /^data:image\/jpeg;base64,/,
+          ""
+        );
+
+        resolve(base64WithoutPrefix);
+      };
+
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+  const uploadImage = async (file) => {
+    const base64 = await resizeAndConvertToBase64(file);
+    try {
+      const response = await axios.post("/api/v1/upload-whitelabel", {
+        file: base64,
+      });
+      return response.data.url; // supondo que o backend retorna `{ url: "..." }`
+    } catch (err) {
+      console.error("Erro no upload da imagem:", err);
+      throw err;
+    }
+  };
+  const handleLogoChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const base64 = await resizeAndConvertToBase64(file);
+      const fullBase64 = `data:image/jpeg;base64,${base64}`;
+      setPreviewLogo(fullBase64);
+      setFormData((prev) => ({
+        ...prev,
+        logo: fullBase64,
+      }));
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao processar o logo.");
+    }
+  };
+
+  const handleBackgroundChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    try {
+      const base64 = await resizeAndConvertToBase64(file);
+      const fullBase64 = `data:image/jpeg;base64,${base64}`;
+      setPreviewBackground(fullBase64);
+      setFormData((prev) => ({
+        ...prev,
+        background: fullBase64,
+      }));
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao processar o fundo.");
+    }
+  };
   const [formData, setFormData] = useState({
-    background: backgroundImage(),
+    backgroundType: "image", // "image" ou "color"
+    backgroundImage: backgroundImage(),
+    backgroundColor: "#ffffff",
     logo: logoPartner(),
-    color1: primaryColor(),
+    color1: "#407fc2",
     color1Gradient: primaryColor2(),
     color1Contrast: alwaysBlack(),
     color2: secondaryColor(),
     color2Gradient: secondaryColor2(),
     color2Contrast: alwaysWhite(),
-    fontPrimary: textGeneralFont(),
-    fontSecondary: textTitleFont(),
+    textTitleFont: textTitleFont(),
+    textGeneralFont: textGeneralFont(),
   });
+  const TabPreview = () => (
+    <div>
+      <h1
+        style={{
+          fontSize: "1.5rem",
+          textAlign: "center",
+          color: formData.color1,
+          fontFamily: formData.textTitleFont,
+        }}
+      >
+        Exemplo de Título
+      </h1>
+      <h2
+        style={{
+          fontSize: "1.3rem",
+          fontWeight: 500,
+          padding: "0.6rem",
+          marginBottom: "1rem",
+          color: formData.color1,
+          fontFamily: formData.textTitleFont,
+        }}
+      >
+        Exemplo de Subtítulo
+      </h2>
+      <h3
+        style={{
+          fontSize: "1.1rem",
+          padding: "6px",
+          fontFamily: formData.textGeneralFont,
+        }}
+      >
+        Exemplo de Subtítulo
+      </h3>
+      <p style={{ fontFamily: formData.textGeneralFont }}>
+        Visualização com o fundo, cores e fontes escolhidas.
+      </p>
+      <div style={{ margin: "2rem", display: "block" }}>
+        <ArvinButton
+          style={{ fontFamily: formData.textGeneralFont }}
+          color="red"
+        >
+          Botão de exemplo
+        </ArvinButton>
+        <ArvinButton
+          style={{ fontFamily: formData.textGeneralFont }}
+          color="orange"
+        >
+          Botão de exemplo
+        </ArvinButton>
+        <ArvinButton
+          style={{ fontFamily: formData.textGeneralFont }}
+          color="green"
+        >
+          Botão de exemplo
+        </ArvinButton>
+      </div>
+    </div>
+  );
 
-  const textFonts = [
-    "Lato",
-    "Pt Sans Narrow",
-    "Pt Sans",
-    "Poppins",
-    "Roboto",
-    "Montserrat",
-    "Inter",
-    "Raleway",
-    "Oswald",
-    "Nunito",
-    "Ubuntu",
-    "Playfair Display",
+  const TabDetalhes = () => (
+    <div>
+      <h1
+        style={{
+          fontSize: "1.3rem",
+          textAlign: "center",
+          color: formData.color1,
+          fontFamily: formData.textTitleFont,
+        }}
+      >
+        Detalhes do Tema
+      </h1>
+      <p style={{ fontFamily: formData.textGeneralFont }}>
+        Aqui você pode visualizar informações específicas sobre as fontes e
+        cores escolhidas para o seu tema.
+      </p>
+      <ul style={{ fontFamily: formData.textGeneralFont, paddingLeft: "1rem" }}>
+        <li>
+          <strong>Fonte Título:</strong> {formData.textTitleFont}
+        </li>
+        <li>
+          <strong>Fonte Geral:</strong> {formData.textGeneralFont}
+        </li>
+        <li>
+          <strong>Cor Principal:</strong>{" "}
+          <span style={{ color: formData.color1 }}>{formData.color1}</span>
+        </li>
+      </ul>
+    </div>
+  );
+
+  const TabMais = () => (
+    <div>
+      <h1
+        style={{
+          fontSize: "1.3rem",
+          textAlign: "center",
+          color: formData.color1,
+          fontFamily: formData.textTitleFont,
+        }}
+      >
+        Mais informações
+      </h1>
+      <p style={{ fontFamily: formData.textGeneralFont }}>
+        Nesta aba você pode adicionar elementos futuros, exemplos de uso do
+        tema, ou botões personalizados.
+      </p>
+      <ArvinButton style={{ fontFamily: formData.textGeneralFont }}>
+        Testar botão adicional
+      </ArvinButton>
+    </div>
+  );
+
+  const titleFonts = [
+    "Arial",
     "Athiti",
+    "Comic Sans MS",
+    "Courier New",
+    "Georgia",
+    "Helvetica",
+    "Impact",
+    "Inter",
+    "Lato",
+    "Lucida Console",
+    "Montserrat",
+    "Nunito",
+    "Oswald",
+    "Playfair Display",
+    "Poppins",
+    "Pt Sans",
+    "Pt Sans Narrow",
+    "Raleway",
+    "Roboto",
+    "Ubuntu",
+    "system-ui",
+    "serif",
+    "sans-serif",
+    "monospace",
+    "cursive",
+    "fantasy",
+    "Times New Roman",
   ];
-
+  const generalTextFonts = [
+    "Arial",
+    "Comic Sans MS",
+    "Georgia",
+    "Helvetica",
+    "Inter",
+    "Lato",
+    "Montserrat",
+    "Poppins",
+    "Pt Sans",
+    "Pt Sans Narrow",
+    "Roboto",
+    "Times New Roman",
+  ];
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
@@ -58,12 +296,19 @@ export default function WhiteLabelPreview({ headers }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const finalFormData = {
+      ...formData,
+      logo: previewLogo,
+      background: previewBackground,
+    };
+
     try {
-      await axios.post(`/api/whitelabel/${studentID}`, formData);
+      await axios.post(`/api/whitelabel/${studentID}`, finalFormData);
       alert("Tema salvo com sucesso!");
+      setFormData(finalFormData); // atualiza estado real após salvar
     } catch (error) {
       console.error(error);
       alert("Erro ao salvar o tema.");
@@ -71,18 +316,27 @@ export default function WhiteLabelPreview({ headers }) {
   };
 
   const sampleStyles = {
-    backgroundImage: `url(${formData.background})`,
+    backgroundImage:
+      formData.backgroundType === "image"
+        ? `url(${previewBackground})`
+        : "none",
+    backgroundColor:
+      formData.backgroundType === "color"
+        ? formData.backgroundColor
+        : "transparent",
     backgroundSize: "cover",
-    overflowY: "auto",
     backgroundPosition: "center",
-    fontFamily: formData.fontPrimary,
+    overflowY: "auto",
+    fontFamily: formData.textGeneralFont,
     color: formData.color1Contrast,
-    padding: "30px",
     borderRadius: "12px",
     marginTop: "40px",
-    border: `2px solid ${formData.color2}`,
+    border: `2px solid black`,
     width: "100%",
     maxWidth: "700px",
+    display: "flex",
+    justifyContent: "space-between",
+    flexDirection: "column",
     height: "700px",
     margin: "40px auto",
   };
@@ -95,14 +349,41 @@ export default function WhiteLabelPreview({ headers }) {
     border: "none",
     borderRadius: "6px",
     fontSize: "16px",
-    fontFamily: formData.fontSecondary,
+    fontFamily: formData.textTitleFont,
     cursor: "pointer",
   };
+  const { UniversalTexts } = useUserContext();
+
+  const allLinksForUser = [
+    {
+      title: UniversalTexts.theCourses,
+      icon: "address-book-o",
+      display: "block",
+      color: true,
+      isLearning: true,
+    },
+    {
+      title: "Flashcards",
+      icon: "clone",
+      display: "block",
+      isLearning: true,
+    },
+    {
+      title: UniversalTexts.calendar,
+      icon: "calendar",
+      display: "block",
+    },
+    {
+      title: "Ranking",
+      icon: "th-list",
+      display: "block",
+    },
+  ];
 
   return (
     <div
       className="page-wrapper"
-      style={{ padding: "40px", fontFamily: formData.fontPrimary }}
+      style={{ padding: "40px", fontFamily: formData.textGeneralFont }}
     >
       <form
         onSubmit={handleSubmit}
@@ -112,32 +393,56 @@ export default function WhiteLabelPreview({ headers }) {
         <h2 style={{ fontSize: "20px", marginBottom: "15px" }}>
           🎨 Personalizar Tema
         </h2>
-
-        {/* Fundo (imagem) */}
         <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Imagem de fundo (URL): </label>
-          <input
-            type="text"
-            name="background"
-            value={formData.background}
+          <label>Tipo de fundo:</label>
+          <select
+            name="backgroundType"
+            value={formData.backgroundType}
             onChange={handleChange}
-            style={{ width: "100%" }}
-          />
+            style={{ marginLeft: "10px", width: "220px" }}
+          >
+            <option value="image">Imagem</option>
+            <option value="color">Cor sólida</option>
+          </select>
         </div>
+
+        {/* Se for imagem, mostra o input de upload */}
+        {formData.backgroundType === "image" && (
+          <div className="form-group" style={{ marginBottom: "15px" }}>
+            <label>Imagem de fundo (upload): </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleBackgroundChange}
+              ref={backgroundInputRef}
+            />
+          </div>
+        )}
+
+        {formData.backgroundType === "color" && (
+          <div className="form-group" style={{ marginBottom: "15px" }}>
+            <label>Cor de fundo: </label>
+            <input
+              type="color"
+              name="backgroundColor"
+              value={formData.backgroundColor}
+              onChange={handleChange}
+            />
+          </div>
+        )}
         <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Logo: </label>
+          <label>Logo (upload): </label>
           <input
-            type="text"
-            name="background"
-            value={formData.logo}
-            onChange={handleChange}
-            style={{ width: "100%" }}
+            type="file"
+            accept="image/*"
+            onChange={handleLogoChange}
+            ref={logoInputRef}
           />
         </div>
 
         {/* Cores corretas */}
         <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Cor primária: </label>
+          <label>Cor Principal do seu negócio: </label>
           <input
             type="color"
             name="color1"
@@ -146,78 +451,14 @@ export default function WhiteLabelPreview({ headers }) {
           />
         </div>
         <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Gradiente da cor primária: </label>
-          <input
-            type="color"
-            name="color1Gradient"
-            value={formData.color1Gradient}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Contraste da cor primária: </label>
-
-          <select
-            name="color1Contrast"
-            value={formData.color1Contrast}
-            onChange={handleChange}
-            style={{ marginLeft: "10px", width: "220px" }}
-          >
-            <option key="black" value="black">
-              Preto
-            </option>{" "}
-            <option key="white" value="white">
-              Branco
-            </option>
-          </select>
-        </div>
-
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Cor secundária: </label>
-          <input
-            type="color"
-            name="color2"
-            value={formData.color2}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Gradiente da cor secundária: </label>
-          <input
-            type="color"
-            name="color2Gradient"
-            value={formData.color2Gradient}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Contraste da cor secundária: </label>
-          <select
-            name="color2Contrast"
-            value={formData.color2Contrast}
-            onChange={handleChange}
-            style={{ marginLeft: "10px", width: "220px" }}
-          >
-            <option key="black" value="black">
-              Preto
-            </option>{" "}
-            <option key="white" value="white">
-              Branco
-            </option>
-          </select>
-        </div>
-
-        {/* Fontes */}
-        <div className="form-group" style={{ marginBottom: "15px" }}>
           <label>Fonte Primária (para títulos): </label>
-
           <select
-            name="fontPrimary"
-            value={formData.fontPrimary}
+            name="textTitleFont"
+            value={formData.textTitleFont}
             onChange={handleChange}
             style={{ marginLeft: "10px", width: "220px" }}
           >
-            {textFonts.map((font) => (
+            {titleFonts.map((font) => (
               <option key={font} value={font}>
                 {font}
               </option>
@@ -227,12 +468,12 @@ export default function WhiteLabelPreview({ headers }) {
         <div className="form-group" style={{ marginBottom: "20px" }}>
           <label>Fonte Secundária (para textos): </label>
           <select
-            name="fontSecondary"
-            value={formData.fontSecondary}
+            name="textGeneralFont"
+            value={formData.textGeneralFont}
             onChange={handleChange}
             style={{ marginLeft: "10px", width: "220px" }}
           >
-            {textFonts.map((font) => (
+            {generalTextFonts.map((font) => (
               <option key={font} value={font}>
                 {font}
               </option>
@@ -257,44 +498,142 @@ export default function WhiteLabelPreview({ headers }) {
       </form>
 
       {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
+      {/* 🔎 Visualização do tema */}
       <div className="sample" style={sampleStyles}>
-        <img
-          src={formData.logo}
-          alt=""
+        <div
           style={{
-            maxWidth: "15rem",
-            margin: "auto",
+            backgroundColor: "#fff",
+            marginBottom: "1rem",
+            padding: "1rem",
+            display: "flex",
+            justifyContent: "space-around",
+            gap: "2rem",
           }}
-        />
+        >
+          <img
+            src={formData.logo}
+            alt=""
+            style={{
+              height: "2rem",
+              width: "auto",
+              maxWidth: "100%",
+              objectFit: "contain",
+            }}
+          />
+          <ul
+            style={{
+              display: "flex",
+              gap: "1rem",
+              padding: "10px",
+              justifyContent: "space-between",
+            }}
+          >
+            {allLinksForUser.map((link, index) => {
+              return (
+                <span
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "5px",
+                    color: link.color ? sampleStyles.color1 : alwaysBlack(),
+                  }}
+                >
+                  <i
+                    style={{
+                      color: link.color ? formData.color1 : alwaysBlack(),
+                    }}
+                    className={`fa fa-${link.icon}`}
+                  />
+                  <span
+                    style={{
+                      fontFamily: formData.textGeneralFont,
+                      color: link.color ? formData.color1 : alwaysBlack(),
+                      textAlign: "center",
+                    }}
+                  >
+                    {link.title}
+                  </span>
+                </span>
+              );
+            })}
+          </ul>
+        </div>
         <div
           className="box-shadow-black smooth"
           style={{
             backgroundColor: alwaysWhite(),
             borderRadius: "6px",
             color: alwaysBlack(),
-            padding: "0.5rem",
+            padding: "0 0 2rem",
+            width: "85%",
+            margin: "auto",
+            marginBottom: "1rem",
             height: "100%",
           }}
         >
-          <h1
-            style={{
-              textAlign: " center",
-              fontSize: "1.1rem",
-              color: formData.color1,
-              fontFamily: formData.textTitleFont,
-            }}
-          >
-            Exemplo de Título
-          </h1>
-          <p>Visualização com o fundo, cores e fontes escolhidas.</p>
-          <ArvinButton
-            color={formData.color1}
-            colorContrast={formData.color1Contrast}
-            colorGradient={formData.color1Gradient}
-          >
-            Botão de exemplo
-          </ArvinButton>
+          <Box>
+            <TabContext value={tabValue}>
+              <Box
+                sx={{
+                  bgcolor: "white",
+                  borderRadius: "8px 8px 0 0",
+                  border: `1px solid #eee`,
+                }}
+              >
+                <TabList
+                  onChange={handleTabChange}
+                  variant="scrollable"
+                  scrollButtons="auto"
+                  aria-label="tabs preview"
+                  sx={{
+                    "& .MuiTab-root": {
+                      fontFamily: formData.textTitleFont,
+                      color: "black",
+                      fontWeight: 500,
+                    },
+                    "& .Mui-selected": {
+                      color: formData.color1,
+                    },
+                    "& .MuiTabs-indicator": {
+                      backgroundColor: formData.color1,
+                    },
+                  }}
+                >
+                  <Tab label="Preview" value="1" />
+                  <Tab label="Detalhes" value="2" />
+                  <Tab label="Mais" value="3" />
+                </TabList>
+              </Box>
+              <TabPanel
+                value="1"
+                sx={{ backgroundColor: "#fff", padding: "1rem" }}
+              >
+                <TabPreview />
+              </TabPanel>
+              <TabPanel
+                value="2"
+                sx={{ backgroundColor: "#fff", padding: "1rem" }}
+              >
+                <TabDetalhes />
+              </TabPanel>
+              <TabPanel
+                value="3"
+                sx={{ backgroundColor: "#fff", padding: "1rem" }}
+              >
+                <TabMais />
+              </TabPanel>
+            </TabContext>
+          </Box>
         </div>
+        <AppFooter style={{ marginTop: "auto" }} see={true} />
       </div>
     </div>
   );

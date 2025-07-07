@@ -25,7 +25,6 @@ import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
-import { color } from "framer-motion";
 import { Streak } from "../../FlashCardsToday/Streak";
 
 interface FlashCardsPropsRv {

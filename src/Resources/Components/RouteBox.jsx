@@ -7,6 +7,7 @@ import {
   transparentWhite,
   secondaryColor,
   textTitleFont,
+  textGeneralFont,
 } from "../../Styles/Styles";
 
 export const RouteSizeControlBox = styled.div`
@@ -89,12 +90,6 @@ export const BlogRouteSizeControlBox = styled.div`
   }
 `;
 
-export const HOne = styled.h1`
-  text-align: center;
-  font-size: 1.1rem;
-  color: ${primaryColor()};
-  font-family: ${textTitleFont()};
-`;
 export const SpanIcon = styled.span`
   font-size: 1px;
   text-decoration: underline;
@@ -123,10 +118,17 @@ export const BlogPostTitle = styled.div`
   }
 `;
 
+export const HOne = styled.h1`
+  text-align: center;
+  font-size: 1.5rem;
+  color: ${primaryColor()};
+  font-family: ${textTitleFont()};
+`;
+
 export const HTwo = styled.h2`
   font-family: ${textTitleFont()};
-  font-size: 1.2rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: 500;
   padding: 0.6rem;
   margin-bottom: 1rem;
   color: ${primaryColor()};
@@ -142,7 +144,8 @@ export const HTwo = styled.h2`
 
 export const HThree = styled.h3`
   font-family: ${textTitleFont()};
-  font-size: 1.1rem;
+  font-family: ${textGeneralFont()};
+  font-size: 1rem;
   padding: 6px;
   @media (max-width: 750px) {
     padding: 3px;

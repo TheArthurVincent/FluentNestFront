@@ -27,12 +27,6 @@ export function Adm({ headers }: HeadersProps) {
 
   const componentsToRender = [
     {
-      title: "WhiteLabel",
-      value: "0",
-      tooltip: "Marque uma aula particular.",
-      component: <WhiteLabelPreview headers={headers} />,
-    },
-    {
       title: "Gestão de Aulas",
       value: "1",
       tooltip: "Marque uma aula particular.",
@@ -57,6 +51,12 @@ export function Adm({ headers }: HeadersProps) {
       tooltip:
         "Faça uma nova postagem que será vista por todos os alunos na página inicial.",
       component: <NewPost headers={headers} />,
+    },
+    {
+      title: "WhiteLabel",
+      value: "0",
+      tooltip: "Marque uma aula particular.",
+      component: <WhiteLabelPreview headers={headers} />,
     },
     {
       title: "Gerar contrato",
@@ -112,13 +112,17 @@ export function Adm({ headers }: HeadersProps) {
                 fontFamily: textTitleFont(),
                 color: secondaryColor(),
                 "& .MuiTab-root": {
+                  padding: "5px",
                   fontFamily: textTitleFont(),
                   color: secondaryColor(),
                 },
                 "& .Mui-selected": {
-                  color: secondaryColor(),
+                  backgroundColor: "#f9f9f9",
+                  borderRadius: "1rem",
+                  padding: "5px",
                 },
                 "& .MuiTabs-indicator": {
+                  color: secondaryColor(),
                   backgroundColor: secondaryColor(),
                 },
               }}

@@ -36,20 +36,15 @@ export const ArvinButton = styled.button<ArvinButtonProps>`
   border-radius: 6px;
   border: none;
   max-width: fit-content;
+  font-weight: 500;
   transition: all 0.3s ease; /* 🔁 boa prática para hover */
 
   &:hover {
-    background: linear-gradient(
-      to left,
-      ${(props) => props.colorGradient || props.color || secondaryColor()} 0%,
-      ${(props) => props.color || secondaryColor()} 100%
-    );
-    border-radius: 6px;
-  }
+box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
+    };
 
   &:active {
-    font-weight: 500;
-    box-shadow: inset 1px 1px 10px 1px #ddd;
+    font-weight: 200;
   }
 `;
 
