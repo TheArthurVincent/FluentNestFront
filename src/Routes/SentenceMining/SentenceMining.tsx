@@ -32,7 +32,8 @@ interface FlashCardsPropsRv {
 const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [myId, setId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [see, setSee] = useState<boolean>(false);
+  const [dis, setDis] = useState<boolean>(false);
+  const [see, setSee] = useState<boolean>(true);
   const [heardSentences, setHeardSentences] = useState([false, false, false]);
   const [word, setWord] = useState<string>("");
   const [finalWord, setFinalWord] = useState<string>("");
@@ -63,7 +64,8 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   const actualHeaders = headers || {};
 
-  const seeCardsToReview = async () => {
+  const mineWord = async () => {
+    setDis(true);
     setLoading(true);
     setSee(true);
     event?.preventDefault();
@@ -98,9 +100,11 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
       setHeardSentences(Array(response.data.examples.length).fill(false));
       setLoading(false);
+      setDis(false);
     } catch (error: any) {
       console.error(error);
       alert(error.response?.data?.error || "Error fetching flashcards.");
+      setDis(false);
     }
   };
 
@@ -196,7 +200,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}
       >
         <form
-          onSubmit={seeCardsToReview}
+          onSubmit={mineWord}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -213,6 +217,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             type="text"
             placeholder="Type a word..."
             value={word}
+            disabled={dis ? true : false}
             maxLength={30}
             onChange={(e) => {
               setWord(e.target.value);
@@ -226,50 +231,52 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               border: "1px solid #ccc",
             }}
           />
-
-          <RadioGroup
-            row
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-            sx={{ fontSize: "12px" }}
-          >
-            {["Basic", "Intermediate", "Advanced"].map((level) => (
-              <FormControlLabel
-                key={level}
-                value={level}
-                control={
-                  <Radio
-                    size="small"
-                    sx={{
-                      color: "#888",
-                      "&.Mui-checked": { color: "#54bf08" },
-                      padding: "2px",
-                    }}
+          {!dis && (
+            <>
+              <RadioGroup
+                row
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+                sx={{ fontSize: "12px" }}
+              >
+                {["Basic", "Intermediate", "Advanced"].map((level) => (
+                  <FormControlLabel
+                    key={level}
+                    value={level}
+                    control={
+                      <Radio
+                        size="small"
+                        sx={{
+                          color: "#888",
+                          "&.Mui-checked": { color: "#54bf08" },
+                          padding: "2px",
+                        }}
+                      />
+                    }
+                    label={
+                      <span style={{ fontSize: "13px", color: "#333" }}>
+                        {level}
+                      </span>
+                    }
                   />
-                }
-                label={
-                  <span style={{ fontSize: "13px", color: "#333" }}>
-                    {level}
-                  </span>
-                }
-              />
-            ))}
-          </RadioGroup>
-
-          <ArvinButton
-            color={word == "" ? "grey" : "green"}
-            cursor={word == "" ? "not-allowed" : "pointer"}
-            type="submit"
-            style={{
-              padding: "4px 12px",
-              fontSize: "13px",
-              borderRadius: "4px",
-              textTransform: "none",
-            }}
-            disabled={word == "" ? true : false}
-          >
-            Mine word
-          </ArvinButton>
+                ))}
+              </RadioGroup>
+              <ArvinButton
+                color={word == "" || dis ? "grey" : "green"}
+                cursor={word == "" || dis ? "not-allowed" : "pointer"}
+                type="submit"
+                style={{
+                  padding: "4px 12px",
+                  fontSize: "13px",
+                  borderRadius: "4px",
+                  textTransform: "none",
+                }}
+                disabled={word == "" || dis ? true : false}
+              >
+                Mine word
+              </ArvinButton>
+            </>
+          )}
         </form>
 
         {see && (
