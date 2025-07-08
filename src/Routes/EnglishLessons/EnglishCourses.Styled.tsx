@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { primaryColor, textSecondaryColorContrast } from "../../Styles/Styles";
+import { textpartnerColorContrast } from "../../Styles/Styles";
 
 export const CoursesList = styled.div`
   display: grid;
@@ -15,12 +15,12 @@ export const CourseItem = styled.div`
   background-color: #eee;
   padding: 3rem;
   border: none;
-  color: ${primaryColor()};
+  color: ${"#000"};
   cursor: pointer;
   transition: 0.2s;
   &:hover {
-    background-color: ${primaryColor()};
-    color: ${textSecondaryColorContrast()};
+    background-color: ${"#000"};
+    color: ${textpartnerColorContrast()};
     font-weight: 700;
   }
 `;

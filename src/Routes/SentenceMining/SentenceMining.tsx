@@ -14,7 +14,7 @@ import {
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { secondaryColor, textTitleFont } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import Voice from "../../Resources/Voice";
@@ -282,7 +282,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         {see && (
           <>
             {loading ? (
-              <CircularProgress style={{ color: secondaryColor() }} />
+              <CircularProgress style={{ color: partnerColor() }} />
             ) : (
               <>
                 <div style={{ margin: "1rem" }}>
@@ -391,7 +391,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
@@ -407,7 +406,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
@@ -423,7 +421,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
@@ -439,7 +436,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",

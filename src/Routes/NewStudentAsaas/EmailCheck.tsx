@@ -1,7 +1,7 @@
 import React from "react";
 import { LogoSVG } from "../../Resources/UniversalComponents";
 import { HOne } from "../../Resources/Components/RouteBox";
-import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 export const generateUsername = (
   name: string,
@@ -23,7 +23,7 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-export const myLogoDone = LogoSVG(primaryColor(), secondaryColor(), 3);
+export const myLogoDone = LogoSVG("#000", partnerColor(), 3);
 export default function EmailCheck() {
   return (
     <div
@@ -58,7 +58,7 @@ export default function EmailCheck() {
           marginLeft: "auto",
           padding: "10px",
           fontSize: "16px",
-          backgroundColor: secondaryColor(),
+          backgroundColor: partnerColor(),
           color: "#fff",
           border: "none",
           cursor: "pointer",

@@ -7,7 +7,7 @@ import {
   DivFlex,
   DivMarginBorder,
 } from "../../Resources/UniversalComponents";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
@@ -162,7 +162,7 @@ export function Blog({
           <div className="grid-flex-2">
             <DivMarginBorder>
               {loadingLESSON ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div className="study-container">
                   <HOne>{UniversalTexts.studyEnglish}</HOne>

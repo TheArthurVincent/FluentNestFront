@@ -14,8 +14,7 @@ import { levels } from "./RankingLevelsList";
 import {
   alwaysBlack,
   alwaysWhite,
-  secondaryColor,
-  textTitleFont,
+  partnerColor,
   transparentBlack,
 } from "../../../Styles/Styles";
 import { listOfButtons } from "./ListOfCriteria";
@@ -372,7 +371,7 @@ export default function StudentsRanking({
         }}
       >
         {loadingScore ? (
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           <div
             style={{
@@ -513,7 +512,6 @@ export default function StudentsRanking({
                 borderRadius: "50%",
                 left: name.length < 15 ? "5rem" : "3.4rem",
                 top: "5rem",
-                fontFamily: textTitleFont(),
                 fontSize: "1.4rem",
               }}
             >
@@ -605,7 +603,6 @@ export default function StudentsRanking({
                       style={{
                         fontWeight: 600,
                         width: "10rem",
-                        fontFamily: textTitleFont(),
                         padding: "5px",
                         backgroundColor: "none",
                         textAlign: "left",
@@ -795,7 +792,6 @@ export default function StudentsRanking({
                       style={{
                         fontWeight: 600,
                         width: "fit-content",
-                        fontFamily: textTitleFont(),
                         padding: "5px",
                         textAlign: "left",
                         backgroundColor: "none",

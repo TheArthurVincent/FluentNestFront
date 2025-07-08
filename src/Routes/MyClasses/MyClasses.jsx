@@ -12,8 +12,7 @@ import {
 import { ClassBox, TransectionMenu } from "./MyClasses.Styled";
 import {
   alwaysBlack,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
 } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
@@ -322,7 +321,7 @@ export function MyClasses({ headers }) {
             height: "100%",
           }}
         >
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
     </RouteDiv>

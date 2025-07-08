@@ -14,7 +14,7 @@ import {
   SpanHover,
 } from "../../Resources/UniversalComponents";
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
-import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import { ItemSideBarProps, ItemTopBarProps, LinkItem } from "./TopBarTypes";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
@@ -117,7 +117,7 @@ export const TopBarVertical: FC<ItemSideBarProps> = ({
                 href={link.endpoint}
                 style={{
                   display: seeItems ? "flex" : "none",
-                  color: primaryColor(),
+                  color: "#000",
                   cursor: "pointer",
                   textDecoration: "none",
                 }}
@@ -135,8 +135,8 @@ export const TopBarVertical: FC<ItemSideBarProps> = ({
                 style={{
                   display: seeItems ? "flex" : "none",
                   color: location.pathname.includes(link.endpoint)
-                    ? secondaryColor()
-                    : primaryColor(),
+                    ? partnerColor()
+                    : "#000",
                   cursor: location.pathname.includes(link.endpoint)
                     ? "default"
                     : "pointer",
@@ -159,8 +159,8 @@ export const TopBarVertical: FC<ItemSideBarProps> = ({
                   key={index}
                   style={{
                     color: location.pathname.includes(link.endpoint)
-                      ? secondaryColor()
-                      : primaryColor(),
+                      ? partnerColor()
+                      : "#000",
                     textDecoration: "none",
                   }}
                   to={link.endpoint}

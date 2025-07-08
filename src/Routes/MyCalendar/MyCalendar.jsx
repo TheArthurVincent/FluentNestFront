@@ -9,10 +9,9 @@ import { Link } from "react-router-dom";
 import {
   alwaysBlack,
   alwaysWhite,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
-  textSecondaryColorContrast,
+  textpartnerColorContrast,
   textTitleFont,
   transparentWhite,
 } from "../../Styles/Styles";
@@ -1074,7 +1073,7 @@ export default function MyCalendar({ headers, thePermissions }) {
               </button>{" "}
             </div>
             {loading ? (
-              <CircularProgress style={{ color: secondaryColor() }} />
+              <CircularProgress style={{ color: partnerColor() }} />
             ) : (
               <div
                 style={{
@@ -1099,7 +1098,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                           hj.getDate() == date.getDate() &&
                           hj.getMonth() == date.getMonth() &&
                           hj.getFullYear() == date.getFullYear()
-                            ? `2px solid ${secondaryColor()}`
+                            ? `2px solid ${partnerColor()}`
                             : "null",
                       }}
                       key={index}
@@ -1160,9 +1159,9 @@ export default function MyCalendar({ headers, thePermissions }) {
                                 event.category === "Group Class"
                                   ? "#D0D0A1" // Amarelo mais escuro, sem ser tão claro
                                   : event.category === "Rep"
-                                  ? secondaryColor() // Tom de azul mais escuro e sóbrio
+                                  ? partnerColor() // Tom de azul mais escuro e sóbrio
                                   : event.category === "Tutoring"
-                                  ? primaryColor() // Cinza mais escuro
+                                  ? "#000" // Cinza mais escuro
                                   : event.category === "Prize Class"
                                   ? "#E4C12D" // Amarelo mais escuro e mais sóbrio
                                   : event.category === "Standalone"
@@ -1185,8 +1184,8 @@ export default function MyCalendar({ headers, thePermissions }) {
                                     paddingBottom: "0px",
                                     marginBottom: "5px",
                                     padding: "3px",
-                                    border: `2px solid ${secondaryColor()}`,
-                                    backgroundColor: `${secondaryColor()}`,
+                                    border: `2px solid ${partnerColor()}`,
+                                    backgroundColor: `${partnerColor()}`,
                                   }}
                                 >
                                   <LinearProgress color="inherit" />
@@ -1204,9 +1203,9 @@ export default function MyCalendar({ headers, thePermissions }) {
                                   event.category === "Group Class"
                                     ? "#D0D0A1" // Amarelo mais escuro, sem ser tão claro
                                     : event.category === "Rep"
-                                    ? secondaryColor() // Tom de azul mais escuro e sóbrio
+                                    ? partnerColor() // Tom de azul mais escuro e sóbrio
                                     : event.category === "Tutoring"
-                                    ? primaryColor() // Cinza mais escuro
+                                    ? "#000" // Cinza mais escuro
                                     : event.category === "Prize Class"
                                     ? "#E4C12D" // Amarelo mais escuro e mais sóbrio
                                     : event.category === "Standalone"
@@ -1231,7 +1230,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                                       event.category === "Group Class"
                                         ? "#fff" // Amarelo mais escuro, sem ser tão claro
                                         : event.category === "Rep"
-                                        ? textSecondaryColorContrast() // Tom de azul mais escuro e sóbrio
+                                        ? textpartnerColorContrast() // Tom de azul mais escuro e sóbrio
                                         : event.category === "Tutoring"
                                         ? textPrimaryColorContrast() // Cinza mais escuro
                                         : event.category === "Prize Class"
@@ -1256,7 +1255,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                                       event.category === "Group Class"
                                         ? "#fff" // Amarelo mais escuro, sem ser tão claro
                                         : event.category === "Rep"
-                                        ? textSecondaryColorContrast() // Tom de azul mais escuro e sóbrio
+                                        ? textpartnerColorContrast() // Tom de azul mais escuro e sóbrio
                                         : event.category === "Tutoring"
                                         ? textPrimaryColorContrast() // Cinza mais escuro
                                         : event.category === "Prize Class"
@@ -1299,9 +1298,9 @@ export default function MyCalendar({ headers, thePermissions }) {
                                   gap: "5px",
                                   color:
                                     event.status == "marcado"
-                                      ? primaryColor()
+                                      ? "#000"
                                       : event.status == "realizada"
-                                      ? secondaryColor()
+                                      ? partnerColor()
                                       : event.status == "desmarcado"
                                       ? "red"
                                       : "#000",
@@ -1358,7 +1357,7 @@ export default function MyCalendar({ headers, thePermissions }) {
               }}
             >
               {loadingModalInfo ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div
                   style={{
@@ -1408,7 +1407,6 @@ export default function MyCalendar({ headers, thePermissions }) {
                   )}
                   <p
                     style={{
-                      fontFamily: textTitleFont(),
                       fontSize: "1.1rem",
                     }}
                   >
@@ -1478,7 +1476,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                         {UniversalTexts.editPost}
                       </HTwo>
                       {loadingInfo ? (
-                        <CircularProgress style={{ color: secondaryColor() }} />
+                        <CircularProgress style={{ color: partnerColor() }} />
                       ) : (
                         <>
                           <div
@@ -1818,7 +1816,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                 {UniversalTexts.editTurorings}
               </HTwo>
               {loadingModalTutoringsInfo ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <form
                   style={{
@@ -1851,7 +1849,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                 </form>
               )}
               {loadingTutoringDays ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div>
                   {tutoringsListOfOneStudent

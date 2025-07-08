@@ -1,6 +1,5 @@
 import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { textTitleFont } from "../../../../Styles/Styles";
 interface TextsWithTranslateSlideLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
@@ -15,7 +14,6 @@ export default function TextsWithTranslateSlideLessonModel({
         padding: "5px",
         margin: "10px 0",
         fontWeight: 600,
-        fontFamily: textTitleFont(),
         fontSize: "3rem",
         display: "grid",
         gap: "5rem",

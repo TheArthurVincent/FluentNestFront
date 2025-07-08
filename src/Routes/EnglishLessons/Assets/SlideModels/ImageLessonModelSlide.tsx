@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { textTitleFont } from "../../../../Styles/Styles";
 interface ImageLessonModelSlideProps {
   headers: MyHeadersType | null;
   element: any;
@@ -35,13 +34,7 @@ export default function ImageLessonModelSlide({
         {element.images &&
           element.images.map((image: any, i: number) => (
             <div key={i}>
-              <span
-                style={{
-                  fontFamily: textTitleFont(),
-                }}
-              >
-                {image.text}
-              </span>
+              <span>{image.text}</span>
               <img
                 style={{
                   width: "100%",

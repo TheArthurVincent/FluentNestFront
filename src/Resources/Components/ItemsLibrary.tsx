@@ -1,12 +1,8 @@
 import styled from "styled-components";
 import {
   alwaysWhite,
-  primaryColor,
-  primaryColor2,
-  secondaryColor,
-  secondaryColor2,
+  partnerColor,
   textGeneralFont,
-  textTitleFont,
 } from "../../Styles/Styles";
 
 interface ButtonProps {
@@ -23,7 +19,7 @@ interface ArvinButtonProps {
 }
 
 export const ArvinButton = styled.button<ArvinButtonProps>`
-  background: ${(props) => (props.color ? props.color : secondaryColor())};
+  background: ${(props) => (props.color ? props.color : partnerColor())};
   color: ${(props) =>
     props.colorContrast === "white" ? "black" : alwaysWhite()};
   padding: 10px;
@@ -40,8 +36,8 @@ export const ArvinButton = styled.button<ArvinButtonProps>`
   transition: all 0.3s ease; /* 🔁 boa prática para hover */
 
   &:hover {
-box-shadow: 0 2px 4px rgba(0,0,0,0.1), 0 8px 16px rgba(0,0,0,0.1);
-    };
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
 
   &:active {
     font-weight: 200;
@@ -72,12 +68,11 @@ export function formatPhoneNumber(phone: string): string {
 export const MyButton = styled.button<ButtonProps>`
   background: linear-gradient(
     to left,
-    ${(props) => props.firstcolor || primaryColor()} 0%,
-    ${(props) => props.secondcolor || props.firstcolor || primaryColor2()} 50%
+    ${(props) => props.firstcolor || "#000"} 0%,
+    ${(props) => props.secondcolor || props.firstcolor || "#5c5c5c"} 50%
   );
   color: ${(props) => props.textcolor || alwaysWhite()};
   padding: 5px 1.2rem;
-  font-family: ${textTitleFont()};
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -87,9 +82,8 @@ export const MyButton = styled.button<ButtonProps>`
   &:hover {
     background: linear-gradient(
       to left,
-      ${(props) => props.firstcolor || primaryColor()} 0%,
-      ${(props) => props.secondcolor || props.firstcolor || primaryColor2()}
-        100%
+      ${(props) => props.firstcolor || "#000"} 0%,
+      ${(props) => props.secondcolor || props.firstcolor || "#5c5c5c"} 100%
     );
 
     box-shadow: 1px 1px 10px 1px #bbb;

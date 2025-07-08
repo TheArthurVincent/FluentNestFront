@@ -1,6 +1,6 @@
 import React from "react";
 import { HOne } from "../Resources/Components/RouteBox";
-import { secondaryColor } from "../Styles/Styles";
+import { partnerColor } from "../Styles/Styles";
 import { myLogoDone } from "./NewStudentAsaas/EmailCheck";
 import { ArvinButton } from "../Resources/Components/ItemsLibrary";
 import { onLoggOut } from "../Resources/UniversalComponents";
@@ -38,7 +38,7 @@ export function FeeNotUpToDate() {
           marginTop: "30px",
           display: "inline-block",
           padding: "12px 20px",
-          backgroundColor: secondaryColor(),
+          backgroundColor: partnerColor(),
           color: "#fff",
           borderRadius: "8px",
           textDecoration: "none",

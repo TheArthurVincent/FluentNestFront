@@ -1,13 +1,10 @@
 import styled, { keyframes } from "styled-components";
 import {
-  primaryColor,
   textPrimaryColorContrast,
   alwaysWhite,
   alwaysBlack,
   transparentWhite,
-  secondaryColor,
-  textTitleFont,
-  textGeneralFont,
+  partnerColor,
 } from "../../Styles/Styles";
 
 export const RouteSizeControlBox = styled.div`
@@ -97,7 +94,6 @@ export const SpanIcon = styled.span`
   opacity: 0.8;
   transition: 0.3s;
   display: flex;
-  font-family: ${textTitleFont()};
   align-items: center;
   &:hover {
     opacity: 1;
@@ -121,17 +117,15 @@ export const BlogPostTitle = styled.div`
 export const HOne = styled.h1`
   text-align: center;
   font-size: 1.5rem;
-  color: ${primaryColor()};
-  font-family: ${textTitleFont()};
+  color: ${"#000"};
 `;
 
 export const HTwo = styled.h2`
-  font-family: ${textTitleFont()};
   font-size: 1.3rem;
   font-weight: 500;
   padding: 0.6rem;
   margin-bottom: 1rem;
-  color: ${primaryColor()};
+  color: ${"#000"};
   @media (max-width: 1700px) {
     text-align: center;
     margin-top: 1rem;
@@ -143,8 +137,6 @@ export const HTwo = styled.h2`
 `;
 
 export const HThree = styled.h3`
-  font-family: ${textTitleFont()};
-  font-family: ${textGeneralFont()};
   font-size: 1rem;
   padding: 6px;
   @media (max-width: 750px) {
@@ -184,7 +176,6 @@ export const fadeIn = keyframes`
 export const DivFont = styled.div`
   font-weight: 600;
   font-size: 1.1rem;
-  font-family: ${textTitleFont()};
   margin: 0;
   @media (max-width: 500px) {
     font-size: 1rem;

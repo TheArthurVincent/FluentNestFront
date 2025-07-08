@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -18,7 +18,7 @@ function RequestResetPassword() {
         `${backDomain}/api/v1/resetpassword/${email}`
       );
 
-      notifyError(response.data.message, secondaryColor());
+      notifyError(response.data.message, partnerColor());
       setTimeout(() => {
         window.location.assign("/login");
       }, 2500);
@@ -29,7 +29,7 @@ function RequestResetPassword() {
     }
   };
 
-  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 2.5);
+  const myLogo = LogoSVG("#000", partnerColor(), 2.5);
 
   return (
     <div
@@ -72,19 +72,19 @@ function RequestResetPassword() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -101,7 +101,7 @@ function RequestResetPassword() {
                   disabled={email == "" ? true : false}
                   style={{
                     backgroundColor: "#eee",
-                    color: primaryColor(),
+                    color: "#000",
                     marginLeft: "auto",
                   }}
                 >

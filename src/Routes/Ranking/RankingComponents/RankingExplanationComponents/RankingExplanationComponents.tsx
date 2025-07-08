@@ -1,8 +1,7 @@
 import React from "react";
 import {
-  primaryColor,
   textPrimaryColorContrast,
-  textSecondaryColorContrast,
+  textpartnerColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
 import {
@@ -19,7 +18,7 @@ export default function RankingExplanationComponent() {
         <GridRankingExplanationCard key={index}>
           <HThree
             style={{
-              color: primaryColor(),
+              color: "#000",
               padding: "5px",
               borderRadius: "6px",
               border: "black solid 2px",
@@ -42,15 +41,18 @@ export default function RankingExplanationComponent() {
               className={criteria.icon}
               aria-hidden="true"
             />{" "}
-            <span style={{ fontFamily: textTitleFont() }}> {criteria.title}</span>
+            <span style={{ fontFamily: textTitleFont() }}>
+              {" "}
+              {criteria.title}
+            </span>
           </HThree>
           <div>
             {criteria.score.map((score, index) => (
               <p
                 key={index}
                 style={{
-                  height:"fit-content",
-                  backgroundColor: primaryColor(),
+                  height: "fit-content",
+                  backgroundColor: "#000",
                   color: textPrimaryColorContrast(),
                   display: "grid",
                   gridTemplateColumns: "1fr 0.6fr",
@@ -65,7 +67,7 @@ export default function RankingExplanationComponent() {
                 <span
                   style={{
                     backgroundColor: score.color,
-                    color: textSecondaryColorContrast(),
+                    color: textpartnerColorContrast(),
                     fontFamily: textTitleFont(),
                     fontWeight: 600,
                     padding: "5px",
@@ -78,7 +80,6 @@ export default function RankingExplanationComponent() {
               </p>
             ))}
           </div>
-        
         </GridRankingExplanationCard>
       ))}
     </GridRankingExplanation>

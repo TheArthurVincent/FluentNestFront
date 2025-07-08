@@ -10,7 +10,7 @@ import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { CircularProgress } from "@mui/material";
 import { languages } from "./AddFlashONEFlashCard";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
 
 const AllCards = ({ headers }: HeadersProps) => {
@@ -250,7 +250,7 @@ const AllCards = ({ headers }: HeadersProps) => {
           {perm === "superadmin" && (
             <div style={{ display: "inline" }}>
               {loadingStudents ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <select onChange={handleStudentChange} value={studentID}>
                   {studentsList.map((student: any, index: number) => (
@@ -266,7 +266,7 @@ const AllCards = ({ headers }: HeadersProps) => {
 
         {/* Cards Section */}
         {loading ? (
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           <div
             ref={scrollRef}

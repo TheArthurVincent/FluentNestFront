@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  primaryColor,
-  secondaryColor,
-  textTitleFont,
-} from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import HTMLJustWrite from "../../../../Resources/Components/HTMLJustWrite";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
-import { Tooltip } from "@mui/material";
 import { notifyError } from "../Functions/FunctionLessons";
 
 interface SentenceLessonModelProps {
@@ -89,11 +83,8 @@ export default function SentenceLessonModelSlide({
               {" "}
               <strong
                 style={{
-                  fontFamily: textTitleFont(),
                   fontSize: "2rem",
-                  color: !sentence.portuguese
-                    ? secondaryColor()
-                    : primaryColor(),
+                  color: !sentence.portuguese ? partnerColor() : "#000",
                 }}
               >
                 {sentence.english}

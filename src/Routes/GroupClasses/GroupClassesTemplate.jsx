@@ -10,7 +10,6 @@ import {
   alwaysWhite,
   darkGreyColor,
   lightGreyColor,
-  primaryColor,
 } from "../../Styles/Styles";
 import CoursesSideBar from "../../Application/CoursesSideBar/CoursesSideBar";
 import styled from "styled-components";
@@ -140,7 +139,7 @@ export default function GroupClassesTemplate({
                         }}
                       >
                         {videoItem.title && (
-                          <p style={{ color: primaryColor() }}>
+                          <p style={{ color: "#000" }}>
                             {videoItem.title}
                           </p>
                         )}{" "}

@@ -5,7 +5,7 @@ import { backDomain } from "../../Resources/UniversalComponents";
 import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
 import { Alert, Box, Grid, TextField } from "@mui/material";
 import { NavLink } from "react-router-dom";
-import { primaryColor, secondaryColor, textGeneralFont } from "../../Styles/Styles";
+import { partnerColor, textGeneralFont } from "../../Styles/Styles";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import Helmets from "../../Resources/Helmets";
 
@@ -78,12 +78,12 @@ export function SendMail() {
             fullWidth
             sx={{
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
-                "&.Mui-focused fieldset": { borderColor: secondaryColor() },
+                "& fieldset": { borderColor: partnerColor() },
+                "&:hover fieldset": { borderColor: partnerColor() },
+                "&.Mui-focused fieldset": { borderColor: partnerColor() },
               },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
+              "& label": { color: partnerColor() },
+              "& label.Mui-focused": { color: partnerColor() },
             }}
           />
           <TextField
@@ -96,12 +96,12 @@ export function SendMail() {
             fullWidth
             sx={{
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
-                "&.Mui-focused fieldset": { borderColor: secondaryColor() },
+                "& fieldset": { borderColor: partnerColor() },
+                "&:hover fieldset": { borderColor: partnerColor() },
+                "&.Mui-focused fieldset": { borderColor: partnerColor() },
               },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
+              "& label": { color: partnerColor() },
+              "& label.Mui-focused": { color: partnerColor() },
             }}
           />
           <Box

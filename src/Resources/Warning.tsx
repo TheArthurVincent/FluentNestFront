@@ -1,5 +1,4 @@
 import React from "react";
-import { textTitleFont } from "../Styles/Styles";
 
 interface WarningTextProps {
   text: string;
@@ -9,7 +8,6 @@ const WarningText: React.FC<WarningTextProps> = ({ text }) => {
   return (
     <div
       style={{
-        fontFamily: textTitleFont(),
         borderRadius: "6px",
         padding: "1rem",
         textAlign: "center",
@@ -17,7 +15,6 @@ const WarningText: React.FC<WarningTextProps> = ({ text }) => {
         marginRight: "auto",
         marginLeft: "auto",
         display: "grid",
-
         maxWidth: "15rem",
         gap: "1rem",
       }}

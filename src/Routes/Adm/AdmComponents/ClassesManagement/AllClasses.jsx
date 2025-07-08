@@ -4,7 +4,7 @@ import { HOne } from "../../../../Resources/Components/RouteBox";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { Button, CircularProgress, Input, Modal } from "@mui/material";
 import { Link } from "react-router-dom";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 
 export function AllClasses({ headers }) {
@@ -112,7 +112,7 @@ export function AllClasses({ headers }) {
       </div>
       <div style={{ maxHeight: "30rem", overflow: "auto" }}>
         {loading ? (
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           filteredTutorings.map((group, index) => (
             <div key={index}>

@@ -5,8 +5,7 @@ import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
@@ -102,16 +101,16 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             aria-label="scrollable auto tabs example"
             sx={{
               fontFamily: textTitleFont(),
-              color: secondaryColor(),
+              color: partnerColor(),
               "& .MuiTab-root": {
                 fontFamily: textTitleFont(),
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .Mui-selected": {
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .MuiTabs-indicator": {
-                backgroundColor: secondaryColor(),
+                backgroundColor: partnerColor(),
               },
             }}
           >
@@ -123,7 +122,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
                     display: component.adm === false ? "block" : displayIsAdm,
                     fontWeight: 500,
                     backgroundColor: textPrimaryColorContrast(),
-                    color: primaryColor(),
+                    color: "#000",
                   }}
                   label={component.title}
                   value={component.value}

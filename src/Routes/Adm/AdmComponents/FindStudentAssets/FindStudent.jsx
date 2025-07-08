@@ -21,8 +21,7 @@ import {
   TableBody,
 } from "@mui/material";
 import {
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
@@ -483,7 +482,7 @@ export function FindStudent({ uploadStatus, headers }) {
                       </TableCell>
                       <TableCell>
                         <a
-                          style={{ color: primaryColor() }}
+                          style={{ color: "#000" }}
                           href={
                             student.googleDriveLink || "http://www.google.com/"
                           }
@@ -510,7 +509,7 @@ export function FindStudent({ uploadStatus, headers }) {
           }}
         >
           <p>Carregando dados</p>
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
 
@@ -540,7 +539,7 @@ export function FindStudent({ uploadStatus, headers }) {
             fontSize: "1.5rem",
             marginBottom: 0,
             margin: "1rem 0",
-            color: primaryColor(),
+            color: "#000",
             padding: "0.3rem",
             backgroundColor: textPrimaryColorContrast(),
           }}
@@ -556,16 +555,16 @@ export function FindStudent({ uploadStatus, headers }) {
               aria-label="scrollable auto tabs example"
               sx={{
                 fontFamily: textTitleFont(),
-                color: secondaryColor(),
+                color: partnerColor(),
                 "& .MuiTab-root": {
                   fontFamily: textTitleFont(),
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
                 "& .Mui-selected": {
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
                 "& .MuiTabs-indicator": {
-                  backgroundColor: secondaryColor(),
+                  backgroundColor: partnerColor(),
                 },
               }}
             >

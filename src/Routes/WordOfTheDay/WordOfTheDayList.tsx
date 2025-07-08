@@ -3,17 +3,16 @@ import axios from "axios";
 import { CircularProgress, Button, Tooltip } from "@mui/material";
 
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  formatDate,
-  formatDateBr,
-} from "../../Resources/UniversalComponents";
+import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
 import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { secondaryColor, textTitleFont, transparentBlack } from "../../Styles/Styles";
-import { Modal, Box, Typography, IconButton } from "@mui/material";
+import {
+  partnerColor,
+  textGeneralFont,
+  transparentBlack,
+} from "../../Styles/Styles";
+import { Modal, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
 
@@ -65,7 +64,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
   }, []);
 
   if (loading) {
-    return <CircularProgress style={{ color: secondaryColor() }} />;
+    return <CircularProgress style={{ color: partnerColor() }} />;
   }
 
   return (
@@ -155,7 +154,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
                 bgcolor: "rgba(255, 255, 255, 0.85)",
                 backdropFilter: "blur(10px)",
                 borderRadius: 4,
-                boxShadow:transparentBlack(),
+                boxShadow: transparentBlack(),
                 p: 4,
                 color: "#333",
               }}
@@ -192,7 +191,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
                   <div
                     style={{
                       textAlign: "center",
-                      fontFamily: "Lato",
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     <p

@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import { textGeneralFont } from "../Styles/Styles";
 
 interface VoiceTypes {
   changeB: boolean;
@@ -46,7 +47,7 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
   }, [selectedOption, changeB]);
 
   return (
-    <div style={{ margin: "5px 0", fontFamily: "Lato, sans-serif" }}>
+    <div style={{ margin: "5px 0", fontFamily: textGeneralFont() }}>
       <div
         style={{
           display: "flex",

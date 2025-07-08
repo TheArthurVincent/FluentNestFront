@@ -14,10 +14,9 @@ import { Button, CircularProgress } from "@mui/material";
 import { ClassBox, TransectionMenu } from "../MyClasses/MyClasses.Styled";
 import {
   alwaysBlack,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
-  textSecondaryColorContrast,
+  textpartnerColorContrast,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
 import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
@@ -91,7 +90,7 @@ export default function GroupClasses({ headers }) {
         >
           <Button
             style={{
-              backgroundColor: primaryColor(),
+              backgroundColor: "#000",
               color: textPrimaryColorContrast(),
             }}
             onClick={handlePrevPage}
@@ -108,7 +107,7 @@ export default function GroupClasses({ headers }) {
           </span>
           <Button
             style={{
-              backgroundColor: primaryColor(),
+              backgroundColor: "#000",
               color: textPrimaryColorContrast(),
             }}
             onClick={handleNextPage}
@@ -171,8 +170,8 @@ export default function GroupClasses({ headers }) {
             >
               <Link
                 style={{
-                  backgroundColor: secondaryColor(),
-                  color: textSecondaryColorContrast(),
+                  backgroundColor: partnerColor(),
+                  color: textpartnerColorContrast(),
                   padding: "10px",
                   borderRadius: "6px",
                   display: "flex",
@@ -214,7 +213,7 @@ export default function GroupClasses({ headers }) {
             {itemsPerPage > 2 && classes.length > 2 && <GroupClassesSideBar />}
           </>
         ) : (
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         )}
       </>
     </RouteDiv>

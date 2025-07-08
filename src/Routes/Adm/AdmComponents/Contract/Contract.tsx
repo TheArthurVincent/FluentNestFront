@@ -14,7 +14,7 @@ import {
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export function Contract({ headers }: HeadersProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -86,7 +86,7 @@ export function Contract({ headers }: HeadersProps) {
   return (
     <div>
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <div
           className="no-print"

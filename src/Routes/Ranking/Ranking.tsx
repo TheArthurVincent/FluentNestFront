@@ -4,8 +4,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
@@ -104,16 +103,16 @@ export default function Ranking({ headers }: HeadersProps) {
             aria-label="scrollable auto tabs example"
             sx={{
               fontFamily: textTitleFont(),
-              color: secondaryColor(),
+              color: partnerColor(),
               "& .MuiTab-root": {
                 fontFamily: textTitleFont(),
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .Mui-selected": {
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .MuiTabs-indicator": {
-                backgroundColor: secondaryColor(),
+                backgroundColor: partnerColor(),
               },
             }}
           >
@@ -124,7 +123,7 @@ export default function Ranking({ headers }: HeadersProps) {
                   style={{
                     fontWeight: 500,
                     backgroundColor: textPrimaryColorContrast(),
-                    color: primaryColor(),
+                    color: "#000",
                   }}
                   label={component.title}
                   value={component.value}

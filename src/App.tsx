@@ -20,6 +20,9 @@ import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 export const currentUrl = window.location.href;
 export const isArvin = currentUrl.includes("localhost");
 export const isArthurVincent = currentUrl.includes("arthurvincent");
+export const getWhiteLabel = JSON.parse(
+  localStorage.getItem("whiteLabel") || "{}"
+);
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");
@@ -54,7 +57,18 @@ function App() {
     // checkLocalBackground();
     const user = localStorage.getItem("loggedIn");
 
-    const textElement = document.querySelector("div");
+    const textElement = document.querySelector("body");
+    const hOne = document.querySelector("h1");
+    const hTwo = document.querySelector("h2");
+
+    if (hOne) {
+      hOne.style.fontFamily = textTitleFont();
+    }
+
+    if (hTwo) {
+      hTwo.style.fontFamily = textTitleFont();
+    }
+
     if (textElement) {
       textElement.style.fontFamily = textGeneralFont();
     }

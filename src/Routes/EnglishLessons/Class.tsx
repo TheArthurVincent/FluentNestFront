@@ -16,9 +16,7 @@ import { Link } from "react-router-dom";
 import {
   alwaysWhite,
   darkGreyColor,
-  primaryColor,
-  secondaryColor,
-  textTitleFont,
+  partnerColor,
   transparentBlack,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
@@ -364,7 +362,7 @@ export default function EnglishClassCourse2({
 
       notifyError(
         "Comentário enviado. Você será respondido em breve!",
-        secondaryColor()
+        partnerColor()
       );
       setComment("");
       getComments();
@@ -415,7 +413,7 @@ export default function EnglishClassCourse2({
       <Helmets text={classTitle} />
 
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <>
           <div
@@ -429,7 +427,7 @@ export default function EnglishClassCourse2({
               style={{
                 textDecoration: "none",
                 fontSize: "10px",
-                color: primaryColor(),
+                color: "#000",
               }}
               to="/english-courses"
             >
@@ -440,7 +438,7 @@ export default function EnglishClassCourse2({
               style={{
                 textDecoration: "none",
                 fontSize: "10px",
-                color: primaryColor(),
+                color: "#000",
                 cursor: "pointer",
               }}
               onClick={backToCourses}
@@ -453,7 +451,7 @@ export default function EnglishClassCourse2({
                 textDecoration: "none",
                 fontStyle: "italic",
                 fontSize: "10px",
-                color: secondaryColor(),
+                color: partnerColor(),
               }}
             >
               {theclass.title}
@@ -472,7 +470,7 @@ export default function EnglishClassCourse2({
             {previousClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={PVSClass}
@@ -509,7 +507,7 @@ export default function EnglishClassCourse2({
             {nextClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={NXTClass}
@@ -630,7 +628,6 @@ export default function EnglishClassCourse2({
                 padding: "0.3rem",
                 backgroundColor: "#f9f9f9",
                 fontSize: "1.1rem",
-                fontFamily: textTitleFont(),
                 fontWeight: 600,
                 textAlign: "center",
               }}
@@ -787,7 +784,7 @@ export default function EnglishClassCourse2({
             {previousClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={PVSClass}
@@ -806,7 +803,7 @@ export default function EnglishClassCourse2({
             {nextClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={NXTClass}

@@ -3,11 +3,7 @@ import axios from "axios";
 import React from "react";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import {
-  primaryColor,
-  secondaryColor,
-  secondaryColor2,
-} from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress, Alert } from "@mui/material";
 import { IFrameAsaas } from "../HomePage/Blog.Styled";
@@ -256,7 +252,7 @@ export default function Subscription() {
       marginLeft: "auto",
       padding: "10px",
       fontSize: "16px",
-      backgroundColor: secondaryColor(),
+      backgroundColor: partnerColor(),
       color: "#fff",
       border: "none",
       cursor: "pointer",
@@ -307,7 +303,7 @@ export default function Subscription() {
 
     fetchAddress();
   }, [form.zip]);
-  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 3);
+  const myLogo = LogoSVG("#000", partnerColor(), 3);
   const [selectedPlan, setSelectedPlan] = useState("monthly");
 
   const handlePlanSelect = (plan: string) => {
@@ -324,8 +320,8 @@ export default function Subscription() {
   };
 
   const selectedStyle = {
-    border: `2px solid ${secondaryColor()}`,
-    backgroundColor: secondaryColor2(),
+    border: `2px solid ${partnerColor()}`,
+    backgroundColor: partnerColor(),
   };
 
   const unselectedStyle = {
@@ -336,8 +332,8 @@ export default function Subscription() {
   const isSelected = (plan: string) =>
     selectedPlan === plan
       ? {
-          border: `2px solid ${secondaryColor()}`,
-          backgroundColor: secondaryColor2(),
+          border: `2px solid ${partnerColor()}`,
+          backgroundColor: partnerColor(),
         }
       : {
           border: "1px solid #ccc",
@@ -371,19 +367,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -400,19 +396,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -431,19 +427,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -461,19 +457,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -491,19 +487,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -523,19 +519,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -554,19 +550,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -582,19 +578,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -616,19 +612,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -647,19 +643,19 @@ export default function Subscription() {
                 sx={{
                   "& .MuiOutlinedInput-root": {
                     "& fieldset": {
-                      borderColor: secondaryColor(), // cor normal
+                      borderColor: partnerColor(), // cor normal
                     },
                     "&:hover fieldset": {
-                      borderColor: secondaryColor(), // ao passar o mouse
+                      borderColor: partnerColor(), // ao passar o mouse
                     },
                     "&.Mui-focused fieldset": {
-                      borderColor: secondaryColor(), // quando focado
+                      borderColor: partnerColor(), // quando focado
                     },
                     "& label": {
-                      color: secondaryColor(), // cor padrão do label
+                      color: partnerColor(), // cor padrão do label
                     },
                     "& label.Mui-focused": {
-                      color: secondaryColor(), // cor quando o label está flutuando
+                      color: partnerColor(), // cor quando o label está flutuando
                     },
                   },
                 }}
@@ -760,19 +756,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -791,19 +787,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -821,19 +817,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -852,19 +848,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -883,19 +879,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -919,19 +915,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -950,19 +946,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -980,19 +976,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -1010,19 +1006,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -1040,19 +1036,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -1070,19 +1066,19 @@ export default function Subscription() {
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       "& fieldset": {
-                        borderColor: secondaryColor(), // cor normal
+                        borderColor: partnerColor(), // cor normal
                       },
                       "&:hover fieldset": {
-                        borderColor: secondaryColor(), // ao passar o mouse
+                        borderColor: partnerColor(), // ao passar o mouse
                       },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(), // quando focado
+                        borderColor: partnerColor(), // quando focado
                       },
                       "& label": {
-                        color: secondaryColor(), // cor padrão do label
+                        color: partnerColor(), // cor padrão do label
                       },
                       "& label.Mui-focused": {
-                        color: secondaryColor(), // cor quando o label está flutuando
+                        color: partnerColor(), // cor quando o label está flutuando
                       },
                     },
                   }}
@@ -1092,7 +1088,7 @@ export default function Subscription() {
           )}
           <button type="submit" style={styles.button} disabled={loading}>
             {loading ? (
-              <CircularProgress style={{ color: secondaryColor() }} />
+              <CircularProgress style={{ color: partnerColor() }} />
             ) : (
               "Cadastrar"
             )}

@@ -5,11 +5,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  alwaysWhite,
-  secondaryColor,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import NewPost from "./AdmComponents/PostsManagement/NewPost";
 import NewTutoring from "./AdmComponents/ClassesManagement/NewTutoring";
@@ -109,12 +105,10 @@ export function Adm({ headers }: HeadersProps) {
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
               sx={{
-                fontFamily: textTitleFont(),
-                color: secondaryColor(),
+                color: partnerColor(),
                 "& .MuiTab-root": {
                   padding: "5px",
-                  fontFamily: textTitleFont(),
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
                 "& .Mui-selected": {
                   backgroundColor: "#f9f9f9",
@@ -122,8 +116,8 @@ export function Adm({ headers }: HeadersProps) {
                   padding: "5px",
                 },
                 "& .MuiTabs-indicator": {
-                  color: secondaryColor(),
-                  backgroundColor: secondaryColor(),
+                  color: partnerColor(),
+                  backgroundColor: partnerColor(),
                 },
               }}
             >

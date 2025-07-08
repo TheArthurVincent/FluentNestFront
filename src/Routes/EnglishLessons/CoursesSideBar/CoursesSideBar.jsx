@@ -10,8 +10,7 @@ import {
 } from "./CoursesSideBarStyled";
 import {
   alwaysWhite,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
 } from "../../../Styles/Styles";
 import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
@@ -58,8 +57,8 @@ function CoursesSideBar({ courses }) {
               <div
                 style={{
                   alignItems: "center",
-                  backgroundColor: secondaryColor(),
-                  border: `ridge 4px ${secondaryColor()}`,
+                  backgroundColor: partnerColor(),
+                  border: `ridge 4px ${partnerColor()}`,
                   borderRadius: "50px",
                   color: alwaysWhite(),
                   cursor: "pointer",
@@ -100,11 +99,11 @@ function CoursesSideBar({ courses }) {
                             className="hover-color"
                             style={{
                               borderRadius: "6px",
-                              color: primaryColor(),
+                              color: "#000",
                               backgroundColor: location.pathname.includes(
                                 pathGenerator(lesson.title)
                               )
-                                ? secondaryColor()
+                                ? partnerColor()
                                 : textPrimaryColorContrast(),
                             }}
                             onClick={handleHideCourses}

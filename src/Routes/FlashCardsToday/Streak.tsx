@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 interface StreakProps {
   streak: number;
@@ -29,7 +29,7 @@ export const Streak: React.FC<StreakProps> = ({ streak, message }) => {
         <motion.div
           style={{
             height: "100%",
-            backgroundColor: secondaryColor(),
+            backgroundColor: partnerColor(),
             borderRadius: "12px",
           }}
           initial={{ width: "0%" }}

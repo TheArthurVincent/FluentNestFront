@@ -9,11 +9,7 @@ import {
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { levels } from "./RankingLevelsList";
-import {
-  secondaryColor,
-  textGeneralFont,
-  textTitleFont,
-} from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 
 export default function StudentsRankingTotal({ headers }: HeadersProps) {
@@ -104,7 +100,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
       >{`> 10.000 only!`}</HTwo>
 
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {sortedStudents.map((item: any, index: number) => {
@@ -189,7 +185,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     <span
                       style={{
                         fontWeight: "1000",
-                        fontFamily: textTitleFont(),
                       }}
                     >
                       {formatNumber(item.totalScore)}
@@ -204,7 +199,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textGeneralFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}
@@ -230,7 +224,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     <span
                       style={{
                         fontWeight: "1000",
-                        fontFamily: textTitleFont(),
                       }}
                     >
                       {formatNumber(item.homeworkAssignmentsDone)}
@@ -244,7 +237,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textGeneralFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}
@@ -271,7 +263,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     <span
                       style={{
                         fontWeight: "1000",
-                        fontFamily: textTitleFont(),
                       }}
                     >
                       {formatNumber(item.flashcards25Reviews)}
@@ -285,7 +276,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textGeneralFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}

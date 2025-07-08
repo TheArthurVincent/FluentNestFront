@@ -10,7 +10,7 @@ import {
 import { FormList } from "../../Adm.Styled";
 import { CircularProgress } from "@mui/material";
 import FindStudent from "./FindStudent";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export function NewStudent({ headers }) {
   const [newName, setNewName] = useState("");
@@ -44,7 +44,7 @@ export function NewStudent({ headers }) {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setButton(<CircularProgress style={{ color: secondaryColor() }} />);
+    setButton(<CircularProgress style={{ color: partnerColor() }} />);
     let newStudent = {
       username: newUsername,
       password: newPassword,

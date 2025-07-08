@@ -9,7 +9,7 @@ import {
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 interface WordOfTheDayRv {
   headers: MyHeadersType | null;
@@ -147,7 +147,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
   };
 
   return loading ? (
-    <CircularProgress style={{ color: secondaryColor() }} />
+    <CircularProgress style={{ color: partnerColor() }} />
   ) : (
     <>
       {see && (

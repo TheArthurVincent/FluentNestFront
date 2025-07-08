@@ -31,9 +31,14 @@ import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 
+export const getWhiteLabel = JSON.parse(
+  localStorage.getItem("whiteLabel") || "{}"
+);
+
 export function HomePage({ headers }: HeadersProps) {
   const [thePermissions, setPermissions] = useState<string>("");
   const [admin, setAdmin] = useState<boolean>(false);
+  const [teacher, setTeacher] = useState<boolean>(false);
   const [_StudentId, setStudentId] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
   const [change, setChange] = useState<boolean>(true);
@@ -47,6 +52,8 @@ export function HomePage({ headers }: HeadersProps) {
       setStudentId(id || _StudentId);
       setPicture(picture);
       setAdmin(permissions === "superadmin" ? true : false);
+      setTeacher(permissions === "teacher" ? true : false);
+      console.log("getWhiteLabel", getWhiteLabel);
     } else {
       onLoggOut();
       return;
@@ -154,7 +161,7 @@ export function HomePage({ headers }: HeadersProps) {
       path: "/adm-businessmanagement",
       title: "Adm",
       component:
-        verifyToken() && admin ? (
+        verifyToken() && (admin || teacher) ? (
           <Adm headers={headers} />
         ) : (
           <Blog

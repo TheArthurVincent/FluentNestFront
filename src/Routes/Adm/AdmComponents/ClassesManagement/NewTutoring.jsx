@@ -3,7 +3,7 @@ import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
 import { DivGrid, backDomain } from "../../../../Resources/UniversalComponents";
 import { CircularProgress, TextField } from "@mui/material";
-import { lightGreyColor, secondaryColor } from "../../../../Styles/Styles";
+import { lightGreyColor, partnerColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
@@ -63,7 +63,7 @@ export function NewTutoring({ headers }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setButton(<CircularProgress style={{ color: secondaryColor() }} />);
+    setButton(<CircularProgress style={{ color: partnerColor() }} />);
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/tutoring/`,
@@ -148,7 +148,7 @@ export function NewTutoring({ headers }) {
       </HTwo>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         </div>
       ) : (
         <form
@@ -188,7 +188,7 @@ export function NewTutoring({ headers }) {
               style={{
                 cursor: "pointer",
                 borderRadius: "8px",
-                backgroundColor: secondaryColor(),
+                backgroundColor: partnerColor(),
                 color: "#fff",
                 padding: "0.6rem 1.2rem",
                 fontWeight: 600,
@@ -282,14 +282,14 @@ export function NewTutoring({ headers }) {
                       fullWidth
                       sx={{
                         "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: secondaryColor() },
-                          "&:hover fieldset": { borderColor: secondaryColor() },
+                          "& fieldset": { borderColor: partnerColor() },
+                          "&:hover fieldset": { borderColor: partnerColor() },
                           "&.Mui-focused fieldset": {
-                            borderColor: secondaryColor(),
+                            borderColor: partnerColor(),
                           },
                         },
-                        "& label": { color: secondaryColor() },
-                        "& label.Mui-focused": { color: secondaryColor() },
+                        "& label": { color: partnerColor() },
+                        "& label.Mui-focused": { color: partnerColor() },
                       }}
                       variant="outlined"
                       placeholder="Escreva os flashcards aqui"
@@ -360,7 +360,7 @@ export function NewTutoring({ headers }) {
             style={{
               marginLeft: "auto",
               cursor: disabled ? "not-allowed" : "pointer",
-              backgroundColor: disabled ? "grey" : secondaryColor(),
+              backgroundColor: disabled ? "grey" : partnerColor(),
               minWidth: 120,
               borderRadius: 8,
               fontWeight: 600,
@@ -384,7 +384,7 @@ export function NewTutoring({ headers }) {
       >
         {loadingHW ? (
           <div style={{ textAlign: "center" }}>
-            <CircularProgress style={{ color: secondaryColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           </div>
         ) : (
           <div>
@@ -437,7 +437,7 @@ export function NewTutoring({ headers }) {
       >
         {loadingFlashcards ? (
           <div style={{ textAlign: "center" }}>
-            <CircularProgress style={{ color: secondaryColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           </div>
         ) : (
           <div>

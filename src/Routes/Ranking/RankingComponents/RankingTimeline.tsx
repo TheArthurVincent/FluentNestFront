@@ -2,10 +2,9 @@ import React, { useEffect, useState } from "react";
 import {
   alwaysWhite,
   lightGreyColor,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
-  textSecondaryColorContrast,
+  textpartnerColorContrast,
 } from "../../../Styles/Styles";
 import axios from "axios";
 import { backDomain, formatDate } from "../../../Resources/UniversalComponents";
@@ -24,7 +23,7 @@ export default function RankingTimeline({
   headers,
   id,
   name,
-  permissions
+  permissions,
 }: RankingTimeLineProps) {
   const [localTimeline, setLocalTimeline] = useState<any>([]);
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -67,9 +66,12 @@ export default function RankingTimeline({
   const seeName = async (id: string) => {
     setLoading(true);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/studentname/${id}`, {
-        headers: actualHeaders,
-      });
+      const response = await axios.get(
+        `${backDomain}/api/v1/studentname/${id}`,
+        {
+          headers: actualHeaders,
+        }
+      );
       setActualName(response.data.name);
       setLoading(false);
     } catch (error) {
@@ -92,10 +94,10 @@ export default function RankingTimeline({
     <div
       style={{
         top: "10%",
-        fontSize:"10px",
+        fontSize: "10px",
         borderRadius: "6px",
         left: "30%",
-        color: primaryColor(),
+        color: "#000",
         backgroundColor: textPrimaryColorContrast(),
         padding: "1rem",
       }}
@@ -107,19 +109,15 @@ export default function RankingTimeline({
           <Button
             onClick={() => seeScore(id)}
             style={{
-              backgroundColor: textSecondaryColorContrast(),
-              color: secondaryColor(),
+              backgroundColor: textpartnerColorContrast(),
+              color: partnerColor(),
             }}
           >
             <i className="fa fa-refresh" aria-hidden="true" />
           </Button>
         )}
         {permissions === "superadmin" && (
-          <select
-            onChange={handleStudentChange}
-            name="students"
-            value={newID}
-          >
+          <select onChange={handleStudentChange} name="students" value={newID}>
             {studentsList.map((student: any, index: number) => (
               <option key={index} value={student.id}>
                 {student.name + " " + student.lastname}
@@ -135,7 +133,9 @@ export default function RankingTimeline({
           justifyContent: "space-between",
         }}
       >
-        <HOne style={{ textAlign: "center", margin: "0.5rem" }}>{actualName}</HOne>
+        <HOne style={{ textAlign: "center", margin: "0.5rem" }}>
+          {actualName}
+        </HOne>
       </span>
       <div
         style={{
@@ -149,15 +149,39 @@ export default function RankingTimeline({
         }}
       >
         {loading ? (
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 {/* <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#f2f2f2" }}>Tipo</th> */}
-                <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#f2f2f2" }}>Score</th>
-                <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#f2f2f2" }}>Data</th>
-                <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#f2f2f2" }}>Descrição</th>
+                <th
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    backgroundColor: "#f2f2f2",
+                  }}
+                >
+                  Score
+                </th>
+                <th
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    backgroundColor: "#f2f2f2",
+                  }}
+                >
+                  Data
+                </th>
+                <th
+                  style={{
+                    border: "1px solid black",
+                    padding: "8px",
+                    backgroundColor: "#f2f2f2",
+                  }}
+                >
+                  Descrição
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -214,8 +238,12 @@ export default function RankingTimeline({
                     >
                       {item.score}
                     </td>
-                    <td style={{ border: "1px solid black", padding: "8px" }}>{formatDate(item.date)}</td>
-                    <td style={{ border: "1px solid black", padding: "8px" }}>{item.description}</td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {formatDate(item.date)}
+                    </td>
+                    <td style={{ border: "1px solid black", padding: "8px" }}>
+                      {item.description}
+                    </td>
                   </tr>
                 );
               })}

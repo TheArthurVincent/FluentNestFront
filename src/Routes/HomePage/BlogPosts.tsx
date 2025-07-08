@@ -15,7 +15,7 @@ import {
   UniversalButtonsDivFlex,
   onLoggOut,
 } from "../../Resources/UniversalComponents";
-import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
@@ -43,7 +43,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
   // Loading
   const [posts, setPosts] = useState<any>([
     {
-      title: <CircularProgress style={{ color: secondaryColor() }} />,
+      title: <CircularProgress style={{ color: partnerColor() }} />,
     },
   ]);
 

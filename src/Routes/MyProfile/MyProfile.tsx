@@ -7,7 +7,7 @@ import {
   onLoggOut,
   updateInfo,
 } from "../../Resources/UniversalComponents";
-import { alwaysBlack, primaryColor, secondaryColor } from "../../Styles/Styles";
+import { alwaysBlack, partnerColor } from "../../Styles/Styles";
 import { NavLink } from "react-router-dom";
 import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
@@ -139,7 +139,7 @@ export function MyProfile({ headers }: HeadersProps) {
         { newPassword },
         { headers: actualHeaders }
       );
-      notifyError("Senha editada com sucesso!", primaryColor());
+      notifyError("Senha editada com sucesso!", "#000");
       setConfirmPassword("");
       setNewPassword("");
     } catch (error) {
@@ -210,7 +210,7 @@ export function MyProfile({ headers }: HeadersProps) {
         <RouteDiv className="grid-flex">
           <Helmets text="My Profile" />
           {loading ? (
-            <CircularProgress style={{ color: secondaryColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           ) : (
             <>
               <div>
@@ -283,7 +283,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         cursor: "pointer",
                         border: "none",
                         borderRadius: "4px",
-                        backgroundColor: secondaryColor(),
+                        backgroundColor: partnerColor(),
                         color: "#fff",
                       }}
                     >
@@ -490,14 +490,14 @@ export function MyProfile({ headers }: HeadersProps) {
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: secondaryColor() },
-                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "& fieldset": { borderColor: partnerColor() },
+                        "&:hover fieldset": { borderColor: partnerColor() },
                         "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(),
+                          borderColor: partnerColor(),
                         },
                       },
-                      "& label": { color: secondaryColor() },
-                      "& label.Mui-focused": { color: secondaryColor() },
+                      "& label": { color: partnerColor() },
+                      "& label.Mui-focused": { color: partnerColor() },
                     }}
                   />
                   <br />
@@ -511,14 +511,14 @@ export function MyProfile({ headers }: HeadersProps) {
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: secondaryColor() },
-                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "& fieldset": { borderColor: partnerColor() },
+                        "&:hover fieldset": { borderColor: partnerColor() },
                         "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(),
+                          borderColor: partnerColor(),
                         },
                       },
-                      "& label": { color: secondaryColor() },
-                      "& label.Mui-focused": { color: secondaryColor() },
+                      "& label": { color: partnerColor() },
+                      "& label.Mui-focused": { color: partnerColor() },
                     }}
                   />
                   <ArvinButton onClick={() => editStudentPassword()}>

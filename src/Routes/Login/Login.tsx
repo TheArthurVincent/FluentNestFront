@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  primaryColor,
-  secondaryColor,
-  textGeneralFont,
-} from "../../Styles/Styles";
+import { partnerColor, textGeneralFont } from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -23,7 +19,7 @@ export function Login() {
     e.preventDefault();
     setFail(false);
 
-    setButton(<CircularProgress style={{ color: secondaryColor() }} />);
+    setButton(<CircularProgress style={{ color: partnerColor() }} />);
 
     try {
       const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
@@ -55,7 +51,7 @@ export function Login() {
     }
   };
 
-  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 2.5);
+  const myLogo = LogoSVG("#000", partnerColor(), 2.5);
 
   return (
     <div
@@ -177,7 +173,7 @@ export function Login() {
                     minWidth: "30px",
                     margin: "0 3px",
                     backgroundColor: "#eee",
-                    color: primaryColor(),
+                    color: "#000",
                     fontFamily: textGeneralFont(),
                     fontSize: "10px",
                     textDecoration: "none",
@@ -196,7 +192,7 @@ export function Login() {
                     textDecoration: "none",
                     margin: "0 3px",
                     backgroundColor: "#eee",
-                    color: primaryColor(),
+                    color: "#000",
                     fontFamily: textGeneralFont(),
                     fontSize: "10px",
                     borderRadius: " 6px",

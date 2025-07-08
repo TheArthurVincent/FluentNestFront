@@ -1,7 +1,6 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import { textTitleFont } from "../../Styles/Styles";
 
 function HTMLJustWrite({ onChange, displayy }) {
   const editorRef = useRef(null);
@@ -106,7 +105,6 @@ function HTMLJustWrite({ onChange, displayy }) {
             height: "500%",
             border: "none",
             padding: "1rem",
-            fontFamily: textTitleFont(),
             marginTop: "1rem",
             fontSize: "1.5rem",
             width: "90%",

@@ -4,7 +4,7 @@ import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import { CircularProgress } from "@mui/material";
 import { HOne } from "../../../Resources/Components/RouteBox";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 
 interface FlashcardItem {
   _id: string;
@@ -104,7 +104,7 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
       {flashcardHistory.length > 0 ? (
         <div className="flashcard-history-list">
           {loading ? (
-            <CircularProgress style={{ color: secondaryColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           ) : (
             <>
               {Object.entries(groupedHistory).map(([date, group]) => (

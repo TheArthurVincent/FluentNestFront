@@ -12,7 +12,7 @@ import {
   pathGenerator,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
-import { darkGreyColor, secondaryColor } from "../../Styles/Styles";
+import { darkGreyColor, partnerColor } from "../../Styles/Styles";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import { CourseCard } from "./EnglishCourses.Styled";
 import EnglishClassCourse2 from "./Class";
@@ -174,7 +174,7 @@ export default function Modules({
               </span>
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   fontSize: "10px",
                   fontStyle: "italic",
                   textDecoration: "none",

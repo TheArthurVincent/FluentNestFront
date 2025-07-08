@@ -20,7 +20,7 @@ import {
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
@@ -48,6 +48,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [backCardVisible, setBackCardVisible] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("nofilter");
   const [textColor, setTextColor] = useState<string>("#000");
+  const [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
   const [timerCardCount, setTimerCardCount] = useState(19);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
 
@@ -55,7 +56,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     const user = localStorage.getItem("loggedIn");
     // @ts-ignore
     if (user) {
-      var { permissions, id, name } = JSON.parse(user);
+      var { permissions, id, name, isArthurStudent } = JSON.parse(user);
+      setIsArthurStudent(isArthurStudent);
       setId(id);
       setPermissions(permissions);
       setName(name);
@@ -455,6 +457,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           Adicione palavras em seus flashcards!
         </a>
       </div>
+
       <div
         style={{
           display: "flex",
@@ -467,9 +470,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           style={{
             position: "relative",
             left: -15,
-            cursor: "pointer",
+            cursor: isArthurStudentBoolean ? "pointer" : "default",
             display: "flex",
             alignItems: "flex-end",
+            visibility: isArthurStudentBoolean ? "visible" : "hidden",
             minWidth: "100px",
             justifyContent: "center",
           }}
@@ -495,11 +499,17 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             alignItems: "center",
           }}
         >
-          <WordOfTheDay change={change} onChange={onChange} headers={headers} />
+          {isArthurStudentBoolean && (
+            <WordOfTheDay
+              change={change}
+              onChange={onChange}
+              headers={headers}
+            />
+          )}
           {see && (
             <div ref={cardRef}>
               {loading ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div
                   style={{
@@ -834,6 +844,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           </div>
         </div>
       </div>
+
       <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       <br />
 

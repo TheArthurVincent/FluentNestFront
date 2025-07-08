@@ -9,7 +9,7 @@ import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export function Invoice({ headers }: HeadersProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -64,7 +64,7 @@ export function Invoice({ headers }: HeadersProps) {
   return (
     <div>
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <div
           style={{

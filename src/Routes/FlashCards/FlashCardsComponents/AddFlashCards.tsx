@@ -12,7 +12,7 @@ import {
   InputLabel,
   CircularProgress,
 } from "@mui/material";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import { notifyError } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 interface Student {
@@ -179,7 +179,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
             >
               <Box sx={{ display: "flex" }}>
                 {loading ? (
-                  <CircularProgress style={{ color: secondaryColor() }} />
+                  <CircularProgress style={{ color: partnerColor() }} />
                 ) : (
                   <FormControl sx={{ width: "250px" }}>
                     <InputLabel id="student-select-label">

@@ -5,7 +5,6 @@ import {
   TopBarNavigation,
   TopBarNavigationBurger,
   BackgroundClick,
-  LogoStyle,
   Hamburguer,
 } from "./TopBar.Styled";
 import {
@@ -17,7 +16,7 @@ import {
 } from "../../Resources/UniversalComponents";
 
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
-import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { logoPartner, partnerColor } from "../../Styles/Styles";
 import { LinkItem } from "./TopBarTypes";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
@@ -165,12 +164,12 @@ export const TopBar: FC = () => {
       display: "block",
       icon: "user-o",
     },
-    {
-      title: UniversalTexts.faq,
-      endpoint: "/faq",
-      icon: "question",
-      display: "block",
-    },
+    // {
+    //   title: UniversalTexts.faq,
+    //   endpoint: "/faq",
+    //   icon: "question",
+    //   display: "block",
+    // },
   ];
 
   const learningLinks = allLinksForUser
@@ -191,7 +190,7 @@ export const TopBar: FC = () => {
     setVisible(visible === "flex" ? "none" : "flex");
   };
   const location = useLocation();
-  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 1);
+  const myLogo = LogoSVG("#000", partnerColor(), 1);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
 
   const [selectedNotification, setSelectedNotification] = useState<any>({});
@@ -235,7 +234,7 @@ export const TopBar: FC = () => {
               maxWidth: "100%",
               objectFit: "contain",
             }}
-            src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin%20(1).png?updatedAt=1751989825671"
+            src={logoPartner()}
             alt=""
           />
         </Link>
@@ -253,12 +252,10 @@ export const TopBar: FC = () => {
         >
           <NavLink
             style={{
-              color: location.pathname.includes("home")
-                ? primaryColor()
-                : primaryColor(),
+              color: location.pathname.includes("home") ? "#000" : "#000",
               paddingBottom: "5px",
               borderBottom: location.pathname.includes("home")
-                ? `solid 1px ${primaryColor()}`
+                ? `solid 1px ${"#000"}`
                 : "none",
               textDecoration: "none",
             }}
@@ -279,8 +276,8 @@ export const TopBar: FC = () => {
                   key={index}
                   style={{
                     color: location.pathname.includes(link.endpoint)
-                      ? secondaryColor()
-                      : primaryColor(),
+                      ? partnerColor()
+                      : "#000",
                     paddingBottom: "5px",
                     cursor: location.pathname.includes(link.endpoint)
                       ? "default"
@@ -306,8 +303,8 @@ export const TopBar: FC = () => {
                 key={index}
                 style={{
                   color: location.pathname.includes(link.endpoint)
-                    ? secondaryColor()
-                    : primaryColor(),
+                    ? partnerColor()
+                    : "#000",
                   paddingBottom: "5px",
 
                   cursor: location.pathname.includes(link.endpoint)
@@ -332,7 +329,12 @@ export const TopBar: FC = () => {
 
         <div
           style={{
-            display: permissions == "superadmin" ? "block" : "none",
+            display:
+              permissions == "superadmin"
+                ? "block"
+                : permissions == "teacher"
+                ? "block"
+                : "none",
           }}
         >
           {toAdm.map((link, index) => {
@@ -340,8 +342,8 @@ export const TopBar: FC = () => {
               <NavLink
                 style={{
                   color: location.pathname.includes(link.endpoint)
-                    ? secondaryColor()
-                    : primaryColor(),
+                    ? partnerColor()
+                    : "#000",
                   paddingBottom: "5px",
 
                   cursor: location.pathname.includes(link.endpoint)
@@ -388,8 +390,8 @@ export const TopBar: FC = () => {
                     color: linksToShow.some((link) =>
                       location.pathname.includes(link)
                     )
-                      ? secondaryColor()
-                      : primaryColor(),
+                      ? partnerColor()
+                      : "#000",
                   }}
                 >
                   <i className="fa fa-book" /> {UniversalTexts.learning}
@@ -414,8 +416,8 @@ export const TopBar: FC = () => {
                             style={{
                               margin: "5px",
                               color: location.pathname.includes(link.endpoint)
-                                ? secondaryColor()
-                                : primaryColor(),
+                                ? partnerColor()
+                                : "#000",
                               paddingBottom: "5px",
 
                               cursor: location.pathname.includes(link.endpoint)
@@ -441,8 +443,8 @@ export const TopBar: FC = () => {
                           style={{
                             margin: "5px",
                             color: location.pathname.includes(link.endpoint)
-                              ? secondaryColor()
-                              : primaryColor(),
+                              ? partnerColor()
+                              : "#000",
                             paddingBottom: "5px",
 
                             cursor: location.pathname.includes(link.endpoint)
@@ -471,8 +473,8 @@ export const TopBar: FC = () => {
                     style={{
                       margin: "5px",
                       color: location.pathname.includes(link.endpoint)
-                        ? secondaryColor()
-                        : primaryColor(),
+                        ? partnerColor()
+                        : "#000",
                       paddingBottom: "5px",
 
                       cursor: location.pathname.includes(link.endpoint)
@@ -489,19 +491,19 @@ export const TopBar: FC = () => {
                   </NavLink>
                 );
               })}
-            {permissions === "superadmin" &&
+            {(permissions === "superadmin" || permissions === "teacher") &&
               toAdm.map((link, index) => {
                 return (
                   <NavLink
                     key={index}
                     style={{
                       color: location.pathname.includes(link.endpoint)
-                        ? secondaryColor()
-                        : primaryColor(),
+                        ? partnerColor()
+                        : "#000",
                       textDecoration: "none",
                       paddingBottom: "5px",
                       borderBottom: location.pathname.includes(link.endpoint)
-                        ? `solid 1px ${primaryColor()}`
+                        ? `solid 1px ${"#000"}`
                         : "none",
                     }}
                     to={link.endpoint}

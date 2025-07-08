@@ -5,10 +5,7 @@ import {
   alwaysWhite,
   backgroundImage,
   logoPartner,
-  primaryColor,
-  primaryColor2,
-  secondaryColor,
-  secondaryColor2,
+  partnerColor,
   textGeneralFont,
   textTitleFont,
 } from "../../../../Styles/Styles";
@@ -19,25 +16,27 @@ import { NavLink } from "react-router-dom";
 import {
   backDomain,
   SpanHover,
+  updateInfo,
 } from "../../../../Resources/UniversalComponents";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import AppFooter from "../../../../Application/Footer/Footer";
 import { Box, Tab, Tabs } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { FontDownload } from "@mui/icons-material";
+import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function WhiteLabelPreview({ headers }) {
   const [studentID, setid] = useState("");
   const [previewLogo, setPreviewLogo] = useState(logoPartner());
   const [previewBackground, setPreviewBackground] = useState(backgroundImage());
   const [tabValue, setTabValue] = useState("1");
-
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
   useEffect(() => {
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+
     setid(getLoggedUser.id);
   }, []);
   const logoInputRef = React.useRef(null);
@@ -83,7 +82,7 @@ export default function WhiteLabelPreview({ headers }) {
       const response = await axios.post("/api/v1/upload-whitelabel", {
         file: base64,
       });
-      return response.data.url; // supondo que o backend retorna `{ url: "..." }`
+      return response.data.url;
     } catch (err) {
       console.error("Erro no upload da imagem:", err);
       throw err;
@@ -306,16 +305,18 @@ export default function WhiteLabelPreview({ headers }) {
     };
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `${backDomain}/api/v1/whitelabel/${studentID}`,
         { finalFormData },
         { headers }
       );
-      alert("Tema salvo com sucesso!");
+      notifyError("Tema salvo com sucesso!", "green");
       setFormData(finalFormData);
+      updateInfo(studentID, headers)
+      console.log(response.data);
     } catch (error) {
       console.error(error);
-      alert("Erro ao salvar o tema.");
+      notifyError("Erro ao salvar o tema.");
     }
   };
 
