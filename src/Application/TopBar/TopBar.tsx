@@ -228,7 +228,16 @@ export const TopBar: FC = () => {
       <Hamburguer onClick={handleVisible}>☰</Hamburguer>
       <SpanDisapear>
         <Link to="/">
-          <LogoStyle>{myLogo}</LogoStyle>
+          <img
+            style={{
+              height: "3rem",
+              width: "auto",
+              maxWidth: "100%",
+              objectFit: "contain",
+            }}
+            src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin%20(1).png?updatedAt=1751989825671"
+            alt=""
+          />
         </Link>
       </SpanDisapear>
       <TopBarNavigationBurger

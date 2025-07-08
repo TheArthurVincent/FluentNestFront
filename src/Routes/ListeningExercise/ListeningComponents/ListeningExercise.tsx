@@ -302,7 +302,7 @@ const ListeningExercise = ({
 
   useEffect(() => {
     if (isIOS || isSafari) {
-    // if (!isIOS && !isSafari) {
+      // if (!isIOS && !isSafari) {
       const SpeechRecognition =
         (window as any).SpeechRecognition ||
         (window as any).webkitSpeechRecognition;
@@ -655,7 +655,7 @@ const ListeningExercise = ({
                           }}
                         >
                           {!isDisabled ? (
-                            `Listen again`
+                            <i className="fa fa-volume-up" aria-hidden="true" />
                           ) : (
                             <i className="fa fa-volume-up" aria-hidden="true" />
                           )}
@@ -675,7 +675,7 @@ const ListeningExercise = ({
                             )
                               return;
                             if (isIOS || isSafari) {
-                            // if (!isIOS && !isSafari) {
+                              // if (!isIOS && !isSafari) {
                               // Só inicia, não para
                               if (!listening) {
                                 cardTextRef.current =

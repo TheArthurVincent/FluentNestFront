@@ -8,7 +8,7 @@ import {
 } from "../../Styles/Styles";
 
 export const TopBarContainer = styled.header.attrs({
-  className: 'box-shadow-black',
+  className: "box-shadow-black",
 })`
   top: 0;
   z-index: 7;
@@ -17,7 +17,7 @@ export const TopBarContainer = styled.header.attrs({
   justify-content: space-evenly;
   align-items: center;
   display: flex;
-  padding: 5px;
+  padding: 6px;
   width: 100%;
   height: 40px;
   @media print {
@@ -58,7 +58,7 @@ export const TopBarNavigation = styled.div`
   list-style: none;
 `;
 export const TopBarNavigationBurger = styled.div.attrs({
-  className: 'box-shadow-black',
+  className: "box-shadow-black",
 })`
   position: fixed;
   top: 0;

@@ -18,12 +18,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
 
-
-
-
-
-
-
 *::-webkit-scrollbar {
   width: 11px;
   height: 11px;
@@ -71,15 +65,14 @@ html {
   animation-timing-function: forward;
   transition: all 0.1s forward;
 }
-
 h1,
 h2,
 h3,
 h4 {
   margin: 0.6rem 0;
   font-size: 1.2rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.031);
 }
-
 h1 {
   font-size: 1.1rem;
   font-weight: 800;
@@ -246,8 +239,7 @@ h4 {
 
 body {
   background-size: cover;
-  background-image: url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769");
-  /* background-color: #bcc2c7; */
+  background-color: #eeeeee;
   background-attachment: fixed;
   background-position: center;
 }

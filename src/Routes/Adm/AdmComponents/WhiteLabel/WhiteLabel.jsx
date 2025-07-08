@@ -16,11 +16,15 @@ import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { NavLink } from "react-router-dom";
-import { SpanHover } from "../../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  SpanHover,
+} from "../../../../Resources/UniversalComponents";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import AppFooter from "../../../../Application/Footer/Footer";
 import { Box, Tab, Tabs } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { FontDownload } from "@mui/icons-material";
 
 export default function WhiteLabelPreview({ headers }) {
   const [studentID, setid] = useState("");
@@ -125,12 +129,8 @@ export default function WhiteLabelPreview({ headers }) {
     backgroundImage: backgroundImage(),
     backgroundColor: "#ffffff",
     logo: logoPartner(),
-    color1: "#407fc2",
-    color1Gradient: primaryColor2(),
-    color1Contrast: alwaysBlack(),
-    color2: secondaryColor(),
-    color2Gradient: secondaryColor2(),
-    color2Contrast: alwaysWhite(),
+    color: "#407fc2",
+    contrastColor: "black",
     textTitleFont: textTitleFont(),
     textGeneralFont: textGeneralFont(),
   });
@@ -140,7 +140,7 @@ export default function WhiteLabelPreview({ headers }) {
         style={{
           fontSize: "1.5rem",
           textAlign: "center",
-          color: formData.color1,
+          color: formData.color,
           fontFamily: formData.textTitleFont,
         }}
       >
@@ -152,7 +152,7 @@ export default function WhiteLabelPreview({ headers }) {
           fontWeight: 500,
           padding: "0.6rem",
           marginBottom: "1rem",
-          color: formData.color1,
+          color: formData.color,
           fontFamily: formData.textTitleFont,
         }}
       >
@@ -199,7 +199,7 @@ export default function WhiteLabelPreview({ headers }) {
         style={{
           fontSize: "1.3rem",
           textAlign: "center",
-          color: formData.color1,
+          color: formData.color,
           fontFamily: formData.textTitleFont,
         }}
       >
@@ -218,7 +218,7 @@ export default function WhiteLabelPreview({ headers }) {
         </li>
         <li>
           <strong>Cor Principal:</strong>{" "}
-          <span style={{ color: formData.color1 }}>{formData.color1}</span>
+          <span style={{ color: formData.color }}>{formData.color}</span>
         </li>
       </ul>
     </div>
@@ -230,7 +230,7 @@ export default function WhiteLabelPreview({ headers }) {
         style={{
           fontSize: "1.3rem",
           textAlign: "center",
-          color: formData.color1,
+          color: formData.color,
           fontFamily: formData.textTitleFont,
         }}
       >
@@ -306,9 +306,13 @@ export default function WhiteLabelPreview({ headers }) {
     };
 
     try {
-      await axios.post(`/api/whitelabel/${studentID}`, finalFormData);
+      await axios.post(
+        `${backDomain}/api/v1/whitelabel/${studentID}`,
+        { finalFormData },
+        { headers }
+      );
       alert("Tema salvo com sucesso!");
-      setFormData(finalFormData); // atualiza estado real após salvar
+      setFormData(finalFormData);
     } catch (error) {
       console.error(error);
       alert("Erro ao salvar o tema.");
@@ -328,7 +332,7 @@ export default function WhiteLabelPreview({ headers }) {
     backgroundPosition: "center",
     overflowY: "auto",
     fontFamily: formData.textGeneralFont,
-    color: formData.color1Contrast,
+    color: formData.contrastColor,
     borderRadius: "12px",
     marginTop: "40px",
     border: `2px solid black`,
@@ -342,8 +346,8 @@ export default function WhiteLabelPreview({ headers }) {
   };
 
   const buttonStyles = {
-    background: formData.color1,
-    color: formData.color1Contrast,
+    background: formData.color,
+    color: formData.contrastColor,
     logo: formData.logo,
     padding: "10px 20px",
     border: "none",
@@ -445,10 +449,22 @@ export default function WhiteLabelPreview({ headers }) {
           <label>Cor Principal do seu negócio: </label>
           <input
             type="color"
-            name="color1"
-            value={formData.color1}
+            name="color"
+            value={formData.color}
             onChange={handleChange}
           />
+        </div>
+        <div className="form-group" style={{ marginBottom: "15px" }}>
+          <label>Cor de contraste: </label>
+          <select
+            name="contrastColor"
+            value={formData.contrastColor}
+            onChange={handleChange}
+            style={{ marginLeft: "10px", width: "220px" }}
+          >
+            <option value="black">Black</option>
+            <option value="white">White</option>
+          </select>
         </div>
         <div className="form-group" style={{ marginBottom: "15px" }}>
           <label>Fonte Primária (para títulos): </label>
@@ -504,9 +520,6 @@ export default function WhiteLabelPreview({ headers }) {
       {/* 🔎 Visualização do tema */}
       {/* 🔎 Visualização do tema */}
       {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
       <div className="sample" style={sampleStyles}>
         <div
           style={{
@@ -543,19 +556,19 @@ export default function WhiteLabelPreview({ headers }) {
                     display: "flex",
                     alignItems: "center",
                     gap: "5px",
-                    color: link.color ? sampleStyles.color1 : alwaysBlack(),
+                    color: link.color ? sampleStyles.color : alwaysBlack(),
                   }}
                 >
                   <i
                     style={{
-                      color: link.color ? formData.color1 : alwaysBlack(),
+                      color: link.color ? formData.color : alwaysBlack(),
                     }}
                     className={`fa fa-${link.icon}`}
                   />
                   <span
                     style={{
                       fontFamily: formData.textGeneralFont,
-                      color: link.color ? formData.color1 : alwaysBlack(),
+                      color: link.color ? formData.color : alwaysBlack(),
                       textAlign: "center",
                     }}
                   >
@@ -600,10 +613,10 @@ export default function WhiteLabelPreview({ headers }) {
                       fontWeight: 500,
                     },
                     "& .Mui-selected": {
-                      color: formData.color1,
+                      color: formData.color,
                     },
                     "& .MuiTabs-indicator": {
-                      backgroundColor: formData.color1,
+                      backgroundColor: formData.color,
                     },
                   }}
                 >
@@ -617,6 +630,32 @@ export default function WhiteLabelPreview({ headers }) {
                 sx={{ backgroundColor: "#fff", padding: "1rem" }}
               >
                 <TabPreview />
+                <div
+                  style={{
+                    color: formData.contrastColor,
+                    backgroundColor: formData.color,
+                    textAlign: "center",
+                    padding: "12px",
+                    borderRadius: "1rem",
+                  }}
+                >
+                  <h1
+                    style={{
+                      fontFamily: formData.textTitleFont,
+                    }}
+                  >
+                    Contraste
+                  </h1>
+                  <p
+                    style={{
+                      fontFamily: formData.textGeneralFont,
+                    }}
+                  >
+                    Este é um exemplo de contraste entre as cores. Escolha entre
+                    **preto** ou **branco** a opção que oferece melhor
+                    legibilidade e harmonia visual com a sua marca.
+                  </p>
+                </div>
               </TabPanel>
               <TabPanel
                 value="2"

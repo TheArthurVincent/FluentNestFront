@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { Login } from "@mui/icons-material";
 import { verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
@@ -30,6 +29,7 @@ import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
+import Login from "./Login/Login";
 
 export function HomePage({ headers }: HeadersProps) {
   const [thePermissions, setPermissions] = useState<string>("");

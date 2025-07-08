@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { primaryColor, secondaryColor, textGeneralFont } from "../../Styles/Styles";
+import {
+  primaryColor,
+  secondaryColor,
+  textGeneralFont,
+} from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -7,6 +11,7 @@ import { Alert, CircularProgress, Grid, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { NavLink } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
+import { isArvin } from "../../App";
 
 export function Login() {
   const [email, setEmail] = useState<string>("");
@@ -25,7 +30,7 @@ export function Login() {
         email,
         password,
       });
-      const { token, loggedIn, notifications } = response.data;
+      const { token, loggedIn, notifications, whiteLabel } = response.data;
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
 
@@ -40,6 +45,8 @@ export function Login() {
       localStorage.setItem("authorization", `${token}`);
       localStorage.setItem("notifications", JSON.stringify(notifications));
       localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
+      localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
+
       setButton("Sucesso");
       window.location.assign("/");
     } catch (error) {
@@ -49,17 +56,6 @@ export function Login() {
   };
 
   const myLogo = LogoSVG(primaryColor(), secondaryColor(), 2.5);
-
-  const handleCheckout = async () => {
-    try {
-      const response = await axios.get(`${backDomain}/api/v1/create-plan`);
-      const { checkoutUrl } = response.data;
-      // window.location.href = checkoutUrl;
-      console.log(checkoutUrl);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   return (
     <div
@@ -90,7 +86,21 @@ export function Login() {
               }}
               className="box-shadow-white"
             >
-              {myLogo}
+              {isArvin ? (
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin%20(2).png?updatedAt=1752003179554"
+                  alt="arvin logo"
+                  style={{
+                    margin: "auto",
+                    height: "8rem",
+                    width: "auto",
+                    maxWidth: "100%",
+                    objectFit: "contain",
+                  }}
+                />
+              ) : (
+                myLogo
+              )}
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <TextField
@@ -103,14 +113,14 @@ export function Login() {
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: secondaryColor() },
-                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "& fieldset": { borderColor: "#555" },
+                        "&:hover fieldset": { borderColor: "#555" },
                         "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(),
+                          borderColor: "#555",
                         },
                       },
-                      "& label": { color: secondaryColor() },
-                      "& label.Mui-focused": { color: secondaryColor() },
+                      "& label": { color: "#555" },
+                      "& label.Mui-focused": { color: "#555" },
                     }}
                   />
                 </Grid>
@@ -125,14 +135,14 @@ export function Login() {
                   fullWidth
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: secondaryColor() },
-                      "&:hover fieldset": { borderColor: secondaryColor() },
+                      "& fieldset": { borderColor: "#555" },
+                      "&:hover fieldset": { borderColor: "#555" },
                       "&.Mui-focused fieldset": {
-                        borderColor: secondaryColor(),
+                        borderColor: "#555",
                       },
                     },
-                    "& label": { color: secondaryColor() },
-                    "& label.Mui-focused": { color: secondaryColor() },
+                    "& label": { color: "#555" },
+                    "& label.Mui-focused": { color: "#555" },
                   }}
                 />
               </Grid>
@@ -144,11 +154,10 @@ export function Login() {
                 }}
               >
                 <ArvinButton
+                  color="green"
                   style={{
                     marginLeft: "auto",
                     marginBottom: "2rem",
-                    backgroundColor: "#eee",
-                    color: primaryColor(),
                   }}
                   type="submit"
                 >
@@ -194,7 +203,7 @@ export function Login() {
                     border: "none",
                     maxWidth: "fit-content",
                   }}
-                  to="/signup"
+                  to={isArvin ? "/" : "/signup"}
                 >
                   Cadastre-se
                 </NavLink>

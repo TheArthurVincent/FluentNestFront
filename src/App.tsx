@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
 import { MessageDrive } from "./Routes/Message/Message";
@@ -11,13 +10,16 @@ import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
 import RequestResetPassword from "./Routes/ChangePassword/RequestResetPassword";
 import ResetPasswordFinalChange from "./Routes/ChangePassword/ResetPasswordFinalChange";
-import NewStudentAsaas from "./Routes/NewStudentAsaas/NewStudentAsaas";
 import SignUp from "./Routes/SignUp/SignUp";
 import EmailCheck from "./Routes/NewStudentAsaas/EmailCheck";
 import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
 import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
+
+export const currentUrl = window.location.href;
+export const isArvin = currentUrl.includes("localhost");
+export const isArthurVincent = currentUrl.includes("arthurvincent");
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");
@@ -32,19 +34,24 @@ const headers: MyHeadersType = {
 function App() {
   const [_StudentId, setStudentId] = useState<string>("");
 
-  const checkLocalBackground = () => {
-    if (window.location.hostname === "localhost") {
-      document.body.style.backgroundColor = "#444";
-    } else if (
-      window.location.hostname === "arvin-staging.9kwq6c.easypanel.host" ||
-      window.location.hostname.includes("easypanel")
-    ) {
-      document.body.style.backgroundColor = "#000";
-    }
-  };
-  useEffect(() => {
-    checkLocalBackground();
+  // const checkLocalBackground = () => {
+  //   if (window.location.hostname === "localhost") {
+  //     document.body.style.backgroundColor = "#444";
+  //   } else if (
+  //     window.location.hostname === "arvin-staging.9kwq6c.easypanel.host" ||
+  //     window.location.hostname.includes("easypanel")
+  //   ) {
+  //     document.body.style.backgroundColor = "#000";
+  //   }
+  // };
 
+  if (isArthurVincent) {
+    document.body.style.backgroundImage = `url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769")`;
+  } else if (isArvin) {
+    document.body.style.backgroundColor = "#eee";
+  }
+  useEffect(() => {
+    // checkLocalBackground();
     const user = localStorage.getItem("loggedIn");
 
     const textElement = document.querySelector("div");
