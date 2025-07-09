@@ -2,8 +2,10 @@ export const getWhiteLabel = JSON.parse(
   localStorage.getItem("whiteLabel") || "{}"
 );
 
+export const backgroundType = (): string =>
+  getWhiteLabel.backgroundType || "color";
 export const primaryColor = (): string => "#000";
-export const theBackgroundColor = (): string => getWhiteLabel.color || "#eee";
+export const theBackgroundColor = (): string => getWhiteLabel.backgroundColor || "#eee";
 export const primaryColor2 = (): string => "#5c5c5c";
 export const partnerColor = (): string => getWhiteLabel.color || "#54bf08";
 export const textGeneralFont = (): string =>

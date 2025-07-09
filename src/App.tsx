@@ -4,7 +4,14 @@ import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
 import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
-import { partnerColor, textGeneralFont, textTitleFont } from "./Styles/Styles";
+import {
+  backgroundImage,
+  backgroundType,
+  partnerColor,
+  textGeneralFont,
+  textTitleFont,
+  theBackgroundColor,
+} from "./Styles/Styles";
 import Login from "./Routes/Login/Login";
 import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
@@ -19,7 +26,8 @@ import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 
 export const currentUrl = window.location.href;
 export const isArvin = currentUrl.includes("localhost");
-export const isArthurVincent = currentUrl.includes("arthurvincent");
+export const isArthurVincent =
+  currentUrl.includes("arthurvincent") || currentUrl.includes("staging");
 export const getWhiteLabel = JSON.parse(
   localStorage.getItem("whiteLabel") || "{}"
 );
@@ -37,39 +45,29 @@ const headers: MyHeadersType = {
 function App() {
   const [_StudentId, setStudentId] = useState<string>("");
 
-  // const checkLocalBackground = () => {
-  //   if (window.location.hostname === "localhost") {
-  //     document.body.style.backgroundColor = "#444";
-  //   } else if (
-  //     window.location.hostname === "arvin-staging.9kwq6c.easypanel.host" ||
-  //     window.location.hostname.includes("easypanel")
-  //   ) {
-  //     document.body.style.backgroundColor = "#000";
-  //   }
-  // };
-
   if (isArthurVincent) {
     document.body.style.backgroundImage = `url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769")`;
   } else if (isArvin) {
-    document.body.style.backgroundColor = "#eee";
+    backgroundType() == "color"
+      ? (document.body.style.backgroundColor = theBackgroundColor())
+      : (document.body.style.backgroundImage = `url(${backgroundImage()})`);
   }
   useEffect(() => {
-    // checkLocalBackground();
     var user = localStorage.getItem("loggedIn");
 
-    var textElement = document.querySelector("body");
-    
+    var textElement = document.querySelector("div");
+
     if (textElement) {
       textElement.style.fontFamily = textGeneralFont();
     }
 
     var hOne = document.querySelector("h1");
-    
+
     if (hOne) {
       hOne.style.fontFamily = textTitleFont();
       hOne.style.color = partnerColor();
     }
-    
+
     var hTwo = document.querySelector("h2");
     if (hTwo) {
       hTwo.style.fontFamily = textTitleFont();

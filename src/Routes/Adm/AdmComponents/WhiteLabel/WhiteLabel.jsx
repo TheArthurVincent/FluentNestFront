@@ -7,6 +7,7 @@ import {
   logoPartner,
   partnerColor,
   textGeneralFont,
+  textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
@@ -128,8 +129,8 @@ export default function WhiteLabelPreview({ headers }) {
     backgroundImage: backgroundImage(),
     backgroundColor: "#ffffff",
     logo: logoPartner(),
-    color: "#407fc2",
-    contrastColor: "black",
+    color: partnerColor(),
+    contrastColor: textPrimaryColorContrast(),
     textTitleFont: textTitleFont(),
     textGeneralFont: textGeneralFont(),
   });
@@ -501,10 +502,7 @@ export default function WhiteLabelPreview({ headers }) {
           </select>
         </div>
 
-        <ArvinButton
-          type="submit"
-          color={partnerColor()}
-        >
+        <ArvinButton type="submit" color={partnerColor()}>
           Salvar Tema
         </ArvinButton>
       </form>
