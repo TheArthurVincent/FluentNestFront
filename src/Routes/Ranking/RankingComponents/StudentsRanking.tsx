@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { DivFont, HTwo } from "../../../Resources/Components/RouteBox";
 import {
   ImgResponsive0,
@@ -238,22 +238,55 @@ export default function StudentsRanking({
     setUser(getLoggedUser);
     getLoggedUser.permissions === "superadmin" ? setIsAdm(true) : null;
   }, []);
-
   const handleSeeModal = () => {
+    setStudents([]);
+    setPage(1);
+    setHasMore(true);
     setIsVisible(!isVisible);
     fetchStudentsScore();
   };
 
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
+
   const fetchStudentsScore = async () => {
+    if (!hasMore || loading) return; // proteção dupla
+    setLoading(true); // <- Adicione isso
+
     try {
-      const response = await axios.get(`${backDomain}/api/v1/scoresranking/`, {
-        headers: actualHeaders,
-      });
-      setStudents(response.data.listOfStudents);
+      const response = await axios.get(
+        `${backDomain}/api/v1/scoresranking/?page=${page}`,
+        {
+          headers: actualHeaders,
+        }
+      );
+
+      setStudents((prev) => [...prev, ...response.data.listOfStudents]);
+      setHasMore(response.data.hasMore);
+      setPage((prev) => prev + 1);
     } catch (error) {
       console.log("Erro ao encontrar alunos");
+    } finally {
+      setLoading(false); // <- Garante que loading seja desativado
     }
   };
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastStudentRef = useCallback(
+    (node: any) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          fetchStudentsScore();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
+
   useEffect(() => {
     fetchStudentsScore();
   }, []);
@@ -550,11 +583,13 @@ export default function StudentsRanking({
                   return "none";
                 }
               };
+              const isLast = index === students.length - 1;
+
               return (
                 <div
-                  style={{
-                    display: verifySee(isAdm, index),
-                  }}
+                  ref={isLast ? lastStudentRef : null}
+                  key={item._id}
+                  style={{ display: verifySee(isAdm, index) }}
                 >
                   <AnimatedLi
                     style={{
@@ -563,7 +598,6 @@ export default function StudentsRanking({
                           ? "none"
                           : `2px groove ${theItems[levelNumber].backgroundcolor}`,
                     }}
-                    key={index + item.picture}
                     color1={theItems[levelNumber].color}
                     color2={
                       item._id !== user.id
@@ -596,7 +630,10 @@ export default function StudentsRanking({
                           borderRadius: "50%",
                           border: `solid ${alwaysWhite()} 2px`,
                         }}
-                        src={item.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
+                        src={
+                          item.picture ||
+                          "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                        }
                       />
                     </div>
                     <p
@@ -729,7 +766,14 @@ export default function StudentsRanking({
               );
             })}
           </ul>
-          <span className="top-item">
+        </div>
+      }
+    </div>
+  );
+}
+
+{
+  /* <span className="top-item">
             {students.map((item: any, index: number) => {
               const levelNumber =
                 updateScore(
@@ -899,9 +943,5 @@ export default function StudentsRanking({
                 </div>
               );
             })}
-          </span>
-        </div>
-      }
-    </div>
-  );
+          </span> */
 }

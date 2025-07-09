@@ -56,7 +56,6 @@ export function Login() {
     }
   };
 
-  const myLogo = LogoSVG("#000", partnerColor(), 2.5);
   const myLogoPartner = logoPartner();
 
   return (
@@ -93,7 +92,7 @@ export function Login() {
                 alt="arvin logo"
                 style={{
                   margin: "auto",
-                  height: "3rem",
+                  height: "6rem",
                   width: "auto",
                   maxWidth: "100%",
                   objectFit: "contain",
