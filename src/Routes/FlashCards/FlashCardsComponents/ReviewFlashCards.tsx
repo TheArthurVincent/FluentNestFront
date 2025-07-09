@@ -460,7 +460,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         <a
           style={{
             fontSize: "13px",
-            color: partnerColor(),
+            color: "#999",
             textDecoration: "none",
           }}
           href="/sentence-mining"
@@ -468,7 +468,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           Adicione palavras em seus flashcards!
         </a>
       </div>
-
       <div
         style={{
           display: "flex",

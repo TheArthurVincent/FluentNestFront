@@ -14,7 +14,11 @@ import {
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
+import {
+  partnerColor,
+  textPrimaryColorContrast,
+  textTitleFont,
+} from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import Voice from "../../Resources/Voice";
@@ -196,7 +200,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         <a
           style={{
             fontSize: "13px",
-            color: "#0066cc",
+            color: "#999",
             textDecoration: "none",
           }}
           href="/flash-cards"
@@ -257,7 +261,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         size="small"
                         sx={{
                           color: "#888",
-                          "&.Mui-checked": { color: "#54bf08" },
+                          "&.Mui-checked": { color: partnerColor() },
                           padding: "2px",
                         }}
                       />
@@ -271,7 +275,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                 ))}
               </RadioGroup>
               <ArvinButton
-                color={word == "" || dis ? "grey" : "green"}
+                color={word == "" || dis ? "grey" : partnerColor()}
                 cursor={word == "" || dis ? "not-allowed" : "pointer"}
                 type="submit"
                 style={{
@@ -293,100 +297,119 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
-              <>
-                <div style={{ margin: "1rem" }}>
-                  <strong style={{ fontSize: "18px" }}>{finalWord}</strong>
-                  <br />
-                  <a
-                    href={youglishBaseUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      fontSize: "13px",
-                      color: "#0066cc",
-                      textDecoration: "none",
-                    }}
-                  >
-                    Ver mais exemplos em vídeos
-                  </a>
-                  <br />
-                  <span
-                    style={{
-                      fontStyle: "italic",
-                      fontSize: "14px",
-                      color: "#555",
-                    }}
-                  >
-                    {explanation}
-                  </span>
-                </div>
+              finalWord !== "" && (
+                <>
+                  <div style={{ margin: "1rem" }}>
+                    <strong
+                      style={{
+                        padding: "5px",
+                        marginBottom: "15px",
+                        borderRadius: "5px",
+                        color: textPrimaryColorContrast(),
+                        backgroundColor: partnerColor(),
+                        fontSize: "18px",
+                      }}
+                    >
+                      {finalWord}
+                    </strong>
+                    <br />
+                    <a
+                      href={youglishBaseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: "13px",
+                        marginTop: "15px",
+                        color: "#999",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Ver mais exemplos em vídeos
+                    </a>
+                    <br />
+                    <span
+                      style={{
+                        fontStyle: "italic",
+                        fontSize: "14px",
+                        color: "#555",
+                      }}
+                    >
+                      {explanation}
+                    </span>
+                  </div>
 
-                <div style={{ marginTop: "10px" }}>
-                  <Voice
-                    maxW="12rem"
-                    changeB={changeNumber}
-                    setChangeB={setChangeNumber}
-                  />
-                </div>
-
-                <UlSentences grid={2}>
-                  {examples.map((example, index) => (
-                    <LiSentence key={index}>
-                      {!example.added && (
-                        <Tooltip
-                          title={
-                            !heardSentences[index]
-                              ? "Listen first!"
-                              : "Add to flashcards"
+                  <div style={{ marginTop: "10px" }}>
+                    <Voice
+                      maxW="12rem"
+                      changeB={changeNumber}
+                      setChangeB={setChangeNumber}
+                    />
+                  </div>
+                  <UlSentences grid={2}>
+                    {examples.map((example, index) => (
+                      <LiSentence key={index}>
+                        {!example.added && (
+                          <Tooltip
+                            title={
+                              !heardSentences[index]
+                                ? "Listen first!"
+                                : "Add to flashcards"
+                            }
+                          >
+                            <ArvinButton
+                              color={
+                                !heardSentences[index]
+                                  ? "white"
+                                  : partnerColor()
+                              }
+                              cursor={
+                                !heardSentences[index]
+                                  ? "not-allowed"
+                                  : "pointer"
+                              }
+                              onClick={() => {
+                                addNewCards(
+                                  index,
+                                  example.sentence,
+                                  example.translation
+                                );
+                                setExamples((prev) =>
+                                  prev.map((ex, i) =>
+                                    i === index ? { ...ex, added: true } : ex
+                                  )
+                                );
+                              }}
+                              disabled={!heardSentences[index]}
+                            >
+                              <i className="fa fa-files-o" aria-hidden="true" />
+                            </ArvinButton>
+                          </Tooltip>
+                        )}
+                        <br />
+                        <strong>{example.sentence}</strong>
+                        <span
+                          className="audio-button"
+                          onClick={() =>
+                            handleReadText(index, example.sentence, language)
                           }
                         >
-                          <ArvinButton
-                            color={!heardSentences[index] ? "white" : "green"}
-                            cursor={
-                              !heardSentences[index] ? "not-allowed" : "pointer"
-                            }
-                            onClick={() => {
-                              addNewCards(
-                                index,
-                                example.sentence,
-                                example.translation
-                              );
-                              setExamples((prev) =>
-                                prev.map((ex, i) =>
-                                  i === index ? { ...ex, added: true } : ex
-                                )
-                              );
-                            }}
-                            disabled={!heardSentences[index]}
-                          >
-                            <i className="fa fa-files-o" aria-hidden="true" />
-                          </ArvinButton>
-                        </Tooltip>
-                      )}
-                      <br />
-                      <strong>{example.sentence}</strong>
-                      <span
-                        className="audio-button"
-                        onClick={() =>
-                          handleReadText(index, example.sentence, language)
-                        }
-                      >
-                        <i className="fa fa-volume-up" aria-hidden="true" />
-                      </span>
-                      <br />
-                      <span style={{ fontStyle: "italic" }}>
-                        {example.translation}
-                      </span>
-                    </LiSentence>
-                  ))}
-                </UlSentences>
-              </>
+                          <i className="fa fa-volume-up" aria-hidden="true" />
+                        </span>
+                        <br />
+                        <span style={{ fontStyle: "italic" }}>
+                          {example.translation}
+                        </span>
+                      </LiSentence>
+                    ))}
+                  </UlSentences>
+                </>
+              )
             )}
           </>
         )}
 
         {thePermissions == "superadmin" && (
-          <>
+          <div style={{ marginTop: "5rem", display: "grid", gap: "10px" }}>
             <ArvinButton onDoubleClick={editWordOfTheDay}>
               Word of the day
             </ArvinButton>
@@ -451,7 +474,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                 fontSize: "16px",
               }}
             />
-          </>
+          </div>
         )}
       </section>
     </RouteDiv>

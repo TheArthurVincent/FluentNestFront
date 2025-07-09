@@ -5,7 +5,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { alwaysWhite, partnerColor } from "../../Styles/Styles";
+import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import NewPost from "./AdmComponents/PostsManagement/NewPost";
 import NewTutoring from "./AdmComponents/ClassesManagement/NewTutoring";
@@ -97,29 +97,27 @@ export function Adm({ headers }: HeadersProps) {
               backgroundColor: alwaysWhite(),
               justifyContent: "space-between",
             }}
-            sx={{ borderBottom: 1, borderColor: "divider" }}
+            sx={{
+              fontFamily: textTitleFont(),
+              color: partnerColor(),
+              "& .MuiTab-root": {
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              },
+              "& .Mui-selected": {
+                color: partnerColor(),
+              },
+              "& .MuiTabs-indicator": {
+                color: partnerColor(),
+                backgroundColor: partnerColor(),
+              },
+            }}
           >
             <TabList
               onChange={handleChange}
               variant="scrollable"
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
-              sx={{
-                color: partnerColor(),
-                "& .MuiTab-root": {
-                  padding: "5px",
-                  color: partnerColor(),
-                },
-                "& .Mui-selected": {
-                  backgroundColor: "#f9f9f9",
-                  borderRadius: "1rem",
-                  padding: "5px",
-                },
-                "& .MuiTabs-indicator": {
-                  color: partnerColor(),
-                  backgroundColor: partnerColor(),
-                },
-              }}
             >
               {componentsToRender.map((component, index) => {
                 return (

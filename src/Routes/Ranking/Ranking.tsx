@@ -102,6 +102,20 @@ export default function Ranking({ headers }: HeadersProps) {
             backgroundColor: alwaysWhite(),
             justifyContent: "space-between",
           }}
+          sx={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+            "& .MuiTab-root": {
+              fontFamily: textTitleFont(),
+              color: partnerColor(),
+            },
+            "& .Mui-selected": {
+              color: partnerColor(),
+            },
+            "& .MuiTabs-indicator": {
+              backgroundColor: partnerColor(),
+            },
+          }}
         >
           <TabList
             onChange={handleChange}
@@ -129,8 +143,6 @@ export default function Ranking({ headers }: HeadersProps) {
                   key={index + component.value}
                   style={{
                     fontWeight: 500,
-                    backgroundColor: textPrimaryColorContrast(),
-                    color: "#000",
                   }}
                   label={component.title}
                   value={component.value}

@@ -73,7 +73,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       value: "4",
       adm: true,
       component: <AddFlashCards display="block" headers={headers} />,
-    }
+    },
   ];
 
   const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
@@ -120,9 +120,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
                   key={index + component.value}
                   style={{
                     display: component.adm === false ? "block" : displayIsAdm,
-                    fontWeight: 500,
-                    backgroundColor: textPrimaryColorContrast(),
-                    color: "#000",
                   }}
                   label={component.title}
                   value={component.value}
