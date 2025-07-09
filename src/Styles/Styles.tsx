@@ -4,7 +4,7 @@ const getWhiteLabel = () =>
 export const backgroundType = (): string =>
   getWhiteLabel().backgroundType || "color";
 
-export const partnerColor = (): string => getWhiteLabel().color || "#54bf08";
+export const partnerColor = (): string => getWhiteLabel().color || "navy";
 
 export const theBackgroundColor = (): string =>
   getWhiteLabel().backgroundColor || "#eee";
@@ -20,7 +20,7 @@ export const backgroundImage = (): string =>
 
 export const logoPartner = (): string =>
   getWhiteLabel().logo ||
-  "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-logo?updatedAt=1752032452239";
+  "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166";
 
 export const textGeneralFont = (): string =>
   getWhiteLabel().textGeneralFont || "Lato";

@@ -202,12 +202,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                         <i className="fa fa-edit" aria-hidden="true" />
                       </button>
                     )}
-                    <HTwo
-                      style={{
-                        fontFamily: textGeneralFont(),
-                        color: partnerColor(),
-                      }}
-                    >
+                    <HTwo style={{ fontFamily: textGeneralFont() }}>
                       {post.title}
                     </HTwo>
                   </span>
