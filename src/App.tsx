@@ -32,6 +32,9 @@ export const isArthurVincent =
 export const getWhiteLabel = JSON.parse(
   localStorage.getItem("whiteLabel") || "{}"
 );
+export const localStorageLoggedIn = JSON.parse(
+  localStorage.getItem("loggedIn") || "{}"
+);
 
 export const verifyToken = () => {
   const token = localStorage.getItem("authorization");

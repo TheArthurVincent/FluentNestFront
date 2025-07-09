@@ -224,7 +224,14 @@ export const TopBar: FC = () => {
 
   return (
     <TopBarContainer>
-      <Hamburguer onClick={handleVisible}>☰</Hamburguer>
+      <Hamburguer
+        style={{
+          color: partnerColor(),
+        }}
+        onClick={handleVisible}
+      >
+        ☰
+      </Hamburguer>
       <SpanDisapear>
         <Link to="/">
           <img

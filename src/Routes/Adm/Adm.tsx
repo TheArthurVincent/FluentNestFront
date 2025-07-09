@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NewStudent from "./AdmComponents/FindStudentAssets/NewStudent";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
@@ -17,23 +17,26 @@ import Manual from "./AdmComponents/Manual/Manual";
 import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
 import TimelineComponent from "./AdmComponents/Timeline/Timeline";
 import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
+import { localStorageLoggedIn } from "../../App";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
+
+  const { id } = localStorageLoggedIn;
 
   const componentsToRender = [
     {
       title: "Gestão de Aulas",
       value: "1",
       tooltip: "Marque uma aula particular.",
-      component: <NewTutoring headers={headers} />,
+      component: <NewTutoring id={id} headers={headers} />,
     },
     {
       title: "Alunos",
       value: "2",
       tooltip:
         "Edite informações de alunos cadastrados, como dados, permissões e senha, ou mesmo exclua um aluno se necessário.",
-      component: <NewStudent headers={headers} />,
+      component: <NewStudent id={id} headers={headers} />,
     },
     {
       title: "Responder Comentários",

@@ -239,7 +239,7 @@ export default function Modules({
                                 <i
                                   style={{
                                     color: "white",
-                                    backgroundColor: "green",
+                                    backgroundColor: partnerColor(),
                                     borderRadius: "50%",
                                     margin: "0 0.5rem",
                                   }}

@@ -130,7 +130,6 @@ export const LogoStyle = styled.div`
 
 export const Hamburguer = styled.div`
   display: none;
-  color: ${partnerColor()};
   font-weight: 900;
   font-size: 1.9rem;
   cursor: pointer;

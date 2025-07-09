@@ -28,8 +28,9 @@ import {
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
+import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
-export function FindStudent({ uploadStatus, headers }) {
+export function FindStudent({ uploadStatus, headers, id }) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
@@ -148,7 +149,7 @@ export function FindStudent({ uploadStatus, headers }) {
           : ""
       );
     } catch (error) {
-      alert(error);
+      notifyError(error);
       console.error(error);
     }
   };
@@ -161,7 +162,7 @@ export function FindStudent({ uploadStatus, headers }) {
       setTotalScore(response.data.formattedStudentData.totalScore);
       setMonthlyScore(response.data.formattedStudentData.monthlyScore);
     } catch (error) {
-      alert(error);
+      notifyError(error);
       console.error(error);
     }
   };
@@ -185,7 +186,7 @@ export function FindStudent({ uploadStatus, headers }) {
     if (newPassword === confirmPassword) {
       setNewPassword(newPassword);
     } else {
-      alert("As senhas são diferentes");
+      notifyError("As senhas são diferentes");
       return;
     }
     try {
@@ -194,11 +195,11 @@ export function FindStudent({ uploadStatus, headers }) {
         editedStudent,
         { headers }
       );
-      alert("Usuário editado com sucesso!");
+      notifyError("Usuário editado com sucesso!");
       handleSeeModal();
       fetchStudents();
     } catch (error) {
-      alert("Erro ao editar usuário");
+      notifyError("Erro ao editar usuário");
       handleSeeModal();
     }
   };
@@ -215,9 +216,9 @@ export function FindStudent({ uploadStatus, headers }) {
       );
       handleSeeModal();
       fetchStudents();
-      alert("Permissões editadas com sucesso!");
+      notifyError("Permissões editadas com sucesso!");
     } catch (error) {
-      alert("Erro ao editar permissões");
+      notifyError("Erro ao editar permissões");
       handleSeeModal();
     }
   };
@@ -226,7 +227,7 @@ export function FindStudent({ uploadStatus, headers }) {
     if (newPassword === confirmPassword) {
       setNewPassword(newPassword);
     } else {
-      alert("As senhas são diferentes");
+      notifyError("As senhas são diferentes");
       return;
     }
     try {
@@ -235,25 +236,25 @@ export function FindStudent({ uploadStatus, headers }) {
         { newPassword },
         { headers }
       );
-      alert("Senha editada com sucesso!");
+      notifyError("Senha editada com sucesso!");
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      alert("Erro ao editar senha");
+      notifyError("Erro ao editar senha");
       handleSeeModal();
     }
   };
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
+      const response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
         headers,
       });
       setStudents(response.data.listOfStudents);
       setLoading(false);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
-      onLoggOut();
+      notifyError("Erro ao encontrar alunos");
+      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -266,11 +267,11 @@ export function FindStudent({ uploadStatus, headers }) {
         `${backDomain}/api/v1/students/${id}`,
         { headers }
       );
-      alert("Aluno excluído");
+      notifyError("Aluno excluído");
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      alert(error);
+      notifyError(error);
 
       handleSeeModal();
       console.error(error);
@@ -296,7 +297,7 @@ export function FindStudent({ uploadStatus, headers }) {
         setHasReset(true);
       }, 2000);
     } catch (error) {
-      alert("Erro ao resetar");
+      notifyError("Erro ao resetar");
     }
   };
 
@@ -369,9 +370,11 @@ export function FindStudent({ uploadStatus, headers }) {
       {!loading ? (
         <div
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "rgb(246, 246, 246)",
             margin: "auto",
-            width: "95%",
+            maxWidth: "70rem",
+            boxShadow: "inset 0px 10px 10px rgb(197, 197, 197)",
+            overflow: "auto",
           }}
         >
           <TableContainer>
@@ -441,8 +444,8 @@ export function FindStudent({ uploadStatus, headers }) {
                         <img
                           style={{
                             width: "2.5rem",
-                            borderRadius: "50%",
                             height: "2.5rem",
+                            borderRadius: "50%",
                             objectFit: "cover",
                           }}
                           src={

@@ -7,8 +7,9 @@ import { lightGreyColor, partnerColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
+import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
-export function NewTutoring({ headers }) {
+export function NewTutoring({ headers, id }) {
   const [newDate, setNewDate] = useState("");
   const [newVideoUrl, setNewVideoUrl] = useState("");
   const [newAttachments, setAttachments] = useState("");
@@ -38,13 +39,13 @@ export function NewTutoring({ headers }) {
   const fetchStudents = async () => {
     setLoadingS(true);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
+      const response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
         headers,
       });
       setStudent(response.data.listOfStudents);
       setLoadingS(false);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
+      notifyError("Erro ao encontrar alunos");
     }
   };
   useEffect(() => {
@@ -72,13 +73,13 @@ export function NewTutoring({ headers }) {
           headers,
         }
       );
-      alert("Aulas criadas com sucesso!");
+      notifyError("Aulas criadas com sucesso!");
       setTutorings([]);
       setNewHWDescription("");
       setButton("Criar");
     } catch (error) {
       setButton("Criar");
-      alert("Erro ao salvar aulas");
+      notifyError("Erro ao salvar aulas");
       setStandardValue("Aluno");
     }
   };
@@ -94,13 +95,13 @@ export function NewTutoring({ headers }) {
           headers,
         }
       );
-      alert("HW criado com sucesso!");
+      notifyError("HW criado com sucesso!");
       setTutorings([]);
       setNewHWDescription("");
       setLoadingHW(false);
     } catch (error) {
       setLoadingHW(false);
-      alert("Erro ao salvar aulas");
+      notifyError("Erro ao salvar aulas");
       setStandardValue("Aluno");
     }
   };
@@ -124,13 +125,13 @@ export function NewTutoring({ headers }) {
     //       headers,
     //     }
     //   );
-    //   alert("HW criado com sucesso!");
+    //   notifyError("HW criado com sucesso!");
     //   setTutorings([]);
     //   setNewHWDescription("");
     setLoadingHW(false);
     // } catch (error) {
     //   setLoadingHW(false);
-    //   alert("Erro ao salvar aulas");
+    //   notifyError("Erro ao salvar aulas");
     //   setStandardValue("Aluno");
     // }
   };

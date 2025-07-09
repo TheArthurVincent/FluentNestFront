@@ -12,7 +12,7 @@ import { CircularProgress } from "@mui/material";
 import FindStudent from "./FindStudent";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
-export function NewStudent({ headers }) {
+export function NewStudent({ headers, id }) {
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
   const [newUsername, setNewUsername] = useState("");
@@ -66,7 +66,7 @@ export function NewStudent({ headers }) {
     }
     try {
       const response = await axios.post(
-        `${backDomain}/api/v1/students`,
+        `${backDomain}/api/v1/students/${id}`,
         newStudent,
         {
           headers,
@@ -83,7 +83,7 @@ export function NewStudent({ headers }) {
 
   return (
     <>
-      <FindStudent uploadStatus={upload} headers={headers} />
+      <FindStudent id={id} uploadStatus={upload} headers={headers} />
       <HOne
         style={{
           fontFamily: textTitleFont(),
