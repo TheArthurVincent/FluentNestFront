@@ -99,33 +99,32 @@ function App() {
     }
   }, []);
 
-  const isOriginal = (): boolean => {
-    const currentUrl = window.location.href;
+  // const isOriginal = (): boolean => {
+  //   const currentUrl = window.location.href;
 
-    if (currentUrl.includes("portal.arthurvincent")) {
-      // if (currentUrl.includes("localhost:51")) { // teste local
-      // Remove apenas chaves relacionadas ao portal
-      Object.keys(localStorage).forEach((key) => {
-        if (key.includes("portal") || key === "authorization") {
-          localStorage.removeItem(key);
-          console.log(`Removed key: ${key}`);
-        } else {
-          console.log(`Not key: ${key}`);
-        }
-      });
-      return true;
-    }
+  //   if (currentUrl.includes("portal.arthurvincent")) {
+  //     // if (currentUrl.includes("localhost:51")) { // teste local
+  //     // Remove apenas chaves relacionadas ao portal
+  //     Object.keys(localStorage).forEach((key) => {
+  //       if (key.includes("portal") || key === "authorization") {
+  //         localStorage.removeItem(key);
+  //         console.log(`Removed key: ${key}`);
+  //       } else {
+  //         console.log(`Not key: ${key}`);
+  //       }
+  //     });
+  //     return true;
+  //   }
 
-    return false;
-  };
+  //   return false;
+  // };
 
-  useEffect(() => {
-    if (isOriginal()) {
-      const currentPath = window.location.pathname;
-      window.location.assign(`http://arthurvincent.com.br${currentPath}`);
-      console.log(`http://arthurvincent.com.br${currentPath}`);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (isOriginal()) {
+  //     const currentPath = window.location.pathname;
+  //     console.log(`http://arthurvincent.com.br${currentPath}`);
+  //   }
+  // }, []);
 
   const routes = [
     {
