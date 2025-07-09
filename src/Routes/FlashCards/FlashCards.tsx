@@ -119,6 +119,8 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
                 <Tab
                   key={index + component.value}
                   style={{
+                    color: partnerColor(),
+                    fontWeight: (index + 1).toString() === value ? 800 : 500,
                     display: component.adm === false ? "block" : displayIsAdm,
                   }}
                   label={component.title}

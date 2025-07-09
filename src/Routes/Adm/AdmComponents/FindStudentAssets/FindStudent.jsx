@@ -571,9 +571,30 @@ export function FindStudent({ uploadStatus, headers }) {
                 },
               }}
             >
-              <Tab label="Dados gerais" value="1" />
-              <Tab label="Permissões" value="2" />
-              <Tab label="Senha" value="3" />
+              <Tab
+                style={{
+                  color: partnerColor(),
+                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                }}
+                label="Dados gerais"
+                value="1"
+              />
+              <Tab
+                style={{
+                  color: partnerColor(),
+                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                }}
+                label="Permissões"
+                value="2"
+              />
+              <Tab
+                style={{
+                  color: partnerColor(),
+                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                }}
+                label="Senha"
+                value="3"
+              />
             </TabList>
           </Box>
           <TabPanel value="1">

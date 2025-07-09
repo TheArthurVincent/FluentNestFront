@@ -142,7 +142,8 @@ export default function Ranking({ headers }: HeadersProps) {
                 <Tab
                   key={index + component.value}
                   style={{
-                    fontWeight: 500,
+                    color: partnerColor(),
+                    fontWeight: (index + 1).toString() === value ? 800 : 500,
                   }}
                   label={component.title}
                   value={component.value}

@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { partnerColor, textGeneralFont } from "../../Styles/Styles";
+import {
+  logoPartner,
+  partnerColor,
+  textGeneralFont,
+} from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -52,6 +56,7 @@ export function Login() {
   };
 
   const myLogo = LogoSVG("#000", partnerColor(), 2.5);
+  const myLogoPartner = logoPartner();
 
   return (
     <div
@@ -82,21 +87,17 @@ export function Login() {
               }}
               className="box-shadow-white"
             >
-              {isArvin ? (
-                <img
-                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin%20(2).png?updatedAt=1752003179554"
-                  alt="arvin logo"
-                  style={{
-                    margin: "auto",
-                    height: "8rem",
-                    width: "auto",
-                    maxWidth: "100%",
-                    objectFit: "contain",
-                  }}
-                />
-              ) : (
-                myLogo
-              )}
+              <img
+                src={myLogoPartner}
+                alt="arvin logo"
+                style={{
+                  margin: "auto",
+                  height: "3rem",
+                  width: "auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
               <Grid item xs={12}>
                 <Grid item xs={12}>
                   <TextField
@@ -150,7 +151,7 @@ export function Login() {
                 }}
               >
                 <ArvinButton
-                  color="green"
+                  color={partnerColor()}
                   style={{
                     marginLeft: "auto",
                     marginBottom: "2rem",

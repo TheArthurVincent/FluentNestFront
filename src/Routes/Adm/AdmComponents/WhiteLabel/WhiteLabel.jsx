@@ -4,6 +4,7 @@ import {
   alwaysBlack,
   alwaysWhite,
   backgroundImage,
+  backgroundType,
   logoPartner,
   partnerColor,
   textGeneralFont,
@@ -125,7 +126,7 @@ export default function WhiteLabelPreview({ headers }) {
     }
   };
   const [formData, setFormData] = useState({
-    backgroundType: "image", // "image" ou "color"
+    backgroundType: backgroundType(), // "image" ou "color"
     backgroundImage: backgroundImage(),
     backgroundColor: "#ffffff",
     logo: logoPartner(),
@@ -614,9 +615,30 @@ export default function WhiteLabelPreview({ headers }) {
                     },
                   }}
                 >
-                  <Tab label="Preview" value="1" />
-                  <Tab label="Detalhes" value="2" />
-                  <Tab label="Mais" value="3" />
+                  <Tab
+                    style={{
+                      color: partnerColor(),
+                      fontWeight: (index + 1).toString() === value ? 800 : 500,
+                    }}
+                    label="Preview"
+                    value="1"
+                  />
+                  <Tab
+                    style={{
+                      color: partnerColor(),
+                      fontWeight: (index + 1).toString() === value ? 800 : 500,
+                    }}
+                    label="Detalhes"
+                    value="2"
+                  />
+                  <Tab
+                    style={{
+                      color: partnerColor(),
+                      fontWeight: (index + 1).toString() === value ? 800 : 500,
+                    }}
+                    label="Mais"
+                    value="3"
+                  />
                 </TabList>
               </Box>
               <TabPanel

@@ -399,6 +399,7 @@ li {
 .button {
   margin: 5px;
   display: flex;
+  border-radius: 5px;
   align-items: center;
   justify-content: center;
   width: 1rem;
@@ -412,6 +413,7 @@ li {
 }
 
 .button2 {
+  border-radius: 5px;
   margin: 5px;
   display: flex;
   align-items: center;

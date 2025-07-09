@@ -1028,8 +1028,12 @@ export default function MyCalendar({ headers, thePermissions }) {
             </HOne>
             <div style={{ display: "flex" }}>
               <button
+                style={{
+                  backgroundColor: partnerColor(),
+                }}
                 className="button"
                 style={{
+                  backgroundColor: partnerColor(),
                   display: thePermissions == "superadmin" ? "flex" : "none",
                 }}
                 onClick={() => handleSeeModal(false)}
@@ -1038,8 +1042,12 @@ export default function MyCalendar({ headers, thePermissions }) {
               </button>
               <button
                 disabled={!disabledAvoid}
+                style={{
+                  backgroundColor: partnerColor(),
+                }}
                 className="button"
                 style={{
+                  backgroundColor: partnerColor(),
                   display: thePermissions == "superadmin" ? "flex" : "none",
                 }}
                 onClick={() => handleSeeModalOfTutorings()}
@@ -1048,22 +1056,31 @@ export default function MyCalendar({ headers, thePermissions }) {
               </button>
               <button
                 disabled={!disabledAvoid}
+                style={{
+                  backgroundColor: partnerColor(),
+                }}
                 className="button"
                 onClick={() => fetchGeneralEvents()}
               >
                 <i className="fa fa-refresh" aria-hidden="true" />
               </button>
               <button
-                style={{ width: "3.5rem" }}
                 disabled={!disabledAvoid}
+                style={{
+                  width: "3.5rem",
+                  backgroundColor: partnerColor(),
+                }}
                 className="button2"
                 onClick={() => handleChangeWeek(-7)}
               >
                 <i className="fa fa-arrow-left" aria-hidden="true" />
               </button>{" "}
               <button
-                style={{ width: "3.5rem" }}
                 disabled={!disabledAvoid}
+                style={{
+                  width: "3.5rem",
+                  backgroundColor: partnerColor(),
+                }}
                 className="button2"
                 onClick={() => handleChangeWeek(7)}
               >
@@ -1071,8 +1088,11 @@ export default function MyCalendar({ headers, thePermissions }) {
               </button>
               <input type="date" onChange={changeToday} />
               <button
-                style={{ width: "3.5rem" }}
                 disabled={!disabledAvoid}
+                style={{
+                  width: "3.5rem",
+                  backgroundColor: partnerColor(),
+                }}
                 className="button2"
                 onClick={handleBackToToday}
               >
@@ -1115,19 +1135,15 @@ export default function MyCalendar({ headers, thePermissions }) {
                           padding: "5px",
                           position: "sticky",
                           top: 0,
-                          fontWeight:
-                            hj.getDate() == date.getDate() &&
-                            hj.getMonth() == date.getMonth() &&
-                            hj.getFullYear() == date.getFullYear()
-                              ? 700
-                              : 500,
+                          fontWeight: 700,
                           textAlign: "center",
-                          fontSize: "0.8rem",
+                          fontSize: "0.9rem",
+                          fontFamily: textTitleFont(),
                           backgroundColor:
                             hj.getDate() == date.getDate() &&
                             hj.getMonth() == date.getMonth() &&
                             hj.getFullYear() == date.getFullYear()
-                              ? "#439906"
+                              ? partnerColor()
                               : alwaysBlack(),
                           color: alwaysWhite(),
                         }}
@@ -1160,25 +1176,24 @@ export default function MyCalendar({ headers, thePermissions }) {
                               margin: "4px",
                               marginBottom: "1rem",
                               padding: "2px",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #aaa",
                               backgroundColor:
                                 event.category === "Group Class"
-                                  ? "#D0D0A1" // Amarelo mais escuro, sem ser tão claro
+                                  ? "orange"
                                   : event.category === "Rep"
-                                  ? partnerColor() // Tom de azul mais escuro e sóbrio
+                                  ? partnerColor()
                                   : event.category === "Tutoring"
-                                  ? "#000" // Cinza mais escuro
+                                  ? "#111"
                                   : event.category === "Prize Class"
-                                  ? "#E4C12D" // Amarelo mais escuro e mais sóbrio
+                                  ? "green"
                                   : event.category === "Standalone"
-                                  ? "#333" // Azul bem escuro
+                                  ? "#333"
                                   : event.category === "Test"
-                                  ? "#1C1C1C" // Cinza muito escuro
+                                  ? "#1C1C1C"
                                   : event.category === "Marcar Reposição"
-                                  ? "#407CB1" // Verde escuro e sóbrio
-                                  : "#000", // Preto para categoria não especificada
-
+                                  ? "#407CB1"
+                                  : "#000",
                               textAlign: "center",
                               display: "grid",
                             }}
@@ -1208,23 +1223,23 @@ export default function MyCalendar({ headers, thePermissions }) {
                                 margin: "2px",
                                 backgroundColor:
                                   event.category === "Group Class"
-                                    ? "#D0D0A1" // Amarelo mais escuro, sem ser tão claro
+                                    ? "orange"
                                     : event.category === "Rep"
-                                    ? partnerColor() // Tom de azul mais escuro e sóbrio
+                                    ? partnerColor()
                                     : event.category === "Tutoring"
-                                    ? "#000" // Cinza mais escuro
+                                    ? "#111"
                                     : event.category === "Prize Class"
-                                    ? "#E4C12D" // Amarelo mais escuro e mais sóbrio
+                                    ? "green"
                                     : event.category === "Standalone"
-                                    ? "#333" // Azul bem escuro
+                                    ? "#333"
                                     : event.category === "Test"
-                                    ? "#1C1C1C" // Cinza muito escuro
+                                    ? "#1C1C1C"
                                     : event.category === "Marcar Reposição"
-                                    ? "#407CB1" // Verde escuro e sóbrio
-                                    : "#000", // Preto para categoria não especificada
+                                    ? "#407CB1"
+                                    : "#000",
                                 display: "grid",
                                 cursor: "pointer",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 fontSize: "0.7rem",
                               }}
                             >
@@ -1286,7 +1301,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                                 gap: "0.5rem",
                                 flexDirection: "column",
                                 margin: "2px",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 backgroundColor:
@@ -1343,7 +1358,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                 top: "0",
                 left: "0",
                 position: "fixed",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 zIndex: 99,
                 display: isVisible ? "block" : "none",
               }}
@@ -1438,7 +1453,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                       <div
                         style={{
                           padding: "1rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           display: seeReplenish ? "grid" : "none",
                           backgroundColor: "grey",
                           color: "white",
@@ -1527,20 +1542,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                                   status == "Canceled" ? "15px" : "12px",
                                 color: status == "Canceled" ? "red" : "grey",
                               }}
-                            />{" "}
-                            {/* {status !== "desmarcado" &&
-                              thePermissions == "superadmin" && (
-                                <i
-                                  className="fa fa-envelope-o"
-                                  aria-hidden="true"
-                                  onClick={() => reminderEmail(event._id)}
-                                  style={{
-                                    cursor: "pointer",
-                                    fontSize: "10px",
-                                    color: "grey",
-                                  }}
-                                />
-                              )} */}
+                            />
                           </div>
                           <form
                             style={{
@@ -1750,7 +1752,7 @@ export default function MyCalendar({ headers, thePermissions }) {
                           {[
                             {
                               text: "No!",
-                              backgroundColor: "navy",
+                              backgroundColor: partnerColor(),
                               onClick: seeDelete,
                             },
 
@@ -1904,7 +1906,13 @@ export default function MyCalendar({ headers, thePermissions }) {
                   display: seeEditTutoring ? "block" : "none",
                 }}
               >
-                <button className="button" onClick={closeEditOneTutoring}>
+                <button
+                  style={{
+                    backgroundColor: partnerColor(),
+                  }}
+                  className="button"
+                  onClick={closeEditOneTutoring}
+                >
                   x
                 </button>
                 <select
