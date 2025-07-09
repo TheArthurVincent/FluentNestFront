@@ -25,7 +25,8 @@ import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 
 export const currentUrl = window.location.href;
-export const isArvin = currentUrl.includes("localhost");
+export const isArvin =
+  currentUrl.includes("arvinplatform") || currentUrl.includes("ocalhost");
 export const isArthurVincent =
   currentUrl.includes("arthurvincent") || currentUrl.includes("staging");
 export const getWhiteLabel = JSON.parse(
