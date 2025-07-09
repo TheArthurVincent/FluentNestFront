@@ -14,7 +14,7 @@ import {
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { partnerColor } from "../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import Voice from "../../Resources/Voice";
@@ -183,7 +183,16 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
-        <HOne>Sentence Mining</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+            textAlign: "center",
+            margin: "0.5rem",
+          }}
+        >
+          Sentence Mining
+        </HOne>
         <a
           style={{
             fontSize: "13px",

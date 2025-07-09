@@ -4,6 +4,7 @@ import {
   lightGreyColor,
   partnerColor,
   textPrimaryColorContrast,
+  textTitleFont,
   textpartnerColorContrast,
 } from "../../../Styles/Styles";
 import axios from "axios";
@@ -133,7 +134,14 @@ export default function RankingTimeline({
           justifyContent: "space-between",
         }}
       >
-        <HOne style={{ textAlign: "center", margin: "0.5rem" }}>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+            textAlign: "center",
+            margin: "0.5rem",
+          }}
+        >
           {actualName}
         </HOne>
       </span>

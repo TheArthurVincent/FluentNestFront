@@ -6,7 +6,11 @@ import {
   getVideoEmbedUrl,
   onLoggOut,
 } from "../../Resources/UniversalComponents";
-import { transparentWhite } from "../../Styles/Styles";
+import {
+  partnerColor,
+  textTitleFont,
+  transparentWhite,
+} from "../../Styles/Styles";
 import { DivAppear, H3FAQ } from "../MyClasses/MyClasses.Styled";
 import { Input } from "@mui/material";
 import { contentFaq } from "./FaqContent";
@@ -48,7 +52,15 @@ function Faq({ headers }: HeadersProps) {
   return (
     <RouteDiv>
       <Helmets text="FAQ" />
-      <HOne>{UniversalTexts.faq}</HOne> <BackToHomePage />
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        {UniversalTexts.faq}
+      </HOne>{" "}
+      <BackToHomePage />
       <Input
         style={{
           display: "flex",
@@ -79,6 +91,7 @@ function Faq({ headers }: HeadersProps) {
             )}
             {expandedItem === index && (
               <DivAppear>
+                {/* @ts-ignore */}
                 {item.url && (
                   <div
                     style={{
@@ -88,6 +101,7 @@ function Faq({ headers }: HeadersProps) {
                     }}
                   >
                     <IFrameVideoBlog
+                      // @ts-ignore
                       src={getVideoEmbedUrl(item.url)}
                       frameBorder="0"
                     />

@@ -9,7 +9,7 @@ import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
-import { partnerColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function Invoice({ headers }: HeadersProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -135,7 +135,12 @@ export function Invoice({ headers }: HeadersProps) {
           padding: "1rem",
         }}
       >
-        <HOne style={{ fontSize: "40px", textAlign: "center" }}>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
           Recibo de Pagamento
         </HOne>
         <div>
@@ -161,7 +166,6 @@ export function Invoice({ headers }: HeadersProps) {
             src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
             alt="signatureArth"
           />{" "}
-        
           <div style={{ fontSize: "16px" }}>
             <p>Arthur Rodrigues Cardoso | Professor Titular</p>
             <p>442.650.158-08</p>

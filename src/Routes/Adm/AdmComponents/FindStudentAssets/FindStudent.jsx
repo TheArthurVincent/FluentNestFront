@@ -308,7 +308,14 @@ export function FindStudent({ uploadStatus, headers }) {
   };
   return (
     <>
-      <HOne>{UniversalTexts.myStudents}</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        {UniversalTexts.myStudents}
+      </HOne>
       <div
         style={{
           display: "grid",
@@ -536,12 +543,8 @@ export function FindStudent({ uploadStatus, headers }) {
         <Xp onClick={() => handleSeeModal()}>X</Xp>
         <HOne
           style={{
-            fontSize: "1.5rem",
-            marginBottom: 0,
-            margin: "1rem 0",
-            color: "#000",
-            padding: "0.3rem",
-            backgroundColor: textPrimaryColorContrast(),
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
           }}
         >
           Editar aluno - {newName}

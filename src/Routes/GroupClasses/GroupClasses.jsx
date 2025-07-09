@@ -16,6 +16,7 @@ import {
   alwaysBlack,
   partnerColor,
   textPrimaryColorContrast,
+  textTitleFont,
   textpartnerColorContrast,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
@@ -160,7 +161,14 @@ export default function GroupClasses({ headers }) {
       <>
         {!loading ? (
           <>
-            <HOne>{UniversalTexts.previousGroupClasses}</HOne>
+            <HOne
+              style={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              }}
+            >
+              {UniversalTexts.previousGroupClasses}
+            </HOne>
             <span
               style={{
                 display: "flex",

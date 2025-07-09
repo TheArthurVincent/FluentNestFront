@@ -13,7 +13,7 @@ import { CircularProgress } from "@mui/material";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import Modules from "./Modules";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor } from "../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
@@ -86,7 +86,14 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       {displayRouteDiv ? (
         !loading ? (
           <RouteDivCourses>
-            <HOne>{UniversalTexts.theCourses}</HOne>
+            <HOne
+              style={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              }}
+            >
+              {UniversalTexts.theCourses}
+            </HOne>
             <ArvinButton onClick={getCourses}>
               <span
                 style={{

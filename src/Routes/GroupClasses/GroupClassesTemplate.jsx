@@ -10,6 +10,8 @@ import {
   alwaysWhite,
   darkGreyColor,
   lightGreyColor,
+  partnerColor,
+  textTitleFont,
 } from "../../Styles/Styles";
 import CoursesSideBar from "../../Application/CoursesSideBar/CoursesSideBar";
 import styled from "styled-components";
@@ -117,7 +119,14 @@ export default function GroupClassesTemplate({
       <RouteSizeControlBox>
         <RouteDiv>
           <div>
-            <HOne>{title}</HOne>
+            <HOne
+              style={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              }}
+            >
+              {title}
+            </HOne>
             <HTwo>{chosenTitle}</HTwo>
           </div>
           <FullDisplay>
@@ -139,9 +148,7 @@ export default function GroupClassesTemplate({
                         }}
                       >
                         {videoItem.title && (
-                          <p style={{ color: "#000" }}>
-                            {videoItem.title}
-                          </p>
+                          <p style={{ color: "#000" }}>{videoItem.title}</p>
                         )}{" "}
                         {videoItem.url && (
                           <div

@@ -20,7 +20,11 @@ import {
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
+import {
+  partnerColor,
+  textPrimaryColorContrast,
+  textTitleFont,
+} from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
@@ -445,7 +449,14 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
-        <HOne style={{ textAlign: "center" }}>Review Flashcards</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          Review Flashcards
+        </HOne>
         <a
           style={{
             fontSize: "13px",

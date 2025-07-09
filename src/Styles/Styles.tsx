@@ -5,13 +5,16 @@ export const getWhiteLabel = JSON.parse(
 export const backgroundType = (): string =>
   getWhiteLabel.backgroundType || "color";
 export const primaryColor = (): string => "#000";
-export const theBackgroundColor = (): string => getWhiteLabel.backgroundColor || "#eee";
+export const theBackgroundColor = (): string =>
+  getWhiteLabel.backgroundColor || "#eee";
 export const primaryColor2 = (): string => "#5c5c5c";
 export const partnerColor = (): string => getWhiteLabel.color || "#54bf08";
 export const textGeneralFont = (): string =>
   getWhiteLabel.textGeneralFont || "Lato";
-export const textTitleFont = (): string =>
-  getWhiteLabel.textTitleFont || "Athiti";
+export const textTitleFont = (): string => {
+  console.log(getWhiteLabel.textTitleFont);
+  return getWhiteLabel.textTitleFont || "Athiti";
+};
 export const backgroundImage = (): string =>
   getWhiteLabel.backgroundImage ||
   "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769";
@@ -30,3 +33,4 @@ export const transparentWhite = (): string => "rgba(255, 255, 255, 0.7)";
 export const transparentBlack = (): string => "rgba(1, 1, 1, 0.7)";
 export const alwaysWhite = (): string => "#fefefe";
 export const alwaysBlack = (): string => "#111";
+

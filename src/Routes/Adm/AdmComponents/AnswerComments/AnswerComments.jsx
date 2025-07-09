@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { partnerColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function AllComments({ headers }) {
   const [comments, setComments] = useState([]);
@@ -74,7 +74,14 @@ export function AllComments({ headers }) {
 
   return (
     <Box sx={{ padding: 2 }}>
-      <HOne>Comentários Pendentes</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Comentários Pendentes
+      </HOne>
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (

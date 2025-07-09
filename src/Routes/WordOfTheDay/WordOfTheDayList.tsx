@@ -10,6 +10,7 @@ import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
 import {
   partnerColor,
   textGeneralFont,
+  textTitleFont,
   transparentBlack,
 } from "../../Styles/Styles";
 import { Modal, Box, IconButton } from "@mui/material";
@@ -73,7 +74,14 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
         maxWidth: "800px",
       }}
     >
-      <HOne>Word of the Day</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Word of the Day
+      </HOne>
 
       {words.map((wordItem: any) => (
         <div
@@ -183,6 +191,8 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
                     style={{
                       margin: 0,
                       fontSize: "2.5rem",
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
                     }}
                   >
                     {selectedWord.word} - {selectedWord.translatedWord}

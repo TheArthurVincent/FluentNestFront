@@ -7,6 +7,7 @@ import {
   alwaysWhite,
   lightGreyColor,
   partnerColor,
+  textTitleFont,
 } from "../../../../Styles/Styles";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -154,7 +155,14 @@ export function ManageGroupClasses({ headers }) {
 
   return (
     <>
-      <HOne>Gerenciar Aulas em Grupo</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Gerenciar Aulas em Grupo
+      </HOne>
       <div id="1">
         {" "}
         <HTwo>Postar aula em grupo</HTwo>

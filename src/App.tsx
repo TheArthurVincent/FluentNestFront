@@ -55,7 +55,7 @@ function App() {
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
 
-    var textElement = document.querySelector("div");
+    var textElement = document.querySelector("body");
 
     if (textElement) {
       textElement.style.fontFamily = textGeneralFont();

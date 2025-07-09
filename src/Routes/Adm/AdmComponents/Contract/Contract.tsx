@@ -14,7 +14,7 @@ import {
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
-import { partnerColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function Contract({ headers }: HeadersProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -118,7 +118,12 @@ export function Contract({ headers }: HeadersProps) {
         </div>
       )}
       <div style={{ fontSize: "11px", padding: "1rem" }} id="contract-content">
-        <HOne style={{ textAlign: "center" }}>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
           Contrato de Aulas Particulares
         </HOne>
         <HTwo

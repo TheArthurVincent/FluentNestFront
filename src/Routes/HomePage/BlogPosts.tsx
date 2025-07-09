@@ -15,7 +15,7 @@ import {
   UniversalButtonsDivFlex,
   onLoggOut,
 } from "../../Resources/UniversalComponents";
-import { alwaysWhite, partnerColor } from "../../Styles/Styles";
+import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
@@ -157,7 +157,14 @@ export function BlogPosts({ headers }: BlogPostsProps) {
       }}
     >
       <div>
-        <HOne>{UniversalTexts.mural}</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          {UniversalTexts.mural}
+        </HOne>
         <div>
           {posts.map((post: any, index: number) => (
             <div

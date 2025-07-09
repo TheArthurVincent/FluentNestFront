@@ -7,7 +7,7 @@ import {
   onLoggOut,
   updateInfo,
 } from "../../Resources/UniversalComponents";
-import { alwaysBlack, partnerColor } from "../../Styles/Styles";
+import { alwaysBlack, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { NavLink } from "react-router-dom";
 import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
@@ -241,7 +241,14 @@ export function MyProfile({ headers }: HeadersProps) {
                   >
                     <i className="fa fa-refresh" aria-hidden="true" />
                   </ArvinButton>
-                  <HOne>{UniversalTexts.myProfile}</HOne>
+                  <HOne
+                    style={{
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.myProfile}
+                  </HOne>
                   <AvatarUpload
                     user={user}
                     setUser={setUser}
@@ -303,9 +310,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     <br />
                     <span style={{ display: "block", marginTop: "0.5rem" }}>
                       Recomende a plataforma a alguém para que a pessoa ganhe{" "}
-
-                      <strong>20% de desconto {" "}</strong>nos 3 primeiros meses!
-
+                      <strong>20% de desconto </strong>nos 3 primeiros meses!
                     </span>
                   </li>
                   {myProfileList.map((item, index) => (
@@ -479,7 +484,14 @@ export function MyProfile({ headers }: HeadersProps) {
                 className="box-shadow-white"
               >
                 <div style={{ textAlign: "center" }}>
-                  <HOne>{UniversalTexts.newPassword}</HOne>
+                  <HOne
+                    style={{
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.newPassword}
+                  </HOne>
 
                   <TextField
                     value={newPassword}

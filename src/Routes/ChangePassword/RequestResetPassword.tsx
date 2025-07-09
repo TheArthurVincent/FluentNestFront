@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { partnerColor } from "../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -60,7 +60,14 @@ function RequestResetPassword() {
               className="box-shadow-white"
             >
               <div style={{ margin: "0 auto" }}>{myLogo}</div>
-              <HOne>Altere sua senha</HOne>
+              <HOne
+                style={{
+                  fontFamily: textTitleFont(),
+                  color: partnerColor(),
+                }}
+              >
+                Altere sua senha
+              </HOne>
               <TextField
                 label="E-mail"
                 name="email"

@@ -129,7 +129,14 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
           );
         })}
       </TabContext> */}
-      <HOne>Listening Exercise</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Listening Exercise
+      </HOne>
       <ListeningExercise
         onChange={onChange}
         change={change}

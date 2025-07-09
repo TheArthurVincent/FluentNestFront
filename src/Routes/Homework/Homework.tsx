@@ -13,6 +13,7 @@ import axios from "axios";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 interface HWProps {
   headers: MyHeadersType | null;
@@ -139,7 +140,14 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   return (
     <RouteDiv>
       <Helmets text="Homework" />
-      <HOne>{UniversalTexts.homework}</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        {UniversalTexts.homework}
+      </HOne>
       <ArvinButton onClick={() => fetchClasses(studentID)}>
         <i className="fa fa-refresh" aria-hidden="true" />
       </ArvinButton>

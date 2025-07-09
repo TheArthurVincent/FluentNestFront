@@ -10,7 +10,7 @@ import {
 import { FormList } from "../../Adm.Styled";
 import { CircularProgress } from "@mui/material";
 import FindStudent from "./FindStudent";
-import { partnerColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function NewStudent({ headers }) {
   const [newName, setNewName] = useState("");
@@ -84,7 +84,14 @@ export function NewStudent({ headers }) {
   return (
     <>
       <FindStudent uploadStatus={upload} headers={headers} />
-      <HOne>Novo Aluno</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Novo Aluno
+      </HOne>
       <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleSubmit}>
         <FormList>
           <InputField

@@ -17,6 +17,7 @@ import {
   alwaysWhite,
   darkGreyColor,
   partnerColor,
+  textTitleFont,
   transparentBlack,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
@@ -489,6 +490,8 @@ export default function EnglishClassCourse2({
             <HOne
               style={{
                 fontSize: "18px",
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
               }}
             >
               {`${order + 1}- ${theclass.title}`}{" "}

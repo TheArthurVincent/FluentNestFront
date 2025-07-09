@@ -12,6 +12,7 @@ import {
   alwaysWhite,
   partnerColor,
   textPrimaryColorContrast,
+  textTitleFont,
 } from "../../../Styles/Styles";
 import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
 
@@ -75,8 +76,21 @@ function CoursesSideBar({ courses }) {
                   zIndex: -1,
                 }}
               >
-                <HOne>Modules</HOne>
-                <HOne style={{ fontSize: "10px" }}>
+                <HOne
+                  style={{
+                    fontFamily: textTitleFont(),
+                    color: partnerColor(),
+                  }}
+                >
+                  Modules
+                </HOne>
+                <HOne
+                  style={{
+                    fontFamily: textTitleFont(),
+                    color: partnerColor(),
+                    fontSize: "10px",
+                  }}
+                >
                   <i
                     className={`fa fa-arrow-${arrow ? "left" : "right"}`}
                     style={{ fontSize: "16px" }}

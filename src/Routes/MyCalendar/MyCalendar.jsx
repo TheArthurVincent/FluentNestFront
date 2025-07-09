@@ -1018,7 +1018,14 @@ export default function MyCalendar({ headers, thePermissions }) {
         <RouteDiv>
           <Helmets text="Calendar" />
           <div>
-            <HOne>{UniversalTexts.calendar}</HOne>
+            <HOne
+              style={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              }}
+            >
+              {UniversalTexts.calendar}
+            </HOne>
             <div style={{ display: "flex" }}>
               <button
                 className="button"

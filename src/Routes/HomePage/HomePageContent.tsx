@@ -7,7 +7,7 @@ import {
   DivFlex,
   DivMarginBorder,
 } from "../../Resources/UniversalComponents";
-import { partnerColor } from "../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
@@ -165,7 +165,14 @@ export function Blog({
                 <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div className="study-container">
-                  <HOne>{UniversalTexts.studyEnglish}</HOne>
+                  <HOne
+                    style={{
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.studyEnglish}
+                  </HOne>
                   <div className="grid-container">
                     {sessions.map((session) => (
                       <a

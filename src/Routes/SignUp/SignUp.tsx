@@ -4,6 +4,7 @@ import React from "react";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 export const generateUsername = (
   name: string,
@@ -231,7 +232,14 @@ export default function SignUp() {
 
   return (
     <div style={styles.container}>
-      <HOne>Cadastro</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Cadastro
+      </HOne>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.grid}>
           {/* 📌 COLUNA 1 - DADOS PESSOAIS */}
