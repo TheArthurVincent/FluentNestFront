@@ -579,23 +579,10 @@ export default function StudentsRanking({
                 item.homeworkAssignmentsDone
               ).level - 1;
 
-            const verifySee = (adm: boolean, index: number) => {
-              if (adm) {
-                return "block";
-              } else if (index < 5) {
-                return "block";
-              } else {
-                return "none";
-              }
-            };
             const isLast = index === students.length - 1;
 
             return (
-              <div
-                ref={isLast ? lastStudentRef : null}
-                key={item._id}
-                style={{ display: verifySee(isAdm, index) }}
-              >
+              <div ref={isLast ? lastStudentRef : null} key={item._id}>
                 <AnimatedLi
                   style={{
                     border:
