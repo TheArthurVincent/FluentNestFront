@@ -249,10 +249,11 @@ export default function StudentsRanking({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [FIRST, setFIRST] = useState(true);
 
   const fetchStudentsScore = async () => {
-    if (!hasMore || loading) return; // proteção dupla
-    setLoading(true); // <- Adicione isso
+    if (!hasMore || loading) return;
+    setLoading(true);
 
     try {
       const response = await axios.get(
@@ -265,10 +266,13 @@ export default function StudentsRanking({
       setStudents((prev) => [...prev, ...response.data.listOfStudents]);
       setHasMore(response.data.hasMore);
       setPage((prev) => prev + 1);
+      setFIRST(false);
     } catch (error) {
+      setFIRST(false);
       console.log("Erro ao encontrar alunos");
     } finally {
-      setLoading(false); // <- Garante que loading seja desativado
+      setFIRST(false);
+      setLoading(false);
     }
   };
 
@@ -558,196 +562,195 @@ export default function StudentsRanking({
           </p>
         </div>
       </div>
-      {
-        <div>
-          <ul
-            className="border-radius-white"
-            style={{
-              margin: "20px 0px",
-            }}
-          >
-            {students.map((item: any, index: number) => {
-              const levelNumber =
-                updateScore(
-                  item.totalScore,
-                  item.flashcards25Reviews,
-                  item.homeworkAssignmentsDone
-                ).level - 1;
+      {loading && FIRST ? (
+        <CircularProgress style={{ color: partnerColor() }} />
+      ) : (
+        <ul
+          className="border-radius-white"
+          style={{
+            margin: "20px 0px",
+          }}
+        >
+          {students.map((item: any, index: number) => {
+            const levelNumber =
+              updateScore(
+                item.totalScore,
+                item.flashcards25Reviews,
+                item.homeworkAssignmentsDone
+              ).level - 1;
 
-              const verifySee = (adm: boolean, index: number) => {
-                if (adm) {
-                  return "block";
-                } else if (index < 5) {
-                  return "block";
-                } else {
-                  return "none";
-                }
-              };
-              const isLast = index === students.length - 1;
+            const verifySee = (adm: boolean, index: number) => {
+              if (adm) {
+                return "block";
+              } else if (index < 5) {
+                return "block";
+              } else {
+                return "none";
+              }
+            };
+            const isLast = index === students.length - 1;
 
-              return (
-                <div
-                  ref={isLast ? lastStudentRef : null}
-                  key={item._id}
-                  style={{ display: verifySee(isAdm, index) }}
-                >
-                  <AnimatedLi
-                    style={{
-                      border:
-                        item._id !== user.id
-                          ? "none"
-                          : `2px groove ${theItems[levelNumber].backgroundcolor}`,
-                    }}
-                    color1={theItems[levelNumber].color}
-                    color2={
+            return (
+              <div
+                ref={isLast ? lastStudentRef : null}
+                key={item._id}
+                style={{ display: verifySee(isAdm, index) }}
+              >
+                <AnimatedLi
+                  style={{
+                    border:
                       item._id !== user.id
-                        ? theItems[levelNumber].color
-                        : theItems[levelNumber].backgroundcolor
-                    }
-                    index={index}
-                    item={item}
-                    background={theItems[levelNumber].color}
-                    textColor={theItems[levelNumber].textcolor}
-                    className="box-shadow-white"
+                        ? "none"
+                        : `2px groove ${theItems[levelNumber].backgroundcolor}`,
+                  }}
+                  color1={theItems[levelNumber].color}
+                  color2={
+                    item._id !== user.id
+                      ? theItems[levelNumber].color
+                      : theItems[levelNumber].backgroundcolor
+                  }
+                  index={index}
+                  item={item}
+                  background={theItems[levelNumber].color}
+                  textColor={theItems[levelNumber].textcolor}
+                  className="box-shadow-white"
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <ImgResponsive0
+                      src={theItems[levelNumber].image2}
+                      alt="level"
+                    />
+                    <img
+                      style={{
+                        width: "3rem",
+                        height: "3rem",
+                        objectFit: "cover",
+                        margin: "auto",
+                        borderRadius: "50%",
+                        border: `solid ${alwaysWhite()} 2px`,
+                      }}
+                      src={
+                        item.picture ||
+                        "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                      }
+                    />
+                  </div>
+                  <p
+                    style={{
+                      fontWeight: 600,
+                      width: "10rem",
+                      padding: "5px",
+                      backgroundColor: "none",
+                      textAlign: "left",
+                      color: theItems[levelNumber].textcolor,
+                    }}
+                  >
+                    #{index + 1} |{" "}
+                    {item.name + " " + abreviateName(item.lastname)}
+                  </p>
+                  <div
+                    style={{
+                      display: isAdm ? "grid" : "none",
+                      // display: "none",
+                      alignItems: "center",
+                      fontSize: "0.5rem",
+                    }}
+                  >
+                    <div
+                      className="pointer-text"
+                      style={{
+                        padding: "5px",
+                        display: "grid",
+                        marginBottom: "5px",
+                        borderRadius: "6px",
+                        alignItems: "center",
+                        textAlign: "center",
+                        width: "fit-content",
+                        color: "white",
+                        backgroundColor: item.feeUpToDate ? "green" : "red",
+                      }}
+                      onClick={() => updateFeeStatus(item._id)}
+                    >
+                      {item.feeUpToDate ? "Fee Ok" : "Late Fee"}
+                    </div>
+                    <div
+                      className="pointer-text"
+                      style={{
+                        padding: "5px",
+                        display: "grid",
+                        alignItems: "center",
+                        marginBottom: "5px",
+                        borderRadius: "6px",
+                        textAlign: "center",
+                        width: "fit-content",
+                        color: "white",
+                        backgroundColor: item.replenishTarget ? "green" : "red",
+                      }}
+                      onClick={() => updateReplenishTargetStatus(item._id)}
+                    >
+                      {item.replenishTarget ? "Replenish" : "Non-Replenish"}
+                    </div>{" "}
+                    <div
+                      className="pointer-text"
+                      style={{
+                        padding: "5px",
+                        display: "grid",
+                        alignItems: "center",
+                        marginBottom: "5px",
+                        borderRadius: "6px",
+                        textAlign: "center",
+                        width: "fit-content",
+                        color: "white",
+                        backgroundColor: item.tutoree ? "blue" : "orange",
+                      }}
+                      onClick={() => updateTutoree(item._id)}
+                    >
+                      {item.tutoree ? "Tutoree" : "Not a tutoreee"}
+                    </div>
+                    <div
+                      className="pointer-text"
+                      style={{
+                        padding: "5px",
+                        display: "grid",
+                        alignItems: "center",
+                        marginBottom: "5px",
+                        borderRadius: "6px",
+                        textAlign: "center",
+                        width: "fit-content",
+                        color: "white",
+                        backgroundColor: "#456",
+                      }}
+                      onClick={() => seeEdition(item._id)}
+                    >
+                      {formatNumber(item.totalScore)} +
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
                   >
                     <div
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <ImgResponsive0
-                        src={theItems[levelNumber].image2}
-                        alt="level"
-                      />
-                      <img
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                          objectFit: "cover",
-                          margin: "auto",
-                          borderRadius: "50%",
-                          border: `solid ${alwaysWhite()} 2px`,
-                        }}
-                        src={
-                          item.picture ||
-                          "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-                        }
-                      />
-                    </div>
-                    <p
-                      style={{
-                        fontWeight: 600,
-                        width: "10rem",
+                        fontSize: "0.9rem",
+                        borderRadius: "0.5rem",
+                        marginBottom: "0.2rem",
                         padding: "5px",
-                        backgroundColor: "none",
-                        textAlign: "left",
-                        color: theItems[levelNumber].textcolor,
                       }}
                     >
-                      #{index + 1} |{" "}
-                      {item.name + " " + abreviateName(item.lastname)}
-                    </p>
-                    <div
-                      style={{
-                        display: isAdm ? "grid" : "none",
-                        // display: "none",
-                        alignItems: "center",
-                        fontSize: "0.5rem",
-                      }}
-                    >
-                      <div
-                        className="pointer-text"
+                      <DivFont
                         style={{
-                          padding: "5px",
-                          display: "grid",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          alignItems: "center",
                           textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: item.feeUpToDate ? "green" : "red",
-                        }}
-                        onClick={() => updateFeeStatus(item._id)}
-                      >
-                        {item.feeUpToDate ? "Fee Ok" : "Late Fee"}
-                      </div>
-                      <div
-                        className="pointer-text"
-                        style={{
-                          padding: "5px",
-                          display: "grid",
-                          alignItems: "center",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: item.replenishTarget
-                            ? "green"
-                            : "red",
-                        }}
-                        onClick={() => updateReplenishTargetStatus(item._id)}
-                      >
-                        {item.replenishTarget ? "Replenish" : "Non-Replenish"}
-                      </div>{" "}
-                      <div
-                        className="pointer-text"
-                        style={{
-                          padding: "5px",
-                          display: "grid",
-                          alignItems: "center",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: item.tutoree ? "blue" : "orange",
-                        }}
-                        onClick={() => updateTutoree(item._id)}
-                      >
-                        {item.tutoree ? "Tutoree" : "Not a tutoreee"}
-                      </div>
-                      <div
-                        className="pointer-text"
-                        style={{
-                          padding: "5px",
-                          display: "grid",
-                          alignItems: "center",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: "#456",
-                        }}
-                        onClick={() => seeEdition(item._id)}
-                      >
-                        {formatNumber(item.totalScore)} +
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "0.9rem",
-                          borderRadius: "0.5rem",
-                          marginBottom: "0.2rem",
-                          padding: "5px",
-                        }}
-                      >
-                        <DivFont
-                          style={{
-                            textAlign: "center",
-                            color: alwaysWhite(),
-                            textShadow: `2px 0 ${alwaysBlack()},
+                          color: alwaysWhite(),
+                          textShadow: `2px 0 ${alwaysBlack()},
                              -2px 0 ${alwaysBlack()}, 
                              0 2px ${alwaysBlack()},
                               0 -2px ${alwaysBlack()},
@@ -755,19 +758,18 @@ export default function StudentsRanking({
                                 -1px -1px ${alwaysBlack()},
                                  1px -1px ${alwaysBlack()},
                                   -1px 1px ${alwaysBlack()}`,
-                          }}
-                        >
-                          {formatNumber(item.monthlyScore)}{" "}
-                        </DivFont>
-                      </div>
+                        }}
+                      >
+                        {formatNumber(item.monthlyScore)}{" "}
+                      </DivFont>
                     </div>
-                  </AnimatedLi>
-                </div>
-              );
-            })}
-          </ul>
-        </div>
-      }
+                  </div>
+                </AnimatedLi>
+              </div>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }
