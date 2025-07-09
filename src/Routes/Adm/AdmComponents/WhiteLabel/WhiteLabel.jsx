@@ -10,6 +10,7 @@ import {
   textGeneralFont,
   textPrimaryColorContrast,
   textTitleFont,
+  theBackgroundColor,
 } from "../../../../Styles/Styles";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
@@ -22,7 +23,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import AppFooter from "../../../../Application/Footer/Footer";
-import { Box, Tab, Tabs } from "@mui/material";
+import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { FontDownload } from "@mui/icons-material";
 import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -128,7 +129,7 @@ export default function WhiteLabelPreview({ headers }) {
   const [formData, setFormData] = useState({
     backgroundType: backgroundType(), // "image" ou "color"
     backgroundImage: backgroundImage(),
-    backgroundColor: "#ffffff",
+    backgroundColor: theBackgroundColor(),
     logo: logoPartner(),
     color: partnerColor(),
     contrastColor: textPrimaryColorContrast(),
@@ -297,7 +298,10 @@ export default function WhiteLabelPreview({ headers }) {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
+
+  var [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     const finalFormData = {
@@ -318,10 +322,11 @@ export default function WhiteLabelPreview({ headers }) {
       updateInfo(studentID, headers);
       setTimeout(() => {
         window.location.reload();
-      }, 1500);
+      }, 200);
     } catch (error) {
       console.error(error);
       notifyError("Erro ao salvar o tema.");
+      setLoading(false);
     }
   };
 
@@ -395,301 +400,308 @@ export default function WhiteLabelPreview({ headers }) {
       className="page-wrapper"
       style={{ padding: "40px", fontFamily: formData.textGeneralFont }}
     >
-      <form
-        onSubmit={handleSubmit}
-        className="form-wrapper"
-        style={{ maxWidth: "700px", margin: "40px auto" }}
+      <HOne
+        style={{
+          color: partnerColor(),
+          fontFamily: textTitleFont(),
+          fontSize: "20px",
+          marginBottom: "15px",
+        }}
       >
-        <h2 style={{ fontSize: "20px", marginBottom: "15px" }}>
-          🎨 Personalizar Tema
-        </h2>
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Tipo de fundo:</label>
-          <select
-            name="backgroundType"
-            value={formData.backgroundType}
-            onChange={handleChange}
-            style={{ marginLeft: "10px", width: "220px" }}
-          >
-            <option value="image">Imagem</option>
-            <option value="color">Cor sólida</option>
-          </select>
-        </div>
+        🎨 Personalizar Tema
+      </HOne>
 
-        {/* Se for imagem, mostra o input de upload */}
-        {formData.backgroundType === "image" && (
-          <div className="form-group" style={{ marginBottom: "15px" }}>
-            <label>Imagem de fundo (upload): </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleBackgroundChange}
-              ref={backgroundInputRef}
-            />
-          </div>
-        )}
-
-        {formData.backgroundType === "color" && (
-          <div className="form-group" style={{ marginBottom: "15px" }}>
-            <label>Cor de fundo: </label>
-            <input
-              type="color"
-              name="backgroundColor"
-              value={formData.backgroundColor}
-              onChange={handleChange}
-            />
-          </div>
-        )}
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Logo (upload): </label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleLogoChange}
-            ref={logoInputRef}
-          />
-        </div>
-
-        {/* Cores corretas */}
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Cor Principal do seu negócio: </label>
-          <input
-            type="color"
-            name="color"
-            value={formData.color}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Cor de contraste: </label>
-          <select
-            name="contrastColor"
-            value={formData.contrastColor}
-            onChange={handleChange}
-            style={{ marginLeft: "10px", width: "220px" }}
+      {loading ? (
+        <CircularProgress style={{ color: partnerColor() }} />
+      ) : (
+        <>
+          <form
+            onSubmit={handleSubmit}
+            className="form-wrapper"
+            style={{ maxWidth: "700px", margin: "40px auto" }}
           >
-            <option value="black">Black</option>
-            <option value="white">White</option>
-          </select>
-        </div>
-        <div className="form-group" style={{ marginBottom: "15px" }}>
-          <label>Fonte Primária (para títulos): </label>
-          <select
-            name="textTitleFont"
-            value={formData.textTitleFont}
-            onChange={handleChange}
-            style={{ marginLeft: "10px", width: "220px" }}
-          >
-            {titleFonts.map((font) => (
-              <option key={font} value={font}>
-                {font}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group" style={{ marginBottom: "20px" }}>
-          <label>Fonte Secundária (para textos): </label>
-          <select
-            name="textGeneralFont"
-            value={formData.textGeneralFont}
-            onChange={handleChange}
-            style={{ marginLeft: "10px", width: "220px" }}
-          >
-            {generalTextFonts.map((font) => (
-              <option key={font} value={font}>
-                {font}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className="form-group" style={{ marginBottom: "15px" }}>
+              <label>Tipo de fundo:</label>
+              <select
+                name="backgroundType"
+                value={formData.backgroundType}
+                onChange={handleChange}
+                style={{ marginLeft: "10px", width: "220px" }}
+              >
+                <option value="image">Imagem</option>
+                <option value="color">Cor sólida</option>
+              </select>
+            </div>
 
-        <ArvinButton type="submit" color={partnerColor()}>
-          Salvar Tema
-        </ArvinButton>
-      </form>
+            {/* Se for imagem, mostra o input de upload */}
+            {formData.backgroundType === "image" && (
+              <div className="form-group" style={{ marginBottom: "15px" }}>
+                <label>Imagem de fundo (upload): </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBackgroundChange}
+                  ref={backgroundInputRef}
+                />
+              </div>
+            )}
 
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      {/* 🔎 Visualização do tema */}
-      <div className="sample" style={sampleStyles}>
-        <div
-          style={{
-            backgroundColor: "#fff",
-            marginBottom: "1rem",
-            padding: "1rem",
-            display: "flex",
-            justifyContent: "space-around",
-            gap: "2rem",
-          }}
-        >
-          <img
-            src={formData.logo}
-            alt=""
-            style={{
-              height: "2rem",
-              width: "auto",
-              maxWidth: "100%",
-              objectFit: "contain",
-            }}
-          />
-          <ul
-            style={{
-              display: "flex",
-              gap: "1rem",
-              padding: "10px",
-              justifyContent: "space-between",
-            }}
-          >
-            {allLinksForUser.map((link, index) => {
-              return (
-                <span
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    color: link.color ? sampleStyles.color : alwaysBlack(),
-                  }}
-                >
-                  <i
-                    style={{
-                      color: link.color ? formData.color : alwaysBlack(),
-                    }}
-                    className={`fa fa-${link.icon}`}
-                  />
-                  <span
-                    style={{
-                      fontFamily: formData.textGeneralFont,
-                      color: link.color ? formData.color : alwaysBlack(),
-                      textAlign: "center",
-                    }}
-                  >
-                    {link.title}
-                  </span>
-                </span>
-              );
-            })}
-          </ul>
-        </div>
-        <div
-          className="box-shadow-black smooth"
-          style={{
-            backgroundColor: alwaysWhite(),
-            borderRadius: "6px",
-            color: alwaysBlack(),
-            padding: "0 0 2rem",
-            width: "85%",
-            margin: "auto",
-            marginBottom: "1rem",
-            height: "100%",
-          }}
-        >
-          <Box>
-            <TabContext value={tabValue}>
-              <Box
-                sx={{
-                  bgcolor: "white",
-                  borderRadius: "8px 8px 0 0",
-                  border: `1px solid #eee`,
+            {formData.backgroundType === "color" && (
+              <div className="form-group" style={{ marginBottom: "15px" }}>
+                <label>Cor de fundo: </label>
+                <input
+                  type="color"
+                  name="backgroundColor"
+                  value={formData.backgroundColor}
+                  onChange={handleChange}
+                />
+              </div>
+            )}
+            <div className="form-group" style={{ marginBottom: "15px" }}>
+              <label>Logo (upload): </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                ref={logoInputRef}
+              />
+            </div>
+
+            {/* Cores corretas */}
+            <div className="form-group" style={{ marginBottom: "15px" }}>
+              <label>Cor Principal do seu negócio: </label>
+              <input
+                type="color"
+                name="color"
+                value={formData.color}
+                onChange={handleChange}
+              />
+            </div>
+            <div className="form-group" style={{ marginBottom: "15px" }}>
+              <label>Cor de contraste: </label>
+              <select
+                name="contrastColor"
+                value={formData.contrastColor}
+                onChange={handleChange}
+                style={{ marginLeft: "10px", width: "220px" }}
+              >
+                <option value="black">Black</option>
+                <option value="white">White</option>
+              </select>
+            </div>
+            <div className="form-group" style={{ marginBottom: "15px" }}>
+              <label>Fonte Primária (para títulos): </label>
+              <select
+                name="textTitleFont"
+                value={formData.textTitleFont}
+                onChange={handleChange}
+                style={{ marginLeft: "10px", width: "220px" }}
+              >
+                {titleFonts.map((font) => (
+                  <option key={font} value={font}>
+                    {font}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group" style={{ marginBottom: "20px" }}>
+              <label>Fonte Secundária (para textos): </label>
+              <select
+                name="textGeneralFont"
+                value={formData.textGeneralFont}
+                onChange={handleChange}
+                style={{ marginLeft: "10px", width: "220px" }}
+              >
+                {generalTextFonts.map((font) => (
+                  <option key={font} value={font}>
+                    {font}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <ArvinButton type="submit" color={partnerColor()}>
+              Salvar Tema
+            </ArvinButton>
+          </form>
+          {/* 🔎 Visualização do tema */}
+          <div className="sample" style={sampleStyles}>
+            <div
+              style={{
+                backgroundColor: "#fff",
+                marginBottom: "1rem",
+                padding: "1rem",
+                display: "flex",
+                justifyContent: "space-around",
+                gap: "2rem",
+              }}
+            >
+              <img
+                src={formData.logo}
+                alt=""
+                style={{
+                  height: "2rem",
+                  width: "auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
+              <ul
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  padding: "10px",
+                  justifyContent: "space-between",
                 }}
               >
-                <TabList
-                  onChange={handleTabChange}
-                  variant="scrollable"
-                  scrollButtons="auto"
-                  aria-label="tabs preview"
-                  sx={{
-                    "& .MuiTab-root": {
-                      fontFamily: formData.textTitleFont,
-                      color: "black",
-                      fontWeight: 500,
-                    },
-                    "& .Mui-selected": {
-                      color: formData.color,
-                    },
-                    "& .MuiTabs-indicator": {
-                      backgroundColor: formData.color,
-                    },
-                  }}
-                >
-                  <Tab
-                    style={{
-                      color: partnerColor(),
-                      fontWeight: (index + 1).toString() === value ? 800 : 500,
+                {allLinksForUser.map((link, index) => {
+                  return (
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        color: link.color ? sampleStyles.color : alwaysBlack(),
+                      }}
+                    >
+                      <i
+                        style={{
+                          color: link.color ? formData.color : alwaysBlack(),
+                        }}
+                        className={`fa fa-${link.icon}`}
+                      />
+                      <span
+                        style={{
+                          fontFamily: formData.textGeneralFont,
+                          color: link.color ? formData.color : alwaysBlack(),
+                          textAlign: "center",
+                        }}
+                      >
+                        {link.title}
+                      </span>
+                    </span>
+                  );
+                })}
+              </ul>
+            </div>
+            <div
+              className="box-shadow-black smooth"
+              style={{
+                backgroundColor: alwaysWhite(),
+                borderRadius: "6px",
+                color: alwaysBlack(),
+                padding: "0 0 2rem",
+                width: "85%",
+                margin: "auto",
+                marginBottom: "1rem",
+                height: "100%",
+              }}
+            >
+              <Box>
+                <TabContext value={tabValue}>
+                  <Box
+                    sx={{
+                      bgcolor: "white",
+                      borderRadius: "8px 8px 0 0",
+                      border: `1px solid #eee`,
                     }}
-                    label="Preview"
+                  >
+                    <TabList
+                      onChange={handleTabChange}
+                      variant="scrollable"
+                      scrollButtons="auto"
+                      aria-label="tabs preview"
+                      sx={{
+                        "& .MuiTab-root": {
+                          fontFamily: formData.textTitleFont,
+                          color: "black",
+                          fontWeight: 500,
+                        },
+                        "& .Mui-selected": {
+                          color: formData.color,
+                        },
+                        "& .MuiTabs-indicator": {
+                          backgroundColor: formData.color,
+                        },
+                      }}
+                    >
+                      <Tab
+                        style={{
+                          color: formData.partnerColor,
+                          fontWeight: tabValue == "1" ? 800 : 500,
+                        }}
+                        label="Preview"
+                        value="1"
+                      />
+                      <Tab
+                        style={{
+                          color: formData.partnerColor,
+                          fontWeight: tabValue == "2" ? 800 : 500,
+                        }}
+                        label="Detalhes"
+                        value="2"
+                      />
+                      <Tab
+                        style={{
+                          color: formData.partnerColor,
+                          fontWeight: tabValue == "3" ? 800 : 500,
+                        }}
+                        label="Mais"
+                        value="3"
+                      />
+                    </TabList>
+                  </Box>
+                  <TabPanel
                     value="1"
-                  />
-                  <Tab
-                    style={{
-                      color: partnerColor(),
-                      fontWeight: (index + 1).toString() === value ? 800 : 500,
-                    }}
-                    label="Detalhes"
+                    sx={{ backgroundColor: "#fff", padding: "1rem" }}
+                  >
+                    <TabPreview />
+                    <div
+                      style={{
+                        color: formData.contrastColor,
+                        backgroundColor: formData.color,
+                        textAlign: "center",
+                        padding: "12px",
+                        borderRadius: "1rem",
+                      }}
+                    >
+                      <h1
+                        style={{
+                          fontFamily: formData.textTitleFont,
+                        }}
+                      >
+                        Contraste
+                      </h1>
+                      <p
+                        style={{
+                          fontFamily: formData.textGeneralFont,
+                        }}
+                      >
+                        Este é um exemplo de contraste entre as cores. Escolha
+                        entre **preto** ou **branco** a opção que oferece melhor
+                        legibilidade e harmonia visual com a sua marca.
+                      </p>
+                    </div>
+                  </TabPanel>
+                  <TabPanel
                     value="2"
-                  />
-                  <Tab
-                    style={{
-                      color: partnerColor(),
-                      fontWeight: (index + 1).toString() === value ? 800 : 500,
-                    }}
-                    label="Mais"
+                    sx={{ backgroundColor: "#fff", padding: "1rem" }}
+                  >
+                    <TabDetalhes />
+                  </TabPanel>
+                  <TabPanel
                     value="3"
-                  />
-                </TabList>
+                    sx={{ backgroundColor: "#fff", padding: "1rem" }}
+                  >
+                    <TabMais />
+                  </TabPanel>
+                </TabContext>
               </Box>
-              <TabPanel
-                value="1"
-                sx={{ backgroundColor: "#fff", padding: "1rem" }}
-              >
-                <TabPreview />
-                <div
-                  style={{
-                    color: formData.contrastColor,
-                    backgroundColor: formData.color,
-                    textAlign: "center",
-                    padding: "12px",
-                    borderRadius: "1rem",
-                  }}
-                >
-                  <h1
-                    style={{
-                      fontFamily: formData.textTitleFont,
-                    }}
-                  >
-                    Contraste
-                  </h1>
-                  <p
-                    style={{
-                      fontFamily: formData.textGeneralFont,
-                    }}
-                  >
-                    Este é um exemplo de contraste entre as cores. Escolha entre
-                    **preto** ou **branco** a opção que oferece melhor
-                    legibilidade e harmonia visual com a sua marca.
-                  </p>
-                </div>
-              </TabPanel>
-              <TabPanel
-                value="2"
-                sx={{ backgroundColor: "#fff", padding: "1rem" }}
-              >
-                <TabDetalhes />
-              </TabPanel>
-              <TabPanel
-                value="3"
-                sx={{ backgroundColor: "#fff", padding: "1rem" }}
-              >
-                <TabMais />
-              </TabPanel>
-            </TabContext>
-          </Box>
-        </div>
-        <AppFooter style={{ marginTop: "auto" }} see={true} />
-      </div>
+            </div>
+            <AppFooter style={{ marginTop: "auto" }} see={true} />
+          </div>
+        </>
+      )}
     </div>
   );
 }

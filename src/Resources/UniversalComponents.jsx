@@ -546,11 +546,54 @@ export function getVideoEmbedUrl(videoUrl) {
 export function TitlePage(title) {
   return (
     <Helmet>
-      <title>{title} | Arthur Vincent</title>
+      <title>{title} | Arvin English Platform</title>
     </Helmet>
   );
 }
 
+export function myProfileSVG(size) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+      width={`1000 * ${size}`}
+      height={`1000 * ${size}`}
+      zoomAndPan="magnify"
+      viewBox="0 0 750 749.999995"
+      preserveAspectRatio="xMidYMid meet"
+      version="1.2"
+    >
+      <g id="6d466bc09a">
+        <rect
+          x="0"
+          width="750"
+          y="0"
+          height="749.999995"
+          style="fill:#ffffff;fill-opacity:1;stroke:none;"
+        />
+        <rect
+          x="0"
+          width="750"
+          y="0"
+          height="749.999995"
+          style="fill:#ffffff;fill-opacity:1;stroke:none;"
+        />
+        <path
+          style=" stroke:none;fill-rule:nonzero;fill:#1e1b16;fill-opacity:1;"
+          d="M 750.035156 375.015625 C 750.035156 470.957031 714.03125 558.457031 654.746094 624.773438 C 586.089844 701.652344 486.214844 750.027344 375.023438 750.027344 C 263.832031 750.027344 163.921875 701.652344 95.292969 624.773438 C 36.011719 558.457031 0.0117188 470.957031 0.0117188 375.015625 C 0.0117188 167.914062 167.890625 0.0078125 375.023438 0.0078125 C 582.121094 0.0078125 750.035156 167.914062 750.035156 375.015625 "
+        />
+        <path
+          style={`stroke:none;fill-rule:nonzero;fill:${partnerColor()};fill-opacity:1;`}
+          d="M 375.023438 444.09375 C 442.988281 444.09375 504.894531 367.199219 504.894531 282.761719 C 504.894531 202.984375 489.46875 124.09375 375.023438 124.09375 C 260.5625 124.09375 245.128906 202.984375 245.128906 282.761719 C 245.128906 367.199219 307.042969 444.09375 375.023438 444.09375 "
+        />
+        <path
+          style={`stroke:none;fill-rule:nonzero;fill:${partnerColor()};fill-opacity:1;`}
+          d="M 654.746094 624.773438 C 586.089844 701.652344 486.214844 750.027344 375.023438 750.027344 C 263.832031 750.027344 163.921875 701.652344 95.292969 624.773438 C 94.109375 578.457031 124.953125 471.144531 282.269531 438.113281 C 309.175781 465.578125 342.300781 481.113281 375.023438 481.113281 C 407.738281 481.113281 440.839844 465.578125 467.742188 438.113281 C 625.09375 471.144531 655.90625 578.457031 654.746094 624.773438 "
+        />
+      </g>
+    </svg>
+  );
+}
 export function LogoSVG(primaryColor, partnerColor, size) {
   return (
     <svg

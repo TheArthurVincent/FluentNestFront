@@ -386,7 +386,6 @@ export const TopBar: FC = () => {
                 <SpanHover
                   style={{
                     cursor: "pointer",
-
                     color: linksToShow.some((link) =>
                       location.pathname.includes(link)
                     )

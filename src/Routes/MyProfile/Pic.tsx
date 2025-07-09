@@ -39,7 +39,7 @@ export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
     >
       {/* Avatar clicável */}
       <img
-        src={user.picture || "https://via.placeholder.com/150"}
+        src={user.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
         alt="Profile"
         onClick={() => fileInputRef.current?.click()}
         style={{

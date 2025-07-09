@@ -596,7 +596,7 @@ export default function StudentsRanking({
                           borderRadius: "50%",
                           border: `solid ${alwaysWhite()} 2px`,
                         }}
-                        src={item.picture}
+                        src={item.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
                       />
                     </div>
                     <p
@@ -752,7 +752,7 @@ export default function StudentsRanking({
                           ? "none"
                           : `2px groove ${theItems[levelNumber].backgroundcolor}`,
                     }}
-                    key={index + item.picture}
+                    key={index + item.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
                     color1={theItems[levelNumber].color}
                     color2={
                       item._id !== user.id
@@ -785,7 +785,7 @@ export default function StudentsRanking({
                           borderRadius: "50%",
                           border: `solid ${alwaysWhite()} 2px`,
                         }}
-                        src={item.picture}
+                        src={item.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
                       />
                     </div>
                     <p

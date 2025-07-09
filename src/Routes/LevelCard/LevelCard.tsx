@@ -3,6 +3,7 @@ import { levels } from "../Ranking/RankingComponents/RankingLevelsList";
 import {
   backDomain,
   formatNumber,
+  myProfileSVG,
   updateInfo,
   updateScore,
 } from "../../Resources/UniversalComponents";
@@ -74,7 +75,10 @@ export function LevelCard({
       });
       setTotalScore(response.data.totalScore);
       setMonthlyScore(response.data.monthlyScore);
-      setPictureStudent(response.data.picture);
+      setPictureStudent(
+        response.data.picture ||
+          "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+      );
       setAssignmentsDone(response.data.homeworkAssignmentsDone);
       setFC(response.data.flashcards25Reviews);
       var newValue = updateScore(
@@ -110,7 +114,13 @@ export function LevelCard({
     <NewLevelCardComponent className="glowing2 box-shadow-black">
       <DivCardLevel>
         <LevelCardLevel
-          style={{ display: showCard }}
+          style={{
+            cursor: "pointer",
+            display: showCard,
+          }}
+          onClick={() => {
+            window.location.assign("/my-profile");
+          }}
           src={items[level].image}
           alt="card"
         />

@@ -445,7 +445,10 @@ export function FindStudent({ uploadStatus, headers }) {
                             height: "2.5rem",
                             objectFit: "cover",
                           }}
-                          src={student.picture}
+                          src={
+                            student.picture ||
+                            "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                          }
                           alt=""
                         />
                       </TableCell>
@@ -574,7 +577,7 @@ export function FindStudent({ uploadStatus, headers }) {
               <Tab
                 style={{
                   color: partnerColor(),
-                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                  fontWeight: value == "1" ? 800 : 500,
                 }}
                 label="Dados gerais"
                 value="1"
@@ -582,7 +585,7 @@ export function FindStudent({ uploadStatus, headers }) {
               <Tab
                 style={{
                   color: partnerColor(),
-                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                  fontWeight: value == "2" ? 800 : 500,
                 }}
                 label="Permissões"
                 value="2"
@@ -590,7 +593,7 @@ export function FindStudent({ uploadStatus, headers }) {
               <Tab
                 style={{
                   color: partnerColor(),
-                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                  fontWeight: value == "3" ? 800 : 500,
                 }}
                 label="Senha"
                 value="3"

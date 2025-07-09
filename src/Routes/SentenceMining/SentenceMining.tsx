@@ -38,7 +38,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [dis, setDis] = useState<boolean>(false);
   const [see, setSee] = useState<boolean>(true);
-  const [heardSentences, setHeardSentences] = useState([false, false, false]);
   const [word, setWord] = useState<string>("");
   const [finalWord, setFinalWord] = useState<string>("");
   const [explanation, setExplanation] = useState<string>("");
@@ -102,7 +101,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         }))
       );
 
-      setHeardSentences(Array(response.data.examples.length).fill(false));
       setLoading(false);
       setDis(false);
     } catch (error: any) {
@@ -151,7 +149,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         tags: [""],
       },
     ];
-
+    readText(frontText, true, "en");
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${myId}`,
@@ -167,13 +165,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       notifyError("Error adding flashcard.");
       console.log(error);
     }
-  };
-
-  const handleReadText = (index: number, text: string, language: string) => {
-    readText(text, true, "en");
-    const newHeardSentences = [...heardSentences];
-    newHeardSentences[index] = true;
-    setHeardSentences(newHeardSentences);
   };
 
   return (
@@ -349,24 +340,10 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     {examples.map((example, index) => (
                       <LiSentence key={index}>
                         {!example.added && (
-                          <Tooltip
-                            title={
-                              !heardSentences[index]
-                                ? "Listen first!"
-                                : "Add to flashcards"
-                            }
-                          >
+                          <Tooltip title={"Add to flashcards"}>
                             <ArvinButton
-                              color={
-                                !heardSentences[index]
-                                  ? "white"
-                                  : partnerColor()
-                              }
-                              cursor={
-                                !heardSentences[index]
-                                  ? "not-allowed"
-                                  : "pointer"
-                              }
+                              color={partnerColor()}
+                              cursor={"pointer"}
                               onClick={() => {
                                 addNewCards(
                                   index,
@@ -379,7 +356,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                   )
                                 );
                               }}
-                              disabled={!heardSentences[index]}
                             >
                               <i className="fa fa-files-o" aria-hidden="true" />
                             </ArvinButton>
@@ -390,7 +366,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         <span
                           className="audio-button"
                           onClick={() =>
-                            handleReadText(index, example.sentence, language)
+                            readText(example.sentence, true, language)
                           }
                         >
                           <i className="fa fa-volume-up" aria-hidden="true" />

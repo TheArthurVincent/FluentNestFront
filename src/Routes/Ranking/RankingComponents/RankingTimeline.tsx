@@ -90,171 +90,121 @@ export default function RankingTimeline({
     setNewID(event.target.value);
     seeName(event.target.value);
   };
+  const tableHeaderStyle = {
+    padding: "10px",
+    fontWeight: 700,
+    textAlign: "left" as const,
+    borderBottom: "2px solid #ddd",
+  };
+
+  const tableCellStyle = {
+    padding: "10px",
+    borderBottom: "1px solid #eee",
+  };
 
   return (
     <div
       style={{
-        top: "10%",
-        fontSize: "10px",
-        borderRadius: "6px",
-        left: "30%",
-        color: "#000",
         backgroundColor: textPrimaryColorContrast(),
-        padding: "1rem",
+        color: "#000",
+        borderRadius: "12px",
+        padding: "2rem",
+        maxWidth: "960px",
+        margin: "2rem auto",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
       }}
     >
-      <span>
-        {loading ? (
-          <></>
-        ) : (
-          <Button
-            onClick={() => seeScore(id)}
-            style={{
-              backgroundColor: textpartnerColorContrast(),
-              color: partnerColor(),
-            }}
-          >
-            <i className="fa fa-refresh" aria-hidden="true" />
-          </Button>
-        )}
-        {permissions === "superadmin" && (
-          <select onChange={handleStudentChange} name="students" value={newID}>
-            {studentsList.map((student: any, index: number) => (
-              <option key={index} value={student.id}>
-                {student.name + " " + student.lastname}
-              </option>
-            ))}
-          </select>
-        )}
-      </span>
-      <span
+      <div
         style={{
-          alignItems: "center",
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "1rem",
+          gap: "1rem",
+          flexWrap: "wrap",
         }}
       >
         <HOne
           style={{
             fontFamily: textTitleFont(),
             color: partnerColor(),
-            textAlign: "center",
-            margin: "0.5rem",
+            fontSize: "1.8rem",
           }}
         >
-          {actualName}
+          Histórico de Pontuação - {actualName}
         </HOne>
-      </span>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          {permissions === "superadmin" && (
+            <select
+              onChange={handleStudentChange}
+              value={newID}
+              style={{
+                padding: "0.5rem",
+                borderRadius: "6px",
+                border: "1px solid #ccc",
+                fontWeight: 500,
+              }}
+            >
+              {studentsList.map((student: any, index: number) => (
+                <option key={index} value={student.id}>
+                  {student.name + " " + student.lastname}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      </div>
+
       <div
         style={{
-          maxHeight: "25rem",
-          margin: "auto",
-          overflow: "auto",
-          padding: "1px",
-          fontWeight: 600,
           backgroundColor: lightGreyColor(),
+          borderRadius: "8px",
+          overflow: "auto",
           border: `2px solid ${lightGreyColor()}`,
+          maxHeight: "28rem",
         }}
       >
         {loading ? (
-          <CircularProgress style={{ color: partnerColor() }} />
+          <div style={{ textAlign: "center", padding: "2rem" }}>
+            <CircularProgress style={{ color: partnerColor() }} />
+          </div>
         ) : (
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr>
-                {/* <th style={{ border: "1px solid black", padding: "8px", backgroundColor: "#f2f2f2" }}>Tipo</th> */}
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    backgroundColor: "#f2f2f2",
-                  }}
-                >
-                  Score
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    backgroundColor: "#f2f2f2",
-                  }}
-                >
-                  Data
-                </th>
-                <th
-                  style={{
-                    border: "1px solid black",
-                    padding: "8px",
-                    backgroundColor: "#f2f2f2",
-                  }}
-                >
-                  Descrição
-                </th>
+              <tr
+                style={{
+                  backgroundColor: partnerColor(),
+                  color: textPrimaryColorContrast(),
+                }}
+              >
+                <th style={tableHeaderStyle}>Score</th>
+                <th style={tableHeaderStyle}>Data</th>
+                <th style={tableHeaderStyle}>Descrição</th>
               </tr>
             </thead>
             <tbody>
-              {localTimeline.map((item: any, index: number) => {
-                const variables = {
-                  type:
-                    item.type === "Anki"
-                      ? "Flashcards"
-                      : item.type === "Flashcards"
-                      ? "Flashcards"
-                      : item.type === "Homework"
-                      ? "Homework"
-                      : item.type === "Extra activity"
-                      ? "Extra activity"
-                      : item.type === "Live Class" || "Group Classes"
-                      ? "Live Class"
-                      : "Other",
-                  color:
-                    item.type === "Anki"
-                      ? "#01BCFF"
-                      : item.type === "Homework"
-                      ? "#E6A020"
-                      : item.type === "Extra activity"
-                      ? "#123"
-                      : item.type === "Live Class" || "Group Classes"
-                      ? "#753"
-                      : "#123",
-                };
-
-                return (
-                  <tr key={index}>
-                    {/* <td style={{ border: "1px solid black", padding: "8px" }}>
-                      <i
-                        style={{
-                          backgroundColor: variables.color,
-                          color: "white",
-                          padding: "0.5rem",
-                          borderRadius: "50%",
-                          fontWeight: 700,
-                          transform: "rotate(-25deg)",
-                        }}
-                        className={variables.type}
-                        aria-hidden="true"
-                      />
-                      {variables.type}
-                    </td> */}
-                    <td
-                      style={{
-                        border: "1px solid black",
-                        padding: "8px",
-                        backgroundColor: item.score < 0 ? "red" : "green",
-                        color: alwaysWhite(),
-                      }}
-                    >
-                      {item.score}
-                    </td>
-                    <td style={{ border: "1px solid black", padding: "8px" }}>
-                      {formatDate(item.date)}
-                    </td>
-                    <td style={{ border: "1px solid black", padding: "8px" }}>
-                      {item.description}
-                    </td>
-                  </tr>
-                );
-              })}
+              {localTimeline.map((item: any, index: number) => (
+                <tr
+                  key={index}
+                  style={{
+                    backgroundColor: index % 2 === 0 ? "#fff" : "#fafafa",
+                  }}
+                >
+                  <td
+                    style={{
+                      ...tableCellStyle,
+                      backgroundColor: partnerColor(),
+                      color: textPrimaryColorContrast(),
+                      fontWeight: 600,
+                      textAlign: "center",
+                    }}
+                  >
+                    {item.score}
+                  </td>
+                  <td style={tableCellStyle}>{formatDate(item.date)}</td>
+                  <td style={tableCellStyle}>{item.description}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}

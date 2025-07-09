@@ -48,6 +48,7 @@ export function Login() {
       localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
 
       setButton("Sucesso");
+      window.location.reload();
       window.location.assign("/");
     } catch (error) {
       setFail(true);

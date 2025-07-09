@@ -231,7 +231,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       updateInfo(user.id, headers);
                       window.location.reload();
                     }}
-                    color="navy"
+                    color={partnerColor()}
                     style={{
                       color: "#fff",
                       padding: "0.5rem 1rem",
