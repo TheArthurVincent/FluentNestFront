@@ -20,7 +20,7 @@ import {
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import { partnerColor } from "../../../Styles/Styles";
+import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
@@ -449,7 +449,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         <a
           style={{
             fontSize: "13px",
-            color: "#0066cc",
+            color: partnerColor(),
             textDecoration: "none",
           }}
           href="/sentence-mining"
@@ -525,7 +525,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         <ArvinButton
                           disabled={isDisabled}
                           cursor={isDisabled ? "not-allowed" : "pointer"}
-                          color={isDisabled ? "grey" : "navy"}
+                          color={isDisabled ? "grey" : partnerColor()}
+                          style={{
+                            color: textPrimaryColorContrast(),
+                          }}
                           onClick={() => {
                             setBackCardVisible(!backCardVisible);
                             setAnswer(!answer);
@@ -570,7 +573,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                   onClick={() =>
                                     reviewCard(cards[0]._id, "easy")
                                   }
-                                  color="green"
+                                  style={{
+                                    color: textPrimaryColorContrast(),
+                                  }}
+                                  color={partnerColor()}
                                 >
                                   I got it! (Acertei)
                                 </ArvinButton>

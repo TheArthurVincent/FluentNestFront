@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
+import { backDomain } from "../../Resources/UniversalComponents";
 import {
   notifyError,
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { partnerColor } from "../../Styles/Styles";
 
 interface WordOfTheDayRv {
@@ -166,6 +164,9 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                 <button
                   onClick={() => setShowWord(!showWord)}
                   className="pulse-button"
+                  style={{
+                    boxShadow: `0 0 12px ${partnerColor()}`,
+                  }}
                 >
                   Word of the Day
                 </button>

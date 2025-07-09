@@ -4,7 +4,7 @@ import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
 import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
-import { textGeneralFont, textTitleFont } from "./Styles/Styles";
+import { partnerColor, textGeneralFont, textTitleFont } from "./Styles/Styles";
 import Login from "./Routes/Login/Login";
 import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
@@ -55,30 +55,33 @@ function App() {
   }
   useEffect(() => {
     // checkLocalBackground();
-    const user = localStorage.getItem("loggedIn");
+    var user = localStorage.getItem("loggedIn");
 
-    const textElement = document.querySelector("body");
-    const hOne = document.querySelector("h1");
-    const hTwo = document.querySelector("h2");
-
-    if (hOne) {
-      hOne.style.fontFamily = textTitleFont();
-    }
-
-    if (hTwo) {
-      hTwo.style.fontFamily = textTitleFont();
-    }
-
+    var textElement = document.querySelector("body");
+    
     if (textElement) {
       textElement.style.fontFamily = textGeneralFont();
     }
 
-    const inputElement = document.querySelector("input");
+    var hOne = document.querySelector("h1");
+    
+    if (hOne) {
+      hOne.style.fontFamily = textTitleFont();
+      hOne.style.color = partnerColor();
+    }
+    
+    var hTwo = document.querySelector("h2");
+    if (hTwo) {
+      hTwo.style.fontFamily = textTitleFont();
+      hTwo.style.color = partnerColor();
+    }
+
+    var inputElement = document.querySelector("input");
     if (inputElement) {
       inputElement.style.fontFamily = textGeneralFont();
     }
 
-    const selectElement = document.querySelector("select");
+    var selectElement = document.querySelector("select");
     if (selectElement) {
       selectElement.style.fontFamily = textTitleFont();
     }

@@ -25,7 +25,6 @@ export const RouteDiv = styled.div.attrs({
 })`
   background-color: ${alwaysWhite()};
   border-radius: 6px;
-  color: ${alwaysBlack()};
   padding: 0.5rem;
   width: 90vw;
   height: 100%;
@@ -39,7 +38,6 @@ export const RouteDivCourses = styled.div.attrs({
 })`
   background-color: ${alwaysWhite()};
   border-radius: 6px;
-  color: ${alwaysBlack()};
   padding: 0.5rem;
   margin-right: auto;
   margin-left: auto;
@@ -116,16 +114,16 @@ export const BlogPostTitle = styled.div`
 
 export const HOne = styled.h1`
   text-align: center;
+  color: ${partnerColor()};
   font-size: 1.5rem;
-  color: ${"#000"};
 `;
 
 export const HTwo = styled.h2`
   font-size: 1.3rem;
+  color: ${partnerColor()};
   font-weight: 500;
   padding: 0.6rem;
   margin-bottom: 1rem;
-  color: ${"#000"};
   @media (max-width: 1700px) {
     text-align: center;
     margin-top: 1rem;

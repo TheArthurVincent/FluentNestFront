@@ -312,8 +312,11 @@ export default function WhiteLabelPreview({ headers }) {
       );
       notifyError("Tema salvo com sucesso!", "green");
       setFormData(finalFormData);
-      updateInfo(studentID, headers)
       console.log(response.data);
+      updateInfo(studentID, headers);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
     } catch (error) {
       console.error(error);
       notifyError("Erro ao salvar o tema.");
@@ -498,20 +501,12 @@ export default function WhiteLabelPreview({ headers }) {
           </select>
         </div>
 
-        <button
+        <ArvinButton
           type="submit"
-          style={{
-            padding: "12px 24px",
-            backgroundColor: "#28a745",
-            color: "#fff",
-            border: "none",
-            borderRadius: "8px",
-            fontSize: "16px",
-            cursor: "pointer",
-          }}
+          color={partnerColor()}
         >
           Salvar Tema
-        </button>
+        </ArvinButton>
       </form>
 
       {/* 🔎 Visualização do tema */}

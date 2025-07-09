@@ -65,6 +65,7 @@ html {
   animation-timing-function: forward;
   transition: all 0.1s forward;
 }
+
 h1,
 h2,
 h3,
@@ -73,6 +74,7 @@ h4 {
   font-size: 1.2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.031);
 }
+
 h1 {
   font-size: 1.1rem;
   font-weight: 800;
@@ -668,16 +670,14 @@ input.inputs-style:focus {
 }
 
 .pulse-button {
-  border: 1px solid #54bf08;
   color: #ffffff;
   padding: 5px 10px;
   border-radius: 25px;
   font-size: 10px;
   cursor: pointer;
-  background: linear-gradient(-45deg, #54bf08, #aacd99, #54bf08, #aacd99);
+  background: linear-gradient(-45deg, #000, #999, #000, #999);
   background-size: 400% 400%;
   animation: waterFlow 4s linear infinite, pulseGlow 2s ease-in-out infinite;
-  box-shadow: 0 0 12px rgba(84, 191, 8, 0.5);
   transition: transform 0.2s ease;
 }
 
@@ -701,15 +701,15 @@ input.inputs-style:focus {
 
 @keyframes pulseGlow {
   0% {
-    box-shadow: 0 0 8px rgba(84, 191, 8, 0.4);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
   }
 
   50% {
-    box-shadow: 0 0 16px rgba(84, 191, 8, 0.9);
+    box-shadow: 0 0 16px rgba(179, 179, 179, 0.9);
   }
 
   100% {
-    box-shadow: 0 0 8px rgba(84, 191, 8, 0.4);
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
   }
 }
 

@@ -17,7 +17,8 @@ export const logoPartner = (): string =>
   getWhiteLabel.logo ||
   "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin.png?updatedAt=1751674257307";
 export const textpartnerColorContrast = (): string => "#f2f2f2";
-export const textPrimaryColorContrast = (): string => "#fff";
+export const textPrimaryColorContrast = (): string =>
+  getWhiteLabel.contrastColor || "#eee";
 
 // Fixed
 export const darkGreyColor = (): string => "#5c5c5c";
