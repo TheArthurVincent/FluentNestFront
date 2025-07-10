@@ -73,25 +73,26 @@ export function MyClasses({ headers }) {
   }, []);
 
   const fetchStudents = async () => {
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/students/${MYID}`,
-        {
-          headers,
-        }
-      );
-      setStudentsList(response.data.listOfStudents);
-    } catch (error) {
-      console.log(error, "Erro ao encontrar alunos");
-      notifyError("Erro ao encontrar alunos");
+    if (IsAllowed) {
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${MYID}`,
+          {
+            headers,
+          }
+        );
+        setStudentsList(response.data.listOfStudents);
+      } catch (error) {
+        console.log(error, "Erro ao encontrar aaalunos");
+        notifyError("Erro ao encontrar aaalunos");
+      }
+    } else {
+      null;
     }
   };
 
   useEffect(() => {
     fetchMonthYear();
-  }, []);
-
-  useEffect(() => {
     fetchStudents();
   }, [IsAllowed]);
 
