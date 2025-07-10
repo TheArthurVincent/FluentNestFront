@@ -24,6 +24,7 @@ import axios from "axios";
 import { Box, Modal } from "@mui/material";
 import { HThree, HTwo } from "../../Resources/Components/RouteBox";
 import socket, { registerUser } from "./socket";
+import { isArvin } from "../../App";
 
 export const TopBar: FC = () => {
   const [visible, setVisible] = useState<string>("none");
@@ -136,7 +137,7 @@ export const TopBar: FC = () => {
       title: "Listening",
       endpoint: "/listening",
       icon: "assistive-listening-systems",
-      display: "block",
+      display: isArvin ? "none" : "block",
       isLearning: true,
     },
     {
@@ -313,7 +314,6 @@ export const TopBar: FC = () => {
                     ? partnerColor()
                     : "#000",
                   paddingBottom: "5px",
-
                   cursor: location.pathname.includes(link.endpoint)
                     ? "default"
                     : "pointer",
@@ -452,7 +452,7 @@ export const TopBar: FC = () => {
                               ? partnerColor()
                               : "#000",
                             paddingBottom: "5px",
-
+                            display: link.display,
                             cursor: location.pathname.includes(link.endpoint)
                               ? "default"
                               : "pointer",

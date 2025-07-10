@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import {  partnerColor, textGeneralFont } from "../../Styles/Styles";
+import React, { useEffect, useState } from "react";
+import { partnerColor, textGeneralFont } from "../../Styles/Styles";
 import AppFooter from "../../Application/Footer/Footer";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import "./styles.lp.css";
@@ -8,6 +8,7 @@ import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
 
 import { useMediaQuery } from "@mui/material"; // Adicione isso
+import { isArvin } from "../../App";
 
 function LandingPage() {
   const [email, setEmail] = useState<string>("");
@@ -78,6 +79,10 @@ function LandingPage() {
   ];
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
+  useEffect(() => {
+    isArvin ? window.location.assign("/login") : null;
+  }, []);
+
   return (
     <div className="container">
       <div
@@ -90,7 +95,7 @@ function LandingPage() {
           padding: "0.2rem",
           zIndex: 10,
         }}
-        >
+      >
         <a
           style={{
             marginLeft: "auto",

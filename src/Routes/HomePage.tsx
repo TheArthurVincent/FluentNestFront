@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { verifyToken } from "../App";
+import { isArthurVincent, isLocalHost, verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
   onLoggOut,
@@ -30,6 +30,7 @@ import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
+import Redirect from "../Redirect";
 
 export const getWhiteLabel = JSON.parse(
   localStorage.getItem("whiteLabel") || "{}"
@@ -124,9 +125,12 @@ export function HomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Listening",
-      component: (
-        <Listening change={change} onChange={setChange} headers={headers} />
-      ),
+      component:
+        isArthurVincent || isLocalHost ? (
+          <Listening change={change} onChange={setChange} headers={headers} />
+        ) : (
+          <Redirect to={"/flash-cards"} />
+        ),
     },
     {
       levelcard: true,

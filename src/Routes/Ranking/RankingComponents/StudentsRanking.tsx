@@ -122,8 +122,8 @@ export default function StudentsRanking({
     justify-content: space-between;
     align-items: center;
     text-align: center;
-    animation: ${fadeIn} 0.3s forwards,
-      ${(props) => changeColors(props.color1, props.color2)} 3s infinite;
+    // animation: ${fadeIn} 0.3s forwards,
+    //   ${(props) => changeColors(props.color1, props.color2)} 3s infinite;
     border-radius: 6px;
     height: 100%; /* Garante altura uniforme */
     background: ${(props) => props.background};
