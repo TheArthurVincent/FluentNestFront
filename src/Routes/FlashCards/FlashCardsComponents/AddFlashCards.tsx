@@ -11,6 +11,10 @@ import {
   FormControl,
   InputLabel,
   CircularProgress,
+  DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { partnerColor } from "../../../Styles/Styles";
 import { notifyError } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -36,6 +40,8 @@ interface AddFlashCardsProps {
 const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
   const [studentsList, setStudentsList] = useState<Student[]>([]);
   const [studentID, setStudentID] = useState<string>("");
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [myId, setMyId] = useState<string>("");
   const [addCardVisible, setAddCardVisible] = useState<boolean>(false);
   const [cards, setCards] = useState<FlashCard[]>([]);
   const [myPermissions, setPermissions] = useState<string>("");
@@ -45,6 +51,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
     if (user) {
       const { permissions, id } = JSON.parse(user);
       setStudentID(id);
+      setMyId(id);
       setPermissions(permissions);
     }
   }, []);
@@ -58,9 +65,12 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
     setAddCardVisible(!addCardVisible);
     if (myPermissions === "superadmin") {
       try {
-        const response = await axios.get(`${backDomain}/api/v1/students/`, {
-          headers: actualHeaders,
-        });
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${myId}`,
+          {
+            headers: actualHeaders,
+          }
+        );
         setStudentsList(response.data.listOfStudents);
         setLoading(false);
       } catch (error) {
@@ -166,9 +176,13 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
       className="smooth"
     >
       <Box sx={{ margin: "auto", display: "flex" }} id="addcards">
-        {myPermissions === "superadmin" && (
+        {(myPermissions === "superadmin" || myPermissions === "teacher") && (
           <Box sx={{ display: "grid" }}>
-            <ArvinButton color="yellow" onClick={fetchStudents}>
+            <ArvinButton
+              style={{ display: !addCardVisible ? "block" : "none" }}
+              color={partnerColor()}
+              onClick={fetchStudents}
+            >
               Adicionar cartas
             </ArvinButton>
             <Box
@@ -203,9 +217,6 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                     </Select>
                   </FormControl>
                 )}
-                <ArvinButton color="navy" onClick={addNewCard}>
-                  +
-                </ArvinButton>
               </Box>
               <Box>
                 {cards.map((card, index) => (
@@ -225,10 +236,19 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                   />
                 ))}
               </Box>
-              <span>
-                <ArvinButton color="green" onClick={addNewCards}>
-                  Add cards
+              <br />
+              <span
+                style={{
+                  marginTop: "1rem",
+                }}
+              >
+                <ArvinButton
+                  color="green"
+                  onClick={() => setShowConfirmation(true)}
+                >
+                  Add all cards
                 </ArvinButton>
+
                 <ArvinButton color="navy" onClick={addNewCard}>
                   +
                 </ArvinButton>
@@ -237,6 +257,72 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
           </Box>
         )}
       </Box>
+      <Dialog
+        open={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>Confirmar adição de flashcards</DialogTitle>
+        <DialogContent dividers>
+          {cards.length === 0 ? (
+            <p>Nenhum card criado.</p>
+          ) : (
+            <ul
+              style={{
+                maxHeight:"15rem",
+                overflow:"auto",
+                paddingLeft: 0,
+                display: "grid",
+                gap: "1rem",
+              }}
+            >
+              {cards.map((card, index) => (
+                <li
+                  key={index}
+                  style={{
+                    listStyle: "none",
+                    padding: "1rem",
+                    border: "1px solid #ccc",
+                    borderRadius: "8px",
+                    backgroundColor: "#f9f9f9",
+                    boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
+                  }}
+                >
+                  <p style={{ margin: "0.3rem 0" }}>
+                    <strong>📝 Front:</strong> {card.frontCard}
+                  </p>
+                  <p style={{ margin: "0.3rem 0" }}>
+                    <strong>💬 Back:</strong> {card.backCard}
+                  </p>
+                  <p style={{ margin: "0.3rem 0" }}>
+                    <strong>🧠 Comentário:</strong>{" "}
+                    {card.backComments ? card.backComments : <i>Nenhum</i>}
+                  </p>
+                  <p style={{ margin: "0.3rem 0" }}>
+                    <strong>🌐 Idiomas:</strong> {card.languageFront} →{" "}
+                    {card.languageBack}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <ArvinButton color="gray" onClick={() => setShowConfirmation(false)}>
+            Cancelar
+          </ArvinButton>
+          <ArvinButton
+            color="green"
+            onClick={() => {
+              addNewCards();
+              setShowConfirmation(false);
+            }}
+          >
+            Confirmar e adicionar
+          </ArvinButton>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

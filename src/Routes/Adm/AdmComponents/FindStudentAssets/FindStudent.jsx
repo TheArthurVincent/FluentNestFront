@@ -751,15 +751,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 onChange={(e) => setPicture(e.target.value)}
               />
             </Grid>
-            {/* <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Mensalidade"
-                value={fee}
-                onChange={(e) => setFee(e.target.value)}
-              />
-            </Grid> */}
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
