@@ -403,12 +403,10 @@ li {
   border-radius: 5px;
   align-items: center;
   justify-content: center;
-  width: 1rem;
   cursor: pointer;
   padding: 10px;
   border: none;
   height: 1rem;
-  border-radius: 50%;
   background-color: #424364;
   color: white;
 }

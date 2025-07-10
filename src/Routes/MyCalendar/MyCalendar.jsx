@@ -33,8 +33,9 @@ import { StyledDiv } from "./MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 
-export default function MyCalendar({ headers, thePermissions,myId }) {
+export default function MyCalendar({ headers, thePermissions, myId }) {
   // states
+  // Filtra apenas cursos cujo campo booleano `arthurVincent` seja `false`
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
@@ -91,11 +92,14 @@ export default function MyCalendar({ headers, thePermissions,myId }) {
 
   // AXIOS
   const fetchStudents = async () => {
-    if (thePermissions == "superadmin") {
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
-        const response = await axios.get(`${backDomain}/api/v1/students/${myId}`, {
-          headers,
-        });
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${myId}`,
+          {
+            headers,
+          }
+        );
         const res = response.data.listOfStudents;
         setStudentsList(res);
       } catch (error) {
@@ -1038,7 +1042,7 @@ export default function MyCalendar({ headers, thePermissions,myId }) {
                 }}
                 onClick={() => handleSeeModal(false)}
               >
-                <i className="fa fa-plus-square-o" aria-hidden="true" />
+                Schedule 1 class
               </button>
               <button
                 disabled={!disabledAvoid}
@@ -1052,7 +1056,7 @@ export default function MyCalendar({ headers, thePermissions,myId }) {
                 }}
                 onClick={() => handleSeeModalOfTutorings()}
               >
-                <i className="fa fa-user-circle" aria-hidden="true" />
+                Schedule recurrent class
               </button>
               <button
                 disabled={!disabledAvoid}
