@@ -197,7 +197,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
                   >
                     {selectedWord.word} - {selectedWord.translatedWord}
                   </HOne>
-                  {myLogoDone}
+
                   <div
                     style={{
                       textAlign: "center",
