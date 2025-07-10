@@ -33,7 +33,7 @@ export default function SignUpTeacher() {
     username: "",
     phoneNumber: "",
     doc: "",
-    permissions: "",
+    permissions: "teacher",
     email: "",
     dateOfBirth: "",
     password: "",
