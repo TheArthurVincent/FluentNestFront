@@ -4,7 +4,7 @@ const getWhiteLabel = () =>
 export const backgroundType = (): string =>
   getWhiteLabel().backgroundType || "color";
 
-export const partnerColor = (): string => getWhiteLabel().color || "navy";
+export const partnerColor = (): string => getWhiteLabel().color || "green";
 
 export const theBackgroundColor = (): string =>
   getWhiteLabel().backgroundColor || "#eee";
