@@ -23,6 +23,7 @@ import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
 import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
+import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 
 export var currentUrl = window.location.href;
 export var isArvin = currentUrl.includes("arvinplatform");
@@ -157,6 +158,7 @@ function App() {
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },
     { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
+    { path: "/signup-teacher", element: <SignUpTeacher /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
     { path: "/material-do-video", element: <SendMail /> },
     { path: "/reset-password/*", element: <ResetPasswordFinalChange /> },
