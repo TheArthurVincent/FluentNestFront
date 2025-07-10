@@ -1432,6 +1432,8 @@ export function isDev() {
     window.location.hostname.includes("easypanel")
   ) {
     return "https://arvin-backstagin.9kwq6c.easypanel.host";
+  } else if (window.location.hostname.includes("arvinplatform")) {
+    return "https://arvin-backstagin.9kwq6c.easypanel.host";
   } else {
     return "https://arvin-backprod.9kwq6c.easypanel.host";
   }
@@ -1443,7 +1445,6 @@ export const updateInfo = async (id, headers) => {
     const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
       headers,
     });
-    console.log(response.data);
     const userInfo = response.data.formattedStudentData;
     const wl = response.data.whiteLabel;
     let loggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};

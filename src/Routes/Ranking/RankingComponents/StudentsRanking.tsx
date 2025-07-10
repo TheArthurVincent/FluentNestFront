@@ -344,7 +344,6 @@ export default function StudentsRanking({
       console.log("error", error);
     }
   };
-  const { UniversalTexts } = useUserContext();
 
   const updateTutoree = async (id: string) => {
     try {
@@ -579,23 +578,10 @@ export default function StudentsRanking({
                 item.homeworkAssignmentsDone
               ).level - 1;
 
-            const verifySee = (adm: boolean, index: number) => {
-              if (adm) {
-                return "block";
-              } else if (index < 5) {
-                return "block";
-              } else {
-                return "none";
-              }
-            };
             const isLast = index === students.length - 1;
 
             return (
-              <div
-                ref={isLast ? lastStudentRef : null}
-                key={item._id}
-                style={{ display: verifySee(isAdm, index) }}
-              >
+              <div ref={isLast ? lastStudentRef : null} key={item._id}>
                 <AnimatedLi
                   style={{
                     border:
@@ -656,10 +642,9 @@ export default function StudentsRanking({
                   </p>
                   <div
                     style={{
-                      display: isAdm ? "grid" : "none",
-                      // display: "none",
                       alignItems: "center",
                       fontSize: "0.5rem",
+                      display: "none",
                     }}
                   >
                     <div

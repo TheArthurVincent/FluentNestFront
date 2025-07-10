@@ -5,10 +5,28 @@ import {
   Xp,
   backDomain,
   formatDateBr,
+  formatNumber,
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Grid,
+  Typography,
+  Switch,
+  FormControlLabel,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Box,
   Tab,
@@ -28,8 +46,9 @@ import {
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
+import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
-export function FindStudent({ uploadStatus, headers }) {
+export function FindStudent({ uploadStatus, headers, id }) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
@@ -52,6 +71,10 @@ export function FindStudent({ uploadStatus, headers }) {
   const [weeklyClasses, setWeeklyClasses] = useState(1);
   const [totalScore, setTotalScore] = useState(0);
   const [monthlyScore, setMonthlyScore] = useState(0);
+  const [feeUpToDate, setFeeUpToDate] = useState(false);
+  const [replenishTarget, setReplenishTarget] = useState(false);
+  const [tutoree, setTutoree] = useState(false);
+  const [isAdm, setIsAdm] = useState(false);
 
   const handleChangeEdit = (event, newValue) => {
     setValue(newValue);
@@ -101,6 +124,12 @@ export function FindStudent({ uploadStatus, headers }) {
           ? response.data.formattedStudentData.email
           : ""
       );
+      setFeeUpToDate(response.data.formattedStudentData.feeUpToDate || false);
+      setReplenishTarget(
+        response.data.formattedStudentData.replenishTarget || false
+      );
+      setTutoree(response.data.formattedStudentData.tutoree || false);
+
       setPermissions(
         response.data.formattedStudentData.permissions
           ? response.data.formattedStudentData.permissions
@@ -148,7 +177,7 @@ export function FindStudent({ uploadStatus, headers }) {
           : ""
       );
     } catch (error) {
-      alert(error);
+      notifyError(error);
       console.error(error);
     }
   };
@@ -161,7 +190,7 @@ export function FindStudent({ uploadStatus, headers }) {
       setTotalScore(response.data.formattedStudentData.totalScore);
       setMonthlyScore(response.data.formattedStudentData.monthlyScore);
     } catch (error) {
-      alert(error);
+      notifyError(error);
       console.error(error);
     }
   };
@@ -183,9 +212,8 @@ export function FindStudent({ uploadStatus, headers }) {
       picture: picture,
     };
     if (newPassword === confirmPassword) {
-      setNewPassword(newPassword);
     } else {
-      alert("As senhas são diferentes");
+      notifyError("As senhas são diferentes");
       return;
     }
     try {
@@ -194,11 +222,11 @@ export function FindStudent({ uploadStatus, headers }) {
         editedStudent,
         { headers }
       );
-      alert("Usuário editado com sucesso!");
+      notifyError("Usuário editado com sucesso!", "green");
       handleSeeModal();
       fetchStudents();
     } catch (error) {
-      alert("Erro ao editar usuário");
+      notifyError("Erro ao editar usuário");
       handleSeeModal();
     }
   };
@@ -215,18 +243,17 @@ export function FindStudent({ uploadStatus, headers }) {
       );
       handleSeeModal();
       fetchStudents();
-      alert("Permissões editadas com sucesso!");
+      notifyError("Permissões editadas com sucesso!", "green");
     } catch (error) {
-      alert("Erro ao editar permissões");
+      notifyError("Erro ao editar permissões");
       handleSeeModal();
     }
   };
 
   const editStudentPassword = async (id) => {
     if (newPassword === confirmPassword) {
-      setNewPassword(newPassword);
     } else {
-      alert("As senhas são diferentes");
+      notifyError("As senhas são diferentes");
       return;
     }
     try {
@@ -235,25 +262,25 @@ export function FindStudent({ uploadStatus, headers }) {
         { newPassword },
         { headers }
       );
-      alert("Senha editada com sucesso!");
+      notifyError("Senha editada com sucesso!", "green");
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      alert("Erro ao editar senha");
+      notifyError("Erro ao editar senha");
       handleSeeModal();
     }
   };
 
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
+      const response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
         headers,
       });
       setStudents(response.data.listOfStudents);
       setLoading(false);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
-      onLoggOut();
+      notifyError("Erro ao encontrar alunos");
+      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -266,11 +293,11 @@ export function FindStudent({ uploadStatus, headers }) {
         `${backDomain}/api/v1/students/${id}`,
         { headers }
       );
-      alert("Aluno excluído");
+      notifyError("Aluno excluído");
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      alert(error);
+      notifyError(error);
 
       handleSeeModal();
       console.error(error);
@@ -296,7 +323,7 @@ export function FindStudent({ uploadStatus, headers }) {
         setHasReset(true);
       }, 2000);
     } catch (error) {
-      alert("Erro ao resetar");
+      notifyError("Erro ao resetar");
     }
   };
 
@@ -306,6 +333,83 @@ export function FindStudent({ uploadStatus, headers }) {
   const cellTable = {
     whiteSpace: "nowrap",
   };
+  const stickyHeaderStyle = {
+    position: "sticky",
+    top: 0,
+    backgroundColor: "#f6f6f6",
+    zIndex: 1,
+    whiteSpace: "nowrap",
+  };
+
+  const updateFeeStatus = async (id) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/feeuptodate/${id}`,
+        {},
+        {
+          headers,
+        }
+      );
+      fetchStudents();
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  const isMobile = window.innerWidth <= 700;
+  const handleSaveAll = () => {
+    if (!ID) return;
+    editStudent(ID);
+    editStudentPermissions(ID);
+    editStudentPassword(ID);
+  };
+
+  const updateReplenishTargetStatus = async (id) => {
+    try {
+      await axios.put(`${backDomain}/api/v1/replenish/${id}`, {}, { headers });
+      setReplenishTarget(!replenishTarget);
+    } catch (error) {
+      notifyError("Erro ao atualizar reposição");
+    }
+  };
+
+  const updateTutoree = async (id) => {
+    try {
+      await axios.put(`${backDomain}/api/v1/tutoree/${id}`, {}, { headers });
+      setTutoree(!tutoree);
+    } catch (error) {
+      notifyError("Erro ao atualizar tutoria");
+    }
+  };
+  if (newPassword !== confirmPassword) {
+    notifyError("As senhas são diferentes");
+    return;
+  }
+
+  const handleDelete = () => {
+    if (!ID) return;
+    deleteStudent(ID);
+  };
+  const [descSpecial, setDescSpecial] = useState("");
+  const [plusScore, setPlusScore] = useState(0);
+
+  const submitPlusScore = async (id, score, description, type) => {
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/score/${id}`,
+        {
+          score,
+          description,
+          type,
+        },
+        { headers }
+      );
+      notifyError("Pontuação atualizada com sucesso!", "green");
+      updateScoreNow(id); // Atualiza os dados no modal
+    } catch (error) {
+      notifyError("Erro ao atualizar pontuação");
+    }
+  };
+
   return (
     <>
       <HOne
@@ -369,55 +473,60 @@ export function FindStudent({ uploadStatus, headers }) {
       {!loading ? (
         <div
           style={{
-            backgroundColor: "#fff",
+            backgroundColor: "rgb(246, 246, 246)",
             margin: "auto",
-            width: "95%",
+            boxShadow: "inset 0px 10px 10px rgb(197, 197, 197)",
+            maxWidth: "70rem",
+            maxHeight: "30rem",
+            overflow: "auto",
           }}
         >
           <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell></TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
+                    <span style={cellTable}>Picture</span>
+                  </TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.name}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.username}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.document}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.dateOfBirth}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.email}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.phoneNumber}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.permissions}</span>
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.fee}</span>
-                  </TableCell>
-                  <TableCell>
+                  </TableCell> */}
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.totalScore}</span>
-                  </TableCell>{" "}
-                  <TableCell>
+                  </TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.monthlyScore}</span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>{UniversalTexts.address}</span>
-                  </TableCell>{" "}
-                  <TableCell>
+                  </TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>
                       {UniversalTexts.weeklyClasses}
                     </span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell style={stickyHeaderStyle}>
                     <span style={cellTable}>
                       {UniversalTexts.googleDriveLink}
                     </span>
@@ -441,8 +550,8 @@ export function FindStudent({ uploadStatus, headers }) {
                         <img
                           style={{
                             width: "2.5rem",
-                            borderRadius: "50%",
                             height: "2.5rem",
+                            borderRadius: "50%",
                             objectFit: "cover",
                           }}
                           src={
@@ -475,12 +584,12 @@ export function FindStudent({ uploadStatus, headers }) {
                       <TableCell>
                         <span style={cellTable}>{student.permissions}</span>
                       </TableCell>
-                      <TableCell>
+                      {/* <TableCell>
                         <span style={cellTable}>R$ {student.fee}</span>
-                      </TableCell>{" "}
+                      </TableCell> */}
                       <TableCell>
                         <span style={cellTable}>{student.totalScore}</span>
-                      </TableCell>{" "}
+                      </TableCell>
                       <TableCell>
                         <span style={cellTable}>{student.monthlyScore}</span>
                       </TableCell>
@@ -522,341 +631,574 @@ export function FindStudent({ uploadStatus, headers }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
-
-      <div
-        onClick={() => handleSeeModal()}
-        className="modal"
-        style={{
-          display: isVisible ? "block" : "none",
-          zIndex: 30,
-          position: "fixed",
-          backgroundColor: "rgba(0,0,0,0.5)",
-          width: "10000px",
-          height: "10000px",
-          top: 0,
-          left: 0,
-        }}
-      />
-      <DivModal
-        className="modal"
-        style={{
-          display: isVisible ? "block" : "none",
+      <Dialog
+        open={isVisible}
+        onClose={handleSeeModal}
+        fullWidth
+        maxWidth="md"
+        PaperProps={{
+          style: { padding: "2rem", borderRadius: "1rem" },
         }}
       >
-        <Xp onClick={() => handleSeeModal()}>X</Xp>
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          Editar aluno - {newName}
-        </HOne>
-        <TabContext value={value}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <TabList
-              onChange={handleChangeEdit}
-              variant="scrollable"
-              scrollButtons="auto"
-              aria-label="scrollable auto tabs example"
-              sx={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-                "& .MuiTab-root": {
-                  fontFamily: textTitleFont(),
-                  color: partnerColor(),
-                },
-                "& .Mui-selected": {
-                  color: partnerColor(),
-                },
-                "& .MuiTabs-indicator": {
-                  backgroundColor: partnerColor(),
-                },
-              }}
-            >
-              <Tab
-                style={{
-                  color: partnerColor(),
-                  fontWeight: value == "1" ? 800 : 500,
-                }}
-                label="Dados gerais"
-                value="1"
-              />
-              <Tab
-                style={{
-                  color: partnerColor(),
-                  fontWeight: value == "2" ? 800 : 500,
-                }}
-                label="Permissões"
-                value="2"
-              />
-              <Tab
-                style={{
-                  color: partnerColor(),
-                  fontWeight: value == "3" ? 800 : 500,
-                }}
-                label="Senha"
-                value="3"
-              />
-            </TabList>
+        <DialogTitle>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Typography variant="h6" fontWeight="bold">
+              Editar Aluno - {newName}
+            </Typography>
+            <Button onClick={handleSeeModal}>
+              <CloseIcon />
+            </Button>
           </Box>
-          <TabPanel value="1">
-            <form
-              style={{
-                display: !seeConfirmDelete ? "block" : "none",
-                maxHeight: "18rem",
-                padding: "5px",
-                overflow: "auto",
-                height: "22rem",
-                backgroundColor: "#eee",
-              }}
-            >
-              <input
-                className="inputs-style"
-                value={newName}
-                onChange={(event) => setNewName(event.target.value)}
-                id="name"
-                placeholder="Nome"
-                type="text"
-              />
-              <input
-                className="inputs-style"
-                value={newLastName}
-                onChange={(event) => setNewLastName(event.target.value)}
-                id="lastname"
-                placeholder="Sobrenome"
-                type="text"
-              />
-              <input
-                className="inputs-style"
-                value={newUsername}
-                onChange={(event) => setNewUsername(event.target.value)}
-                placeholder="Username"
-                type="text"
-                disabled={true}
-              />{" "}
-              <input
-                className="inputs-style"
-                value={newAddress}
-                onChange={(event) => setNewAddress(event.target.value)}
-                placeholder="Address"
-                type="text"
-                disabled={true}
-              />
-              <input
-                className="inputs-style"
-                value={newPhone}
-                onChange={(event) => setNewPhone(event.target.value)}
-                placeholder="Número de celular"
-                type="number"
-              />
-              <input
-                className="inputs-style"
-                value={newEmail}
-                onChange={(event) => setNewEmail(event.target.value)}
-                placeholder="E-mail"
-                type="email"
-              />
-              <input
-                className="inputs-style"
-                value={googleDriveLink}
-                onChange={(event) => setGoogleDriveLink(event.target.value)}
-                placeholder="Link do Google Drive"
-                type="text"
-              />
-              <input
-                className="inputs-style"
-                value={picture}
-                onChange={(event) => setPicture(event.target.value)}
-                placeholder="Foto"
-                type="text"
-              />
-              <input
-                className="inputs-style"
-                value={fee}
-                onChange={(event) => setFee(event.target.value)}
-                placeholder="Mensalidade"
-                type="number"
-              />
-              <input
-                className="inputs-style"
-                value={weeklyClasses}
-                onChange={(event) => setWeeklyClasses(event.target.value)}
-                placeholder="Aulas semanais"
-                type="text"
-              />
-            </form>
-            <div
-              style={{
-                marginTop: "2rem",
-                display: !seeConfirmDelete ? "flex" : "none",
-                justifyContent: "space-evenly",
-                gap: "0.5rem",
-              }}
-            >
-              <MyButton
-                firstcolor="#FF1400"
-                secondcolor="#F01400"
-                textcolor="white"
-                onClick={() => handleConfirmDelete()}
-              >
-                Excluir
-              </MyButton>
-              <MyButton onClick={() => handleSeeModal()}>Cancelar</MyButton>
-              <MyButton
-                firstcolor="#138017"
-                secondcolor="#139417"
-                textcolor="white"
-                onClick={() => editStudent(ID)}
-              >
-                Salvar
-              </MyButton>
-            </div>
-            <div
-              style={{
-                marginTop: "1rem",
-                display: seeConfirmDelete ? "grid" : "none",
-                justifyContent: "space-evenly",
-                padding: "1rem",
-                backgroundColor: "#dd6e6e",
-                textAlign: "center",
-              }}
-            >
-              <HThree>
-                Esta ação não pode ser desfeita! Tem certeza que deseja excluir
-                o(a) aluno(a) <br />
-                <br />
-                <span
-                  style={{
-                    backgroundColor: "#111",
-                    color: "#fff",
-                    padding: "0.3rem",
-                    margin: "0.5rem",
-                  }}
-                >
-                  {newName} {newLastName}
-                </span>
-                <br />
-                <br />?
-              </HThree>
-              <div
-                style={{
-                  marginTop: "1rem",
-                  display: "flex",
-                  justifyContent: "space-evenly",
-                }}
-              >
-                <MyButton onClick={() => handleConfirmDelete()}>Não!!</MyButton>
-                <MyButton
-                  firstcolor="#FF1400"
-                  secondcolor="#F01400"
-                  onClick={() => deleteStudent(ID)}
-                >
-                  Sim...
-                </MyButton>
-              </div>
-            </div>
-          </TabPanel>
-          <TabPanel value="2">
-            <div
-              style={{
-                display: "grid",
-                alignContent: "center",
-                justifyItems: "center",
-              }}
-            >
-              <select
-                id="permissions"
-                value={permissions}
-                onChange={handleChange}
-                style={{
-                  padding: "0.3rem",
-                  marginBottom: "0.3rem",
+        </DialogTitle>
+        <Grid item xs={12} md={6}>
+          <Typography>
+            Total Score: <strong>{formatNumber(totalScore)}</strong>
+          </Typography>
+          <Typography>
+            Monthly Score: <strong>{formatNumber(monthlyScore)}</strong>
+          </Typography>
+        </Grid>
 
-                  color: "#111",
-                  minWidth: "15rem",
-                }}
-              >
-                <option value="permissions" hidden>
-                  Permissions
-                </option>
-                <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
-                <option value="superadmin">Superadmin</option>
-              </select>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  gap: "1rem",
-                  marginTop: "2rem",
-                }}
-              >
-                <MyButton
-                  style={{
-                    color: "#fff",
-                    width: "8rem",
-                    backgroundColor: "#194169",
-                  }}
-                  onClick={() => handleSeeModal()}
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            type="number"
+            label="Pontuação extra"
+            placeholder="Score"
+            onChange={(e) => setPlusScore(Number(e.target.value))}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Descrição da pontuação"
+            placeholder="Ex: Participação extra"
+            onChange={(e) => setDescSpecial(e.target.value)}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={12}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() =>
+              submitPlusScore(ID, plusScore, descSpecial, "Others")
+            }
+          >
+            Enviar Pontuação Manual
+          </Button>
+        </Grid>
+
+        <DialogContent dividers>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Nome"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Sobrenome"
+                value={newLastName}
+                onChange={(e) => setNewLastName(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Usuário"
+                value={newUsername}
+                disabled
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Endereço"
+                value={newAddress}
+                onChange={(e) => setNewAddress(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Telefone"
+                value={newPhone}
+                onChange={(e) => setNewPhone(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="E-mail"
+                value={newEmail}
+                onChange={(e) => setNewEmail(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Link Google Drive"
+                value={googleDriveLink}
+                onChange={(e) => setGoogleDriveLink(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="URL da Foto"
+                value={picture}
+                onChange={(e) => setPicture(e.target.value)}
+              />
+            </Grid>
+            {/* <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Mensalidade"
+                value={fee}
+                onChange={(e) => setFee(e.target.value)}
+              />
+            </Grid> */}
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="number"
+                label="Aulas por semana"
+                value={weeklyClasses}
+                onChange={(e) => setWeeklyClasses(e.target.value)}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth>
+                <InputLabel>Permissões</InputLabel>
+                <Select
+                  value={permissions}
+                  label="Permissões"
+                  onChange={(e) => setPermissions(e.target.value)}
                 >
-                  Cancelar
-                </MyButton>
-                <MyButton
-                  firstcolor="#138017"
-                  secondcolor="#139417"
-                  onClick={() => editStudentPermissions(ID)}
-                >
-                  Salvar
-                </MyButton>
-              </div>
-            </div>
-          </TabPanel>
-          <TabPanel value="3">
-            <div
-              style={{
-                display: "grid",
-                alignContent: "center",
-                justifyItems: "center",
-              }}
-            >
-              <input
-                className="inputs-style"
+                  <MenuItem value="student">Aluno</MenuItem>
+                  <MenuItem value="teacher">Professor</MenuItem>
+                  <MenuItem value="superadmin">Admin</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={feeUpToDate}
+                    onChange={() => setFeeUpToDate(!feeUpToDate)}
+                  />
+                }
+                label={
+                  feeUpToDate ? "Mensalidade em dia" : "Mensalidade atrasada"
+                }
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={replenishTarget}
+                    onChange={() => setReplenishTarget(!replenishTarget)}
+                  />
+                }
+                label={replenishTarget ? "Com Reposição" : "Sem Reposição"}
+              />
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={tutoree}
+                    onChange={() => setTutoree(!tutoree)}
+                  />
+                }
+                label={tutoree ? "Aluno de monitoria" : "Sem monitoria"}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="password"
+                label="Nova Senha"
                 value={newPassword}
-                onChange={(event) => setNewPassword(event.target.value)}
-                placeholder="Escolha uma nova senha"
-                type="password"
+                onChange={(e) => setNewPassword(e.target.value)}
               />
-              <input
-                className="inputs-style"
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                type="password"
+                label="Confirmar Senha"
                 value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-                placeholder="Confirme a Senha"
-                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  gap: "1rem",
-                  marginTop: "2rem",
-                }}
+            </Grid>
+          </Grid>
+        </DialogContent>
+
+        <DialogActions>
+          <Box width="100%" display="flex" justifyContent="space-between">
+            {!seeConfirmDelete ? (
+              <>
+                <Button color="error" onClick={() => setSeeConfirmDelete(true)}>
+                  Excluir
+                </Button>
+                <Button onClick={handleSeeModal}>Cancelar</Button>
+                <Button variant="contained" onClick={handleSaveAll}>
+                  Salvar Tudo
+                </Button>
+              </>
+            ) : (
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignItems="center"
+                width="100%"
               >
-                <MyButton onClick={() => handleSeeModal()}>Cancelar</MyButton>
-                <MyButton
-                  firstcolor="#138017"
-                  secondcolor="#139417"
-                  onClick={() => editStudentPassword(ID)}
-                >
-                  Salvar
-                </MyButton>
-              </div>
-            </div>
-          </TabPanel>
-        </TabContext>
-      </DivModal>
+                <Typography color="error">
+                  Tem certeza que deseja excluir{" "}
+                  <strong>
+                    {newName} {newLastName}
+                  </strong>
+                  ?
+                </Typography>
+                <Box mt={2} display="flex" gap={2}>
+                  <Button onClick={() => setSeeConfirmDelete(false)}>
+                    Cancelar
+                  </Button>
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={handleDelete}
+                  >
+                    Confirmar Exclusão
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
 
 export default FindStudent;
+
+// <div
+//   onClick={() => handleSeeModal()}
+//   className="modal"
+//   style={{
+//     display: isVisible ? "block" : "none",
+//     zIndex: 30,
+//     position: "fixed",
+//     backgroundColor: "rgba(0,0,0,0.5)",
+//     width: "10000px",
+//     height: "10000px",
+//     top: 0,
+//     left: 0,
+//   }}
+// />
+// <div
+//   className="modal"
+//   style={{
+//     position: "fixed",
+//     zIndex: 100,
+//     backgroundColor: "#fff",
+//     padding: "1rem",
+//     width: isMobile ? "20rem" : "25rem",
+//     height: "32rem",
+//     top: "50%",
+//     left: "50%",
+//     transform: "translate(-50%, -50%)",
+//     display: isVisible ? "block" : "none",
+//   }}
+// >
+//   <Xp onClick={() => handleSeeModal()}>X</Xp>
+
+//   <HOne style={{ fontFamily: textTitleFont(), color: partnerColor() }}>
+//     Editar aluno - {newName}
+//   </HOne>
+//   <div
+//     className="nice"
+//     style={{
+//       display: "grid",
+//       alignItems: "center",
+//       fontSize: "0.5rem",
+//       marginBottom: "1rem",
+//     }}
+//   >
+//     <div
+//       className="pointer-text"
+//       style={{
+//         padding: "5px",
+//         display: "grid",
+//         marginBottom: "5px",
+//         borderRadius: "6px",
+//         alignItems: "center",
+//         textAlign: "center",
+//         width: "fit-content",
+//         color: "white",
+//         backgroundColor: feeUpToDate ? "green" : "red",
+//       }}
+//       onClick={() => {
+//         updateFeeStatus(ID);
+//         setFeeUpToDate(!feeUpToDate);
+//       }}
+//     >
+//       {feeUpToDate ? "Fee Ok" : "Late Fee"}
+//     </div>
+
+//     <div
+//       className="pointer-text"
+//       style={{
+//         padding: "5px",
+//         display: "grid",
+//         alignItems: "center",
+//         marginBottom: "5px",
+//         borderRadius: "6px",
+//         textAlign: "center",
+//         width: "fit-content",
+//         color: "white",
+//         backgroundColor: replenishTarget ? "green" : "red",
+//       }}
+//       onClick={() => {
+//         updateReplenishTargetStatus(ID);
+//         setReplenishTarget(!replenishTarget);
+//       }}
+//     >
+//       {replenishTarget ? "Replenish" : "Non-Replenish"}
+//     </div>
+
+//     <div
+//       className="pointer-text"
+//       style={{
+//         padding: "5px",
+//         display: "grid",
+//         alignItems: "center",
+//         marginBottom: "5px",
+//         borderRadius: "6px",
+//         textAlign: "center",
+//         width: "fit-content",
+//         color: "white",
+//         backgroundColor: tutoree ? "blue" : "orange",
+//       }}
+//       onClick={() => {
+//         updateTutoree(ID);
+//         setTutoree(!tutoree);
+//       }}
+//     >
+//       {tutoree ? "Tutoree" : "Not a tutoreee"}
+//     </div>
+
+//     <div
+//       className="pointer-text"
+//       style={{
+//         padding: "5px",
+//         display: "grid",
+//         alignItems: "center",
+//         marginBottom: "5px",
+//         borderRadius: "6px",
+//         textAlign: "center",
+//         width: "fit-content",
+//         color: "white",
+//         backgroundColor: "#456",
+//       }}
+//     >
+//       {formatNumber(totalScore)} +
+//     </div>
+//   </div>
+//   {/* Formulário principal */}
+//   <form
+//     style={{
+//       display: !seeConfirmDelete ? "grid" : "none",
+//       gridTemplateColumns: "1fr 1fr",
+//       gap: "1rem",
+//       padding: "1rem",
+//       backgroundColor: "#eee",
+//     }}
+//   >
+//     <input
+//       className="inputs-style"
+//       value={newName}
+//       onChange={(e) => setNewName(e.target.value)}
+//       placeholder="Nome"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={newLastName}
+//       onChange={(e) => setNewLastName(e.target.value)}
+//       placeholder="Sobrenome"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={newUsername}
+//       disabled
+//       placeholder="Username"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={newAddress}
+//       disabled
+//       onChange={(e) => setNewAddress(e.target.value)}
+//       placeholder="Endereço"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={newPhone}
+//       onChange={(e) => setNewPhone(e.target.value)}
+//       placeholder="Celular"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={newEmail}
+//       onChange={(e) => setNewEmail(e.target.value)}
+//       placeholder="E-mail"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={googleDriveLink}
+//       onChange={(e) => setGoogleDriveLink(e.target.value)}
+//       placeholder="Link Google Drive"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={picture}
+//       onChange={(e) => setPicture(e.target.value)}
+//       placeholder="Foto"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={fee}
+//       onChange={(e) => setFee(e.target.value)}
+//       placeholder="Mensalidade"
+//       type="number"
+//     />
+//     <input
+//       className="inputs-style"
+//       value={weeklyClasses}
+//       onChange={(e) => setWeeklyClasses(e.target.value)}
+//       placeholder="Aulas semanais"
+//     />
+//   </form>
+
+//   {/* Permissões e senha */}
+//   {!seeConfirmDelete && (
+//     <div style={{ padding: "1rem", display: "grid", gap: "1rem" }}>
+//       <select
+//         className="inputs-style"
+//         value={permissions}
+//         onChange={(e) => setPermissions(e.target.value)}
+//       >
+//         <option value="permissions" hidden>
+//           Permissões
+//         </option>
+//         <option value="student">Student</option>
+//         <option value="teacher">Teacher</option>
+//         <option value="superadmin">Superadmin</option>
+//       </select>
+
+//       <input
+//         className="inputs-style"
+//         value={newPassword}
+//         onChange={(e) => setNewPassword(e.target.value)}
+//         placeholder="Nova senha"
+//         type="password"
+//       />
+//       <input
+//         className="inputs-style"
+//         value={confirmPassword}
+//         onChange={(e) => setConfirmPassword(e.target.value)}
+//         placeholder="Confirmar senha"
+//         type="password"
+//       />
+//     </div>
+//   )}
+
+//   {/* Botões principais */}
+//   {!seeConfirmDelete ? (
+//     <div
+//       style={{
+//         display: "flex",
+//         justifyContent: "space-evenly",
+//         marginTop: "1rem",
+//       }}
+//     >
+//       <MyButton
+//         firstcolor="#FF1400"
+//         secondcolor="#F01400"
+//         textcolor="white"
+//         onClick={handleConfirmDelete}
+//       >
+//         Excluir
+//       </MyButton>
+//       <MyButton onClick={handleSeeModal}>Cancelar</MyButton>
+//       <MyButton
+//         firstcolor="#138017"
+//         secondcolor="#139417"
+//         textcolor="white"
+//         onClick={() => {
+//           editStudent(ID);
+//           editStudentPermissions(ID);
+//           editStudentPassword(ID);
+//         }}
+//       >
+//         Salvar tudo
+//       </MyButton>
+//     </div>
+//   ) : (
+//     <div
+//       style={{
+//         backgroundColor: "#dd6e6e",
+//         padding: "1rem",
+//         textAlign: "center",
+//         marginTop: "1rem",
+//       }}
+//     >
+//       <HThree>
+//         Esta ação não pode ser desfeita! Tem certeza que deseja excluir
+//         o(a) aluno(a):
+//         <br />
+//         <br />
+//         <span
+//           style={{
+//             backgroundColor: "#111",
+//             color: "#fff",
+//             padding: "0.3rem",
+//           }}
+//         >
+//           {newName} {newLastName}
+//         </span>
+//         <br />
+//         <br />?
+//       </HThree>
+//       <div
+//         style={{
+//           display: "flex",
+//           justifyContent: "space-evenly",
+//           marginTop: "1rem",
+//         }}
+//       >
+//         <MyButton onClick={handleConfirmDelete}>Não!!</MyButton>
+//         <MyButton
+//           firstcolor="#FF1400"
+//           secondcolor="#F01400"
+//           onClick={() => deleteStudent(ID)}
+//         >
+//           Sim...
+//         </MyButton>
+//       </div>
+//     </div>
+//   )}
+// </div>

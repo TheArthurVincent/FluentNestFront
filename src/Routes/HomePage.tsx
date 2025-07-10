@@ -53,12 +53,10 @@ export function HomePage({ headers }: HeadersProps) {
       setPicture(picture);
       setAdmin(permissions === "superadmin" ? true : false);
       setTeacher(permissions === "teacher" ? true : false);
-      console.log("getWhiteLabel", getWhiteLabel);
     } else {
       onLoggOut();
       return;
     }
-
     updateInfo(id, headers);
   }, []);
 
@@ -101,7 +99,11 @@ export function HomePage({ headers }: HeadersProps) {
     {
       title: "My Calendar",
       component: (
-        <MyCalendar thePermissions={thePermissions} headers={headers} />
+        <MyCalendar
+          myId={setStudentId}
+          thePermissions={thePermissions}
+          headers={headers}
+        />
       ),
     },
     {
