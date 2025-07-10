@@ -85,7 +85,6 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
       notifyError(error.response?.data?.error || "Error adding flashcard.");
     }
   };
-  const [disabled, setDisabled] = useState<boolean>(false);
 
   const addNewCards = async () => {
     const newCards = [
