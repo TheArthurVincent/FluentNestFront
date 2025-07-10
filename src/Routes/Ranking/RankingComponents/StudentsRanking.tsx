@@ -641,10 +641,10 @@ export default function StudentsRanking({
                     {item.name + " " + abreviateName(item.lastname)}
                   </p>
                   <div
-                    className="nice"
                     style={{
                       alignItems: "center",
                       fontSize: "0.5rem",
+                      display: "none",
                     }}
                   >
                     <div

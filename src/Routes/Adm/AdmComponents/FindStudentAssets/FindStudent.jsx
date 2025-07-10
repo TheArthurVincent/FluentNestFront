@@ -389,6 +389,26 @@ export function FindStudent({ uploadStatus, headers, id }) {
     if (!ID) return;
     deleteStudent(ID);
   };
+  const [descSpecial, setDescSpecial] = useState("");
+  const [plusScore, setPlusScore] = useState(0);
+
+  const submitPlusScore = async (id, score, description, type) => {
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/score/${id}`,
+        {
+          score,
+          description,
+          type,
+        },
+        { headers }
+      );
+      notifyError("Pontuação atualizada com sucesso!", "green");
+      updateScoreNow(id); // Atualiza os dados no modal
+    } catch (error) {
+      notifyError("Erro ao atualizar pontuação");
+    }
+  };
 
   return (
     <>
@@ -634,6 +654,45 @@ export function FindStudent({ uploadStatus, headers, id }) {
             </Button>
           </Box>
         </DialogTitle>
+        <Grid item xs={12} md={6}>
+          <Typography>
+            Total Score: <strong>{formatNumber(totalScore)}</strong>
+          </Typography>
+          <Typography>
+            Monthly Score: <strong>{formatNumber(monthlyScore)}</strong>
+          </Typography>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            type="number"
+            label="Pontuação extra"
+            placeholder="Score"
+            onChange={(e) => setPlusScore(Number(e.target.value))}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Descrição da pontuação"
+            placeholder="Ex: Participação extra"
+            onChange={(e) => setDescSpecial(e.target.value)}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={12}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() =>
+              submitPlusScore(ID, plusScore, descSpecial, "Others")
+            }
+          >
+            Enviar Pontuação Manual
+          </Button>
+        </Grid>
 
         <DialogContent dividers>
           <Grid container spacing={2}>
