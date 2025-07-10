@@ -211,11 +211,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       fee,
       picture: picture,
     };
-    if (newPassword === confirmPassword) {
-    } else {
-      notifyError("As senhas são diferentes");
-      return;
-    }
+
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/students/${id}`,
@@ -246,27 +242,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       notifyError("Permissões editadas com sucesso!", "green");
     } catch (error) {
       notifyError("Erro ao editar permissões");
-      handleSeeModal();
-    }
-  };
-
-  const editStudentPassword = async (id) => {
-    if (newPassword === confirmPassword) {
-    } else {
-      notifyError("As senhas são diferentes");
-      return;
-    }
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/studentpassword/${id}`,
-        { newPassword },
-        { headers }
-      );
-      notifyError("Senha editada com sucesso!", "green");
-      fetchStudents();
-      handleSeeModal();
-    } catch (error) {
-      notifyError("Erro ao editar senha");
       handleSeeModal();
     }
   };
@@ -380,10 +355,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       notifyError("Erro ao atualizar tutoria");
     }
   };
-  if (newPassword !== confirmPassword) {
-    notifyError("As senhas são diferentes");
-    return;
-  }
 
   const handleDelete = () => {
     if (!ID) return;
@@ -407,6 +378,26 @@ export function FindStudent({ uploadStatus, headers, id }) {
       updateScoreNow(id); // Atualiza os dados no modal
     } catch (error) {
       notifyError("Erro ao atualizar pontuação");
+    }
+  };
+
+  const editStudentPassword = async (id) => {
+    if (newPassword === confirmPassword) {
+    } else {
+      notifyError("As senhas são diferentes");
+    }
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/studentpassword/${id}`,
+        { newPassword },
+        { headers }
+      );
+      alert("Senha editada com sucesso!");
+      fetchStudents();
+      handleSeeModal();
+    } catch (error) {
+      alert("Erro ao editar senha");
+      handleSeeModal();
     }
   };
 
@@ -827,22 +818,44 @@ export function FindStudent({ uploadStatus, headers, id }) {
             </Grid>
 
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="password"
-                label="Nova Senha"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="password"
-                label="Confirmar Senha"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div
+                style={{
+                  display: "grid",
+                  alignContent: "center",
+                  justifyItems: "center",
+                }}
+              >
+                <input
+                  className="inputs-style"
+                  value={newPassword}
+                  onChange={(event) => setNewPassword(event.target.value)}
+                  placeholder="Escolha uma nova senha"
+                  type="password"
+                />
+                <input
+                  className="inputs-style"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  placeholder="Confirme a Senha"
+                  type="password"
+                />
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-around",
+                    gap: "1rem",
+                    marginTop: "2rem",
+                  }}
+                >
+                  <MyButton
+                    firstcolor="#138017"
+                    secondcolor="#139417"
+                    onClick={() => editStudentPassword(ID)}
+                  >
+                    Salvar
+                  </MyButton>
+                </div>
+              </div>
             </Grid>
           </Grid>
         </DialogContent>
