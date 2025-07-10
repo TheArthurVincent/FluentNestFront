@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import NewStudent from "./AdmComponents/FindStudentAssets/NewStudent";
+import AllStudents from "./AdmComponents/FindStudentAssets/NewStudent";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -26,17 +26,17 @@ export function Adm({ headers }: HeadersProps) {
 
   const componentsToRender = [
     {
-      title: "Gestão de Aulas",
+      title: "Postar Aulas",
       value: "1",
       tooltip: "Marque uma aula particular.",
       component: <NewTutoring id={id} headers={headers} />,
     },
     {
-      title: "Alunos",
+      title: "Meus Alunos",
       value: "2",
       tooltip:
         "Edite informações de alunos cadastrados, como dados, permissões e senha, ou mesmo exclua um aluno se necessário.",
-      component: <NewStudent id={id} headers={headers} />,
+      component: <AllStudents id={id} headers={headers} />,
     },
     {
       title: "Responder Comentários",

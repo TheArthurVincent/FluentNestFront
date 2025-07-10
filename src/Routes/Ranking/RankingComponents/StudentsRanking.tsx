@@ -344,7 +344,6 @@ export default function StudentsRanking({
       console.log("error", error);
     }
   };
-  const { UniversalTexts } = useUserContext();
 
   const updateTutoree = async (id: string) => {
     try {
@@ -642,9 +641,8 @@ export default function StudentsRanking({
                     {item.name + " " + abreviateName(item.lastname)}
                   </p>
                   <div
+                    className="nice"
                     style={{
-                      display: isAdm ? "grid" : "none",
-                      // display: "none",
                       alignItems: "center",
                       fontSize: "0.5rem",
                     }}

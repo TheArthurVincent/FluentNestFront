@@ -1,168 +1,186 @@
 import React, { useState } from "react";
-import { HOne, RouteDiv } from "../../../../Resources/Components/RouteBox";
+import { HOne } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
-import {
-  InputField,
-  Button,
-  backDomain,
-  InputFieldNotRequired,
-} from "../../../../Resources/UniversalComponents";
-import { FormList } from "../../Adm.Styled";
-import { CircularProgress } from "@mui/material";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+import { CircularProgress, TextField } from "@mui/material";
 import FindStudent from "./FindStudent";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
-export function NewStudent({ headers, id }) {
-  const [newName, setNewName] = useState("");
-  const [newLastName, setNewLastName] = useState("");
-  const [newUsername, setNewUsername] = useState("");
-  const [newPhone, setNewPhone] = useState("");
-  const [newEmail, setNewEmail] = useState("");
-  const [newDateOfBirth, setNewDateOfBirth] = useState("2000-12-12");
-  const [newCPF, setNewCPF] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [newGoogleDriveLink, setNewGoogleDriveLink] = useState("");
+export function AllStudents({ headers, id }) {
+  const [formData, setFormData] = useState({
+    name: "",
+    lastname: "",
+    email: "",
+    dateOfBirth: "2000-12-12",
+    cpf: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
   const [upload, setUpload] = useState(true);
-  const [button, setButton] = useState("Cadastrar");
 
-  const reset = () => {
-    setNewName("");
-    setNewLastName("");
-    setNewUsername("");
-    setNewPhone("");
-    setNewEmail("");
-    setNewDateOfBirth("2000-12-12");
-    setNewCPF("");
-    setNewPassword("");
-    setConfirmPassword("");
-    setNewGoogleDriveLink("");
-    setButton("Sucesso");
-    setUpload(!upload);
-    setButton("Cadastrar");
-    alert("Usuário cadastrado com sucesso!");
+  const handleChange = (field) => (event) => {
+    setFormData({ ...formData, [field]: event.target.value });
   };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      lastname: "",
+      email: "",
+      dateOfBirth: "2000-12-12",
+      cpf: "",
+      password: "",
+      confirmPassword: "",
+    });
+    setUpload((prev) => !prev);
+    notifyError("Usuário cadastrado com sucesso!", "green");
+  };
+
+  const validateForm = () => {
+    const { name, lastname, email, password, confirmPassword } = formData;
+    if (!name || !lastname || !email || !password || !confirmPassword) {
+      notifyError("Preencha todos os campos obrigatórios!", "red");
+      return false;
+    }
+    if (password !== confirmPassword) {
+      notifyError("As senhas não coincidem!", "red");
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setButton(<CircularProgress style={{ color: partnerColor() }} />);
-    let newStudent = {
-      username: newUsername,
-      password: newPassword,
-      email: newEmail,
-      name: newName,
-      lastname: newLastName,
-      doc: newCPF,
-      phoneNumber: newPhone,
-      dateOfBirth: newDateOfBirth,
-      googleDriveLink: newGoogleDriveLink,
+
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+
+    const newStudent = {
+      name: formData.name,
+      lastname: formData.lastname,
+      email: formData.email,
+      password: formData.password,
+      doc: formData.cpf,
+      dateOfBirth: formData.dateOfBirth,
     };
-    if (newPassword === confirmPassword) {
-      setNewPassword(newPassword);
-    } else {
-      alert("As senhas são diferentes");
-      event.preventDefault();
-      setButton("Cadastrar");
-      return;
-    }
+
     try {
-      const response = await axios.post(
-        `${backDomain}/api/v1/students/${id}`,
+      await axios.post(
+        `${backDomain}/api/v1/newstudentbyteacher/${id}`,
         newStudent,
-        {
-          headers,
-        }
+        { headers }
       );
-      reset();
+      resetForm();
     } catch (error) {
-      setButton("...");
-      alert("Erro ao cadastrar aluno");
-      setButton("Cadastrar");
-      reset();
+      console.error(error);
+      notifyError("Erro ao cadastrar aluno: " + error.message, "red");
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const formContainerStyle = {
+    margin: "2rem",
+    padding: "2rem",
+    flexDirection: "column",
+    display: "flex",
+    gap: "1rem",
   };
 
   return (
     <>
       <FindStudent id={id} uploadStatus={upload} headers={headers} />
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Novo Aluno
-      </HOne>
-      <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleSubmit}>
-        <FormList>
-          <InputField
-            value={newName}
-            onChange={(event) => setNewName(event.target.value)}
-            id="name"
-            placeholder="Nome"
-            type="text"
-          />
-          <InputField
-            value={newLastName}
-            onChange={(event) => setNewLastName(event.target.value)}
-            id="lastname"
-            placeholder="Sobrenome"
-            type="text"
-          />
-          <InputFieldNotRequired
-            value={newUsername}
-            onChange={(event) => setNewUsername(event.target.value)}
-            placeholder="Username"
-            type="text"
-          />
-          <InputField
-            value={newPhone}
-            onChange={(event) => setNewPhone(event.target.value)}
-            placeholder="Número de celular"
-            type="number"
-          />
-          <InputField
-            value={newEmail}
-            onChange={(event) => setNewEmail(event.target.value)}
-            placeholder="E-mail"
-            type="email"
-          />
-          <InputField
-            value={newDateOfBirth}
-            onChange={(event) => setNewDateOfBirth(event.target.value)}
-            placeholder="Data de nascimento"
-            type="date"
-          />
-          <InputField
-            value={newCPF}
-            onChange={(event) => setNewCPF(event.target.value)}
-            placeholder="CPF"
-            type="number"
-          />
-          <InputFieldNotRequired
-            value={newGoogleDriveLink}
-            onChange={(event) => setNewGoogleDriveLink(event.target.value)}
-            placeholder="Link do Drive"
-            type="text"
-          />
-          <InputField
-            value={newPassword}
-            onChange={(event) => setNewPassword(event.target.value)}
-            placeholder="Escolha uma senha"
-            type="password"
-          />
-          <InputField
-            value={confirmPassword}
-            onChange={(event) => setConfirmPassword(event.target.value)}
-            placeholder="Confirme a Senha"
-            type="password"
-          />
-        </FormList>
-        <Button style={{ marginLeft: "auto" }} type="submit">
-          {button}
-        </Button>
-      </form>
+      {/* //new student */}
+      <div style={formContainerStyle}>
+        <h1
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+            fontSize: "1.8rem",
+            textAlign: "center",
+            marginBottom: "1rem",
+          }}
+        >
+          Novo Aluno
+        </h1>
+
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: "grid",
+            gap: "1rem",
+            gridTemplateColumns: "1fr 1fr",
+          }}
+        >
+          {[
+            { label: "Nome", type: "text", key: "name" },
+            { label: "Sobrenome", type: "text", key: "lastname" },
+            { label: "E-mail", type: "email", key: "email" },
+            { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
+            { label: "CPF", type: "number", key: "cpf" },
+            { label: "Senha", type: "password", key: "password" },
+            {
+              label: "Confirme a Senha",
+              type: "password",
+              key: "confirmPassword",
+            },
+          ].map(({ label, type, key }) => (
+            <TextField
+              key={key}
+              label={label}
+              type={type}
+              fullWidth
+              variant="outlined"
+              value={formData[key]}
+              onChange={handleChange(key)}
+              InputLabelProps={type === "date" ? { shrink: true } : {}}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: partnerColor() },
+                  "&:hover fieldset": { borderColor: partnerColor() },
+                  "&.Mui-focused fieldset": {
+                    borderColor: partnerColor(),
+                  },
+                },
+                "& label": { color: partnerColor() },
+                "& label.Mui-focused": { color: partnerColor() },
+              }}
+              variant="outlined"
+            />
+          ))}
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            style={{
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              padding: "12px",
+              fontSize: "1rem",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              marginTop: "1rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              transition: "background 0.3s",
+            }}
+          >
+            {isLoading ? (
+              <CircularProgress size={24} style={{ color: "#fff" }} />
+            ) : (
+              "Cadastrar"
+            )}
+          </button>
+        </form>
+      </div>
     </>
   );
 }
 
-export default NewStudent;
+export default AllStudents;

@@ -33,7 +33,7 @@ import { StyledDiv } from "./MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 
-export default function MyCalendar({ headers, thePermissions }) {
+export default function MyCalendar({ headers, thePermissions,myId }) {
   // states
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
@@ -93,7 +93,7 @@ export default function MyCalendar({ headers, thePermissions }) {
   const fetchStudents = async () => {
     if (thePermissions == "superadmin") {
       try {
-        const response = await axios.get(`${backDomain}/api/v1/students/`, {
+        const response = await axios.get(`${backDomain}/api/v1/students/${myId}`, {
           headers,
         });
         const res = response.data.listOfStudents;
