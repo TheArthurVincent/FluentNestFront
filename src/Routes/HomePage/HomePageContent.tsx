@@ -88,7 +88,7 @@ export function Blog({
         ? `${UniversalTexts.currentLesson}  - ${lesson}`
         : "Begin your journey!",
       description: UniversalTexts.retome,
-      display: isArthurVincent ? "flex" : "none",
+      display: "flex",
       img: img,
       link: NO
         ? `/english-courses/${course
@@ -109,7 +109,7 @@ export function Blog({
       id: "listening",
       title: UniversalTexts.listening,
       description: UniversalTexts.pratique,
-      display: "flex",
+      display: isArthurVincent ? "flex" : "none",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/list.png?updatedAt=1742402052061",
       link: "/listening",
     },
