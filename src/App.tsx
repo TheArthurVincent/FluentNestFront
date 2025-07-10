@@ -142,15 +142,19 @@ function App() {
     },
     {
       path: "/*",
-      element: verifyToken() ? <HomePage headers={headers} /> : <LandingPage />,
+      element: verifyToken() ? (
+        <HomePage headers={headers} />
+      ) : (
+        <Redirect to={isArvin ? "/login" : "/cadastre-se"} />
+      ),
     },
     {
       path: "/cadastre-se",
-      element: <LandingPage />,
+      element: isArvin ? <Login /> : <LandingPage />,
     },
+    { path: "/signup", element: isArvin ? <Login /> : <LandingPage /> },
     { path: "/message", element: verifyToken() ? <MessageDrive /> : <Login /> },
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },
-    { path: "/signup", element: <LandingPage /> },
     { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
