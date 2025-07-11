@@ -71,10 +71,16 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
             headers: actualHeaders,
           }
         );
-        setStudentsList(response.data.listOfStudents);
-        setLoading(false);
+
+        if (response.data.listOfStudents.length > 0) {
+          setStudentsList(response.data.listOfStudents);
+          setLoading(false);
+        } else {
+          setStudentsList([]);
+          setLoading(false);
+        }
       } catch (error) {
-        alert("Erro ao encontrar alunos");
+        notifyError("Erro ao encontrar alunos");
       }
     }
   };
@@ -270,8 +276,8 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
           ) : (
             <ul
               style={{
-                maxHeight:"15rem",
-                overflow:"auto",
+                maxHeight: "15rem",
+                overflow: "auto",
                 paddingLeft: 0,
                 display: "grid",
                 gap: "1rem",

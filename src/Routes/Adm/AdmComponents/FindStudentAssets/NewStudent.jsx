@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
-import { backDomain } from "../../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  isValidCPF,
+} from "../../../../Resources/UniversalComponents";
 import { CircularProgress, TextField } from "@mui/material";
 import FindStudent from "./FindStudent";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
@@ -12,7 +15,7 @@ export function AllStudents({ headers, id }) {
     name: "",
     lastname: "",
     email: "",
-    dateOfBirth: "2000-12-12",
+    dateOfBirth: new Date(),
     cpf: "",
     password: "",
     confirmPassword: "",
@@ -30,7 +33,7 @@ export function AllStudents({ headers, id }) {
       name: "",
       lastname: "",
       email: "",
-      dateOfBirth: "2000-12-12",
+      dateOfBirth: new Date(),
       cpf: "",
       password: "",
       confirmPassword: "",
@@ -40,11 +43,18 @@ export function AllStudents({ headers, id }) {
   };
 
   const validateForm = () => {
-    const { name, lastname, email, password, confirmPassword } = formData;
+    const { name, lastname, email, password, cpf, confirmPassword } = formData;
     if (!name || !lastname || !email || !password || !confirmPassword) {
       notifyError("Preencha todos os campos obrigatórios!", "red");
       return false;
     }
+
+    const isValid = isValidCPF(cpf)
+    if (!isValid) {
+      notifyError("CPF inválido!", "red");
+      return false;
+    }
+
     if (password !== confirmPassword) {
       notifyError("As senhas não coincidem!", "red");
       return false;
@@ -113,7 +123,7 @@ export function AllStudents({ headers, id }) {
           style={{
             display: "grid",
             gap: "1rem",
-            gridTemplateColumns: "1fr 1fr",
+            gridTemplateColumns: "1fr",
           }}
         >
           {[
@@ -121,14 +131,19 @@ export function AllStudents({ headers, id }) {
             { label: "Sobrenome", type: "text", key: "lastname" },
             { label: "E-mail", type: "email", key: "email" },
             { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
-            { label: "CPF", type: "number", key: "cpf" },
+            {
+              label: "CPF",
+              type: "number",
+              key: "cpf",
+              inputProps: { maxLength: 11 },
+            },
             { label: "Senha", type: "password", key: "password" },
             {
               label: "Confirme a Senha",
               type: "password",
               key: "confirmPassword",
             },
-          ].map(({ label, type, key }) => (
+          ].map(({ label, inputProps, type, key }) => (
             <TextField
               key={key}
               label={label}
@@ -138,6 +153,7 @@ export function AllStudents({ headers, id }) {
               value={formData[key]}
               onChange={handleChange(key)}
               InputLabelProps={type === "date" ? { shrink: true } : {}}
+              inputProps={inputProps ? inputProps : {}}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": { borderColor: partnerColor() },
@@ -152,7 +168,6 @@ export function AllStudents({ headers, id }) {
               variant="outlined"
             />
           ))}
-
           <button
             type="submit"
             disabled={isLoading}

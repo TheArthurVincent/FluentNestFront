@@ -115,7 +115,7 @@ export const BlogPostTitle = styled.div`
 
 export const HOne = styled.h1`
   text-align: center;
-  text-shadow: -2px 2px 10px rgba(0, 0, 0, 0.31); /* sombra suave à esquerda */
+  text-shadow: -2px 2px 10px rgba(0, 0, 0, 0.1); /* sombra suave à esquerda */
   font-family: ${textTitleFont()};
   color: ${partnerColor()};
   font-size: 1.5rem;

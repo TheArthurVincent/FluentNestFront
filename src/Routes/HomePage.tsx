@@ -101,7 +101,7 @@ export function HomePage({ headers }: HeadersProps) {
       title: "My Calendar",
       component: (
         <MyCalendar
-          myId={setStudentId}
+          myId={_StudentId}
           thePermissions={thePermissions}
           headers={headers}
         />

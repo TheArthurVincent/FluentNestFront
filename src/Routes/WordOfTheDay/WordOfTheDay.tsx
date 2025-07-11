@@ -86,8 +86,8 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
     }
   };
   const [disabled, setDisabled] = useState<boolean>(false);
-
   const addNewCards = async () => {
+    setDisabled(true);
     const newCards = [
       {
         wordOfTheDay: true,
@@ -214,6 +214,8 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                               onClick={() => {
                                 addNewCards();
                               }}
+                              disabled={disabled}
+                              style={{ display: disabled ? "none" : "block" }}
                             >
                               <i className="fa fa-files-o" />
                             </button>

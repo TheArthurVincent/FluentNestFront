@@ -88,7 +88,7 @@ export const TopBarNavigationBurger = styled.div.attrs({
       transform 0.3s;
 
     &:hover {
-      background-color: ${partnerColor()};
+      background-color: #eee;
       color: #fff;
       padding-left: 1.8rem;
       transform: translateX(5px);

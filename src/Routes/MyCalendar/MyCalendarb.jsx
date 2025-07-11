@@ -900,89 +900,55 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const times = [
     "6:00",
-    "6:15",
     "6:30",
-    "6:45",
 
     "7:00",
-    "7:15",
     "7:30",
-    "7:45",
 
     "8:00",
-    "8:15",
     "8:30",
-    "8:45",
 
     "9:00",
-    "9:15",
     "9:30",
-    "9:45",
 
     "10:00",
-    "10:15",
     "10:30",
-    "10:45",
 
     "11:00",
-    "11:15",
     "11:30",
-    "11:45",
 
     "12:00",
-    "12:15",
     "12:30",
-    "12:45",
 
     "13:00",
-    "13:15",
     "13:30",
-    "13:45",
 
     "14:00",
-    "14:15",
     "14:30",
-    "14:45",
 
     "15:00",
-    "15:15",
     "15:30",
-    "15:45",
 
     "16:00",
-    "16:15",
     "16:30",
-    "16:45",
 
     "17:00",
-    "17:15",
     "17:30",
-    "17:45",
 
     "18:00",
-    "18:15",
     "18:30",
-    "18:45",
 
     "19:00",
-    "19:15",
     "19:30",
-    "19:45",
 
     "20:00",
-    "20:15",
     "20:30",
-    "20:45",
 
     "21:00",
-    "21:15",
     "21:30",
-    "21:45",
 
     "22:00",
-    "22:15",
     "22:30",
-    "22:45",
   ];
 
   function newFormatDate(date) {
@@ -1109,246 +1075,136 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               <div
                 style={{
                   display: "flex",
-                  gap: "5px",
-                  overflowX: "auto",
+                  width: "100%",
+                  maxHeight: "30rem",
+                  overflow: "auto",
                 }}
               >
-                {futureDates.map((date, index) => {
-                  const hj = new Date();
-                  return (
-                    <StyledDiv
-                      className={
-                        hj.getDate() == date.getDate() &&
-                        hj.getMonth() == date.getMonth() &&
-                        hj.getFullYear() == date.getFullYear()
-                          ? "glowing"
-                          : "none"
-                      }
+                {/* Coluna lateral com horários */}
+                <div
+                  style={{
+                    width: "60px",
+                    borderRight: "1px solid #ccc",
+                    paddingTop: "30px",
+                    backgroundColor: "#f8f8f8",
+                    flexShrink: 0,
+                  }}
+                >
+                  {times.map((time, idx) => (
+                    <div
+                      key={idx}
                       style={{
-                        border:
-                          hj.getDate() == date.getDate() &&
-                          hj.getMonth() == date.getMonth() &&
-                          hj.getFullYear() == date.getFullYear()
-                            ? `2px solid ${partnerColor()}`
-                            : "null",
+                        height: "30px",
+                        fontSize: "0.65rem",
+                        textAlign: "right",
+                        paddingRight: "4px",
+                        borderBottom: "1px solid #eee",
                       }}
-                      key={index}
                     >
-                      <p
+                      {time}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Grade com 7 colunas (um por dia) */}
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(7, 1fr)",
+                    flex: 1,
+                    height: `${times.length * 30 + 30}px`, // 24h + cabeçalho
+                    overflow: "auto",
+                    borderLeft: "1px solid #ccc",
+                    position: "relative",
+                  }}
+                >
+                  {futureDates.map((date, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        borderLeft: "1px solid #ccc",
+                        borderRight: index === 6 ? "1px solid #ccc" : "none",
+                        position: "relative",
+                      }}
+                    >
+                      {/* Cabeçalho com o dia da semana e data */}
+                      <div
                         style={{
-                          padding: "5px",
+                          height: "30px",
+                          textAlign: "center",
+                          fontWeight: "bold",
+                          fontSize: "0.75rem",
+                          backgroundColor: "#f0f0f0",
+                          borderBottom: "1px solid #ccc",
                           position: "sticky",
                           top: 0,
-                          fontWeight: 700,
-                          textAlign: "center",
-                          fontSize: "0.9rem",
-                          fontFamily: textTitleFont(),
-                          backgroundColor:
-                            hj.getDate() == date.getDate() &&
-                            hj.getMonth() == date.getMonth() &&
-                            hj.getFullYear() == date.getFullYear()
-                              ? partnerColor()
-                              : alwaysBlack(),
-                          color: alwaysWhite(),
+                          zIndex: 2,
                         }}
                       >
                         {date.toLocaleDateString("en-US", {
                           weekday: "short",
-                          month: "short",
                           day: "numeric",
-                          year: "numeric",
+                          month: "short",
                         })}
-                      </p>
-                      {events
-                        .filter(
-                          (event) =>
-                            event.date.toDateString() === date.toDateString()
-                        )
-                        .sort((a, b) => {
-                          const timeA =
-                            parseInt(a.time.split(":")[0]) * 60 +
-                            parseInt(a.time.split(":")[1]);
-                          const timeB =
-                            parseInt(b.time.split(":")[0]) * 60 +
-                            parseInt(b.time.split(":")[1]);
-                          return timeA - timeB;
-                        })
-                        .map((event, index) => (
-                          <div
-                            className="box-shadow-white"
-                            style={{
-                              margin: "4px",
-                              marginBottom: "1rem",
-                              padding: "2px",
-                              borderRadius: "4px",
-                              border: "1px solid #aaa",
-                              backgroundColor:
-                                event.category === "Group Class"
-                                  ? "orange"
-                                  : event.category === "Rep"
-                                  ? partnerColor()
-                                  : event.category === "Tutoring"
-                                  ? "#111"
-                                  : event.category === "Prize Class"
-                                  ? "green"
-                                  : event.category === "Standalone"
-                                  ? "#333"
-                                  : event.category === "Test"
-                                  ? "#1C1C1C"
-                                  : event.category === "Marcar Reposição"
-                                  ? "#407CB1"
-                                  : "#000",
-                              textAlign: "center",
-                              display: "grid",
-                            }}
-                            key={event + index}
-                          >
-                            {event.status !== "desmarcado" &&
-                              isEventTimeNow(event, hj, date) && (
-                                <span
-                                  style={{
-                                    paddingBottom: "0px",
-                                    marginBottom: "5px",
-                                    padding: "3px",
-                                    border: `2px solid ${partnerColor()}`,
-                                    backgroundColor: `${partnerColor()}`,
-                                  }}
-                                >
-                                  <LinearProgress color="inherit" />
-                                </span>
-                              )}
-                            <p
-                              onClick={() => {
-                                handleSeeModal(event);
-                              }}
-                              className="name"
-                              style={{
-                                padding: "8px",
-                                margin: "2px",
-                                backgroundColor:
-                                  event.category === "Group Class"
-                                    ? "orange"
-                                    : event.category === "Rep"
-                                    ? partnerColor()
-                                    : event.category === "Tutoring"
-                                    ? "#111"
-                                    : event.category === "Prize Class"
-                                    ? "green"
-                                    : event.category === "Standalone"
-                                    ? "#333"
-                                    : event.category === "Test"
-                                    ? "#1C1C1C"
-                                    : event.category === "Marcar Reposição"
-                                    ? "#407CB1"
-                                    : "#000",
-                                display: "grid",
-                                cursor: "pointer",
-                                borderRadius: "4px",
-                                fontSize: "0.7rem",
-                              }}
-                            >
-                              {event.student ? (
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                    fontWeight: 600,
-                                    color:
-                                      event.category === "Group Class"
-                                        ? "#fff" // Amarelo mais escuro, sem ser tão claro
-                                        : event.category === "Rep"
-                                        ? textpartnerColorContrast() // Tom de azul mais escuro e sóbrio
-                                        : event.category === "Tutoring"
-                                        ? textPrimaryColorContrast() // Cinza mais escuro
-                                        : event.category === "Prize Class"
-                                        ? "#fff" // Amarelo mais escuro e mais sóbrio
-                                        : event.category === "Standalone"
-                                        ? "#fff" // Azul bem escuro
-                                        : event.category === "Test"
-                                        ? "#fff" // Cinza muito escuro
-                                        : event.category === "Marcar Reposição"
-                                        ? "#fff" // Verde escuro e sóbrio
-                                        : "#fff", // Preto para categoria não especificada
-                                  }}
-                                >
-                                  {event.student}
-                                </span>
-                              ) : (
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                    fontWeight: 600,
-                                    color:
-                                      event.category === "Group Class"
-                                        ? "#fff" // Amarelo mais escuro, sem ser tão claro
-                                        : event.category === "Rep"
-                                        ? textpartnerColorContrast() // Tom de azul mais escuro e sóbrio
-                                        : event.category === "Tutoring"
-                                        ? textPrimaryColorContrast() // Cinza mais escuro
-                                        : event.category === "Prize Class"
-                                        ? "#fff" // Amarelo mais escuro e mais sóbrio
-                                        : event.category === "Standalone"
-                                        ? "#fff" // Azul bem escuro
-                                        : event.category === "Test"
-                                        ? "#fff" // Cinza muito escuro
-                                        : event.category === "Marcar Reposição"
-                                        ? "#fff" // Verde escuro e sóbrio
-                                        : "#fff", // Preto para categoria não especificada
-                                  }}
-                                >
-                                  {event.description}
-                                </span>
-                              )}
-                            </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: "0.5rem",
-                                flexDirection: "column",
-                                margin: "2px",
-                                borderRadius: "4px",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor:
-                                  event.status == "desmarcado"
-                                    ? "#FFCCCC"
-                                    : event.status == "marcado"
-                                    ? "#CCE5FF"
-                                    : event.status == "realizada"
-                                    ? "#CCFFCC"
-                                    : "#000",
-                              }}
-                            >
+                      </div>
+
+                      {/* Eventos posicionados */}
+                      <div
+                        style={{
+                          position: "relative",
+                          height: `${times.length * 30}px`,
+                        }}
+                      >
+                        {events
+                          .filter(
+                            (event) =>
+                              new Date(event.date).toDateString() ===
+                              date.toDateString()
+                          )
+                          .map((event, i) => {
+                            const formattedTime = event.time.replace(/^0/, ""); // Ex: "06:00" → "6:00"
+                            const timeIndex = times.findIndex(
+                              (t) => t === formattedTime
+                            );
+                            const topOffset = timeIndex * 30;
+
+                            return (
                               <div
+                                key={i}
+                                onClick={() => handleSeeModal(event)}
                                 style={{
-                                  display: "flex",
-                                  gap: "5px",
-                                  color:
-                                    event.status == "marcado"
-                                      ? "#000"
-                                      : event.status == "realizada"
-                                      ? partnerColor()
-                                      : event.status == "desmarcado"
-                                      ? "red"
-                                      : "#000",
-                                  fontSize: "8px",
-                                  padding: "5px",
-                                  fontWeight: 600,
+                                  position: "absolute",
+                                  top: `${topOffset}px`,
+                                  left: "5%",
+                                  width: "90%",
+                                  height: "30px",
+                                  backgroundColor:
+                                    event.category === "Tutoring"
+                                      ? "#111"
+                                      : event.category === "Group Class"
+                                      ? "orange"
+                                      : event.category === "Standalone"
+                                      ? "#333"
+                                      : "#999",
+                                  color: "white",
+                                  fontSize: "0.7rem",
+                                  borderRadius: "4px",
+                                  padding: "4px",
+                                  boxSizing: "border-box",
+                                  cursor: "pointer",
+                                  overflow: "hidden",
                                 }}
                               >
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                  }}
-                                >
-                                  {` ${event.time} | ${event.category}`}
-                                </span>
+                                {event.student || event.description}
+                                <br />
+                                {event.time}
                               </div>
-                            </div>
-                          </div>
-                        ))}
-                    </StyledDiv>
-                  );
-                })}
+                            );
+                          })}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

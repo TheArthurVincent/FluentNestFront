@@ -174,6 +174,7 @@ export default function EnglishClassCourse2({
         setIsCompleted(false);
       }
       setheClass(clss);
+      console.log(response.data.classDetails, clss);
       setLoading(false);
       setCommentsTrigger(true);
     } catch (error) {
@@ -959,56 +960,53 @@ export default function EnglishClassCourse2({
           </label>
         </>
       )}
-      {/* Teacher */}
-      {/* Teacher */}
-      {/* Teacher */}
-      {/* Teacher */}
-      {/* Teacher */}
-      {seeSlides && (
-        <>
-          <div
+      <>
+        <div
+          onClick={() => {
+            setSeeSlides(!seeSlides);
+          }}
+          style={{
+            backgroundColor: transparentBlack(),
+            zIndex: 100000000000,
+            position: "fixed",
+            top: 0,
+            display: seeSlides ? "block" : "none",
+            left: 0,
+            width: "100000000vw",
+            height: "100000000vw",
+          }}
+        />
+        <div
+          style={{
+            padding: "2rem",
+            position: "fixed",
+            display: seeSlides ? "block" : "none",
+            top: 5,
+            left: 5,
+            width: "94vw",
+            border: "1px grey solid",
+            borderRadius: "6px",
+            height: "97vh",
+            zIndex: 10000000000000,
+            backgroundColor: "white",
+          }}
+        >
+          <Xp
+            style={{ margin: "1rem auto", display: "block" }}
             onClick={() => {
               setSeeSlides(!seeSlides);
             }}
-            style={{
-              backgroundColor: transparentBlack(),
-              zIndex: 100000000000,
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100000000vw",
-              height: "100000000vw",
-            }}
-          />
+          >
+            x
+          </Xp>
           <div
             style={{
-              padding: "2rem",
-              position: "fixed",
-              top: 5,
-              left: 5,
-              width: "94vw",
-              border: "1px grey solid",
-              borderRadius: "6px",
-              height: "97vh",
-              zIndex: 10000000000000,
-              backgroundColor: "white",
+              height: "75vh",
+              overflow: "auto",
             }}
           >
-            <Xp
-              style={{ margin: "1rem auto", display: "block" }}
-              onClick={() => {
-                setSeeSlides(!seeSlides);
-              }}
-            >
-              x
-            </Xp>
-            <div
-              style={{
-                height: "75vh",
-                overflow: "auto",
-              }}
-            >
-              {theclass.elements
+            {theclass.elements &&
+              theclass.elements
                 .sort((a: any, b: any) => a.order - b.order)
                 .map((element: any, index: number) => (
                   <div key={index} style={{ marginBottom: "10px" }}>
@@ -1043,10 +1041,9 @@ export default function EnglishClassCourse2({
                     )}
                   </div>
                 ))}
-            </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
     </div>
   );
 }
