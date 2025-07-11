@@ -15,6 +15,11 @@ import { io } from "socket.io-client";
 import { levels } from "../Routes/Ranking/RankingComponents/RankingLevelsList";
 import { notifyError } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
 
+
+
+
+
+
 const items = levels();
 export var colorOfTheTShirt;
 export var whichMascot;
@@ -1498,3 +1503,25 @@ export const registerUser = (studentID) => {
 };
 
 export default socket;
+
+
+export function isValidCPF(cpf) {
+  cpf = cpf.replace(/[^\d]+/g, '');
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    sum += parseInt(cpf.charAt(i)) * (10 - i);
+  }
+  let firstCheck = 11 - (sum % 11);
+  firstCheck = firstCheck > 9 ? 0 : firstCheck;
+  if (firstCheck !== parseInt(cpf.charAt(9))) return false;
+
+  sum = 0;
+  for (let i = 0; i < 10; i++) {
+    sum += parseInt(cpf.charAt(i)) * (11 - i);
+  }
+  let secondCheck = 11 - (sum % 11);
+  secondCheck = secondCheck > 9 ? 0 : secondCheck;
+  return secondCheck === parseInt(cpf.charAt(10));
+}
