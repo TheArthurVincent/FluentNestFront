@@ -37,7 +37,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
 
   const fetchStudents = async () => {
     setLoading(true);
-    if (ID !== "" || isAllowed) {
+    if (ID == "") {
+      setLoading(false);
+      return;
+    } else if (isAllowed) {
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${ID}`,
@@ -46,9 +49,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
           }
         );
         setStudentsList(response.data.listOfStudents);
+        setLoading(false);
       } catch (error) {
         notifyError("Erro ao encontrar alunos");
         console.log(error, "Erro ao encontrar alunos");
+        setLoading(false);
       }
       setLoading(false);
     } else null;
