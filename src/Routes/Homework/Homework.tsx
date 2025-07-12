@@ -91,7 +91,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   useEffect(() => {
     fetchStudents();
   }, [ID]);
-
+  const [disabled, setDisabled] = useState<boolean>(false);
   const updateRealizedClass = async (tutoringId: string, score: number) => {
     try {
       await axios.put(
@@ -229,28 +229,42 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       homework?.status === "pending" && (
                         <>
                           <ArvinButton
-                            onClick={() =>
-                              updateRealizedClass(homework._id, pointsMadeHW)
-                            }
+                            disabled={disabled}
+                            onClick={() => {
+                              setDisabled(true);
+                              updateRealizedClass(homework._id, pointsMadeHW);
+                            }}
                           >
                             Up to date
                           </ArvinButton>
                           <ArvinButton
-                            onClick={() =>
-                              updateRealizedClass(homework._id, pointsLateHW)
-                            }
+                            disabled={disabled}
+                            onClick={() => {
+                              setDisabled(true);
+
+                              updateRealizedClass(homework._id, pointsLateHW);
+                            }}
                           >
                             Late
                           </ArvinButton>
-                          <ArvinButton onClick={() => justStatus(homework._id)}>
+                          <ArvinButton
+                            disabled={disabled}
+                            onClick={() => {
+                              setDisabled(true);
+                              justStatus(homework._id);
+                            }}
+                          >
                             Just status
                           </ArvinButton>
                         </>
                       )}
                     {isAllowed && (
                       <ArvinButton
+                        disabled={disabled}
                         color="red"
-                        onDoubleClick={() => deleteHomework(homework._id)}
+                        onDoubleClick={() => {
+                          deleteHomework(homework._id);
+                        }}
                       >
                         <i className="fa fa-trash" aria-hidden="true" /> Double
                         Click

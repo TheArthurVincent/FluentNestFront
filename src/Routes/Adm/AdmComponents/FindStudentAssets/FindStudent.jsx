@@ -39,14 +39,19 @@ import {
   TableBody,
 } from "@mui/material";
 import {
+  alwaysWhite,
   partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
+import {
+  ArvinButton,
+  MyButton,
+} from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 
 export function FindStudent({ uploadStatus, headers, id }) {
   const { UniversalTexts } = useUserContext();
@@ -66,6 +71,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [seeConfirmDelete, setSeeConfirmDelete] = useState(false);
   const [ID, setID] = useState("");
   const [value, setValue] = useState("1");
+  const [homeworkAssignmentsDone, setHomeworkAssignmentsDone] = useState("1");
+  const [flashcards25Reviews, setFlashcards25Reviews] = useState("1");
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [weeklyClasses, setWeeklyClasses] = useState(1);
@@ -176,6 +183,16 @@ export function FindStudent({ uploadStatus, headers, id }) {
           ? response.data.formattedStudentData.address
           : ""
       );
+      setHomeworkAssignmentsDone(
+        response.data.formattedStudentData.homeworkAssignmentsDone
+          ? response.data.formattedStudentData.homeworkAssignmentsDone
+          : ""
+      );
+      setFlashcards25Reviews(
+        response.data.formattedStudentData.flashcards25Reviews
+          ? response.data.formattedStudentData.flashcards25Reviews
+          : ""
+      );
     } catch (error) {
       notifyError(error);
       console.error(error);
@@ -189,6 +206,17 @@ export function FindStudent({ uploadStatus, headers, id }) {
       });
       setTotalScore(response.data.formattedStudentData.totalScore);
       setMonthlyScore(response.data.formattedStudentData.monthlyScore);
+      setHomeworkAssignmentsDone(
+        response.data.formattedStudentData.homeworkAssignmentsDone
+          ? response.data.formattedStudentData.homeworkAssignmentsDone
+          : ""
+      );
+      setFlashcards25Reviews(
+        response.data.formattedStudentData.flashcards25Reviews
+          ? response.data.formattedStudentData.flashcards25Reviews
+          : ""
+      );
+      console.log(response.data.formattedStudentData);
     } catch (error) {
       notifyError(error);
       console.error(error);
@@ -282,6 +310,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [hasReset, setHasReset] = useState(false);
   const [resetVisible, setResetVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const handleResetMonth = async () => {
     const headersBack = {
@@ -365,19 +394,18 @@ export function FindStudent({ uploadStatus, headers, id }) {
 
   const submitPlusScore = async (id, score, description, type) => {
     try {
+      setDisabled(true);
       await axios.put(
         `${backDomain}/api/v1/score/${id}`,
-        {
-          score,
-          description,
-          type,
-        },
+        { score, description, type },
         { headers }
       );
       notifyError("Pontuação atualizada com sucesso!", "green");
-      updateScoreNow(id); // Atualiza os dados no modal
+      await updateScoreNow(id); // ESSENCIAL!
+      setDisabled(false);
     } catch (error) {
       notifyError("Erro ao atualizar pontuação");
+      setDisabled(false);
     }
   };
 
@@ -652,8 +680,40 @@ export function FindStudent({ uploadStatus, headers, id }) {
           <Typography>
             Monthly Score: <strong>{formatNumber(monthlyScore)}</strong>
           </Typography>
+          <Typography>
+            Homework Assignment:{" "}
+            <strong>{formatNumber(homeworkAssignmentsDone)}</strong>
+          </Typography>
+          <Typography>
+            Flashcards Reviews:{" "}
+            <strong>{formatNumber(flashcards25Reviews)}</strong>
+          </Typography>
         </Grid>
-
+        <div style={{ display: "flex", gap: "1rem", margin: "1rem" }}>
+          {listOfButtons.map((item, index) => {
+            return (
+              <ArvinButton
+                key={index}
+                disabled={disabled}
+                style={{
+                  color: alwaysWhite(),
+                  fontSize: "0.8rem",
+                }}
+                color={item.color}
+                onClick={() =>
+                  submitPlusScore(
+                    ID,
+                    item.score,
+                    item.description,
+                    item.category
+                  )
+                }
+              >
+                {item.text}
+              </ArvinButton>
+            );
+          })}
+        </div>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth

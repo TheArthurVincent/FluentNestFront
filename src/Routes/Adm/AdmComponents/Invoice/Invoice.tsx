@@ -10,16 +10,24 @@ import Helmets from "../../../../Resources/Helmets";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import {
+  getWhiteLabel,
+  isArthurVincent,
+  localStorageLoggedIn,
+} from "../../../../App";
 
 export function Invoice({ headers }: HeadersProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
   const [newID, setNewID] = useState<string>("");
+
   const [name, setName] = useState<string>("");
   const [doc, setDoc] = useState<string>("");
   const [today, setDate] = useState<any>(new Date());
   const [thisMonth, setThisMonth] = useState<string>("Janeiro/1999");
   const [fee, setFee] = useState<number>(1000);
   const [loading, setLoading] = useState<Boolean>(false);
+
+  const MYID = localStorageLoggedIn?.id || "";
 
   const [comments, setComments] = useState<string>("");
   const handleStudentChange = async (event: any) => {
@@ -44,9 +52,12 @@ export function Invoice({ headers }: HeadersProps) {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
-        headers: actualHeaders,
-      });
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${MYID}`,
+        {
+          headers: actualHeaders,
+        }
+      );
       setStudentsList(response.data.listOfStudents);
       setLoading(false);
     } catch (error) {
@@ -146,29 +157,42 @@ export function Invoice({ headers }: HeadersProps) {
         <div>
           <p>
             Recibo referente ao recebimento da importância de R$ {fee},00
-            referente às aulas de inglês de {name}, (CPF: {doc}), no mês de{" "}
-            {thisMonth}. Este valor compreende as aulas particulares + aulas em
-            grupo.
+            recebida de {name}, (CPF: {doc}), no mês de {thisMonth}.
           </p>
           {comments && (
             <div>
               <p>{comments}</p>
             </div>
           )}
-          <img
+          {isArthurVincent && (
+            <img
+              style={{
+                margin: "auto",
+                display: "block",
+                maxWidth: "10rem",
+                marginTop: "10rem",
+                borderBottom: "solid 2px",
+              }}
+              src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
+              alt="signatureArth"
+            />
+          )}{" "}
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <div
             style={{
-              margin: "auto",
-              display: "block",
-              maxWidth: "10rem",
-              marginTop: "10rem",
-              borderBottom: "solid 2px",
+              borderTop: "solid 2px",
+              padding: "1rem",
+              fontSize: "16px",
             }}
-            src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
-            alt="signatureArth"
-          />{" "}
-          <div style={{ fontSize: "16px" }}>
-            <p>Arthur Rodrigues Cardoso | Professor Titular</p>
-            <p>442.650.158-08</p>
+          >
+            <p>
+              {localStorageLoggedIn.name + " " + localStorageLoggedIn.lastname}
+            </p>
+            <p>{localStorageLoggedIn.doc}</p>
             <br />
             <p
               style={{
@@ -176,7 +200,7 @@ export function Invoice({ headers }: HeadersProps) {
               }}
             >
               {" "}
-              Embu das Artes/SP, {formatDateBr(today)}
+              {formatDateBr(today)}
             </p>
           </div>
         </div>
@@ -188,7 +212,10 @@ export function Invoice({ headers }: HeadersProps) {
           display: "block",
           maxWidth: "12rem",
         }}
-        src="https://ik.imagekit.io/vjz75qw96/assets/mylogotransp.png?updatedAt=1715968430436"
+        src={
+          getWhiteLabel.logo ||
+          "https://ik.imagekit.io/vjz75qw96/assets/logo.png?updatedAt=1717680390615"
+        }
         alt="signatureArth"
       />
       <Helmets text={`Recibo de Pagamento de Aulas Particulares | ${name}`} />
