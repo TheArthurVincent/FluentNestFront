@@ -9,7 +9,7 @@ import {
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 
-import { secondaryColor, textTitleFont } from "../../../Styles/Styles";
+import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 
@@ -302,7 +302,7 @@ const ListeningExercise = ({
 
   useEffect(() => {
     if (isIOS || isSafari) {
-    // if (!isIOS && !isSafari) {
+      // if (!isIOS && !isSafari) {
       const SpeechRecognition =
         (window as any).SpeechRecognition ||
         (window as any).webkitSpeechRecognition;
@@ -488,7 +488,7 @@ const ListeningExercise = ({
       {see && (
         <div>
           {loading ? (
-            <CircularProgress style={{ color: secondaryColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           ) : (
             <div
               style={{
@@ -558,7 +558,6 @@ const ListeningExercise = ({
                       >
                         <p
                           style={{
-                            fontFamily: textTitleFont(),
                             fontSize: "1rem",
                             fontWeight: 400,
                           }}
@@ -567,7 +566,7 @@ const ListeningExercise = ({
                         </p>
                         <p
                           style={{
-                            fontFamily: "Lato",
+                            fontFamily: textGeneralFont(),
                             fontSize: "12px",
                             fontWeight: 400,
                             color: "#555",
@@ -609,7 +608,7 @@ const ListeningExercise = ({
                       </p>
                     </div>
                     {seeProgress ? (
-                      <CircularProgress style={{ color: secondaryColor() }} />
+                      <CircularProgress style={{ color: partnerColor() }} />
                     ) : (
                       <div
                         style={{
@@ -655,7 +654,7 @@ const ListeningExercise = ({
                           }}
                         >
                           {!isDisabled ? (
-                            `Listen again`
+                            <i className="fa fa-volume-up" aria-hidden="true" />
                           ) : (
                             <i className="fa fa-volume-up" aria-hidden="true" />
                           )}
@@ -675,7 +674,7 @@ const ListeningExercise = ({
                             )
                               return;
                             if (isIOS || isSafari) {
-                            // if (!isIOS && !isSafari) {
+                              // if (!isIOS && !isSafari) {
                               // Só inicia, não para
                               if (!listening) {
                                 cardTextRef.current =

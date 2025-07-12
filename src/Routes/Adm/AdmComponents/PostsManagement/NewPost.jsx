@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function NewPost({ headers }) {
   const [newTitle, setNewTitle] = useState("");
@@ -47,10 +47,17 @@ export function NewPost({ headers }) {
   };
 
   return loading ? (
-    <CircularProgress style={{ color: secondaryColor() }} />
+    <CircularProgress style={{ color: partnerColor() }} />
   ) : (
     <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
-      <HOne>Nova Postagem</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Nova Postagem
+      </HOne>
       <Paper sx={{ padding: 3 }} elevation={3}>
         <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleSubmit}>
           <TextField

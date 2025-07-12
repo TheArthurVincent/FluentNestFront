@@ -14,7 +14,11 @@ import {
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { secondaryColor, textTitleFont } from "../../Styles/Styles";
+import {
+  partnerColor,
+  textPrimaryColorContrast,
+  textTitleFont,
+} from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import Voice from "../../Resources/Voice";
@@ -32,8 +36,8 @@ interface FlashCardsPropsRv {
 const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [myId, setId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [see, setSee] = useState<boolean>(false);
-  const [heardSentences, setHeardSentences] = useState([false, false, false]);
+  const [dis, setDis] = useState<boolean>(false);
+  const [see, setSee] = useState<boolean>(true);
   const [word, setWord] = useState<string>("");
   const [finalWord, setFinalWord] = useState<string>("");
   const [explanation, setExplanation] = useState<string>("");
@@ -63,7 +67,8 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   const actualHeaders = headers || {};
 
-  const seeCardsToReview = async () => {
+  const mineWord = async () => {
+    setDis(true);
     setLoading(true);
     setSee(true);
     event?.preventDefault();
@@ -96,11 +101,12 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         }))
       );
 
-      setHeardSentences(Array(response.data.examples.length).fill(false));
       setLoading(false);
+      setDis(false);
     } catch (error: any) {
       console.error(error);
       alert(error.response?.data?.error || "Error fetching flashcards.");
+      setDis(false);
     }
   };
 
@@ -143,7 +149,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         tags: [""],
       },
     ];
-
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${myId}`,
@@ -161,13 +166,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
-  const handleReadText = (index: number, text: string, language: string) => {
-    readText(text, true, "en");
-    const newHeardSentences = [...heardSentences];
-    newHeardSentences[index] = true;
-    setHeardSentences(newHeardSentences);
-  };
-
   return (
     <RouteDiv>
       <Helmets text="Sentence Mining" />
@@ -179,11 +177,20 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
-        <HOne>Sentence Mining</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+            textAlign: "center",
+            margin: "0.5rem",
+          }}
+        >
+          Sentence Mining
+        </HOne>
         <a
           style={{
             fontSize: "13px",
-            color: "#0066cc",
+            color: "#999",
             textDecoration: "none",
           }}
           href="/flash-cards"
@@ -196,7 +203,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         style={{ padding: "20px", maxWidth: "600px", margin: "auto" }}
       >
         <form
-          onSubmit={seeCardsToReview}
+          onSubmit={mineWord}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -213,6 +220,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             type="text"
             placeholder="Type a word..."
             value={word}
+            disabled={dis ? true : false}
             maxLength={30}
             onChange={(e) => {
               setWord(e.target.value);
@@ -226,151 +234,157 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               border: "1px solid #ccc",
             }}
           />
-
-          <RadioGroup
-            row
-            value={difficulty}
-            onChange={(e) => setDifficulty(e.target.value)}
-            sx={{ fontSize: "12px" }}
-          >
-            {["Basic", "Intermediate", "Advanced"].map((level) => (
-              <FormControlLabel
-                key={level}
-                value={level}
-                control={
-                  <Radio
-                    size="small"
-                    sx={{
-                      color: "#888",
-                      "&.Mui-checked": { color: "#54bf08" },
-                      padding: "2px",
-                    }}
+          {!dis && (
+            <>
+              <RadioGroup
+                row
+                value={difficulty}
+                onChange={(e) => setDifficulty(e.target.value)}
+                sx={{ fontSize: "12px" }}
+              >
+                {["Basic", "Intermediate", "Advanced"].map((level) => (
+                  <FormControlLabel
+                    key={level}
+                    value={level}
+                    control={
+                      <Radio
+                        size="small"
+                        sx={{
+                          color: "#888",
+                          "&.Mui-checked": { color: partnerColor() },
+                          padding: "2px",
+                        }}
+                      />
+                    }
+                    label={
+                      <span style={{ fontSize: "13px", color: "#333" }}>
+                        {level}
+                      </span>
+                    }
                   />
-                }
-                label={
-                  <span style={{ fontSize: "13px", color: "#333" }}>
-                    {level}
-                  </span>
-                }
-              />
-            ))}
-          </RadioGroup>
-
-          <ArvinButton
-            color={word == "" ? "grey" : "green"}
-            cursor={word == "" ? "not-allowed" : "pointer"}
-            type="submit"
-            style={{
-              padding: "4px 12px",
-              fontSize: "13px",
-              borderRadius: "4px",
-              textTransform: "none",
-            }}
-            disabled={word == "" ? true : false}
-          >
-            Mine word
-          </ArvinButton>
+                ))}
+              </RadioGroup>
+              <ArvinButton
+                color={word == "" || dis ? "grey" : partnerColor()}
+                cursor={word == "" || dis ? "not-allowed" : "pointer"}
+                type="submit"
+                style={{
+                  padding: "4px 12px",
+                  fontSize: "13px",
+                  borderRadius: "4px",
+                  textTransform: "none",
+                }}
+                disabled={word == "" || dis ? true : false}
+              >
+                Mine word
+              </ArvinButton>
+            </>
+          )}
         </form>
 
         {see && (
           <>
             {loading ? (
-              <CircularProgress style={{ color: secondaryColor() }} />
+              <CircularProgress style={{ color: partnerColor() }} />
             ) : (
-              <>
-                <div style={{ margin: "1rem" }}>
-                  <strong style={{ fontSize: "18px" }}>{finalWord}</strong>
-                  <br />
-                  <a
-                    href={youglishBaseUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      fontSize: "13px",
-                      color: "#0066cc",
-                      textDecoration: "none",
-                    }}
-                  >
-                    Ver mais exemplos em vídeos
-                  </a>
-                  <br />
-                  <span
-                    style={{
-                      fontStyle: "italic",
-                      fontSize: "14px",
-                      color: "#555",
-                    }}
-                  >
-                    {explanation}
-                  </span>
-                </div>
+              finalWord !== "" && (
+                <>
+                  <div style={{ margin: "1rem" }}>
+                    <strong
+                      style={{
+                        padding: "5px",
+                        marginBottom: "15px",
+                        borderRadius: "5px",
+                        color: textPrimaryColorContrast(),
+                        backgroundColor: partnerColor(),
+                        fontSize: "18px",
+                      }}
+                    >
+                      {finalWord}
+                    </strong>
+                    <br />
+                    <a
+                      href={youglishBaseUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: "13px",
+                        marginTop: "15px",
+                        color: "#999",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Ver mais exemplos em vídeos
+                    </a>
+                    <br />
+                    <span
+                      style={{
+                        fontStyle: "italic",
+                        fontSize: "14px",
+                        color: "#555",
+                      }}
+                    >
+                      {explanation}
+                    </span>
+                  </div>
 
-                <div style={{ marginTop: "10px" }}>
-                  <Voice
-                    maxW="12rem"
-                    changeB={changeNumber}
-                    setChangeB={setChangeNumber}
-                  />
-                </div>
-
-                <UlSentences grid={2}>
-                  {examples.map((example, index) => (
-                    <LiSentence key={index}>
-                      {!example.added && (
-                        <Tooltip
-                          title={
-                            !heardSentences[index]
-                              ? "Listen first!"
-                              : "Add to flashcards"
+                  <div style={{ marginTop: "10px" }}>
+                    <Voice
+                      maxW="12rem"
+                      changeB={changeNumber}
+                      setChangeB={setChangeNumber}
+                    />
+                  </div>
+                  <UlSentences grid={2}>
+                    {examples.map((example, index) => (
+                      <LiSentence key={index}>
+                        {!example.added && (
+                          <Tooltip title={"Add to flashcards"}>
+                            <ArvinButton
+                              color={partnerColor()}
+                              cursor={"pointer"}
+                              onClick={() => {
+                                addNewCards(
+                                  index,
+                                  example.sentence,
+                                  example.translation
+                                );
+                                setExamples((prev) =>
+                                  prev.map((ex, i) =>
+                                    i === index ? { ...ex, added: true } : ex
+                                  )
+                                );
+                              }}
+                            >
+                              <i className="fa fa-files-o" aria-hidden="true" />
+                            </ArvinButton>
+                          </Tooltip>
+                        )}
+                        <br />
+                        <strong>{example.sentence}</strong>
+                        <span
+                          className="audio-button"
+                          onClick={() =>
+                            readText(example.sentence, true, language)
                           }
                         >
-                          <ArvinButton
-                            color={!heardSentences[index] ? "white" : "green"}
-                            cursor={
-                              !heardSentences[index] ? "not-allowed" : "pointer"
-                            }
-                            onClick={() => {
-                              addNewCards(
-                                index,
-                                example.sentence,
-                                example.translation
-                              );
-                              setExamples((prev) =>
-                                prev.map((ex, i) =>
-                                  i === index ? { ...ex, added: true } : ex
-                                )
-                              );
-                            }}
-                            disabled={!heardSentences[index]}
-                          >
-                            <i className="fa fa-files-o" aria-hidden="true" />
-                          </ArvinButton>
-                        </Tooltip>
-                      )}
-                      <br />
-                      <strong>{example.sentence}</strong>
-                      <span
-                        className="audio-button"
-                        onClick={() =>
-                          handleReadText(index, example.sentence, language)
-                        }
-                      >
-                        <i className="fa fa-volume-up" aria-hidden="true" />
-                      </span>
-                      <br />
-                      <span style={{ fontStyle: "italic" }}>
-                        {example.translation}
-                      </span>
-                    </LiSentence>
-                  ))}
-                </UlSentences>
-              </>
+                          <i className="fa fa-volume-up" aria-hidden="true" />
+                        </span>
+                        <br />
+                        <span style={{ fontStyle: "italic" }}>
+                          {example.translation}
+                        </span>
+                      </LiSentence>
+                    ))}
+                  </UlSentences>
+                </>
+              )
             )}
           </>
         )}
 
         {thePermissions == "superadmin" && (
-          <>
+          <div style={{ marginTop: "5rem", display: "grid", gap: "10px" }}>
             <ArvinButton onDoubleClick={editWordOfTheDay}>
               Word of the day
             </ArvinButton>
@@ -384,7 +398,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
@@ -400,7 +413,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
@@ -416,7 +428,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
@@ -432,14 +443,13 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               style={{
                 padding: "8px",
                 fontWeight: 600,
-                fontFamily: textTitleFont(),
                 width: "100%",
                 borderRadius: "6px",
                 border: "1px solid #ccc",
                 fontSize: "16px",
               }}
             />
-          </>
+          </div>
         )}
       </section>
     </RouteDiv>

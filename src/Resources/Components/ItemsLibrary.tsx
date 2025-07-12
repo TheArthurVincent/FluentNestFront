@@ -1,12 +1,8 @@
 import styled from "styled-components";
 import {
   alwaysWhite,
-  primaryColor,
-  primaryColor2,
-  secondaryColor,
-  secondaryColor2,
-  textFont,
-  textTitleFont,
+  partnerColor,
+  textGeneralFont,
 } from "../../Styles/Styles";
 
 interface ButtonProps {
@@ -17,96 +13,34 @@ interface ButtonProps {
 
 interface ArvinButtonProps {
   color?: string;
+  colorContrast?: string;
+  colorGradient?: string;
   cursor?: string;
 }
 
 export const ArvinButton = styled.button<ArvinButtonProps>`
-  background: ${(props) =>
-    props.color === "red"
-      ? "red"
-      : props.color === "green"
-      ? secondaryColor()
-      : props.color === "blue"
-      ? "blue"
-      : props.color === "orange"
-      ? "orange"
-      : props.color === "purple"
-      ? "purple"
-      : props.color === "yellow"
-      ? "#FFD700"
-      : props.color === "pink"
-      ? "#FF69B4"
-      : props.color === "grey"
-      ? "#eee"
-      : props.color === "white"
-      ? "white"
-      : secondaryColor()};
-
-  color: ${(props) => (props.color === "white" ? "black" : alwaysWhite())};
+  background: ${(props) => (props.color ? props.color : partnerColor())};
+  color: ${(props) =>
+    props.colorContrast === "white" ? "black" : alwaysWhite()};
   padding: 10px;
   min-width: 30px;
   margin: 0 3px;
-  
   cursor: ${(props) =>
     props.cursor === "not-allowed" ? "not-allowed" : "pointer"};
-  display: inline;
-  font-family: ${textFont()};
+  display: inline-block;
+  font-family: ${textGeneralFont()};
   border-radius: 6px;
   border: none;
   max-width: fit-content;
+  font-weight: 500;
+  transition: all 0.3s ease; /* 🔁 boa prática para hover */
 
   &:hover {
-    background: linear-gradient(
-      to left,
-      ${(props) =>
-          props.color === "red"
-            ? "red"
-            : props.color === "green"
-            ? secondaryColor()
-            : props.color === "blue"
-            ? "blue"
-            : props.color === "white"
-            ? "white"
-            : props.color === "orange"
-            ? "orange"
-            : props.color === "purple"
-            ? "purple"
-            : props.color === "grey"
-            ? "grey"
-            : props.color === "yellow"
-            ? "#FFD700" // Yellow darker shade
-            : props.color === "pink"
-            ? "#FF69B4" // Pink darker shade
-            : secondaryColor()}
-        0%,
-      ${(props) =>
-          props.color === "red"
-            ? "#FA7A71"
-            : props.color === "white"
-            ? "grey"
-            : props.color === "green"
-            ? secondaryColor2()
-            : props.color === "blue"
-            ? "#87CEFA"
-            : props.color === "orange"
-            ? "#FFA500"
-            : props.color === "purple"
-            ? "#DDA0DD"
-            : props.color === "grey"
-            ? "grey"
-            : props.color === "yellow"
-            ? "#B8860B" // Yellow darker gradient
-            : props.color === "pink"
-            ? "#C71585" // Pink darker gradient
-            : secondaryColor2()}
-        100%
-    );
-    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
   }
 
   &:active {
-    font-weight: 500;
-    box-shadow: inset 1px 1px 10px 1px #ddd;
+    font-weight: 200;
   }
 `;
 
@@ -134,12 +68,11 @@ export function formatPhoneNumber(phone: string): string {
 export const MyButton = styled.button<ButtonProps>`
   background: linear-gradient(
     to left,
-    ${(props) => props.firstcolor || primaryColor()} 0%,
-    ${(props) => props.secondcolor || props.firstcolor || primaryColor2()} 50%
+    ${(props) => props.firstcolor || "#000"} 0%,
+    ${(props) => props.secondcolor || props.firstcolor || "#5c5c5c"} 50%
   );
   color: ${(props) => props.textcolor || alwaysWhite()};
   padding: 5px 1.2rem;
-  font-family: ${textTitleFont()};
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -149,9 +82,8 @@ export const MyButton = styled.button<ButtonProps>`
   &:hover {
     background: linear-gradient(
       to left,
-      ${(props) => props.firstcolor || primaryColor()} 0%,
-      ${(props) => props.secondcolor || props.firstcolor || primaryColor2()}
-        100%
+      ${(props) => props.firstcolor || "#000"} 0%,
+      ${(props) => props.secondcolor || props.firstcolor || "#5c5c5c"} 100%
     );
 
     box-shadow: 1px 1px 10px 1px #bbb;

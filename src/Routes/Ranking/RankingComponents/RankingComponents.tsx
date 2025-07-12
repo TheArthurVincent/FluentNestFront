@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { alwaysWhite, lightGreyColor, textTitleFont } from "../../../Styles/Styles";
+import { alwaysWhite, lightGreyColor } from "../../../Styles/Styles";
 import { formatDate } from "../../../Resources/UniversalComponents";
 
 export const FlexAdjust = styled.span`
@@ -25,14 +25,17 @@ export const CenterRightToggle = styled.p`
   }
 `;
 const d = new Date();
-export const monthInQuestion = (formatDate(d).split(" ")[0] + "/" + formatDate(d).split(" ")[2]).split(",")[0];
+export const monthInQuestion = (
+  formatDate(d).split(" ")[0] +
+  "/" +
+  formatDate(d).split(" ")[2]
+).split(",")[0];
 
 export const DivHover = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  font-family: ${textTitleFont()};
   padding: 0.5rem 0;
   margin: 2px auto;
   background-color: ${alwaysWhite()};

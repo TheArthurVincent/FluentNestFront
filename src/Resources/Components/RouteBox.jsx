@@ -1,11 +1,10 @@
 import styled, { keyframes } from "styled-components";
 import {
-  primaryColor,
   textPrimaryColorContrast,
   alwaysWhite,
   alwaysBlack,
   transparentWhite,
-  secondaryColor,
+  partnerColor,
   textTitleFont,
 } from "../../Styles/Styles";
 
@@ -27,7 +26,6 @@ export const RouteDiv = styled.div.attrs({
 })`
   background-color: ${alwaysWhite()};
   border-radius: 6px;
-  color: ${alwaysBlack()};
   padding: 0.5rem;
   width: 90vw;
   height: 100%;
@@ -41,7 +39,6 @@ export const RouteDivCourses = styled.div.attrs({
 })`
   background-color: ${alwaysWhite()};
   border-radius: 6px;
-  color: ${alwaysBlack()};
   padding: 0.5rem;
   margin-right: auto;
   margin-left: auto;
@@ -89,12 +86,6 @@ export const BlogRouteSizeControlBox = styled.div`
   }
 `;
 
-export const HOne = styled.h1`
-  text-align: center;
-  font-size: 1.1rem;
-  color: ${primaryColor()};
-  font-family: ${textTitleFont()};
-`;
 export const SpanIcon = styled.span`
   font-size: 1px;
   text-decoration: underline;
@@ -102,7 +93,6 @@ export const SpanIcon = styled.span`
   opacity: 0.8;
   transition: 0.3s;
   display: flex;
-  font-family: ${textTitleFont()};
   align-items: center;
   &:hover {
     opacity: 1;
@@ -123,13 +113,21 @@ export const BlogPostTitle = styled.div`
   }
 `;
 
-export const HTwo = styled.h2`
+export const HOne = styled.h1`
+  text-align: center;
+  text-shadow: -2px 2px 10px rgba(0, 0, 0, 0.1); /* sombra suave à esquerda */
   font-family: ${textTitleFont()};
-  font-size: 1.2rem;
-  font-weight: 600;
+  color: ${partnerColor()};
+  font-size: 1.5rem;
+`;
+
+export const HTwo = styled.h2`
+  font-size: 1.3rem;
+  font-family:${textTitleFont()},
+  color: ${partnerColor()};
+  font-weight: 500;
   padding: 0.6rem;
   margin-bottom: 1rem;
-  color: ${primaryColor()};
   @media (max-width: 1700px) {
     text-align: center;
     margin-top: 1rem;
@@ -141,8 +139,7 @@ export const HTwo = styled.h2`
 `;
 
 export const HThree = styled.h3`
-  font-family: ${textTitleFont()};
-  font-size: 1.1rem;
+  font-size: 1rem;
   padding: 6px;
   @media (max-width: 750px) {
     padding: 3px;
@@ -181,7 +178,6 @@ export const fadeIn = keyframes`
 export const DivFont = styled.div`
   font-weight: 600;
   font-size: 1.1rem;
-  font-family: ${textTitleFont()};
   margin: 0;
   @media (max-width: 500px) {
     font-size: 1rem;

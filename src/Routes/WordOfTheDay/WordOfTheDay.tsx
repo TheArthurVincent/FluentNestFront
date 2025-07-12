@@ -2,14 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
+import { backDomain } from "../../Resources/UniversalComponents";
 import {
   notifyError,
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 interface WordOfTheDayRv {
   headers: MyHeadersType | null;
@@ -88,8 +86,8 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
     }
   };
   const [disabled, setDisabled] = useState<boolean>(false);
-
   const addNewCards = async () => {
+    setDisabled(true);
     const newCards = [
       {
         wordOfTheDay: true,
@@ -147,7 +145,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
   };
 
   return loading ? (
-    <CircularProgress style={{ color: secondaryColor() }} />
+    <CircularProgress style={{ color: partnerColor() }} />
   ) : (
     <>
       {see && (
@@ -166,6 +164,9 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                 <button
                   onClick={() => setShowWord(!showWord)}
                   className="pulse-button"
+                  style={{
+                    boxShadow: `0 0 12px ${partnerColor()}`,
+                  }}
                 >
                   Word of the Day
                 </button>
@@ -213,6 +214,8 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                               onClick={() => {
                                 addNewCards();
                               }}
+                              disabled={disabled}
+                              style={{ display: disabled ? "none" : "block" }}
                             >
                               <i className="fa fa-files-o" />
                             </button>

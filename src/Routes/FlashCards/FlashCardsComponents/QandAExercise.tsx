@@ -5,7 +5,7 @@ import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 
 // Função para limpar a string
 function cleanString(str: string): string {
@@ -161,7 +161,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       {see && (
         <div>
           {loading ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
           ) : (
             <>
               {thereIsQuestion ? (

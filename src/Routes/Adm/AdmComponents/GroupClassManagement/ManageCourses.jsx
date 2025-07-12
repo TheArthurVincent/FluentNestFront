@@ -6,7 +6,8 @@ import { CircularProgress, Button, TextField } from "@mui/material";
 import {
   alwaysWhite,
   lightGreyColor,
-  secondaryColor,
+  partnerColor,
+  textTitleFont,
 } from "../../../../Styles/Styles";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -154,7 +155,14 @@ export function ManageGroupClasses({ headers }) {
 
   return (
     <>
-      <HOne>Gerenciar Aulas em Grupo</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Gerenciar Aulas em Grupo
+      </HOne>
       <div id="1">
         {" "}
         <HTwo>Postar aula em grupo</HTwo>
@@ -169,14 +177,14 @@ export function ManageGroupClasses({ headers }) {
             label="Nome da nova aula"
             sx={{
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
+                "& fieldset": { borderColor: partnerColor() },
+                "&:hover fieldset": { borderColor: partnerColor() },
                 "&.Mui-focused fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
               },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
+              "& label": { color: partnerColor() },
+              "& label.Mui-focused": { color: partnerColor() },
             }}
             variant="outlined"
             value={newClassName}
@@ -189,14 +197,14 @@ export function ManageGroupClasses({ headers }) {
             value={newVideoUrl}
             sx={{
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
+                "& fieldset": { borderColor: partnerColor() },
+                "&:hover fieldset": { borderColor: partnerColor() },
                 "&.Mui-focused fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
               },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
+              "& label": { color: partnerColor() },
+              "& label.Mui-focused": { color: partnerColor() },
             }}
             onChange={(e) => setNewVideoUrl(e.target.value)}
           />
@@ -206,14 +214,14 @@ export function ManageGroupClasses({ headers }) {
             variant="outlined"
             sx={{
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
+                "& fieldset": { borderColor: partnerColor() },
+                "&:hover fieldset": { borderColor: partnerColor() },
                 "&.Mui-focused fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
               },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
+              "& label": { color: partnerColor() },
+              "& label.Mui-focused": { color: partnerColor() },
             }}
             value={newGoogleDriveLink}
             onChange={(e) => setNewGoogleDriveLink(e.target.value)}

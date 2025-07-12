@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { formatDate } from "../../../Resources/UniversalComponents";
 import {
-  secondaryColor,
-  textSecondaryColorContrast,
+  partnerColor,
+  textpartnerColorContrast,
   textTitleFont,
 } from "../../../Styles/Styles";
 import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
@@ -66,8 +66,8 @@ export default function Countdown({ text, targetDate }: CountDownProps) {
       </p>
       <div
         style={{
-          backgroundColor: timeLeft.days == 0 ? "red" : secondaryColor(),
-          color: textSecondaryColorContrast(),
+          backgroundColor: timeLeft.days == 0 ? "red" : partnerColor(),
+          color: textpartnerColorContrast(),
           borderRadius: "6px",
           fontSize: "1rem",
           padding: "6px 8px",

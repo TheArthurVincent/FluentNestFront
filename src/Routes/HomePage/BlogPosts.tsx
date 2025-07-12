@@ -15,7 +15,12 @@ import {
   UniversalButtonsDivFlex,
   onLoggOut,
 } from "../../Resources/UniversalComponents";
-import { alwaysWhite, secondaryColor } from "../../Styles/Styles";
+import {
+  alwaysWhite,
+  partnerColor,
+  textGeneralFont,
+  textTitleFont,
+} from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
@@ -43,7 +48,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
   // Loading
   const [posts, setPosts] = useState<any>([
     {
-      title: <CircularProgress style={{ color: secondaryColor() }} />,
+      title: <CircularProgress style={{ color: partnerColor() }} />,
     },
   ]);
 
@@ -141,8 +146,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
         setPosts(filteredPosts);
         setLoading(false);
       }, 300);
-
-      console.log(response.data.listOfPosts);
     } catch (error: any) {
       notifyError(error.response.data.error);
       onLoggOut();
@@ -159,7 +162,14 @@ export function BlogPosts({ headers }: BlogPostsProps) {
       }}
     >
       <div>
-        <HOne>{UniversalTexts.mural}</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          {UniversalTexts.mural}
+        </HOne>
         <div>
           {posts.map((post: any, index: number) => (
             <div
@@ -192,7 +202,9 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                         <i className="fa fa-edit" aria-hidden="true" />
                       </button>
                     )}
-                    <HTwo> {post.title}</HTwo>
+                    <HTwo style={{ fontFamily: textGeneralFont() }}>
+                      {post.title}
+                    </HTwo>
                   </span>
                   {post.createdAt && <span>{formatDate(post.createdAt)}</span>}
                 </BlogPostTitle>

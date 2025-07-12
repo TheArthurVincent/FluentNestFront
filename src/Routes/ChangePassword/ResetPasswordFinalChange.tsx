@@ -5,7 +5,7 @@ import { backDomain } from "../../Resources/UniversalComponents";
 import axios from "axios";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import { TextField } from "@mui/material";
 import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -27,7 +27,7 @@ function ResetPasswordFinalChange() {
         }
       );
       setTimeout(() => {
-        notifyError(response.data.message, secondaryColor());
+        notifyError(response.data.message, partnerColor());
         setTimeout(() => {
           window.location.assign("/login");
         }, 1000);
@@ -72,19 +72,19 @@ function ResetPasswordFinalChange() {
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
                 "&:hover fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
                 "& label": {
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
                 "& label.Mui-focused": {
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
               },
             }}
@@ -100,19 +100,19 @@ function ResetPasswordFinalChange() {
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
                 "&:hover fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
                 "&.Mui-focused fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
                 "& label": {
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
                 "& label.Mui-focused": {
-                  color: secondaryColor(),
+                  color: partnerColor(),
                 },
               },
             }}
@@ -124,7 +124,7 @@ function ResetPasswordFinalChange() {
               marginLeft: "auto",
               cursor: Password1 !== Password ? "not-allowed" : "pointer",
               backgroundColor:
-                Password1 !== Password ? "gray" : secondaryColor(),
+                Password1 !== Password ? "gray" : partnerColor(),
             }}
             disabled={Password1 !== Password}
             onClick={handleSendPassword}

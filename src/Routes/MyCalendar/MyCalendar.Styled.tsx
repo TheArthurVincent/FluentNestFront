@@ -2,8 +2,7 @@ import styled from "styled-components";
 import {
   darkGreyColor,
   lightGreyColor,
-  primaryColor,
-  textSecondaryColorContrast,
+  textpartnerColorContrast,
 } from "../../Styles/Styles";
 
 export const CoursesList = styled.div`
@@ -35,12 +34,12 @@ export const CourseItem = styled.div`
   padding: 3rem;
   text-align: center;
   border: none;
-  color: ${primaryColor()};
+  color: ${"#000"};
   cursor: pointer;
   transition: 0.2s;
   &:hover {
-    background-color: ${primaryColor()};
-    color: ${textSecondaryColorContrast()};
+    background-color: ${"#000"};
+    color: ${textpartnerColorContrast()};
     font-weight: 700;
   }
 `;
@@ -49,12 +48,12 @@ export const ItemItem = styled.i`
   padding: 3rem;
   text-align: center;
   border: none;
-  color: ${primaryColor()};
+  color: ${"#000"};
   cursor: pointer;
   transition: 0.2s;
   &:hover {
-    background-color: ${primaryColor()};
-    color: ${textSecondaryColorContrast()};
+    background-color: ${"#000"};
+    color: ${textpartnerColorContrast()};
     font-weight: 700;
   }
 `;

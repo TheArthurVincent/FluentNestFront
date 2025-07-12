@@ -37,7 +37,7 @@ export const contentFaq = [
           <li>
             Revise{" "}
             <a
-              href="https://portal.arthurvincent.com.br/flash-cards"
+              href="/flash-cards"
               target="_blank"
             >
               flashcards
@@ -47,7 +47,7 @@ export const contentFaq = [
           <li>
             Faça{" "}
             <a
-              href="https://portal.arthurvincent.com.br/listening"
+              href="/listening"
               target="_blank"
             >
               exercícios de listening
@@ -84,7 +84,7 @@ export const contentFaq = [
         <br />
         🔍 Nossa plataforma:{" "}
         <a
-          href="https://portal.arthurvincent.com.br/sentence-mining"
+          href="/sentence-mining"
           target="_blank"
         >
           Sentence Mining
@@ -178,7 +178,7 @@ export const contentFaq = [
         <br />
         Acesse seus flashcards aqui:{" "}
         <a
-          href="https://portal.arthurvincent.com.br/flash-cards"
+          href="/flash-cards"
           target="_blank"
         >
           Flashcards
@@ -201,7 +201,7 @@ export const contentFaq = [
           <li>Fazer anotações de palavras novas.</li>
         </ul>
         Acesse os exercícios aqui:{" "}
-        <a href="https://portal.arthurvincent.com.br/listening" target="_blank">
+        <a href="/listening" target="_blank">
           Listening
         </a>
       </div>
@@ -246,7 +246,7 @@ export const contentFaq = [
       <div>
         Acesse os cursos gravados através deste link:{" "}
         <a
-          href="https://portal.arthurvincent.com.br/english-courses"
+          href="/english-courses"
           target="_blank"
         >
           Cursos Gravados

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
-import { textFont } from "../../../../Styles/Styles";
+import { textGeneralFont } from "../../../../Styles/Styles";
 
 export const notifyError = (
   message: string,
@@ -26,7 +26,7 @@ export const notifyError = (
   toast.style.borderRadius = "8px";
   toast.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.6)";
   toast.style.zIndex = "9999";
-  toast.style.fontFamily = textFont();
+  toast.style.fontFamily = textGeneralFont();
   toast.style.fontWeight = "500";
   toast.style.opacity = "0.5";
 

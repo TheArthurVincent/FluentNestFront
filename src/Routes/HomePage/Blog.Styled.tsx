@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { alwaysWhite, lightGreyColor, primaryColor } from "../../Styles/Styles";
+import { alwaysWhite, lightGreyColor } from "../../Styles/Styles";
 
 export const DivModal = styled.div`
   position: fixed;

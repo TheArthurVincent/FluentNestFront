@@ -16,8 +16,7 @@ import { Link } from "react-router-dom";
 import {
   alwaysWhite,
   darkGreyColor,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textTitleFont,
   transparentBlack,
 } from "../../Styles/Styles";
@@ -49,6 +48,7 @@ import TextAreaLesson from "./Assets/Functions/TextAreaLessons";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import Voice from "../../Resources/Voice";
 import { notifyError } from "./Assets/Functions/FunctionLessons";
+import { isArthurVincent } from "../../App";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -155,9 +155,6 @@ export default function EnglishClassCourse2({
     const { id, permissions, picture } = JSON.parse(user || "");
     setPermissions(permissions);
     setPicture(picture);
-    if (permissions == "superadmin") {
-      fetchStudents();
-    }
 
     if (user) {
       setId(id);
@@ -177,10 +174,11 @@ export default function EnglishClassCourse2({
         setIsCompleted(false);
       }
       setheClass(clss);
+      console.log(response.data.classDetails, clss);
       setLoading(false);
       setCommentsTrigger(true);
     } catch (error) {
-      console.log(error, "Erro ao obter aulas");
+      console.error(error, "Erro ao obter aulas");
       onLoggOut();
       setLoading(false);
     }
@@ -190,7 +188,7 @@ export default function EnglishClassCourse2({
     const user = localStorage.getItem("loggedIn");
     const { id, permissions } = JSON.parse(user || "");
     setPermissions(permissions);
-    if (permissions == "superadmin") {
+    if (permissions === "superadmin" || permissions === "teacher") {
       fetchStudents();
     }
 
@@ -206,7 +204,6 @@ export default function EnglishClassCourse2({
 
       var clss = response.data.classDetails;
       setClassTitle(response.data.classDetails.title);
-      console.log(response.data.classDetails.studentsWhoCompletedIt, studentID);
       if (response.data.classDetails.studentsWhoCompletedIt.includes(id)) {
         setIsCompleted(true);
       } else {
@@ -214,7 +211,7 @@ export default function EnglishClassCourse2({
       }
       setheClass(clss);
     } catch (error) {
-      console.log(error, "Erro ao obter aulas");
+      console.error(error, "Erro ao obter aulas");
     }
   };
   // Função para alternar o estado do switch
@@ -278,6 +275,12 @@ export default function EnglishClassCourse2({
     getClass();
   }, []);
 
+  useEffect(() => {
+    if (thePermissions === "superadmin" || thePermissions === "teacher") {
+      fetchStudents();
+    }
+  }, [commentsTrigger]);
+
   const handleKeyDown = (event: any) => {
     if (event.key === "Escape") {
       setSeeSlides(false);
@@ -298,12 +301,15 @@ export default function EnglishClassCourse2({
   };
   const fetchStudents = async () => {
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
-        headers: actualHeaders,
-      });
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${myId}`,
+        {
+          headers: actualHeaders,
+        }
+      );
       setStudentsList(response.data.listOfStudents);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
+      notifyError("Erro ao encontrar alunos");
     }
   };
 
@@ -335,18 +341,12 @@ export default function EnglishClassCourse2({
       );
       var com = [];
       var myCom = [];
-      if (response.data.comments.length > 0) {
-        com = response.data.comments;
-      } else {
-      }
-      if (response.data.myComments.length > 0) {
-        myCom = response.data.myComments;
-      }
+      com = response.data.comments || [];
+      myCom = response.data.myComments | [];
       setComments(com);
       setMyComments(myCom);
     } catch (error) {
-      console.log(error, "Erro ao buscar comentários");
-      // onLoggOut();
+      console.error(error, "Erro ao buscar comentários");
     }
   };
   const sendComment = async () => {
@@ -364,20 +364,18 @@ export default function EnglishClassCourse2({
 
       notifyError(
         "Comentário enviado. Você será respondido em breve!",
-        secondaryColor()
+        partnerColor()
       );
       setComment("");
       getComments();
     } catch (error) {
-      console.log(error, "Erro ao comentar");
-      // onLoggOut();
+      console.error(error, "Erro ao comentar");
+      notifyError("Erro ao comentar");
     }
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      getComments();
-    }, 500);
+    getComments();
   }, [commentsTrigger]);
 
   const handleShowCourses = () => {
@@ -392,11 +390,11 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      window.alert("Comentário excluído!");
+      notifyError("Comentário excluído!", "green");
       setComment("");
       getComments();
     } catch (error) {
-      console.log(error, "Erro ao comentar");
+      console.error(error, "Erro ao comentar");
       // onLoggOut();
     }
   };
@@ -407,7 +405,6 @@ export default function EnglishClassCourse2({
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
-    console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
   return (
@@ -415,7 +412,7 @@ export default function EnglishClassCourse2({
       <Helmets text={classTitle} />
 
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <>
           <div
@@ -429,7 +426,7 @@ export default function EnglishClassCourse2({
               style={{
                 textDecoration: "none",
                 fontSize: "10px",
-                color: primaryColor(),
+                color: "#000",
               }}
               to="/english-courses"
             >
@@ -440,7 +437,7 @@ export default function EnglishClassCourse2({
               style={{
                 textDecoration: "none",
                 fontSize: "10px",
-                color: primaryColor(),
+                color: "#000",
                 cursor: "pointer",
               }}
               onClick={backToCourses}
@@ -453,7 +450,7 @@ export default function EnglishClassCourse2({
                 textDecoration: "none",
                 fontStyle: "italic",
                 fontSize: "10px",
-                color: secondaryColor(),
+                color: partnerColor(),
               }}
             >
               {theclass.title}
@@ -472,7 +469,7 @@ export default function EnglishClassCourse2({
             {previousClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={PVSClass}
@@ -491,25 +488,29 @@ export default function EnglishClassCourse2({
             <HOne
               style={{
                 fontSize: "18px",
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
               }}
             >
               {`${order + 1}- ${theclass.title}`}{" "}
-              <i
-                style={{
-                  color: "white",
-                  backgroundColor: "green",
-                  padding: "1px",
-                  borderRadius: "50%",
-                  margin: "0 0.5rem",
-                }}
-                className={isCompleted ? `fa fa-check` : `fa fa-circle`}
-              />
+              {isCompleted && (
+                <i
+                  style={{
+                    color: "white",
+                    backgroundColor: partnerColor(),
+                    padding: "1px",
+                    borderRadius: "50%",
+                    margin: "0 0.5rem",
+                  }}
+                  className={`fa fa-check`}
+                />
+              )}
             </HOne>
 
             {nextClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={NXTClass}
@@ -526,6 +527,14 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
+          <ArvinButton
+            style={{ margin: "1rem auto", display: "block" }}
+            onClick={() => {
+              setSeeSlides(!seeSlides);
+            }}
+          >
+            See Board
+          </ArvinButton>
           <label>
             <input
               style={{
@@ -542,21 +551,6 @@ export default function EnglishClassCourse2({
               ? "  Completed"
               : "  Not Completed"}
           </label>
-          {thePermissions == "superadmin" && (
-            <div
-              onClick={handleCurrentClass}
-              style={{
-                margin: "5px",
-                padding: "5px",
-                cursor: "pointer",
-                backgroundColor: "#eee",
-                display: "inline",
-              }}
-            >
-              handleCurrentClass
-            </div>
-          )}
-
           {
             <div
               className="box-shadow-white"
@@ -576,7 +570,11 @@ export default function EnglishClassCourse2({
             >
               <span
                 style={{
-                  display: thePermissions === "superadmin" ? "block" : "none",
+                  display:
+                    thePermissions === "superadmin" ||
+                    thePermissions === "teacher"
+                      ? "block"
+                      : "none",
                   marginRight: "10px",
                 }}
               >
@@ -612,7 +610,7 @@ export default function EnglishClassCourse2({
           {theclass.image && (
             <ImgLesson src={theclass.image} alt={theclass.subtitle} />
           )}
-          {theclass.video && (
+          {theclass.video && isArthurVincent && (
             <div
               style={{
                 display: "flex",
@@ -623,21 +621,20 @@ export default function EnglishClassCourse2({
               <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
             </div>
           )}
-          {theclass.description && (
+          {/* {theclass.description && (
             <p
               style={{
                 margin: "1rem 0",
                 padding: "0.3rem",
                 backgroundColor: "#f9f9f9",
                 fontSize: "1.1rem",
-                fontFamily: textTitleFont(),
                 fontWeight: 600,
                 textAlign: "center",
               }}
             >
               {theclass.description}
             </p>
-          )}
+          )} */}
           {theclass.elements &&
             theclass.elements
               .sort((a: any, b: any) => a.order - b.order)
@@ -650,13 +647,13 @@ export default function EnglishClassCourse2({
                         alignItems: "center",
                       }}
                     >
-                      <HTwo>{index + 1 + "- " + element.subtitle}</HTwo>
+                      <HTwo>{element.subtitle}</HTwo>
                     </div>
                   )}
                   {element.image && element.subtitle && (
                     <ImgLesson src={element.image} alt={element.subtitle} />
                   )}
-                  {element.video && element.subtitle && (
+                  {element.video && element.subtitle && isArthurVincent && (
                     <VideoLessonModel element={element} />
                   )}
 
@@ -787,7 +784,7 @@ export default function EnglishClassCourse2({
             {previousClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={PVSClass}
@@ -806,7 +803,7 @@ export default function EnglishClassCourse2({
             {nextClass !== "123456" ? (
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   cursor: "pointer",
                 }}
                 onClick={NXTClass}
@@ -829,7 +826,7 @@ export default function EnglishClassCourse2({
               setSeeSlides(!seeSlides);
             }}
           >
-            See slides
+            See Board
           </ArvinButton>
           <div>
             <HTwo>{UniversalTexts.leaveAComment}</HTwo>
@@ -890,16 +887,20 @@ export default function EnglishClassCourse2({
                               {formatDateBr(new Date(comment.date))}
                             </span>
                           </div>
-                          {thePermissions == "superadmin" && (
-                            <span>
-                              <ArvinButton
-                                onClick={() => deleteComment(comment.id)}
-                                color="red"
-                              >
-                                <i className="fa fa-trash" aria-hidden="true" />
-                              </ArvinButton>
-                            </span>
-                          )}
+                          {thePermissions == "superadmin" ||
+                            (thePermissions == "teacher" && (
+                              <span>
+                                <ArvinButton
+                                  onClick={() => deleteComment(comment.id)}
+                                  color="red"
+                                >
+                                  <i
+                                    className="fa fa-trash"
+                                    aria-hidden="true"
+                                  />
+                                </ArvinButton>
+                              </span>
+                            ))}
                         </div>
                       ))}
                     </div>
@@ -919,16 +920,20 @@ export default function EnglishClassCourse2({
                           }}
                         >
                           {comment.comment}{" "}
-                          {thePermissions == "superadmin" && (
-                            <span>
-                              <ArvinButton
-                                onClick={() => deleteComment(comment.id)}
-                                color="red"
-                              >
-                                <i className="fa fa-trash" aria-hidden="true" />
-                              </ArvinButton>
-                            </span>
-                          )}
+                          {thePermissions == "superadmin" ||
+                            (thePermissions == "teacher" && (
+                              <span>
+                                <ArvinButton
+                                  onClick={() => deleteComment(comment.id)}
+                                  color="red"
+                                >
+                                  <i
+                                    className="fa fa-trash"
+                                    aria-hidden="true"
+                                  />
+                                </ArvinButton>
+                              </span>
+                            ))}
                         </li>
                       ))}
                     </ul>
@@ -955,56 +960,53 @@ export default function EnglishClassCourse2({
           </label>
         </>
       )}
-      {/* Teacher */}
-      {/* Teacher */}
-      {/* Teacher */}
-      {/* Teacher */}
-      {/* Teacher */}
-      {seeSlides && (
-        <>
-          <div
+      <>
+        <div
+          onClick={() => {
+            setSeeSlides(!seeSlides);
+          }}
+          style={{
+            backgroundColor: transparentBlack(),
+            zIndex: 100000000000,
+            position: "fixed",
+            top: 0,
+            display: seeSlides ? "block" : "none",
+            left: 0,
+            width: "100000000vw",
+            height: "100000000vw",
+          }}
+        />
+        <div
+          style={{
+            padding: "2rem",
+            position: "fixed",
+            display: seeSlides ? "block" : "none",
+            top: 5,
+            left: 5,
+            width: "94vw",
+            border: "1px grey solid",
+            borderRadius: "6px",
+            height: "97vh",
+            zIndex: 10000000000000,
+            backgroundColor: "white",
+          }}
+        >
+          <Xp
+            style={{ margin: "1rem auto", display: "block" }}
             onClick={() => {
               setSeeSlides(!seeSlides);
             }}
-            style={{
-              backgroundColor: transparentBlack(),
-              zIndex: 100000000000,
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100000000vw",
-              height: "100000000vw",
-            }}
-          />
+          >
+            x
+          </Xp>
           <div
             style={{
-              padding: "2rem",
-              position: "fixed",
-              top: 5,
-              left: 5,
-              width: "94vw",
-              border: "1px grey solid",
-              borderRadius: "6px",
-              height: "97vh",
-              zIndex: 10000000000000,
-              backgroundColor: "white",
+              height: "75vh",
+              overflow: "auto",
             }}
           >
-            <Xp
-              style={{ margin: "1rem auto", display: "block" }}
-              onClick={() => {
-                setSeeSlides(!seeSlides);
-              }}
-            >
-              x
-            </Xp>
-            <div
-              style={{
-                height: "75vh",
-                overflow: "auto",
-              }}
-            >
-              {theclass.elements
+            {theclass.elements &&
+              theclass.elements
                 .sort((a: any, b: any) => a.order - b.order)
                 .map((element: any, index: number) => (
                   <div key={index} style={{ marginBottom: "10px" }}>
@@ -1012,6 +1014,7 @@ export default function EnglishClassCourse2({
                       <SentenceLessonModelSlide
                         studentId={studentID}
                         element={element}
+                        selectedVoice={selectedVoice}
                         headers={headers}
                       />
                     ) : element.type === "text" ? (
@@ -1038,10 +1041,9 @@ export default function EnglishClassCourse2({
                     )}
                   </div>
                 ))}
-            </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
     </div>
   );
 }

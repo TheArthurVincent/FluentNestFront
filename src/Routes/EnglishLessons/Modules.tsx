@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  HOne,
-  RouteDivCourses,
-} from "../../Resources/Components/RouteBox";
+import { HOne, RouteDivCourses } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Link, Outlet, Route, Routes, useLocation } from "react-router-dom";
@@ -12,7 +9,11 @@ import {
   pathGenerator,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
-import { darkGreyColor, secondaryColor } from "../../Styles/Styles";
+import {
+  darkGreyColor,
+  partnerColor,
+  textTitleFont,
+} from "../../Styles/Styles";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import { CourseCard } from "./EnglishCourses.Styled";
 import EnglishClassCourse2 from "./Class";
@@ -141,7 +142,14 @@ export default function Modules({
       </Routes>
       {displayRouteDiv ? (
         <div>
-          <HOne>{title}</HOne>
+          <HOne
+            style={{
+              fontFamily: textTitleFont(),
+              color: partnerColor(),
+            }}
+          >
+            {title}
+          </HOne>
           {loading ? (
             <>...</>
           ) : (
@@ -174,7 +182,7 @@ export default function Modules({
               </span>
               <span
                 style={{
-                  color: secondaryColor(),
+                  color: partnerColor(),
                   fontSize: "10px",
                   fontStyle: "italic",
                   textDecoration: "none",
@@ -231,7 +239,7 @@ export default function Modules({
                                 <i
                                   style={{
                                     color: "white",
-                                    backgroundColor: "green",
+                                    backgroundColor: partnerColor(),
                                     borderRadius: "50%",
                                     margin: "0 0.5rem",
                                   }}

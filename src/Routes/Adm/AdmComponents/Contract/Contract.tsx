@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Button, CircularProgress, TextField } from "@mui/material";
 import { HeadersProps } from "../../../../Resources/types.universalInterfaces";
 import {
   backDomain,
   formatDateBrContract,
-  onLoggOut,
 } from "../../../../Resources/UniversalComponents";
 import {
   formatCPF,
   formatPhoneNumber,
-  MyButton,
 } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
-import { CircularProgress } from "@mui/material";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { localStorageLoggedIn } from "../../../../App";
+import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function Contract({ headers }: HeadersProps) {
-  const [studentsList, setStudentsList] = useState<any>([]);
+  const [studentsList, setStudentsList] = useState<any[]>([]);
   const [newID, setNewID] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<string>("");
@@ -26,67 +26,107 @@ export function Contract({ headers }: HeadersProps) {
   const [fee, setFee] = useState<number>(0);
   const [weeklyClasses, setWeeklyClasses] = useState<number>(0);
   const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [loading, setLoading] = useState<Boolean>(false);
-
-  const handleStudentChange = async (event: any) => {
-    setNewID(event.target.value);
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/student/${event.target.value}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-      setName(response.data.formattedStudentData.fullname);
-      setFee(response.data.formattedStudentData.fee);
-      setWeeklyClasses(response.data.formattedStudentData.weeklyClasses);
-      setEmail(response.data.formattedStudentData.email);
-      setPhoneNumber(response.data.formattedStudentData.phoneNumber);
-      setDoc(response.data.formattedStudentData.doc);
-      setDateOfBirth(response.data.formattedStudentData.dateOfBirth);
-    } catch (error) {
-      alert("Erro ao encontrar alunos");
-      onLoggOut();
-    }
-  };
+  const [customTerms, setCustomTerms] = useState<string[]>([]);
+  const [editing, setEditing] = useState<boolean>(false);
+  const [signed, setSigned] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const actualHeaders = headers || {};
 
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
-        headers: actualHeaders,
-      });
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${localStorageLoggedIn.id}`,
+        { headers: actualHeaders }
+      );
       setStudentsList(response.data.listOfStudents);
-      setLoading(false);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
-      onLoggOut();
+      notifyError("Erro ao encontrar alunos");
     }
-  };
-
-  const liStyle = { listStyle: "upper-roman inside", marginBottom: "4px" };
-  const ulStyle = { padding: " 0 1rem" };
-  const topSignature = {
-    width: "25rem",
-    borderTop: "2px solid",
-    paddingTop: "5px",
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchStudents();
   }, []);
 
+  const handleStudentChange = async (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const studentID = event.target.value;
+    setNewID(studentID);
+
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/contract/${event.target.value}`,
+        { headers: actualHeaders }
+      );
+
+      const data = response.data.contract;
+      setName(data.fullname);
+      setFee(data.fee);
+      setWeeklyClasses(data.weeklyClasses);
+      setEmail(data.email);
+      setPhoneNumber(data.phoneNumber);
+      setDoc(data.doc);
+      setDateOfBirth(data.dateOfBirth);
+      setCustomTerms(data.contractTerms || []);
+      setSigned(data.signed || false);
+    } catch (error) {
+      notifyError("Erro ao carregar contrato do aluno.");
+    }
+  };
+
+  const handleSaveContractTerms = async () => {
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/contract/${newID}`,
+        {
+          contractTerms: customTerms,
+          fullname: name,
+          fee,
+          weeklyClasses,
+          dateOfBirth,
+          phoneNumber,
+          email,
+        },
+        { headers: actualHeaders }
+      );
+      notifyError("Contrato atualizado com sucesso!", "green");
+      setEditing(false);
+    } catch (err) {
+      notifyError("Erro ao salvar contrato.", "red");
+    }
+  };
+
+  const handleSignContract = async () => {
+    try {
+      await axios.put(`${backDomain}/api/v1/contract/sign/${newID}`, null, {
+        headers: actualHeaders,
+      });
+      notifyError("Contrato assinado com sucesso!", "green");
+      setSigned(true);
+    } catch (err) {
+      notifyError("Erro ao assinar contrato.", "red");
+    }
+  };
+
   const generatePDF = () => {
     window.print();
+  };
+
+  const liStyle = { listStyle: "upper-roman", marginBottom: "8px" };
+  const topSignature = {
+    width: "25rem",
+    borderTop: "2px solid",
+    paddingTop: "5px",
   };
 
   return (
     <div>
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <div
           className="no-print"
@@ -97,199 +137,281 @@ export function Contract({ headers }: HeadersProps) {
             padding: "0 5rem",
           }}
         >
-          <select
-            onChange={handleStudentChange}
-            name="students"
-            className="no-print"
-            id=""
-            value={newID}
-          >
-            {studentsList.map((student: any, index: number) => {
-              return (
-                <option key={index} value={student.id}>
-                  {student.name + " " + student.lastname}
-                </option>
-              );
-            })}
+          <select onChange={handleStudentChange} value={newID}>
+            <option value="">Selecione um aluno</option>
+            {studentsList.map((student, index) => (
+              <option key={index} value={student.id}>
+                {student.name + " " + student.lastname}
+              </option>
+            ))}
           </select>
-          <span className="no-print">
-            <MyButton onClick={generatePDF}>Gerar PDF</MyButton>
-          </span>
+
+          <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: editing ? "red" : partnerColor(),
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: editing
+                    ? "rgba(251, 85, 85, 0)"
+                    : partnerColor(),
+                },
+              }}
+              onClick={() => setEditing(!editing)}
+            >
+              {editing ? "Cancelar Edição" : "Editar Termos"}
+            </Button>
+
+            {editing && (
+              <Button
+                variant="contained"
+                sx={{
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: partnerColor(),
+                  },
+                }}
+                onClick={handleSaveContractTerms}
+              >
+                Salvar
+              </Button>
+            )}
+
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: partnerColor(),
+                color: "#fff",
+                "&:hover": {
+                  backgroundColor: partnerColor(),
+                },
+              }}
+              onClick={generatePDF}
+            >
+              Gerar PDF
+            </Button>
+          </div>
         </div>
       )}
-      <div style={{ fontSize: "11px", padding: "1rem" }} id="contract-content">
-        <HOne style={{ textAlign: "center" }}>
+
+      <div style={{ padding: "1rem", fontSize: "11px" }} id="contract-content">
+        <HOne style={{ fontFamily: textTitleFont(), color: partnerColor() }}>
           Contrato de Aulas Particulares
         </HOne>
-        <HTwo
+
+        <div
           style={{
-            paddingBottom: "2rem 0",
-            textAlign: "center",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            fontWeight: "bold",
+            marginBottom: "1rem",
           }}
         >
+          {signed ? (
+            <>
+              {/* <CheckCircleIcon style={{ color: "green" }} /> */}
+              <span style={{ color: "green" }}>Assinado</span>
+            </>
+          ) : (
+            <>
+              {/* <CancelIcon style={{ color: "red" }} /> */}
+              <span style={{ color: "red" }}>Não assinado</span>
+              <button
+                className="no-print"
+                onClick={handleSignContract}
+                style={{
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  padding: "4px 10px",
+                  border: "none",
+                  borderRadius: "6px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                  cursor: "pointer",
+                }}
+              >
+                {/* <BorderColorIcon fontSize="small" /> */}
+                Assinado?
+              </button>
+            </>
+          )}
+        </div>
+
+        <HTwo style={{ paddingBottom: "2rem", textAlign: "center" }}>
           Dados do Aluno
         </HTwo>
+
         <div
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr 1fr",
             textAlign: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
-          <p>
-            <strong>Nome do aluno:</strong> {name}
-          </p>
-          <p>
-            <strong>Data de nascimento:</strong>{" "}
-            {formatDateBrContract(dateOfBirth)}
-          </p>
-          <p>
-            <strong>Telefone:</strong> {formatPhoneNumber(phoneNumber)}
-          </p>
-          <p>
-            <strong>E-mail:</strong> {email}
-          </p>
-          <p>
-            <strong>CPF:</strong> {formatCPF(doc)}
-          </p>{" "}
+          {editing ? (
+            <>
+              <TextField
+                label="Nome"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <TextField
+                label="Nascimento"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                value={dateOfBirth?.substring(0, 10)}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+              />
+              <TextField
+                label="Telefone"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+              <TextField
+                label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField label="CPF" value={doc} disabled />
+            </>
+          ) : (
+            <>
+              <p>
+                <strong>Nome:</strong> {name}
+              </p>
+              <p>
+                <strong>Nascimento:</strong> {formatDateBrContract(dateOfBirth)}
+              </p>
+              <p>
+                <strong>Telefone:</strong> {formatPhoneNumber(phoneNumber)}
+              </p>
+              <p>
+                <strong>Email:</strong> {email}
+              </p>
+              <p>
+                <strong>CPF:</strong> {formatCPF(doc)}
+              </p>
+            </>
+          )}
         </div>
-        <HTwo
-          style={{
-            marginTop: "1rem",
-            paddingBottom: "2rem 0",
-            textAlign: "center",
-          }}
-        >
+
+        <HTwo style={{ marginTop: "1rem", textAlign: "center" }}>
           Detalhes do Contrato
         </HTwo>
+
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "1fr 1fr 1fr",
+            gridTemplateColumns: "1fr 1fr",
             textAlign: "center",
-            alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
-          <p>
-            <strong>Número de aulas semanais (55min):</strong> {weeklyClasses}
-          </p>
-          <p>
-            <strong>Valor acordado:</strong> R$ {fee}
-          </p>
+          {editing ? (
+            <>
+              <TextField
+                label="Nº de aulas por semana"
+                type="number"
+                value={weeklyClasses}
+                onChange={(e) => setWeeklyClasses(parseInt(e.target.value))}
+              />
+              <TextField
+                label="Mensalidade (R$)"
+                type="number"
+                value={fee}
+                onChange={(e) => setFee(parseFloat(e.target.value))}
+              />
+            </>
+          ) : (
+            <>
+              <p>
+                <strong>Nº de aulas por semana:</strong> {weeklyClasses}
+              </p>
+              <p>
+                <strong>Valor acordado:</strong> R$ {fee}
+              </p>
+            </>
+          )}
         </div>
-        <HTwo
-          style={{
-            marginTop: "1rem",
-            paddingBottom: "1rem 0",
-            textAlign: "center",
-          }}
-        >
+
+        <HTwo style={{ marginTop: "1rem", textAlign: "center" }}>
           Termos do Contrato
         </HTwo>
-        <ul style={ulStyle}>
-          <li style={{ listStyle: "none" }}>
-            <ul style={ulStyle}>
-              <li style={liStyle}>
-                As aulas terão duração de 55 minutos, e os links para as aulas
-                estão disponíveis no Portal do Aluno;
-              </li>
-              <li style={liStyle}>
-                O aluno também terá o direito de participar de aulas coletivas,
-                além das aulas particulares contratadas;
-                <p
+
+        {editing ? (
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.8rem" }}
+          >
+            {customTerms.map((term, index) => (
+              <div
+                key={index}
+                style={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "0.5rem",
+                }}
+              >
+                <span style={{ fontWeight: "bold", minWidth: "2rem" }}>
+                  {String.fromCharCode(73 + index)}
+                </span>
+                <textarea
+                  value={term}
+                  onChange={(e) => {
+                    const updated = [...customTerms];
+                    updated[index] = e.target.value;
+                    setCustomTerms(updated);
+                  }}
+                  style={{ flex: 1, padding: "6px" }}
+                />
+                <button
+                  className="no-print"
+                  onClick={() => {
+                    const updated = [...customTerms];
+                    updated.splice(index, 1);
+                    setCustomTerms(updated);
+                  }}
                   style={{
-                    fontStyle: "italic",
-                    listStyle: "square",
-                    fontSize: "10px",
-                    padding: "0 2rem",
+                    background: "red",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "4px",
+                    padding: "2px 6px",
+                    cursor: "pointer",
                   }}
                 >
-                  Esta aula extra é considerada compensação por aulas perdidas
-                  pelo aluno, e pelos feriados, nos quais não haverá aulas;
-                </p>
+                  X
+                </button>
+              </div>
+            ))}
+            <button
+              onClick={() => setCustomTerms([...customTerms, ""])}
+              style={{
+                backgroundColor: partnerColor(),
+                color: "#fff",
+                padding: "6px 12px",
+                borderRadius: "6px",
+                border: "none",
+                cursor: "pointer",
+                marginTop: "1rem",
+              }}
+            >
+              + Adicionar cláusula
+            </button>
+          </div>
+        ) : (
+          <ol style={{ padding: "0 2rem", marginTop: "1rem" }}>
+            {customTerms.map((term, index) => (
+              <li key={index} style={liStyle}>
+                {term}
               </li>
-              <li style={liStyle}>
-                Em dias de feriado nacional, não haverá aulas;
-              </li>{" "}
-              <li style={liStyle}>
-                Nos dias entre 24/12 e 01/01, não haverá aulas;
-              </li>{" "}
-              <li style={liStyle}>
-                Se o aluno não puder comparecer à aula, deve informar o
-                professor com, no mínimo, 24 horas de antecedência;
-              </li>
-              <li style={liStyle}>
-                Se o aluno não avisar ao professor com tal antecedência, o
-                professor não terá a obrigação de fazer a reposição da aula
-                particular;
-              </li>
-              <li style={liStyle}>
-                Se o aluno avisar ao professor com tal antecedência, o aluno
-                deve bater uma meta de 1000 pontos em flashcards para que seja
-                aberta a agenda de reposições;
-              </li>{" "}
-              <li style={liStyle}>
-                Se o aluno perder a aula de reposição, esta{" "}
-                <strong>não poderá mais ser reposta</strong>;
-              </li>
-              <li style={liStyle}>
-                Em caso de falta <strong>do professor</strong>, este reporá a
-                aula ao aluno em horário combinado por ambos.
-              </li>
-              <li style={liStyle}>
-                Os horários disponíveis para reposição de aula são estabelecidos
-                pelo professor;
-              </li>
-              <li style={liStyle}>
-                Caberá ao aluno agendar sua aula no calendário após bater a meta
-                de reposição.
-              </li>
-              <li style={liStyle}>
-                O aluno terá direito aos descontos oferecidos na aba "Ranking",
-                por avanço de níveis ou posição no ranking de alunos, conforme o
-                critério estabelecido no mês anterior à reivindicação do
-                desconto.
-              </li>
-              <li style={liStyle}>
-                Caso o aluno faça uma recomendação ao professor, e esta resulte
-                em fechamento de contrato, o aluno receberá um desconto de 10%
-                em relação à mensalidade do aluno recomendado. Este desconto
-                ocorrerá uma vez, no mês seguinte ao fechamento do contrato do
-                aluno recomendado.
-              </li>
-              <li style={liStyle}>
-                Em caso de cancelamento do curso, o aluno deve avisar o
-                professor com pelo menos <strong>1 mês de antecedência</strong>,
-                o que significa que se o aluno decidir encerrar o curso em
-                março, por exemplo, este deverá ainda pagar a parcela de abril;
-              </li>
-              <li style={liStyle}>
-                Este mês extra também representa mais um mês de aula, caso o
-                aluno deseje. Conforme o exemplo anterior, o aluno poderá fazer
-                as aulas de abril.
-              </li>
-              <li style={liStyle}>
-                Após a finalização oficial do curso, o aluno terá uma semana
-                para baixar todo o material produzido nas aulas. Após este
-                prazo, o mesmo será definitivamente excluído.
-              </li>
-              <li style={liStyle}>
-                O aluno deve se comprometer a realizar as atividades propostas
-                pelo professor para melhor desenvolvimento do curso;
-              </li>
-            </ul>
-          </li>
-        </ul>
-        <HTwo
-          style={{
-            textAlign: "center",
-          }}
-        >
-          Assinaturas
-        </HTwo>
+            ))}
+          </ol>
+        )}
+
+        <HTwo style={{ textAlign: "center" }}>Assinaturas</HTwo>
         <div
           style={{
             display: "flex",
@@ -302,16 +424,60 @@ export function Contract({ headers }: HeadersProps) {
           <p style={topSignature}> {name} (ou RESPONSÁVEL) ___/___/___</p>
           <div>
             <img
-              style={{
-                maxWidth: "6rem",
-                borderBottom: "solid 2px",
-              }}
+              style={{ maxWidth: "6rem", borderBottom: "solid 2px" }}
               src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
               alt="signatureArth"
             />
             <p>ASSINATURA DO PROFESSOR</p>
           </div>
         </div>
+      </div>
+      <div className="no-print" style={{ display: "flex", gap: "1rem" }}>
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: editing ? "red" : partnerColor(),
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: editing
+                ? "rgba(251, 85, 85, 0)"
+                : partnerColor(),
+            },
+          }}
+          onClick={() => setEditing(!editing)}
+        >
+          {editing ? "Cancelar Edição" : "Editar Termos"}
+        </Button>
+
+        {editing && (
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              "&:hover": {
+                backgroundColor: partnerColor(),
+              },
+            }}
+            onClick={handleSaveContractTerms}
+          >
+            Salvar
+          </Button>
+        )}
+
+        <Button
+          variant="contained"
+          sx={{
+            backgroundColor: partnerColor(),
+            color: "#fff",
+            "&:hover": {
+              backgroundColor: partnerColor(),
+            },
+          }}
+          onClick={generatePDF}
+        >
+          Gerar PDF
+        </Button>
       </div>
       <Helmets text={`Contrato de Aulas Particulares | ${name}`} />
     </div>

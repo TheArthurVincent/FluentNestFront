@@ -26,13 +26,14 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-export default function SignUp() {
+export default function SignUpTeacher() {
   const [form, setForm] = useState({
     name: "",
     lastname: "",
     username: "",
     phoneNumber: "",
     doc: "",
+    permissions: "teacher",
     email: "",
     dateOfBirth: "",
     password: "",
@@ -105,11 +106,8 @@ export default function SignUp() {
 
     try {
       const response = await axios.post(`${backDomain}/api/v1/students`, form);
-
       notifyError(`Registrado!`, "green");
-
       console.log("Dados completos:", response.data);
-
       setTimeout(() => {
         login();
       }, 1000);

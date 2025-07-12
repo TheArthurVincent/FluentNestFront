@@ -7,7 +7,7 @@ import {
   onLoggOut,
   updateInfo,
 } from "../../Resources/UniversalComponents";
-import { alwaysBlack, primaryColor, secondaryColor } from "../../Styles/Styles";
+import { alwaysBlack, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { NavLink } from "react-router-dom";
 import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
@@ -139,7 +139,7 @@ export function MyProfile({ headers }: HeadersProps) {
         { newPassword },
         { headers: actualHeaders }
       );
-      notifyError("Senha editada com sucesso!", primaryColor());
+      notifyError("Senha editada com sucesso!", "#000");
       setConfirmPassword("");
       setNewPassword("");
     } catch (error) {
@@ -210,7 +210,7 @@ export function MyProfile({ headers }: HeadersProps) {
         <RouteDiv className="grid-flex">
           <Helmets text="My Profile" />
           {loading ? (
-            <CircularProgress style={{ color: secondaryColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           ) : (
             <>
               <div>
@@ -231,7 +231,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       updateInfo(user.id, headers);
                       window.location.reload();
                     }}
-                    color="navy"
+                    color={partnerColor()}
                     style={{
                       color: "#fff",
                       padding: "0.5rem 1rem",
@@ -241,7 +241,14 @@ export function MyProfile({ headers }: HeadersProps) {
                   >
                     <i className="fa fa-refresh" aria-hidden="true" />
                   </ArvinButton>
-                  <HOne>{UniversalTexts.myProfile}</HOne>
+                  <HOne
+                    style={{
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.myProfile}
+                  </HOne>
                   <AvatarUpload
                     user={user}
                     setUser={setUser}
@@ -283,7 +290,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         cursor: "pointer",
                         border: "none",
                         borderRadius: "4px",
-                        backgroundColor: secondaryColor(),
+                        backgroundColor: partnerColor(),
                         color: "#fff",
                       }}
                     >
@@ -303,9 +310,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     <br />
                     <span style={{ display: "block", marginTop: "0.5rem" }}>
                       Recomende a plataforma a alguém para que a pessoa ganhe{" "}
-
-                      <strong>20% de desconto {" "}</strong>nos 3 primeiros meses!
-
+                      <strong>20% de desconto </strong>nos 3 primeiros meses!
                     </span>
                   </li>
                   {myProfileList.map((item, index) => (
@@ -479,7 +484,14 @@ export function MyProfile({ headers }: HeadersProps) {
                 className="box-shadow-white"
               >
                 <div style={{ textAlign: "center" }}>
-                  <HOne>{UniversalTexts.newPassword}</HOne>
+                  <HOne
+                    style={{
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.newPassword}
+                  </HOne>
 
                   <TextField
                     value={newPassword}
@@ -490,14 +502,14 @@ export function MyProfile({ headers }: HeadersProps) {
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: secondaryColor() },
-                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "& fieldset": { borderColor: partnerColor() },
+                        "&:hover fieldset": { borderColor: partnerColor() },
                         "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(),
+                          borderColor: partnerColor(),
                         },
                       },
-                      "& label": { color: secondaryColor() },
-                      "& label.Mui-focused": { color: secondaryColor() },
+                      "& label": { color: partnerColor() },
+                      "& label.Mui-focused": { color: partnerColor() },
                     }}
                   />
                   <br />
@@ -511,14 +523,14 @@ export function MyProfile({ headers }: HeadersProps) {
                     fullWidth
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: secondaryColor() },
-                        "&:hover fieldset": { borderColor: secondaryColor() },
+                        "& fieldset": { borderColor: partnerColor() },
+                        "&:hover fieldset": { borderColor: partnerColor() },
                         "&.Mui-focused fieldset": {
-                          borderColor: secondaryColor(),
+                          borderColor: partnerColor(),
                         },
                       },
-                      "& label": { color: secondaryColor() },
-                      "& label.Mui-focused": { color: secondaryColor() },
+                      "& label": { color: partnerColor() },
+                      "& label.Mui-focused": { color: partnerColor() },
                     }}
                   />
                   <ArvinButton onClick={() => editStudentPassword()}>

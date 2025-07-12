@@ -3,7 +3,11 @@ import { AnimatedLi, HOne } from "../../../Resources/Components/RouteBox";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
-import { lightGreyColor, secondaryColor } from "../../../Styles/Styles";
+import {
+  lightGreyColor,
+  partnerColor,
+  textTitleFont,
+} from "../../../Styles/Styles";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { monthInQuestion } from "./RankingComponents";
 
@@ -159,7 +163,7 @@ export default function StudentsHistoryOfWinners({ headers, monthNow }) {
         </ArvinButton>
       )}
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         history.map((month, index) => (
           <ul
@@ -173,7 +177,16 @@ export default function StudentsHistoryOfWinners({ headers, monthNow }) {
               boxShadow: "0px 6px 10px rgba(0, 0, 0, 0.08)",
             }}
           >
-            <HOne>{month?.score[0]?.month}</HOne>
+            <HOne
+              style={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+                textAlign: "center",
+                margin: "0.5rem",
+              }}
+            >
+              {month?.score[0]?.month}
+            </HOne>
             {month.score.map((item, i) => (
               <ModelListItem
                 key={i}

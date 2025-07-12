@@ -1,33 +1,28 @@
 import React, { useEffect, useState } from "react";
 import {
-  primaryColor,
-  secondaryColor,
+  partnerColor,
+  textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
 import HTMLJustWrite from "../../../../Resources/Components/HTMLJustWrite";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
-import { Tooltip } from "@mui/material";
-import { notifyError } from "../Functions/FunctionLessons";
+import { notifyError, readText } from "../Functions/FunctionLessons";
 
 interface SentenceLessonModelProps {
   element: any;
   headers: MyHeadersType | null;
   studentId: string;
+  selectedVoice: string;
 }
 
 export default function SentenceLessonModelSlide({
   element,
+  selectedVoice,
   studentId,
   headers,
 }: SentenceLessonModelProps) {
-  const [newHWDescription, setNewHWDescription] = useState("");
-  const handleHWDescriptionChange = (htmlContent: any) => {
-    setNewHWDescription(htmlContent);
-  };
-
   const actualHeaders = headers || {};
 
   const addNewCards = async (frontText: string, backText: string) => {
@@ -56,16 +51,6 @@ export default function SentenceLessonModelSlide({
     }
   };
 
-  const [permissions, setPermissions] = useState<string>("");
-
-  useEffect(() => {
-    const user = localStorage.getItem("loggedIn");
-    if (user) {
-      const { permissions } = JSON.parse(user);
-      setPermissions(permissions);
-    }
-  }, []);
-
   return (
     <ul
       style={{
@@ -86,16 +71,25 @@ export default function SentenceLessonModelSlide({
             key={i}
           >
             <span>
-              {" "}
               <strong
                 style={{
-                  fontFamily: textTitleFont(),
                   fontSize: "2rem",
-                  color: !sentence.portuguese
-                    ? secondaryColor()
-                    : primaryColor(),
+                  color: !sentence.portuguese ? partnerColor() : "#000",
                 }}
               >
+                <span
+                  style={{
+                    fontSize: "2rem",
+                    cursor: "pointer",
+                    marginRight: "1rem",
+                    fontFamily: textTitleFont(),
+                  }}
+                  onClick={() => {
+                    readText(sentence.english, true, "en", selectedVoice);
+                  }}
+                >
+                  <i className="fa fa-volume-up" aria-hidden="true" />
+                </span>{" "}
                 {sentence.english}
               </strong>
             </span>
@@ -109,10 +103,29 @@ export default function SentenceLessonModelSlide({
               {sentence.portuguese}
             </span>
             <br />
-            <HTMLJustWrite
-              displayy={permissions === "superadmin" ? "block" : "none"}
-              onChange={handleHWDescriptionChange}
-            />
+            <textarea
+              placeholder="Blackboard"
+              style={{
+                width: "80%",
+                minHeight: "200px",
+                padding: "12px 16px",
+                borderRadius: "12px",
+                marginTop: "1rem",
+                border: "1px solid #ccc",
+                outline: "none",
+                fontSize: "3rem",
+                fontFamily: textTitleFont(),
+                color: "black",
+                backgroundColor: textPrimaryColorContrast(),
+                boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.5)",
+                transition: "all 0.3s ease",
+                resize: "vertical",
+              }}
+              onFocus={(e) =>
+                (e.target.style.border = `1px solid${partnerColor()}`)
+              }
+              onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
+            />{" "}
           </li>
         ))}
     </ul>

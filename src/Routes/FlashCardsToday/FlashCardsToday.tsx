@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Confetti from "react-confetti";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 interface ProgressCounterProps {
   flashcardsToday: number;
@@ -43,7 +43,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
         <motion.div
           style={{
             height: "100%",
-            backgroundColor: secondaryColor(),
+            backgroundColor: partnerColor(),
             borderRadius: "12px",
           }}
           initial={{ width: "0%" }}

@@ -20,12 +20,15 @@ import {
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import { secondaryColor } from "../../../Styles/Styles";
+import {
+  partnerColor,
+  textPrimaryColorContrast,
+  textTitleFont,
+} from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
-import { color } from "framer-motion";
 import { Streak } from "../../FlashCardsToday/Streak";
 
 interface FlashCardsPropsRv {
@@ -49,6 +52,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [backCardVisible, setBackCardVisible] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("nofilter");
   const [textColor, setTextColor] = useState<string>("#000");
+  const [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
   const [timerCardCount, setTimerCardCount] = useState(19);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
 
@@ -56,7 +60,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     const user = localStorage.getItem("loggedIn");
     // @ts-ignore
     if (user) {
-      var { permissions, id, name } = JSON.parse(user);
+      var { permissions, id, name, isArthurStudent } = JSON.parse(user);
+      setIsArthurStudent(isArthurStudent);
       setId(id);
       setPermissions(permissions);
       setName(name);
@@ -444,11 +449,18 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
-        <HOne style={{ textAlign: "center" }}>Review Flashcards</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          Review Flashcards
+        </HOne>
         <a
           style={{
             fontSize: "13px",
-            color: "#0066cc",
+            color: "#999",
             textDecoration: "none",
           }}
           href="/sentence-mining"
@@ -468,9 +480,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           style={{
             position: "relative",
             left: -15,
-            cursor: "pointer",
+            cursor: isArthurStudentBoolean ? "pointer" : "default",
             display: "flex",
             alignItems: "flex-end",
+            visibility: isArthurStudentBoolean ? "visible" : "hidden",
             minWidth: "100px",
             justifyContent: "center",
           }}
@@ -500,7 +513,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           {see && (
             <div ref={cardRef}>
               {loading ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div
                   style={{
@@ -516,7 +529,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         <ArvinButton
                           disabled={isDisabled}
                           cursor={isDisabled ? "not-allowed" : "pointer"}
-                          color={isDisabled ? "grey" : "navy"}
+                          color={isDisabled ? "grey" : partnerColor()}
+                          style={{
+                            color: textPrimaryColorContrast(),
+                          }}
                           onClick={() => {
                             setBackCardVisible(!backCardVisible);
                             setAnswer(!answer);
@@ -561,7 +577,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                   onClick={() =>
                                     reviewCard(cards[0]._id, "easy")
                                   }
-                                  color="green"
+                                  style={{
+                                    color: textPrimaryColorContrast(),
+                                  }}
+                                  color={partnerColor()}
                                 >
                                   I got it! (Acertei)
                                 </ArvinButton>
@@ -835,6 +854,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           </div>
         </div>
       </div>
+
       <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       <br />
 

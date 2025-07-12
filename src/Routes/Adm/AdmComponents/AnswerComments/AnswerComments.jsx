@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { secondaryColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function AllComments({ headers }) {
   const [comments, setComments] = useState([]);
@@ -74,9 +74,16 @@ export function AllComments({ headers }) {
 
   return (
     <Box sx={{ padding: 2 }}>
-      <HOne>Comentários Pendentes</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Comentários Pendentes
+      </HOne>
       {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         comments.map((comment, index) => (
           <Paper key={index} sx={{ padding: 2, marginBottom: 2 }} elevation={3}>
@@ -128,14 +135,14 @@ export function AllComments({ headers }) {
             rows={4}
             sx={{
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: secondaryColor() },
-                "&:hover fieldset": { borderColor: secondaryColor() },
+                "& fieldset": { borderColor: partnerColor() },
+                "&:hover fieldset": { borderColor: partnerColor() },
                 "&.Mui-focused fieldset": {
-                  borderColor: secondaryColor(),
+                  borderColor: partnerColor(),
                 },
               },
-              "& label": { color: secondaryColor() },
-              "& label.Mui-focused": { color: secondaryColor() },
+              "& label": { color: partnerColor() },
+              "& label.Mui-focused": { color: partnerColor() },
             }}
             variant="outlined"
             value={responseText}

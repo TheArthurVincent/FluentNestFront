@@ -1,15 +1,11 @@
-import React, { useState } from "react";
-import NewStudent from "./AdmComponents/FindStudentAssets/NewStudent";
+import React, { useEffect, useState } from "react";
+import AllStudents from "./AdmComponents/FindStudentAssets/NewStudent";
 import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import {
-  alwaysWhite,
-  secondaryColor,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import NewPost from "./AdmComponents/PostsManagement/NewPost";
 import NewTutoring from "./AdmComponents/ClassesManagement/NewTutoring";
@@ -20,61 +16,84 @@ import Invoice from "./AdmComponents/Invoice/Invoice";
 import Manual from "./AdmComponents/Manual/Manual";
 import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
 import TimelineComponent from "./AdmComponents/Timeline/Timeline";
+import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
+import { localStorageLoggedIn } from "../../App";
+import NewHomeworkAssignment from "./AdmComponents/ClassesManagement/NewHomework";
+import { Tooltip } from "@mui/material";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
 
+  const { id } = localStorageLoggedIn;
   const componentsToRender = [
     {
-      title: "Gestão de Aulas",
+      title: "Alunos",
       value: "1",
-      tooltip: "Marque uma aula particular.",
-      component: <NewTutoring headers={headers} />,
+      tooltip:
+        "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
+      component: <AllStudents id={id} headers={headers} />,
     },
     {
-      title: "Alunos",
+      title: "Aulas",
       value: "2",
       tooltip:
-        "Edite informações de alunos cadastrados, como dados, permissões e senha, ou mesmo exclua um aluno se necessário.",
-      component: <NewStudent headers={headers} />,
+        "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
+      component: <NewTutoring id={id} headers={headers} />,
     },
     {
-      title: "Responder Comentários",
+      title: "Homework",
       value: "3",
-      tooltip: "Responder Comentários",
+      tooltip:
+        "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
+      component: <NewHomeworkAssignment id={id} headers={headers} />,
+    },
+    {
+      title: "Comentários",
+      value: "4",
+      tooltip:
+        "Visualize e responda aos comentários enviados pelos alunos. Utilize este espaço para esclarecer dúvidas, dar feedbacks e manter uma comunicação ativa.",
       component: <AllComments headers={headers} />,
     },
     {
       title: "Postagens",
-      value: "4",
+      value: "5",
       tooltip:
-        "Faça uma nova postagem que será vista por todos os alunos na página inicial.",
+        "Crie novas postagens para serem exibidas na página inicial de todos os alunos. Compartilhe avisos, novidades, materiais extras ou mensagens importantes.",
       component: <NewPost headers={headers} />,
     },
     {
-      title: "Gerar contrato",
-      value: "5",
-      tooltip: "Geração do contrato de um aluno específico.",
+      title: "Aparência",
+      value: "6",
+      tooltip:
+        "Personalize a aparência da plataforma para os alunos. Ajuste cores, logotipo, textos e outros elementos visuais para deixar o ambiente com a identidade da sua escola.",
+      component: <WhiteLabelPreview headers={headers} />,
+    },
+    {
+      title: "Contrato",
+      value: "7",
+      tooltip:
+        "Gere contratos personalizados para cada aluno. Preencha os dados necessários e disponibilize o documento para assinatura ou download.",
       component: <Contract headers={headers} />,
     },
     {
-      title: "Gerar recibo",
-      value: "6",
-      tooltip: "Geração do recibo de um aluno específico.",
+      title: "Recibo",
+      value: "8",
+      tooltip:
+        "Emita recibos de pagamento para os alunos. Gere documentos oficiais com os dados do aluno, valores e datas de pagamento.",
       component: <Invoice headers={headers} />,
     },
-    {
-      title: "Manual do aluno",
-      value: "7",
-      tooltip: "Manual do aluno.",
-      component: <Manual />,
-    },
-    {
-      title: "Timeline",
-      value: "8",
-      tooltip: "O que está acontecendo com seu negócio",
-      component: <TimelineComponent headers={headers} />,
-    },
+    // {
+    //   title: "Manual do aluno",
+    //   value: "9",
+    //   tooltip: "Acesse o manual do aluno com orientações e dicas de uso da plataforma.",
+    //   component: <Manual />,
+    // },
+    // {
+    //   title: "Timeline",
+    //   value: "10",
+    //   tooltip: "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
+    //   component: <TimelineComponent headers={headers} />,
+    // },
   ];
 
   const handleChange = (event: any, newValue: string) => {
@@ -94,38 +113,45 @@ export function Adm({ headers }: HeadersProps) {
               backgroundColor: alwaysWhite(),
               justifyContent: "space-between",
             }}
-            sx={{ borderBottom: 1, borderColor: "divider" }}
+            sx={{
+              fontFamily: textTitleFont(),
+              color: partnerColor(),
+              "& .MuiTab-root": {
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              },
+              "& .Mui-selected": {
+                color: partnerColor(),
+              },
+              "& .MuiTabs-indicator": {
+                color: partnerColor(),
+                backgroundColor: partnerColor(),
+              },
+            }}
           >
             <TabList
               onChange={handleChange}
               variant="scrollable"
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
-              sx={{
-                fontFamily: textTitleFont(),
-                color: secondaryColor(),
-                "& .MuiTab-root": {
-                  fontFamily: textTitleFont(),
-                  color: secondaryColor(),
-                },
-                "& .Mui-selected": {
-                  color: secondaryColor(),
-                },
-                "& .MuiTabs-indicator": {
-                  backgroundColor: secondaryColor(),
-                },
-              }}
             >
               {componentsToRender.map((component, index) => {
                 return (
-                  <Tab
+                  <Tooltip
                     key={index + component.value}
-                    style={{
-                      fontWeight: 500,
-                    }}
-                    label={component.title}
-                    value={component.value}
-                  />
+                    title={component.tooltip}
+                    placement="top"
+                  >
+                    <Tab
+                      style={{
+                        color: partnerColor(),
+                        fontWeight:
+                          (index + 1).toString() === value ? 800 : 500,
+                      }}
+                      label={component.title}
+                      value={component.value}
+                    />
+                  </Tooltip>
                 );
               })}
             </TabList>

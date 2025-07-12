@@ -10,35 +10,36 @@ import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { CircularProgress } from "@mui/material";
 import { languages } from "./AddFlashONEFlashCard";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
 
-const AllCards = ({ headers }: HeadersProps) => {
-  const actualHeaders = headers || {};
+var AllCards = ({ headers }: HeadersProps) => {
+  var actualHeaders = headers || {};
 
-  const [addCardVisible, setAddCardVisible] = useState<boolean>(false);
-  const [cards, setCards] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [loadingStudents, setLoadingStudents] = useState<boolean>(true);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [newFront, setNewFront] = useState<string>("");
-  const [newBack, setNewBack] = useState<string>("");
-  const [newLGFront, setNewLGFront] = useState<string>("");
-  const [newLGBack, setNewLGBack] = useState<string>("");
-  const [cardIdToEdit, setCardIdToEdit] = useState<string>("");
-  const [newBackComments, setNewBackComments] = useState<string>("");
-  const [studentsList, setStudentsList] = useState<any>([]);
-  const [perm, setPermissions] = useState<string>("");
-  const [studentID, setStudentID] = useState<string>("");
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
+  var [addCardVisible, setAddCardVisible] = useState<boolean>(false);
+  var [cards, setCards] = useState<any[]>([]);
+  var [loading, setLoading] = useState<boolean>(true);
+  var [loadingStudents, setLoadingStudents] = useState<boolean>(true);
+  var [showModal, setShowModal] = useState<boolean>(false);
+  var [newFront, setNewFront] = useState<string>("");
+  var [newBack, setNewBack] = useState<string>("");
+  var [newLGFront, setNewLGFront] = useState<string>("");
+  var [newLGBack, setNewLGBack] = useState<string>("");
+  var [cardIdToEdit, setCardIdToEdit] = useState<string>("");
+  var [newBackComments, setNewBackComments] = useState<string>("");
+  var [studentsList, setStudentsList] = useState<any>([]);
+  var [perm, setPermissions] = useState<string>("");
+  var [studentID, setStudentID] = useState<string>("");
+  var [myId, setMyId] = useState<string>("");
+  var [page, setPage] = useState(0);
+  var [hasMore, setHasMore] = useState(true);
 
-  const fetchMoreCards = async (
+  var fetchMoreCards = async (
     isReset: boolean = false,
     customId?: string
   ): Promise<void> => {
-    const currentPage = isReset ? 0 : page;
-    const id = customId ?? studentID;
+    var currentPage = isReset ? 0 : page;
+    var id = customId ?? studentID;
 
     if (!id) return; // segurança extra
     if (!hasMore && !isReset) return;
@@ -51,13 +52,13 @@ const AllCards = ({ headers }: HeadersProps) => {
 
     setLoading(true);
     try {
-      const response = await axios.get(
+      var response = await axios.get(
         `${backDomain}/api/v1/cards/${id}?skip=${currentPage * 10}&limit=10`,
         { headers: actualHeaders }
       );
       setLoading(false);
 
-      const newCards = response.data.allFlashCards;
+      var newCards = response.data.allFlashCards;
       if (newCards.length === 0) {
         setHasMore(false);
       } else {
@@ -73,13 +74,13 @@ const AllCards = ({ headers }: HeadersProps) => {
     }
   };
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  var scrollRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = () => {
-    const element = scrollRef.current;
+  var handleScroll = () => {
+    var element = scrollRef.current;
     if (!element || loading || !hasMore) return;
 
-    const isBottom =
+    var isBottom =
       element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 
     if (isBottom) {
@@ -90,15 +91,16 @@ const AllCards = ({ headers }: HeadersProps) => {
   };
 
   useEffect(() => {
-    const user = localStorage.getItem("loggedIn");
-    const { id, permissions } = JSON.parse(user || "");
+    var user = localStorage.getItem("loggedIn");
+    var { id, permissions } = JSON.parse(user || "");
     setPermissions(permissions);
-    if (permissions == "superadmin") {
-      fetchStudents();
+    if (permissions == "superadmin" || permissions == "teacher") {
+      fetchStudents(id);
     }
 
     if (user) {
       setStudentID(id);
+      setMyId(id);
       setCards([]);
       setPage(0);
       setHasMore(true);
@@ -106,17 +108,17 @@ const AllCards = ({ headers }: HeadersProps) => {
     }
   }, []);
 
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newID = event.target.value;
+  var handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    var newID = event.target.value;
     setStudentID(newID);
     fetchMoreCards(true, newID);
   };
 
-  const fetchStudents = async () => {
+  var fetchStudents = async (id: string) => {
     setLoadingStudents(true);
     setAddCardVisible(!addCardVisible);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/students/`, {
+      var response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
         headers: actualHeaders,
       });
       setStudentsList(response.data.listOfStudents);
@@ -137,22 +139,22 @@ const AllCards = ({ headers }: HeadersProps) => {
   /////////////////
   /////////////////
 
-  const handleSeeModal = async (cardId: string) => {
+  var handleSeeModal = async (cardId: string) => {
     setShowModal(true);
     try {
-      const response = await axios.get(
+      var response = await axios.get(
         `${backDomain}/api/v1/flashcardfindone/${studentID}`,
         {
           params: { cardId },
           headers: actualHeaders,
         }
       );
-      const newf = response.data.flashcard.front.text;
-      const newb = response.data.flashcard.back.text;
-      const newlf = response.data.flashcard.front.language;
-      const newlb = response.data.flashcard.back.language;
-      const newIDcard = response.data.flashcard._id;
-      const newComments = response.data.flashcard.backComments;
+      var newf = response.data.flashcard.front.text;
+      var newb = response.data.flashcard.back.text;
+      var newlf = response.data.flashcard.front.language;
+      var newlb = response.data.flashcard.back.language;
+      var newIDcard = response.data.flashcard._id;
+      var newComments = response.data.flashcard.backComments;
 
       setNewBackComments(newComments);
       setNewFront(newf);
@@ -165,10 +167,10 @@ const AllCards = ({ headers }: HeadersProps) => {
       onLoggOut();
     }
   };
-  const handleEditCard = async (cardId: string) => {
+  var handleEditCard = async (cardId: string) => {
     setShowModal(true);
     try {
-      const response = await axios.put(
+      var response = await axios.put(
         `${backDomain}/api/v1/flashcard/${studentID}`,
         {
           newFront,
@@ -190,9 +192,9 @@ const AllCards = ({ headers }: HeadersProps) => {
     }
   };
 
-  const handleDeleteCard = async (cardId: string) => {
+  var handleDeleteCard = async (cardId: string) => {
     try {
-      const response = await axios.delete(
+      var response = await axios.delete(
         `${backDomain}/api/v1/flashcard/${studentID}`,
         {
           params: { cardId },
@@ -208,20 +210,20 @@ const AllCards = ({ headers }: HeadersProps) => {
     }
   };
 
-  const handleHideModal = () => {
+  var handleHideModal = () => {
     setShowModal(false);
   };
 
-  const [selectedVoice, setSelectedVoice] = useState<any>("");
-  const [changeNumber, setChangeNumber] = useState<boolean>(true);
+  var [selectedVoice, setSelectedVoice] = useState<any>("");
+  var [changeNumber, setChangeNumber] = useState<boolean>(true);
 
   useEffect(() => {
-    const storedVoice = localStorage.getItem("chosenVoice");
+    var storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
     console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
   useEffect(() => {
-    const element = scrollRef.current;
+    var element = scrollRef.current;
     if (element && element.scrollHeight <= element.clientHeight) {
       fetchMoreCards();
     }
@@ -250,7 +252,7 @@ const AllCards = ({ headers }: HeadersProps) => {
           {perm === "superadmin" && (
             <div style={{ display: "inline" }}>
               {loadingStudents ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <select onChange={handleStudentChange} value={studentID}>
                   {studentsList.map((student: any, index: number) => (
@@ -266,7 +268,7 @@ const AllCards = ({ headers }: HeadersProps) => {
 
         {/* Cards Section */}
         {loading ? (
-          <CircularProgress style={{ color: secondaryColor() }} />
+          <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           <div
             ref={scrollRef}

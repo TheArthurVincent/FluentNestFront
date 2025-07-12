@@ -4,7 +4,7 @@ import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import { CircularProgress } from "@mui/material";
 import { HOne } from "../../../Resources/Components/RouteBox";
-import { secondaryColor } from "../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../Styles/Styles";
 
 interface FlashcardItem {
   _id: string;
@@ -83,7 +83,7 @@ const ListeningHistory = ({ headers }: HeadersProps) => {
   }, []);
 
   if (loading) {
-    return <CircularProgress style={{ color: secondaryColor() }} />;
+    return <CircularProgress style={{ color: partnerColor() }} />;
   }
 
   const groupedListeningHistory = groupByDay2(listeningFlashcardHistory);
@@ -91,7 +91,14 @@ const ListeningHistory = ({ headers }: HeadersProps) => {
   return (
     <div className="flashcard-history-upper">
       <div>
-        <HOne>Listening Exercises</HOne>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          Listening Exercises
+        </HOne>
         {listeningFlashcardHistory.length > 0 ? (
           <div className="flashcard-history-list">
             {Object.entries(groupedListeningHistory).map(([date, group]) => (

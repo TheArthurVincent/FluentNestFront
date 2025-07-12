@@ -5,7 +5,6 @@ import {
   TopBarNavigation,
   TopBarNavigationBurger,
   BackgroundClick,
-  LogoStyle,
   Hamburguer,
 } from "./TopBar.Styled";
 import {
@@ -17,7 +16,7 @@ import {
 } from "../../Resources/UniversalComponents";
 
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
-import { primaryColor, secondaryColor } from "../../Styles/Styles";
+import { logoPartner, partnerColor } from "../../Styles/Styles";
 import { LinkItem } from "./TopBarTypes";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
@@ -25,6 +24,7 @@ import axios from "axios";
 import { Box, Modal } from "@mui/material";
 import { HThree, HTwo } from "../../Resources/Components/RouteBox";
 import socket, { registerUser } from "./socket";
+import { isArvin } from "../../App";
 
 export const TopBar: FC = () => {
   const [visible, setVisible] = useState<string>("none");
@@ -137,7 +137,7 @@ export const TopBar: FC = () => {
       title: "Listening",
       endpoint: "/listening",
       icon: "assistive-listening-systems",
-      display: "block",
+      display: isArvin ? "none" : "block",
       isLearning: true,
     },
     {
@@ -165,12 +165,12 @@ export const TopBar: FC = () => {
       display: "block",
       icon: "user-o",
     },
-    {
-      title: UniversalTexts.faq,
-      endpoint: "/faq",
-      icon: "question",
-      display: "block",
-    },
+    // {
+    //   title: UniversalTexts.faq,
+    //   endpoint: "/faq",
+    //   icon: "question",
+    //   display: "block",
+    // },
   ];
 
   const learningLinks = allLinksForUser
@@ -191,7 +191,7 @@ export const TopBar: FC = () => {
     setVisible(visible === "flex" ? "none" : "flex");
   };
   const location = useLocation();
-  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 1);
+  const myLogo = LogoSVG("#000", partnerColor(), 1);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
 
   const [selectedNotification, setSelectedNotification] = useState<any>({});
@@ -225,10 +225,26 @@ export const TopBar: FC = () => {
 
   return (
     <TopBarContainer>
-      <Hamburguer onClick={handleVisible}>☰</Hamburguer>
+      <Hamburguer
+        style={{
+          color: partnerColor(),
+        }}
+        onClick={handleVisible}
+      >
+        ☰
+      </Hamburguer>
       <SpanDisapear>
         <Link to="/">
-          <LogoStyle>{myLogo}</LogoStyle>
+          <img
+            style={{
+              height: "3rem",
+              width: "auto",
+              maxWidth: "100%",
+              objectFit: "contain",
+            }}
+            src={logoPartner()}
+            alt=""
+          />
         </Link>
       </SpanDisapear>
       <TopBarNavigationBurger
@@ -244,12 +260,10 @@ export const TopBar: FC = () => {
         >
           <NavLink
             style={{
-              color: location.pathname.includes("home")
-                ? primaryColor()
-                : primaryColor(),
+              color: location.pathname.includes("home") ? "#000" : "#000",
               paddingBottom: "5px",
               borderBottom: location.pathname.includes("home")
-                ? `solid 1px ${primaryColor()}`
+                ? `solid 1px ${"#000"}`
                 : "none",
               textDecoration: "none",
             }}
@@ -263,44 +277,42 @@ export const TopBar: FC = () => {
               {UniversalTexts.homePage}
             </span>
           </NavLink>
-          {tutoree &&
-            toTutoree.map((link, index) => {
-              return (
-                <NavLink
-                  key={index}
+          {toTutoree.map((link, index) => {
+            return (
+              <NavLink
+                key={index}
+                style={{
+                  color: location.pathname.includes(link.endpoint)
+                    ? partnerColor()
+                    : "#000",
+                  paddingBottom: "5px",
+                  cursor: location.pathname.includes(link.endpoint)
+                    ? "default"
+                    : "pointer",
+                  display: link.display,
+                  textDecoration: "none",
+                }}
+                to={link.endpoint}
+              >
+                <span
                   style={{
-                    color: location.pathname.includes(link.endpoint)
-                      ? secondaryColor()
-                      : primaryColor(),
-                    paddingBottom: "5px",
-                    cursor: location.pathname.includes(link.endpoint)
-                      ? "default"
-                      : "pointer",
-                    display: link.display,
-                    textDecoration: "none",
+                    textAlign: "center",
                   }}
-                  to={link.endpoint}
                 >
-                  <span
-                    style={{
-                      textAlign: "center",
-                    }}
-                  >
-                    {link.title}
-                  </span>
-                </NavLink>
-              );
-            })}
+                  {link.title}
+                </span>
+              </NavLink>
+            );
+          })}
           {allLinksForUser.map((link, index) => {
             return (
               <NavLink
                 key={index}
                 style={{
                   color: location.pathname.includes(link.endpoint)
-                    ? secondaryColor()
-                    : primaryColor(),
+                    ? partnerColor()
+                    : "#000",
                   paddingBottom: "5px",
-
                   cursor: location.pathname.includes(link.endpoint)
                     ? "default"
                     : "pointer",
@@ -323,7 +335,12 @@ export const TopBar: FC = () => {
 
         <div
           style={{
-            display: permissions == "superadmin" ? "block" : "none",
+            display:
+              permissions == "superadmin"
+                ? "block"
+                : permissions == "teacher"
+                ? "block"
+                : "none",
           }}
         >
           {toAdm.map((link, index) => {
@@ -331,8 +348,8 @@ export const TopBar: FC = () => {
               <NavLink
                 style={{
                   color: location.pathname.includes(link.endpoint)
-                    ? secondaryColor()
-                    : primaryColor(),
+                    ? partnerColor()
+                    : "#000",
                   paddingBottom: "5px",
 
                   cursor: location.pathname.includes(link.endpoint)
@@ -375,12 +392,11 @@ export const TopBar: FC = () => {
                 <SpanHover
                   style={{
                     cursor: "pointer",
-
                     color: linksToShow.some((link) =>
                       location.pathname.includes(link)
                     )
-                      ? secondaryColor()
-                      : primaryColor(),
+                      ? partnerColor()
+                      : "#000",
                   }}
                 >
                   <i className="fa fa-book" /> {UniversalTexts.learning}
@@ -397,32 +413,31 @@ export const TopBar: FC = () => {
                       left: "0",
                     }}
                   >
-                    {tutoree &&
-                      toTutoree.map((link, index) => {
-                        return (
-                          <NavLink
-                            key={index}
-                            style={{
-                              margin: "5px",
-                              color: location.pathname.includes(link.endpoint)
-                                ? secondaryColor()
-                                : primaryColor(),
-                              paddingBottom: "5px",
+                    {toTutoree.map((link, index) => {
+                      return (
+                        <NavLink
+                          key={index}
+                          style={{
+                            margin: "5px",
+                            color: location.pathname.includes(link.endpoint)
+                              ? partnerColor()
+                              : "#000",
+                            paddingBottom: "5px",
 
-                              cursor: location.pathname.includes(link.endpoint)
-                                ? "default"
-                                : "pointer",
-                              textDecoration: "none",
-                            }}
-                            to={link.endpoint}
-                          >
-                            <SpanHover>
-                              <i className={`fa fa-${link.icon}`} />
-                              {link.title}
-                            </SpanHover>
-                          </NavLink>
-                        );
-                      })}
+                            cursor: location.pathname.includes(link.endpoint)
+                              ? "default"
+                              : "pointer",
+                            textDecoration: "none",
+                          }}
+                          to={link.endpoint}
+                        >
+                          <SpanHover>
+                            <i className={`fa fa-${link.icon}`} />
+                            {link.title}
+                          </SpanHover>
+                        </NavLink>
+                      );
+                    })}
                     {allLinksForUser
                       .filter((link) => link.isLearning)
                       .map((link: any, index: any) => (
@@ -432,10 +447,10 @@ export const TopBar: FC = () => {
                           style={{
                             margin: "5px",
                             color: location.pathname.includes(link.endpoint)
-                              ? secondaryColor()
-                              : primaryColor(),
+                              ? partnerColor()
+                              : "#000",
                             paddingBottom: "5px",
-
+                            display: link.display,
                             cursor: location.pathname.includes(link.endpoint)
                               ? "default"
                               : "pointer",
@@ -462,8 +477,8 @@ export const TopBar: FC = () => {
                     style={{
                       margin: "5px",
                       color: location.pathname.includes(link.endpoint)
-                        ? secondaryColor()
-                        : primaryColor(),
+                        ? partnerColor()
+                        : "#000",
                       paddingBottom: "5px",
 
                       cursor: location.pathname.includes(link.endpoint)
@@ -480,19 +495,19 @@ export const TopBar: FC = () => {
                   </NavLink>
                 );
               })}
-            {permissions === "superadmin" &&
+            {(permissions === "superadmin" || permissions === "teacher") &&
               toAdm.map((link, index) => {
                 return (
                   <NavLink
                     key={index}
                     style={{
                       color: location.pathname.includes(link.endpoint)
-                        ? secondaryColor()
-                        : primaryColor(),
+                        ? partnerColor()
+                        : "#000",
                       textDecoration: "none",
                       paddingBottom: "5px",
                       borderBottom: location.pathname.includes(link.endpoint)
-                        ? `solid 1px ${primaryColor()}`
+                        ? `solid 1px ${"#000"}`
                         : "none",
                     }}
                     to={link.endpoint}

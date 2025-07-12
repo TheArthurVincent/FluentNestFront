@@ -4,8 +4,7 @@ import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
@@ -87,7 +86,14 @@ export default function Ranking({ headers }: HeadersProps) {
   return (
     <RouteDiv>
       <Helmets text="Ranking" />
-      <HOne>Ranking</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Ranking
+      </HOne>
       <TabContext value={value}>
         <Box
           style={{
@@ -95,6 +101,20 @@ export default function Ranking({ headers }: HeadersProps) {
             alignItems: "center",
             backgroundColor: alwaysWhite(),
             justifyContent: "space-between",
+          }}
+          sx={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+            "& .MuiTab-root": {
+              fontFamily: textTitleFont(),
+              color: partnerColor(),
+            },
+            "& .Mui-selected": {
+              color: partnerColor(),
+            },
+            "& .MuiTabs-indicator": {
+              backgroundColor: partnerColor(),
+            },
           }}
         >
           <TabList
@@ -104,16 +124,16 @@ export default function Ranking({ headers }: HeadersProps) {
             aria-label="scrollable auto tabs example"
             sx={{
               fontFamily: textTitleFont(),
-              color: secondaryColor(),
+              color: partnerColor(),
               "& .MuiTab-root": {
                 fontFamily: textTitleFont(),
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .Mui-selected": {
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .MuiTabs-indicator": {
-                backgroundColor: secondaryColor(),
+                backgroundColor: partnerColor(),
               },
             }}
           >
@@ -122,9 +142,8 @@ export default function Ranking({ headers }: HeadersProps) {
                 <Tab
                   key={index + component.value}
                   style={{
-                    fontWeight: 500,
-                    backgroundColor: textPrimaryColorContrast(),
-                    color: primaryColor(),
+                    color: partnerColor(),
+                    fontWeight: (index + 1).toString() === value ? 800 : 500,
                   }}
                   label={component.title}
                   value={component.value}

@@ -1,6 +1,6 @@
 import React from "react";
 import { SignUp } from "./types.SignUp";
-import { secondaryColor, textTitleFont } from "../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../Styles/Styles";
 
 export function InputFieldSignUp({
   value,
@@ -34,7 +34,7 @@ export function InputFieldSignUp({
           padding: "0.5rem",
           fontSize: "15px",
           fontWeight: 500,
-          border: `1px solid ${secondaryColor()}`,
+          border: `1px solid ${partnerColor()}`,
           width: "90%",
         }}
         value={value}

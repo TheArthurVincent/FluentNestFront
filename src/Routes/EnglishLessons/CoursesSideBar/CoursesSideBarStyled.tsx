@@ -1,16 +1,15 @@
 import styled from "styled-components";
 import {
-  primaryColor,
   alwaysWhite,
   alwaysBlack,
   lightGreyColor,
-  secondaryColor,
+  partnerColor,
 } from "../../../Styles/Styles";
 
 export const CoursesListContainer = styled.div`
   display: flex;
   height: 100vh;
-  border-right: ridge 5px ${secondaryColor()};
+  border-right: ridge 5px ${partnerColor()};
   position: fixed;
   top: 0rem;
   z-index: 10;
@@ -18,7 +17,7 @@ export const CoursesListContainer = styled.div`
 `;
 
 export const CoursesListTitleContainer = styled.div`
-  color: ${primaryColor()};
+  color: ${"#000"};
   background-color: ${alwaysWhite()};
   display: flex;
   align-items: center;

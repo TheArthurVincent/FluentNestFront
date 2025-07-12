@@ -5,9 +5,7 @@ import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Box, Tab } from "@mui/material";
 import {
   alwaysWhite,
-  primaryColor,
-  secondaryColor,
-  textFont,
+  partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
@@ -18,7 +16,6 @@ import AllCards from "./FlashCardsComponents/AllCards";
 import { onLoggOut } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import SentenceMining from "../SentenceMining/SentenceMining";
 
 interface FlashCardsProps {
   headers: MyHeadersType | null;
@@ -76,10 +73,13 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       value: "4",
       adm: true,
       component: <AddFlashCards display="block" headers={headers} />,
-    }
+    },
   ];
 
-  const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
+  const displayIsAdm =
+    myPermissions === "superadmin" || myPermissions == "teacher"
+      ? "block"
+      : "none";
   return (
     <RouteDiv
       style={{
@@ -104,16 +104,16 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             aria-label="scrollable auto tabs example"
             sx={{
               fontFamily: textTitleFont(),
-              color: secondaryColor(),
+              color: partnerColor(),
               "& .MuiTab-root": {
                 fontFamily: textTitleFont(),
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .Mui-selected": {
-                color: secondaryColor(),
+                color: partnerColor(),
               },
               "& .MuiTabs-indicator": {
-                backgroundColor: secondaryColor(),
+                backgroundColor: partnerColor(),
               },
             }}
           >
@@ -122,10 +122,9 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
                 <Tab
                   key={index + component.value}
                   style={{
+                    color: partnerColor(),
+                    fontWeight: (index + 1).toString() === value ? 800 : 500,
                     display: component.adm === false ? "block" : displayIsAdm,
-                    fontWeight: 500,
-                    backgroundColor: textPrimaryColorContrast(),
-                    color: primaryColor(),
                   }}
                   label={component.title}
                   value={component.value}

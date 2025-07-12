@@ -7,12 +7,13 @@ import {
   DivFlex,
   DivMarginBorder,
 } from "../../Resources/UniversalComponents";
-import { secondaryColor } from "../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import ReviewFlashCards from "../FlashCards/FlashCardsComponents/ReviewFlashCards";
 import BlogPosts from "./BlogPosts";
+import { isArthurVincent } from "../../App";
 
 interface BlogProps {
   headers: MyHeadersType | null;
@@ -87,6 +88,7 @@ export function Blog({
         ? `${UniversalTexts.currentLesson}  - ${lesson}`
         : "Begin your journey!",
       description: UniversalTexts.retome,
+      display: "flex",
       img: img,
       link: NO
         ? `/english-courses/${course
@@ -99,6 +101,7 @@ export function Blog({
       id: "flash-cards",
       title: "Flashcards",
       description: UniversalTexts.revise,
+      display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcards.png?updatedAt=1742402052092",
       link: "/flash-cards",
     },
@@ -106,6 +109,7 @@ export function Blog({
       id: "listening",
       title: UniversalTexts.listening,
       description: UniversalTexts.pratique,
+      display: isArthurVincent ? "flex" : "none",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/list.png?updatedAt=1742402052061",
       link: "/listening",
     },
@@ -113,6 +117,7 @@ export function Blog({
       id: "sentence-mining",
       title: UniversalTexts.vocabulary,
       description: UniversalTexts.enriqueça,
+      display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mining.png?updatedAt=1742402051850",
       link: "/sentence-mining",
     },
@@ -162,16 +167,26 @@ export function Blog({
           <div className="grid-flex-2">
             <DivMarginBorder>
               {loadingLESSON ? (
-                <CircularProgress style={{ color: secondaryColor() }} />
+                <CircularProgress style={{ color: partnerColor() }} />
               ) : (
                 <div className="study-container">
-                  <HOne>{UniversalTexts.studyEnglish}</HOne>
+                  <HOne
+                    style={{
+                      fontFamily: textTitleFont(),
+                      color: partnerColor(),
+                    }}
+                  >
+                    {UniversalTexts.studyEnglish}
+                  </HOne>
                   <div className="grid-container">
                     {sessions.map((session) => (
                       <a
                         key={session.id}
                         href={session.link}
                         className="grid-item"
+                        style={{
+                          display: session.display,
+                        }}
                       >
                         <span className="session-title">{session.title}</span>
                         <div

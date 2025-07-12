@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatedLi2, HTwo } from "../../../Resources/Components/RouteBox";
 import {
   ImgResponsive3,
@@ -9,12 +9,9 @@ import {
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
 import { levels } from "./RankingLevelsList";
-import {
-  secondaryColor,
-  textFont,
-  textTitleFont,
-} from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
+import { notifyError } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const [students, setStudents] = useState<any>([]);
@@ -41,25 +38,50 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   };
   const actualHeaders = headers || {};
   const [ID, setID] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [FIRST, setFIRST] = useState(true);
 
   const fetchStudents = async () => {
-    let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "");
-    setID(getLoggedUser.id);
-    setIsAdm(getLoggedUser.permissions);
-    // setLoading(true);
+    if (!hasMore || loading) return;
+    setLoading(true);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/scorestotalranking/`,
+        `${backDomain}/api/v1/scorestotalranking?page=${page}&limit=10`,
         {
           headers: actualHeaders,
         }
       );
-      // setLoading(false);
-      setStudents(response.data.listOfStudents);
+      setStudents((prev: any[]) => [...prev, ...response.data.listOfStudents]);
+      setHasMore(response.data.hasMore);
+      setPage((prev) => prev + 1);
+      setLoading(false);
+      setFIRST(false);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
+      console.error(error);
+      setLoading(false);
+      setFIRST(false);
+      notifyError("Erro ao encontrar alunos");
+    } finally {
+      setFIRST(false);
+      setLoading(false);
     }
   };
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastStudentRef = useCallback(
+    (node: any) => {
+      if (loading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          fetchStudents();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, hasMore]
+  );
 
   const sortedStudents = [...students].sort((a, b) => {
     const levelA = updateScore(
@@ -95,16 +117,8 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   };
   return (
     <div style={{ display: "grid" }}>
-      <HTwo
-        style={{
-          margin: 0,
-          padding: 0,
-        }}
-        onClick={() => fetchStudents()}
-      >{`> 10.000 only!`}</HTwo>
-
-      {loading ? (
-        <CircularProgress style={{ color: secondaryColor() }} />
+      {loading && FIRST ? (
+        <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <ul style={{ listStyleType: "none", padding: 0 }}>
           {sortedStudents.map((item: any, index: number) => {
@@ -124,20 +138,20 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
             const remainingFC =
               (Number(nextLevel.flashcards25Reviews) || 0) -
               (Number(item.flashcards25Reviews) || 0);
+            const isLast = index === sortedStudents.length - 1;
 
             return (
               <div
+                key={item._id}
+                ref={isLast ? lastStudentRef : null}
                 style={{
                   display: "block",
-                  //@ts-ignore
                   border: `1px solid ${theItems[levelNumber - 1].color}`,
-                  //@ts-ignore
                   backgroundColor: "#000",
                   marginBottom: "0.5rem",
                   borderRadius: "6px",
                   padding: "5px",
                 }}
-                key={index}
               >
                 <AnimatedLi2
                   style={{
@@ -189,7 +203,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     <span
                       style={{
                         fontWeight: "1000",
-                        fontFamily: textTitleFont(),
                       }}
                     >
                       {formatNumber(item.totalScore)}
@@ -204,7 +217,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}
@@ -230,7 +242,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     <span
                       style={{
                         fontWeight: "1000",
-                        fontFamily: textTitleFont(),
                       }}
                     >
                       {formatNumber(item.homeworkAssignmentsDone)}
@@ -244,7 +255,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}
@@ -271,7 +281,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                     <span
                       style={{
                         fontWeight: "1000",
-                        fontFamily: textTitleFont(),
                       }}
                     >
                       {formatNumber(item.flashcards25Reviews)}
@@ -285,7 +294,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
                           borderRadius: "6px",
                           marginTop: "5px",
                           fontSize: "12px",
-                          fontFamily: textFont(),
                           textAlign: "left",
                           zIndex: 99,
                         }}

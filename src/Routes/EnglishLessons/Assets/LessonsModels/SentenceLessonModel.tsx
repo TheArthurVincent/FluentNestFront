@@ -9,6 +9,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
+import { partnerColor } from "../../../../Styles/Styles";
 
 interface SentenceLessonModelProps {
   headers: MyHeadersType | null;
@@ -70,7 +71,7 @@ export default function SentenceLessonModel({
           <LiSentence key={i}>
             <Tooltip title="Add to flashcards">
               <ArvinButton
-                color="white"
+                color={partnerColor()}
                 onClick={() =>
                   addNewCards(sentence.english, sentence.portuguese)
                 }

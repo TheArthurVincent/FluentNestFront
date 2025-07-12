@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { Login } from "@mui/icons-material";
-import { verifyToken } from "../App";
+import { isArthurVincent, isLocalHost, verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
   onLoggOut,
@@ -30,10 +29,17 @@ import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
+import Login from "./Login/Login";
+import Redirect from "../Redirect";
+
+export const getWhiteLabel = JSON.parse(
+  localStorage.getItem("whiteLabel") || "{}"
+);
 
 export function HomePage({ headers }: HeadersProps) {
   const [thePermissions, setPermissions] = useState<string>("");
   const [admin, setAdmin] = useState<boolean>(false);
+  const [teacher, setTeacher] = useState<boolean>(false);
   const [_StudentId, setStudentId] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
   const [change, setChange] = useState<boolean>(true);
@@ -47,11 +53,11 @@ export function HomePage({ headers }: HeadersProps) {
       setStudentId(id || _StudentId);
       setPicture(picture);
       setAdmin(permissions === "superadmin" ? true : false);
+      setTeacher(permissions === "teacher" ? true : false);
     } else {
       onLoggOut();
       return;
     }
-
     updateInfo(id, headers);
   }, []);
 
@@ -94,7 +100,11 @@ export function HomePage({ headers }: HeadersProps) {
     {
       title: "My Calendar",
       component: (
-        <MyCalendar thePermissions={thePermissions} headers={headers} />
+        <MyCalendar
+          myId={_StudentId}
+          thePermissions={thePermissions}
+          headers={headers}
+        />
       ),
     },
     {
@@ -115,9 +125,12 @@ export function HomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Listening",
-      component: (
-        <Listening change={change} onChange={setChange} headers={headers} />
-      ),
+      component:
+        isArthurVincent || isLocalHost ? (
+          <Listening change={change} onChange={setChange} headers={headers} />
+        ) : (
+          <Redirect to={"/flash-cards"} />
+        ),
     },
     {
       levelcard: true,
@@ -154,7 +167,7 @@ export function HomePage({ headers }: HeadersProps) {
       path: "/adm-businessmanagement",
       title: "Adm",
       component:
-        verifyToken() && admin ? (
+        verifyToken() && (admin || teacher) ? (
           <Adm headers={headers} />
         ) : (
           <Blog

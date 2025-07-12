@@ -1,5 +1,6 @@
 import React from "react";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 export function Manual() {
   const tableStyle = {
@@ -31,7 +32,14 @@ export function Manual() {
         padding: "1rem",
       }}
     >
-      <HOne>Manual do Aluno</HOne>
+      <HOne
+        style={{
+          fontFamily: textTitleFont(),
+          color: partnerColor(),
+        }}
+      >
+        Manual do Aluno
+      </HOne>
 
       <HTwo>Acesso às Ferramentas:</HTwo>
       <p>Plataforma do Curso</p>

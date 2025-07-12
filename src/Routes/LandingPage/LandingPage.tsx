@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { primaryColor, secondaryColor, textFont } from "../../Styles/Styles";
+import React, { useEffect, useState } from "react";
+import { partnerColor, textGeneralFont } from "../../Styles/Styles";
 import AppFooter from "../../Application/Footer/Footer";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import "./styles.lp.css";
@@ -8,6 +8,7 @@ import { Alert, CircularProgress } from "@mui/material";
 import axios from "axios";
 
 import { useMediaQuery } from "@mui/material"; // Adicione isso
+import { isArvin } from "../../App";
 
 function LandingPage() {
   const [email, setEmail] = useState<string>("");
@@ -20,7 +21,7 @@ function LandingPage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setFail(false);
-    setButton(<CircularProgress style={{ color: secondaryColor() }} />);
+    setButton(<CircularProgress style={{ color: partnerColor() }} />);
 
     try {
       const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
@@ -42,7 +43,7 @@ function LandingPage() {
       setButton("Entrar");
     }
   };
-  const myLogo = LogoSVG(primaryColor(), secondaryColor(), 4);
+  const myLogo = LogoSVG("#000", partnerColor(), 4);
 
   const videos = [
     {
@@ -78,6 +79,10 @@ function LandingPage() {
   ];
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
+  useEffect(() => {
+    isArvin ? window.location.assign("/login") : null;
+  }, []);
+
   return (
     <div className="container">
       <div
@@ -90,14 +95,14 @@ function LandingPage() {
           padding: "0.2rem",
           zIndex: 10,
         }}
-        >
+      >
         <a
           style={{
             marginLeft: "auto",
             marginRight: "6px",
             padding: "0 10px",
             fontSize: "10px",
-            backgroundColor: secondaryColor(),
+            backgroundColor: partnerColor(),
             color: "#fff",
             border: "none",
             cursor: "pointer",
@@ -148,7 +153,7 @@ function LandingPage() {
               Você <b>vai</b> aprender inglês!
             </p>
             <a
-              style={{ backgroundColor: secondaryColor() }}
+              style={{ backgroundColor: partnerColor() }}
               href="#subscription-section"
               className="cta-button"
             >
@@ -282,7 +287,7 @@ export default LandingPage;
             <ArvinButton
               type="submit"
               style={{
-                backgroundColor: secondaryColor(),
+                backgroundColor: partnerColor(),
                 color: "#fff",
                 width: isMobile ? "100%" : "auto",
               }}
@@ -293,7 +298,7 @@ export default LandingPage;
               onClick={() => window.location.assign("/request-reset-password")}
               style={{
                 backgroundColor: "#eee",
-                color: primaryColor(),
+                color: "#000",
                 marginRight: isMobile ? "0" : "1rem",
                 width: isMobile ? "100%" : "auto",
               }}

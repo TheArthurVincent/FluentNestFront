@@ -2,8 +2,7 @@ import styled from "styled-components";
 import {
   alwaysBlack,
   lightGreyColor,
-  primaryColor,
-  secondaryColor,
+  partnerColor,
   textPrimaryColorContrast,
 } from "../../Styles/Styles";
 
@@ -30,7 +29,7 @@ export const EventsCard = styled.div`
 export const HThree = styled.h3`
   padding: 0.5rem;
   margin: 0.5rem 0;
-  color: ${primaryColor()};
+  color: ${"#000"};
   @media (max-width: 900px) {
     margin: 10px auto;
   }
@@ -43,9 +42,9 @@ export const HThreeModule = styled.h3`
   padding: 0.75rem 1rem;
   margin: 1rem 0;
   cursor: pointer;
-  color: ${primaryColor()};
+  color: ${"#000"};
   background-color: #f8f8f8;
-  border-left: 5px solid ${primaryColor()};
+  border-left: 5px solid ${"#000"};
   font-size: 1.1rem;
   font-weight: bold;
   border-radius: 6px;
@@ -53,7 +52,7 @@ export const HThreeModule = styled.h3`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   &:hover {
-    color: ${secondaryColor()};
+    color: ${partnerColor()};
   }
 
   @media (max-width: 900px) {
@@ -72,7 +71,7 @@ export const HThreeModule = styled.h3`
 export const H3FAQ = styled.h3`
   padding: 0.5rem;
   margin: 0.5rem;
-  background-color: ${primaryColor()};
+  background-color: ${"#000"};
   color: ${textPrimaryColorContrast()};
   @media (max-width: 900px) {
     margin: 10px auto;
@@ -82,7 +81,7 @@ export const H3FAQ = styled.h3`
   }
   &:hover {
     background-color: ${alwaysBlack()};
-    color: ${secondaryColor()};
+    color: ${partnerColor()};
     transition: 0.2s;
   }
 `;
@@ -99,7 +98,7 @@ export const ClassBox = styled.div`
   gap: 0.5rem;
   justify-content: space-evenly;
   padding-bottom: 4rem;
-  border-bottom: solid 1px ${primaryColor()};
+  border-bottom: solid 1px ${"#000"};
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }

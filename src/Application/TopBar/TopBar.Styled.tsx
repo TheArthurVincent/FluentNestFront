@@ -1,14 +1,12 @@
 import styled from "styled-components";
 import {
-  secondaryColor,
+  partnerColor,
   transparentBlack,
-  primaryColor,
   alwaysWhite,
-  textTitleFont,
 } from "../../Styles/Styles";
 
 export const TopBarContainer = styled.header.attrs({
-  className: 'box-shadow-black',
+  className: "box-shadow-black",
 })`
   top: 0;
   z-index: 7;
@@ -17,7 +15,7 @@ export const TopBarContainer = styled.header.attrs({
   justify-content: space-evenly;
   align-items: center;
   display: flex;
-  padding: 5px;
+  padding: 6px;
   width: 100%;
   height: 40px;
   @media print {
@@ -58,7 +56,7 @@ export const TopBarNavigation = styled.div`
   list-style: none;
 `;
 export const TopBarNavigationBurger = styled.div.attrs({
-  className: 'box-shadow-black',
+  className: "box-shadow-black",
 })`
   position: fixed;
   top: 0;
@@ -70,7 +68,7 @@ export const TopBarNavigationBurger = styled.div.attrs({
   gap: 1.5rem;
   background-color: ${alwaysWhite()};
   padding: 2rem 1.5rem;
-  border-right: 1px solid ${secondaryColor()};
+  border-right: 1px solid ${partnerColor()};
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 
   &.smooth {
@@ -81,25 +79,24 @@ export const TopBarNavigationBurger = styled.div.attrs({
 
   a {
     text-decoration: none;
-    color: ${primaryColor()};
+    color: ${"#000"};
     font-weight: 600;
     font-size: 1rem;
-    font-family: ${textTitleFont()};
     padding: 0.8rem 1rem;
     border-radius: 6px;
     transition: color 0.3s, background-color 0.3s, padding-left 0.3s,
       transform 0.3s;
 
     &:hover {
-      background-color: ${secondaryColor()};
+      background-color: #eee;
       color: #fff;
       padding-left: 1.8rem;
       transform: translateX(5px);
     }
 
     &.active {
-      color: ${secondaryColor()};
-      border-left: 4px solid ${secondaryColor()};
+      color: ${partnerColor()};
+      border-left: 4px solid ${partnerColor()};
       padding-left: calc(1rem - 4px);
     }
   }
@@ -133,12 +130,11 @@ export const LogoStyle = styled.div`
 
 export const Hamburguer = styled.div`
   display: none;
-  color: ${secondaryColor()};
   font-weight: 900;
   font-size: 1.9rem;
   cursor: pointer;
   &:hover {
-    color: ${primaryColor()};
+    color: ${"#000"};
   }
   @media (max-width: 1380px) {
     display: block;
