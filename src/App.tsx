@@ -27,10 +27,9 @@ import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 
 export var currentUrl = window.location.href;
 export var isArvin = currentUrl.includes("arvinplatform");
-
 export var isLocalHost = currentUrl.includes("localhost");
 export var isArthurVincent =
-  currentUrl.includes("arthurvincent") || currentUrl.includes("staging");
+  currentUrl.includes("arthurvincent");
 export var getWhiteLabel = JSON.parse(
   localStorage.getItem("whiteLabel") || "{}"
 );
