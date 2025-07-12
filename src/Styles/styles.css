@@ -381,7 +381,7 @@ body {
 }
 
 .audio-button:active {
-  color: blue;
+  color: #555;
 }
 
 .comment {
