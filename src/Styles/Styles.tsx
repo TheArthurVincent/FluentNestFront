@@ -1,10 +1,21 @@
-const getWhiteLabel = () =>
-  JSON.parse(localStorage.getItem("whiteLabel") || "{}");
+const getWhiteLabel = () => {
+  try {
+    const wl = localStorage.getItem("whiteLabel");
+    if (!wl) return {};
+    const parsed = JSON.parse(wl);
+    if (typeof parsed === "object" && parsed !== null) return parsed;
+    return {};
+  } catch (err) {
+    console.error("[Styles] Erro ao ler whiteLabel:", err);
+    return {};
+  }
+};
 
 export const backgroundType = (): string =>
   getWhiteLabel().backgroundType || "color";
 
-export const partnerColor = (): string => getWhiteLabel().color || "rgba(67, 125, 172, 1)";
+export const partnerColor = (): string =>
+  getWhiteLabel().color || "rgba(67, 125, 172, 1)";
 
 export const theBackgroundColor = (): string =>
   getWhiteLabel().backgroundColor || "rgba(188, 221, 248, 1)";
