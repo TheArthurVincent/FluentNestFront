@@ -11,7 +11,10 @@ import {
   textGeneralFont,
   textTitleFont,
   theBackgroundColor,
+  textPrimaryColorContrast,
+  logoPartner,
 } from "./Styles/Styles";
+
 import Login from "./Routes/Login/Login";
 import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
@@ -38,15 +41,32 @@ export var getWhiteLabel = (() => {
     const wl = localStorage.getItem("whiteLabel");
     if (wl) {
       const parsed = JSON.parse(wl);
-      console.log("[App] getWhiteLabel carregado:", parsed);
-      return parsed;
+      // Monta objeto com fallback dos styles
+      return {
+        backgroundType: parsed.backgroundType ?? backgroundType(),
+        color: parsed.color ?? partnerColor(),
+        backgroundColor: parsed.backgroundColor ?? theBackgroundColor(),
+        contrastColor: parsed.contrastColor ?? textPrimaryColorContrast(),
+        backgroundImage: parsed.backgroundImage ?? backgroundImage(),
+        logo: parsed.logo ?? logoPartner(),
+        textGeneralFont: parsed.textGeneralFont ?? textGeneralFont(),
+        textTitleFont: parsed.textTitleFont ?? textTitleFont(),
+      };
     }
-    console.log("[App] getWhiteLabel não encontrado.");
-    return {};
   } catch (err) {
     console.error("[App] Erro ao fazer parse do whiteLabel:", err);
-    return {};
   }
+  // Se não existe ou erro, retorna todos os padrões
+  return {
+    backgroundType: backgroundType(),
+    color: partnerColor(),
+    backgroundColor: theBackgroundColor(),
+    contrastColor: textPrimaryColorContrast(),
+    backgroundImage: backgroundImage(),
+    logo: logoPartner(),
+    textGeneralFont: textGeneralFont(),
+    textTitleFont: textTitleFont(),
+  };
 })();
 
 export var localStorageLoggedIn = (() => {
@@ -152,7 +172,11 @@ function App() {
           setStudentId(id || _StudentId);
           console.log("[App] ID do estudante setado:", id);
         } catch (error) {
-          console.error("[App] Erro ao fazer parse do JSON do usuário:", error, user);
+          console.error(
+            "[App] Erro ao fazer parse do JSON do usuário:",
+            error,
+            user
+          );
         }
       }
     } catch (err) {
@@ -271,7 +295,10 @@ function App() {
                 <Route key={index} path={route.path} element={route.element} />
               );
             } catch (err) {
-              console.error(`[App] Erro ao renderizar rota ${route.path}:`, err);
+              console.error(
+                `[App] Erro ao renderizar rota ${route.path}:`,
+                err
+              );
               return null;
             }
           })}

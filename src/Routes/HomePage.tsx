@@ -32,9 +32,6 @@ import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 import Redirect from "../Redirect";
 
-export const getWhiteLabel = JSON.parse(
-  localStorage.getItem("whiteLabel") || "{}"
-);
 
 export function HomePage({ headers }: HeadersProps) {
   const [thePermissions, setPermissions] = useState<string>("");
@@ -46,7 +43,7 @@ export function HomePage({ headers }: HeadersProps) {
   const [see, setSee] = useState(false);
 
   useEffect(() => {
-    var user = localStorage.getItem("loggedIn");
+    var user = localStorage.Item("loggedIn");
     if (user) {
       var { permissions, picture, id } = JSON.parse(user);
       setPermissions(permissions);
