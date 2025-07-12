@@ -647,7 +647,7 @@ export default function EnglishClassCourse2({
                         alignItems: "center",
                       }}
                     >
-                      <HTwo>{index + 1 + "- " + element.subtitle}</HTwo>
+                      <HTwo>{element.subtitle}</HTwo>
                     </div>
                   )}
                   {element.image && element.subtitle && (

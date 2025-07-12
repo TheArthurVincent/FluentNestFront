@@ -149,7 +149,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         tags: [""],
       },
     ];
-    readText(frontText, true, "en");
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/flashcard/${myId}`,
