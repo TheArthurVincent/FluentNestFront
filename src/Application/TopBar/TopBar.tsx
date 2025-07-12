@@ -24,6 +24,7 @@ import axios from "axios";
 import { Box, Modal } from "@mui/material";
 import { HThree, HTwo } from "../../Resources/Components/RouteBox";
 import socket, { registerUser } from "./socket";
+import { isArvin } from "../../App";
 
 export const TopBar: FC = () => {
   const [visible, setVisible] = useState<string>("none");
@@ -136,7 +137,7 @@ export const TopBar: FC = () => {
       title: "Listening",
       endpoint: "/listening",
       icon: "assistive-listening-systems",
-      display: "block",
+      display: isArvin ? "none" : "block",
       isLearning: true,
     },
     {
@@ -276,34 +277,33 @@ export const TopBar: FC = () => {
               {UniversalTexts.homePage}
             </span>
           </NavLink>
-          {tutoree &&
-            toTutoree.map((link, index) => {
-              return (
-                <NavLink
-                  key={index}
+          {toTutoree.map((link, index) => {
+            return (
+              <NavLink
+                key={index}
+                style={{
+                  color: location.pathname.includes(link.endpoint)
+                    ? partnerColor()
+                    : "#000",
+                  paddingBottom: "5px",
+                  cursor: location.pathname.includes(link.endpoint)
+                    ? "default"
+                    : "pointer",
+                  display: link.display,
+                  textDecoration: "none",
+                }}
+                to={link.endpoint}
+              >
+                <span
                   style={{
-                    color: location.pathname.includes(link.endpoint)
-                      ? partnerColor()
-                      : "#000",
-                    paddingBottom: "5px",
-                    cursor: location.pathname.includes(link.endpoint)
-                      ? "default"
-                      : "pointer",
-                    display: link.display,
-                    textDecoration: "none",
+                    textAlign: "center",
                   }}
-                  to={link.endpoint}
                 >
-                  <span
-                    style={{
-                      textAlign: "center",
-                    }}
-                  >
-                    {link.title}
-                  </span>
-                </NavLink>
-              );
-            })}
+                  {link.title}
+                </span>
+              </NavLink>
+            );
+          })}
           {allLinksForUser.map((link, index) => {
             return (
               <NavLink
@@ -313,7 +313,6 @@ export const TopBar: FC = () => {
                     ? partnerColor()
                     : "#000",
                   paddingBottom: "5px",
-
                   cursor: location.pathname.includes(link.endpoint)
                     ? "default"
                     : "pointer",
@@ -414,32 +413,31 @@ export const TopBar: FC = () => {
                       left: "0",
                     }}
                   >
-                    {tutoree &&
-                      toTutoree.map((link, index) => {
-                        return (
-                          <NavLink
-                            key={index}
-                            style={{
-                              margin: "5px",
-                              color: location.pathname.includes(link.endpoint)
-                                ? partnerColor()
-                                : "#000",
-                              paddingBottom: "5px",
+                    {toTutoree.map((link, index) => {
+                      return (
+                        <NavLink
+                          key={index}
+                          style={{
+                            margin: "5px",
+                            color: location.pathname.includes(link.endpoint)
+                              ? partnerColor()
+                              : "#000",
+                            paddingBottom: "5px",
 
-                              cursor: location.pathname.includes(link.endpoint)
-                                ? "default"
-                                : "pointer",
-                              textDecoration: "none",
-                            }}
-                            to={link.endpoint}
-                          >
-                            <SpanHover>
-                              <i className={`fa fa-${link.icon}`} />
-                              {link.title}
-                            </SpanHover>
-                          </NavLink>
-                        );
-                      })}
+                            cursor: location.pathname.includes(link.endpoint)
+                              ? "default"
+                              : "pointer",
+                            textDecoration: "none",
+                          }}
+                          to={link.endpoint}
+                        >
+                          <SpanHover>
+                            <i className={`fa fa-${link.icon}`} />
+                            {link.title}
+                          </SpanHover>
+                        </NavLink>
+                      );
+                    })}
                     {allLinksForUser
                       .filter((link) => link.isLearning)
                       .map((link: any, index: any) => (
@@ -452,7 +450,7 @@ export const TopBar: FC = () => {
                               ? partnerColor()
                               : "#000",
                             paddingBottom: "5px",
-
+                            display: link.display,
                             cursor: location.pathname.includes(link.endpoint)
                               ? "default"
                               : "pointer",

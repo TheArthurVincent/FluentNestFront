@@ -76,7 +76,10 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
     },
   ];
 
-  const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
+  const displayIsAdm =
+    myPermissions === "superadmin" || myPermissions == "teacher"
+      ? "block"
+      : "none";
   return (
     <RouteDiv
       style={{

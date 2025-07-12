@@ -35,11 +35,14 @@ export default function RankingTimeline({
   const actualHeaders = headers || {};
 
   const fetchStudents = async () => {
-    if (permissions === "superadmin") {
+    if (permissions === "superadmin" || permissions === "teacher") {
       try {
-        const response = await axios.get(`${backDomain}/api/v1/students/`, {
-          headers: actualHeaders,
-        });
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${id}`,
+          {
+            headers: actualHeaders,
+          }
+        );
         setStudentsList(response.data.listOfStudents);
       } catch (error) {
         alert("Erro ao encontrar alunos");
@@ -105,13 +108,9 @@ export default function RankingTimeline({
   return (
     <div
       style={{
-        backgroundColor: textPrimaryColorContrast(),
         color: "#000",
-        borderRadius: "12px",
-        padding: "2rem",
         maxWidth: "960px",
         margin: "2rem auto",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
       }}
     >
       <div

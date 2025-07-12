@@ -509,13 +509,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             alignItems: "center",
           }}
         >
-          {isArthurStudentBoolean && (
-            <WordOfTheDay
-              change={change}
-              onChange={onChange}
-              headers={headers}
-            />
-          )}
+          <WordOfTheDay change={change} onChange={onChange} headers={headers} />
           {see && (
             <div ref={cardRef}>
               {loading ? (

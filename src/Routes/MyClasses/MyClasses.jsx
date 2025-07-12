@@ -19,9 +19,11 @@ import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
+import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function MyClasses({ headers }) {
   const [loading, setLoading] = useState(false);
+  const [IsAllowed, setIsAllowed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(1);
   const [classes, setClasses] = useState([]);
@@ -29,6 +31,7 @@ export function MyClasses({ headers }) {
   const [studentNXTId, setStudentNXTId] = useState("");
   const [studentsList, setStudentsList] = useState([]);
   const [permissions, setPermissions] = useState("");
+  const [MYID, setMYID] = useState("");
   const [newID, setNewID] = useState("");
 
   const { UniversalTexts } = useUserContext();
@@ -59,27 +62,39 @@ export function MyClasses({ headers }) {
       setClasses(response.data.formattedTutoringFromParticularStudent);
     } catch (error) {}
   }
-
-  const fetchStudents = async () => {
+  useEffect(() => {
     let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn"));
     setPermissions(getLoggedUser.permissions);
-    if (getLoggedUser.permissions == "superadmin") {
+    setMYID(getLoggedUser.id);
+    setIsAllowed(
+      getLoggedUser.permissions == "superadmin" ||
+        getLoggedUser.permissions == "teacher"
+    );
+  }, []);
+
+  const fetchStudents = async () => {
+    if (IsAllowed) {
       try {
-        const response = await axios.get(`${backDomain}/api/v1/students/`, {
-          headers,
-        });
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${MYID}`,
+          {
+            headers,
+          }
+        );
         setStudentsList(response.data.listOfStudents);
       } catch (error) {
-        alert("Erro ao encontrar alunos");
+        console.log(error, "Erro ao encontrar aaalunos");
+        notifyError("Erro ao encontrar aaalunos");
       }
     } else {
+      null;
     }
   };
 
   useEffect(() => {
     fetchMonthYear();
     fetchStudents();
-  }, []);
+  }, [IsAllowed]);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -185,10 +200,12 @@ export function MyClasses({ headers }) {
         `${backDomain}/api/v1/tutoring/${tutoringID}`,
         { headers }
       );
-      alert(`Aula com ID ${tutoringID} excluída`);
+      console.log(`Aula com ID ${tutoringID} excluída`);
+      notifyError(`Aula com ID ${tutoringID} excluída`);
       fetchNextStudentClasses(studentNXTId);
     } catch (error) {
-      alert(`Erro ao excluir aula com ID ${tutoringID}: ${error}`);
+      console.log(`Erro ao excluir aula com ID ${tutoringID}: ${error}`);
+      notifyError(`Erro ao excluir aula com ID ${tutoringID}: ${error}`);
     }
   }
 

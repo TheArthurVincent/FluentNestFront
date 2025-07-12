@@ -32,8 +32,23 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
 }) => {
   return (
     <>
-      <Box>
-        <p>Card #{index + 1}</p>
+      <Box
+        style={{
+          padding: "10px",
+          borderRadius: "10px",
+          boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+          margin: "2rem auto",
+          backgroundColor: "rgba(175, 175, 175, 0.1)",
+        }}
+      >
+        <h2
+          style={{
+            textAlign: "center",
+            marginBottom: "10px",
+          }}
+        >
+          Card #{index + 1}
+        </h2>
         <article id="front">
           <TextField
             style={{ margin: "1px" }}

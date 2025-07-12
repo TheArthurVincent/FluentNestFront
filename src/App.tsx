@@ -23,35 +23,41 @@ import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
 import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
+import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 
-export const currentUrl = window.location.href;
-export const isArvin =
-  currentUrl.includes("arvinplatform") || currentUrl.includes("ocalhost");
-export const isArthurVincent =
+export var currentUrl = window.location.href;
+export var isArvin = currentUrl.includes("arvinplatform");
+
+export var isLocalHost = currentUrl.includes("localhost");
+export var isArthurVincent =
   currentUrl.includes("arthurvincent") || currentUrl.includes("staging");
-export const getWhiteLabel = JSON.parse(
+export var getWhiteLabel = JSON.parse(
   localStorage.getItem("whiteLabel") || "{}"
 );
-export const localStorageLoggedIn = JSON.parse(
+export var localStorageLoggedIn = JSON.parse(
   localStorage.getItem("loggedIn") || "{}"
 );
 
-export const verifyToken = () => {
-  const token = localStorage.getItem("authorization");
+export var verifyToken = () => {
+  var token = localStorage.getItem("authorization");
   return token;
 };
 
-const authorization: string = authorizationToken();
-const headers: MyHeadersType = {
+var authorization: string = authorizationToken();
+var headers: MyHeadersType = {
   Authorization: authorization,
 };
 
 function App() {
-  const [_StudentId, setStudentId] = useState<string>("");
-
+  var [_StudentId, setStudentId] = useState<string>("");
+  useEffect(() => {
+    console.log("isArvin?", isArvin);
+    console.log("isArthurVincent?", isArthurVincent);
+    console.log("isLocalHost?", isLocalHost);
+  }, []);
   if (isArthurVincent) {
     document.body.style.backgroundImage = `url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769")`;
-  } else if (isArvin) {
+  } else if (isArvin || isLocalHost) {
     backgroundType() == "color"
       ? (document.body.style.backgroundColor = theBackgroundColor())
       : (document.body.style.backgroundImage = `url(${backgroundImage()})`);
@@ -88,14 +94,14 @@ function App() {
       selectElement.style.fontFamily = textTitleFont();
     }
 
-    const h1Element = document.querySelector("h1");
+    var h1Element = document.querySelector("h1");
     if (h1Element) {
       h1Element.style.fontFamily = textTitleFont();
     }
 
     if (user) {
       try {
-        const { id } = JSON.parse(user);
+        var { id } = JSON.parse(user);
         setStudentId(id || _StudentId);
       } catch (error) {
         console.error("Erro ao fazer parse do JSON:", error);
@@ -103,8 +109,8 @@ function App() {
     }
   }, []);
 
-  // const isOriginal = (): boolean => {
-  //   const currentUrl = window.location.href;
+  // var isOriginal = (): boolean => {
+  //   var currentUrl = window.location.href;
 
   //   if (currentUrl.includes("portal.arthurvincent")) {
   //     // if (currentUrl.includes("localhost:51")) { // teste local
@@ -125,29 +131,34 @@ function App() {
 
   // useEffect(() => {
   //   if (isOriginal()) {
-  //     const currentPath = window.location.pathname;
+  //     var currentPath = window.location.pathname;
   //     console.log(`http://arthurvincent.com.br${currentPath}`);
   //   }
   // }, []);
 
-  const routes = [
+  var routes = [
     {
       path: "/login",
-      element: verifyToken() ? <Redirect /> : <Login />,
+      element: verifyToken() ? <Redirect to={"/"} /> : <Login />,
     },
     {
       path: "/*",
-      element: verifyToken() ? <HomePage headers={headers} /> : <LandingPage />,
+      element: verifyToken() ? (
+        <HomePage headers={headers} />
+      ) : (
+        <Redirect to={isArvin ? "/login" : "/cadastre-se"} />
+      ),
     },
     {
       path: "/cadastre-se",
-      element: <LandingPage />,
+      element: isArvin ? <Login /> : <LandingPage />,
     },
+    { path: "/signup", element: isArvin ? <Login /> : <LandingPage /> },
     { path: "/message", element: verifyToken() ? <MessageDrive /> : <Login /> },
     { path: "*", element: verifyToken() ? <NotFound /> : <Login /> },
-    { path: "/signup", element: <LandingPage /> },
     { path: "/verify-email", element: <EmailCheck /> },
     { path: "/signup-privatestudent", element: <SignUp /> },
+    { path: "/signup-teacher", element: <SignUpTeacher /> },
     { path: "/request-reset-password", element: <RequestResetPassword /> },
     { path: "/material-do-video", element: <SendMail /> },
     { path: "/reset-password/*", element: <ResetPasswordFinalChange /> },

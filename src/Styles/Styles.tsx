@@ -4,10 +4,10 @@ const getWhiteLabel = () =>
 export const backgroundType = (): string =>
   getWhiteLabel().backgroundType || "color";
 
-export const partnerColor = (): string => getWhiteLabel().color || "navy";
+export const partnerColor = (): string => getWhiteLabel().color || "rgba(67, 125, 172, 1)";
 
 export const theBackgroundColor = (): string =>
-  getWhiteLabel().backgroundColor || "#eee";
+  getWhiteLabel().backgroundColor || "rgba(188, 221, 248, 1)";
 
 export const textPrimaryColorContrast = (): string =>
   getWhiteLabel().contrastColor || "#eee";
