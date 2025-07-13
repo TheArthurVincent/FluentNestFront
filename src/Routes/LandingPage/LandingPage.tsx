@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { partnerColor, textGeneralFont } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 import AppFooter from "../../Application/Footer/Footer";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import "./styles.lp.css";
@@ -43,7 +43,7 @@ function LandingPage() {
       setButton("Entrar");
     }
   };
-  const myLogo = LogoSVG("#000", partnerColor(), 4);
+  const myLogo = LogoSVG("#000", "#4eb309", 4);
 
   const videos = [
     {
