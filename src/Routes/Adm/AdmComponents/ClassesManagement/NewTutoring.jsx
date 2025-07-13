@@ -453,7 +453,7 @@ export function NewTutoring({ headers, id }) {
             </div>
           ))}
           <ArvinButton
-            disabled={disabled || !isFormValid}
+            // disabled={disabled || !isFormValid}
             style={{
               marginLeft: "auto",
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",
