@@ -52,6 +52,8 @@ export const textGeneralFont = (): string => {
   return wl.textGeneralFont || "Lato";
 };
 
+export const textpartnerColorContrast = (): string => "#f2f2f2";
+
 export const textTitleFont = (): string => {
   const wl = getWhiteLabel();
   return wl.textTitleFont || "Athiti";

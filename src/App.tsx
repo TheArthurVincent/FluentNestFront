@@ -1,3 +1,27 @@
+
+(function ensureWhiteLabel() {
+  try {
+    const wl = localStorage.getItem("whiteLabel");
+    if (!wl || wl === "undefined") {
+      // Monta objeto padrão
+      const defaultWL = {
+        backgroundType: "color",
+        color: "rgba(67, 125, 172, 1)",
+        backgroundColor: "rgba(188, 221, 248, 1)",
+        contrastColor: "#eee",
+        backgroundImage: "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
+        logo: "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166",
+        textGeneralFont: "Lato",
+        textTitleFont: "Athiti",
+      };
+      localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
+      console.log("[App] WhiteLabel padrão criado no localStorage.");
+    }
+  } catch (err) {
+    console.error("[App] Erro ao garantir whiteLabel no localStorage:", err);
+  }
+})();
+
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
@@ -41,7 +65,6 @@ export var getWhiteLabel = (() => {
     const wl = localStorage.getItem("whiteLabel");
     if (wl) {
       const parsed = JSON.parse(wl);
-      // Monta objeto com fallback dos styles
       return {
         backgroundType: parsed.backgroundType ?? backgroundType(),
         color: parsed.color ?? partnerColor(),
