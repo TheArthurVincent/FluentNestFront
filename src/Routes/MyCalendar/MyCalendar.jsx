@@ -11,7 +11,6 @@ import {
   alwaysWhite,
   partnerColor,
   textPrimaryColorContrast,
-  textpartnerColorContrast,
   textTitleFont,
   transparentWhite,
 } from "../../Styles/Styles";
@@ -1256,7 +1255,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       event.category === "Group Class"
                                         ? "#fff" // Amarelo mais escuro, sem ser tão claro
                                         : event.category === "Rep"
-                                        ? textpartnerColorContrast() // Tom de azul mais escuro e sóbrio
+                                        ? textPrimaryColorContrast() // Tom de azul mais escuro e sóbrio
                                         : event.category === "Tutoring"
                                         ? textPrimaryColorContrast() // Cinza mais escuro
                                         : event.category === "Prize Class"
@@ -1281,7 +1280,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       event.category === "Group Class"
                                         ? "#fff" // Amarelo mais escuro, sem ser tão claro
                                         : event.category === "Rep"
-                                        ? textpartnerColorContrast() // Tom de azul mais escuro e sóbrio
+                                        ? textPrimaryColorContrast() // Tom de azul mais escuro e sóbrio
                                         : event.category === "Tutoring"
                                         ? textPrimaryColorContrast() // Cinza mais escuro
                                         : event.category === "Prize Class"

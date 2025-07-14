@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
-  alwaysWhite,
   lightGreyColor,
   partnerColor,
-  textPrimaryColorContrast,
   textTitleFont,
-  textpartnerColorContrast,
+  textPrimaryColorContrast,
 } from "../../../Styles/Styles";
 import axios from "axios";
 import { backDomain, formatDate } from "../../../Resources/UniversalComponents";
-import { Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
 

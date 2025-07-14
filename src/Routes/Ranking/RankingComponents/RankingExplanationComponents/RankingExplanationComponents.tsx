@@ -1,7 +1,6 @@
 import React from "react";
 import {
   textPrimaryColorContrast,
-  textpartnerColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
 import {
@@ -67,7 +66,7 @@ export default function RankingExplanationComponent() {
                 <span
                   style={{
                     backgroundColor: score.color,
-                    color: textpartnerColorContrast(),
+                    color: textPrimaryColorContrast(),
                     fontFamily: textTitleFont(),
                     fontWeight: 600,
                     padding: "5px",
