@@ -191,7 +191,7 @@ export function NewTutoring({ headers, id }) {
                   "selectedStudentID",
                   selectedStudentID
                 );
-                console.log(tutorings, "tutorings after change"); 
+                console.log(tutorings, "tutorings after change");
               }}
               value={selectedStudentID}
             >
@@ -457,8 +457,7 @@ export function NewTutoring({ headers, id }) {
             style={{
               marginLeft: "auto",
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",
-              backgroundColor:
-                disabled || !isFormValid ? "grey" : partnerColor(),
+              backgroundColor: partnerColor(),
               minWidth: 120,
               borderRadius: 8,
               fontWeight: 600,
