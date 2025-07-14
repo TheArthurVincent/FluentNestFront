@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
+import { HOne } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
 import { DivGrid, backDomain } from "../../../../Resources/UniversalComponents";
 import { CircularProgress, TextField } from "@mui/material";
@@ -132,9 +132,9 @@ export function NewTutoring({ headers, id }) {
         fontFamily: "inherit",
       }}
     >
-      <HTwo style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
+      <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
         Postar aula particular dada
-      </HTwo>
+      </HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
           <CircularProgress style={{ color: partnerColor() }} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
+import { HOne } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
 import { DivGrid, backDomain } from "../../../../Resources/UniversalComponents";
 import { CircularProgress, TextField } from "@mui/material";
@@ -95,7 +95,7 @@ export function NewHomeworkAssignment({ headers, id }) {
           headers,
         }
       );
-      notifyError("HW criado com sucesso!","green");
+      notifyError("HW criado com sucesso!", "green");
       setNewHWDescription("");
       setLoadingHW(false);
     } catch (error) {
@@ -114,26 +114,6 @@ export function NewHomeworkAssignment({ headers, id }) {
     console.log("New Flashcards:", newFlashcards);
   }, [newFlashcards]);
 
-  const postFC = async () => {
-    setLoadingHW(true);
-    // try {
-    //   const response = await axios.post(
-    //     `${backDomain}/api/v1/homework/${selectedStudentID}`,
-    //     { description: newHWDescription, dueDate },
-    //     {
-    //       headers,
-    //     }
-    //   );
-    //   notifyError("HW criado com sucesso!");
-    //   setTutorings([]);
-    //   setNewHWDescription("");
-    setLoadingHW(false);
-    // } catch (error) {
-    //   setLoadingHW(false);
-    //   notifyError("Erro ao salvar aulas");
-    //   setStandardValue("Aluno");
-    // }
-  };
   return (
     <div
       style={{
@@ -143,9 +123,9 @@ export function NewHomeworkAssignment({ headers, id }) {
         fontFamily: "inherit",
       }}
     >
-      <HTwo style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
-        Postar aula particular dada
-      </HTwo>
+      <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
+        Postar Homework
+      </HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
           <CircularProgress style={{ color: partnerColor() }} />
@@ -174,8 +154,6 @@ export function NewHomeworkAssignment({ headers, id }) {
               </option>
             ))}
           </select>
-
-          <HTwo style={{ marginBottom: 12 }}>Homework</HTwo>
           <div>
             <input
               style={{

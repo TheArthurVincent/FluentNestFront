@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import AllStudents from "./AdmComponents/FindStudentAssets/NewStudent";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
@@ -11,9 +11,7 @@ import Helmets from "../../Resources/Helmets";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Contract from "./AdmComponents/Contract/Contract";
 import Invoice from "./AdmComponents/Invoice/Invoice";
-import Manual from "./AdmComponents/Manual/Manual";
 import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
-import TimelineComponent from "./AdmComponents/Timeline/Timeline";
 import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
 import { localStorageLoggedIn } from "../../App";
 import NewHomeworkAssignment from "./AdmComponents/ClassesManagement/NewHomework";
