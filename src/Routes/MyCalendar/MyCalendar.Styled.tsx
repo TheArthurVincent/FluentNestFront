@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   darkGreyColor,
   lightGreyColor,
-  textpartnerColorContrast,
+  textPrimaryColorContrast,
 } from "../../Styles/Styles";
 
 export const CoursesList = styled.div`
@@ -39,7 +39,7 @@ export const CourseItem = styled.div`
   transition: 0.2s;
   &:hover {
     background-color: ${"#000"};
-    color: ${textpartnerColorContrast()};
+    color: ${textPrimaryColorContrast()};
     font-weight: 700;
   }
 `;
@@ -53,7 +53,7 @@ export const ItemItem = styled.i`
   transition: 0.2s;
   &:hover {
     background-color: ${"#000"};
-    color: ${textpartnerColorContrast()};
+    color: ${textPrimaryColorContrast()};
     font-weight: 700;
   }
 `;

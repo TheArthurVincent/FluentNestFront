@@ -5,7 +5,6 @@ import {
   CircularProgress,
   Modal,
   TextField,
-  Box,
   Typography,
   Paper,
 } from "@mui/material";
@@ -73,7 +72,7 @@ export function AllComments({ headers }) {
   };
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <div sx={{ padding: 2 }}>
       <HOne
         style={{
           fontFamily: textTitleFont(),
@@ -91,7 +90,7 @@ export function AllComments({ headers }) {
             <Typography variant="body1" sx={{ padding: "1rem 0" }}>
               {comment.comment}
             </Typography>
-            <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+            <div sx={{ display: "flex", justifyContent: "space-between" }}>
               <Button
                 color="error"
                 variant="contained"
@@ -107,13 +106,13 @@ export function AllComments({ headers }) {
               >
                 Responder
               </Button>
-            </Box>
+            </div>
           </Paper>
         ))
       )}
 
       <Modal open={isModalOpen} onClose={handleCloseModal}>
-        <Box
+        <div
           sx={{
             position: "absolute",
             top: "50%",
@@ -148,7 +147,7 @@ export function AllComments({ headers }) {
             value={responseText}
             onChange={(e) => setResponseText(e.target.value)}
           />
-          <Box
+          <div
             sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}
           >
             <Button onClick={handleCloseModal} sx={{ marginRight: 1 }}>
@@ -157,10 +156,10 @@ export function AllComments({ headers }) {
             <Button variant="contained" onClick={handleSubmitResponse}>
               Enviar
             </Button>
-          </Box>
-        </Box>
+          </div>
+        </div>
       </Modal>
-    </Box>
+    </div>
   );
 }
 

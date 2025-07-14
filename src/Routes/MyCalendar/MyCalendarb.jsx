@@ -11,7 +11,6 @@ import {
   alwaysWhite,
   partnerColor,
   textPrimaryColorContrast,
-  textpartnerColorContrast,
   textTitleFont,
   transparentWhite,
 } from "../../Styles/Styles";

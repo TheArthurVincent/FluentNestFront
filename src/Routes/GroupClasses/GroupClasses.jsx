@@ -17,7 +17,6 @@ import {
   partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
-  textpartnerColorContrast,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
 import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
@@ -179,7 +178,7 @@ export default function GroupClasses({ headers }) {
               <Link
                 style={{
                   backgroundColor: partnerColor(),
-                  color: textpartnerColorContrast(),
+                  color: textPrimaryColorContrast(),
                   padding: "10px",
                   borderRadius: "6px",
                   display: "flex",

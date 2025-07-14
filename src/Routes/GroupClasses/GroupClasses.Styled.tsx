@@ -2,7 +2,7 @@ import styled from "styled-components";
 import {
   lightGreyColor,
   partnerColor,
-  textpartnerColorContrast,
+  textPrimaryColorContrast,
 } from "../../Styles/Styles";
 
 export const CoursesList = styled.div`
@@ -20,11 +20,11 @@ export const CourseItem = styled.div`
   padding: 3rem;
   text-align: center;
   border: none;
-  color: ${textpartnerColorContrast()};
+  color: ${textPrimaryColorContrast()};
   cursor: pointer;
   transition: 0.2s;
   &:hover {
-    background-color: ${textpartnerColorContrast()};
+    background-color: ${textPrimaryColorContrast()};
     color: ${partnerColor()};
     font-weight: 700;
   }

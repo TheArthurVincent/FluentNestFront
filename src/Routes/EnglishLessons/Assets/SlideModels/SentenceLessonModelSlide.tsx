@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   partnerColor,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
-import HTMLJustWrite from "../../../../Resources/Components/HTMLJustWrite";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";

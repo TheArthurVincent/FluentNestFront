@@ -2,13 +2,8 @@ import React, { useEffect, useState } from "react";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { Box, Tab } from "@mui/material";
-import {
-  alwaysWhite,
-  partnerColor,
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { Tab } from "@mui/material";
+import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
 import ReviewFlashCards from "./FlashCardsComponents/ReviewFlashCards";
@@ -88,14 +83,13 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
     >
       <Helmets text="Flashcards" />
       <TabContext value={value}>
-        <Box
+        <div
           style={{
             display: "flex",
             alignItems: "center",
             backgroundColor: alwaysWhite(),
             justifyContent: "space-between",
           }}
-          sx={{ borderBottom: 1, borderColor: "divider" }}
         >
           <TabList
             onChange={handleChange}
@@ -132,7 +126,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
               );
             })}
           </TabList>
-        </Box>
+        </div>
         {componentsToRender.map((component, index) => {
           return (
             <TabPanel

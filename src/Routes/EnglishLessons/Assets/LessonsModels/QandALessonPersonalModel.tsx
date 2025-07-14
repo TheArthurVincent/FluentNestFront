@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import {
   backDomain,
@@ -6,7 +6,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { readText } from "../Functions/FunctionLessons";
-import { Tooltip, IconButton, Collapse, Box, Typography } from "@mui/material";
+import { Tooltip, IconButton } from "@mui/material";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 
@@ -23,7 +23,6 @@ export default function QandALessonPersonalModel({
   mainTag,
   studentId,
 }: QandALessonPersonalModelProps) {
-
   const actualHeaders = headers || {};
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
@@ -105,7 +104,7 @@ export default function QandALessonPersonalModel({
               <i className="fa fa-volume-up" aria-hidden="true" />
             </IconButton>
           </div>
-          <Box mt={2}>
+          <div>
             <p>
               <textarea
                 style={{
@@ -122,7 +121,7 @@ export default function QandALessonPersonalModel({
                 required
               />
             </p>
-          </Box>
+          </div>
         </LiSentence>
       ))}
     </UlSentences>

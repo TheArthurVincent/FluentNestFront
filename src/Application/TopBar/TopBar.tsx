@@ -21,7 +21,7 @@ import { LinkItem } from "./TopBarTypes";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 import axios from "axios";
-import { Box, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import { HThree, HTwo } from "../../Resources/Components/RouteBox";
 import socket, { registerUser } from "./socket";
 import { isArvin } from "../../App";
@@ -650,14 +650,14 @@ export const TopBar: FC = () => {
           </ArvinButton>
         </div>
       </div>
-      <Modal open={modalOpen} onClose={handleClose}>
-        <Box sx={modalStyle}>
+      <Modal sx={modalStyle} open={modalOpen} onClose={handleClose}>
+        <div>
           <Link target="_blank" to={selectedNotification.link}>
             <HTwo>{selectedNotification.message}</HTwo>
           </Link>
           <HThree>{formatDateBr(selectedNotification.date)}</HThree>
           <ArvinButton onClick={handleClose}>x</ArvinButton>
-        </Box>
+        </div>
       </Modal>
     </TopBarContainer>
   );

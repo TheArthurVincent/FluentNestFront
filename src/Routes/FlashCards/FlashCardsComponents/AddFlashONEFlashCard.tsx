@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField, Select, MenuItem, Box } from "@mui/material";
+import { TextField, Select, MenuItem } from "@mui/material";
 
 export const languages = ["en", "pt", "it", "fr", "de"];
 
@@ -32,7 +32,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
 }) => {
   return (
     <>
-      <Box
+      <div
         style={{
           padding: "10px",
           borderRadius: "10px",
@@ -98,7 +98,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
           onChange={(e) => handleCommentsBack(index, e.target.value)}
           type="text"
         />
-      </Box>
+      </div>
     </>
   );
 };

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import AllStudents from "./AdmComponents/FindStudentAssets/NewStudent";
-import Box from "@mui/material/Box";
 import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
-import { RouteDiv } from "../../Resources/Components/RouteBox";
 import NewPost from "./AdmComponents/PostsManagement/NewPost";
 import NewTutoring from "./AdmComponents/ClassesManagement/NewTutoring";
 import Helmets from "../../Resources/Helmets";
@@ -20,6 +18,7 @@ import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
 import { localStorageLoggedIn } from "../../App";
 import NewHomeworkAssignment from "./AdmComponents/ClassesManagement/NewHomework";
 import { Tooltip } from "@mui/material";
+import { RouteDiv } from "../../Resources/Components/RouteBox";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
@@ -106,30 +105,30 @@ export function Adm({ headers }: HeadersProps) {
       <Helmets text="Adm" />
       <TabContext value={value}>
         <span className="no-print">
-          <Box
+          <div
             style={{
               display: "flex",
               alignItems: "center",
               backgroundColor: alwaysWhite(),
               justifyContent: "space-between",
             }}
-            sx={{
-              fontFamily: textTitleFont(),
-              color: partnerColor(),
-              "& .MuiTab-root": {
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              },
-              "& .Mui-selected": {
-                color: partnerColor(),
-              },
-              "& .MuiTabs-indicator": {
-                color: partnerColor(),
-                backgroundColor: partnerColor(),
-              },
-            }}
           >
             <TabList
+              sx={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+                "& .MuiTab-root": {
+                  fontFamily: textTitleFont(),
+                  color: partnerColor(),
+                },
+                "& .Mui-selected": {
+                  color: partnerColor(),
+                },
+                "& .MuiTabs-indicator": {
+                  color: partnerColor(),
+                  backgroundColor: partnerColor(),
+                },
+              }}
               onChange={handleChange}
               variant="scrollable"
               scrollButtons="auto"
@@ -155,7 +154,7 @@ export function Adm({ headers }: HeadersProps) {
                 );
               })}
             </TabList>
-          </Box>
+          </div>
         </span>
         {componentsToRender.map((component, index) => {
           return (

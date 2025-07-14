@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Box, Tab } from "@mui/material";
-import {
-  alwaysWhite,
-  partnerColor,
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { Tab } from "@mui/material";
+import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import RankingExplanation from "./RankingComponents/RankingExplanation";
@@ -95,26 +90,12 @@ export default function Ranking({ headers }: HeadersProps) {
         Ranking
       </HOne>
       <TabContext value={value}>
-        <Box
+        <div
           style={{
             display: "flex",
             alignItems: "center",
             backgroundColor: alwaysWhite(),
             justifyContent: "space-between",
-          }}
-          sx={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            "& .MuiTab-root": {
-              fontFamily: textTitleFont(),
-              color: partnerColor(),
-            },
-            "& .Mui-selected": {
-              color: partnerColor(),
-            },
-            "& .MuiTabs-indicator": {
-              backgroundColor: partnerColor(),
-            },
           }}
         >
           <TabList
@@ -151,7 +132,7 @@ export default function Ranking({ headers }: HeadersProps) {
               );
             })}
           </TabList>
-        </Box>
+        </div>
         <Countdown targetDate={targetDate} text="Score resets on" />
         {componentsToRender.map((component, index) => {
           return (
