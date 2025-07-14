@@ -28,7 +28,6 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import {
-  Box,
   Tab,
   CircularProgress,
   TableContainer,
@@ -660,7 +659,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
         }}
       >
         <DialogTitle>
-          <Box
+          <div
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -671,7 +670,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             <Button onClick={handleSeeModal}>
               <CloseIcon />
             </Button>
-          </Box>
+          </div>
         </DialogTitle>
         <Grid item xs={12} md={6}>
           <Typography>
@@ -912,7 +911,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
         </DialogContent>
 
         <DialogActions>
-          <Box width="100%" display="flex" justifyContent="space-between">
+          <div width="100%" display="flex" justifyContent="space-between">
             {!seeConfirmDelete ? (
               <>
                 <Button color="error" onClick={() => setSeeConfirmDelete(true)}>
@@ -924,7 +923,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 </Button>
               </>
             ) : (
-              <Box
+              <div
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -937,7 +936,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   </strong>
                   ?
                 </Typography>
-                <Box mt={2} display="flex" gap={2}>
+                <div mt={2} display="flex" gap={2}>
                   <Button onClick={() => setSeeConfirmDelete(false)}>
                     Cancelar
                   </Button>
@@ -948,10 +947,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   >
                     Confirmar Exclusão
                   </Button>
-                </Box>
-              </Box>
+                </div>
+              </div>
             )}
-          </Box>
+          </div>
         </DialogActions>
       </Dialog>
     </>

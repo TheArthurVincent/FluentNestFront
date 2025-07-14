@@ -5,7 +5,6 @@ import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import AddOneFlashCard from "./AddFlashONEFlashCard";
 import {
-  Box,
   Select,
   MenuItem,
   FormControl,
@@ -168,8 +167,8 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
   };
 
   return (
-    <Box
-      sx={{
+    <div
+      style={{
         borderRadius: "6px",
         zIndex: 10000,
         bottom: 10,
@@ -181,9 +180,9 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
       }}
       className="smooth"
     >
-      <Box sx={{ margin: "auto", display: "flex" }} id="addcards">
+      <div style={{ margin: "auto", display: "flex" }} id="addcards">
         {(myPermissions === "superadmin" || myPermissions === "teacher") && (
-          <Box sx={{ display: "grid" }}>
+          <div style={{ display: "grid" }}>
             <ArvinButton
               style={{ display: !addCardVisible ? "block" : "none" }}
               color={partnerColor()}
@@ -191,17 +190,17 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
             >
               Adicionar cartas
             </ArvinButton>
-            <Box
-              sx={{
+            <div
+              style={{
                 marginTop: "1rem",
                 display: addCardVisible ? "block" : "none",
               }}
             >
-              <Box sx={{ display: "flex" }}>
+              <div style={{ display: "flex" }}>
                 {loading ? (
                   <CircularProgress style={{ color: partnerColor() }} />
                 ) : (
-                  <FormControl sx={{ width: "250px" }}>
+                  <FormControl style={{ width: "250px" }}>
                     <InputLabel id="student-select-label">
                       Choose student
                     </InputLabel>
@@ -223,8 +222,8 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                     </Select>
                   </FormControl>
                 )}
-              </Box>
-              <Box>
+              </div>
+              <div>
                 {cards.map((card, index) => (
                   <AddOneFlashCard
                     key={index}
@@ -241,7 +240,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                     handleCommentsBack={handleCommentsBack}
                   />
                 ))}
-              </Box>
+              </div>
               <br />
               <span
                 style={{
@@ -259,10 +258,10 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                   +
                 </ArvinButton>
               </span>
-            </Box>
-          </Box>
+            </div>
+          </div>
         )}
-      </Box>
+      </div>
       <Dialog
         open={showConfirmation}
         onClose={() => setShowConfirmation(false)}
@@ -329,7 +328,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
           </ArvinButton>
         </DialogActions>
       </Dialog>
-    </Box>
+    </div>
   );
 };
 

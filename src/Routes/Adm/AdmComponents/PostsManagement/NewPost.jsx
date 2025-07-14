@@ -5,7 +5,6 @@ import {
   Select,
   MenuItem,
   Typography,
-  Box,
   Paper,
   CircularProgress,
 } from "@mui/material";
@@ -49,7 +48,7 @@ export function NewPost({ headers }) {
   return loading ? (
     <CircularProgress style={{ color: partnerColor() }} />
   ) : (
-    <Box sx={{ maxWidth: 600, margin: "auto", padding: 3 }}>
+    <div style={{ maxWidth: 600, margin: "auto", padding: 3 }}>
       <HOne
         style={{
           fontFamily: textTitleFont(),
@@ -113,7 +112,7 @@ export function NewPost({ headers }) {
           </Button>
         </form>
       </Paper>
-    </Box>
+    </div>
   );
 }
 

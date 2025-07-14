@@ -2,18 +2,13 @@ import React, { useEffect, useState } from "react";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { Box, Tab } from "@mui/material";
 import {
-  alwaysWhite,
   partnerColor,
-  textPrimaryColorContrast,
   textTitleFont,
 } from "../../Styles/Styles";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { onLoggOut } from "../../Resources/UniversalComponents";
 import ListeningExercise from "./ListeningComponents/ListeningExercise";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import ListeningHistory from "./ListeningComponents/ListeningHistory";
 
 interface ListeningProps {
   headers: MyHeadersType | null;
@@ -25,11 +20,6 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
   const [myPermissions, setPermissions] = useState<string>("");
   const [value, setValue] = useState<string>("1");
   const { UniversalTexts } = useUserContext();
-
-  const handleChange = (event: any, newValue: string) => {
-    event.preventDefault();
-    setValue(newValue);
-  };
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
@@ -62,73 +52,10 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
     // },
   ];
 
-  const displayIsAdm = myPermissions === "superadmin" ? "block" : "none";
 
   return (
     <RouteDiv>
       <Helmets text="Listening Exercise" />
-      {/* <TabContext value={value}>
-        <Box
-          style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: alwaysWhite(),
-            justifyContent: "space-between",
-          }}
-          sx={{ borderBottom: 1, borderColor: "divider" }}
-        >
-          <TabList
-            onChange={handleChange}
-             variant="scrollable"
-            scrollButtons="auto"
-            aria-label="scrollable auto tabs example"
-           sx={{
-              fontFamily: textTitleFont(),
-              color: partnerColor(),
-              "& .MuiTab-root": {
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              },
-              "& .Mui-selected": {
-                color: partnerColor(),
-              },
-              "& .MuiTabs-indicator": {
-                backgroundColor: partnerColor(),
-              },
-            }}
-          >
-            {componentsToRender.map((component, index) => {
-              return (
-                <Tab
-                  key={index + component.value}
-                  style={{
-                    display: component.adm === false ? "block" : displayIsAdm,
-                    fontWeight: 500,
-                    backgroundColor: textPrimaryColorContrast(),
-                    color: "#000",
-                  }}
-                  label={component.title}
-                  value={component.value}
-                />
-              );
-            })}
-          </TabList>
-        </Box>
-        {componentsToRender.map((component, index) => {
-          return (
-            <TabPanel
-              style={{
-                padding: 0,
-                margin: "1rem auto",
-              }}
-              key={index + component.value}
-              value={component.value}
-            >
-              {component.component}
-            </TabPanel>
-          );
-        })}
-      </TabContext> */}
       <HOne
         style={{
           fontFamily: textTitleFont(),

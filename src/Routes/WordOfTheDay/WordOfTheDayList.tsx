@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { CircularProgress, Button, Tooltip } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
@@ -13,9 +13,8 @@ import {
   textTitleFont,
   transparentBlack,
 } from "../../Styles/Styles";
-import { Modal, Box, IconButton } from "@mui/material";
+import { Modal, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
 
 interface WordOfTheDayListRv {
   headers: MyHeadersType | null;
@@ -151,22 +150,24 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
           <ArvinButton onClick={() => handleOpen(wordItem)}>
             Ver no Card
           </ArvinButton>
-          <Modal open={open} onClose={handleClose}>
-            <Box
-              sx={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                width: { xs: "90%", sm: 400 },
-                bgcolor: "rgba(255, 255, 255, 0.85)",
-                backdropFilter: "blur(10px)",
-                borderRadius: 4,
-                boxShadow: transparentBlack(),
-                p: 4,
-                color: "#333",
-              }}
-            >
+          <Modal
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: { xs: "90%", sm: 400 },
+              bgcolor: "rgba(255, 255, 255, 0.85)",
+              backdropFilter: "blur(10px)",
+              borderRadius: 4,
+              boxShadow: transparentBlack(),
+              p: 4,
+              color: "#333",
+            }}
+            open={open}
+            onClose={handleClose}
+          >
+            <div>
               <IconButton
                 onClick={handleClose}
                 sx={{ position: "absolute", top: 8, right: 8, color: "#444" }}
@@ -215,7 +216,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
                   </div>
                 </div>
               )}
-            </Box>
+            </div>
           </Modal>
           <div
             style={{

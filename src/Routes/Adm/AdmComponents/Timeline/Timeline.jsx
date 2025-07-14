@@ -9,7 +9,7 @@ import {
   TimelineDot,
   TimelineOppositeContent,
 } from "@mui/lab";
-import { Paper, Typography, CircularProgress, Box } from "@mui/material";
+import { Paper, Typography, CircularProgress } from "@mui/material";
 import {
   backDomain,
   formatDate,
@@ -41,9 +41,9 @@ const TimelineComponent = (headers) => {
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" mt={4}>
+      <div style={{display="flex", justifyContent="center"}} mt={4}>
         <CircularProgress style={{ color: partnerColor() }} />
-      </Box>
+      </div>
     );
   }
 

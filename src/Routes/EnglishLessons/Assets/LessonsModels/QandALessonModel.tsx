@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import {
   backDomain,
@@ -6,7 +6,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { readText } from "../Functions/FunctionLessons";
-import { Tooltip, IconButton, Collapse, Box, Typography } from "@mui/material";
+import { Tooltip, IconButton, Collapse } from "@mui/material";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 
@@ -23,7 +23,6 @@ export default function QandALessonModel({
   mainTag,
   studentId,
 }: QandALessonModelProps) {
-
   const actualHeaders = headers || {};
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
@@ -103,16 +102,16 @@ export default function QandALessonModel({
           </div>
 
           <Collapse in={expandedIndex === index} timeout="auto" unmountOnExit>
-            <Box mt={2}>
+            <div>
               <p>
                 {theitem.answer}{" "}
                 <span onClick={() => readText(theitem.answer, true)}>
                   <i className="fa fa-volume-up" aria-hidden="true" />
                 </span>
               </p>
-            </Box>
+            </div>
           </Collapse>
-          <Box mt={2}>
+          <div>
             <ArvinButton
               color="white"
               onClick={() => {
@@ -124,7 +123,7 @@ export default function QandALessonModel({
             >
               {expandedIndex === index ? "Hide Answer" : "Show Answer"}
             </ArvinButton>
-          </Box>
+          </div>
         </LiSentence>
       ))}
     </UlSentences>

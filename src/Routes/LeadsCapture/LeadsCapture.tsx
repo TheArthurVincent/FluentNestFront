@@ -3,9 +3,7 @@ import { RouteDiv } from "../../Resources/Components/RouteBox";
 import axios from "axios";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
-import { Alert, Box, Grid, TextField } from "@mui/material";
-import { NavLink } from "react-router-dom";
-import { partnerColor, textGeneralFont } from "../../Styles/Styles";
+import { Alert, TextField } from "@mui/material";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import Helmets from "../../Resources/Helmets";
 
@@ -41,8 +39,8 @@ export function SendMail() {
   return (
     <RouteDiv>
       <Helmets text={"Peça seu conteúdo!"} />
-      <Box
-        sx={{
+      <div
+        style={{
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
@@ -50,19 +48,16 @@ export function SendMail() {
           background: "#f7f7f7",
         }}
       >
-        <Box
-          component="form"
+        <form
           onSubmit={submitMail}
-          sx={{
-            p: { xs: 2, sm: 4 },
+          style={{
             backgroundColor: "#fff",
             borderRadius: 2,
-            boxShadow: 3,
             width: "100%",
             maxWidth: 400,
             display: "flex",
             flexDirection: "column",
-            gap: 3,
+            gap: "1rem",
             alignItems: "center",
           }}
           className="box-shadow-white"
@@ -76,15 +71,6 @@ export function SendMail() {
             onChange={(e) => setName(e.target.value)}
             required
             fullWidth
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: partnerColor() },
-                "&:hover fieldset": { borderColor: partnerColor() },
-                "&.Mui-focused fieldset": { borderColor: partnerColor() },
-              },
-              "& label": { color: partnerColor() },
-              "& label.Mui-focused": { color: partnerColor() },
-            }}
           />
           <TextField
             label="E-mail"
@@ -94,36 +80,26 @@ export function SendMail() {
             onChange={(e) => setEmail(e.target.value)}
             required
             fullWidth
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: partnerColor() },
-                "&:hover fieldset": { borderColor: partnerColor() },
-                "&.Mui-focused fieldset": { borderColor: partnerColor() },
-              },
-              "& label": { color: partnerColor() },
-              "& label.Mui-focused": { color: partnerColor() },
-            }}
           />
-          <Box
-            sx={{
+          <div
+            style={{
               display: "flex",
               flexDirection: "column",
-              gap: 1,
+              gap: "0.5rem",
               width: "100%",
             }}
           >
             <ArvinButton
-              style={{
-                marginLeft: "auto",
-              }}
+              style={{ marginLeft: "auto" }}
+              type="submit"
+              disabled={loading}
             >
               Receber material do vídeo!
             </ArvinButton>
             <br />
             <ArvinButton
-              style={{
-                marginLeft: "auto",
-              }}
+              style={{ marginLeft: "auto" }}
+              type="button"
               onClick={() => {
                 window.location.assign("/cadastre-se");
               }}
@@ -131,11 +107,11 @@ export function SendMail() {
             >
               {"Cadastrar-me na plataforma"}
             </ArvinButton>
-          </Box>
+          </div>
           {success && <Alert severity="success">Enviado com sucesso!</Alert>}
           {error && <Alert severity="error">{error}</Alert>}
-        </Box>
-      </Box>
+        </form>
+      </div>
     </RouteDiv>
   );
 }

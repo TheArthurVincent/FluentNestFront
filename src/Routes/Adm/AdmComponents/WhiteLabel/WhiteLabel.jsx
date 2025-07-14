@@ -23,7 +23,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import AppFooter from "../../../../Application/Footer/Footer";
-import { Box, CircularProgress, Tab, Tabs } from "@mui/material";
+import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { FontDownload } from "@mui/icons-material";
 import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -597,16 +597,15 @@ export default function WhiteLabelPreview({ headers }) {
                 height: "100%",
               }}
             >
-              <Box>
+              <div>
                 <TabContext value={tabValue}>
-                  <Box
-                    sx={{
-                      bgcolor: "white",
-                      borderRadius: "8px 8px 0 0",
-                      border: `1px solid #eee`,
-                    }}
-                  >
+                  <div>
                     <TabList
+                      sx={{
+                        bgcolor: "white",
+                        borderRadius: "8px 8px 0 0",
+                        border: `1px solid #eee`,
+                      }}
                       onChange={handleTabChange}
                       variant="scrollable"
                       scrollButtons="auto"
@@ -650,7 +649,7 @@ export default function WhiteLabelPreview({ headers }) {
                         value="3"
                       />
                     </TabList>
-                  </Box>
+                  </div>
                   <TabPanel
                     value="1"
                     sx={{ backgroundColor: "#fff", padding: "1rem" }}
@@ -696,7 +695,7 @@ export default function WhiteLabelPreview({ headers }) {
                     <TabMais />
                   </TabPanel>
                 </TabContext>
-              </Box>
+              </div>
             </div>
             <AppFooter style={{ marginTop: "auto" }} see={true} />
           </div>
