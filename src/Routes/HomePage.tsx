@@ -43,7 +43,7 @@ export function HomePage({ headers }: HeadersProps) {
   const [see, setSee] = useState(false);
 
   useEffect(() => {
-    var user = localStorage.Item("loggedIn");
+    var user = localStorage.getItem("loggedIn");
     if (user) {
       var { permissions, picture, id } = JSON.parse(user);
       setPermissions(permissions);
