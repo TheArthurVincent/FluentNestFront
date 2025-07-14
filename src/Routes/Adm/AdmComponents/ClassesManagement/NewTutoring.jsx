@@ -123,26 +123,6 @@ export function NewTutoring({ headers, id }) {
     console.log("New Flashcards:", newFlashcards);
   }, [newFlashcards]);
 
-  const postFC = async () => {
-    setLoadingHW(true);
-    // try {
-    //   const response = await axios.post(
-    //     `${backDomain}/api/v1/homework/${selectedStudentID}`,
-    //     { description: newHWDescription, dueDate },
-    //     {
-    //       headers,
-    //     }
-    //   );
-    //   notifyError("HW criado com sucesso!");
-    //   setTutorings([]);
-    //   setNewHWDescription("");
-    setLoadingHW(false);
-    // } catch (error) {
-    //   setLoadingHW(false);
-    //   notifyError("Erro ao salvar aulas");
-    //   setStandardValue("Aluno");
-    // }
-  };
   return (
     <div
       style={{
