@@ -123,26 +123,6 @@ export function NewTutoring({ headers, id }) {
     console.log("New Flashcards:", newFlashcards);
   }, [newFlashcards]);
 
-  const postFC = async () => {
-    setLoadingHW(true);
-    // try {
-    //   const response = await axios.post(
-    //     `${backDomain}/api/v1/homework/${selectedStudentID}`,
-    //     { description: newHWDescription, dueDate },
-    //     {
-    //       headers,
-    //     }
-    //   );
-    //   notifyError("HW criado com sucesso!");
-    //   setTutorings([]);
-    //   setNewHWDescription("");
-    setLoadingHW(false);
-    // } catch (error) {
-    //   setLoadingHW(false);
-    //   notifyError("Erro ao salvar aulas");
-    //   setStandardValue("Aluno");
-    // }
-  };
   return (
     <div
       style={{
@@ -191,7 +171,7 @@ export function NewTutoring({ headers, id }) {
                   "selectedStudentID",
                   selectedStudentID
                 );
-                console.log(tutorings, "tutorings after change"); 
+                console.log(tutorings, "tutorings after change");
               }}
               value={selectedStudentID}
             >
@@ -453,12 +433,11 @@ export function NewTutoring({ headers, id }) {
             </div>
           ))}
           <ArvinButton
-            disabled={disabled || !isFormValid}
+            // disabled={disabled || !isFormValid}
             style={{
               marginLeft: "auto",
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",
-              backgroundColor:
-                disabled || !isFormValid ? "grey" : partnerColor(),
+              backgroundColor: partnerColor(),
               minWidth: 120,
               borderRadius: 8,
               fontWeight: 600,
