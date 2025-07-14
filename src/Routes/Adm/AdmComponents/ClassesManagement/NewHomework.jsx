@@ -115,14 +115,7 @@ export function NewHomeworkAssignment({ headers, id }) {
   }, [newFlashcards]);
 
   return (
-    <div
-      style={{
-        margin: "2rem auto",
-        background: "#fff",
-        padding: "2rem",
-        fontFamily: "inherit",
-      }}
-    >
+    <div style={{ background: "#fff", fontFamily: "inherit" }}>
       <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
         Postar Homework
       </HOne>
