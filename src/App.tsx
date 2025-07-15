@@ -1,4 +1,3 @@
-
 (function ensureWhiteLabel() {
   try {
     const wl = localStorage.getItem("whiteLabel");
@@ -6,10 +5,11 @@
       // Monta objeto padrão
       const defaultWL = {
         backgroundType: "color",
-        color: "rgba(67, 125, 172, 1)",
+        color: "rgba(236, 236, 236, 1)",
         backgroundColor: "rgba(188, 221, 248, 1)",
         contrastColor: "#eee",
-        backgroundImage: "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
+        backgroundImage:
+          "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
         logo: "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166",
         textGeneralFont: "Lato",
         textTitleFont: "Athiti",
@@ -97,13 +97,10 @@ export var localStorageLoggedIn = (() => {
     const li = localStorage.getItem("loggedIn");
     if (li) {
       const parsed = JSON.parse(li);
-      console.log("[App] localStorageLoggedIn carregado:", parsed);
       return parsed;
     }
-    console.log("[App] localStorageLoggedIn não encontrado.");
     return {};
   } catch (err) {
-    console.error("[App] Erro ao fazer parse do loggedIn:", err);
     return {};
   }
 })();
@@ -111,7 +108,6 @@ export var localStorageLoggedIn = (() => {
 export var verifyToken = () => {
   try {
     var token = localStorage.getItem("authorization");
-    console.log("[App] Token encontrado:", token);
     return token;
   } catch (err) {
     console.error("[App] Erro ao buscar token:", err);
@@ -140,14 +136,11 @@ function App() {
   try {
     if (isArthurVincent) {
       document.body.style.backgroundImage = `url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769")`;
-      console.log("[App] Background ArthurVincent aplicado.");
     } else if (isArvin || isLocalHost) {
       if (backgroundType() == "color") {
         document.body.style.backgroundColor = theBackgroundColor();
-        console.log("[App] Background color aplicado.");
       } else {
         document.body.style.backgroundImage = `url(${backgroundImage()})`;
-        console.log("[App] Background image aplicado.");
       }
     }
   } catch (err) {
