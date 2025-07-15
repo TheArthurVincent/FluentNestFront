@@ -95,7 +95,6 @@ export function AllStudents({ headers, id }) {
 
   const formContainerStyle = {
     margin: "2rem",
-    padding: "2rem",
     flexDirection: "column",
     display: "flex",
     gap: "1rem",

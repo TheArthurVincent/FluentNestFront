@@ -137,7 +137,7 @@ export function Adm({ headers }: HeadersProps) {
                   <Tooltip
                     key={index + component.value}
                     title={component.tooltip}
-                    placement="top"
+                    placement="bottom"
                   >
                     <Tab
                       style={{
