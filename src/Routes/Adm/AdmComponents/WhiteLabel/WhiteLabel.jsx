@@ -322,7 +322,7 @@ export default function WhiteLabelPreview({ headers }) {
       updateInfo(studentID, headers);
       setTimeout(() => {
         window.location.reload();
-      }, 200);
+      }, 1000);
     } catch (error) {
       console.error(error);
       notifyError("Erro ao salvar o tema.");
@@ -420,7 +420,7 @@ export default function WhiteLabelPreview({ headers }) {
             className="form-wrapper"
             style={{ maxWidth: "700px", margin: "40px auto" }}
           >
-            <div className="form-group" style={{ marginBottom: "15px" }}>
+            {/* <div className="form-group" style={{ marginBottom: "15px" }}>
               <label>Tipo de fundo:</label>
               <select
                 name="backgroundType"
@@ -431,11 +431,10 @@ export default function WhiteLabelPreview({ headers }) {
                 <option value="image">Imagem</option>
                 <option value="color">Cor sólida</option>
               </select>
-            </div>
-
+            </div> */}
             {/* Se for imagem, mostra o input de upload */}
             {formData.backgroundType === "image" && (
-              <div className="form-group" style={{ marginBottom: "15px" }}>
+              <div className="form-group" style={{ marginBottom: "15 px" }}>
                 <label>Imagem de fundo (upload): </label>
                 <input
                   type="file"

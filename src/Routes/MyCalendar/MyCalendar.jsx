@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   HOne,
   HTwo,
@@ -150,7 +150,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setPostNew(false);
     const user = JSON.parse(localStorage.getItem("loggedIn"));
     const id = user.id;
-    if (user.permissions == "superadmin") {
+    if (user.permissions == "superadmin" || user.permissions == "teacher") {
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/eventsgeneral/${id}?today=${today}`,
@@ -858,6 +858,32 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     futureDates.push(date);
   }
 
+  const calendarRef = useRef(null);
+  const todayRef = useRef(null);
+
+  // ...existing code...
+
+  // Adicione este useEffect para centralizar o dia de hoje
+  useEffect(() => {
+    if (todayRef.current && calendarRef.current && !loading) {
+      const container = calendarRef.current;
+      const todayElement = todayRef.current;
+
+      // Calcula a posição para centralizar
+      const containerWidth = container.offsetWidth;
+      const todayWidth = todayElement.offsetWidth;
+      const todayLeft = todayElement.offsetLeft;
+
+      const scrollLeft = todayLeft - containerWidth / 2 + todayWidth / 2;
+
+      // Faz o scroll suave
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: "smooth",
+      });
+    }
+  }, [loading, futureDates]);
+
   const formattedDates = (dateString) => {
     const date = new Date(dateString);
     date.toLocaleString("en-US", {
@@ -997,9 +1023,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     <>
       {headers ? (
         <RouteDiv
-        style={{
-          width:"99vw"
-        }}
+          style={{
+            width: "99vw",
+          }}
         >
           <div>
             <HOne
@@ -1018,7 +1044,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 className="button"
                 style={{
                   backgroundColor: partnerColor(),
-                  display: thePermissions == "superadmin" ? "flex" : "none",
+                  display:
+                    thePermissions == "superadmin" ||
+                    thePermissions == "teacher"
+                      ? "flex"
+                      : "none",
                 }}
                 onClick={() => handleSeeModal(false)}
               >
@@ -1032,7 +1062,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 className="button"
                 style={{
                   backgroundColor: partnerColor(),
-                  display: thePermissions == "superadmin" ? "flex" : "none",
+                  display:
+                    thePermissions == "superadmin" ||
+                    thePermissions == "teacher"
+                      ? "flex"
+                      : "none",
                 }}
                 onClick={() => handleSeeModalOfTutorings()}
               >
@@ -1087,6 +1121,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
               <div
+                ref={calendarRef}
                 style={{
                   display: "flex",
                   gap: "0.75rem",
@@ -1106,6 +1141,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   return (
                     <StyledDiv
                       className={isToday ? "glowing" : "none"}
+                      ref={isToday ? todayRef : null}
                       style={{
                         border: isToday
                           ? `3px solid ${partnerColor()}`
@@ -1498,166 +1534,147 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   </div>
 
                   {/* Admin Section */}
-                  {thePermissions == "superadmin" && (
-                    <div
-                      style={{
-                        borderTop: "2px solid #e9ecef",
-                        paddingTop: "1.5rem",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "1.5rem",
-                      }}
-                    >
-                      <HTwo style={{ margin: 0, color: partnerColor() }}>
-                        {UniversalTexts.editPost}
-                      </HTwo>
+                  {thePermissions == "superadmin" ||
+                    (thePermissions == "teacher" && (
+                      <div
+                        style={{
+                          borderTop: "2px solid #e9ecef",
+                          paddingTop: "1.5rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "1.5rem",
+                        }}
+                      >
+                        <HTwo style={{ margin: 0, color: partnerColor() }}>
+                          {UniversalTexts.editPost}
+                        </HTwo>
 
-                      {loadingInfo ? (
-                        <div style={{ textAlign: "center", padding: "2rem" }}>
-                          <CircularProgress style={{ color: partnerColor() }} />
-                        </div>
-                      ) : (
-                        <>
-                          {/* Status Icons */}
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: "1rem",
-                              padding: "1rem",
-                              backgroundColor: "#f8f9fa",
-                              borderRadius: "8px",
-                            }}
-                          >
-                            <div
-                              style={{ textAlign: "center", cursor: "pointer" }}
-                              onClick={() => updateScheduled(newEventId)}
-                            >
-                              <i
-                                className="fa fa-clock-o"
-                                style={{
-                                  fontSize:
-                                    status == "Scheduled" ? "24px" : "18px",
-                                  color:
-                                    status == "Scheduled"
-                                      ? "#007bff"
-                                      : "#6c757d",
-                                  transition: "all 0.2s",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  fontSize: "0.8rem",
-                                  color: "#6c757d",
-                                  marginTop: "0.25rem",
-                                }}
-                              >
-                                Scheduled
-                              </div>
-                            </div>
-
-                            <div
-                              style={{ textAlign: "center", cursor: "pointer" }}
-                              onClick={() => updateRealizedClass(newEventId)}
-                            >
-                              <i
-                                className="fa fa-check-circle"
-                                style={{
-                                  fontSize:
-                                    status == "Realized" ? "24px" : "18px",
-                                  color:
-                                    status == "Realized"
-                                      ? "#28a745"
-                                      : "#6c757d",
-                                  transition: "all 0.2s",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  fontSize: "0.8rem",
-                                  color: "#6c757d",
-                                  marginTop: "0.25rem",
-                                }}
-                              >
-                                Realized
-                              </div>
-                            </div>
-
-                            <div
-                              style={{ textAlign: "center", cursor: "pointer" }}
-                              onClick={() => updateUnscheduled(newEventId)}
-                            >
-                              <i
-                                className="fa fa-times-circle-o"
-                                style={{
-                                  fontSize:
-                                    status == "Canceled" ? "24px" : "18px",
-                                  color:
-                                    status == "Canceled"
-                                      ? "#dc3545"
-                                      : "#6c757d",
-                                  transition: "all 0.2s",
-                                }}
-                              />
-                              <div
-                                style={{
-                                  fontSize: "0.8rem",
-                                  color: "#6c757d",
-                                  marginTop: "0.25rem",
-                                }}
-                              >
-                                Canceled
-                              </div>
-                            </div>
+                        {loadingInfo ? (
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
+                            <CircularProgress
+                              style={{ color: partnerColor() }}
+                            />
                           </div>
-
-                          {/* Form */}
-                          <form
-                            style={{
-                              display: "grid",
-                              gap: "1rem",
-                              backgroundColor: "#f8f9fa",
-                              padding: "1.5rem",
-                              borderRadius: "8px",
-                            }}
-                          >
-                            <select
-                              onChange={handleCategoryChange}
-                              name="category"
-                              value={category}
-                              className="inputs-style"
+                        ) : (
+                          <>
+                            {/* Status Icons */}
+                            <div
                               style={{
-                                padding: "0.75rem",
-                                borderRadius: "6px",
-                                border: "1px solid #ced4da",
-                                fontSize: "1rem",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "1rem",
+                                padding: "1rem",
+                                backgroundColor: "#f8f9fa",
+                                borderRadius: "8px",
                               }}
                             >
-                              <option value="category" hidden>
-                                Select category
-                              </option>
-                              {[
-                                "Test",
-                                "Standalone",
-                                "Group Class",
-                                "Rep",
-                                "Prize Class",
-                                "Tutoring",
-                                "Marcar Reposição",
-                              ].map((cat, index) => (
-                                <option key={index} value={cat}>
-                                  {cat}
-                                </option>
-                              ))}
-                            </select>
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateScheduled(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-clock-o"
+                                  style={{
+                                    fontSize:
+                                      status == "Scheduled" ? "24px" : "18px",
+                                    color:
+                                      status == "Scheduled"
+                                        ? "#007bff"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6c757d",
+                                    marginTop: "0.25rem",
+                                  }}
+                                >
+                                  Scheduled
+                                </div>
+                              </div>
 
-                            {isTutoring && (
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateRealizedClass(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-check-circle"
+                                  style={{
+                                    fontSize:
+                                      status == "Realized" ? "24px" : "18px",
+                                    color:
+                                      status == "Realized"
+                                        ? "#28a745"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6c757d",
+                                    marginTop: "0.25rem",
+                                  }}
+                                >
+                                  Realized
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateUnscheduled(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-times-circle-o"
+                                  style={{
+                                    fontSize:
+                                      status == "Canceled" ? "24px" : "18px",
+                                    color:
+                                      status == "Canceled"
+                                        ? "#dc3545"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6c757d",
+                                    marginTop: "0.25rem",
+                                  }}
+                                >
+                                  Canceled
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Form */}
+                            <form
+                              style={{
+                                display: "grid",
+                                gap: "1rem",
+                                backgroundColor: "#f8f9fa",
+                                padding: "1.5rem",
+                                borderRadius: "8px",
+                              }}
+                            >
                               <select
+                                onChange={handleCategoryChange}
+                                name="category"
+                                value={category}
                                 className="inputs-style"
-                                onChange={handleStudentChange}
-                                name="students"
-                                value={newStudentId}
                                 style={{
                                   padding: "0.75rem",
                                   borderRadius: "6px",
@@ -1666,274 +1683,305 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 }}
                               >
                                 <option value="category" hidden>
-                                  Select student
+                                  Select category
                                 </option>
-                                {studentsList.map((student, index) => (
-                                  <option key={index} value={student.id}>
-                                    {student.name + " " + student.lastname}
+                                {[
+                                  "Test",
+                                  "Standalone",
+                                  "Group Class",
+                                  "Rep",
+                                  "Prize Class",
+                                  "Tutoring",
+                                  "Marcar Reposição",
+                                ].map((cat, index) => (
+                                  <option key={index} value={cat}>
+                                    {cat}
                                   </option>
                                 ))}
                               </select>
-                            )}
 
-                            <input
-                              className="inputs-style"
-                              value={date}
-                              onChange={(e) => setDate(e.target.value)}
-                              type="date"
-                              style={{
-                                padding: "0.75rem",
-                                borderRadius: "6px",
-                                border: "1px solid #ced4da",
-                                fontSize: "1rem",
-                              }}
-                              required
-                            />
+                              {isTutoring && (
+                                <select
+                                  className="inputs-style"
+                                  onChange={handleStudentChange}
+                                  name="students"
+                                  value={newStudentId}
+                                  style={{
+                                    padding: "0.75rem",
+                                    borderRadius: "6px",
+                                    border: "1px solid #ced4da",
+                                    fontSize: "1rem",
+                                  }}
+                                >
+                                  <option value="category" hidden>
+                                    Select student
+                                  </option>
+                                  {studentsList.map((student, index) => (
+                                    <option key={index} value={student.id}>
+                                      {student.name + " " + student.lastname}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
 
-                            <input
-                              className="inputs-style"
-                              value={theTime}
-                              onChange={(e) => setTheTime(e.target.value)}
-                              type="time"
-                              style={{
-                                padding: "0.75rem",
-                                borderRadius: "6px",
-                                border: "1px solid #ced4da",
-                                fontSize: "1rem",
-                              }}
-                              required
-                            />
+                              <input
+                                className="inputs-style"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                type="date"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
 
-                            <input
-                              className="inputs-style"
-                              value={link}
-                              onChange={(e) => setLink(e.target.value)}
-                              placeholder="Link"
-                              type="text"
-                              style={{
-                                padding: "0.75rem",
-                                borderRadius: "6px",
-                                border: "1px solid #ced4da",
-                                fontSize: "1rem",
-                              }}
-                              required
-                            />
+                              <input
+                                className="inputs-style"
+                                value={theTime}
+                                onChange={(e) => setTheTime(e.target.value)}
+                                type="time"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
 
-                            <input
-                              className="inputs-style"
-                              value={description}
-                              onChange={(e) => setDescription(e.target.value)}
-                              placeholder="Description"
-                              type="text"
-                              style={{
-                                padding: "0.75rem",
-                                borderRadius: "6px",
-                                border: "1px solid #ced4da",
-                                fontSize: "1rem",
-                              }}
-                              required
-                            />
-                          </form>
+                              <input
+                                className="inputs-style"
+                                value={link}
+                                onChange={(e) => setLink(e.target.value)}
+                                placeholder="Link"
+                                type="text"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
 
-                          {/* Checklist */}
-                          <div
-                            style={{
-                              backgroundColor: "#f8f9fa",
-                              padding: "1.5rem",
-                              borderRadius: "8px",
-                              border: "1px solid #e9ecef",
-                            }}
-                          >
-                            <h4
+                              <input
+                                className="inputs-style"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Description"
+                                type="text"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
+                            </form>
+
+                            {/* Checklist */}
+                            <div
                               style={{
-                                margin: "0 0 1rem 0",
-                                color: partnerColor(),
+                                backgroundColor: "#f8f9fa",
+                                padding: "1.5rem",
+                                borderRadius: "8px",
+                                border: "1px solid #e9ecef",
                               }}
                             >
-                              Task Checklist
-                            </h4>
-                            <div style={{ display: "grid", gap: "0.75rem" }}>
-                              {[
-                                {
-                                  key: "checkList1",
-                                  text: "0. Subir Vídeo no vimeo",
-                                  handler: handleCheckbox1Change,
-                                },
-                                {
-                                  key: "checkList2",
-                                  text: "1. Subir Aulas na Plataforma",
-                                  handler: handleCheckbox2Change,
-                                },
-                                {
-                                  key: "checkList3",
-                                  text: "2. Adicionar Atividades de Homework",
-                                  handler: handleCheckbox3Change,
-                                },
-                                {
-                                  key: "checkList4",
-                                  text: "3. Subir Flashcards",
-                                  handler: handleCheckbox4Change,
-                                },
-                                {
-                                  key: "checkList5",
-                                  text: "4. Formatar Material",
-                                  handler: handleCheckbox5Change,
-                                },
-                              ].map((item, index) => (
-                                <label
-                                  key={index}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.75rem",
-                                    padding: "0.5rem",
-                                    backgroundColor: eventFull[item.key]
-                                      ? "#d4edda"
-                                      : "white",
-                                    borderRadius: "6px",
-                                    border: "1px solid #dee2e6",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s",
-                                  }}
-                                >
-                                  <input
-                                    checked={eventFull[item.key] || false}
-                                    type="checkbox"
-                                    onChange={item.handler}
+                              <h4
+                                style={{
+                                  margin: "0 0 1rem 0",
+                                  color: partnerColor(),
+                                }}
+                              >
+                                Task Checklist
+                              </h4>
+                              <div style={{ display: "grid", gap: "0.75rem" }}>
+                                {[
+                                  {
+                                    key: "checkList1",
+                                    text: "0. Subir Vídeo",
+                                    handler: handleCheckbox1Change,
+                                  },
+                                  {
+                                    key: "checkList2",
+                                    text: "1. Subir Aulas na Plataforma",
+                                    handler: handleCheckbox2Change,
+                                  },
+                                  {
+                                    key: "checkList3",
+                                    text: "2. Adicionar Atividades de Homework",
+                                    handler: handleCheckbox3Change,
+                                  },
+                                  {
+                                    key: "checkList4",
+                                    text: "3. Subir Flashcards",
+                                    handler: handleCheckbox4Change,
+                                  },
+                                  {
+                                    key: "checkList5",
+                                    text: "4. Formatar Material",
+                                    handler: handleCheckbox5Change,
+                                  },
+                                ].map((item, index) => (
+                                  <label
+                                    key={index}
                                     style={{
-                                      width: "18px",
-                                      height: "18px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.75rem",
+                                      padding: "0.5rem",
+                                      backgroundColor: eventFull[item.key]
+                                        ? "#d4edda"
+                                        : "white",
+                                      borderRadius: "6px",
+                                      border: "1px solid #dee2e6",
                                       cursor: "pointer",
-                                    }}
-                                  />
-                                  <span
-                                    style={{
-                                      fontSize: "0.95rem",
-                                      color: "#495057",
-                                      textDecoration: eventFull[item.key]
-                                        ? "line-through"
-                                        : "none",
+                                      transition: "all 0.2s",
                                     }}
                                   >
-                                    {item.text}
-                                  </span>
-                                </label>
-                              ))}
+                                    <input
+                                      checked={eventFull[item.key] || false}
+                                      type="checkbox"
+                                      onChange={item.handler}
+                                      style={{
+                                        width: "18px",
+                                        height: "18px",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        fontSize: "0.95rem",
+                                        color: "#495057",
+                                        textDecoration: eventFull[item.key]
+                                          ? "line-through"
+                                          : "none",
+                                      }}
+                                    >
+                                      {item.text}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        </>
-                      )}
+                          </>
+                        )}
 
-                      {/* Action Buttons */}
-                      {!deleteVisible ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "1rem",
-                            justifyContent: "center",
-                            paddingTop: "1rem",
-                          }}
-                        >
-                          {[
-                            {
-                              text: "Delete",
-                              color: "red",
-                              onClick: seeDelete,
-                              visible: !postNew,
-                            },
-                            {
-                              text: "Cancel",
-                              color: "blue",
-                              onClick: handleCloseModal,
-                              visible: true,
-                            },
-                            {
-                              text: "Save",
-                              color: "green",
-                              onClick: postNew ? postNewEvent : editInside,
-                              visible: true,
-                            },
-                          ].map(
-                            (item, index) =>
-                              item.visible && (
-                                <ArvinButton
-                                  key={index}
-                                  color={item.color}
-                                  onClick={item.onClick}
-                                  style={{
-                                    padding: "0.75rem 1.5rem",
-                                    fontSize: "1rem",
-                                    fontWeight: "500",
-                                    minWidth: "100px",
-                                  }}
-                                >
-                                  {item.text}
-                                </ArvinButton>
-                              )
-                          )}
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            backgroundColor: "#f8d7da",
-                            padding: "1.5rem",
-                            borderRadius: "8px",
-                            border: "1px solid #f5c6cb",
-                            textAlign: "center",
-                          }}
-                        >
-                          <p
-                            style={{
-                              margin: "0 0 1rem 0",
-                              fontSize: "1.1rem",
-                              fontWeight: "500",
-                              color: "#721c24",
-                            }}
-                          >
-                            ⚠️ Are you sure you want to delete this event?
-                          </p>
+                        {/* Action Buttons */}
+                        {!deleteVisible ? (
                           <div
                             style={{
                               display: "flex",
                               gap: "1rem",
                               justifyContent: "center",
+                              paddingTop: "1rem",
                             }}
                           >
-                            <button
-                              onClick={seeDelete}
-                              style={{
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: partnerColor(),
-                                color: "white",
-                                border: "none",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                fontSize: "1rem",
-                                fontWeight: "500",
-                              }}
-                            >
-                              No, Cancel
-                            </button>
-                            <button
-                              onClick={deleteOneMaterialInside}
-                              style={{
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: "#dc3545",
-                                color: "white",
-                                border: "none",
-                                borderRadius: "6px",
-                                cursor: "pointer",
-                                fontSize: "1rem",
-                                fontWeight: "500",
-                              }}
-                            >
-                              Yes, Delete
-                            </button>
+                            {[
+                              {
+                                text: "Delete",
+                                color: "red",
+                                onClick: seeDelete,
+                                visible: !postNew,
+                              },
+                              {
+                                text: "Cancel",
+                                color: "blue",
+                                onClick: handleCloseModal,
+                                visible: true,
+                              },
+                              {
+                                text: "Save",
+                                color: "green",
+                                onClick: postNew ? postNewEvent : editInside,
+                                visible: true,
+                              },
+                            ].map(
+                              (item, index) =>
+                                item.visible && (
+                                  <ArvinButton
+                                    key={index}
+                                    color={item.color}
+                                    onClick={item.onClick}
+                                    style={{
+                                      padding: "0.75rem 1.5rem",
+                                      fontSize: "1rem",
+                                      fontWeight: "500",
+                                      minWidth: "100px",
+                                    }}
+                                  >
+                                    {item.text}
+                                  </ArvinButton>
+                                )
+                            )}
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                        ) : (
+                          <div
+                            style={{
+                              backgroundColor: "#f8d7da",
+                              padding: "1.5rem",
+                              borderRadius: "8px",
+                              border: "1px solid #f5c6cb",
+                              textAlign: "center",
+                            }}
+                          >
+                            <p
+                              style={{
+                                margin: "0 0 1rem 0",
+                                fontSize: "1.1rem",
+                                fontWeight: "500",
+                                color: "#721c24",
+                              }}
+                            >
+                              ⚠️ Are you sure you want to delete this event?
+                            </p>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1rem",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                onClick={seeDelete}
+                                style={{
+                                  padding: "0.75rem 1.5rem",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                No, Cancel
+                              </button>
+                              <button
+                                onClick={deleteOneMaterialInside}
+                                style={{
+                                  padding: "0.75rem 1.5rem",
+                                  backgroundColor: "#dc3545",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Yes, Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                 </div>
               )}
               {/* Event Information */}

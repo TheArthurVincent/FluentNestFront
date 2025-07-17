@@ -362,10 +362,8 @@ export default function StudentsRanking({
           backgroundColor: alwaysWhite(),
           top: "50%",
           left: "50%",
-          width: "100vw",
-          maxWidth: "40rem",
-          maxHeight: "75vh",
-          overflow: "auto",
+          width: "25rem",
+          height: "25rem",
           display: isVisible ? "block" : "none",
           transform: "translate(-50%, -50%)",
         }}
