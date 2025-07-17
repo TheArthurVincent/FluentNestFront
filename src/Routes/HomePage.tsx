@@ -200,7 +200,6 @@ export function HomePage({ headers }: HeadersProps) {
                   <>
                     <BlogRouteSizeControlBox
                       style={{ gap: "1rem" }}
-                      className="smooth"
                     >
                       {component.component}
                       {component.levelcard && (

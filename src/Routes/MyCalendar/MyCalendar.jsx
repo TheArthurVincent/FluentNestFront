@@ -3,6 +3,7 @@ import {
   HOne,
   HTwo,
   RouteDiv,
+  RouteDivCalendar,
   RouteSizeControlBox,
 } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
@@ -33,8 +34,6 @@ import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
-  // states
-  // Filtra apenas cursos cujo campo booleano `arthurVincent` seja `false`
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
@@ -142,7 +141,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -170,7 +168,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         setEvents(eventsLoop);
       } catch (error) {
         console.log(error);
-        // onLoggOut();
       }
     } else {
       null;
@@ -204,7 +201,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const handleChangeWeek = async (sum) => {
@@ -238,7 +234,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const handleBackToToday = async () => {
@@ -272,7 +267,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const fetchOneEvent = async (id) => {
@@ -315,7 +309,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const fetchOneSetOfTutorings = async (studentId) => {
@@ -365,7 +358,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchGeneralEvents();
     } catch (error) {
       console.log(error);
-      // onLoggOut();
+
       console.log(error, "Erro ao criar evento");
     }
   };
@@ -389,7 +382,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao excluir evento");
       console.log(error);
-      // onLoggOut();
     }
   };
   const deleteOneMaterialInside = () => {
@@ -425,7 +417,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao criar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
   const editInside = () => {
@@ -449,7 +440,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
   const updateUnscheduled = async (id) => {
@@ -467,7 +457,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -482,7 +471,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao enviar e-mail");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -501,7 +489,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -526,7 +513,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -552,7 +538,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -593,7 +578,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -813,7 +797,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -827,7 +810,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -841,7 +823,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -855,7 +836,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -869,7 +849,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -1009,7 +988,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       handleCloseModal();
     } catch (error) {
       console.log(error);
-      // onLoggOut();
+
       console.error(error);
     }
   };
@@ -1017,8 +996,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   return (
     <>
       {headers ? (
-        <RouteDiv>
-          <Helmets text="Calendar" />
+        <RouteDiv
+        style={{
+          width:"99vw"
+        }}
+        >
           <div>
             <HOne
               style={{
@@ -2614,6 +2596,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       ) : (
         <RouteSizeControlBox>Nenhum usuário logado</RouteSizeControlBox>
       )}
+      <Helmets text="Calendar" />
     </>
   );
 }
