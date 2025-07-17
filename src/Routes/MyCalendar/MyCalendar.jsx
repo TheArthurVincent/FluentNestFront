@@ -92,6 +92,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   // AXIOS
   const fetchStudents = async () => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      console.log("Fetching students list");
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${myId}`,
@@ -105,7 +106,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         console.log(error, "Erro ao encontrar alunos");
       }
     } else {
-      null;
+      console.log("Not Fetching students list");
     }
   };
 
@@ -332,8 +333,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
-      console.log(error);
-      // onLoggOut();
     }
   };
   const fetchOneSetOfTutoringsInside = (e) => {
@@ -1375,7 +1374,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width: "20rem",
+                width: window.innerWidth <= 768 ? "90vw" : "35rem",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
@@ -1386,181 +1385,411 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               ) : (
                 <div
                   style={{
-                    padding: "1rem",
-                    maxHeight: "30rem",
+                    padding: "1.5rem",
+                    maxHeight: "40rem",
                     overflow: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1.5rem",
                   }}
                 >
-                  <Xp onClick={handleCloseModal}>X</Xp>
-                  <HTwo
+                  {/* Header */}
+                  <div
                     style={{
-                      margin: "0.5rem 0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    Access the event
-                  </HTwo>
-                  <p>
-                    <b>Category:</b>{" "}
-                    {category == "Test"
-                      ? "Test Class"
-                      : category == "Standalone"
-                      ? "Standalone Class"
-                      : category == "Group Class"
-                      ? "Group Class"
-                      : category == "Rep"
-                      ? "Marcar Reposição"
-                      : category == "Marcar Reposição"
-                      ? "Janela de Marcar Reposição"
-                      : category == "Prize Class"
-                      ? "Prize Class"
-                      : category == "Tutoring"
-                      ? "Tutoring: Private Class"
-                      : ""}{" "}
-                  </p>
-                  <p>
-                    <b>Date: </b>
-                    {newFormatDate(date)}
-                  </p>
-                  <p>
-                    <b>Time: </b>
-                    {theTime}
-                  </p>
-                  {category !== "Marcar Reposição" && (
-                    <Link to={link} target="_blank">
-                      Click here to access the class
-                    </Link>
-                  )}
-                  <p
+                    <HTwo
+                      style={{
+                        margin: 0,
+                        color: partnerColor(),
+                      }}
+                    >
+                      Access the event
+                    </HTwo>
+                    <Xp
+                      onClick={handleCloseModal}
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "1.5rem",
+                        color: "#999",
+                        transition: "color 0.2s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.color = partnerColor())
+                      }
+                      onMouseLeave={(e) => (e.target.style.color = "#999")}
+                    >
+                      ×
+                    </Xp>
+                  </div>
+
+                  {/* Event Information */}
+                  <div
                     style={{
-                      fontSize: "1.1rem",
+                      backgroundColor: "#f8f9fa",
+                      padding: "1.2rem",
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.8rem",
                     }}
                   >
-                    {description}
-                  </p>
-                  {category == "Marcar Reposição" && (
-                    <>
-                      <div
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <span
                         style={{
-                          padding: "1rem",
-                          display: !seeReplenish ? "flex" : "none",
+                          fontWeight: "600",
+                          color: "#495057",
+                          minWidth: "80px",
                         }}
                       >
-                        <ArvinButton
-                          onClick={() => {
-                            setSeeReplenish(true);
+                        Category:
+                      </span>
+                      <span
+                        style={{
+                          backgroundColor: partnerColor(),
+                          color: "white",
+                          padding: "0.25rem 0.75rem",
+                          borderRadius: "20px",
+                          fontSize: "0.9rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {category == "Test"
+                          ? "Test Class"
+                          : category == "Standalone"
+                          ? "Standalone Class"
+                          : category == "Group Class"
+                          ? "Group Class"
+                          : category == "Rep"
+                          ? "Marcar Reposição"
+                          : category == "Marcar Reposição"
+                          ? "Janela de Marcar Reposição"
+                          : category == "Prize Class"
+                          ? "Prize Class"
+                          : category == "Tutoring"
+                          ? "Tutoring: Private Class"
+                          : ""}
+                      </span>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "600",
+                          color: "#495057",
+                          minWidth: "80px",
+                        }}
+                      >
+                        Date:
+                      </span>
+                      <span style={{ color: "#6c757d", fontWeight: "500" }}>
+                        {newFormatDate(date)}
+                      </span>
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "600",
+                          color: "#495057",
+                          minWidth: "80px",
+                        }}
+                      >
+                        Time:
+                      </span>
+                      <span style={{ color: "#6c757d", fontWeight: "500" }}>
+                        {theTime}
+                      </span>
+                    </div>
+
+                    {category !== "Marcar Reposição" && (
+                      <Link
+                        to={link}
+                        target="_blank"
+                        style={{
+                          color: partnerColor(),
+                          textDecoration: "none",
+                          fontWeight: "500",
+                          padding: "0.5rem 1rem",
+                          backgroundColor: "white",
+                          border: `2px solid ${partnerColor()}`,
+                          borderRadius: "6px",
+                          textAlign: "center",
+                          transition: "all 0.2s",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = partnerColor();
+                          e.target.style.color = "white";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "white";
+                          e.target.style.color = partnerColor();
+                        }}
+                      >
+                        🔗 Click here to access the class
+                      </Link>
+                    )}
+
+                    {description && (
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          padding: "1rem",
+                          borderRadius: "6px",
+                          border: "1px solid #dee2e6",
+                          borderLeft: `4px solid ${partnerColor()}`,
+                        }}
+                      >
+                        <p
+                          style={{
+                            margin: 0,
+                            fontSize: "1.1rem",
+                            color: "#495057",
                           }}
                         >
-                          Reservar este horário para Marcar Reposição
+                          {description}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Replenish Section */}
+                  {category == "Marcar Reposição" && (
+                    <div
+                      style={{
+                        backgroundColor: "#fff3cd",
+                        padding: "1.2rem",
+                        borderRadius: "8px",
+                        border: "1px solid #ffeaa7",
+                      }}
+                    >
+                      <div
+                        style={{ display: !seeReplenish ? "block" : "none" }}
+                      >
+                        <ArvinButton
+                          onClick={() => setSeeReplenish(true)}
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            fontSize: "1rem",
+                            fontWeight: "500",
+                          }}
+                        >
+                          📅 Reservar este horário para Marcar Reposição
                         </ArvinButton>
                       </div>
+
                       <div
                         style={{
-                          padding: "1rem",
-                          borderRadius: "4px",
-                          display: seeReplenish ? "grid" : "none",
-                          backgroundColor: "grey",
+                          display: seeReplenish ? "block" : "none",
+                          backgroundColor: "#6c757d",
                           color: "white",
+                          padding: "1.2rem",
+                          borderRadius: "8px",
+                          textAlign: "center",
                         }}
                       >
-                        <p>
-                          Deseja marcar este horário para marcar reposição? Esta
-                          ação não pode ser desfeita.
+                        <p
+                          style={{
+                            margin: "0 0 1rem 0",
+                            fontSize: "1.1rem",
+                            fontWeight: "500",
+                          }}
+                        >
+                          ⚠️ Deseja marcar este horário para marcar reposição?
+                          Esta ação não pode ser desfeita.
                         </p>
                         <div
                           style={{
-                            margin: "1rem",
                             display: "flex",
-                            justifyContent: "space-around",
+                            gap: "1rem",
+                            justifyContent: "center",
+                            marginTop: "1rem",
                           }}
                         >
                           <ArvinButton
-                            onClick={() => {
-                              setSeeReplenish(false);
-                            }}
+                            onClick={() => setSeeReplenish(false)}
                             color="red"
+                            style={{
+                              padding: "0.5rem 1.5rem",
+                              fontWeight: "500",
+                            }}
                           >
-                            Não
+                            ❌ Não
                           </ArvinButton>
                           <ArvinButton
                             onClick={handleScheduleReplenish}
                             color="green"
+                            style={{
+                              padding: "0.5rem 1.5rem",
+                              fontWeight: "500",
+                            }}
                           >
-                            Sim
+                            ✅ Sim
                           </ArvinButton>
                         </div>
                       </div>
-                    </>
+                    </div>
                   )}
+
+                  {/* Admin Section */}
                   {thePermissions == "superadmin" && (
-                    <>
-                      <HTwo
-                        style={{
-                          margin: "0.5rem 0",
-                        }}
-                      >
+                    <div
+                      style={{
+                        borderTop: "2px solid #e9ecef",
+                        paddingTop: "1.5rem",
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "1.5rem",
+                      }}
+                    >
+                      <HTwo style={{ margin: 0, color: partnerColor() }}>
                         {UniversalTexts.editPost}
                       </HTwo>
+
                       {loadingInfo ? (
-                        <CircularProgress style={{ color: partnerColor() }} />
+                        <div style={{ textAlign: "center", padding: "2rem" }}>
+                          <CircularProgress style={{ color: partnerColor() }} />
+                        </div>
                       ) : (
                         <>
+                          {/* Status Icons */}
                           <div
                             style={{
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              gap: "5px",
-                              marginBottom: "10px",
+                              gap: "1rem",
+                              padding: "1rem",
+                              backgroundColor: "#f8f9fa",
+                              borderRadius: "8px",
                             }}
                           >
-                            <i
-                              className="fa fa-clock-o"
-                              aria-hidden="true"
+                            <div
+                              style={{ textAlign: "center", cursor: "pointer" }}
                               onClick={() => updateScheduled(newEventId)}
-                              style={{
-                                cursor: "pointer",
-                                fontSize:
-                                  status == "Scheduled" ? "15px" : "12px",
-                                color: status == "Scheduled" ? "blue" : "grey",
-                              }}
-                            />
-                            <i
-                              className="fa fa-check-circle"
-                              aria-hidden="true"
+                            >
+                              <i
+                                className="fa fa-clock-o"
+                                style={{
+                                  fontSize:
+                                    status == "Scheduled" ? "24px" : "18px",
+                                  color:
+                                    status == "Scheduled"
+                                      ? "#007bff"
+                                      : "#6c757d",
+                                  transition: "all 0.2s",
+                                }}
+                              />
+                              <div
+                                style={{
+                                  fontSize: "0.8rem",
+                                  color: "#6c757d",
+                                  marginTop: "0.25rem",
+                                }}
+                              >
+                                Scheduled
+                              </div>
+                            </div>
+
+                            <div
+                              style={{ textAlign: "center", cursor: "pointer" }}
                               onClick={() => updateRealizedClass(newEventId)}
-                              style={{
-                                cursor: "pointer",
-                                fontSize:
-                                  status == "Realized" ? "15px" : "12px",
-                                color: status == "Realized" ? "green" : "grey",
-                              }}
-                            />
-                            <i
-                              className="fa fa-times-circle-o"
-                              aria-hidden="true"
+                            >
+                              <i
+                                className="fa fa-check-circle"
+                                style={{
+                                  fontSize:
+                                    status == "Realized" ? "24px" : "18px",
+                                  color:
+                                    status == "Realized"
+                                      ? "#28a745"
+                                      : "#6c757d",
+                                  transition: "all 0.2s",
+                                }}
+                              />
+                              <div
+                                style={{
+                                  fontSize: "0.8rem",
+                                  color: "#6c757d",
+                                  marginTop: "0.25rem",
+                                }}
+                              >
+                                Realized
+                              </div>
+                            </div>
+
+                            <div
+                              style={{ textAlign: "center", cursor: "pointer" }}
                               onClick={() => updateUnscheduled(newEventId)}
-                              style={{
-                                cursor: "pointer",
-                                fontSize:
-                                  status == "Canceled" ? "15px" : "12px",
-                                color: status == "Canceled" ? "red" : "grey",
-                              }}
-                            />
+                            >
+                              <i
+                                className="fa fa-times-circle-o"
+                                style={{
+                                  fontSize:
+                                    status == "Canceled" ? "24px" : "18px",
+                                  color:
+                                    status == "Canceled"
+                                      ? "#dc3545"
+                                      : "#6c757d",
+                                  transition: "all 0.2s",
+                                }}
+                              />
+                              <div
+                                style={{
+                                  fontSize: "0.8rem",
+                                  color: "#6c757d",
+                                  marginTop: "0.25rem",
+                                }}
+                              >
+                                Canceled
+                              </div>
+                            </div>
                           </div>
+
+                          {/* Form */}
                           <form
                             style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyItems: "center",
-                              gap: "0.5rem",
+                              display: "grid",
+                              gap: "1rem",
+                              backgroundColor: "#f8f9fa",
+                              padding: "1.5rem",
+                              borderRadius: "8px",
                             }}
                           >
                             <select
                               onChange={handleCategoryChange}
                               name="category"
-                              id=""
                               value={category}
                               className="inputs-style"
+                              style={{
+                                padding: "0.75rem",
+                                borderRadius: "6px",
+                                border: "1px solid #ced4da",
+                                fontSize: "1rem",
+                              }}
                             >
                               <option value="category" hidden>
                                 Select category
@@ -1573,134 +1802,193 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 "Prize Class",
                                 "Tutoring",
                                 "Marcar Reposição",
-                              ].map((category, index) => {
-                                return (
-                                  <option key={index} value={category}>
-                                    {category}
-                                  </option>
-                                );
-                              })}
+                              ].map((cat, index) => (
+                                <option key={index} value={cat}>
+                                  {cat}
+                                </option>
+                              ))}
                             </select>
+
                             {isTutoring && (
                               <select
                                 className="inputs-style"
                                 onChange={handleStudentChange}
                                 name="students"
-                                id=""
                                 value={newStudentId}
-                                style={{ display: "block" }}
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
                               >
                                 <option value="category" hidden>
                                   Select student
                                 </option>
-                                {studentsList.map((student, index) => {
-                                  return (
-                                    <option key={index} value={student.id}>
-                                      {student.name + " " + student.lastname}
-                                    </option>
-                                  );
-                                })}
+                                {studentsList.map((student, index) => (
+                                  <option key={index} value={student.id}>
+                                    {student.name + " " + student.lastname}
+                                  </option>
+                                ))}
                               </select>
                             )}
+
                             <input
                               className="inputs-style"
                               value={date}
-                              onChange={(e) => {
-                                setDate(e.target.value);
-                              }}
+                              onChange={(e) => setDate(e.target.value)}
                               type="date"
+                              style={{
+                                padding: "0.75rem",
+                                borderRadius: "6px",
+                                border: "1px solid #ced4da",
+                                fontSize: "1rem",
+                              }}
                               required
                             />
+
                             <input
                               className="inputs-style"
                               value={theTime}
-                              onChange={(e) => {
-                                setTheTime(e.target.value);
-                              }}
+                              onChange={(e) => setTheTime(e.target.value)}
                               type="time"
+                              style={{
+                                padding: "0.75rem",
+                                borderRadius: "6px",
+                                border: "1px solid #ced4da",
+                                fontSize: "1rem",
+                              }}
                               required
                             />
+
                             <input
                               className="inputs-style"
                               value={link}
                               onChange={(e) => setLink(e.target.value)}
                               placeholder="Link"
                               type="text"
+                              style={{
+                                padding: "0.75rem",
+                                borderRadius: "6px",
+                                border: "1px solid #ced4da",
+                                fontSize: "1rem",
+                              }}
                               required
                             />
+
                             <input
                               className="inputs-style"
                               value={description}
                               onChange={(e) => setDescription(e.target.value)}
                               placeholder="Description"
                               type="text"
+                              style={{
+                                padding: "0.75rem",
+                                borderRadius: "6px",
+                                border: "1px solid #ced4da",
+                                fontSize: "1rem",
+                              }}
                               required
                             />
                           </form>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList1}
-                                type="checkbox"
-                                value="option1"
-                                onChange={handleCheckbox1Change}
-                              />
-                              0. Subir Vídeo no vimeo:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList2}
-                                type="checkbox"
-                                value="option2"
-                                onChange={handleCheckbox2Change}
-                              />
-                              1. Subir Aulas na Plataforma:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList3}
-                                type="checkbox"
-                                value="option3"
-                                onChange={handleCheckbox3Change}
-                              />
-                              2. Adicionar Atividades de Homework:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList4}
-                                type="checkbox"
-                                value="option4"
-                                onChange={handleCheckbox4Change}
-                              />
-                              3. Subir Flashcards:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={eventFull.checkList5}
-                                value="option5"
-                                onChange={handleCheckbox5Change}
-                              />
-                              4. Formatar Material:
-                            </label>
+
+                          {/* Checklist */}
+                          <div
+                            style={{
+                              backgroundColor: "#f8f9fa",
+                              padding: "1.5rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e9ecef",
+                            }}
+                          >
+                            <h4
+                              style={{
+                                margin: "0 0 1rem 0",
+                                color: partnerColor(),
+                              }}
+                            >
+                              Task Checklist
+                            </h4>
+                            <div style={{ display: "grid", gap: "0.75rem" }}>
+                              {[
+                                {
+                                  key: "checkList1",
+                                  text: "0. Subir Vídeo no vimeo",
+                                  handler: handleCheckbox1Change,
+                                },
+                                {
+                                  key: "checkList2",
+                                  text: "1. Subir Aulas na Plataforma",
+                                  handler: handleCheckbox2Change,
+                                },
+                                {
+                                  key: "checkList3",
+                                  text: "2. Adicionar Atividades de Homework",
+                                  handler: handleCheckbox3Change,
+                                },
+                                {
+                                  key: "checkList4",
+                                  text: "3. Subir Flashcards",
+                                  handler: handleCheckbox4Change,
+                                },
+                                {
+                                  key: "checkList5",
+                                  text: "4. Formatar Material",
+                                  handler: handleCheckbox5Change,
+                                },
+                              ].map((item, index) => (
+                                <label
+                                  key={index}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.75rem",
+                                    padding: "0.5rem",
+                                    backgroundColor: eventFull[item.key]
+                                      ? "#d4edda"
+                                      : "white",
+                                    borderRadius: "6px",
+                                    border: "1px solid #dee2e6",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s",
+                                  }}
+                                >
+                                  <input
+                                    checked={eventFull[item.key] || false}
+                                    type="checkbox"
+                                    onChange={item.handler}
+                                    style={{
+                                      width: "18px",
+                                      height: "18px",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                  <span
+                                    style={{
+                                      fontSize: "0.95rem",
+                                      color: "#495057",
+                                      textDecoration: eventFull[item.key]
+                                        ? "line-through"
+                                        : "none",
+                                    }}
+                                  >
+                                    {item.text}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
                         </>
                       )}
+
+                      {/* Action Buttons */}
                       {!deleteVisible ? (
                         <div
                           style={{
                             display: "flex",
-                            alignItems: "center",
-                            width: "100%",
-                            justifyContent: "space-evenly",
+                            gap: "1rem",
+                            justifyContent: "center",
+                            paddingTop: "1rem",
                           }}
                         >
                           {[
@@ -1708,7 +1996,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               text: "Delete",
                               color: "red",
                               onClick: seeDelete,
-                              visible: postNew ? false : true,
+                              visible: !postNew,
                             },
                             {
                               text: "Cancel",
@@ -1721,75 +2009,93 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               color: "green",
                               onClick: postNew ? postNewEvent : editInside,
                               visible: true,
-                              type: "submit",
                             },
-                          ].map((item, index) => {
-                            return (
-                              <ArvinButton
-                                key={index}
-                                color={item.color}
-                                onClick={item.onClick}
-                                style={{
-                                  display: item.visible ? "block" : "none",
-                                  marginTop: "1rem",
-                                  cursor: "pointer",
-                                  color: "white",
-                                }}
-                                type={item.type ? item.type : null}
-                              >
-                                {item.text}
-                              </ArvinButton>
-                            );
-                          })}
+                          ].map(
+                            (item, index) =>
+                              item.visible && (
+                                <ArvinButton
+                                  key={index}
+                                  color={item.color}
+                                  onClick={item.onClick}
+                                  style={{
+                                    padding: "0.75rem 1.5rem",
+                                    fontSize: "1rem",
+                                    fontWeight: "500",
+                                    minWidth: "100px",
+                                  }}
+                                >
+                                  {item.text}
+                                </ArvinButton>
+                              )
+                          )}
                         </div>
                       ) : (
                         <div
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            width: "100%",
-                            justifyContent: "space-evenly",
+                            backgroundColor: "#f8d7da",
+                            padding: "1.5rem",
+                            borderRadius: "8px",
+                            border: "1px solid #f5c6cb",
+                            textAlign: "center",
                           }}
                         >
-                          <p>Are you Sure??</p>
-                          {[
-                            {
-                              text: "No!",
-                              backgroundColor: partnerColor(),
-                              onClick: seeDelete,
-                            },
-
-                            {
-                              text: "Yes!",
-                              backgroundColor: "red",
-                              onClick: deleteOneMaterialInside,
-                            },
-                          ].map((item, index) => {
-                            return (
-                              <button
-                                key={index}
-                                onClick={item.onClick}
-                                style={{
-                                  marginTop: "1rem",
-                                  color: "white",
-                                  cursor: "pointer",
-                                  backgroundColor: item.backgroundColor,
-                                }}
-                              >
-                                {item.text}
-                              </button>
-                            );
-                          })}
+                          <p
+                            style={{
+                              margin: "0 0 1rem 0",
+                              fontSize: "1.1rem",
+                              fontWeight: "500",
+                              color: "#721c24",
+                            }}
+                          >
+                            ⚠️ Are you sure you want to delete this event?
+                          </p>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "1rem",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button
+                              onClick={seeDelete}
+                              style={{
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: partnerColor(),
+                                color: "white",
+                                border: "none",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                                fontSize: "1rem",
+                                fontWeight: "500",
+                              }}
+                            >
+                              No, Cancel
+                            </button>
+                            <button
+                              onClick={deleteOneMaterialInside}
+                              style={{
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: "#dc3545",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "6px",
+                                cursor: "pointer",
+                                fontSize: "1rem",
+                                fontWeight: "500",
+                              }}
+                            >
+                              Yes, Delete
+                            </button>
+                          </div>
                         </div>
                       )}
-                    </>
+                    </div>
                   )}
                 </div>
               )}
             </div>
           </>
           <>
-            {/*Modal de nosos/edição de aulas particulares dos alunos */}
             <div
               style={{
                 backgroundColor: transparentWhite(),
