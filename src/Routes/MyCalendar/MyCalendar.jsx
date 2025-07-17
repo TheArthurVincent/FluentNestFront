@@ -1426,8 +1426,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     </Xp>
                   </div>
 
-              
-
                   {/* Admin Section */}
                   {thePermissions == "superadmin" && (
                     <div
@@ -1867,233 +1865,231 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   )}
                 </div>
               )}
-                  {/* Event Information */}
-                  <div
+              {/* Event Information */}
+              <div
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  padding: "1.2rem",
+                  borderRadius: "8px",
+                  border: "1px solid #e9ecef",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.8rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span
                     style={{
-                      backgroundColor: "#f8f9fa",
-                      padding: "1.2rem",
-                      borderRadius: "8px",
-                      border: "1px solid #e9ecef",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "0.8rem",
+                      fontWeight: "600",
+                      color: "#495057",
+                      minWidth: "80px",
                     }}
                   >
-                    <div
+                    Category:
+                  </span>
+                  <span
+                    style={{
+                      backgroundColor: partnerColor(),
+                      color: "white",
+                      padding: "0.25rem 0.75rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {category == "Test"
+                      ? "Test Class"
+                      : category == "Standalone"
+                      ? "Standalone Class"
+                      : category == "Group Class"
+                      ? "Group Class"
+                      : category == "Rep"
+                      ? "Marcar Reposição"
+                      : category == "Marcar Reposição"
+                      ? "Janela de Marcar Reposição"
+                      : category == "Prize Class"
+                      ? "Prize Class"
+                      : category == "Tutoring"
+                      ? "Tutoring: Private Class"
+                      : ""}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: "600",
+                      color: "#495057",
+                      minWidth: "80px",
+                    }}
+                  >
+                    Date:
+                  </span>
+                  <span style={{ color: "#6c757d", fontWeight: "500" }}>
+                    {newFormatDate(date)}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: "600",
+                      color: "#495057",
+                      minWidth: "80px",
+                    }}
+                  >
+                    Time:
+                  </span>
+                  <span style={{ color: "#6c757d", fontWeight: "500" }}>
+                    {theTime}
+                  </span>
+                </div>
+
+                {category !== "Marcar Reposição" && (
+                  <Link
+                    to={link}
+                    target="_blank"
+                    style={{
+                      color: partnerColor(),
+                      textDecoration: "none",
+                      fontWeight: "500",
+                      padding: "0.5rem 1rem",
+                      backgroundColor: "white",
+                      border: `2px solid ${partnerColor()}`,
+                      borderRadius: "6px",
+                      textAlign: "center",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = partnerColor();
+                      e.target.style.color = "white";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "white";
+                      e.target.style.color = partnerColor();
+                    }}
+                  >
+                    🔗 Click here to access the class
+                  </Link>
+                )}
+
+                {description && (
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      padding: "1rem",
+                      borderRadius: "6px",
+                      border: "1px solid #dee2e6",
+                      borderLeft: `4px solid ${partnerColor()}`,
+                    }}
+                  >
+                    <p
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
+                        margin: 0,
+                        fontSize: "1.1rem",
+                        color: "#495057",
                       }}
                     >
-                      <span
-                        style={{
-                          fontWeight: "600",
-                          color: "#495057",
-                          minWidth: "80px",
-                        }}
-                      >
-                        Category:
-                      </span>
-                      <span
-                        style={{
-                          backgroundColor: partnerColor(),
-                          color: "white",
-                          padding: "0.25rem 0.75rem",
-                          borderRadius: "20px",
-                          fontSize: "0.9rem",
-                          fontWeight: "500",
-                        }}
-                      >
-                        {category == "Test"
-                          ? "Test Class"
-                          : category == "Standalone"
-                          ? "Standalone Class"
-                          : category == "Group Class"
-                          ? "Group Class"
-                          : category == "Rep"
-                          ? "Marcar Reposição"
-                          : category == "Marcar Reposição"
-                          ? "Janela de Marcar Reposição"
-                          : category == "Prize Class"
-                          ? "Prize Class"
-                          : category == "Tutoring"
-                          ? "Tutoring: Private Class"
-                          : ""}
-                      </span>
-                    </div>
+                      {description}
+                    </p>
+                  </div>
+                )}
+              </div>
 
-                    <div
+              {/* Replenish Section */}
+              {category == "Marcar Reposição" && (
+                <div
+                  style={{
+                    backgroundColor: "#fff3cd",
+                    padding: "1.2rem",
+                    borderRadius: "8px",
+                    border: "1px solid #ffeaa7",
+                  }}
+                >
+                  <div style={{ display: !seeReplenish ? "block" : "none" }}>
+                    <ArvinButton
+                      onClick={() => setSeeReplenish(true)}
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
+                        width: "100%",
+                        padding: "0.75rem",
+                        fontSize: "1rem",
+                        fontWeight: "500",
                       }}
                     >
-                      <span
-                        style={{
-                          fontWeight: "600",
-                          color: "#495057",
-                          minWidth: "80px",
-                        }}
-                      >
-                        Date:
-                      </span>
-                      <span style={{ color: "#6c757d", fontWeight: "500" }}>
-                        {newFormatDate(date)}
-                      </span>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: "600",
-                          color: "#495057",
-                          minWidth: "80px",
-                        }}
-                      >
-                        Time:
-                      </span>
-                      <span style={{ color: "#6c757d", fontWeight: "500" }}>
-                        {theTime}
-                      </span>
-                    </div>
-
-                    {category !== "Marcar Reposição" && (
-                      <Link
-                        to={link}
-                        target="_blank"
-                        style={{
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          fontWeight: "500",
-                          padding: "0.5rem 1rem",
-                          backgroundColor: "white",
-                          border: `2px solid ${partnerColor()}`,
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          transition: "all 0.2s",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = partnerColor();
-                          e.target.style.color = "white";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = "white";
-                          e.target.style.color = partnerColor();
-                        }}
-                      >
-                        🔗 Click here to access the class
-                      </Link>
-                    )}
-
-                    {description && (
-                      <div
-                        style={{
-                          backgroundColor: "white",
-                          padding: "1rem",
-                          borderRadius: "6px",
-                          border: "1px solid #dee2e6",
-                          borderLeft: `4px solid ${partnerColor()}`,
-                        }}
-                      >
-                        <p
-                          style={{
-                            margin: 0,
-                            fontSize: "1.1rem",
-                            color: "#495057",
-                          }}
-                        >
-                          {description}
-                        </p>
-                      </div>
-                    )}
+                      📅 Reservar este horário para Marcar Reposição
+                    </ArvinButton>
                   </div>
 
-                  {/* Replenish Section */}
-                  {category == "Marcar Reposição" && (
-                    <div
+                  <div
+                    style={{
+                      display: seeReplenish ? "block" : "none",
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      padding: "1.2rem",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <p
                       style={{
-                        backgroundColor: "#fff3cd",
-                        padding: "1.2rem",
-                        borderRadius: "8px",
-                        border: "1px solid #ffeaa7",
+                        margin: "0 0 1rem 0",
+                        fontSize: "1.1rem",
+                        fontWeight: "500",
                       }}
                     >
-                      <div
-                        style={{ display: !seeReplenish ? "block" : "none" }}
-                      >
-                        <ArvinButton
-                          onClick={() => setSeeReplenish(true)}
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            fontSize: "1rem",
-                            fontWeight: "500",
-                          }}
-                        >
-                          📅 Reservar este horário para Marcar Reposição
-                        </ArvinButton>
-                      </div>
-
-                      <div
+                      ⚠️ Deseja marcar este horário para marcar reposição? Esta
+                      ação não pode ser desfeita.
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        justifyContent: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <ArvinButton
+                        onClick={() => setSeeReplenish(false)}
+                        color="red"
                         style={{
-                          display: seeReplenish ? "block" : "none",
-                          backgroundColor: "#6c757d",
-                          color: "white",
-                          padding: "1.2rem",
-                          borderRadius: "8px",
-                          textAlign: "center",
+                          padding: "0.5rem 1.5rem",
+                          fontWeight: "500",
                         }}
                       >
-                        <p
-                          style={{
-                            margin: "0 0 1rem 0",
-                            fontSize: "1.1rem",
-                            fontWeight: "500",
-                          }}
-                        >
-                          ⚠️ Deseja marcar este horário para marcar reposição?
-                          Esta ação não pode ser desfeita.
-                        </p>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "1rem",
-                            justifyContent: "center",
-                            marginTop: "1rem",
-                          }}
-                        >
-                          <ArvinButton
-                            onClick={() => setSeeReplenish(false)}
-                            color="red"
-                            style={{
-                              padding: "0.5rem 1.5rem",
-                              fontWeight: "500",
-                            }}
-                          >
-                            ❌ Não
-                          </ArvinButton>
-                          <ArvinButton
-                            onClick={handleScheduleReplenish}
-                            color="green"
-                            style={{
-                              padding: "0.5rem 1.5rem",
-                              fontWeight: "500",
-                            }}
-                          >
-                            ✅ Sim
-                          </ArvinButton>
-                        </div>
-                      </div>
+                        ❌ Não
+                      </ArvinButton>
+                      <ArvinButton
+                        onClick={handleScheduleReplenish}
+                        color="green"
+                        style={{
+                          padding: "0.5rem 1.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        ✅ Sim
+                      </ArvinButton>
                     </div>
-                  )}
+                  </div>
+                </div>
+              )}
             </div>
           </>
           <>
