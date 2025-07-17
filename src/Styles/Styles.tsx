@@ -23,7 +23,7 @@ export const partnerColor = (): string => {
 
 export const theBackgroundColor = (): string => {
   const wl = getWhiteLabel();
-  return wl.backgroundColor || "rgba(188, 221, 248, 1)";
+  return wl.backgroundColor || "rgba(207, 207, 207, 1)";
 };
 
 export const textPrimaryColorContrast = (): string => {

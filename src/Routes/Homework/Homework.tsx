@@ -93,6 +93,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   }, [ID]);
   const [disabled, setDisabled] = useState<boolean>(false);
   const updateRealizedClass = async (tutoringId: string, score: number) => {
+    setDisabled(true);
     try {
       await axios.put(
         `${backDomain}/api/v1/homework/${studentID}`,
@@ -106,8 +107,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       );
       setChange(!change);
       fetchHW(studentID);
+      setDisabled(false);
     } catch (error) {
       notifyError("Erro ao encontrar alunos");
+      setDisabled(false);
     }
   };
 
@@ -231,7 +234,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           <ArvinButton
                             disabled={disabled}
                             onClick={() => {
-                              setDisabled(true);
                               updateRealizedClass(homework._id, pointsMadeHW);
                             }}
                           >
@@ -240,8 +242,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           <ArvinButton
                             disabled={disabled}
                             onClick={() => {
-                              setDisabled(true);
-
                               updateRealizedClass(homework._id, pointsLateHW);
                             }}
                           >
@@ -250,7 +250,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           <ArvinButton
                             disabled={disabled}
                             onClick={() => {
-                              setDisabled(true);
                               justStatus(homework._id);
                             }}
                           >
@@ -260,7 +259,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       )}
                     {isAllowed && (
                       <ArvinButton
-                        disabled={disabled}
                         color="red"
                         onDoubleClick={() => {
                           deleteHomework(homework._id);

@@ -157,7 +157,6 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
               left: "50%",
               transform: "translate(-50%, -50%)",
               width: { xs: "90%", sm: 400 },
-              bgcolor: "rgba(255, 255, 255, 0.85)",
               backdropFilter: "blur(10px)",
               borderRadius: 4,
               boxShadow: transparentBlack(),
@@ -167,7 +166,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
             open={open}
             onClose={handleClose}
           >
-            <div>
+            <div style={{ backgroundColor: "#fff" }}>
               <IconButton
                 onClick={handleClose}
                 sx={{ position: "absolute", top: 8, right: 8, color: "#444" }}
