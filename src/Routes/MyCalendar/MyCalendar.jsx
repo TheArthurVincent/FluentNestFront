@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   HOne,
   HTwo,
   RouteDiv,
+  RouteDivCalendar,
   RouteSizeControlBox,
 } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
@@ -33,8 +34,6 @@ import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
-  // states
-  // Filtra apenas cursos cujo campo booleano `arthurVincent` seja `false`
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
@@ -92,6 +91,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   // AXIOS
   const fetchStudents = async () => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      console.log("Fetching students list");
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${myId}`,
@@ -105,7 +105,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         console.log(error, "Erro ao encontrar alunos");
       }
     } else {
-      null;
+      console.log("Not Fetching students list");
     }
   };
 
@@ -141,7 +141,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -151,7 +150,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setPostNew(false);
     const user = JSON.parse(localStorage.getItem("loggedIn"));
     const id = user.id;
-    if (user.permissions == "superadmin") {
+    if (user.permissions == "superadmin" || user.permissions == "teacher") {
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/eventsgeneral/${id}?today=${today}`,
@@ -169,7 +168,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         setEvents(eventsLoop);
       } catch (error) {
         console.log(error);
-        // onLoggOut();
       }
     } else {
       null;
@@ -203,7 +201,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const handleChangeWeek = async (sum) => {
@@ -237,7 +234,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const handleBackToToday = async () => {
@@ -271,7 +267,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const fetchOneEvent = async (id) => {
@@ -314,7 +309,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
       console.log(error);
-      // onLoggOut();
     }
   };
   const fetchOneSetOfTutorings = async (studentId) => {
@@ -332,8 +326,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
-      console.log(error);
-      // onLoggOut();
     }
   };
   const fetchOneSetOfTutoringsInside = (e) => {
@@ -366,7 +358,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchGeneralEvents();
     } catch (error) {
       console.log(error);
-      // onLoggOut();
+
       console.log(error, "Erro ao criar evento");
     }
   };
@@ -390,7 +382,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao excluir evento");
       console.log(error);
-      // onLoggOut();
     }
   };
   const deleteOneMaterialInside = () => {
@@ -426,7 +417,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao criar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
   const editInside = () => {
@@ -450,7 +440,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
   const updateUnscheduled = async (id) => {
@@ -468,7 +457,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -483,7 +471,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao enviar e-mail");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -502,7 +489,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -527,7 +513,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -553,7 +538,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -594,7 +578,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -814,7 +797,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -828,7 +810,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -842,7 +823,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -856,7 +836,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -870,7 +849,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro");
       console.log(error);
-      // onLoggOut();
     }
   };
 
@@ -879,6 +857,32 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     date.setDate(today.getDate() + i);
     futureDates.push(date);
   }
+
+  const calendarRef = useRef(null);
+  const todayRef = useRef(null);
+
+  // ...existing code...
+
+  // Adicione este useEffect para centralizar o dia de hoje
+  useEffect(() => {
+    if (todayRef.current && calendarRef.current && !loading) {
+      const container = calendarRef.current;
+      const todayElement = todayRef.current;
+
+      // Calcula a posição para centralizar
+      const containerWidth = container.offsetWidth;
+      const todayWidth = todayElement.offsetWidth;
+      const todayLeft = todayElement.offsetLeft;
+
+      const scrollLeft = todayLeft - containerWidth / 2 + todayWidth / 2;
+
+      // Faz o scroll suave
+      container.scrollTo({
+        left: scrollLeft,
+        behavior: "smooth",
+      });
+    }
+  }, [loading, futureDates]);
 
   const formattedDates = (dateString) => {
     const date = new Date(dateString);
@@ -1010,7 +1014,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       handleCloseModal();
     } catch (error) {
       console.log(error);
-      // onLoggOut();
+
       console.error(error);
     }
   };
@@ -1018,8 +1022,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   return (
     <>
       {headers ? (
-        <RouteDiv>
-          <Helmets text="Calendar" />
+        <RouteDiv
+          style={{
+            width: "99vw",
+          }}
+        >
           <div>
             <HOne
               style={{
@@ -1037,11 +1044,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 className="button"
                 style={{
                   backgroundColor: partnerColor(),
-                  display: thePermissions == "superadmin" ? "flex" : "none",
+                  display:
+                    thePermissions == "superadmin" ||
+                    thePermissions == "teacher"
+                      ? "flex"
+                      : "none",
                 }}
                 onClick={() => handleSeeModal(false)}
               >
-                Schedule 1 class
+                Standalone
               </button>
               <button
                 disabled={!disabledAvoid}
@@ -1051,11 +1062,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 className="button"
                 style={{
                   backgroundColor: partnerColor(),
-                  display: thePermissions == "superadmin" ? "flex" : "none",
+                  display:
+                    thePermissions == "superadmin" ||
+                    thePermissions == "teacher"
+                      ? "flex"
+                      : "none",
                 }}
                 onClick={() => handleSeeModalOfTutorings()}
               >
-                Schedule recurrent class
+                Recurrent
               </button>
               <button
                 disabled={!disabledAvoid}
@@ -1106,245 +1121,336 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
               <div
+                ref={calendarRef}
                 style={{
                   display: "flex",
-                  gap: "5px",
+                  gap: "0.75rem",
                   overflowX: "auto",
+                  padding: "1rem 0",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: `${partnerColor()} transparent`,
                 }}
               >
                 {futureDates.map((date, index) => {
                   const hj = new Date();
+                  const isToday =
+                    hj.getDate() === date.getDate() &&
+                    hj.getMonth() === date.getMonth() &&
+                    hj.getFullYear() === date.getFullYear();
+
                   return (
                     <StyledDiv
-                      className={
-                        hj.getDate() == date.getDate() &&
-                        hj.getMonth() == date.getMonth() &&
-                        hj.getFullYear() == date.getFullYear()
-                          ? "glowing"
-                          : "none"
-                      }
+                      className={isToday ? "glowing" : "none"}
+                      ref={isToday ? todayRef : null}
                       style={{
-                        border:
-                          hj.getDate() == date.getDate() &&
-                          hj.getMonth() == date.getMonth() &&
-                          hj.getFullYear() == date.getFullYear()
-                            ? `2px solid ${partnerColor()}`
-                            : "null",
+                        border: isToday
+                          ? `3px solid ${partnerColor()}`
+                          : "1px solid #e0e0e0",
+                        borderRadius: "12px",
+                        backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
+                        boxShadow: isToday
+                          ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
+                          : "0 2px 8px rgba(0,0,0,0.08)",
+                        transition: "all 0.3s ease",
+                        minWidth: "280px",
+                        maxWidth: "320px",
                       }}
                       key={index}
                     >
-                      <p
+                      {/* Date Header */}
+                      <div
                         style={{
-                          padding: "5px",
+                          padding: "1rem",
                           position: "sticky",
                           top: 0,
                           fontWeight: 700,
                           textAlign: "center",
-                          fontSize: "0.9rem",
+                          fontSize: "0.95rem",
                           fontFamily: textTitleFont(),
-                          backgroundColor:
-                            hj.getDate() == date.getDate() &&
-                            hj.getMonth() == date.getMonth() &&
-                            hj.getFullYear() == date.getFullYear()
-                              ? partnerColor()
-                              : alwaysBlack(),
+                          background: isToday
+                            ? partnerColor()
+                            : "linear-gradient(135deg, #111, #555)",
                           color: alwaysWhite(),
+                          borderRadius: "12px 12px 0 0",
+                          marginBottom: "0.5rem",
+                          letterSpacing: "0.5px",
+                          textShadow: "0 1px 2px rgba(0,0,0,0.2)",
                         }}
                       >
-                        {date.toLocaleDateString("en-US", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </p>
-                      {events
-                        .filter(
+                        <div
+                          style={{
+                            fontSize: "0.8rem",
+                            opacity: 0.9,
+                            marginBottom: "0.25rem",
+                          }}
+                        >
+                          {date.toLocaleDateString("en-US", {
+                            weekday: "long",
+                          })}
+                        </div>
+                        <div style={{ fontSize: "1.1rem" }}>
+                          {date.toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Events Container */}
+                      <div style={{ padding: "0 0.75rem 1rem" }}>
+                        {events
+                          .filter(
+                            (event) =>
+                              event.date.toDateString() === date.toDateString()
+                          )
+                          .sort((a, b) => {
+                            const timeA =
+                              parseInt(a.time.split(":")[0]) * 60 +
+                              parseInt(a.time.split(":")[1]);
+                            const timeB =
+                              parseInt(b.time.split(":")[0]) * 60 +
+                              parseInt(b.time.split(":")[1]);
+                            return timeA - timeB;
+                          })
+                          .map((event, eventIndex) => {
+                            const categoryColors = {
+                              "Group Class": { bg: "#ff6b35", text: "#fff" },
+                              Rep: { bg: partnerColor(), text: "#fff" },
+                              Tutoring: { bg: "#111", text: "#fff" },
+                              "Prize Class": { bg: "#27ae60", text: "#fff" },
+                              Standalone: { bg: "#8e44ad", text: "#fff" },
+                              Test: { bg: "#34495e", text: "#fff" },
+                              "Marcar Reposição": {
+                                bg: "#3498db",
+                                text: "#fff",
+                              },
+                            };
+
+                            const statusColors = {
+                              desmarcado: {
+                                bg: "#ffebee",
+                                text: "#c62828",
+                                border: "#ef5350",
+                              },
+                              marcado: {
+                                bg: "#e3f2fd",
+                                text: "#1565c0",
+                                border: "#42a5f5",
+                              },
+                              realizada: {
+                                bg: "#e8f5e8",
+                                text: "#2e7d32",
+                                border: "#66bb6a",
+                              },
+                            };
+
+                            const categoryColor = categoryColors[
+                              event.category
+                            ] || { bg: "#000", text: "#fff" };
+                            const statusColor = statusColors[event.status] || {
+                              bg: "#f5f5f5",
+                              text: "#333",
+                              border: "#ddd",
+                            };
+
+                            return (
+                              <div
+                                key={`${event._id}-${eventIndex}`}
+                                style={{
+                                  marginBottom: "0.75rem",
+                                  borderRadius: "8px",
+                                  overflow: "hidden",
+                                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                  transition: "all 0.2s ease",
+                                  cursor: "pointer",
+                                  border: `1px solid ${statusColor.border}`,
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "translateY(-2px)";
+                                  e.currentTarget.style.boxShadow =
+                                    "0 4px 12px rgba(0,0,0,0.15)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "translateY(0)";
+                                  e.currentTarget.style.boxShadow =
+                                    "0 2px 8px rgba(0,0,0,0.1)";
+                                }}
+                                onClick={() => handleSeeModal(event)}
+                              >
+                                {/* Live Event Indicator */}
+                                {event.status !== "desmarcado" &&
+                                  isEventTimeNow(event, hj, date) && (
+                                    <div
+                                      style={{
+                                        background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}dd)`,
+                                        padding: "0.25rem",
+                                        position: "relative",
+                                        overflow: "hidden",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          color: "white",
+                                          fontSize: "0.75rem",
+                                          fontWeight: "600",
+                                          textTransform: "uppercase",
+                                          letterSpacing: "0.5px",
+                                        }}
+                                      >
+                                        <span
+                                          style={{
+                                            width: "6px",
+                                            height: "6px",
+                                            backgroundColor: "white",
+                                            borderRadius: "50%",
+                                            marginRight: "0.5rem",
+                                            animation: "pulse 2s infinite",
+                                          }}
+                                        ></span>
+                                        Live Now
+                                      </div>
+                                    </div>
+                                  )}
+
+                                {/* Event Content */}
+                                <div
+                                  style={{
+                                    background: categoryColor.bg,
+                                    color: categoryColor.text,
+                                    padding: "0.75rem",
+                                    position: "relative",
+                                  }}
+                                >
+                                  {/* Category Badge */}
+                                  <div
+                                    style={{
+                                      position: "absolute",
+                                      top: "0.5rem",
+                                      right: "0.5rem",
+                                      backgroundColor: "rgba(255,255,255,0.2)",
+                                      color: categoryColor.text,
+                                      padding: "0.25rem 0.5rem",
+                                      borderRadius: "12px",
+                                      fontSize: "0.65rem",
+                                      fontWeight: "600",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.3px",
+                                    }}
+                                  >
+                                    {event.category}
+                                  </div>
+
+                                  {/* Event Title/Description */}
+                                  <div
+                                    style={{
+                                      fontSize: "0.85rem",
+                                      fontWeight: "600",
+                                      marginBottom: "0.5rem",
+                                      lineHeight: "1.3",
+                                      paddingRight: "4rem",
+                                    }}
+                                  >
+                                    {event.student ||
+                                      event.description ||
+                                      "No description"}
+                                  </div>
+
+                                  {/* Time Display */}
+                                  <div
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      fontWeight: "700",
+                                      opacity: 0.9,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-clock-o"
+                                      style={{ fontSize: "0.8rem" }}
+                                    ></i>
+                                    {event.time}
+                                  </div>
+                                </div>
+
+                                {/* Status Footer */}
+                                <div
+                                  style={{
+                                    backgroundColor: statusColor.bg,
+                                    color: statusColor.text,
+                                    padding: "0.5rem 0.75rem",
+                                    fontSize: "0.75rem",
+                                    fontWeight: "600",
+                                    textAlign: "center",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px",
+                                    borderTop: `1px solid ${statusColor.border}`,
+                                  }}
+                                >
+                                  {event.status === "desmarcado" && (
+                                    <>
+                                      <i
+                                        className="fa fa-times-circle"
+                                        style={{ marginRight: "0.25rem" }}
+                                      ></i>
+                                      Canceled
+                                    </>
+                                  )}
+                                  {event.status === "marcado" && (
+                                    <>
+                                      <i
+                                        className="fa fa-calendar-check-o"
+                                        style={{ marginRight: "0.25rem" }}
+                                      ></i>
+                                      Scheduled
+                                    </>
+                                  )}
+                                  {event.status === "realizada" && (
+                                    <>
+                                      <i
+                                        className="fa fa-check-circle"
+                                        style={{ marginRight: "0.25rem" }}
+                                      ></i>
+                                      Completed
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                        {/* Empty State */}
+                        {events.filter(
                           (event) =>
                             event.date.toDateString() === date.toDateString()
-                        )
-                        .sort((a, b) => {
-                          const timeA =
-                            parseInt(a.time.split(":")[0]) * 60 +
-                            parseInt(a.time.split(":")[1]);
-                          const timeB =
-                            parseInt(b.time.split(":")[0]) * 60 +
-                            parseInt(b.time.split(":")[1]);
-                          return timeA - timeB;
-                        })
-                        .map((event, index) => (
+                        ).length === 0 && (
                           <div
-                            className="box-shadow-white"
                             style={{
-                              margin: "4px",
-                              marginBottom: "1rem",
-                              padding: "2px",
-                              borderRadius: "4px",
-                              border: "1px solid #aaa",
-                              backgroundColor:
-                                event.category === "Group Class"
-                                  ? "orange"
-                                  : event.category === "Rep"
-                                  ? partnerColor()
-                                  : event.category === "Tutoring"
-                                  ? "#111"
-                                  : event.category === "Prize Class"
-                                  ? "green"
-                                  : event.category === "Standalone"
-                                  ? "#333"
-                                  : event.category === "Test"
-                                  ? "#1C1C1C"
-                                  : event.category === "Marcar Reposição"
-                                  ? "#407CB1"
-                                  : "#000",
                               textAlign: "center",
-                              display: "grid",
+                              padding: "2rem 1rem",
+                              color: "#94a3b8",
+                              fontSize: "0.9rem",
                             }}
-                            key={event + index}
                           >
-                            {event.status !== "desmarcado" &&
-                              isEventTimeNow(event, hj, date) && (
-                                <span
-                                  style={{
-                                    paddingBottom: "0px",
-                                    marginBottom: "5px",
-                                    padding: "3px",
-                                    border: `2px solid ${partnerColor()}`,
-                                    backgroundColor: `${partnerColor()}`,
-                                  }}
-                                >
-                                  <LinearProgress color="inherit" />
-                                </span>
-                              )}
-                            <p
-                              onClick={() => {
-                                handleSeeModal(event);
-                              }}
-                              className="name"
+                            <i
+                              className="fa fa-calendar-o"
                               style={{
-                                padding: "8px",
-                                margin: "2px",
-                                backgroundColor:
-                                  event.category === "Group Class"
-                                    ? "orange"
-                                    : event.category === "Rep"
-                                    ? partnerColor()
-                                    : event.category === "Tutoring"
-                                    ? "#111"
-                                    : event.category === "Prize Class"
-                                    ? "green"
-                                    : event.category === "Standalone"
-                                    ? "#333"
-                                    : event.category === "Test"
-                                    ? "#1C1C1C"
-                                    : event.category === "Marcar Reposição"
-                                    ? "#407CB1"
-                                    : "#000",
-                                display: "grid",
-                                cursor: "pointer",
-                                borderRadius: "4px",
-                                fontSize: "0.7rem",
+                                fontSize: "2rem",
+                                marginBottom: "0.5rem",
+                                display: "block",
                               }}
-                            >
-                              {event.student ? (
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                    fontWeight: 600,
-                                    color:
-                                      event.category === "Group Class"
-                                        ? "#fff" // Amarelo mais escuro, sem ser tão claro
-                                        : event.category === "Rep"
-                                        ? textPrimaryColorContrast() // Tom de azul mais escuro e sóbrio
-                                        : event.category === "Tutoring"
-                                        ? textPrimaryColorContrast() // Cinza mais escuro
-                                        : event.category === "Prize Class"
-                                        ? "#fff" // Amarelo mais escuro e mais sóbrio
-                                        : event.category === "Standalone"
-                                        ? "#fff" // Azul bem escuro
-                                        : event.category === "Test"
-                                        ? "#fff" // Cinza muito escuro
-                                        : event.category === "Marcar Reposição"
-                                        ? "#fff" // Verde escuro e sóbrio
-                                        : "#fff", // Preto para categoria não especificada
-                                  }}
-                                >
-                                  {event.student}
-                                </span>
-                              ) : (
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                    fontWeight: 600,
-                                    color:
-                                      event.category === "Group Class"
-                                        ? "#fff" // Amarelo mais escuro, sem ser tão claro
-                                        : event.category === "Rep"
-                                        ? textPrimaryColorContrast() // Tom de azul mais escuro e sóbrio
-                                        : event.category === "Tutoring"
-                                        ? textPrimaryColorContrast() // Cinza mais escuro
-                                        : event.category === "Prize Class"
-                                        ? "#fff" // Amarelo mais escuro e mais sóbrio
-                                        : event.category === "Standalone"
-                                        ? "#fff" // Azul bem escuro
-                                        : event.category === "Test"
-                                        ? "#fff" // Cinza muito escuro
-                                        : event.category === "Marcar Reposição"
-                                        ? "#fff" // Verde escuro e sóbrio
-                                        : "#fff", // Preto para categoria não especificada
-                                  }}
-                                >
-                                  {event.description}
-                                </span>
-                              )}
-                            </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: "0.5rem",
-                                flexDirection: "column",
-                                margin: "2px",
-                                borderRadius: "4px",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor:
-                                  event.status == "desmarcado"
-                                    ? "#FFCCCC"
-                                    : event.status == "marcado"
-                                    ? "#CCE5FF"
-                                    : event.status == "realizada"
-                                    ? "#CCFFCC"
-                                    : "#000",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: "5px",
-                                  color:
-                                    event.status == "marcado"
-                                      ? "#000"
-                                      : event.status == "realizada"
-                                      ? partnerColor()
-                                      : event.status == "desmarcado"
-                                      ? "red"
-                                      : "#000",
-                                  fontSize: "8px",
-                                  padding: "5px",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                  }}
-                                >
-                                  {` ${event.time} | ${event.category}`}
-                                </span>
-                              </div>
-                            </div>
+                            ></i>
+                            No events scheduled
                           </div>
-                        ))}
+                        )}
+                      </div>
                     </StyledDiv>
                   );
                 })}
@@ -1375,7 +1481,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width: "20rem",
+                width: window.innerWidth <= 768 ? "90vw" : "35rem",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
@@ -1386,21 +1492,536 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               ) : (
                 <div
                   style={{
-                    padding: "1rem",
-                    maxHeight: "30rem",
+                    padding: "1.5rem",
+                    maxHeight: "40rem",
                     overflow: "auto",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "1.5rem",
                   }}
                 >
-                  <Xp onClick={handleCloseModal}>X</Xp>
-                  <HTwo
+                  {/* Header */}
+                  <div
                     style={{
-                      margin: "0.5rem 0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
                     }}
                   >
-                    Access the event
-                  </HTwo>
-                  <p>
-                    <b>Category:</b>{" "}
+                    <HTwo
+                      style={{
+                        margin: 0,
+                        color: partnerColor(),
+                      }}
+                    >
+                      Access the event
+                    </HTwo>
+                    <Xp
+                      onClick={handleCloseModal}
+                      style={{
+                        cursor: "pointer",
+                        fontSize: "1.5rem",
+                        color: "#999",
+                        transition: "color 0.2s",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.color = partnerColor())
+                      }
+                      onMouseLeave={(e) => (e.target.style.color = "#999")}
+                    >
+                      ×
+                    </Xp>
+                  </div>
+
+                  {/* Admin Section */}
+                  {thePermissions == "superadmin" ||
+                    (thePermissions == "teacher" && (
+                      <div
+                        style={{
+                          borderTop: "2px solid #e9ecef",
+                          paddingTop: "1.5rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "1.5rem",
+                        }}
+                      >
+                        <HTwo style={{ margin: 0, color: partnerColor() }}>
+                          {UniversalTexts.editPost}
+                        </HTwo>
+
+                        {loadingInfo ? (
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
+                            <CircularProgress
+                              style={{ color: partnerColor() }}
+                            />
+                          </div>
+                        ) : (
+                          <>
+                            {/* Status Icons */}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "1rem",
+                                padding: "1rem",
+                                backgroundColor: "#f8f9fa",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateScheduled(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-clock-o"
+                                  style={{
+                                    fontSize:
+                                      status == "Scheduled" ? "24px" : "18px",
+                                    color:
+                                      status == "Scheduled"
+                                        ? "#007bff"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6c757d",
+                                    marginTop: "0.25rem",
+                                  }}
+                                >
+                                  Scheduled
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateRealizedClass(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-check-circle"
+                                  style={{
+                                    fontSize:
+                                      status == "Realized" ? "24px" : "18px",
+                                    color:
+                                      status == "Realized"
+                                        ? "#28a745"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6c757d",
+                                    marginTop: "0.25rem",
+                                  }}
+                                >
+                                  Realized
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateUnscheduled(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-times-circle-o"
+                                  style={{
+                                    fontSize:
+                                      status == "Canceled" ? "24px" : "18px",
+                                    color:
+                                      status == "Canceled"
+                                        ? "#dc3545"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6c757d",
+                                    marginTop: "0.25rem",
+                                  }}
+                                >
+                                  Canceled
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Form */}
+                            <form
+                              style={{
+                                display: "grid",
+                                gap: "1rem",
+                                backgroundColor: "#f8f9fa",
+                                padding: "1.5rem",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              <select
+                                onChange={handleCategoryChange}
+                                name="category"
+                                value={category}
+                                className="inputs-style"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                              >
+                                <option value="category" hidden>
+                                  Select category
+                                </option>
+                                {[
+                                  "Test",
+                                  "Standalone",
+                                  "Group Class",
+                                  "Rep",
+                                  "Prize Class",
+                                  "Tutoring",
+                                  "Marcar Reposição",
+                                ].map((cat, index) => (
+                                  <option key={index} value={cat}>
+                                    {cat}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {isTutoring && (
+                                <select
+                                  className="inputs-style"
+                                  onChange={handleStudentChange}
+                                  name="students"
+                                  value={newStudentId}
+                                  style={{
+                                    padding: "0.75rem",
+                                    borderRadius: "6px",
+                                    border: "1px solid #ced4da",
+                                    fontSize: "1rem",
+                                  }}
+                                >
+                                  <option value="category" hidden>
+                                    Select student
+                                  </option>
+                                  {studentsList.map((student, index) => (
+                                    <option key={index} value={student.id}>
+                                      {student.name + " " + student.lastname}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+
+                              <input
+                                className="inputs-style"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                type="date"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
+
+                              <input
+                                className="inputs-style"
+                                value={theTime}
+                                onChange={(e) => setTheTime(e.target.value)}
+                                type="time"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
+
+                              <input
+                                className="inputs-style"
+                                value={link}
+                                onChange={(e) => setLink(e.target.value)}
+                                placeholder="Link"
+                                type="text"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
+
+                              <input
+                                className="inputs-style"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Description"
+                                type="text"
+                                style={{
+                                  padding: "0.75rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                  fontSize: "1rem",
+                                }}
+                                required
+                              />
+                            </form>
+
+                            {/* Checklist */}
+                            <div
+                              style={{
+                                backgroundColor: "#f8f9fa",
+                                padding: "1.5rem",
+                                borderRadius: "8px",
+                                border: "1px solid #e9ecef",
+                              }}
+                            >
+                              <h4
+                                style={{
+                                  margin: "0 0 1rem 0",
+                                  color: partnerColor(),
+                                }}
+                              >
+                                Task Checklist
+                              </h4>
+                              <div style={{ display: "grid", gap: "0.75rem" }}>
+                                {[
+                                  {
+                                    key: "checkList1",
+                                    text: "0. Subir Vídeo",
+                                    handler: handleCheckbox1Change,
+                                  },
+                                  {
+                                    key: "checkList2",
+                                    text: "1. Subir Aulas na Plataforma",
+                                    handler: handleCheckbox2Change,
+                                  },
+                                  {
+                                    key: "checkList3",
+                                    text: "2. Adicionar Atividades de Homework",
+                                    handler: handleCheckbox3Change,
+                                  },
+                                  {
+                                    key: "checkList4",
+                                    text: "3. Subir Flashcards",
+                                    handler: handleCheckbox4Change,
+                                  },
+                                  {
+                                    key: "checkList5",
+                                    text: "4. Formatar Material",
+                                    handler: handleCheckbox5Change,
+                                  },
+                                ].map((item, index) => (
+                                  <label
+                                    key={index}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.75rem",
+                                      padding: "0.5rem",
+                                      backgroundColor: eventFull[item.key]
+                                        ? "#d4edda"
+                                        : "white",
+                                      borderRadius: "6px",
+                                      border: "1px solid #dee2e6",
+                                      cursor: "pointer",
+                                      transition: "all 0.2s",
+                                    }}
+                                  >
+                                    <input
+                                      checked={eventFull[item.key] || false}
+                                      type="checkbox"
+                                      onChange={item.handler}
+                                      style={{
+                                        width: "18px",
+                                        height: "18px",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        fontSize: "0.95rem",
+                                        color: "#495057",
+                                        textDecoration: eventFull[item.key]
+                                          ? "line-through"
+                                          : "none",
+                                      }}
+                                    >
+                                      {item.text}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {/* Action Buttons */}
+                        {!deleteVisible ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "1rem",
+                              justifyContent: "center",
+                              paddingTop: "1rem",
+                            }}
+                          >
+                            {[
+                              {
+                                text: "Delete",
+                                color: "red",
+                                onClick: seeDelete,
+                                visible: !postNew,
+                              },
+                              {
+                                text: "Cancel",
+                                color: "blue",
+                                onClick: handleCloseModal,
+                                visible: true,
+                              },
+                              {
+                                text: "Save",
+                                color: "green",
+                                onClick: postNew ? postNewEvent : editInside,
+                                visible: true,
+                              },
+                            ].map(
+                              (item, index) =>
+                                item.visible && (
+                                  <ArvinButton
+                                    key={index}
+                                    color={item.color}
+                                    onClick={item.onClick}
+                                    style={{
+                                      padding: "0.75rem 1.5rem",
+                                      fontSize: "1rem",
+                                      fontWeight: "500",
+                                      minWidth: "100px",
+                                    }}
+                                  >
+                                    {item.text}
+                                  </ArvinButton>
+                                )
+                            )}
+                          </div>
+                        ) : (
+                          <div
+                            style={{
+                              backgroundColor: "#f8d7da",
+                              padding: "1.5rem",
+                              borderRadius: "8px",
+                              border: "1px solid #f5c6cb",
+                              textAlign: "center",
+                            }}
+                          >
+                            <p
+                              style={{
+                                margin: "0 0 1rem 0",
+                                fontSize: "1.1rem",
+                                fontWeight: "500",
+                                color: "#721c24",
+                              }}
+                            >
+                              ⚠️ Are you sure you want to delete this event?
+                            </p>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1rem",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                onClick={seeDelete}
+                                style={{
+                                  padding: "0.75rem 1.5rem",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                No, Cancel
+                              </button>
+                              <button
+                                onClick={deleteOneMaterialInside}
+                                style={{
+                                  padding: "0.75rem 1.5rem",
+                                  backgroundColor: "#dc3545",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "1rem",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Yes, Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                </div>
+              )}
+              {/* Event Information */}
+              <div
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  padding: "1.2rem",
+                  borderRadius: "8px",
+                  border: "1px solid #e9ecef",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.8rem",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: "600",
+                      color: "#495057",
+                      minWidth: "80px",
+                    }}
+                  >
+                    Category:
+                  </span>
+                  <span
+                    style={{
+                      backgroundColor: partnerColor(),
+                      color: "white",
+                      padding: "0.25rem 0.75rem",
+                      borderRadius: "20px",
+                      fontSize: "0.9rem",
+                      fontWeight: "500",
+                    }}
+                  >
                     {category == "Test"
                       ? "Test Class"
                       : category == "Standalone"
@@ -1415,381 +2036,182 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       ? "Prize Class"
                       : category == "Tutoring"
                       ? "Tutoring: Private Class"
-                      : ""}{" "}
-                  </p>
-                  <p>
-                    <b>Date: </b>
-                    {newFormatDate(date)}
-                  </p>
-                  <p>
-                    <b>Time: </b>
-                    {theTime}
-                  </p>
-                  {category !== "Marcar Reposição" && (
-                    <Link to={link} target="_blank">
-                      Click here to access the class
-                    </Link>
-                  )}
-                  <p
+                      : ""}
+                  </span>
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span
                     style={{
-                      fontSize: "1.1rem",
+                      fontWeight: "600",
+                      color: "#495057",
+                      minWidth: "80px",
                     }}
                   >
-                    {description}
-                  </p>
-                  {category == "Marcar Reposição" && (
-                    <>
-                      <div
-                        style={{
-                          padding: "1rem",
-                          display: !seeReplenish ? "flex" : "none",
-                        }}
-                      >
-                        <ArvinButton
-                          onClick={() => {
-                            setSeeReplenish(true);
-                          }}
-                        >
-                          Reservar este horário para Marcar Reposição
-                        </ArvinButton>
-                      </div>
-                      <div
-                        style={{
-                          padding: "1rem",
-                          borderRadius: "4px",
-                          display: seeReplenish ? "grid" : "none",
-                          backgroundColor: "grey",
-                          color: "white",
-                        }}
-                      >
-                        <p>
-                          Deseja marcar este horário para marcar reposição? Esta
-                          ação não pode ser desfeita.
-                        </p>
-                        <div
-                          style={{
-                            margin: "1rem",
-                            display: "flex",
-                            justifyContent: "space-around",
-                          }}
-                        >
-                          <ArvinButton
-                            onClick={() => {
-                              setSeeReplenish(false);
-                            }}
-                            color="red"
-                          >
-                            Não
-                          </ArvinButton>
-                          <ArvinButton
-                            onClick={handleScheduleReplenish}
-                            color="green"
-                          >
-                            Sim
-                          </ArvinButton>
-                        </div>
-                      </div>
-                    </>
-                  )}
-                  {thePermissions == "superadmin" && (
-                    <>
-                      <HTwo
-                        style={{
-                          margin: "0.5rem 0",
-                        }}
-                      >
-                        {UniversalTexts.editPost}
-                      </HTwo>
-                      {loadingInfo ? (
-                        <CircularProgress style={{ color: partnerColor() }} />
-                      ) : (
-                        <>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              gap: "5px",
-                              marginBottom: "10px",
-                            }}
-                          >
-                            <i
-                              className="fa fa-clock-o"
-                              aria-hidden="true"
-                              onClick={() => updateScheduled(newEventId)}
-                              style={{
-                                cursor: "pointer",
-                                fontSize:
-                                  status == "Scheduled" ? "15px" : "12px",
-                                color: status == "Scheduled" ? "blue" : "grey",
-                              }}
-                            />
-                            <i
-                              className="fa fa-check-circle"
-                              aria-hidden="true"
-                              onClick={() => updateRealizedClass(newEventId)}
-                              style={{
-                                cursor: "pointer",
-                                fontSize:
-                                  status == "Realized" ? "15px" : "12px",
-                                color: status == "Realized" ? "green" : "grey",
-                              }}
-                            />
-                            <i
-                              className="fa fa-times-circle-o"
-                              aria-hidden="true"
-                              onClick={() => updateUnscheduled(newEventId)}
-                              style={{
-                                cursor: "pointer",
-                                fontSize:
-                                  status == "Canceled" ? "15px" : "12px",
-                                color: status == "Canceled" ? "red" : "grey",
-                              }}
-                            />
-                          </div>
-                          <form
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              justifyItems: "center",
-                              gap: "0.5rem",
-                            }}
-                          >
-                            <select
-                              onChange={handleCategoryChange}
-                              name="category"
-                              id=""
-                              value={category}
-                              className="inputs-style"
-                            >
-                              <option value="category" hidden>
-                                Select category
-                              </option>
-                              {[
-                                "Test",
-                                "Standalone",
-                                "Group Class",
-                                "Rep",
-                                "Prize Class",
-                                "Tutoring",
-                                "Marcar Reposição",
-                              ].map((category, index) => {
-                                return (
-                                  <option key={index} value={category}>
-                                    {category}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                            {isTutoring && (
-                              <select
-                                className="inputs-style"
-                                onChange={handleStudentChange}
-                                name="students"
-                                id=""
-                                value={newStudentId}
-                                style={{ display: "block" }}
-                              >
-                                <option value="category" hidden>
-                                  Select student
-                                </option>
-                                {studentsList.map((student, index) => {
-                                  return (
-                                    <option key={index} value={student.id}>
-                                      {student.name + " " + student.lastname}
-                                    </option>
-                                  );
-                                })}
-                              </select>
-                            )}
-                            <input
-                              className="inputs-style"
-                              value={date}
-                              onChange={(e) => {
-                                setDate(e.target.value);
-                              }}
-                              type="date"
-                              required
-                            />
-                            <input
-                              className="inputs-style"
-                              value={theTime}
-                              onChange={(e) => {
-                                setTheTime(e.target.value);
-                              }}
-                              type="time"
-                              required
-                            />
-                            <input
-                              className="inputs-style"
-                              value={link}
-                              onChange={(e) => setLink(e.target.value)}
-                              placeholder="Link"
-                              type="text"
-                              required
-                            />
-                            <input
-                              className="inputs-style"
-                              value={description}
-                              onChange={(e) => setDescription(e.target.value)}
-                              placeholder="Description"
-                              type="text"
-                              required
-                            />
-                          </form>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList1}
-                                type="checkbox"
-                                value="option1"
-                                onChange={handleCheckbox1Change}
-                              />
-                              0. Subir Vídeo no vimeo:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList2}
-                                type="checkbox"
-                                value="option2"
-                                onChange={handleCheckbox2Change}
-                              />
-                              1. Subir Aulas na Plataforma:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList3}
-                                type="checkbox"
-                                value="option3"
-                                onChange={handleCheckbox3Change}
-                              />
-                              2. Adicionar Atividades de Homework:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                checked={eventFull.checkList4}
-                                type="checkbox"
-                                value="option4"
-                                onChange={handleCheckbox4Change}
-                              />
-                              3. Subir Flashcards:
-                            </label>
-                          </div>
-                          <div>
-                            <label>
-                              <input
-                                type="checkbox"
-                                checked={eventFull.checkList5}
-                                value="option5"
-                                onChange={handleCheckbox5Change}
-                              />
-                              4. Formatar Material:
-                            </label>
-                          </div>
-                        </>
-                      )}
-                      {!deleteVisible ? (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            width: "100%",
-                            justifyContent: "space-evenly",
-                          }}
-                        >
-                          {[
-                            {
-                              text: "Delete",
-                              color: "red",
-                              onClick: seeDelete,
-                              visible: postNew ? false : true,
-                            },
-                            {
-                              text: "Cancel",
-                              color: "blue",
-                              onClick: handleCloseModal,
-                              visible: true,
-                            },
-                            {
-                              text: "Save",
-                              color: "green",
-                              onClick: postNew ? postNewEvent : editInside,
-                              visible: true,
-                              type: "submit",
-                            },
-                          ].map((item, index) => {
-                            return (
-                              <ArvinButton
-                                key={index}
-                                color={item.color}
-                                onClick={item.onClick}
-                                style={{
-                                  display: item.visible ? "block" : "none",
-                                  marginTop: "1rem",
-                                  cursor: "pointer",
-                                  color: "white",
-                                }}
-                                type={item.type ? item.type : null}
-                              >
-                                {item.text}
-                              </ArvinButton>
-                            );
-                          })}
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            width: "100%",
-                            justifyContent: "space-evenly",
-                          }}
-                        >
-                          <p>Are you Sure??</p>
-                          {[
-                            {
-                              text: "No!",
-                              backgroundColor: partnerColor(),
-                              onClick: seeDelete,
-                            },
+                    Date:
+                  </span>
+                  <span style={{ color: "#6c757d", fontWeight: "500" }}>
+                    {newFormatDate(date)}
+                  </span>
+                </div>
 
-                            {
-                              text: "Yes!",
-                              backgroundColor: "red",
-                              onClick: deleteOneMaterialInside,
-                            },
-                          ].map((item, index) => {
-                            return (
-                              <button
-                                key={index}
-                                onClick={item.onClick}
-                                style={{
-                                  marginTop: "1rem",
-                                  color: "white",
-                                  cursor: "pointer",
-                                  backgroundColor: item.backgroundColor,
-                                }}
-                              >
-                                {item.text}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </>
-                  )}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontWeight: "600",
+                      color: "#495057",
+                      minWidth: "80px",
+                    }}
+                  >
+                    Time:
+                  </span>
+                  <span style={{ color: "#6c757d", fontWeight: "500" }}>
+                    {theTime}
+                  </span>
+                </div>
+
+                {category !== "Marcar Reposição" && (
+                  <Link
+                    to={link}
+                    target="_blank"
+                    style={{
+                      color: partnerColor(),
+                      textDecoration: "none",
+                      fontWeight: "500",
+                      padding: "0.5rem 1rem",
+                      backgroundColor: "white",
+                      border: `2px solid ${partnerColor()}`,
+                      borderRadius: "6px",
+                      textAlign: "center",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = partnerColor();
+                      e.target.style.color = "white";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "white";
+                      e.target.style.color = partnerColor();
+                    }}
+                  >
+                    🔗 Click here to access the class
+                  </Link>
+                )}
+
+                {description && (
+                  <div
+                    style={{
+                      backgroundColor: "white",
+                      padding: "1rem",
+                      borderRadius: "6px",
+                      border: "1px solid #dee2e6",
+                      borderLeft: `4px solid ${partnerColor()}`,
+                    }}
+                  >
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "1.1rem",
+                        color: "#495057",
+                      }}
+                    >
+                      {description}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Replenish Section */}
+              {category == "Marcar Reposição" && (
+                <div
+                  style={{
+                    backgroundColor: "#fff3cd",
+                    padding: "1.2rem",
+                    borderRadius: "8px",
+                    border: "1px solid #ffeaa7",
+                  }}
+                >
+                  <div style={{ display: !seeReplenish ? "block" : "none" }}>
+                    <ArvinButton
+                      onClick={() => setSeeReplenish(true)}
+                      style={{
+                        width: "100%",
+                        padding: "0.75rem",
+                        fontSize: "1rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      📅 Reservar este horário para Marcar Reposição
+                    </ArvinButton>
+                  </div>
+
+                  <div
+                    style={{
+                      display: seeReplenish ? "block" : "none",
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      padding: "1.2rem",
+                      borderRadius: "8px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <p
+                      style={{
+                        margin: "0 0 1rem 0",
+                        fontSize: "1.1rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      ⚠️ Deseja marcar este horário para marcar reposição? Esta
+                      ação não pode ser desfeita.
+                    </p>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        justifyContent: "center",
+                        marginTop: "1rem",
+                      }}
+                    >
+                      <ArvinButton
+                        onClick={() => setSeeReplenish(false)}
+                        color="red"
+                        style={{
+                          padding: "0.5rem 1.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        ❌ Não
+                      </ArvinButton>
+                      <ArvinButton
+                        onClick={handleScheduleReplenish}
+                        color="green"
+                        style={{
+                          padding: "0.5rem 1.5rem",
+                          fontWeight: "500",
+                        }}
+                      >
+                        ✅ Sim
+                      </ArvinButton>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
           </>
           <>
-            {/*Modal de nosos/edição de aulas particulares dos alunos */}
             <div
               style={{
                 backgroundColor: transparentWhite(),
@@ -1811,41 +2233,78 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isModalOfTutoringsVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                padding: "1rem",
-                width: "20rem",
-                height: "30rem",
+                padding: "1.5rem",
+                width: window.innerWidth <= 768 ? "90vw" : "28rem",
+                maxHeight: "80vh",
+                overflow: "auto",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
+                borderRadius: "8px",
               }}
             >
-              <Xp onClick={handleCloseModalOfTutorings}>X</Xp>
-              <HTwo
+              {/* Header */}
+              <div
                 style={{
-                  margin: "0.5rem 0",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "1.5rem",
                 }}
               >
-                {UniversalTexts.editTurorings}
-              </HTwo>
-              {loadingModalTutoringsInfo ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <form
+                <HTwo
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyItems: "center",
-                    gap: "0.5rem",
+                    margin: 0,
+                    color: partnerColor(),
                   }}
                 >
+                  {UniversalTexts.editTurorings}
+                </HTwo>
+                <Xp
+                  onClick={handleCloseModalOfTutorings}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                    color: "#999",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) => (e.target.style.color = partnerColor())}
+                  onMouseLeave={(e) => (e.target.style.color = "#999")}
+                >
+                  ×
+                </Xp>
+              </div>
+
+              {loadingModalTutoringsInfo ? (
+                <div style={{ textAlign: "center", padding: "2rem" }}>
+                  <CircularProgress style={{ color: partnerColor() }} />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "1.5rem" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "0.5rem",
+                      fontWeight: "600",
+                      color: "#495057",
+                    }}
+                  >
+                    Select Student:
+                  </label>
                   <select
                     onChange={(e) => {
                       fetchOneSetOfTutoringsInside(e);
                     }}
                     name="students"
-                    id=""
                     value={newStudentId}
-                    style={{ display: "block" }}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                      backgroundColor: "white",
+                    }}
                   >
                     <option value="category" hidden>
                       Select student
@@ -1858,160 +2317,326 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       );
                     })}
                   </select>
-                </form>
-              )}
-              {loadingTutoringDays ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <div>
-                  {tutoringsListOfOneStudent
-                    .sort(
-                      (a, b) =>
-                        moment(a.day, "dddd").day() -
-                        moment(b.day, "dddd").day()
-                    )
-                    .map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          style={{
-                            padding: "10px",
-                            display: showClasses ? "flex" : "none",
-                            gap: "5px",
-                          }}
-                        >
-                          <p style={{ fontWeight: 600 }}>Class #{index + 1}</p>
-                          <div style={{ display: "flex", gap: "10px" }}>
-                            <p>
-                              {item.day} - {item.time} -
-                              <Link target="_blank" to={item.link}>
-                                Link
-                              </Link>
-                            </p>
-                            <button
-                              onClick={() => {
-                                seeEditOneTutoring(item);
-                              }}
-                            >
-                              Edit
-                            </button>
-                            <button onClick={() => deleteTutoring(item)}>
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
                 </div>
               )}
+
+              {/* Existing Classes */}
+              {loadingTutoringDays ? (
+                <div style={{ textAlign: "center", padding: "2rem" }}>
+                  <CircularProgress style={{ color: partnerColor() }} />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "1.5rem" }}>
+                  {showClasses && tutoringsListOfOneStudent.length > 0 && (
+                    <div>
+                      <h4
+                        style={{ color: partnerColor(), marginBottom: "1rem" }}
+                      >
+                        Current Classes:
+                      </h4>
+                      <div style={{ display: "grid", gap: "0.75rem" }}>
+                        {tutoringsListOfOneStudent
+                          .sort(
+                            (a, b) =>
+                              moment(a.day, "dddd").day() -
+                              moment(b.day, "dddd").day()
+                          )
+                          .map((item, index) => {
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  backgroundColor: "#f8f9fa",
+                                  padding: "1rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #dee2e6",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <div>
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#495057",
+                                      }}
+                                    >
+                                      Class #{index + 1}
+                                    </span>
+                                    <div
+                                      style={{
+                                        fontSize: "0.9rem",
+                                        color: "#6c757d",
+                                        marginTop: "0.25rem",
+                                      }}
+                                    >
+                                      {item.day} - {item.time} -
+                                      <Link
+                                        target="_blank"
+                                        to={item.link}
+                                        style={{
+                                          color: partnerColor(),
+                                          textDecoration: "none",
+                                          marginLeft: "0.5rem",
+                                        }}
+                                      >
+                                        Access Link
+                                      </Link>
+                                    </div>
+                                  </div>
+                                  <div
+                                    style={{ display: "flex", gap: "0.5rem" }}
+                                  >
+                                    <button
+                                      onClick={() => {
+                                        seeEditOneTutoring(item);
+                                      }}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: partnerColor(),
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        fontSize: "0.9rem",
+                                      }}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button
+                                      onClick={() => deleteTutoring(item)}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: "#dc3545",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        fontSize: "0.9rem",
+                                      }}
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Edit Form */}
               <div
                 style={{
                   display: seeEditTutoring ? "block" : "none",
+                  backgroundColor: "#fff3cd",
+                  padding: "1.5rem",
+                  borderRadius: "8px",
+                  border: "1px solid #ffeaa7",
+                  marginBottom: "1.5rem",
                 }}
               >
-                <button
+                <div
                   style={{
-                    backgroundColor: partnerColor(),
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "1rem",
                   }}
-                  className="button"
-                  onClick={closeEditOneTutoring}
                 >
-                  x
-                </button>
-                <select
-                  onChange={handleWeekDayChange}
-                  name="students"
-                  id=""
-                  value={weekDay}
-                  style={{ display: "block" }}
-                >
-                  <option value="select week day" hidden>
-                    Select week day
-                  </option>
-                  {weekDays.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
-                      </option>
-                    );
-                  })}
-                </select>
-                <select
-                  onChange={handleTimeChange}
-                  name="students"
-                  id=""
-                  value={timeOfTutoring}
-                  style={{ display: "block" }}
-                >
-                  <option value="select time" hidden>
-                    Select time
-                  </option>
-                  {times.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
-                      </option>
-                    );
-                  })}
-                </select>
-                <input
-                  value={link}
-                  onChange={(e) => {
-                    setLink(e.target.value);
-                  }}
-                  type="text"
-                  required
-                />
-                <button onClick={updateOneTutoring}>Save</button>
+                  <h4 style={{ margin: 0, color: "#856404" }}>Edit Class</h4>
+                  <button
+                    onClick={closeEditOneTutoring}
+                    style={{
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "0.5rem 1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div style={{ display: "grid", gap: "1rem" }}>
+                  <select
+                    onChange={handleWeekDayChange}
+                    value={weekDay}
+                    style={{
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <option value="select week day" hidden>
+                      Select week day
+                    </option>
+                    {weekDays.map((weekDay, index) => {
+                      return (
+                        <option key={index} value={weekDay}>
+                          {weekDay}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <select
+                    onChange={handleTimeChange}
+                    value={timeOfTutoring}
+                    style={{
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <option value="select time" hidden>
+                      Select time
+                    </option>
+                    {times.map((time, index) => {
+                      return (
+                        <option key={index} value={time}>
+                          {time}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <input
+                    value={link}
+                    onChange={(e) => {
+                      setLink(e.target.value);
+                    }}
+                    placeholder="Meeting Link"
+                    type="text"
+                    style={{
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                    }}
+                    required
+                  />
+                  <button
+                    onClick={updateOneTutoring}
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      backgroundColor: "#28a745",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontSize: "1rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Save Changes
+                  </button>
+                </div>
               </div>
+
+              {/* New Class Form */}
               <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                <HTwo>New</HTwo>
-                <select
-                  onChange={handleTheNewWeekDayChange}
-                  name="students"
-                  id=""
-                  value={theNewWeekDay}
-                  style={{ display: "block" }}
-                >
-                  <option hidden value="select week day">
-                    Select Week Day
-                  </option>
-                  {weekDays.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
-                      </option>
-                    );
-                  })}
-                </select>
-                <select
-                  onChange={handleTheNewTimeChange}
-                  name="students"
-                  id=""
-                  value={theNewTimeOfTutoring}
-                  style={{ display: "block" }}
-                >
-                  <option hidden value="Select Time">
-                    Select Time
-                  </option>
-                  {times.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
-                      </option>
-                    );
-                  })}
-                </select>
-                <input
-                  placeholder="New link"
-                  value={theNewLink}
-                  onChange={(e) => {
-                    setTheNewLink(e.target.value);
+                <div
+                  style={{
+                    backgroundColor: "#d4edda",
+                    padding: "1.5rem",
+                    borderRadius: "8px",
+                    border: "1px solid #c3e6cb",
                   }}
-                  type="text"
-                  required
-                />
-                <button onClick={newTutoring}>New</button>
+                >
+                  <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
+                    Add New Class
+                  </h4>
+                  <div style={{ display: "grid", gap: "1rem" }}>
+                    <select
+                      onChange={handleTheNewWeekDayChange}
+                      value={theNewWeekDay}
+                      style={{
+                        padding: "0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid #ced4da",
+                        fontSize: "1rem",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <option hidden value="select week day">
+                        Select Week Day
+                      </option>
+                      {weekDays.map((weekDay, index) => {
+                        return (
+                          <option key={index} value={weekDay}>
+                            {weekDay}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <select
+                      onChange={handleTheNewTimeChange}
+                      value={theNewTimeOfTutoring}
+                      style={{
+                        padding: "0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid #ced4da",
+                        fontSize: "1rem",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <option hidden value="Select Time">
+                        Select Time
+                      </option>
+                      {times.map((time, index) => {
+                        return (
+                          <option key={index} value={time}>
+                            {time}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <input
+                      placeholder="Meeting Link"
+                      value={theNewLink}
+                      onChange={(e) => {
+                        setTheNewLink(e.target.value);
+                      }}
+                      type="text"
+                      style={{
+                        padding: "0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid #ced4da",
+                        fontSize: "1rem",
+                      }}
+                      required
+                    />
+                    <button
+                      onClick={newTutoring}
+                      style={{
+                        padding: "0.75rem 1.5rem",
+                        backgroundColor: partnerColor(),
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontSize: "1rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Add New Class
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </>
@@ -2019,6 +2644,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       ) : (
         <RouteSizeControlBox>Nenhum usuário logado</RouteSizeControlBox>
       )}
+      <Helmets text="Calendar" />
     </>
   );
 }

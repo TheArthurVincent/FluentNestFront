@@ -27,11 +27,18 @@ export const RouteDiv = styled.div.attrs({
   background-color: ${alwaysWhite()};
   border-radius: 6px;
   padding: 0.5rem;
-  width: 90vw;
+  width: 95vw;
   height: 100%;
-  @media (max-width: 1380px) {
-    width: 95vw;
-  }
+  overflow: auto;
+`;
+export const RouteDivCalendar = styled.div.attrs({
+  className: "box-shadow-black smooth",
+})`
+  background-color: ${alwaysWhite()};
+  border-radius: 6px;
+  padding: 0.5rem;
+  width: 95vw;
+  height: 100%;
 `;
 
 export const RouteDivCourses = styled.div.attrs({
@@ -43,10 +50,7 @@ export const RouteDivCourses = styled.div.attrs({
   margin-right: auto;
   margin-left: auto;
   height: 100%;
-  width: 1000px;
-  @media (max-width: 1380px) {
-    width: 95vw;
-  }
+  width: 95vw;
 `;
 
 export const OverFlow = styled.div`
@@ -60,18 +64,14 @@ export const OverFlow = styled.div`
   `;
 export const BlogRouteSizeControlBox = styled.div`
   display: flex;
-  margin: 10px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 15px;
   margin-top: 60px;
   margin-bottom: 22px;
-  max-width: 60vw;
   gap: 0.2rem;
+  max-width: 70vw;
+  margin-right: auto;
+  margin-left: auto;
   @media (max-width: 1380px) {
-    display: flex;
-    max-width: 70vw;
-    margin-right: auto;
-    margin-left: auto;
     flex-direction: column-reverse;
     justify-content: center;
     align-items: center;

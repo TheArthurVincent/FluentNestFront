@@ -21,7 +21,6 @@ import { listOfButtons } from "./ListOfCriteria";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../MyClasses/MyClasses.Styled";
-import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 import styled, { keyframes } from "styled-components";
 
 interface StudentsRankingProps {
@@ -142,7 +141,7 @@ export default function StudentsRanking({
   const [monthlyScore, setMonthlyScore] = useState<number>(0);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [ID, setId] = useState<string>("");
-  const [card, setCard] = useState<boolean>(false);
+  const [card, setCard] = useState<boolean>(true);
   const [pic, setPic] = useState<string>("");
   const [name, setName] = useState<string>("");
 
@@ -238,12 +237,12 @@ export default function StudentsRanking({
     setUser(getLoggedUser);
     getLoggedUser.permissions === "superadmin" ? setIsAdm(true) : null;
   }, []);
-  const handleSeeModal = () => {
-    setStudents([]);
-    setPage(1);
-    setHasMore(true);
-    setIsVisible(!isVisible);
-    fetchStudentsScore();
+  const handleSeeModal = (studentId?: string) => {
+    if (studentId) {
+      seeEdition(studentId);
+    } else {
+      setIsVisible(false);
+    }
   };
 
   const [page, setPage] = useState(1);
@@ -294,41 +293,6 @@ export default function StudentsRanking({
   useEffect(() => {
     fetchStudentsScore();
   }, []);
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     fetchStudentsScore();
-  //   }, 6000);
-  // }, []);
-  // ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
-  ///////////
 
   const updateFeeStatus = async (id: string) => {
     try {
@@ -398,45 +362,28 @@ export default function StudentsRanking({
           backgroundColor: alwaysWhite(),
           top: "50%",
           left: "50%",
-          width: "100vw",
-          maxWidth: "40rem",
-          maxHeight: "75vh",
-          overflow: "auto",
+          width: "25rem",
+          height: "25rem",
           display: isVisible ? "block" : "none",
           transform: "translate(-50%, -50%)",
         }}
       >
-        {loadingScore ? (
-          <CircularProgress style={{ color: partnerColor() }} />
-        ) : (
-          <div
+        <div
+          style={{
+            display: "grid",
+            gap: "0.5rem",
+          }}
+        >
+          <Xp
+            onClick={() => handleSeeModal()}
             style={{
-              display: "grid",
-              gap: "0.5rem",
+              fontSize: "1.5rem",
             }}
           >
-            <Xp
-              onClick={() => handleSeeModal()}
-              style={{
-                fontSize: "1.5rem",
-              }}
-            >
-              x
-            </Xp>
-            <HThree>
-              Monthly Score: <strong>{formatNumber(monthlyScore)} </strong>{" "}
-            </HThree>
-            <HThree>
-              Total Score: <strong>{formatNumber(totalScore)} </strong>
-            </HThree>
-            <HThree>
-              Homework Done: <strong>{totalHomeworkDone} </strong>{" "}
-            </HThree>
-            <HThree>
-              Flashcards 25/day: <strong>{totalFlashCards25} </strong>
-            </HThree>
-          </div>
-        )}
+            x
+          </Xp>
+        </div>
+
         <div
           style={{
             display: "grid",
@@ -444,121 +391,149 @@ export default function StudentsRanking({
             overflow: "auto",
           }}
         >
-          <div
-            style={{
-              display: "grid",
-              gap: "0.5rem",
-            }}
-          >
-            {listOfButtons.map((item, index) => {
-              return (
+          {!card && user.permissions === "superadmin" && (
+            <div
+              style={{
+                display: "grid",
+                gap: "0.5rem",
+              }}
+            >
+              <HThree>
+                Monthly Score: <strong>{formatNumber(monthlyScore)} </strong>{" "}
+              </HThree>
+              <HThree>
+                Total Score: <strong>{formatNumber(totalScore)} </strong>
+              </HThree>
+              <HThree>
+                Homework Done: <strong>{totalHomeworkDone} </strong>{" "}
+              </HThree>
+              <HThree>
+                Flashcards 25/day: <strong>{totalFlashCards25} </strong>
+              </HThree>
+              {listOfButtons.map((item, index) => {
+                return (
+                  <ArvinButton
+                    key={index}
+                    disabled={disabled}
+                    style={{
+                      color: alwaysWhite(),
+                      fontSize: "0.8rem",
+                    }}
+                    color={item.color}
+                    onClick={() =>
+                      submitPlusScore(
+                        ID,
+                        item.score,
+                        item.description,
+                        item.category
+                      )
+                    }
+                  >
+                    {item.text}
+                  </ArvinButton>
+                );
+              })}
+
+              <div>
+                <p>Personalizado</p>
+                <input
+                  style={{ maxWidth: "5rem", marginRight: "5px" }}
+                  placeholder="Special Score"
+                  onChange={(e) => changePlusScore(Number(e.target.value))}
+                  type="number"
+                />
+                <input
+                  style={{ maxWidth: "5rem", marginRight: "5px" }}
+                  placeholder="Description"
+                  onChange={(e) => setDescSpecial(e.target.value)}
+                  type="text"
+                />
                 <ArvinButton
-                  key={index}
-                  disabled={disabled}
-                  style={{
-                    color: alwaysWhite(),
-                    fontSize: "0.8rem",
-                  }}
-                  color={item.color}
                   onClick={() =>
-                    submitPlusScore(
-                      ID,
-                      item.score,
-                      item.description,
-                      item.category
-                    )
+                    submitPlusScore(ID, plusScore, descSpecial, "Others")
                   }
                 >
-                  {item.text}
+                  +
                 </ArvinButton>
-              );
-            })}
-
-            <div>
-              <p>Personalizado</p>
-              <input
-                style={{ maxWidth: "5rem", marginRight: "5px" }}
-                placeholder="Special Score"
-                onChange={(e) => changePlusScore(Number(e.target.value))}
-                type="number"
-              />
-              <input
-                style={{ maxWidth: "5rem", marginRight: "5px" }}
-                placeholder="Description"
-                onChange={(e) => setDescSpecial(e.target.value)}
-                type="text"
-              />
-              <ArvinButton
-                onClick={() =>
-                  submitPlusScore(ID, plusScore, descSpecial, "Others")
-                }
-              >
-                +
-              </ArvinButton>
+              </div>
             </div>
+          )}
+
+          {loadingScore ? (
+            <CircularProgress style={{ color: partnerColor() }} />
+          ) : (
+            <div
+              id="the-card"
+              style={{
+                display: card ? "block" : "none",
+                position: "relative",
+              }}
+            >
+              <img
+                style={{
+                  maxWidth: "22rem",
+                  position: "absolute",
+                  zIndex: 1,
+                }}
+                src={
+                  updateScore(totalScore, totalFlashCards25, totalHomeworkDone)
+                    .card
+                }
+                alt=""
+              />
+              <img
+                style={{
+                  maxWidth: "10rem",
+                  width: "10rem",
+                  height: "10rem",
+                  objectFit: "cover",
+                  margin: "auto",
+                  borderRadius: "50%",
+                  position: "relative",
+                  zIndex: 2,
+                  left: "7em",
+                  top: "2rem",
+                }}
+                src={pic}
+                alt=""
+              />
+              <p
+                style={{
+                  position: "relative",
+                  zIndex: 3,
+                  height: "12rem",
+                  objectFit: "cover",
+                  margin: "auto",
+                  borderRadius: "50%",
+                  left: "10rem",
+                  top: "5.5rem",
+                  fontSize: "1.2rem",
+                  fontWeight: 800,
+                }}
+              >
+                {name}
+              </p>
+            </div>
+          )}
+          {user.permissions === "superadmin" && (
             <ArvinButton
               onClick={() => {
                 setCard(!card);
               }}
             >
-              See card
+              {card ? "See Score" : "See Card"}
             </ArvinButton>
-          </div>
-          <div
-            id="the-card"
-            style={{ display: card ? "block" : "none", position: "relative" }}
-          >
-            <img
-              style={{
-                maxWidth: "30rem",
-                position: "absolute",
-                zIndex: 1,
-              }}
-              src={
+          )}
+          {user.permissions === "superadmin" && (
+            <p>
+              New{" "}
+              {
                 updateScore(totalScore, totalFlashCards25, totalHomeworkDone)
-                  .card
+                  .text
               }
-              alt=""
-            />
-            <img
-              style={{
-                maxWidth: "16rem",
-                width: "16rem",
-                height: "16rem",
-                objectFit: "cover",
-                margin: "auto",
-                borderRadius: "50%",
-                position: "relative",
-                zIndex: 2,
-                left: "7em",
-                top: "1em",
-              }}
-              src={pic}
-              alt=""
-            />
-            <p
-              style={{
-                position: "relative",
-                zIndex: 3,
-                maxWidth: "16rem",
-                width: "16rem",
-                height: "16rem",
-                objectFit: "cover",
-                margin: "auto",
-                borderRadius: "50%",
-                left: name.length < 15 ? "5rem" : "3.4rem",
-                top: "5rem",
-                fontSize: "1.4rem",
-              }}
-            >
-              {name}
+              !! Congratulations, {name}
             </p>
-          </div>
-          <p>
-            New{" "}
-            {updateScore(totalScore, totalFlashCards25, totalHomeworkDone).text}
-            !! Congratulations, {name}
-          </p>
+          )}
         </div>
       </div>
       {loading && FIRST ? (
@@ -625,6 +600,7 @@ export default function StudentsRanking({
                         item.picture ||
                         "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
                       }
+                      onClick={() => handleSeeModal(item._id)}
                     />
                   </div>
                   <p
@@ -757,178 +733,4 @@ export default function StudentsRanking({
       )}
     </div>
   );
-}
-
-{
-  /* <span className="top-item">
-            {students.map((item: any, index: number) => {
-              const levelNumber =
-                updateScore(
-                  item.totalScore,
-                  item.flashcards25Reviews,
-                  item.homeworkAssignmentsDone
-                ).level - 1;
-              return (
-                <div
-                  style={{
-                    display:
-                      item._id === user.id && index > 4 ? "block" : "none",
-                  }}
-                >
-                  <HTwo>{UniversalTexts.you}</HTwo>
-                  <AnimatedLi
-                    style={{
-                      border:
-                        item._id !== user.id
-                          ? "none"
-                          : `2px groove ${theItems[levelNumber].backgroundcolor}`,
-                    }}
-                    key={index + item.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
-                    color1={theItems[levelNumber].color}
-                    color2={
-                      item._id !== user.id
-                        ? theItems[levelNumber].color
-                        : theItems[levelNumber].backgroundcolor
-                    }
-                    index={index}
-                    item={item}
-                    background={theItems[levelNumber].color}
-                    textColor={theItems[levelNumber].textcolor}
-                    className="box-shadow-white"
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <ImgResponsive0
-                        src={theItems[levelNumber].image2}
-                        alt="level"
-                      />
-                      <img
-                        style={{
-                          width: "3rem",
-                          height: "3rem",
-                          objectFit: "cover",
-                          margin: "auto",
-                          borderRadius: "50%",
-                          border: `solid ${alwaysWhite()} 2px`,
-                        }}
-                        src={item.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
-                      />
-                    </div>
-                    <p
-                      style={{
-                        fontWeight: 600,
-                        width: "fit-content",
-                        padding: "5px",
-                        textAlign: "left",
-                        backgroundColor: "none",
-                        color: theItems[levelNumber].textcolor,
-                      }}
-                    >
-                      #{index + 1} |{" "}
-                      {item.name + " " + abreviateName(item.lastname)}
-                    </p>
-                    <div
-                      style={{
-                        display: isAdm ? "grid" : "none",
-                        alignItems: "center",
-                        fontSize: "0.5rem",
-                      }}
-                    >
-                      <div
-                        className="pointer-text"
-                        style={{
-                          padding: "5px",
-                          display: "grid",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          alignItems: "center",
-                          textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: item.feeUpToDate ? "green" : "red",
-                        }}
-                        onClick={() => updateFeeStatus(item._id)}
-                      >
-                        {item.feeUpToDate ? "Fee Ok" : "Late Fee"}
-                      </div>
-                      <div
-                        className="pointer-text"
-                        style={{
-                          padding: "5px",
-                          display: "grid",
-                          alignItems: "center",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: item.replenishTarget
-                            ? "green"
-                            : "red",
-                        }}
-                        onClick={() => updateReplenishTargetStatus(item._id)}
-                      >
-                        {item.replenishTarget ? "Replenish" : "Non-Replenish"}
-                      </div>
-                      <div
-                        className="pointer-text"
-                        style={{
-                          padding: "5px",
-                          display: "grid",
-                          alignItems: "center",
-                          marginBottom: "5px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                          width: "fit-content",
-                          color: "white",
-                          backgroundColor: "#456",
-                        }}
-                        onClick={() => seeEdition(item._id)}
-                      >
-                        {formatNumber(item.totalScore)} +
-                      </div>
-                    </div>
-                    <div
-                      style={{
-                        display: "grid",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "0.9rem",
-                          borderRadius: "0.5rem",
-                          marginBottom: "0.2rem",
-                          padding: "5px",
-                        }}
-                      >
-                        <DivFont
-                          style={{
-                            textAlign: "center",
-                            color: alwaysWhite(),
-                            textShadow: `2px 0 ${alwaysBlack()},
-                             -2px 0 ${alwaysBlack()}, 
-                             0 2px ${alwaysBlack()},
-                              0 -2px ${alwaysBlack()},
-                               1px 1px ${alwaysBlack()},
-                                -1px -1px ${alwaysBlack()},
-                                 1px -1px ${alwaysBlack()},
-                                  -1px 1px ${alwaysBlack()}`,
-                          }}
-                        >
-                          {formatNumber(item.monthlyScore)}{" "}
-                        </DivFont>
-                      </div>
-                    </div>
-                  </AnimatedLi>
-                </div>
-              );
-            })}
-          </span> */
 }

@@ -32,7 +32,6 @@ import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 import Redirect from "../Redirect";
 
-
 export function HomePage({ headers }: HeadersProps) {
   const [thePermissions, setPermissions] = useState<string>("");
   const [admin, setAdmin] = useState<boolean>(false);
@@ -201,7 +200,6 @@ export function HomePage({ headers }: HeadersProps) {
                   <>
                     <BlogRouteSizeControlBox
                       style={{ gap: "1rem" }}
-                      className="smooth"
                     >
                       {component.component}
                       {component.levelcard && (
