@@ -466,7 +466,10 @@ export default function StudentsRanking({
           ) : (
             <div
               id="the-card"
-              style={{ display: card ? "block" : "none", position: "relative" }}
+              style={{
+                display: card ? "block" : "none",
+                position: "relative",
+              }}
             >
               <img
                 style={{
