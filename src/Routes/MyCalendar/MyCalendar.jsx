@@ -1107,243 +1107,332 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               <div
                 style={{
                   display: "flex",
-                  gap: "5px",
+                  gap: "0.75rem",
                   overflowX: "auto",
+                  padding: "1rem 0",
+                  scrollbarWidth: "thin",
+                  scrollbarColor: `${partnerColor()} transparent`,
                 }}
               >
                 {futureDates.map((date, index) => {
                   const hj = new Date();
+                  const isToday =
+                    hj.getDate() === date.getDate() &&
+                    hj.getMonth() === date.getMonth() &&
+                    hj.getFullYear() === date.getFullYear();
+
                   return (
                     <StyledDiv
-                      className={
-                        hj.getDate() == date.getDate() &&
-                        hj.getMonth() == date.getMonth() &&
-                        hj.getFullYear() == date.getFullYear()
-                          ? "glowing"
-                          : "none"
-                      }
+                      className={isToday ? "glowing" : "none"}
                       style={{
-                        border:
-                          hj.getDate() == date.getDate() &&
-                          hj.getMonth() == date.getMonth() &&
-                          hj.getFullYear() == date.getFullYear()
-                            ? `2px solid ${partnerColor()}`
-                            : "null",
+                        border: isToday
+                          ? `3px solid ${partnerColor()}`
+                          : "1px solid #e0e0e0",
+                        borderRadius: "12px",
+                        backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
+                        boxShadow: isToday
+                          ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
+                          : "0 2px 8px rgba(0,0,0,0.08)",
+                        transition: "all 0.3s ease",
+                        minWidth: "280px",
+                        maxWidth: "320px",
                       }}
                       key={index}
                     >
-                      <p
+                      {/* Date Header */}
+                      <div
                         style={{
-                          padding: "5px",
+                          padding: "1rem",
                           position: "sticky",
                           top: 0,
                           fontWeight: 700,
                           textAlign: "center",
-                          fontSize: "0.9rem",
+                          fontSize: "0.95rem",
                           fontFamily: textTitleFont(),
-                          backgroundColor:
-                            hj.getDate() == date.getDate() &&
-                            hj.getMonth() == date.getMonth() &&
-                            hj.getFullYear() == date.getFullYear()
-                              ? partnerColor()
-                              : alwaysBlack(),
+                          background: isToday
+                            ? partnerColor()
+                            : "linear-gradient(135deg, #111, #555)",
                           color: alwaysWhite(),
+                          borderRadius: "12px 12px 0 0",
+                          marginBottom: "0.5rem",
+                          letterSpacing: "0.5px",
+                          textShadow: "0 1px 2px rgba(0,0,0,0.2)",
                         }}
                       >
-                        {date.toLocaleDateString("en-US", {
-                          weekday: "short",
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </p>
-                      {events
-                        .filter(
+                        <div
+                          style={{
+                            fontSize: "0.8rem",
+                            opacity: 0.9,
+                            marginBottom: "0.25rem",
+                          }}
+                        >
+                          {date.toLocaleDateString("en-US", {
+                            weekday: "long",
+                          })}
+                        </div>
+                        <div style={{ fontSize: "1.1rem" }}>
+                          {date.toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Events Container */}
+                      <div style={{ padding: "0 0.75rem 1rem" }}>
+                        {events
+                          .filter(
+                            (event) =>
+                              event.date.toDateString() === date.toDateString()
+                          )
+                          .sort((a, b) => {
+                            const timeA =
+                              parseInt(a.time.split(":")[0]) * 60 +
+                              parseInt(a.time.split(":")[1]);
+                            const timeB =
+                              parseInt(b.time.split(":")[0]) * 60 +
+                              parseInt(b.time.split(":")[1]);
+                            return timeA - timeB;
+                          })
+                          .map((event, eventIndex) => {
+                            const categoryColors = {
+                              "Group Class": { bg: "#ff6b35", text: "#fff" },
+                              Rep: { bg: partnerColor(), text: "#fff" },
+                              Tutoring: { bg: "#111", text: "#fff" },
+                              "Prize Class": { bg: "#27ae60", text: "#fff" },
+                              Standalone: { bg: "#8e44ad", text: "#fff" },
+                              Test: { bg: "#34495e", text: "#fff" },
+                              "Marcar Reposição": {
+                                bg: "#3498db",
+                                text: "#fff",
+                              },
+                            };
+
+                            const statusColors = {
+                              desmarcado: {
+                                bg: "#ffebee",
+                                text: "#c62828",
+                                border: "#ef5350",
+                              },
+                              marcado: {
+                                bg: "#e3f2fd",
+                                text: "#1565c0",
+                                border: "#42a5f5",
+                              },
+                              realizada: {
+                                bg: "#e8f5e8",
+                                text: "#2e7d32",
+                                border: "#66bb6a",
+                              },
+                            };
+
+                            const categoryColor = categoryColors[
+                              event.category
+                            ] || { bg: "#000", text: "#fff" };
+                            const statusColor = statusColors[event.status] || {
+                              bg: "#f5f5f5",
+                              text: "#333",
+                              border: "#ddd",
+                            };
+
+                            return (
+                              <div
+                                key={`${event._id}-${eventIndex}`}
+                                style={{
+                                  marginBottom: "0.75rem",
+                                  borderRadius: "8px",
+                                  overflow: "hidden",
+                                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                                  transition: "all 0.2s ease",
+                                  cursor: "pointer",
+                                  border: `1px solid ${statusColor.border}`,
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "translateY(-2px)";
+                                  e.currentTarget.style.boxShadow =
+                                    "0 4px 12px rgba(0,0,0,0.15)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.transform =
+                                    "translateY(0)";
+                                  e.currentTarget.style.boxShadow =
+                                    "0 2px 8px rgba(0,0,0,0.1)";
+                                }}
+                                onClick={() => handleSeeModal(event)}
+                              >
+                                {/* Live Event Indicator */}
+                                {event.status !== "desmarcado" &&
+                                  isEventTimeNow(event, hj, date) && (
+                                    <div
+                                      style={{
+                                        background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}dd)`,
+                                        padding: "0.25rem",
+                                        position: "relative",
+                                        overflow: "hidden",
+                                      }}
+                                    >
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "center",
+                                          color: "white",
+                                          fontSize: "0.75rem",
+                                          fontWeight: "600",
+                                          textTransform: "uppercase",
+                                          letterSpacing: "0.5px",
+                                        }}
+                                      >
+                                        <span
+                                          style={{
+                                            width: "6px",
+                                            height: "6px",
+                                            backgroundColor: "white",
+                                            borderRadius: "50%",
+                                            marginRight: "0.5rem",
+                                            animation: "pulse 2s infinite",
+                                          }}
+                                        ></span>
+                                        Live Now
+                                      </div>
+                                    </div>
+                                  )}
+
+                                {/* Event Content */}
+                                <div
+                                  style={{
+                                    background: categoryColor.bg,
+                                    color: categoryColor.text,
+                                    padding: "0.75rem",
+                                    position: "relative",
+                                  }}
+                                >
+                                  {/* Category Badge */}
+                                  <div
+                                    style={{
+                                      position: "absolute",
+                                      top: "0.5rem",
+                                      right: "0.5rem",
+                                      backgroundColor: "rgba(255,255,255,0.2)",
+                                      color: categoryColor.text,
+                                      padding: "0.25rem 0.5rem",
+                                      borderRadius: "12px",
+                                      fontSize: "0.65rem",
+                                      fontWeight: "600",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.3px",
+                                    }}
+                                  >
+                                    {event.category}
+                                  </div>
+
+                                  {/* Event Title/Description */}
+                                  <div
+                                    style={{
+                                      fontSize: "0.85rem",
+                                      fontWeight: "600",
+                                      marginBottom: "0.5rem",
+                                      lineHeight: "1.3",
+                                      paddingRight: "4rem",
+                                    }}
+                                  >
+                                    {event.student ||
+                                      event.description ||
+                                      "No description"}
+                                  </div>
+
+                                  {/* Time Display */}
+                                  <div
+                                    style={{
+                                      fontSize: "0.9rem",
+                                      fontWeight: "700",
+                                      opacity: 0.9,
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-clock-o"
+                                      style={{ fontSize: "0.8rem" }}
+                                    ></i>
+                                    {event.time}
+                                  </div>
+                                </div>
+
+                                {/* Status Footer */}
+                                <div
+                                  style={{
+                                    backgroundColor: statusColor.bg,
+                                    color: statusColor.text,
+                                    padding: "0.5rem 0.75rem",
+                                    fontSize: "0.75rem",
+                                    fontWeight: "600",
+                                    textAlign: "center",
+                                    textTransform: "uppercase",
+                                    letterSpacing: "0.5px",
+                                    borderTop: `1px solid ${statusColor.border}`,
+                                  }}
+                                >
+                                  {event.status === "desmarcado" && (
+                                    <>
+                                      <i
+                                        className="fa fa-times-circle"
+                                        style={{ marginRight: "0.25rem" }}
+                                      ></i>
+                                      Canceled
+                                    </>
+                                  )}
+                                  {event.status === "marcado" && (
+                                    <>
+                                      <i
+                                        className="fa fa-calendar-check-o"
+                                        style={{ marginRight: "0.25rem" }}
+                                      ></i>
+                                      Scheduled
+                                    </>
+                                  )}
+                                  {event.status === "realizada" && (
+                                    <>
+                                      <i
+                                        className="fa fa-check-circle"
+                                        style={{ marginRight: "0.25rem" }}
+                                      ></i>
+                                      Completed
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+
+                        {/* Empty State */}
+                        {events.filter(
                           (event) =>
                             event.date.toDateString() === date.toDateString()
-                        )
-                        .sort((a, b) => {
-                          const timeA =
-                            parseInt(a.time.split(":")[0]) * 60 +
-                            parseInt(a.time.split(":")[1]);
-                          const timeB =
-                            parseInt(b.time.split(":")[0]) * 60 +
-                            parseInt(b.time.split(":")[1]);
-                          return timeA - timeB;
-                        })
-                        .map((event, index) => (
+                        ).length === 0 && (
                           <div
-                            className="box-shadow-white"
                             style={{
-                              margin: "4px",
-                              marginBottom: "1rem",
-                              padding: "2px",
-                              borderRadius: "4px",
-                              border: "1px solid #aaa",
-                              backgroundColor:
-                                event.category === "Group Class"
-                                  ? "orange"
-                                  : event.category === "Rep"
-                                  ? partnerColor()
-                                  : event.category === "Tutoring"
-                                  ? "#111"
-                                  : event.category === "Prize Class"
-                                  ? "green"
-                                  : event.category === "Standalone"
-                                  ? "#333"
-                                  : event.category === "Test"
-                                  ? "#1C1C1C"
-                                  : event.category === "Marcar Reposição"
-                                  ? "#407CB1"
-                                  : "#000",
                               textAlign: "center",
-                              display: "grid",
+                              padding: "2rem 1rem",
+                              color: "#94a3b8",
+                              fontSize: "0.9rem",
                             }}
-                            key={event + index}
                           >
-                            {event.status !== "desmarcado" &&
-                              isEventTimeNow(event, hj, date) && (
-                                <span
-                                  style={{
-                                    paddingBottom: "0px",
-                                    marginBottom: "5px",
-                                    padding: "3px",
-                                    border: `2px solid ${partnerColor()}`,
-                                    backgroundColor: `${partnerColor()}`,
-                                  }}
-                                >
-                                  <LinearProgress color="inherit" />
-                                </span>
-                              )}
-                            <p
-                              onClick={() => {
-                                handleSeeModal(event);
-                              }}
-                              className="name"
+                            <i
+                              className="fa fa-calendar-o"
                               style={{
-                                padding: "8px",
-                                margin: "2px",
-                                backgroundColor:
-                                  event.category === "Group Class"
-                                    ? "orange"
-                                    : event.category === "Rep"
-                                    ? partnerColor()
-                                    : event.category === "Tutoring"
-                                    ? "#111"
-                                    : event.category === "Prize Class"
-                                    ? "green"
-                                    : event.category === "Standalone"
-                                    ? "#333"
-                                    : event.category === "Test"
-                                    ? "#1C1C1C"
-                                    : event.category === "Marcar Reposição"
-                                    ? "#407CB1"
-                                    : "#000",
-                                display: "grid",
-                                cursor: "pointer",
-                                borderRadius: "4px",
-                                fontSize: "0.7rem",
+                                fontSize: "2rem",
+                                marginBottom: "0.5rem",
+                                display: "block",
                               }}
-                            >
-                              {event.student ? (
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                    fontWeight: 600,
-                                    color:
-                                      event.category === "Group Class"
-                                        ? "#fff" // Amarelo mais escuro, sem ser tão claro
-                                        : event.category === "Rep"
-                                        ? textPrimaryColorContrast() // Tom de azul mais escuro e sóbrio
-                                        : event.category === "Tutoring"
-                                        ? textPrimaryColorContrast() // Cinza mais escuro
-                                        : event.category === "Prize Class"
-                                        ? "#fff" // Amarelo mais escuro e mais sóbrio
-                                        : event.category === "Standalone"
-                                        ? "#fff" // Azul bem escuro
-                                        : event.category === "Test"
-                                        ? "#fff" // Cinza muito escuro
-                                        : event.category === "Marcar Reposição"
-                                        ? "#fff" // Verde escuro e sóbrio
-                                        : "#fff", // Preto para categoria não especificada
-                                  }}
-                                >
-                                  {event.student}
-                                </span>
-                              ) : (
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                    fontWeight: 600,
-                                    color:
-                                      event.category === "Group Class"
-                                        ? "#fff" // Amarelo mais escuro, sem ser tão claro
-                                        : event.category === "Rep"
-                                        ? textPrimaryColorContrast() // Tom de azul mais escuro e sóbrio
-                                        : event.category === "Tutoring"
-                                        ? textPrimaryColorContrast() // Cinza mais escuro
-                                        : event.category === "Prize Class"
-                                        ? "#fff" // Amarelo mais escuro e mais sóbrio
-                                        : event.category === "Standalone"
-                                        ? "#fff" // Azul bem escuro
-                                        : event.category === "Test"
-                                        ? "#fff" // Cinza muito escuro
-                                        : event.category === "Marcar Reposição"
-                                        ? "#fff" // Verde escuro e sóbrio
-                                        : "#fff", // Preto para categoria não especificada
-                                  }}
-                                >
-                                  {event.description}
-                                </span>
-                              )}
-                            </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: "0.5rem",
-                                flexDirection: "column",
-                                margin: "2px",
-                                borderRadius: "4px",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                backgroundColor:
-                                  event.status == "desmarcado"
-                                    ? "#FFCCCC"
-                                    : event.status == "marcado"
-                                    ? "#CCE5FF"
-                                    : event.status == "realizada"
-                                    ? "#CCFFCC"
-                                    : "#000",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  gap: "5px",
-                                  color:
-                                    event.status == "marcado"
-                                      ? "#000"
-                                      : event.status == "realizada"
-                                      ? partnerColor()
-                                      : event.status == "desmarcado"
-                                      ? "red"
-                                      : "#000",
-                                  fontSize: "8px",
-                                  padding: "5px",
-                                  fontWeight: 600,
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontSize: "8px",
-                                  }}
-                                >
-                                  {` ${event.time} | ${event.category}`}
-                                </span>
-                              </div>
-                            </div>
+                            ></i>
+                            No events scheduled
                           </div>
-                        ))}
+                        )}
+                      </div>
                     </StyledDiv>
                   );
                 })}
@@ -2092,12 +2181,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               )}
             </div>
           </>
-        
-        
-
-
-
-
           <>
             <div
               style={{
@@ -2131,7 +2214,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               }}
             >
               {/* Header */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "1.5rem",
+                }}
+              >
                 <HTwo
                   style={{
                     margin: 0,
@@ -2140,7 +2230,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   {UniversalTexts.editTurorings}
                 </HTwo>
-                <Xp 
+                <Xp
                   onClick={handleCloseModalOfTutorings}
                   style={{
                     cursor: "pointer",
@@ -2148,8 +2238,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     color: "#999",
                     transition: "color 0.2s",
                   }}
-                  onMouseEnter={(e) => e.target.style.color = partnerColor()}
-                  onMouseLeave={(e) => e.target.style.color = "#999"}
+                  onMouseEnter={(e) => (e.target.style.color = partnerColor())}
+                  onMouseLeave={(e) => (e.target.style.color = "#999")}
                 >
                   ×
                 </Xp>
@@ -2161,7 +2251,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 </div>
               ) : (
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "#495057" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "0.5rem",
+                      fontWeight: "600",
+                      color: "#495057",
+                    }}
+                  >
                     Select Student:
                   </label>
                   <select
@@ -2202,7 +2299,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 <div style={{ marginBottom: "1.5rem" }}>
                   {showClasses && tutoringsListOfOneStudent.length > 0 && (
                     <div>
-                      <h4 style={{ color: partnerColor(), marginBottom: "1rem" }}>
+                      <h4
+                        style={{ color: partnerColor(), marginBottom: "1rem" }}
+                      >
                         Current Classes:
                       </h4>
                       <div style={{ display: "grid", gap: "0.75rem" }}>
@@ -2223,27 +2322,48 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   border: "1px solid #dee2e6",
                                 }}
                               >
-                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    gap: "0.5rem",
+                                  }}
+                                >
                                   <div>
-                                    <span style={{ fontWeight: "600", color: "#495057" }}>
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#495057",
+                                      }}
+                                    >
                                       Class #{index + 1}
                                     </span>
-                                    <div style={{ fontSize: "0.9rem", color: "#6c757d", marginTop: "0.25rem" }}>
-                                      {item.day} - {item.time} - 
-                                      <Link 
-                                        target="_blank" 
+                                    <div
+                                      style={{
+                                        fontSize: "0.9rem",
+                                        color: "#6c757d",
+                                        marginTop: "0.25rem",
+                                      }}
+                                    >
+                                      {item.day} - {item.time} -
+                                      <Link
+                                        target="_blank"
                                         to={item.link}
-                                        style={{ 
-                                          color: partnerColor(), 
+                                        style={{
+                                          color: partnerColor(),
                                           textDecoration: "none",
-                                          marginLeft: "0.5rem"
+                                          marginLeft: "0.5rem",
                                         }}
                                       >
                                         Access Link
                                       </Link>
                                     </div>
                                   </div>
-                                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                                  <div
+                                    style={{ display: "flex", gap: "0.5rem" }}
+                                  >
                                     <button
                                       onClick={() => {
                                         seeEditOneTutoring(item);
@@ -2260,7 +2380,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     >
                                       Edit
                                     </button>
-                                    <button 
+                                    <button
                                       onClick={() => deleteTutoring(item)}
                                       style={{
                                         padding: "0.5rem 1rem",
@@ -2296,7 +2416,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   marginBottom: "1.5rem",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "1rem",
+                  }}
+                >
                   <h4 style={{ margin: 0, color: "#856404" }}>Edit Class</h4>
                   <button
                     onClick={closeEditOneTutoring}
@@ -2372,7 +2499,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     }}
                     required
                   />
-                  <button 
+                  <button
                     onClick={updateOneTutoring}
                     style={{
                       padding: "0.75rem 1.5rem",
@@ -2392,13 +2519,17 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
               {/* New Class Form */}
               <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                <div style={{
-                  backgroundColor: "#d4edda",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  border: "1px solid #c3e6cb",
-                }}>
-                  <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>Add New Class</h4>
+                <div
+                  style={{
+                    backgroundColor: "#d4edda",
+                    padding: "1.5rem",
+                    borderRadius: "8px",
+                    border: "1px solid #c3e6cb",
+                  }}
+                >
+                  <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
+                    Add New Class
+                  </h4>
                   <div style={{ display: "grid", gap: "1rem" }}>
                     <select
                       onChange={handleTheNewWeekDayChange}
@@ -2459,7 +2590,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       required
                     />
-                    <button 
+                    <button
                       onClick={newTutoring}
                       style={{
                         padding: "0.75rem 1.5rem",
