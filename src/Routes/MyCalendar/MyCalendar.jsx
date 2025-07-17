@@ -2092,6 +2092,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               )}
             </div>
           </>
+        
+        
+
+
+
+
           <>
             <div
               style={{
@@ -2114,41 +2120,64 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isModalOfTutoringsVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                padding: "1rem",
-                width: "20rem",
-                height: "30rem",
+                padding: "1.5rem",
+                width: window.innerWidth <= 768 ? "90vw" : "28rem",
+                maxHeight: "80vh",
+                overflow: "auto",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
+                borderRadius: "8px",
               }}
             >
-              <Xp onClick={handleCloseModalOfTutorings}>X</Xp>
-              <HTwo
-                style={{
-                  margin: "0.5rem 0",
-                }}
-              >
-                {UniversalTexts.editTurorings}
-              </HTwo>
-              {loadingModalTutoringsInfo ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <form
+              {/* Header */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+                <HTwo
                   style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyItems: "center",
-                    gap: "0.5rem",
+                    margin: 0,
+                    color: partnerColor(),
                   }}
                 >
+                  {UniversalTexts.editTurorings}
+                </HTwo>
+                <Xp 
+                  onClick={handleCloseModalOfTutorings}
+                  style={{
+                    cursor: "pointer",
+                    fontSize: "1.5rem",
+                    color: "#999",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={(e) => e.target.style.color = partnerColor()}
+                  onMouseLeave={(e) => e.target.style.color = "#999"}
+                >
+                  ×
+                </Xp>
+              </div>
+
+              {loadingModalTutoringsInfo ? (
+                <div style={{ textAlign: "center", padding: "2rem" }}>
+                  <CircularProgress style={{ color: partnerColor() }} />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "1.5rem" }}>
+                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "600", color: "#495057" }}>
+                    Select Student:
+                  </label>
                   <select
                     onChange={(e) => {
                       fetchOneSetOfTutoringsInside(e);
                     }}
                     name="students"
-                    id=""
                     value={newStudentId}
-                    style={{ display: "block" }}
+                    style={{
+                      width: "100%",
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                      backgroundColor: "white",
+                    }}
                   >
                     <option value="category" hidden>
                       Select student
@@ -2161,160 +2190,292 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       );
                     })}
                   </select>
-                </form>
-              )}
-              {loadingTutoringDays ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <div>
-                  {tutoringsListOfOneStudent
-                    .sort(
-                      (a, b) =>
-                        moment(a.day, "dddd").day() -
-                        moment(b.day, "dddd").day()
-                    )
-                    .map((item, index) => {
-                      return (
-                        <div
-                          key={index}
-                          style={{
-                            padding: "10px",
-                            display: showClasses ? "flex" : "none",
-                            gap: "5px",
-                          }}
-                        >
-                          <p style={{ fontWeight: 600 }}>Class #{index + 1}</p>
-                          <div style={{ display: "flex", gap: "10px" }}>
-                            <p>
-                              {item.day} - {item.time} -
-                              <Link target="_blank" to={item.link}>
-                                Link
-                              </Link>
-                            </p>
-                            <button
-                              onClick={() => {
-                                seeEditOneTutoring(item);
-                              }}
-                            >
-                              Edit
-                            </button>
-                            <button onClick={() => deleteTutoring(item)}>
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })}
                 </div>
               )}
+
+              {/* Existing Classes */}
+              {loadingTutoringDays ? (
+                <div style={{ textAlign: "center", padding: "2rem" }}>
+                  <CircularProgress style={{ color: partnerColor() }} />
+                </div>
+              ) : (
+                <div style={{ marginBottom: "1.5rem" }}>
+                  {showClasses && tutoringsListOfOneStudent.length > 0 && (
+                    <div>
+                      <h4 style={{ color: partnerColor(), marginBottom: "1rem" }}>
+                        Current Classes:
+                      </h4>
+                      <div style={{ display: "grid", gap: "0.75rem" }}>
+                        {tutoringsListOfOneStudent
+                          .sort(
+                            (a, b) =>
+                              moment(a.day, "dddd").day() -
+                              moment(b.day, "dddd").day()
+                          )
+                          .map((item, index) => {
+                            return (
+                              <div
+                                key={index}
+                                style={{
+                                  backgroundColor: "#f8f9fa",
+                                  padding: "1rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #dee2e6",
+                                }}
+                              >
+                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.5rem" }}>
+                                  <div>
+                                    <span style={{ fontWeight: "600", color: "#495057" }}>
+                                      Class #{index + 1}
+                                    </span>
+                                    <div style={{ fontSize: "0.9rem", color: "#6c757d", marginTop: "0.25rem" }}>
+                                      {item.day} - {item.time} - 
+                                      <Link 
+                                        target="_blank" 
+                                        to={item.link}
+                                        style={{ 
+                                          color: partnerColor(), 
+                                          textDecoration: "none",
+                                          marginLeft: "0.5rem"
+                                        }}
+                                      >
+                                        Access Link
+                                      </Link>
+                                    </div>
+                                  </div>
+                                  <div style={{ display: "flex", gap: "0.5rem" }}>
+                                    <button
+                                      onClick={() => {
+                                        seeEditOneTutoring(item);
+                                      }}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: partnerColor(),
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        fontSize: "0.9rem",
+                                      }}
+                                    >
+                                      Edit
+                                    </button>
+                                    <button 
+                                      onClick={() => deleteTutoring(item)}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: "#dc3545",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                        cursor: "pointer",
+                                        fontSize: "0.9rem",
+                                      }}
+                                    >
+                                      Delete
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Edit Form */}
               <div
                 style={{
                   display: seeEditTutoring ? "block" : "none",
+                  backgroundColor: "#fff3cd",
+                  padding: "1.5rem",
+                  borderRadius: "8px",
+                  border: "1px solid #ffeaa7",
+                  marginBottom: "1.5rem",
                 }}
               >
-                <button
-                  style={{
-                    backgroundColor: partnerColor(),
-                  }}
-                  className="button"
-                  onClick={closeEditOneTutoring}
-                >
-                  x
-                </button>
-                <select
-                  onChange={handleWeekDayChange}
-                  name="students"
-                  id=""
-                  value={weekDay}
-                  style={{ display: "block" }}
-                >
-                  <option value="select week day" hidden>
-                    Select week day
-                  </option>
-                  {weekDays.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
-                      </option>
-                    );
-                  })}
-                </select>
-                <select
-                  onChange={handleTimeChange}
-                  name="students"
-                  id=""
-                  value={timeOfTutoring}
-                  style={{ display: "block" }}
-                >
-                  <option value="select time" hidden>
-                    Select time
-                  </option>
-                  {times.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
-                      </option>
-                    );
-                  })}
-                </select>
-                <input
-                  value={link}
-                  onChange={(e) => {
-                    setLink(e.target.value);
-                  }}
-                  type="text"
-                  required
-                />
-                <button onClick={updateOneTutoring}>Save</button>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
+                  <h4 style={{ margin: 0, color: "#856404" }}>Edit Class</h4>
+                  <button
+                    onClick={closeEditOneTutoring}
+                    style={{
+                      backgroundColor: "#dc3545",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "0.5rem 1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div style={{ display: "grid", gap: "1rem" }}>
+                  <select
+                    onChange={handleWeekDayChange}
+                    value={weekDay}
+                    style={{
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <option value="select week day" hidden>
+                      Select week day
+                    </option>
+                    {weekDays.map((weekDay, index) => {
+                      return (
+                        <option key={index} value={weekDay}>
+                          {weekDay}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <select
+                    onChange={handleTimeChange}
+                    value={timeOfTutoring}
+                    style={{
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <option value="select time" hidden>
+                      Select time
+                    </option>
+                    {times.map((time, index) => {
+                      return (
+                        <option key={index} value={time}>
+                          {time}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  <input
+                    value={link}
+                    onChange={(e) => {
+                      setLink(e.target.value);
+                    }}
+                    placeholder="Meeting Link"
+                    type="text"
+                    style={{
+                      padding: "0.75rem",
+                      borderRadius: "6px",
+                      border: "1px solid #ced4da",
+                      fontSize: "1rem",
+                    }}
+                    required
+                  />
+                  <button 
+                    onClick={updateOneTutoring}
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      backgroundColor: "#28a745",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontSize: "1rem",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Save Changes
+                  </button>
+                </div>
               </div>
+
+              {/* New Class Form */}
               <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                <HTwo>New</HTwo>
-                <select
-                  onChange={handleTheNewWeekDayChange}
-                  name="students"
-                  id=""
-                  value={theNewWeekDay}
-                  style={{ display: "block" }}
-                >
-                  <option hidden value="select week day">
-                    Select Week Day
-                  </option>
-                  {weekDays.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
+                <div style={{
+                  backgroundColor: "#d4edda",
+                  padding: "1.5rem",
+                  borderRadius: "8px",
+                  border: "1px solid #c3e6cb",
+                }}>
+                  <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>Add New Class</h4>
+                  <div style={{ display: "grid", gap: "1rem" }}>
+                    <select
+                      onChange={handleTheNewWeekDayChange}
+                      value={theNewWeekDay}
+                      style={{
+                        padding: "0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid #ced4da",
+                        fontSize: "1rem",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <option hidden value="select week day">
+                        Select Week Day
                       </option>
-                    );
-                  })}
-                </select>
-                <select
-                  onChange={handleTheNewTimeChange}
-                  name="students"
-                  id=""
-                  value={theNewTimeOfTutoring}
-                  style={{ display: "block" }}
-                >
-                  <option hidden value="Select Time">
-                    Select Time
-                  </option>
-                  {times.map((weekDay, index) => {
-                    return (
-                      <option key={index} value={weekDay.id}>
-                        {weekDay}
+                      {weekDays.map((weekDay, index) => {
+                        return (
+                          <option key={index} value={weekDay}>
+                            {weekDay}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <select
+                      onChange={handleTheNewTimeChange}
+                      value={theNewTimeOfTutoring}
+                      style={{
+                        padding: "0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid #ced4da",
+                        fontSize: "1rem",
+                        backgroundColor: "white",
+                      }}
+                    >
+                      <option hidden value="Select Time">
+                        Select Time
                       </option>
-                    );
-                  })}
-                </select>
-                <input
-                  placeholder="New link"
-                  value={theNewLink}
-                  onChange={(e) => {
-                    setTheNewLink(e.target.value);
-                  }}
-                  type="text"
-                  required
-                />
-                <button onClick={newTutoring}>New</button>
+                      {times.map((time, index) => {
+                        return (
+                          <option key={index} value={time}>
+                            {time}
+                          </option>
+                        );
+                      })}
+                    </select>
+                    <input
+                      placeholder="Meeting Link"
+                      value={theNewLink}
+                      onChange={(e) => {
+                        setTheNewLink(e.target.value);
+                      }}
+                      type="text"
+                      style={{
+                        padding: "0.75rem",
+                        borderRadius: "6px",
+                        border: "1px solid #ced4da",
+                        fontSize: "1rem",
+                      }}
+                      required
+                    />
+                    <button 
+                      onClick={newTutoring}
+                      style={{
+                        padding: "0.75rem 1.5rem",
+                        backgroundColor: partnerColor(),
+                        color: "white",
+                        border: "none",
+                        borderRadius: "6px",
+                        cursor: "pointer",
+                        fontSize: "1rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Add New Class
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </>
