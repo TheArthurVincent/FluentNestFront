@@ -363,7 +363,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
     if (!ID) return;
     editStudent(ID);
     editStudentPermissions(ID);
-    editStudentPassword(ID);
+    // editStudentPassword(ID);
   };
 
   const updateReplenishTargetStatus = async (id) => {
@@ -840,27 +840,36 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 control={
                   <Switch
                     checked={feeUpToDate}
-                    onChange={() => setFeeUpToDate(!feeUpToDate)}
+                    onChange={() => {
+                      updateFeeStatus(ID);
+                      setFeeUpToDate(!feeUpToDate);
+                    }}
                   />
                 }
                 label={
                   feeUpToDate ? "Mensalidade em dia" : "Mensalidade atrasada"
                 }
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={
                   <Switch
                     checked={replenishTarget}
-                    onChange={() => setReplenishTarget(!replenishTarget)}
+                    onChange={() => {
+                      updateReplenishTargetStatus(ID);
+                      setReplenishTarget(!replenishTarget);
+                    }}
                   />
                 }
                 label={replenishTarget ? "Com Reposição" : "Sem Reposição"}
-              />
+              /> */}
               <FormControlLabel
                 control={
                   <Switch
                     checked={tutoree}
-                    onChange={() => setTutoree(!tutoree)}
+                    onChange={() => {
+                      updateTutoree(ID);
+                      setTutoree(!tutoree);
+                    }}
                   />
                 }
                 label={tutoree ? "Aluno de monitoria" : "Sem monitoria"}
