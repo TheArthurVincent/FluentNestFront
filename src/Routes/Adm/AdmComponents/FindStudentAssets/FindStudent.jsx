@@ -649,70 +649,203 @@ export function FindStudent({ uploadStatus, headers, id }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
-      <Dialog
-        open={isVisible}
-        onClose={handleSeeModal}
-        fullWidth
-        maxWidth="md"
-        PaperProps={{
-          style: { padding: "2rem", borderRadius: "1rem" },
-        }}
-      >
-        <DialogTitle>
-          <div
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography variant="h6" fontWeight="bold">
-              Editar Aluno - {newName}
-            </Typography>
-            <Button onClick={handleSeeModal}>
-              <CloseIcon />
-            </Button>
-          </div>
-        </DialogTitle>
+  
+  
+
+
+// ...existing code...
+
+<Dialog
+  open={isVisible}
+  onClose={handleSeeModal}
+  fullWidth
+  maxWidth="md"
+  PaperProps={{
+    style: { borderRadius: "12px" },
+  }}
+>
+  <DialogTitle>
+    <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      borderBottom: "1px solid #eee",
+      paddingBottom: "1rem"
+    }}>
+      <Typography variant="h5" fontWeight="600" color="#333">
+        {newName} {newLastName}
+      </Typography>
+      <Button onClick={handleSeeModal} style={{ minWidth: "auto", padding: "8px" }}>
+        <CloseIcon />
+      </Button>
+    </div>
+  </DialogTitle>
+
+  <DialogContent style={{ padding: "2rem" }}>
+    {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
+    <div style={{
+      backgroundColor: "#f8f9fa",
+      padding: "1.5rem",
+      borderRadius: "8px",
+      marginBottom: "2rem"
+    }}>
+      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+        📝 Informações Básicas
+      </Typography>
+      
+      <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
-          <Typography>
-            Total Score: <strong>{formatNumber(totalScore)}</strong>
-          </Typography>
-          <Typography>
-            Monthly Score: <strong>{formatNumber(monthlyScore)}</strong>
-          </Typography>
-          <Typography>
-            Homework Assignment:{" "}
-            <strong>{formatNumber(homeworkAssignmentsDone)}</strong>
-          </Typography>
-          <Typography>
-            Flashcards Reviews:{" "}
-            <strong>{formatNumber(flashcards25Reviews)}</strong>
-          </Typography>
+          <TextField
+            fullWidth
+            label="Nome"
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            size="small"
+          />
         </Grid>
-        <div style={{ display: "flex", gap: "1rem", margin: "1rem" }}>
-          {listOfButtons.map((item, index) => {
-            return (
-              <ArvinButton
-                key={index}
-                disabled={disabled}
-                style={{
-                  color: alwaysWhite(),
-                  fontSize: "0.8rem",
-                }}
-                color={item.color}
-                onClick={() =>
-                  submitPlusScore(
-                    ID,
-                    item.score,
-                    item.description,
-                    item.category
-                  )
-                }
-              >
-                {item.text}
-              </ArvinButton>
-            );
-          })}
-        </div>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Sobrenome"
+            value={newLastName}
+            onChange={(e) => setNewLastName(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="E-mail"
+            value={newEmail}
+            onChange={(e) => setNewEmail(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Telefone"
+            value={newPhone}
+            onChange={(e) => setNewPhone(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Endereço"
+            value={newAddress}
+            onChange={(e) => setNewAddress(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            type="number"
+            label="Aulas por semana"
+            value={weeklyClasses}
+            onChange={(e) => setWeeklyClasses(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            label="Link Google Drive"
+            value={googleDriveLink}
+            onChange={(e) => setGoogleDriveLink(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <FormControl fullWidth size="small">
+            <InputLabel>Permissões</InputLabel>
+            <Select
+              value={permissions}
+              label="Permissões"
+              onChange={(e) => setPermissions(e.target.value)}
+            >
+              <MenuItem value="student">Aluno</MenuItem>
+              <MenuItem value="teacher">Professor</MenuItem>
+              <MenuItem value="superadmin">Admin</MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+      </Grid>
+
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
+        <Button
+          variant="contained"
+          onClick={() => editStudent(ID)}
+          style={{
+            backgroundColor: partnerColor(),
+            color: "#fff",
+            fontWeight: "600"
+          }}
+        >
+          💾 Salvar Informações
+        </Button>
+      </div>
+    </div>
+
+    {/* SEÇÃO 2: PONTUAÇÃO */}
+    <div style={{
+      backgroundColor: "#fff3cd",
+      padding: "1.5rem",
+      borderRadius: "8px",
+      marginBottom: "2rem",
+      border: "1px solid #ffeaa7"
+    }}>
+      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+        🏆 Pontuação
+      </Typography>
+      
+      <Grid container spacing={2} style={{ marginBottom: "1rem" }}>
+        <Grid item xs={6} md={3}>
+          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
+            <Typography variant="body2" color="#666">Total</Typography>
+            <Typography variant="h6" fontWeight="600">{formatNumber(totalScore)}</Typography>
+          </div>
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
+            <Typography variant="body2" color="#666">Mensal</Typography>
+            <Typography variant="h6" fontWeight="600">{formatNumber(monthlyScore)}</Typography>
+          </div>
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
+            <Typography variant="body2" color="#666">Homework</Typography>
+            <Typography variant="h6" fontWeight="600">{formatNumber(homeworkAssignmentsDone)}</Typography>
+          </div>
+        </Grid>
+        <Grid item xs={6} md={3}>
+          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
+            <Typography variant="body2" color="#666">Flashcards</Typography>
+            <Typography variant="h6" fontWeight="600">{formatNumber(flashcards25Reviews)}</Typography>
+          </div>
+        </Grid>
+      </Grid>
+
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
+        {listOfButtons.map((item, index) => (
+          <ArvinButton
+            key={index}
+            disabled={disabled}
+            style={{
+              fontSize: "0.75rem",
+              padding: "6px 12px"
+            }}
+            color={item.color}
+            onClick={() => submitPlusScore(ID, item.score, item.description, item.category)}
+          >
+            {item.text}
+          </ArvinButton>
+        ))}
+      </div>
+
+      <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
@@ -720,557 +853,183 @@ export function FindStudent({ uploadStatus, headers, id }) {
             label="Pontuação extra"
             placeholder="Score"
             onChange={(e) => setPlusScore(Number(e.target.value))}
+            size="small"
           />
         </Grid>
-
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             label="Descrição da pontuação"
             placeholder="Ex: Participação extra"
             onChange={(e) => setDescSpecial(e.target.value)}
+            size="small"
           />
         </Grid>
+      </Grid>
 
-        <Grid item xs={12} md={12}>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={() =>
-              submitPlusScore(ID, plusScore, descSpecial, "Others")
-            }
-          >
-            Enviar Pontuação Manual
-          </Button>
-        </Grid>
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
+        <Button
+          variant="outlined"
+          onClick={() => submitPlusScore(ID, plusScore, descSpecial, "Others")}
+          disabled={disabled}
+          style={{ fontWeight: "600" }}
+        >
+          ➕ Adicionar Pontuação
+        </Button>
+      </div>
+    </div>
 
-        <DialogContent dividers>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Nome"
-                value={newName}
-                onChange={(e) => setNewName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Sobrenome"
-                value={newLastName}
-                onChange={(e) => setNewLastName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Usuário"
-                value={newUsername}
-                disabled
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Endereço"
-                value={newAddress}
-                onChange={(e) => setNewAddress(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Telefone"
-                value={newPhone}
-                onChange={(e) => setNewPhone(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="E-mail"
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Link Google Drive"
-                value={googleDriveLink}
-                onChange={(e) => setGoogleDriveLink(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="URL da Foto"
-                value={picture}
-                onChange={(e) => setPicture(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                type="number"
-                label="Aulas por semana"
-                value={weeklyClasses}
-                onChange={(e) => setWeeklyClasses(e.target.value)}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Permissões</InputLabel>
-                <Select
-                  value={permissions}
-                  label="Permissões"
-                  onChange={(e) => setPermissions(e.target.value)}
-                >
-                  <MenuItem value="student">Aluno</MenuItem>
-                  <MenuItem value="teacher">Professor</MenuItem>
-                  <MenuItem value="superadmin">Admin</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={feeUpToDate}
-                    onChange={() => {
-                      updateFeeStatus(ID);
-                      setFeeUpToDate(!feeUpToDate);
-                    }}
-                  />
-                }
-                label={
-                  feeUpToDate ? "Mensalidade em dia" : "Mensalidade atrasada"
-                }
-              />
-              {/* <FormControlLabel
-                control={
-                  <Switch
-                    checked={replenishTarget}
-                    onChange={() => {
-                      updateReplenishTargetStatus(ID);
-                      setReplenishTarget(!replenishTarget);
-                    }}
-                  />
-                }
-                label={replenishTarget ? "Com Reposição" : "Sem Reposição"}
-              /> */}
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={tutoree}
-                    onChange={() => {
-                      updateTutoree(ID);
-                      setTutoree(!tutoree);
-                    }}
-                  />
-                }
-                label={tutoree ? "Aluno de monitoria" : "Sem monitoria"}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={6}>
-              <div
-                style={{
-                  display: "grid",
-                  alignContent: "center",
-                  justifyItems: "center",
+    {/* SEÇÃO 3: CONFIGURAÇÕES */}
+    <div style={{
+      backgroundColor: "#e3f2fd",
+      padding: "1.5rem",
+      borderRadius: "8px",
+      marginBottom: "2rem",
+      border: "1px solid #bbdefb"
+    }}>
+      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+        ⚙️ Configurações
+      </Typography>
+      
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={4}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={feeUpToDate}
+                onChange={() => {
+                  updateFeeStatus(ID);
+                  setFeeUpToDate(!feeUpToDate);
                 }}
-              >
-                <input
-                  className="inputs-style"
-                  value={newPassword}
-                  onChange={(event) => setNewPassword(event.target.value)}
-                  placeholder="Escolha uma nova senha"
-                  type="password"
-                />
-                <input
-                  className="inputs-style"
-                  value={confirmPassword}
-                  onChange={(event) => setConfirmPassword(event.target.value)}
-                  placeholder="Confirme a Senha"
-                  type="password"
-                />
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    gap: "1rem",
-                    marginTop: "2rem",
-                  }}
-                >
-                  <MyButton
-                    firstcolor="#138017"
-                    secondcolor="#139417"
-                    onClick={() => editStudentPassword(ID)}
-                  >
-                    Salvar
-                  </MyButton>
-                </div>
-              </div>
-            </Grid>
-          </Grid>
-        </DialogContent>
+                color="primary"
+              />
+            }
+            label={feeUpToDate ? "💰 Mensalidade em dia" : "⚠️ Mensalidade atrasada"}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={tutoree}
+                onChange={() => {
+                  updateTutoree(ID);
+                  setTutoree(!tutoree);
+                }}
+                color="primary"
+              />
+            }
+            label={tutoree ? "📚 Aluno de monitoria" : "📖 Sem monitoria"}
+          />
+        </Grid>
+      </Grid>
+    </div>
 
-        <DialogActions>
-          <div width="100%" display="flex" justifyContent="space-between">
-            {!seeConfirmDelete ? (
-              <>
-                <Button color="error" onClick={() => setSeeConfirmDelete(true)}>
-                  Excluir
-                </Button>
-                <Button onClick={handleSeeModal}>Cancelar</Button>
-                <Button variant="contained" onClick={handleSaveAll}>
-                  Salvar Tudo
-                </Button>
-              </>
-            ) : (
-              <div
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-                width="100%"
-              >
-                <Typography color="error">
-                  Tem certeza que deseja excluir{" "}
-                  <strong>
-                    {newName} {newLastName}
-                  </strong>
-                  ?
-                </Typography>
-                <div mt={2} display="flex" gap={2}>
-                  <Button onClick={() => setSeeConfirmDelete(false)}>
-                    Cancelar
-                  </Button>
-                  <Button
-                    color="error"
-                    variant="contained"
-                    onClick={handleDelete}
-                  >
-                    Confirmar Exclusão
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        </DialogActions>
-      </Dialog>
+    {/* SEÇÃO 4: ALTERAR SENHA */}
+    <div style={{
+      backgroundColor: "#fce4ec",
+      padding: "1.5rem",
+      borderRadius: "8px",
+      marginBottom: "2rem",
+      border: "1px solid #f8bbd9"
+    }}>
+      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+        🔒 Alterar Senha
+      </Typography>
+      
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            type="password"
+            label="Nova senha"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            type="password"
+            label="Confirmar senha"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            size="small"
+          />
+        </Grid>
+      </Grid>
+
+      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
+        <Button
+          variant="contained"
+          onClick={() => editStudentPassword(ID)}
+          disabled={!newPassword || newPassword !== confirmPassword}
+          style={{
+            backgroundColor: "#e91e63",
+            color: "#fff",
+            fontWeight: "600"
+          }}
+        >
+          🔑 Alterar Senha
+        </Button>
+      </div>
+    </div>
+  </DialogContent>
+
+  <DialogActions style={{
+    padding: "1.5rem",
+    borderTop: "1px solid #eee",
+    justifyContent: "space-between"
+  }}>
+    {!seeConfirmDelete ? (
+      <>
+        <Button
+          color="error"
+          variant="outlined"
+          onClick={() => setSeeConfirmDelete(true)}
+          style={{ fontWeight: "600" }}
+        >
+          🗑️ Excluir Aluno
+        </Button>
+        <div style={{ display: "flex", gap: "1rem" }}>
+          <Button onClick={handleSeeModal} style={{ fontWeight: "600" }}>
+            Cancelar
+          </Button>
+        </div>
+      </>
+    ) : (
+      <div style={{ width: "100%", textAlign: "center" }}>
+        <Typography color="error" variant="h6" gutterBottom>
+          ⚠️ Confirmar Exclusão
+        </Typography>
+        <Typography color="textSecondary" gutterBottom>
+          Tem certeza que deseja excluir <strong>{newName} {newLastName}</strong>?
+          <br />
+          <small>Esta ação não pode ser desfeita.</small>
+        </Typography>
+        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
+          <Button onClick={() => setSeeConfirmDelete(false)} style={{ fontWeight: "600" }}>
+            Cancelar
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={handleDelete}
+            style={{ fontWeight: "600" }}
+          >
+            Confirmar Exclusão
+          </Button>
+        </div>
+      </div>
+    )}
+  </DialogActions>
+</Dialog>
+
+// ...existing code...
+
     </>
   );
 }
 
 export default FindStudent;
-
-// <div
-//   onClick={() => handleSeeModal()}
-//   className="modal"
-//   style={{
-//     display: isVisible ? "block" : "none",
-//     zIndex: 30,
-//     position: "fixed",
-//     backgroundColor: "rgba(0,0,0,0.5)",
-//     width: "10000px",
-//     height: "10000px",
-//     top: 0,
-//     left: 0,
-//   }}
-// />
-// <div
-//   className="modal"
-//   style={{
-//     position: "fixed",
-//     zIndex: 100,
-//     backgroundColor: "#fff",
-//     padding: "1rem",
-//     width: isMobile ? "20rem" : "25rem",
-//     height: "32rem",
-//     top: "50%",
-//     left: "50%",
-//     transform: "translate(-50%, -50%)",
-//     display: isVisible ? "block" : "none",
-//   }}
-// >
-//   <Xp onClick={() => handleSeeModal()}>X</Xp>
-
-//   <HOne style={{ fontFamily: textTitleFont(), color: partnerColor() }}>
-//     Editar aluno - {newName}
-//   </HOne>
-//   <div
-//     className="nice"
-//     style={{
-//       display: "grid",
-//       alignItems: "center",
-//       fontSize: "0.5rem",
-//       marginBottom: "1rem",
-//     }}
-//   >
-//     <div
-//       className="pointer-text"
-//       style={{
-//         padding: "5px",
-//         display: "grid",
-//         marginBottom: "5px",
-//         borderRadius: "6px",
-//         alignItems: "center",
-//         textAlign: "center",
-//         width: "fit-content",
-//         color: "white",
-//         backgroundColor: feeUpToDate ? "green" : "red",
-//       }}
-//       onClick={() => {
-//         updateFeeStatus(ID);
-//         setFeeUpToDate(!feeUpToDate);
-//       }}
-//     >
-//       {feeUpToDate ? "Fee Ok" : "Late Fee"}
-//     </div>
-
-//     <div
-//       className="pointer-text"
-//       style={{
-//         padding: "5px",
-//         display: "grid",
-//         alignItems: "center",
-//         marginBottom: "5px",
-//         borderRadius: "6px",
-//         textAlign: "center",
-//         width: "fit-content",
-//         color: "white",
-//         backgroundColor: replenishTarget ? "green" : "red",
-//       }}
-//       onClick={() => {
-//         updateReplenishTargetStatus(ID);
-//         setReplenishTarget(!replenishTarget);
-//       }}
-//     >
-//       {replenishTarget ? "Replenish" : "Non-Replenish"}
-//     </div>
-
-//     <div
-//       className="pointer-text"
-//       style={{
-//         padding: "5px",
-//         display: "grid",
-//         alignItems: "center",
-//         marginBottom: "5px",
-//         borderRadius: "6px",
-//         textAlign: "center",
-//         width: "fit-content",
-//         color: "white",
-//         backgroundColor: tutoree ? "blue" : "orange",
-//       }}
-//       onClick={() => {
-//         updateTutoree(ID);
-//         setTutoree(!tutoree);
-//       }}
-//     >
-//       {tutoree ? "Tutoree" : "Not a tutoreee"}
-//     </div>
-
-//     <div
-//       className="pointer-text"
-//       style={{
-//         padding: "5px",
-//         display: "grid",
-//         alignItems: "center",
-//         marginBottom: "5px",
-//         borderRadius: "6px",
-//         textAlign: "center",
-//         width: "fit-content",
-//         color: "white",
-//         backgroundColor: "#456",
-//       }}
-//     >
-//       {formatNumber(totalScore)} +
-//     </div>
-//   </div>
-//   {/* Formulário principal */}
-//   <form
-//     style={{
-//       display: !seeConfirmDelete ? "grid" : "none",
-//       gridTemplateColumns: "1fr 1fr",
-//       gap: "1rem",
-//       padding: "1rem",
-//       backgroundColor: "#eee",
-//     }}
-//   >
-//     <input
-//       className="inputs-style"
-//       value={newName}
-//       onChange={(e) => setNewName(e.target.value)}
-//       placeholder="Nome"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={newLastName}
-//       onChange={(e) => setNewLastName(e.target.value)}
-//       placeholder="Sobrenome"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={newUsername}
-//       disabled
-//       placeholder="Username"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={newAddress}
-//       disabled
-//       onChange={(e) => setNewAddress(e.target.value)}
-//       placeholder="Endereço"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={newPhone}
-//       onChange={(e) => setNewPhone(e.target.value)}
-//       placeholder="Celular"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={newEmail}
-//       onChange={(e) => setNewEmail(e.target.value)}
-//       placeholder="E-mail"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={googleDriveLink}
-//       onChange={(e) => setGoogleDriveLink(e.target.value)}
-//       placeholder="Link Google Drive"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={picture}
-//       onChange={(e) => setPicture(e.target.value)}
-//       placeholder="Foto"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={fee}
-//       onChange={(e) => setFee(e.target.value)}
-//       placeholder="Mensalidade"
-//       type="number"
-//     />
-//     <input
-//       className="inputs-style"
-//       value={weeklyClasses}
-//       onChange={(e) => setWeeklyClasses(e.target.value)}
-//       placeholder="Aulas semanais"
-//     />
-//   </form>
-
-//   {/* Permissões e senha */}
-//   {!seeConfirmDelete && (
-//     <div style={{ padding: "1rem", display: "grid", gap: "1rem" }}>
-//       <select
-//         className="inputs-style"
-//         value={permissions}
-//         onChange={(e) => setPermissions(e.target.value)}
-//       >
-//         <option value="permissions" hidden>
-//           Permissões
-//         </option>
-//         <option value="student">Student</option>
-//         <option value="teacher">Teacher</option>
-//         <option value="superadmin">Superadmin</option>
-//       </select>
-
-//       <input
-//         className="inputs-style"
-//         value={newPassword}
-//         onChange={(e) => setNewPassword(e.target.value)}
-//         placeholder="Nova senha"
-//         type="password"
-//       />
-//       <input
-//         className="inputs-style"
-//         value={confirmPassword}
-//         onChange={(e) => setConfirmPassword(e.target.value)}
-//         placeholder="Confirmar senha"
-//         type="password"
-//       />
-//     </div>
-//   )}
-
-//   {/* Botões principais */}
-//   {!seeConfirmDelete ? (
-//     <div
-//       style={{
-//         display: "flex",
-//         justifyContent: "space-evenly",
-//         marginTop: "1rem",
-//       }}
-//     >
-//       <MyButton
-//         firstcolor="#FF1400"
-//         secondcolor="#F01400"
-//         textcolor="white"
-//         onClick={handleConfirmDelete}
-//       >
-//         Excluir
-//       </MyButton>
-//       <MyButton onClick={handleSeeModal}>Cancelar</MyButton>
-//       <MyButton
-//         firstcolor="#138017"
-//         secondcolor="#139417"
-//         textcolor="white"
-//         onClick={() => {
-//           editStudent(ID);
-//           editStudentPermissions(ID);
-//           editStudentPassword(ID);
-//         }}
-//       >
-//         Salvar tudo
-//       </MyButton>
-//     </div>
-//   ) : (
-//     <div
-//       style={{
-//         backgroundColor: "#dd6e6e",
-//         padding: "1rem",
-//         textAlign: "center",
-//         marginTop: "1rem",
-//       }}
-//     >
-//       <HThree>
-//         Esta ação não pode ser desfeita! Tem certeza que deseja excluir
-//         o(a) aluno(a):
-//         <br />
-//         <br />
-//         <span
-//           style={{
-//             backgroundColor: "#111",
-//             color: "#fff",
-//             padding: "0.3rem",
-//           }}
-//         >
-//           {newName} {newLastName}
-//         </span>
-//         <br />
-//         <br />?
-//       </HThree>
-//       <div
-//         style={{
-//           display: "flex",
-//           justifyContent: "space-evenly",
-//           marginTop: "1rem",
-//         }}
-//       >
-//         <MyButton onClick={handleConfirmDelete}>Não!!</MyButton>
-//         <MyButton
-//           firstcolor="#FF1400"
-//           secondcolor="#F01400"
-//           onClick={() => deleteStudent(ID)}
-//         >
-//           Sim...
-//         </MyButton>
-//       </div>
-//     </div>
-//   )}
-// </div>
