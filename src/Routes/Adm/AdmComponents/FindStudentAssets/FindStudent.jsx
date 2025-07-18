@@ -649,385 +649,489 @@ export function FindStudent({ uploadStatus, headers, id }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
-  
-  
-
-
-// ...existing code...
-
-<Dialog
-  open={isVisible}
-  onClose={handleSeeModal}
-  fullWidth
-  maxWidth="md"
-  PaperProps={{
-    style: { borderRadius: "12px" },
-  }}
->
-  <DialogTitle>
-    <div style={{
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      borderBottom: "1px solid #eee",
-      paddingBottom: "1rem"
-    }}>
-      <Typography variant="h5" fontWeight="600" color="#333">
-        {newName} {newLastName}
-      </Typography>
-      <Button onClick={handleSeeModal} style={{ minWidth: "auto", padding: "8px" }}>
-        <CloseIcon />
-      </Button>
-    </div>
-  </DialogTitle>
-
-  <DialogContent style={{ padding: "2rem" }}>
-    {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
-    <div style={{
-      backgroundColor: "#f8f9fa",
-      padding: "1.5rem",
-      borderRadius: "8px",
-      marginBottom: "2rem"
-    }}>
-      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-        📝 Informações Básicas
-      </Typography>
-      
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Nome"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Sobrenome"
-            value={newLastName}
-            onChange={(e) => setNewLastName(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="E-mail"
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Telefone"
-            value={newPhone}
-            onChange={(e) => setNewPhone(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Endereço"
-            value={newAddress}
-            onChange={(e) => setNewAddress(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            type="number"
-            label="Aulas por semana"
-            value={weeklyClasses}
-            onChange={(e) => setWeeklyClasses(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Link Google Drive"
-            value={googleDriveLink}
-            onChange={(e) => setGoogleDriveLink(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <FormControl fullWidth size="small">
-            <InputLabel>Permissões</InputLabel>
-            <Select
-              value={permissions}
-              label="Permissões"
-              onChange={(e) => setPermissions(e.target.value)}
-            >
-              <MenuItem value="student">Aluno</MenuItem>
-              <MenuItem value="teacher">Professor</MenuItem>
-              <MenuItem value="superadmin">Admin</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
-
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
-        <Button
-          variant="contained"
-          onClick={() => editStudent(ID)}
-          style={{
-            backgroundColor: partnerColor(),
-            color: "#fff",
-            fontWeight: "600"
-          }}
-        >
-          💾 Salvar Informações
-        </Button>
-      </div>
-    </div>
-
-    {/* SEÇÃO 2: PONTUAÇÃO */}
-    <div style={{
-      backgroundColor: "#fff3cd",
-      padding: "1.5rem",
-      borderRadius: "8px",
-      marginBottom: "2rem",
-      border: "1px solid #ffeaa7"
-    }}>
-      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-        🏆 Pontuação
-      </Typography>
-      
-      <Grid container spacing={2} style={{ marginBottom: "1rem" }}>
-        <Grid item xs={6} md={3}>
-          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
-            <Typography variant="body2" color="#666">Total</Typography>
-            <Typography variant="h6" fontWeight="600">{formatNumber(totalScore)}</Typography>
-          </div>
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
-            <Typography variant="body2" color="#666">Mensal</Typography>
-            <Typography variant="h6" fontWeight="600">{formatNumber(monthlyScore)}</Typography>
-          </div>
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
-            <Typography variant="body2" color="#666">Homework</Typography>
-            <Typography variant="h6" fontWeight="600">{formatNumber(homeworkAssignmentsDone)}</Typography>
-          </div>
-        </Grid>
-        <Grid item xs={6} md={3}>
-          <div style={{ textAlign: "center", padding: "1rem", backgroundColor: "#fff", borderRadius: "6px" }}>
-            <Typography variant="body2" color="#666">Flashcards</Typography>
-            <Typography variant="h6" fontWeight="600">{formatNumber(flashcards25Reviews)}</Typography>
-          </div>
-        </Grid>
-      </Grid>
-
-      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1rem" }}>
-        {listOfButtons.map((item, index) => (
-          <ArvinButton
-            key={index}
-            disabled={disabled}
+      // ...existing code...
+      <Dialog
+        open={isVisible}
+        onClose={handleSeeModal}
+        fullWidth
+        maxWidth="md"
+        PaperProps={{
+          style: { borderRadius: "12px" },
+        }}
+      >
+        <DialogTitle>
+          <div
             style={{
-              fontSize: "0.75rem",
-              padding: "6px 12px"
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #eee",
+              paddingBottom: "1rem",
             }}
-            color={item.color}
-            onClick={() => submitPlusScore(ID, item.score, item.description, item.category)}
           >
-            {item.text}
-          </ArvinButton>
-        ))}
-      </div>
+            <Typography variant="h5" fontWeight="600" color="#333">
+              {newName} {newLastName}
+            </Typography>
+            <Button
+              onClick={handleSeeModal}
+              style={{ minWidth: "auto", padding: "8px" }}
+            >
+              <CloseIcon />
+            </Button>
+          </div>
+        </DialogTitle>
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            type="number"
-            label="Pontuação extra"
-            placeholder="Score"
-            onChange={(e) => setPlusScore(Number(e.target.value))}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            label="Descrição da pontuação"
-            placeholder="Ex: Participação extra"
-            onChange={(e) => setDescSpecial(e.target.value)}
-            size="small"
-          />
-        </Grid>
-      </Grid>
+        <DialogContent style={{ padding: "2rem" }}>
+          {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
+          <div
+            style={{
+              backgroundColor: "#f8f9fa",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              marginBottom: "2rem",
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+              📝 Informações Básicas
+            </Typography>
 
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
-        <Button
-          variant="outlined"
-          onClick={() => submitPlusScore(ID, plusScore, descSpecial, "Others")}
-          disabled={disabled}
-          style={{ fontWeight: "600" }}
-        >
-          ➕ Adicionar Pontuação
-        </Button>
-      </div>
-    </div>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Nome"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Sobrenome"
+                  value={newLastName}
+                  onChange={(e) => setNewLastName(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="E-mail"
+                  value={newEmail}
+                  onChange={(e) => setNewEmail(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Telefone"
+                  value={newPhone}
+                  onChange={(e) => setNewPhone(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Endereço"
+                  value={newAddress}
+                  onChange={(e) => setNewAddress(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Aulas por semana"
+                  value={weeklyClasses}
+                  onChange={(e) => setWeeklyClasses(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Link Google Drive"
+                  value={googleDriveLink}
+                  onChange={(e) => setGoogleDriveLink(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Permissões</InputLabel>
+                  <Select
+                    value={permissions}
+                    label="Permissões"
+                    onChange={(e) => setPermissions(e.target.value)}
+                  >
+                    <MenuItem value="student">Aluno</MenuItem>
+                    <MenuItem value="teacher">Professor</MenuItem>
+                    <MenuItem value="superadmin">Admin</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+            </Grid>
 
-    {/* SEÇÃO 3: CONFIGURAÇÕES */}
-    <div style={{
-      backgroundColor: "#e3f2fd",
-      padding: "1.5rem",
-      borderRadius: "8px",
-      marginBottom: "2rem",
-      border: "1px solid #bbdefb"
-    }}>
-      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-        ⚙️ Configurações
-      </Typography>
-      
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={4}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={feeUpToDate}
-                onChange={() => {
-                  updateFeeStatus(ID);
-                  setFeeUpToDate(!feeUpToDate);
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "1rem",
+              }}
+            >
+              <Button
+                variant="contained"
+                onClick={() => editStudent(ID)}
+                style={{
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  fontWeight: "600",
                 }}
-                color="primary"
-              />
-            }
-            label={feeUpToDate ? "💰 Mensalidade em dia" : "⚠️ Mensalidade atrasada"}
-          />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={tutoree}
-                onChange={() => {
-                  updateTutoree(ID);
-                  setTutoree(!tutoree);
+              >
+                💾 Salvar Informações
+              </Button>
+            </div>
+          </div>
+
+          {/* SEÇÃO 2: PONTUAÇÃO */}
+          <div
+            style={{
+              backgroundColor: "#fff3cd",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              marginBottom: "2rem",
+              border: "1px solid #ffeaa7",
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+              🏆 Pontuação
+            </Typography>
+
+            <Grid container spacing={2} style={{ marginBottom: "1rem" }}>
+              <Grid item xs={6} md={3}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "1rem",
+                    backgroundColor: "#fff",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <Typography variant="body2" color="#666">
+                    Total
+                  </Typography>
+                  <Typography variant="h6" fontWeight="600">
+                    {formatNumber(totalScore)}
+                  </Typography>
+                </div>
+              </Grid>
+              <Grid item xs={6} md={3}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "1rem",
+                    backgroundColor: "#fff",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <Typography variant="body2" color="#666">
+                    Mensal
+                  </Typography>
+                  <Typography variant="h6" fontWeight="600">
+                    {formatNumber(monthlyScore)}
+                  </Typography>
+                </div>
+              </Grid>
+              <Grid item xs={6} md={3}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "1rem",
+                    backgroundColor: "#fff",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <Typography variant="body2" color="#666">
+                    Homework
+                  </Typography>
+                  <Typography variant="h6" fontWeight="600">
+                    {formatNumber(homeworkAssignmentsDone)}
+                  </Typography>
+                </div>
+              </Grid>
+              <Grid item xs={6} md={3}>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "1rem",
+                    backgroundColor: "#fff",
+                    borderRadius: "6px",
+                  }}
+                >
+                  <Typography variant="body2" color="#666">
+                    Flashcards
+                  </Typography>
+                  <Typography variant="h6" fontWeight="600">
+                    {formatNumber(flashcards25Reviews)}
+                  </Typography>
+                </div>
+              </Grid>
+            </Grid>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                flexWrap: "wrap",
+                marginBottom: "1rem",
+              }}
+            >
+              {listOfButtons.map((item, index) => (
+                <ArvinButton
+                  key={index}
+                  disabled={disabled}
+                  style={{
+                    fontSize: "0.75rem",
+                    padding: "6px 12px",
+                  }}
+                  color={item.color}
+                  onClick={() =>
+                    submitPlusScore(
+                      ID,
+                      item.score,
+                      item.description,
+                      item.category
+                    )
+                  }
+                >
+                  {item.text}
+                </ArvinButton>
+              ))}
+            </div>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="number"
+                  label="Pontuação extra"
+                  placeholder="Score"
+                  onChange={(e) => setPlusScore(Number(e.target.value))}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Descrição da pontuação"
+                  placeholder="Ex: Participação extra"
+                  onChange={(e) => setDescSpecial(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+            </Grid>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "1rem",
+              }}
+            >
+              <Button
+                variant="outlined"
+                onClick={() =>
+                  submitPlusScore(ID, plusScore, descSpecial, "Others")
+                }
+                disabled={disabled}
+                style={{ fontWeight: "600" }}
+              >
+                ➕ Adicionar Pontuação
+              </Button>
+            </div>
+          </div>
+
+          {/* SEÇÃO 3: CONFIGURAÇÕES */}
+          <div
+            style={{
+              backgroundColor: "#e3f2fd",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              marginBottom: "2rem",
+              border: "1px solid #bbdefb",
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+              ⚙️ Configurações
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={feeUpToDate}
+                      onChange={() => {
+                        updateFeeStatus(ID);
+                        setFeeUpToDate(!feeUpToDate);
+                      }}
+                      color="primary"
+                    />
+                  }
+                  label={
+                    feeUpToDate
+                      ? "💰 Mensalidade em dia"
+                      : "⚠️ Mensalidade atrasada"
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={tutoree}
+                      onChange={() => {
+                        updateTutoree(ID);
+                        setTutoree(!tutoree);
+                      }}
+                      color="primary"
+                    />
+                  }
+                  label={tutoree ? "📚 Aluno de monitoria" : "📖 Sem monitoria"}
+                />
+              </Grid>
+            </Grid>
+          </div>
+
+          {/* SEÇÃO 4: ALTERAR SENHA */}
+          <div
+            style={{
+              backgroundColor: "#fce4ec",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              marginBottom: "2rem",
+              border: "1px solid #f8bbd9",
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+              🔒 Alterar Senha
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="password"
+                  label="Nova senha"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="password"
+                  label="Confirmar senha"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  size="small"
+                />
+              </Grid>
+            </Grid>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: "1rem",
+              }}
+            >
+              <Button
+                variant="contained"
+                onClick={() => editStudentPassword(ID)}
+                disabled={!newPassword || newPassword !== confirmPassword}
+                style={{
+                  backgroundColor: "#e91e63",
+                  color: "#fff",
+                  fontWeight: "600",
                 }}
-                color="primary"
-              />
-            }
-            label={tutoree ? "📚 Aluno de monitoria" : "📖 Sem monitoria"}
-          />
-        </Grid>
-      </Grid>
-    </div>
+              >
+                🔑 Alterar Senha
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
 
-    {/* SEÇÃO 4: ALTERAR SENHA */}
-    <div style={{
-      backgroundColor: "#fce4ec",
-      padding: "1.5rem",
-      borderRadius: "8px",
-      marginBottom: "2rem",
-      border: "1px solid #f8bbd9"
-    }}>
-      <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-        🔒 Alterar Senha
-      </Typography>
-      
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            type="password"
-            label="Nova senha"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            size="small"
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            type="password"
-            label="Confirmar senha"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            size="small"
-          />
-        </Grid>
-      </Grid>
-
-      <div style={{ display: "flex", justifyContent: "flex-end", marginTop: "1rem" }}>
-        <Button
-          variant="contained"
-          onClick={() => editStudentPassword(ID)}
-          disabled={!newPassword || newPassword !== confirmPassword}
+        <DialogActions
           style={{
-            backgroundColor: "#e91e63",
-            color: "#fff",
-            fontWeight: "600"
+            padding: "1.5rem",
+            borderTop: "1px solid #eee",
+            justifyContent: "space-between",
           }}
         >
-          🔑 Alterar Senha
-        </Button>
-      </div>
-    </div>
-  </DialogContent>
-
-  <DialogActions style={{
-    padding: "1.5rem",
-    borderTop: "1px solid #eee",
-    justifyContent: "space-between"
-  }}>
-    {!seeConfirmDelete ? (
-      <>
-        <Button
-          color="error"
-          variant="outlined"
-          onClick={() => setSeeConfirmDelete(true)}
-          style={{ fontWeight: "600" }}
-        >
-          🗑️ Excluir Aluno
-        </Button>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <Button onClick={handleSeeModal} style={{ fontWeight: "600" }}>
-            Cancelar
-          </Button>
-        </div>
-      </>
-    ) : (
-      <div style={{ width: "100%", textAlign: "center" }}>
-        <Typography color="error" variant="h6" gutterBottom>
-          ⚠️ Confirmar Exclusão
-        </Typography>
-        <Typography color="textSecondary" gutterBottom>
-          Tem certeza que deseja excluir <strong>{newName} {newLastName}</strong>?
-          <br />
-          <small>Esta ação não pode ser desfeita.</small>
-        </Typography>
-        <div style={{ display: "flex", justifyContent: "center", gap: "1rem", marginTop: "1rem" }}>
-          <Button onClick={() => setSeeConfirmDelete(false)} style={{ fontWeight: "600" }}>
-            Cancelar
-          </Button>
-          <Button
-            color="error"
-            variant="contained"
-            onClick={handleDelete}
-            style={{ fontWeight: "600" }}
-          >
-            Confirmar Exclusão
-          </Button>
-        </div>
-      </div>
-    )}
-  </DialogActions>
-</Dialog>
-
-// ...existing code...
-
+          {!seeConfirmDelete ? (
+            <>
+              <Button
+                color="error"
+                variant="outlined"
+                onClick={() => setSeeConfirmDelete(true)}
+                style={{ fontWeight: "600" }}
+              >
+                🗑️ Excluir Aluno
+              </Button>
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <Button onClick={handleSeeModal} style={{ fontWeight: "600" }}>
+                  Cancelar
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div style={{ width: "100%", textAlign: "center" }}>
+              <Typography color="error" variant="h6" gutterBottom>
+                ⚠️ Confirmar Exclusão
+              </Typography>
+              <Typography color="textSecondary" gutterBottom>
+                Tem certeza que deseja excluir{" "}
+                <strong>
+                  {newName} {newLastName}
+                </strong>
+                ?
+                <br />
+                <small>Esta ação não pode ser desfeita.</small>
+              </Typography>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "1rem",
+                  marginTop: "1rem",
+                }}
+              >
+                <Button
+                  onClick={() => setSeeConfirmDelete(false)}
+                  style={{ fontWeight: "600" }}
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  color="error"
+                  variant="contained"
+                  onClick={handleDelete}
+                  style={{ fontWeight: "600" }}
+                >
+                  Confirmar Exclusão
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogActions>
+      </Dialog>
+      // ...existing code...
     </>
   );
 }
