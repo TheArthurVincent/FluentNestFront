@@ -580,7 +580,7 @@ li {
   grid-template-columns: 1fr 1fr;
 }
 
-@media (max-width: 1380px) {
+@media (max-width: 1000px) {
   .grid-flex {
     grid-template-columns: 1fr;
   }

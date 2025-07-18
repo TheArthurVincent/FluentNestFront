@@ -423,7 +423,6 @@ export const TopBar: FC = () => {
                               ? partnerColor()
                               : "#000",
                             paddingBottom: "5px",
-
                             cursor: location.pathname.includes(link.endpoint)
                               ? "default"
                               : "pointer",
