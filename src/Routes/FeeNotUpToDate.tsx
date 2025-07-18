@@ -25,7 +25,17 @@ export function FeeNotUpToDate() {
       }}
     >
       <ArvinButton onClick={onLoggOut}>Sair</ArvinButton>
-      {myLogoDone}
+      <img
+        src={myLogoDone}
+        alt="arvin logo"
+        style={{
+          margin: "auto",
+          height: "4rem",
+          width: "auto",
+          maxWidth: "100%",
+          objectFit: "contain",
+        }}
+      />
       <HOne
         style={{
           fontFamily: textTitleFont(),
