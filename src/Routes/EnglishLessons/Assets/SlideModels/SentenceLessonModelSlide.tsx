@@ -7,7 +7,7 @@ import {
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { notifyError, readText } from "../Functions/FunctionLessons";
+import { notifyAlert, readText } from "../Functions/FunctionLessons";
 
 interface SentenceLessonModelProps {
   element: any;
@@ -44,7 +44,7 @@ export default function SentenceLessonModelSlide({
         { newCards },
         { headers: actualHeaders }
       );
-      notifyError("Card adicionado", "green");
+      notifyAlert("Card adicionado", "green");
     } catch (error) {
       alert("Erro ao enviar cards");
     }

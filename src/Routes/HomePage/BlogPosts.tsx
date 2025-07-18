@@ -24,7 +24,7 @@ import {
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 interface BlogPostsProps {
   headers: MyHeadersType | null;
@@ -147,7 +147,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
         setLoading(false);
       }, 300);
     } catch (error: any) {
-      notifyError(error.response.data.error);
+      notifyAlert(error.response.data.error);
       onLoggOut();
       setLoading(false);
     }

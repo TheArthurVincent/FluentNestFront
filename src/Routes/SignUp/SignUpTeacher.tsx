@@ -3,7 +3,7 @@ import axios from "axios";
 import React from "react";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 export const generateUsername = (
@@ -106,7 +106,7 @@ export default function SignUpTeacher() {
 
     try {
       const response = await axios.post(`${backDomain}/api/v1/students`, form);
-      notifyError(`Registrado!`, "green");
+      notifyAlert(`Registrado!`, "green");
       console.log("Dados completos:", response.data);
       setTimeout(() => {
         login();
@@ -116,7 +116,7 @@ export default function SignUpTeacher() {
       const errorMessage = err.response
         ? err.response.data.message
         : "Tente novamente";
-      notifyError(errorMessage);
+      notifyAlert(errorMessage);
       console.log(errorMessage, err);
     } finally {
       setLoading(false);

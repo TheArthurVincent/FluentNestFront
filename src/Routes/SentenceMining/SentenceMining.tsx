@@ -10,7 +10,7 @@ import {
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain } from "../../Resources/UniversalComponents";
 import {
-  notifyError,
+  notifyAlert,
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
@@ -155,13 +155,13 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         { newCards },
         { headers: actualHeaders }
       );
-      notifyError(
+      notifyAlert(
         "Card adicionado: " + response.data.addedNewFlashcards,
         "green"
       );
       onChange(!change);
     } catch (error: any) {
-      notifyError("Error adding flashcard.");
+      notifyAlert("Error adding flashcard.");
       console.log(error);
     }
   };

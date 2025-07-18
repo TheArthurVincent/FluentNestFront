@@ -8,7 +8,7 @@ import axios from "axios";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 import { Tooltip } from "@mui/material";
-import { notifyError, readText } from "../Functions/FunctionLessons";
+import { notifyAlert, readText } from "../Functions/FunctionLessons";
 
 interface AudioSoundTrackProps {
   headers: MyHeadersType | null;
@@ -65,7 +65,7 @@ export default function AudioSoundTrack({
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
-      notifyError(showThis, "green");
+      notifyAlert(showThis, "green");
     } catch (error) {
       alert("Erro ao enviar cards");
       onLoggOut();

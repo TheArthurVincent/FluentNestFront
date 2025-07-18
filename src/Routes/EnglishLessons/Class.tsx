@@ -47,7 +47,7 @@ import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
 import TextAreaLesson from "./Assets/Functions/TextAreaLessons";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import Voice from "../../Resources/Voice";
-import { notifyError } from "./Assets/Functions/FunctionLessons";
+import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
 const styles = {
   container: {
@@ -309,7 +309,7 @@ export default function EnglishClassCourse2({
       );
       setStudentsList(response.data.listOfStudents);
     } catch (error) {
-      notifyError("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar alunos");
     }
   };
 
@@ -362,7 +362,7 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      notifyError(
+      notifyAlert(
         "Comentário enviado. Você será respondido em breve!",
         partnerColor()
       );
@@ -370,7 +370,7 @@ export default function EnglishClassCourse2({
       getComments();
     } catch (error) {
       console.error(error, "Erro ao comentar");
-      notifyError("Erro ao comentar");
+      notifyAlert("Erro ao comentar");
     }
   };
 
@@ -390,7 +390,7 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      notifyError("Comentário excluído!", "green");
+      notifyAlert("Comentário excluído!", "green");
       setComment("");
       getComments();
     } catch (error) {

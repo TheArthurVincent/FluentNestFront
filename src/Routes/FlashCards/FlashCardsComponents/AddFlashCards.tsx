@@ -16,7 +16,7 @@ import {
   DialogContent,
 } from "@mui/material";
 import { partnerColor } from "../../../Styles/Styles";
-import { notifyError } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 interface Student {
   id: string;
@@ -79,7 +79,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
           setLoading(false);
         }
       } catch (error) {
-        notifyError("Erro ao encontrar alunos");
+        notifyAlert("Erro ao encontrar alunos");
       }
     }
   };
@@ -158,10 +158,10 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
-      notifyError(showThis, "green");
+      notifyAlert(showThis, "green");
       setCards([]);
     } catch (error) {
-      notifyError("Erro ao enviar cards");
+      notifyAlert("Erro ao enviar cards");
       onLoggOut();
     }
   };

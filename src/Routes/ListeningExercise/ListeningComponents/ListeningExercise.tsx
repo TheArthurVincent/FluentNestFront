@@ -4,7 +4,7 @@ import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import {
-  notifyError,
+  notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
@@ -172,7 +172,7 @@ const ListeningExercise = ({
       setLoading(false);
       seeCardsToReview();
     } catch (error) {
-      notifyError("Erro ao enviar cards");
+      notifyAlert("Erro ao enviar cards");
       // onLoggOut();
     }
   };
@@ -183,7 +183,7 @@ const ListeningExercise = ({
     const cardTextRaw = cardTextRef.current;
 
     if (!cardTextRaw) {
-      notifyError("Erro: Card text está vazio ou indefinido.");
+      notifyAlert("Erro: Card text está vazio ou indefinido.");
       return;
     }
 
@@ -215,7 +215,7 @@ const ListeningExercise = ({
     setLoading(true);
     const raw = cards[0]?.front?.text;
     if (!raw) {
-      notifyError("Erro: Card text está vazio.");
+      notifyAlert("Erro: Card text está vazio.");
       return;
     }
 
@@ -289,7 +289,7 @@ const ListeningExercise = ({
         setEnableVoice(true); // Ativa só após cards estarem prontos
       }, 300);
     } catch (error) {
-      notifyError("Erro ao carregar cards");
+      notifyAlert("Erro ao carregar cards");
     }
     setIsShow(true);
   };
@@ -308,7 +308,7 @@ const ListeningExercise = ({
         (window as any).webkitSpeechRecognition;
 
       if (!SpeechRecognition) {
-        notifyError("Reconhecimento de voz não suportado.");
+        notifyAlert("Reconhecimento de voz não suportado.");
         return;
       }
 
@@ -319,7 +319,7 @@ const ListeningExercise = ({
 
       recognition.onresult = (event: any) => {
         if (!cardTextRef.current) {
-          notifyError("Erro: Nenhuma frase carregada para comparar.");
+          notifyAlert("Erro: Nenhuma frase carregada para comparar.");
           return;
         }
 
@@ -339,7 +339,7 @@ const ListeningExercise = ({
       };
 
       recognition.onerror = () => {
-        notifyError("Erro no reconhecimento de voz");
+        notifyAlert("Erro no reconhecimento de voz");
         setEnableVoice(false);
         setListening(false);
       };
@@ -402,7 +402,7 @@ const ListeningExercise = ({
   // };
   // recognition.onerror = () => {
   //   stopListening();
-  //   notifyError("Erro no reconhecimento de voz");
+  //   notifyAlert("Erro no reconhecimento de voz");
   //   window.location.reload();
   // };
   // Reconhecimento com MediaRecorder + envio para backend Google Cloud
@@ -415,7 +415,7 @@ const ListeningExercise = ({
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
     if (isIOS || isSafari) {
-      notifyError(
+      notifyAlert(
         "Seu dispositivo ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
       );
       return;
@@ -454,7 +454,7 @@ const ListeningExercise = ({
           isCorrectAnswer(speechToText);
           setIsDisabled(false);
         } catch (error) {
-          notifyError("Erro ao transcrever áudio");
+          notifyAlert("Erro ao transcrever áudio");
           console.log("Erro ao transcrever áudio", error);
         } finally {
           setSeeProgress(false);
@@ -463,7 +463,7 @@ const ListeningExercise = ({
         }
       };
     } catch (error: any) {
-      notifyError("Erro ao acessar microfone", error);
+      notifyAlert("Erro ao acessar microfone", error);
       console.log("Erro ao acessar microfone", error);
     }
   };

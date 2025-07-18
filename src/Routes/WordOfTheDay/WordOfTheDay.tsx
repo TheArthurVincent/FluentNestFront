@@ -4,7 +4,7 @@ import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain } from "../../Resources/UniversalComponents";
 import {
-  notifyError,
+  notifyAlert,
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../Styles/Styles";
@@ -82,7 +82,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
       setNowGo(nowGo);
       setLoading(false);
     } catch (error: any) {
-      notifyError(error.response?.data?.error || "Error adding flashcard.");
+      notifyAlert(error.response?.data?.error || "Error adding flashcard.");
     }
   };
   const [disabled, setDisabled] = useState<boolean>(false);
@@ -110,14 +110,14 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
         { headers: actualHeaders }
       );
 
-      notifyError(
+      notifyAlert(
         "Card adicionado: " + response.data.addedNewFlashcards,
         "green"
       );
       fetchObjectUniv();
       onChange(!change);
     } catch (error: any) {
-      notifyError(error.response?.data?.error || "Error adding flashcard.");
+      notifyAlert(error.response?.data?.error || "Error adding flashcard.");
     }
   };
 

@@ -15,7 +15,7 @@ import {
 } from "../../../Resources/UniversalComponents";
 
 import {
-  notifyError,
+  notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -327,7 +327,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setLoading(false);
     } catch (error) {
       console.log(error);
-      notifyError("Erro ao enviar cards");
+      notifyAlert("Erro ao enviar cards");
       onLoggOut();
     }
   };

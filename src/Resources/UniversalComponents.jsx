@@ -13,7 +13,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 import { levels } from "../Routes/Ranking/RankingComponents/RankingLevelsList";
-import { notifyError } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
 
 const items = levels();
 export var colorOfTheTShirt;
@@ -1478,7 +1478,7 @@ export const onLoggOut = () => {
   if (auth) {
     localStorage.removeItem("authorization");
   }
-  notifyError("Faça login novamente");
+  notifyAlert("Faça login novamente");
   window.location.assign("/login");
 };
 
