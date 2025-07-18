@@ -1370,7 +1370,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       gap: "2px",
                                     }}
                                   >
-                                    <i className="fa fa-clock-o" style={{}}></i>
+                                    <i className="fa fa-clock-o" style={{}} />
                                     {event.time}
                                   </div>
                                 </div>
@@ -1394,7 +1394,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       <i
                                         className="fa fa-times-circle"
                                         style={{ marginRight: "2px" }}
-                                      ></i>
+                                      />
                                       Canceled
                                     </>
                                   )}
@@ -1403,7 +1403,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       <i
                                         className="fa fa-calendar-check-o"
                                         style={{ marginRight: "2px" }}
-                                      ></i>
+                                      />
                                       Scheduled
                                     </>
                                   )}
@@ -1412,7 +1412,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       <i
                                         className="fa fa-check-circle"
                                         style={{ marginRight: "2px" }}
-                                      ></i>
+                                      />
                                       Completed
                                     </>
                                   )}
@@ -1439,7 +1439,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 marginBottom: "5px",
                                 display: "block",
                               }}
-                            ></i>
+                            />
                             No events scheduled
                           </div>
                         )}
@@ -2381,9 +2381,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       </Link>
                                     </div>
                                   </div>
-                                  <div
-                                    style={{ display: "flex", gap: "5px" }}
-                                  >
+                                  <div style={{ display: "flex", gap: "5px" }}>
                                     <button
                                       onClick={() => {
                                         seeEditOneTutoring(item);
