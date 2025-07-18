@@ -26,7 +26,7 @@ import AppFooter from "../../../../Application/Footer/Footer";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { FontDownload } from "@mui/icons-material";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function WhiteLabelPreview({ headers }) {
   const [studentID, setid] = useState("");
@@ -316,7 +316,7 @@ export default function WhiteLabelPreview({ headers }) {
         { finalFormData },
         { headers }
       );
-      notifyError("Tema salvo com sucesso!", "green");
+      notifyAlert("Tema salvo com sucesso!", "green");
       setFormData(finalFormData);
       console.log(response.data);
       updateInfo(studentID, headers);
@@ -325,7 +325,7 @@ export default function WhiteLabelPreview({ headers }) {
       }, 1000);
     } catch (error) {
       console.error(error);
-      notifyError("Erro ao salvar o tema.");
+      notifyAlert("Erro ao salvar o tema.");
       setLoading(false);
     }
   };

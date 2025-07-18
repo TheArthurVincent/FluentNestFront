@@ -7,7 +7,7 @@ import { Button, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { HOne } from "../../Resources/Components/RouteBox";
 import { NavLink } from "react-router-dom";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 function RequestResetPassword() {
   const [email, setEmail] = useState<string>("");
@@ -18,7 +18,7 @@ function RequestResetPassword() {
         `${backDomain}/api/v1/resetpassword/${email}`
       );
 
-      notifyError(response.data.message, partnerColor());
+      notifyAlert(response.data.message, partnerColor());
       setTimeout(() => {
         window.location.assign("/login");
       }, 2500);

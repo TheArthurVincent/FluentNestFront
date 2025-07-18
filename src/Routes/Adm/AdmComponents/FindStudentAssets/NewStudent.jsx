@@ -8,7 +8,7 @@ import {
 import { CircularProgress, TextField } from "@mui/material";
 import FindStudent from "./FindStudent";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function AllStudents({ headers, id }) {
   const [formData, setFormData] = useState({
@@ -39,24 +39,24 @@ export function AllStudents({ headers, id }) {
       confirmPassword: "",
     });
     setUpload((prev) => !prev);
-    notifyError("Usuário cadastrado com sucesso!", "green");
+    notifyAlert("Usuário cadastrado com sucesso!", "green");
   };
 
   const validateForm = () => {
     const { name, lastname, email, password, cpf, confirmPassword } = formData;
     if (!name || !lastname || !email || !password || !confirmPassword) {
-      notifyError("Preencha todos os campos obrigatórios!", "red");
+      notifyAlert("Preencha todos os campos obrigatórios!", "red");
       return false;
     }
 
     const isValid = isValidCPF(cpf);
     if (!isValid) {
-      notifyError("CPF inválido!", "red");
+      notifyAlert("CPF inválido!", "red");
       return false;
     }
 
     if (password !== confirmPassword) {
-      notifyError("As senhas não coincidem!", "red");
+      notifyAlert("As senhas não coincidem!", "red");
       return false;
     }
     return true;
@@ -87,7 +87,7 @@ export function AllStudents({ headers, id }) {
       resetForm();
     } catch (error) {
       console.error(error);
-      notifyError("Erro ao cadastrar aluno: " + error.message, "red");
+      notifyAlert("Erro ao cadastrar aluno: " + error.message, "red");
     } finally {
       setIsLoading(false);
     }

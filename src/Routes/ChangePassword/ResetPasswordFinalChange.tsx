@@ -7,7 +7,7 @@ import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import { partnerColor } from "../../Styles/Styles";
 import { TextField } from "@mui/material";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 function ResetPasswordFinalChange() {
   const [Password, setPassword] = useState<string>("");
@@ -27,14 +27,14 @@ function ResetPasswordFinalChange() {
         }
       );
       setTimeout(() => {
-        notifyError(response.data.message, partnerColor());
+        notifyAlert(response.data.message, partnerColor());
         setTimeout(() => {
           window.location.assign("/login");
         }, 1000);
       }, 500);
     } catch (error: any) {
       console.log(error);
-      notifyError(error.response.data.message);
+      notifyAlert(error.response.data.message);
     }
   };
   return (

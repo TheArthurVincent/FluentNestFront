@@ -16,7 +16,7 @@ import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../HomePage/Blog.Styled";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
 const styles = {
@@ -139,12 +139,12 @@ export function MyProfile({ headers }: HeadersProps) {
         { newPassword },
         { headers: actualHeaders }
       );
-      notifyError("Senha editada com sucesso!", "#000");
+      notifyAlert("Senha editada com sucesso!", "#000");
       setConfirmPassword("");
       setNewPassword("");
     } catch (error) {
       onLoggOut();
-      notifyError("Erro ao editar senha");
+      notifyAlert("Erro ao editar senha");
     }
   };
 
@@ -181,7 +181,7 @@ export function MyProfile({ headers }: HeadersProps) {
         await axios.delete(
           `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
         );
-        notifyError("Assinatura cancelada com sucesso.");
+        notifyAlert("Assinatura cancelada com sucesso.");
         updateInfo(user.id, headers);
         setTimeout(() => {
           window.location.reload();
@@ -193,7 +193,7 @@ export function MyProfile({ headers }: HeadersProps) {
       }
       console.log("user.paymentId", user.paymentId, "cancel payment refund");
     } else if (user.paymentId) {
-      notifyError(
+      notifyAlert(
         "Fale comigo por WhatsApp, e prosseguiei com seu cancelamento. :)"
       );
       setTimeout(() => {

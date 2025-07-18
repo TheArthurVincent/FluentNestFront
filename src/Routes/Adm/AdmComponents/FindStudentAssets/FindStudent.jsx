@@ -49,7 +49,7 @@ import {
   MyButton,
 } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 
 export function FindStudent({ uploadStatus, headers, id }) {
@@ -193,7 +193,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
           : ""
       );
     } catch (error) {
-      notifyError(error);
+      notifyAlert(error);
       console.error(error);
     }
   };
@@ -217,7 +217,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
       console.log(response.data.formattedStudentData);
     } catch (error) {
-      notifyError(error);
+      notifyAlert(error);
       console.error(error);
     }
   };
@@ -245,11 +245,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
         editedStudent,
         { headers }
       );
-      notifyError("Usuário editado com sucesso!", "green");
+      notifyAlert("Usuário editado com sucesso!", "green");
       handleSeeModal();
       fetchStudents();
     } catch (error) {
-      notifyError("Erro ao editar usuário");
+      notifyAlert("Erro ao editar usuário");
       handleSeeModal();
     }
   };
@@ -266,9 +266,9 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
       handleSeeModal();
       fetchStudents();
-      notifyError("Permissões editadas com sucesso!", "green");
+      notifyAlert("Permissões editadas com sucesso!", "green");
     } catch (error) {
-      notifyError("Erro ao editar permissões");
+      notifyAlert("Erro ao editar permissões");
       handleSeeModal();
     }
   };
@@ -281,7 +281,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setStudents(response.data.listOfStudents);
       setLoading(false);
     } catch (error) {
-      notifyError("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar alunos");
       // onLoggOut();
     }
   };
@@ -295,11 +295,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
         `${backDomain}/api/v1/students/${id}`,
         { headers }
       );
-      notifyError("Aluno excluído");
+      notifyAlert("Aluno excluído");
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      notifyError(error);
+      notifyAlert(error);
 
       handleSeeModal();
       console.error(error);
@@ -326,7 +326,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
         setHasReset(true);
       }, 2000);
     } catch (error) {
-      notifyError("Erro ao resetar");
+      notifyAlert("Erro ao resetar");
     }
   };
 
@@ -371,7 +371,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       await axios.put(`${backDomain}/api/v1/replenish/${id}`, {}, { headers });
       setReplenishTarget(!replenishTarget);
     } catch (error) {
-      notifyError("Erro ao atualizar reposição");
+      notifyAlert("Erro ao atualizar reposição");
     }
   };
 
@@ -380,7 +380,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       await axios.put(`${backDomain}/api/v1/tutoree/${id}`, {}, { headers });
       setTutoree(!tutoree);
     } catch (error) {
-      notifyError("Erro ao atualizar tutoria");
+      notifyAlert("Erro ao atualizar tutoria");
     }
   };
 
@@ -399,11 +399,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
         { score, description, type },
         { headers }
       );
-      notifyError("Pontuação atualizada com sucesso!", "green");
+      notifyAlert("Pontuação atualizada com sucesso!", "green");
       await updateScoreNow(id); // ESSENCIAL!
       setDisabled(false);
     } catch (error) {
-      notifyError("Erro ao atualizar pontuação");
+      notifyAlert("Erro ao atualizar pontuação");
       setDisabled(false);
     }
   };
@@ -411,7 +411,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const editStudentPassword = async (id) => {
     if (newPassword === confirmPassword) {
     } else {
-      notifyError("As senhas são diferentes");
+      notifyAlert("As senhas são diferentes");
     }
     try {
       const response = await axios.put(

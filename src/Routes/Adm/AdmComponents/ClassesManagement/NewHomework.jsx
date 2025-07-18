@@ -7,7 +7,7 @@ import { lightGreyColor, partnerColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function NewHomeworkAssignment({ headers, id }) {
   const [newDate, setNewDate] = useState("");
@@ -45,7 +45,7 @@ export function NewHomeworkAssignment({ headers, id }) {
       setStudent(response.data.listOfStudents);
       setLoadingS(false);
     } catch (error) {
-      notifyError("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar alunos");
     }
   };
   useEffect(() => {
@@ -73,13 +73,13 @@ export function NewHomeworkAssignment({ headers, id }) {
           headers,
         }
       );
-      notifyError("Aulas criadas com sucesso!");
+      notifyAlert("Aulas criadas com sucesso!");
       setTutorings([]);
       setNewHWDescription("");
       setButton("Criar");
     } catch (error) {
       setButton("Criar");
-      notifyError("Erro ao salvar aulas");
+      notifyAlert("Erro ao salvar aulas");
       setStandardValue("Aluno");
     }
   };
@@ -95,12 +95,12 @@ export function NewHomeworkAssignment({ headers, id }) {
           headers,
         }
       );
-      notifyError("HW criado com sucesso!", "green");
+      notifyAlert("HW criado com sucesso!", "green");
       setNewHWDescription("");
       setLoadingHW(false);
     } catch (error) {
       setLoadingHW(false);
-      notifyError("Erro ao salvar aulas");
+      notifyAlert("Erro ao salvar aulas");
       setStandardValue("Aluno");
     }
   };

@@ -19,7 +19,7 @@ import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function MyClasses({ headers }) {
   const [loading, setLoading] = useState(false);
@@ -66,7 +66,7 @@ export function MyClasses({ headers }) {
       setLoading(false);
     } catch (error) {
       console.error("Erro ao buscar aulas do aluno:", error);
-      notifyError("Erro ao buscar aulas do aluno");
+      notifyAlert("Erro ao buscar aulas do aluno");
       setLoading(false);
     }
   }
@@ -92,7 +92,7 @@ export function MyClasses({ headers }) {
         setStudentsList(response.data.listOfStudents);
       } catch (error) {
         console.log(error, "Erro ao encontrar aaalunos");
-        notifyError("Erro ao encontrar aaalunos");
+        notifyAlert("Erro ao encontrar aaalunos");
       }
     } else {
       null;
@@ -209,11 +209,11 @@ export function MyClasses({ headers }) {
         { headers }
       );
       console.log(`Aula com ID ${tutoringID} excluída`);
-      notifyError(`Aula com ID ${tutoringID} excluída`);
+      notifyAlert(`Aula com ID ${tutoringID} excluída`);
       fetchNextStudentClasses(studentNXTId);
     } catch (error) {
       console.log(`Erro ao excluir aula com ID ${tutoringID}: ${error}`);
-      notifyError(`Erro ao excluir aula com ID ${tutoringID}: ${error}`);
+      notifyAlert(`Erro ao excluir aula com ID ${tutoringID}: ${error}`);
     }
   }
 
@@ -313,6 +313,18 @@ export function MyClasses({ headers }) {
                 {classItem.attachments && (
                   <Link
                     to={classItem.attachments}
+                    style={{
+                      color: "#007bff",
+                      textDecoration: "none",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {classItem.fileName || "Class File"}
+                  </Link>
+                )}{" "}
+                {classItem.importantLink && (
+                  <Link
+                    to={classItem.importantLink}
                     target="_blank"
                     style={{
                       color: "#007bff",
@@ -320,7 +332,7 @@ export function MyClasses({ headers }) {
                       fontSize: "14px",
                     }}
                   >
-                    Arquivos da aula
+                    {classItem.importantLinkName || "Important Link"}
                   </Link>
                 )}
                 <div

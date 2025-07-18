@@ -14,7 +14,7 @@ import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 import { localStorageLoggedIn } from "../../../../App";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function Contract({ headers }: HeadersProps) {
   const [studentsList, setStudentsList] = useState<any[]>([]);
@@ -43,7 +43,7 @@ export function Contract({ headers }: HeadersProps) {
       );
       setStudentsList(response.data.listOfStudents);
     } catch (error) {
-      notifyError("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar alunos");
     }
     setLoading(false);
   };
@@ -76,7 +76,7 @@ export function Contract({ headers }: HeadersProps) {
       setCustomTerms(data.contractTerms || []);
       setSigned(data.signed || false);
     } catch (error) {
-      notifyError("Erro ao carregar contrato do aluno.");
+      notifyAlert("Erro ao carregar contrato do aluno.");
     }
   };
 
@@ -95,10 +95,10 @@ export function Contract({ headers }: HeadersProps) {
         },
         { headers: actualHeaders }
       );
-      notifyError("Contrato atualizado com sucesso!", "green");
+      notifyAlert("Contrato atualizado com sucesso!", "green");
       setEditing(false);
     } catch (err) {
-      notifyError("Erro ao salvar contrato.", "red");
+      notifyAlert("Erro ao salvar contrato.", "red");
     }
   };
 
@@ -107,10 +107,10 @@ export function Contract({ headers }: HeadersProps) {
       await axios.put(`${backDomain}/api/v1/contract/sign/${newID}`, null, {
         headers: actualHeaders,
       });
-      notifyError("Contrato assinado com sucesso!", "green");
+      notifyAlert("Contrato assinado com sucesso!", "green");
       setSigned(true);
     } catch (err) {
-      notifyError("Erro ao assinar contrato.", "red");
+      notifyAlert("Erro ao assinar contrato.", "red");
     }
   };
 

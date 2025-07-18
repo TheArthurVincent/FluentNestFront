@@ -2,7 +2,7 @@ import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { textGeneralFont } from "../../../../Styles/Styles";
 
-export const notifyError = (
+export const notifyAlert = (
   message: string,
   color?: string,
   timeEstablished?: number
@@ -68,7 +68,7 @@ export const notifyError = (
 //   rate?: number
 // ) => {
 //   if (!("speechSynthesis" in window)) {
-//     notifyError("Seu navegador não suporta a síntese de fala!");
+//     notifyAlert("Seu navegador não suporta a síntese de fala!");
 //     return;
 //   }
 
@@ -129,7 +129,7 @@ export const notifyError = (
 //       utterance.voice = selectedVoice;
 //     } else {
 //       if (userAgent === "Opera") {
-//         notifyError(
+//         notifyAlert(
 //           "Seu navegador não suporta este recurso de voz. Tente o Edge ou o Chrome"
 //         );
 //         return;
@@ -172,7 +172,7 @@ export const readText = async (
     const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
     audio.play();
   } catch (error) {
-    notifyError("Erro ao gerar áudio");
+    notifyAlert("Erro ao gerar áudio");
     console.error("Erro TTS:", error);
   }
 };
