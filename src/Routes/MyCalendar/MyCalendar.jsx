@@ -11,6 +11,7 @@ import {
   alwaysBlack,
   alwaysWhite,
   partnerColor,
+  textGeneralFont,
   textPrimaryColorContrast,
   textTitleFont,
   transparentWhite,
@@ -88,6 +89,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const futureDates = [];
 
+  useEffect(() => {
+    console.log(thePermissions, "thePermissions");
+  }, []);
   // AXIOS
   const fetchStudents = async () => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
@@ -1124,7 +1128,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 ref={calendarRef}
                 style={{
                   display: "flex",
-                  gap: "0.75rem",
+                  gap: "0.5rem",
                   overflowX: "auto",
                   padding: "1rem 0",
                   scrollbarWidth: "thin",
@@ -1143,6 +1147,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       className={isToday ? "glowing" : "none"}
                       ref={isToday ? todayRef : null}
                       style={{
+                        fontSize: "10px",
                         border: isToday
                           ? `3px solid ${partnerColor()}`
                           : "1px solid #e0e0e0",
@@ -1153,20 +1158,19 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           : "0 2px 8px rgba(0,0,0,0.08)",
                         transition: "all 0.3s ease",
                         minWidth: "280px",
-                        maxWidth: "320px",
                       }}
                       key={index}
                     >
                       {/* Date Header */}
                       <div
                         style={{
-                          padding: "1rem",
+                          padding: "6px",
                           position: "sticky",
+                          zIndex: 10,
                           top: 0,
                           fontWeight: 700,
                           textAlign: "center",
-                          fontSize: "0.95rem",
-                          fontFamily: textTitleFont(),
+                          fontFamily: textGeneralFont(),
                           background: isToday
                             ? partnerColor()
                             : "linear-gradient(135deg, #111, #555)",
@@ -1179,16 +1183,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       >
                         <div
                           style={{
-                            fontSize: "0.8rem",
-                            opacity: 0.9,
-                            marginBottom: "0.25rem",
+                            marginBottom: "0.15rem",
                           }}
                         >
                           {date.toLocaleDateString("en-US", {
                             weekday: "long",
                           })}
                         </div>
-                        <div style={{ fontSize: "1.1rem" }}>
+                        <div>
                           {date.toLocaleDateString("en-US", {
                             month: "short",
                             day: "numeric",
@@ -1198,7 +1200,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       </div>
 
                       {/* Events Container */}
-                      <div style={{ padding: "0 0.75rem 1rem" }}>
+                      <div style={{ padding: "0 0.5rem 1rem" }}>
                         {events
                           .filter(
                             (event) =>
@@ -1258,7 +1260,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               <div
                                 key={`${event._id}-${eventIndex}`}
                                 style={{
-                                  marginBottom: "0.75rem",
+                                  marginBottom: "0.5rem",
                                   borderRadius: "8px",
                                   overflow: "hidden",
                                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -1286,7 +1288,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <div
                                       style={{
                                         background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}dd)`,
-                                        padding: "0.25rem",
+                                        padding: "0.15rem",
                                         position: "relative",
                                         overflow: "hidden",
                                       }}
@@ -1297,7 +1299,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                           alignItems: "center",
                                           justifyContent: "center",
                                           color: "white",
-                                          fontSize: "0.75rem",
+
                                           fontWeight: "600",
                                           textTransform: "uppercase",
                                           letterSpacing: "0.5px",
@@ -1323,7 +1325,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     background: categoryColor.bg,
                                     color: categoryColor.text,
-                                    padding: "0.75rem",
+                                    padding: "0.5rem",
                                     position: "relative",
                                   }}
                                 >
@@ -1335,9 +1337,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       right: "0.5rem",
                                       backgroundColor: "rgba(255,255,255,0.2)",
                                       color: categoryColor.text,
-                                      padding: "0.25rem 0.5rem",
+                                      padding: "0.15rem 0.5rem",
                                       borderRadius: "12px",
-                                      fontSize: "0.65rem",
+
                                       fontWeight: "600",
                                       textTransform: "uppercase",
                                       letterSpacing: "0.3px",
@@ -1349,7 +1351,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   {/* Event Title/Description */}
                                   <div
                                     style={{
-                                      fontSize: "0.85rem",
                                       fontWeight: "600",
                                       marginBottom: "0.5rem",
                                       lineHeight: "1.3",
@@ -1364,18 +1365,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   {/* Time Display */}
                                   <div
                                     style={{
-                                      fontSize: "0.9rem",
                                       fontWeight: "700",
                                       opacity: 0.9,
                                       display: "flex",
                                       alignItems: "center",
-                                      gap: "0.25rem",
+                                      gap: "0.15rem",
                                     }}
                                   >
-                                    <i
-                                      className="fa fa-clock-o"
-                                      style={{ fontSize: "0.8rem" }}
-                                    ></i>
+                                    <i className="fa fa-clock-o" style={{}}></i>
                                     {event.time}
                                   </div>
                                 </div>
@@ -1385,8 +1382,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     backgroundColor: statusColor.bg,
                                     color: statusColor.text,
-                                    padding: "0.5rem 0.75rem",
-                                    fontSize: "0.75rem",
+                                    padding: "0.5rem 0.5rem",
+
                                     fontWeight: "600",
                                     textAlign: "center",
                                     textTransform: "uppercase",
@@ -1398,7 +1395,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <>
                                       <i
                                         className="fa fa-times-circle"
-                                        style={{ marginRight: "0.25rem" }}
+                                        style={{ marginRight: "0.15rem" }}
                                       ></i>
                                       Canceled
                                     </>
@@ -1407,7 +1404,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <>
                                       <i
                                         className="fa fa-calendar-check-o"
-                                        style={{ marginRight: "0.25rem" }}
+                                        style={{ marginRight: "0.15rem" }}
                                       ></i>
                                       Scheduled
                                     </>
@@ -1416,7 +1413,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <>
                                       <i
                                         className="fa fa-check-circle"
-                                        style={{ marginRight: "0.25rem" }}
+                                        style={{ marginRight: "0.15rem" }}
                                       ></i>
                                       Completed
                                     </>
@@ -1436,13 +1433,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               textAlign: "center",
                               padding: "2rem 1rem",
                               color: "#94a3b8",
-                              fontSize: "0.9rem",
                             }}
                           >
                             <i
                               className="fa fa-calendar-o"
                               style={{
-                                fontSize: "2rem",
                                 marginBottom: "0.5rem",
                                 display: "block",
                               }}
@@ -1520,7 +1515,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onClick={handleCloseModal}
                       style={{
                         cursor: "pointer",
-                        fontSize: "1.5rem",
+
                         color: "#999",
                         transition: "color 0.2s",
                       }}
@@ -1532,456 +1527,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       ×
                     </Xp>
                   </div>
-
-                  {/* Admin Section */}
-                  {thePermissions == "superadmin" ||
-                    (thePermissions == "teacher" && (
-                      <div
-                        style={{
-                          borderTop: "2px solid #e9ecef",
-                          paddingTop: "1.5rem",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "1.5rem",
-                        }}
-                      >
-                        <HTwo style={{ margin: 0, color: partnerColor() }}>
-                          {UniversalTexts.editPost}
-                        </HTwo>
-
-                        {loadingInfo ? (
-                          <div style={{ textAlign: "center", padding: "2rem" }}>
-                            <CircularProgress
-                              style={{ color: partnerColor() }}
-                            />
-                          </div>
-                        ) : (
-                          <>
-                            {/* Status Icons */}
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: "1rem",
-                                padding: "1rem",
-                                backgroundColor: "#f8f9fa",
-                                borderRadius: "8px",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => updateScheduled(newEventId)}
-                              >
-                                <i
-                                  className="fa fa-clock-o"
-                                  style={{
-                                    fontSize:
-                                      status == "Scheduled" ? "24px" : "18px",
-                                    color:
-                                      status == "Scheduled"
-                                        ? "#007bff"
-                                        : "#6c757d",
-                                    transition: "all 0.2s",
-                                  }}
-                                />
-                                <div
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    color: "#6c757d",
-                                    marginTop: "0.25rem",
-                                  }}
-                                >
-                                  Scheduled
-                                </div>
-                              </div>
-
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => updateRealizedClass(newEventId)}
-                              >
-                                <i
-                                  className="fa fa-check-circle"
-                                  style={{
-                                    fontSize:
-                                      status == "Realized" ? "24px" : "18px",
-                                    color:
-                                      status == "Realized"
-                                        ? "#28a745"
-                                        : "#6c757d",
-                                    transition: "all 0.2s",
-                                  }}
-                                />
-                                <div
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    color: "#6c757d",
-                                    marginTop: "0.25rem",
-                                  }}
-                                >
-                                  Realized
-                                </div>
-                              </div>
-
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => updateUnscheduled(newEventId)}
-                              >
-                                <i
-                                  className="fa fa-times-circle-o"
-                                  style={{
-                                    fontSize:
-                                      status == "Canceled" ? "24px" : "18px",
-                                    color:
-                                      status == "Canceled"
-                                        ? "#dc3545"
-                                        : "#6c757d",
-                                    transition: "all 0.2s",
-                                  }}
-                                />
-                                <div
-                                  style={{
-                                    fontSize: "0.8rem",
-                                    color: "#6c757d",
-                                    marginTop: "0.25rem",
-                                  }}
-                                >
-                                  Canceled
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Form */}
-                            <form
-                              style={{
-                                display: "grid",
-                                gap: "1rem",
-                                backgroundColor: "#f8f9fa",
-                                padding: "1.5rem",
-                                borderRadius: "8px",
-                              }}
-                            >
-                              <select
-                                onChange={handleCategoryChange}
-                                name="category"
-                                value={category}
-                                className="inputs-style"
-                                style={{
-                                  padding: "0.75rem",
-                                  borderRadius: "6px",
-                                  border: "1px solid #ced4da",
-                                  fontSize: "1rem",
-                                }}
-                              >
-                                <option value="category" hidden>
-                                  Select category
-                                </option>
-                                {[
-                                  "Test",
-                                  "Standalone",
-                                  "Group Class",
-                                  "Rep",
-                                  "Prize Class",
-                                  "Tutoring",
-                                  "Marcar Reposição",
-                                ].map((cat, index) => (
-                                  <option key={index} value={cat}>
-                                    {cat}
-                                  </option>
-                                ))}
-                              </select>
-
-                              {isTutoring && (
-                                <select
-                                  className="inputs-style"
-                                  onChange={handleStudentChange}
-                                  name="students"
-                                  value={newStudentId}
-                                  style={{
-                                    padding: "0.75rem",
-                                    borderRadius: "6px",
-                                    border: "1px solid #ced4da",
-                                    fontSize: "1rem",
-                                  }}
-                                >
-                                  <option value="category" hidden>
-                                    Select student
-                                  </option>
-                                  {studentsList.map((student, index) => (
-                                    <option key={index} value={student.id}>
-                                      {student.name + " " + student.lastname}
-                                    </option>
-                                  ))}
-                                </select>
-                              )}
-
-                              <input
-                                className="inputs-style"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                type="date"
-                                style={{
-                                  padding: "0.75rem",
-                                  borderRadius: "6px",
-                                  border: "1px solid #ced4da",
-                                  fontSize: "1rem",
-                                }}
-                                required
-                              />
-
-                              <input
-                                className="inputs-style"
-                                value={theTime}
-                                onChange={(e) => setTheTime(e.target.value)}
-                                type="time"
-                                style={{
-                                  padding: "0.75rem",
-                                  borderRadius: "6px",
-                                  border: "1px solid #ced4da",
-                                  fontSize: "1rem",
-                                }}
-                                required
-                              />
-
-                              <input
-                                className="inputs-style"
-                                value={link}
-                                onChange={(e) => setLink(e.target.value)}
-                                placeholder="Link"
-                                type="text"
-                                style={{
-                                  padding: "0.75rem",
-                                  borderRadius: "6px",
-                                  border: "1px solid #ced4da",
-                                  fontSize: "1rem",
-                                }}
-                                required
-                              />
-
-                              <input
-                                className="inputs-style"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Description"
-                                type="text"
-                                style={{
-                                  padding: "0.75rem",
-                                  borderRadius: "6px",
-                                  border: "1px solid #ced4da",
-                                  fontSize: "1rem",
-                                }}
-                                required
-                              />
-                            </form>
-
-                            {/* Checklist */}
-                            <div
-                              style={{
-                                backgroundColor: "#f8f9fa",
-                                padding: "1.5rem",
-                                borderRadius: "8px",
-                                border: "1px solid #e9ecef",
-                              }}
-                            >
-                              <h4
-                                style={{
-                                  margin: "0 0 1rem 0",
-                                  color: partnerColor(),
-                                }}
-                              >
-                                Task Checklist
-                              </h4>
-                              <div style={{ display: "grid", gap: "0.75rem" }}>
-                                {[
-                                  {
-                                    key: "checkList1",
-                                    text: "0. Subir Vídeo",
-                                    handler: handleCheckbox1Change,
-                                  },
-                                  {
-                                    key: "checkList2",
-                                    text: "1. Subir Aulas na Plataforma",
-                                    handler: handleCheckbox2Change,
-                                  },
-                                  {
-                                    key: "checkList3",
-                                    text: "2. Adicionar Atividades de Homework",
-                                    handler: handleCheckbox3Change,
-                                  },
-                                  {
-                                    key: "checkList4",
-                                    text: "3. Subir Flashcards",
-                                    handler: handleCheckbox4Change,
-                                  },
-                                  {
-                                    key: "checkList5",
-                                    text: "4. Formatar Material",
-                                    handler: handleCheckbox5Change,
-                                  },
-                                ].map((item, index) => (
-                                  <label
-                                    key={index}
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "0.75rem",
-                                      padding: "0.5rem",
-                                      backgroundColor: eventFull[item.key]
-                                        ? "#d4edda"
-                                        : "white",
-                                      borderRadius: "6px",
-                                      border: "1px solid #dee2e6",
-                                      cursor: "pointer",
-                                      transition: "all 0.2s",
-                                    }}
-                                  >
-                                    <input
-                                      checked={eventFull[item.key] || false}
-                                      type="checkbox"
-                                      onChange={item.handler}
-                                      style={{
-                                        width: "18px",
-                                        height: "18px",
-                                        cursor: "pointer",
-                                      }}
-                                    />
-                                    <span
-                                      style={{
-                                        fontSize: "0.95rem",
-                                        color: "#495057",
-                                        textDecoration: eventFull[item.key]
-                                          ? "line-through"
-                                          : "none",
-                                      }}
-                                    >
-                                      {item.text}
-                                    </span>
-                                  </label>
-                                ))}
-                              </div>
-                            </div>
-                          </>
-                        )}
-
-                        {/* Action Buttons */}
-                        {!deleteVisible ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "1rem",
-                              justifyContent: "center",
-                              paddingTop: "1rem",
-                            }}
-                          >
-                            {[
-                              {
-                                text: "Delete",
-                                color: "red",
-                                onClick: seeDelete,
-                                visible: !postNew,
-                              },
-                              {
-                                text: "Cancel",
-                                color: "blue",
-                                onClick: handleCloseModal,
-                                visible: true,
-                              },
-                              {
-                                text: "Save",
-                                color: "green",
-                                onClick: postNew ? postNewEvent : editInside,
-                                visible: true,
-                              },
-                            ].map(
-                              (item, index) =>
-                                item.visible && (
-                                  <ArvinButton
-                                    key={index}
-                                    color={item.color}
-                                    onClick={item.onClick}
-                                    style={{
-                                      padding: "0.75rem 1.5rem",
-                                      fontSize: "1rem",
-                                      fontWeight: "500",
-                                      minWidth: "100px",
-                                    }}
-                                  >
-                                    {item.text}
-                                  </ArvinButton>
-                                )
-                            )}
-                          </div>
-                        ) : (
-                          <div
-                            style={{
-                              backgroundColor: "#f8d7da",
-                              padding: "1.5rem",
-                              borderRadius: "8px",
-                              border: "1px solid #f5c6cb",
-                              textAlign: "center",
-                            }}
-                          >
-                            <p
-                              style={{
-                                margin: "0 0 1rem 0",
-                                fontSize: "1.1rem",
-                                fontWeight: "500",
-                                color: "#721c24",
-                              }}
-                            >
-                              ⚠️ Are you sure you want to delete this event?
-                            </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                gap: "1rem",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <button
-                                onClick={seeDelete}
-                                style={{
-                                  padding: "0.75rem 1.5rem",
-                                  backgroundColor: partnerColor(),
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "6px",
-                                  cursor: "pointer",
-                                  fontSize: "1rem",
-                                  fontWeight: "500",
-                                }}
-                              >
-                                No, Cancel
-                              </button>
-                              <button
-                                onClick={deleteOneMaterialInside}
-                                style={{
-                                  padding: "0.75rem 1.5rem",
-                                  backgroundColor: "#dc3545",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "6px",
-                                  cursor: "pointer",
-                                  fontSize: "1rem",
-                                  fontWeight: "500",
-                                }}
-                              >
-                                Yes, Delete
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
                 </div>
               )}
               {/* Event Information */}
@@ -2016,9 +1561,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     style={{
                       backgroundColor: partnerColor(),
                       color: "white",
-                      padding: "0.25rem 0.75rem",
+                      padding: "0.15rem 0.5rem",
                       borderRadius: "20px",
-                      fontSize: "0.9rem",
+
                       fontWeight: "500",
                     }}
                   >
@@ -2081,6 +1626,455 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     {theTime}
                   </span>
                 </div>
+                {/* Admin Section */}
+                {(thePermissions == "superadmin" ||
+                  thePermissions == "teacher") && (
+                  <div
+                    style={{
+                      maxHeight: "20rem",
+                      overflowY: "auto",
+                      display: "flex",
+                    }}
+                  >
+                    {
+                      <div
+                        style={{
+                          borderTop: "2px solid #e9ecef",
+                          paddingTop: "1.5rem",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "1.5rem",
+                        }}
+                      >
+                        <HTwo style={{ margin: 0, color: partnerColor() }}>
+                          {UniversalTexts.editPost}
+                        </HTwo>
+
+                        {loadingInfo ? (
+                          <div style={{ textAlign: "center", padding: "2rem" }}>
+                            <CircularProgress
+                              style={{ color: partnerColor() }}
+                            />
+                          </div>
+                        ) : (
+                          <>
+                            {/* Status Icons */}
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                gap: "1rem",
+                                padding: "1rem",
+                                backgroundColor: "#f8f9fa",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateScheduled(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-clock-o"
+                                  style={{
+                                    fontSize:
+                                      status == "Scheduled" ? "24px" : "18px",
+                                    color:
+                                      status == "Scheduled"
+                                        ? "#007bff"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    color: "#6c757d",
+                                    marginTop: "0.15rem",
+                                  }}
+                                >
+                                  Scheduled
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateRealizedClass(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-check-circle"
+                                  style={{
+                                    fontSize:
+                                      status == "Realized" ? "24px" : "18px",
+                                    color:
+                                      status == "Realized"
+                                        ? "#28a745"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    color: "#6c757d",
+                                    marginTop: "0.15rem",
+                                  }}
+                                >
+                                  Realized
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() => updateUnscheduled(newEventId)}
+                              >
+                                <i
+                                  className="fa fa-times-circle-o"
+                                  style={{
+                                    fontSize:
+                                      status == "Canceled" ? "24px" : "18px",
+                                    color:
+                                      status == "Canceled"
+                                        ? "#dc3545"
+                                        : "#6c757d",
+                                    transition: "all 0.2s",
+                                  }}
+                                />
+                                <div
+                                  style={{
+                                    color: "#6c757d",
+                                    marginTop: "0.15rem",
+                                  }}
+                                >
+                                  Canceled
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Form */}
+                            <form
+                              style={{
+                                display: "grid",
+                                gap: "1rem",
+                                backgroundColor: "#f8f9fa",
+                                padding: "1.5rem",
+                                borderRadius: "8px",
+                              }}
+                            >
+                              <select
+                                onChange={handleCategoryChange}
+                                name="category"
+                                value={category}
+                                className="inputs-style"
+                                style={{
+                                  padding: "0.5rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                }}
+                              >
+                                <option value="category" hidden>
+                                  Select category
+                                </option>
+                                {[
+                                  "Test",
+                                  "Standalone",
+                                  "Group Class",
+                                  "Rep",
+                                  "Prize Class",
+                                  "Tutoring",
+                                  "Marcar Reposição",
+                                ].map((cat, index) => (
+                                  <option key={index} value={cat}>
+                                    {cat}
+                                  </option>
+                                ))}
+                              </select>
+
+                              {isTutoring && (
+                                <select
+                                  className="inputs-style"
+                                  onChange={handleStudentChange}
+                                  name="students"
+                                  value={newStudentId}
+                                  style={{
+                                    padding: "0.5rem",
+                                    borderRadius: "6px",
+                                    border: "1px solid #ced4da",
+                                  }}
+                                >
+                                  <option value="category" hidden>
+                                    Select student
+                                  </option>
+                                  {studentsList.map((student, index) => (
+                                    <option key={index} value={student.id}>
+                                      {student.name + " " + student.lastname}
+                                    </option>
+                                  ))}
+                                </select>
+                              )}
+
+                              <input
+                                className="inputs-style"
+                                value={date}
+                                onChange={(e) => setDate(e.target.value)}
+                                type="date"
+                                style={{
+                                  padding: "0.5rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                }}
+                                required
+                              />
+
+                              <input
+                                className="inputs-style"
+                                value={theTime}
+                                onChange={(e) => setTheTime(e.target.value)}
+                                type="time"
+                                style={{
+                                  padding: "0.5rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                }}
+                                required
+                              />
+
+                              <input
+                                className="inputs-style"
+                                value={link}
+                                onChange={(e) => setLink(e.target.value)}
+                                placeholder="Link"
+                                type="text"
+                                style={{
+                                  padding: "0.5rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                }}
+                                required
+                              />
+
+                              <input
+                                className="inputs-style"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                placeholder="Description"
+                                type="text"
+                                style={{
+                                  padding: "0.5rem",
+                                  borderRadius: "6px",
+                                  border: "1px solid #ced4da",
+                                }}
+                                required
+                              />
+                            </form>
+
+                            {/* Checklist */}
+                            <div
+                              style={{
+                                backgroundColor: "#f8f9fa",
+                                padding: "1.5rem",
+                                borderRadius: "8px",
+                                border: "1px solid #e9ecef",
+                              }}
+                            >
+                              <h4
+                                style={{
+                                  margin: "0 0 1rem 0",
+                                  color: partnerColor(),
+                                }}
+                              >
+                                Task Checklist
+                              </h4>
+                              <div style={{ display: "grid", gap: "0.5rem" }}>
+                                {[
+                                  {
+                                    key: "checkList1",
+                                    text: "0. Subir Vídeo",
+                                    handler: handleCheckbox1Change,
+                                  },
+                                  {
+                                    key: "checkList2",
+                                    text: "1. Subir Aulas na Plataforma",
+                                    handler: handleCheckbox2Change,
+                                  },
+                                  {
+                                    key: "checkList3",
+                                    text: "2. Adicionar Atividades de Homework",
+                                    handler: handleCheckbox3Change,
+                                  },
+                                  {
+                                    key: "checkList4",
+                                    text: "3. Subir Flashcards",
+                                    handler: handleCheckbox4Change,
+                                  },
+                                  {
+                                    key: "checkList5",
+                                    text: "4. Formatar Material",
+                                    handler: handleCheckbox5Change,
+                                  },
+                                ].map((item, index) => (
+                                  <label
+                                    key={index}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                      padding: "0.5rem",
+                                      backgroundColor: eventFull[item.key]
+                                        ? "#d4edda"
+                                        : "white",
+                                      borderRadius: "6px",
+                                      border: "1px solid #dee2e6",
+                                      cursor: "pointer",
+                                      transition: "all 0.2s",
+                                    }}
+                                  >
+                                    <input
+                                      checked={eventFull[item.key] || false}
+                                      type="checkbox"
+                                      onChange={item.handler}
+                                      style={{
+                                        width: "18px",
+                                        height: "18px",
+                                        cursor: "pointer",
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        color: "#495057",
+                                        textDecoration: eventFull[item.key]
+                                          ? "line-through"
+                                          : "none",
+                                      }}
+                                    >
+                                      {item.text}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          </>
+                        )}
+
+                        {/* Action Buttons */}
+                        {!deleteVisible ? (
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "1rem",
+                              justifyContent: "center",
+                              paddingTop: "1rem",
+                            }}
+                          >
+                            {[
+                              {
+                                text: "Delete",
+                                color: "red",
+                                onClick: seeDelete,
+                                visible: !postNew,
+                              },
+                              {
+                                text: "Cancel",
+                                color: "blue",
+                                onClick: handleCloseModal,
+                                visible: true,
+                              },
+                              {
+                                text: "Save",
+                                color: "green",
+                                onClick: postNew ? postNewEvent : editInside,
+                                visible: true,
+                              },
+                            ].map(
+                              (item, index) =>
+                                item.visible && (
+                                  <ArvinButton
+                                    key={index}
+                                    color={item.color}
+                                    onClick={item.onClick}
+                                    style={{
+                                      padding: "0.5rem 1.5rem",
+
+                                      fontWeight: "500",
+                                      minWidth: "100px",
+                                    }}
+                                  >
+                                    {item.text}
+                                  </ArvinButton>
+                                )
+                            )}
+                          </div>
+                        ) : (
+                          <div
+                            style={{
+                              backgroundColor: "#f8d7da",
+                              padding: "1.5rem",
+                              borderRadius: "8px",
+                              border: "1px solid #f5c6cb",
+                              textAlign: "center",
+                            }}
+                          >
+                            <p
+                              style={{
+                                margin: "0 0 1rem 0",
+
+                                fontWeight: "500",
+                                color: "#721c24",
+                              }}
+                            >
+                              ⚠️ Are you sure you want to delete this event?
+                            </p>
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1rem",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                onClick={seeDelete}
+                                style={{
+                                  padding: "0.5rem 1.5rem",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+
+                                  fontWeight: "500",
+                                }}
+                              >
+                                No, Cancel
+                              </button>
+                              <button
+                                onClick={deleteOneMaterialInside}
+                                style={{
+                                  padding: "0.5rem 1.5rem",
+                                  backgroundColor: "#dc3545",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "6px",
+                                  cursor: "pointer",
+
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Yes, Delete
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    }
+                  </div>
+                )}
 
                 {category !== "Marcar Reposição" && (
                   <Link
@@ -2123,7 +2117,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     <p
                       style={{
                         margin: 0,
-                        fontSize: "1.1rem",
+
                         color: "#495057",
                       }}
                     >
@@ -2148,8 +2142,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onClick={() => setSeeReplenish(true)}
                       style={{
                         width: "100%",
-                        padding: "0.75rem",
-                        fontSize: "1rem",
+                        padding: "0.5rem",
+
                         fontWeight: "500",
                       }}
                     >
@@ -2170,7 +2164,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     <p
                       style={{
                         margin: "0 0 1rem 0",
-                        fontSize: "1.1rem",
+
                         fontWeight: "500",
                       }}
                     >
@@ -2264,7 +2258,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   onClick={handleCloseModalOfTutorings}
                   style={{
                     cursor: "pointer",
-                    fontSize: "1.5rem",
                     color: "#999",
                     transition: "color 0.2s",
                   }}
@@ -2299,10 +2292,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     value={newStudentId}
                     style={{
                       width: "100%",
-                      padding: "0.75rem",
+                      padding: "0.5rem",
                       borderRadius: "6px",
                       border: "1px solid #ced4da",
-                      fontSize: "1rem",
+
                       backgroundColor: "white",
                     }}
                   >
@@ -2334,7 +2327,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       >
                         Current Classes:
                       </h4>
-                      <div style={{ display: "grid", gap: "0.75rem" }}>
+                      <div style={{ display: "grid", gap: "0.5rem" }}>
                         {tutoringsListOfOneStudent
                           .sort(
                             (a, b) =>
@@ -2372,9 +2365,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     </span>
                                     <div
                                       style={{
-                                        fontSize: "0.9rem",
                                         color: "#6c757d",
-                                        marginTop: "0.25rem",
+                                        marginTop: "0.15rem",
                                       }}
                                     >
                                       {item.day} - {item.time} -
@@ -2405,7 +2397,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         border: "none",
                                         borderRadius: "4px",
                                         cursor: "pointer",
-                                        fontSize: "0.9rem",
                                       }}
                                     >
                                       Edit
@@ -2419,7 +2410,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         border: "none",
                                         borderRadius: "4px",
                                         cursor: "pointer",
-                                        fontSize: "0.9rem",
                                       }}
                                     >
                                       Delete
@@ -2474,10 +2464,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     onChange={handleWeekDayChange}
                     value={weekDay}
                     style={{
-                      padding: "0.75rem",
+                      padding: "0.5rem",
                       borderRadius: "6px",
                       border: "1px solid #ced4da",
-                      fontSize: "1rem",
+
                       backgroundColor: "white",
                     }}
                   >
@@ -2496,10 +2486,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     onChange={handleTimeChange}
                     value={timeOfTutoring}
                     style={{
-                      padding: "0.75rem",
+                      padding: "0.5rem",
                       borderRadius: "6px",
                       border: "1px solid #ced4da",
-                      fontSize: "1rem",
+
                       backgroundColor: "white",
                     }}
                   >
@@ -2522,23 +2512,22 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     placeholder="Meeting Link"
                     type="text"
                     style={{
-                      padding: "0.75rem",
+                      padding: "0.5rem",
                       borderRadius: "6px",
                       border: "1px solid #ced4da",
-                      fontSize: "1rem",
                     }}
                     required
                   />
                   <button
                     onClick={updateOneTutoring}
                     style={{
-                      padding: "0.75rem 1.5rem",
+                      padding: "0.5rem 1.5rem",
                       backgroundColor: "#28a745",
                       color: "white",
                       border: "none",
                       borderRadius: "6px",
                       cursor: "pointer",
-                      fontSize: "1rem",
+
                       fontWeight: "500",
                     }}
                   >
@@ -2565,10 +2554,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onChange={handleTheNewWeekDayChange}
                       value={theNewWeekDay}
                       style={{
-                        padding: "0.75rem",
+                        padding: "0.5rem",
                         borderRadius: "6px",
                         border: "1px solid #ced4da",
-                        fontSize: "1rem",
+
                         backgroundColor: "white",
                       }}
                     >
@@ -2587,10 +2576,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onChange={handleTheNewTimeChange}
                       value={theNewTimeOfTutoring}
                       style={{
-                        padding: "0.75rem",
+                        padding: "0.5rem",
                         borderRadius: "6px",
                         border: "1px solid #ced4da",
-                        fontSize: "1rem",
+
                         backgroundColor: "white",
                       }}
                     >
@@ -2613,23 +2602,22 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       type="text"
                       style={{
-                        padding: "0.75rem",
+                        padding: "0.5rem",
                         borderRadius: "6px",
                         border: "1px solid #ced4da",
-                        fontSize: "1rem",
                       }}
                       required
                     />
                     <button
                       onClick={newTutoring}
                       style={{
-                        padding: "0.75rem 1.5rem",
+                        padding: "0.5rem 1.5rem",
                         backgroundColor: partnerColor(),
                         color: "white",
                         border: "none",
                         borderRadius: "6px",
                         cursor: "pointer",
-                        fontSize: "1rem",
+
                         fontWeight: "500",
                       }}
                     >

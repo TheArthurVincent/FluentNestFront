@@ -395,7 +395,6 @@ export default function EnglishClassCourse2({
       getComments();
     } catch (error) {
       console.error(error, "Erro ao comentar");
-      // onLoggOut();
     }
   };
 
