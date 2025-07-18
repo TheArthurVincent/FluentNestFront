@@ -1,7 +1,7 @@
 import React from "react";
 import { LogoSVG } from "../../Resources/UniversalComponents";
 import { HOne } from "../../Resources/Components/RouteBox";
-import { partnerColor } from "../../Styles/Styles";
+import { logoPartner, partnerColor } from "../../Styles/Styles";
 
 export const generateUsername = (
   name: string,
@@ -23,7 +23,8 @@ export const generateUsername = (
   return `${first}${year}${last}${month}`;
 };
 
-export const myLogoDone = LogoSVG("#000", partnerColor(), 3);
+export const myLogoDone = logoPartner();
+
 export default function EmailCheck() {
   return (
     <div
@@ -51,7 +52,17 @@ export default function EmailCheck() {
       >
         Pagamento Aprovado! Verifique seu e-mail
       </HOne>
-      {myLogoDone}
+      <img
+        src={myLogoDone}
+        alt="arvin logo"
+        style={{
+          margin: "auto",
+          height: "6rem",
+          width: "auto",
+          maxWidth: "100%",
+          objectFit: "contain",
+        }}
+      />
       <a
         href="/login"
         style={{

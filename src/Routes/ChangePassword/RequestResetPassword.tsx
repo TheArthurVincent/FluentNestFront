@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
+import { logoPartner, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
@@ -29,7 +29,7 @@ function RequestResetPassword() {
     }
   };
 
-  const myLogo = LogoSVG("#000", partnerColor(), 2.5);
+  const myLogo = logoPartner();
 
   return (
     <div
@@ -59,7 +59,17 @@ function RequestResetPassword() {
               }}
               className="box-shadow-white"
             >
-              <div style={{ margin: "0 auto" }}>{myLogo}</div>
+              <img
+                src={myLogo}
+                alt="arvin logo"
+                style={{
+                  margin: "auto",
+                  height: "4rem",
+                  width: "auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+              />
               <HOne
                 style={{
                   fontFamily: textTitleFont(),

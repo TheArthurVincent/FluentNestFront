@@ -1,18 +1,11 @@
 import React from "react";
-import { LogoSVG } from "../../Resources/UniversalComponents";
-import {
-  alwaysBlack,
-  alwaysWhite,
-  darkGreyColor,
-  mediumGreyColor,
-} from "../../Styles/Styles";
+import { alwaysBlack, alwaysWhite, logoPartner } from "../../Styles/Styles";
 
-interface AppFooterIn  {
-  see:boolean
+interface AppFooterIn {
+  see: boolean;
 }
-export default function AppFooter({see}:AppFooterIn) {
- 
-  const myLogo = LogoSVG(darkGreyColor(), mediumGreyColor(), 1.3);
+export default function AppFooter({ see }: AppFooterIn) {
+  const myLogo = logoPartner();
   return (
     <footer
       className="footer no-print"
@@ -27,7 +20,17 @@ export default function AppFooter({see}:AppFooterIn) {
         width: "100%",
       }}
     >
-      {myLogo}
+      <img
+        src={myLogo}
+        alt="arvin logo"
+        style={{
+          margin: "auto",
+          height: "3rem",
+          width: "auto",
+          maxWidth: "100%",
+          objectFit: "contain",
+        }}
+      />
       <span>
         This platform is powered by ARVIN ENGLISH SCHOOL © Some rights reserved{" "}
         <br />
