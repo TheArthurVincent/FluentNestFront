@@ -1028,7 +1028,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       {headers ? (
         <RouteDiv
           style={{
-            width: "99vw",
+            width: "96vw",
           }}
         >
           <div>
@@ -1128,7 +1128,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 ref={calendarRef}
                 style={{
                   display: "flex",
-                  gap: "0.5rem",
+                  gap: "5px",
                   overflowX: "auto",
                   padding: "1rem 0",
                   scrollbarWidth: "thin",
@@ -1151,7 +1151,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         border: isToday
                           ? `3px solid ${partnerColor()}`
                           : "1px solid #e0e0e0",
-                        borderRadius: "12px",
+                        borderRadius: "8px",
                         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
                         boxShadow: isToday
                           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
@@ -1175,15 +1175,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             ? partnerColor()
                             : "linear-gradient(135deg, #111, #555)",
                           color: alwaysWhite(),
-                          borderRadius: "12px 12px 0 0",
-                          marginBottom: "0.5rem",
+                          marginBottom: "5px",
                           letterSpacing: "0.5px",
                           textShadow: "0 1px 2px rgba(0,0,0,0.2)",
                         }}
                       >
                         <div
                           style={{
-                            marginBottom: "0.15rem",
+                            marginBottom: "2px",
                           }}
                         >
                           {date.toLocaleDateString("en-US", {
@@ -1200,7 +1199,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       </div>
 
                       {/* Events Container */}
-                      <div style={{ padding: "0 0.5rem 1rem" }}>
+                      <div style={{ padding: "0 5px 1rem" }}>
                         {events
                           .filter(
                             (event) =>
@@ -1260,7 +1259,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               <div
                                 key={`${event._id}-${eventIndex}`}
                                 style={{
-                                  marginBottom: "0.5rem",
+                                  marginBottom: "5px",
                                   borderRadius: "8px",
                                   overflow: "hidden",
                                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -1288,7 +1287,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <div
                                       style={{
                                         background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}dd)`,
-                                        padding: "0.15rem",
+                                        padding: "2px",
                                         position: "relative",
                                         overflow: "hidden",
                                       }}
@@ -1310,8 +1309,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             width: "6px",
                                             height: "6px",
                                             backgroundColor: "white",
-                                            borderRadius: "50%",
-                                            marginRight: "0.5rem",
+                                            borderRadius: "8px%",
+                                            marginRight: "5px",
                                             animation: "pulse 2s infinite",
                                           }}
                                         ></span>
@@ -1325,7 +1324,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     background: categoryColor.bg,
                                     color: categoryColor.text,
-                                    padding: "0.5rem",
+                                    padding: "5px",
                                     position: "relative",
                                   }}
                                 >
@@ -1333,13 +1332,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   <div
                                     style={{
                                       position: "absolute",
-                                      top: "0.5rem",
-                                      right: "0.5rem",
+                                      top: "5px",
+                                      right: "5px",
                                       backgroundColor: "rgba(255,255,255,0.2)",
                                       color: categoryColor.text,
-                                      padding: "0.15rem 0.5rem",
-                                      borderRadius: "12px",
-
+                                      padding: "2px 5px",
+                                      borderRadius: "8px",
                                       fontWeight: "600",
                                       textTransform: "uppercase",
                                       letterSpacing: "0.3px",
@@ -1352,7 +1350,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   <div
                                     style={{
                                       fontWeight: "600",
-                                      marginBottom: "0.5rem",
+                                      marginBottom: "5px",
                                       lineHeight: "1.3",
                                       paddingRight: "4rem",
                                     }}
@@ -1369,7 +1367,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       opacity: 0.9,
                                       display: "flex",
                                       alignItems: "center",
-                                      gap: "0.15rem",
+                                      gap: "2px",
                                     }}
                                   >
                                     <i className="fa fa-clock-o" style={{}}></i>
@@ -1382,7 +1380,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     backgroundColor: statusColor.bg,
                                     color: statusColor.text,
-                                    padding: "0.5rem 0.5rem",
+                                    padding: "5px 5px",
 
                                     fontWeight: "600",
                                     textAlign: "center",
@@ -1395,7 +1393,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <>
                                       <i
                                         className="fa fa-times-circle"
-                                        style={{ marginRight: "0.15rem" }}
+                                        style={{ marginRight: "2px" }}
                                       ></i>
                                       Canceled
                                     </>
@@ -1404,7 +1402,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <>
                                       <i
                                         className="fa fa-calendar-check-o"
-                                        style={{ marginRight: "0.15rem" }}
+                                        style={{ marginRight: "2px" }}
                                       ></i>
                                       Scheduled
                                     </>
@@ -1413,7 +1411,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <>
                                       <i
                                         className="fa fa-check-circle"
-                                        style={{ marginRight: "0.15rem" }}
+                                        style={{ marginRight: "2px" }}
                                       ></i>
                                       Completed
                                     </>
@@ -1438,7 +1436,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             <i
                               className="fa fa-calendar-o"
                               style={{
-                                marginBottom: "0.5rem",
+                                marginBottom: "5px",
                                 display: "block",
                               }}
                             ></i>
@@ -1462,7 +1460,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 top: "0",
                 left: "0",
                 position: "fixed",
-                borderRadius: "4px",
+                borderRadius: "8px",
                 zIndex: 99,
                 display: isVisible ? "block" : "none",
               }}
@@ -1545,7 +1543,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    gap: "5px",
                   }}
                 >
                   <span
@@ -1561,8 +1559,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     style={{
                       backgroundColor: partnerColor(),
                       color: "white",
-                      padding: "0.15rem 0.5rem",
-                      borderRadius: "20px",
+                      padding: "2px 5px",
+                      borderRadius: "8px",
 
                       fontWeight: "500",
                     }}
@@ -1589,7 +1587,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    gap: "5px",
                   }}
                 >
                   <span
@@ -1610,7 +1608,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    gap: "5px",
                   }}
                 >
                   <span
@@ -1692,7 +1690,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 <div
                                   style={{
                                     color: "#6c757d",
-                                    marginTop: "0.15rem",
+                                    marginTop: "2px",
                                   }}
                                 >
                                   Scheduled
@@ -1721,7 +1719,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 <div
                                   style={{
                                     color: "#6c757d",
-                                    marginTop: "0.15rem",
+                                    marginTop: "2px",
                                   }}
                                 >
                                   Realized
@@ -1750,7 +1748,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 <div
                                   style={{
                                     color: "#6c757d",
-                                    marginTop: "0.15rem",
+                                    marginTop: "2px",
                                   }}
                                 >
                                   Canceled
@@ -1774,8 +1772,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 value={category}
                                 className="inputs-style"
                                 style={{
-                                  padding: "0.5rem",
-                                  borderRadius: "6px",
+                                  padding: "5px",
+                                  borderRadius: "8px",
                                   border: "1px solid #ced4da",
                                 }}
                               >
@@ -1804,8 +1802,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   name="students"
                                   value={newStudentId}
                                   style={{
-                                    padding: "0.5rem",
-                                    borderRadius: "6px",
+                                    padding: "5px",
+                                    borderRadius: "8px",
                                     border: "1px solid #ced4da",
                                   }}
                                 >
@@ -1826,8 +1824,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 onChange={(e) => setDate(e.target.value)}
                                 type="date"
                                 style={{
-                                  padding: "0.5rem",
-                                  borderRadius: "6px",
+                                  padding: "5px",
+                                  borderRadius: "8px",
                                   border: "1px solid #ced4da",
                                 }}
                                 required
@@ -1839,8 +1837,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 onChange={(e) => setTheTime(e.target.value)}
                                 type="time"
                                 style={{
-                                  padding: "0.5rem",
-                                  borderRadius: "6px",
+                                  padding: "5px",
+                                  borderRadius: "8px",
                                   border: "1px solid #ced4da",
                                 }}
                                 required
@@ -1853,8 +1851,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 placeholder="Link"
                                 type="text"
                                 style={{
-                                  padding: "0.5rem",
-                                  borderRadius: "6px",
+                                  padding: "5px",
+                                  borderRadius: "8px",
                                   border: "1px solid #ced4da",
                                 }}
                                 required
@@ -1867,8 +1865,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 placeholder="Description"
                                 type="text"
                                 style={{
-                                  padding: "0.5rem",
-                                  borderRadius: "6px",
+                                  padding: "5px",
+                                  borderRadius: "8px",
                                   border: "1px solid #ced4da",
                                 }}
                                 required
@@ -1892,7 +1890,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               >
                                 Task Checklist
                               </h4>
-                              <div style={{ display: "grid", gap: "0.5rem" }}>
+                              <div style={{ display: "grid", gap: "5px" }}>
                                 {[
                                   {
                                     key: "checkList1",
@@ -1925,12 +1923,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
-                                      gap: "0.5rem",
-                                      padding: "0.5rem",
+                                      gap: "5px",
+                                      padding: "5px",
                                       backgroundColor: eventFull[item.key]
                                         ? "#d4edda"
                                         : "white",
-                                      borderRadius: "6px",
+                                      borderRadius: "8px",
                                       border: "1px solid #dee2e6",
                                       cursor: "pointer",
                                       transition: "all 0.2s",
@@ -2000,7 +1998,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     color={item.color}
                                     onClick={item.onClick}
                                     style={{
-                                      padding: "0.5rem 1.5rem",
+                                      padding: "5px 1.5rem",
 
                                       fontWeight: "500",
                                       minWidth: "100px",
@@ -2041,11 +2039,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               <button
                                 onClick={seeDelete}
                                 style={{
-                                  padding: "0.5rem 1.5rem",
+                                  padding: "5px 1.5rem",
                                   backgroundColor: partnerColor(),
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "8px",
                                   cursor: "pointer",
 
                                   fontWeight: "500",
@@ -2056,11 +2054,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               <button
                                 onClick={deleteOneMaterialInside}
                                 style={{
-                                  padding: "0.5rem 1.5rem",
+                                  padding: "5px 1.5rem",
                                   backgroundColor: "#dc3545",
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "8px",
                                   cursor: "pointer",
 
                                   fontWeight: "500",
@@ -2084,10 +2082,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       color: partnerColor(),
                       textDecoration: "none",
                       fontWeight: "500",
-                      padding: "0.5rem 1rem",
+                      padding: "5px 1rem",
                       backgroundColor: "white",
                       border: `2px solid ${partnerColor()}`,
-                      borderRadius: "6px",
+                      borderRadius: "8px",
                       textAlign: "center",
                       transition: "all 0.2s",
                     }}
@@ -2109,7 +2107,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     style={{
                       backgroundColor: "white",
                       padding: "1rem",
-                      borderRadius: "6px",
+                      borderRadius: "8px",
                       border: "1px solid #dee2e6",
                       borderLeft: `4px solid ${partnerColor()}`,
                     }}
@@ -2142,7 +2140,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onClick={() => setSeeReplenish(true)}
                       style={{
                         width: "100%",
-                        padding: "0.5rem",
+                        padding: "5px",
 
                         fontWeight: "500",
                       }}
@@ -2183,7 +2181,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         onClick={() => setSeeReplenish(false)}
                         color="red"
                         style={{
-                          padding: "0.5rem 1.5rem",
+                          padding: "5px 1.5rem",
                           fontWeight: "500",
                         }}
                       >
@@ -2193,7 +2191,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         onClick={handleScheduleReplenish}
                         color="green"
                         style={{
-                          padding: "0.5rem 1.5rem",
+                          padding: "5px 1.5rem",
                           fontWeight: "500",
                         }}
                       >
@@ -2277,7 +2275,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <label
                     style={{
                       display: "block",
-                      marginBottom: "0.5rem",
+                      marginBottom: "5px",
                       fontWeight: "600",
                       color: "#495057",
                     }}
@@ -2292,8 +2290,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     value={newStudentId}
                     style={{
                       width: "100%",
-                      padding: "0.5rem",
-                      borderRadius: "6px",
+                      padding: "5px",
+                      borderRadius: "8px",
                       border: "1px solid #ced4da",
 
                       backgroundColor: "white",
@@ -2327,7 +2325,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       >
                         Current Classes:
                       </h4>
-                      <div style={{ display: "grid", gap: "0.5rem" }}>
+                      <div style={{ display: "grid", gap: "5px" }}>
                         {tutoringsListOfOneStudent
                           .sort(
                             (a, b) =>
@@ -2341,7 +2339,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 style={{
                                   backgroundColor: "#f8f9fa",
                                   padding: "1rem",
-                                  borderRadius: "6px",
+                                  borderRadius: "8px",
                                   border: "1px solid #dee2e6",
                                 }}
                               >
@@ -2351,7 +2349,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     justifyContent: "space-between",
                                     alignItems: "center",
                                     flexWrap: "wrap",
-                                    gap: "0.5rem",
+                                    gap: "5px",
                                   }}
                                 >
                                   <div>
@@ -2366,7 +2364,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <div
                                       style={{
                                         color: "#6c757d",
-                                        marginTop: "0.15rem",
+                                        marginTop: "2px",
                                       }}
                                     >
                                       {item.day} - {item.time} -
@@ -2376,7 +2374,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         style={{
                                           color: partnerColor(),
                                           textDecoration: "none",
-                                          marginLeft: "0.5rem",
+                                          marginLeft: "5px",
                                         }}
                                       >
                                         Access Link
@@ -2384,18 +2382,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     </div>
                                   </div>
                                   <div
-                                    style={{ display: "flex", gap: "0.5rem" }}
+                                    style={{ display: "flex", gap: "5px" }}
                                   >
                                     <button
                                       onClick={() => {
                                         seeEditOneTutoring(item);
                                       }}
                                       style={{
-                                        padding: "0.5rem 1rem",
+                                        padding: "5px 1rem",
                                         backgroundColor: partnerColor(),
                                         color: "white",
                                         border: "none",
-                                        borderRadius: "4px",
+                                        borderRadius: "8px",
                                         cursor: "pointer",
                                       }}
                                     >
@@ -2404,11 +2402,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <button
                                       onClick={() => deleteTutoring(item)}
                                       style={{
-                                        padding: "0.5rem 1rem",
+                                        padding: "5px 1rem",
                                         backgroundColor: "#dc3545",
                                         color: "white",
                                         border: "none",
-                                        borderRadius: "4px",
+                                        borderRadius: "8px",
                                         cursor: "pointer",
                                       }}
                                     >
@@ -2451,8 +2449,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       backgroundColor: "#dc3545",
                       color: "white",
                       border: "none",
-                      borderRadius: "4px",
-                      padding: "0.5rem 1rem",
+                      borderRadius: "8px",
+                      padding: "5px 1rem",
                       cursor: "pointer",
                     }}
                   >
@@ -2464,8 +2462,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     onChange={handleWeekDayChange}
                     value={weekDay}
                     style={{
-                      padding: "0.5rem",
-                      borderRadius: "6px",
+                      padding: "5px",
+                      borderRadius: "8px",
                       border: "1px solid #ced4da",
 
                       backgroundColor: "white",
@@ -2486,8 +2484,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     onChange={handleTimeChange}
                     value={timeOfTutoring}
                     style={{
-                      padding: "0.5rem",
-                      borderRadius: "6px",
+                      padding: "5px",
+                      borderRadius: "8px",
                       border: "1px solid #ced4da",
 
                       backgroundColor: "white",
@@ -2512,8 +2510,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     placeholder="Meeting Link"
                     type="text"
                     style={{
-                      padding: "0.5rem",
-                      borderRadius: "6px",
+                      padding: "5px",
+                      borderRadius: "8px",
                       border: "1px solid #ced4da",
                     }}
                     required
@@ -2521,11 +2519,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <button
                     onClick={updateOneTutoring}
                     style={{
-                      padding: "0.5rem 1.5rem",
+                      padding: "5px 1.5rem",
                       backgroundColor: "#28a745",
                       color: "white",
                       border: "none",
-                      borderRadius: "6px",
+                      borderRadius: "8px",
                       cursor: "pointer",
 
                       fontWeight: "500",
@@ -2554,8 +2552,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onChange={handleTheNewWeekDayChange}
                       value={theNewWeekDay}
                       style={{
-                        padding: "0.5rem",
-                        borderRadius: "6px",
+                        padding: "5px",
+                        borderRadius: "8px",
                         border: "1px solid #ced4da",
 
                         backgroundColor: "white",
@@ -2576,8 +2574,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onChange={handleTheNewTimeChange}
                       value={theNewTimeOfTutoring}
                       style={{
-                        padding: "0.5rem",
-                        borderRadius: "6px",
+                        padding: "5px",
+                        borderRadius: "8px",
                         border: "1px solid #ced4da",
 
                         backgroundColor: "white",
@@ -2602,8 +2600,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       type="text"
                       style={{
-                        padding: "0.5rem",
-                        borderRadius: "6px",
+                        padding: "5px",
+                        borderRadius: "8px",
                         border: "1px solid #ced4da",
                       }}
                       required
@@ -2611,11 +2609,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     <button
                       onClick={newTutoring}
                       style={{
-                        padding: "0.5rem 1.5rem",
+                        padding: "5px 1.5rem",
                         backgroundColor: partnerColor(),
                         color: "white",
                         border: "none",
-                        borderRadius: "6px",
+                        borderRadius: "8px",
                         cursor: "pointer",
 
                         fontWeight: "500",
