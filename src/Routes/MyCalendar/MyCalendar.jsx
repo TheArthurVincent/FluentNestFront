@@ -1166,7 +1166,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         style={{
                           padding: "6px",
                           position: "sticky",
-                          zIndex: 10,
+                          zIndex: 1,
                           top: 0,
                           fontWeight: 700,
                           textAlign: "center",
