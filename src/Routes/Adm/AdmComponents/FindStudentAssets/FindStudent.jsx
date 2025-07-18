@@ -419,11 +419,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
         { newPassword },
         { headers }
       );
-      alert("Senha editada com sucesso!");
+      notifyAlert("Senha editada com sucesso!", "green");
       fetchStudents();
       handleSeeModal();
     } catch (error) {
-      alert("Erro ao editar senha");
+      notifyAlert("Erro ao editar senha");
       handleSeeModal();
     }
   };
@@ -649,7 +649,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
-      // ...existing code...
       <Dialog
         open={isVisible}
         onClose={handleSeeModal}
@@ -1131,7 +1130,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
           )}
         </DialogActions>
       </Dialog>
-      // ...existing code...
     </>
   );
 }
