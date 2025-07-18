@@ -89,13 +89,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const futureDates = [];
 
-  useEffect(() => {
-    console.log(thePermissions, "thePermissions");
-  }, []);
-  // AXIOS
   const fetchStudents = async () => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
-      console.log("Fetching students list");
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${myId}`,
@@ -1040,87 +1035,357 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
             >
               {UniversalTexts.calendar}
             </HOne>
-            <div style={{ display: "flex" }}>
-              <button
+
+            {/* Toolbar moderna do calendário */}
+            <div
+              style={{
+                marginBottom: "1.5rem",
+                padding: "0.5rem",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "12px",
+                border: "1px solid #e9ecef",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              }}
+            >
+              {/* Seção Principal - Navegação e Data */}
+              <div
                 style={{
-                  backgroundColor: partnerColor(),
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: "1rem",
+                  marginBottom: "1rem",
                 }}
-                className="button"
-                style={{
-                  backgroundColor: partnerColor(),
-                  display:
-                    thePermissions == "superadmin" ||
-                    thePermissions == "teacher"
-                      ? "flex"
-                      : "none",
-                }}
-                onClick={() => handleSeeModal(false)}
               >
-                Standalone
-              </button>
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  backgroundColor: partnerColor(),
-                }}
-                className="button"
-                style={{
-                  backgroundColor: partnerColor(),
-                  display:
-                    thePermissions == "superadmin" ||
-                    thePermissions == "teacher"
-                      ? "flex"
-                      : "none",
-                }}
-                onClick={() => handleSeeModalOfTutorings()}
-              >
-                Recurrent
-              </button>
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  backgroundColor: partnerColor(),
-                }}
-                className="button"
-                onClick={() => fetchGeneralEvents()}
-              >
-                <i className="fa fa-refresh" aria-hidden="true" />
-              </button>
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  width: "3.5rem",
-                  backgroundColor: partnerColor(),
-                }}
-                className="button2"
-                onClick={() => handleChangeWeek(-7)}
-              >
-                <i className="fa fa-arrow-left" aria-hidden="true" />
-              </button>{" "}
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  width: "3.5rem",
-                  backgroundColor: partnerColor(),
-                }}
-                className="button2"
-                onClick={() => handleChangeWeek(7)}
-              >
-                <i className="fa fa-arrow-right" aria-hidden="true" />
-              </button>
-              <input type="date" onChange={changeToday} />
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  width: "3.5rem",
-                  backgroundColor: partnerColor(),
-                }}
-                className="button2"
-                onClick={handleBackToToday}
-              >
-                Today
-              </button>{" "}
+                {/* Navegação de Semana */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    backgroundColor: "white",
+                    padding: "0.5rem",
+                    borderRadius: "8px",
+                    border: "1px solid #dee2e6",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      backgroundColor: !disabledAvoid
+                        ? "#6c757d"
+                        : partnerColor(),
+                      border: "none",
+                      borderRadius: "6px",
+                      color: "white",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.2s ease",
+                      opacity: !disabledAvoid ? 0.6 : 1,
+                    }}
+                    onClick={() => handleChangeWeek(-7)}
+                    onMouseEnter={(e) => {
+                      if (disabledAvoid) {
+                        e.target.style.transform = "translateX(-2px)";
+                        e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = "translateX(0)";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  >
+                    <i className="fa fa-chevron-left" />
+                  </button>
+
+                  <div
+                    style={{
+                      padding: "0 1rem",
+                      fontWeight: "600",
+                      color: "#495057",
+                      fontSize: "0.95rem",
+                      minWidth: "120px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {today.toLocaleDateString("pt-BR", {
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </div>
+
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      width: "40px",
+                      height: "40px",
+                      backgroundColor: !disabledAvoid
+                        ? "#6c757d"
+                        : partnerColor(),
+                      border: "none",
+                      borderRadius: "6px",
+                      color: "white",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.2s ease",
+                      opacity: !disabledAvoid ? 0.6 : 1,
+                    }}
+                    onClick={() => handleChangeWeek(7)}
+                    onMouseEnter={(e) => {
+                      if (disabledAvoid) {
+                        e.target.style.transform = "translateX(2px)";
+                        e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = "translateX(0)";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  >
+                    <i className="fa fa-chevron-right" />
+                  </button>
+                </div>
+
+                {/* Seletor de Data Customizado */}
+                <div
+                  style={{
+                    position: "relative",
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    border: "1px solid #dee2e6",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    overflow: "hidden",
+                  }}
+                >
+                  <input
+                    type="date"
+                    onChange={changeToday}
+                    style={{
+                      padding: "0.75rem 1rem",
+                      border: "none",
+                      outline: "none",
+                      fontSize: "0.9rem",
+                      fontWeight: "500",
+                      color: "#495057",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
+                      minWidth: "150px",
+                    }}
+                  />
+                  <div
+                    style={{
+                      position: "absolute",
+                      right: "0.75rem",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      pointerEvents: "none",
+                      color: partnerColor(),
+                    }}
+                  >
+                    <i className="fa fa-calendar" />
+                  </div>
+                </div>
+
+                {/* Botão de Atualizar */}
+                <button
+                  disabled={!disabledAvoid}
+                  style={{
+                    padding: "0.75rem",
+                    backgroundColor: !disabledAvoid ? "#6c757d" : "white",
+                    border: `2px solid ${
+                      !disabledAvoid ? "#6c757d" : partnerColor()
+                    }`,
+                    borderRadius: "8px",
+                    color: !disabledAvoid ? "white" : partnerColor(),
+                    cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                    fontSize: "1rem",
+                    transition: "all 0.2s ease",
+                    opacity: !disabledAvoid ? 0.6 : 1,
+                    minWidth: "50px",
+                    height: "50px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onClick={() => fetchGeneralEvents()}
+                  onMouseEnter={(e) => {
+                    if (disabledAvoid) {
+                      e.target.style.backgroundColor = partnerColor();
+                      e.target.style.color = "white";
+                      e.target.style.transform = "rotate(180deg)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (disabledAvoid) {
+                      e.target.style.backgroundColor = "white";
+                      e.target.style.color = partnerColor();
+                      e.target.style.transform = "rotate(0deg)";
+                    }
+                  }}
+                >
+                  <i className="fa fa-refresh" />
+                </button>
+              </div>
+
+              {/* Seção de Ações - Criar Eventos */}
+              {(thePermissions === "superadmin" ||
+                thePermissions === "teacher") && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.75rem",
+                    flexWrap: "wrap",
+                    paddingTop: "1rem",
+                    borderTop: "1px solid #e9ecef",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.85rem",
+                      fontWeight: "600",
+                      color: "#6c757d",
+                      marginRight: "0.5rem",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.25rem",
+                    }}
+                  >
+                    <i className="fa fa-plus-circle" />
+                    <span>Criar Evento:</span>
+                  </div>
+
+                  {/* Botão Standalone */}
+                  <button
+                    style={{
+                      padding: "0.6rem 1.2rem",
+                      backgroundColor: "white",
+                      border: `2px solid ${partnerColor()}`,
+                      borderRadius: "20px",
+                      color: partnerColor(),
+                      cursor: "pointer",
+                      fontSize: "0.85rem",
+                      fontWeight: "600",
+                      transition: "all 0.2s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                    }}
+                    onClick={() => handleSeeModal(false)}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = partnerColor();
+                      e.target.style.color = "white";
+                      e.target.style.transform = "translateY(-2px)";
+                      e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = "white";
+                      e.target.style.color = partnerColor();
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  >
+                    <i className="fa fa-calendar-plus-o" />
+                    <span>Aula Única</span>
+                  </button>
+
+                  {/* Botão Recurrent */}
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      padding: "0.6rem 1.2rem",
+                      backgroundColor: !disabledAvoid ? "#f8f9fa" : "white",
+                      border: `2px solid ${
+                        !disabledAvoid ? "#6c757d" : "#28a745"
+                      }`,
+                      borderRadius: "20px",
+                      color: !disabledAvoid ? "#6c757d" : "#28a745",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      fontSize: "0.85rem",
+                      fontWeight: "600",
+                      transition: "all 0.2s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      opacity: !disabledAvoid ? 0.6 : 1,
+                    }}
+                    onClick={() => handleSeeModalOfTutorings()}
+                    onMouseEnter={(e) => {
+                      if (disabledAvoid) {
+                        e.target.style.backgroundColor = "#28a745";
+                        e.target.style.color = "white";
+                        e.target.style.transform = "translateY(-2px)";
+                        e.target.style.boxShadow =
+                          "0 4px 12px rgba(0,0,0,0.15)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (disabledAvoid) {
+                        e.target.style.backgroundColor = "white";
+                        e.target.style.color = "#28a745";
+                        e.target.style.transform = "translateY(0)";
+                        e.target.style.boxShadow = "none";
+                      }
+                    }}
+                  >
+                    <i className="fa fa-repeat" />
+                    <span>Aulas Recorrentes</span>
+                  </button>
+
+                  {/* Botão Hoje (Reativado) */}
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      padding: "0.6rem 1.2rem",
+                      backgroundColor: !disabledAvoid ? "#f8f9fa" : "white",
+                      border: `2px solid ${
+                        !disabledAvoid ? "#6c757d" : "#17a2b8"
+                      }`,
+                      borderRadius: "20px",
+                      color: !disabledAvoid ? "#6c757d" : "#17a2b8",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      fontSize: "0.85rem",
+                      fontWeight: "600",
+                      transition: "all 0.2s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      opacity: !disabledAvoid ? 0.6 : 1,
+                    }}
+                    onClick={handleBackToToday}
+                    onMouseEnter={(e) => {
+                      if (disabledAvoid) {
+                        e.target.style.backgroundColor = "#17a2b8";
+                        e.target.style.color = "white";
+                        e.target.style.transform = "translateY(-2px)";
+                        e.target.style.boxShadow =
+                          "0 4px 12px rgba(0,0,0,0.15)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (disabledAvoid) {
+                        e.target.style.backgroundColor = "white";
+                        e.target.style.color = "#17a2b8";
+                        e.target.style.transform = "translateY(0)";
+                        e.target.style.boxShadow = "none";
+                      }
+                    }}
+                  >
+                    <i className="fa fa-home" />
+                    <span>Hoje</span>
+                  </button>
+                </div>
+              )}
             </div>
+
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
@@ -1663,7 +1928,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 alignItems: "center",
                                 justifyContent: "center",
                                 gap: "1rem",
-                                padding: "1rem",
+                                padding: "0.5rem",
                                 backgroundColor: "#f8f9fa",
                                 borderRadius: "8px",
                               }}
@@ -2106,7 +2371,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <div
                     style={{
                       backgroundColor: "white",
-                      padding: "1rem",
+                      padding: "0.5rem",
                       borderRadius: "8px",
                       border: "1px solid #dee2e6",
                       borderLeft: `4px solid ${partnerColor()}`,
@@ -2214,7 +2479,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 position: "fixed",
                 zIndex: 99,
                 display: isModalOfTutoringsVisible ? "block" : "none",
-                padding: "1rem",
+                padding: "0.5rem",
               }}
               onClick={handleCloseModalOfTutorings}
             />
@@ -2338,7 +2603,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 key={index}
                                 style={{
                                   backgroundColor: "#f8f9fa",
-                                  padding: "1rem",
+                                  padding: "0.5rem",
                                   borderRadius: "8px",
                                   border: "1px solid #dee2e6",
                                 }}
