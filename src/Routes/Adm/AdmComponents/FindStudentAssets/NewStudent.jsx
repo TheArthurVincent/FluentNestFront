@@ -49,7 +49,7 @@ export function AllStudents({ headers, id }) {
       return false;
     }
 
-    const isValid = isValidCPF(cpf)
+    const isValid = isValidCPF(cpf);
     if (!isValid) {
       notifyError("CPF inválido!", "red");
       return false;

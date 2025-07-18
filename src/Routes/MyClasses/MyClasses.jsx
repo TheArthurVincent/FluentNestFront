@@ -54,13 +54,21 @@ export function MyClasses({ headers }) {
   }
 
   async function fetchNextStudentClasses(id) {
+    setLoading(true);
+
     setStudentNXTId(id);
     try {
       const response = await axios.get(`${backDomain}/api/v1/tutoring/${id}`, {
         headers,
       });
       setClasses(response.data.formattedTutoringFromParticularStudent);
-    } catch (error) {}
+      console.log(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Erro ao buscar aulas do aluno:", error);
+      notifyError("Erro ao buscar aulas do aluno");
+      setLoading(false);
+    }
   }
   useEffect(() => {
     let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn"));

@@ -12,7 +12,7 @@ import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 export function NewTutoring({ headers, id }) {
   const [newDate, setNewDate] = useState("");
   const [newVideoUrl, setNewVideoUrl] = useState("");
-  const [newAttachments, setAttachments] = useState("");
+  const [importantLink, setImportantLink] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [seeHW, setSeeHW] = useState(false);
   const [loadingHW, setLoadingHW] = useState(false);
@@ -67,7 +67,7 @@ export function NewTutoring({ headers, id }) {
       date: "",
       studentID: selectedStudentID,
       videoUrl: "",
-      attachments: "",
+      importantLink: "",
     };
     setTutorings([...tutorings, newTutoring]);
   };
@@ -117,7 +117,7 @@ export function NewTutoring({ headers, id }) {
 
   const isFormValid =
     tutorings.length > 0 &&
-    tutorings.every((t) => t.videoUrl && t.attachments && t.date);
+    tutorings.every((t) => t.videoUrl && t.importantLink && t.date);
 
   useEffect(() => {
     console.log("New Flashcards:", newFlashcards);
@@ -223,11 +223,12 @@ export function NewTutoring({ headers, id }) {
                     newTutorings[index] = {
                       ...newTutorings[index],
                       videoUrl: e.target.value,
-                      studentID: selectedStudentID, // mantém o studentID atualizado
+                      studentID: selectedStudentID,
                     };
                     setTutorings(newTutorings);
                   }}
                 />
+
                 <input
                   style={{
                     padding: "0.5rem",
@@ -238,10 +239,10 @@ export function NewTutoring({ headers, id }) {
                   required
                   type="text"
                   placeholder="Pasta da Aula"
-                  value={tutoring.attachments}
+                  value={tutoring.importantLink}
                   onChange={(e) => {
                     const newTutorings = [...tutorings];
-                    newTutorings[index].attachments = e.target.value;
+                    newTutorings[index].importantLink = e.target.value;
                     setTutorings(newTutorings);
                   }}
                 />
@@ -260,6 +261,76 @@ export function NewTutoring({ headers, id }) {
                     borderRadius: 6,
                     border: `1px solid ${lightGreyColor()}`,
                     fontSize: "1rem",
+                  }}
+                />
+                <input
+                  style={{
+                    padding: "0.5rem",
+                    borderRadius: 6,
+                    border: `1px solid ${lightGreyColor()}`,
+                    fontSize: "1rem",
+                  }}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.xlsx,.xls,.ppt,.pptx"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    const forbiddenTypes = [
+                      "audio/mpeg",
+                      "audio/mp3",
+                      "audio/wav",
+                      "audio/ogg",
+                      "video/mp4",
+                      "video/avi",
+                      "video/mov",
+                      "video/wmv",
+                      "video/mkv",
+                    ];
+
+                    if (
+                      forbiddenTypes.includes(file.type) ||
+                      file.name.toLowerCase().endsWith(".mp3") ||
+                      file.name.toLowerCase().endsWith(".mp4")
+                    ) {
+                      notifyError(
+                        "Arquivos de áudio e vídeo não são permitidos!"
+                      );
+                      e.target.value = "";
+                      return;
+                    }
+
+                    // // Verificar tamanho do arquivo (aproximadamente 7 páginas de PDF = ~3.5MB)
+                    // const maxSizeInBytes = 3.5 * 1024 * 1024; // 3.5MB
+                    // if (file.size > maxSizeInBytes) {
+                    //   notifyError(
+                    //     "Arquivo muito grande! O limite é de aproximadamente 7 páginas de PDF (3.5MB)."
+                    //   );
+                    //   e.target.value = "";
+                    //   return;
+                    // }
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                      const base64String = event.target.result;
+                      console.log(
+                        "Arquivo convertido para base64:",
+                        base64String
+                      );
+                      const newTutorings = [...tutorings];
+                      newTutorings[index] = {
+                        ...newTutorings[index],
+                        importantLink,
+                        base64String,
+                        fileName: file.name,
+                        fileType: file.type,
+                      };
+                      setTutorings(newTutorings);
+                    };
+
+                    reader.onerror = () => {
+                      notifyError("Erro ao processar o arquivo!");
+                    };
+                    reader.readAsDataURL(file);
                   }}
                 />
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -426,7 +497,6 @@ export function NewTutoring({ headers, id }) {
             </div>
           ))}
           <ArvinButton
-            // disabled={disabled || !isFormValid}
             style={{
               marginLeft: "auto",
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",
