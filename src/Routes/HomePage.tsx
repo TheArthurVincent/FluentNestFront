@@ -4,7 +4,9 @@ import GroupClasses from "./GroupClasses/GroupClasses";
 import { isArthurVincent, isLocalHost, verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
+  backDomain,
   onLoggOut,
+  onLoggOutFee,
   pathGenerator,
   updateInfo,
 } from "../Resources/UniversalComponents";
@@ -31,16 +33,19 @@ import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 import Redirect from "../Redirect";
+import axios from "axios";
+import { CircularProgress } from "@mui/material";
 
 export function HomePage({ headers }: HeadersProps) {
-  const [thePermissions, setPermissions] = useState<string>("");
-  const [admin, setAdmin] = useState<boolean>(false);
-  const [teacher, setTeacher] = useState<boolean>(false);
-  const [_StudentId, setStudentId] = useState<string>("");
-  const [picture, setPicture] = useState<string>("");
-  const [change, setChange] = useState<boolean>(true);
-  const [see, setSee] = useState(false);
-
+  var [loading, setLoading] = useState<boolean>(true);
+  var [thePermissions, setPermissions] = useState<string>("");
+  var [admin, setAdmin] = useState<boolean>(false);
+  var [teacher, setTeacher] = useState<boolean>(false);
+  var [_StudentId, setStudentId] = useState<string>("");
+  var [picture, setPicture] = useState<string>("");
+  var [change, setChange] = useState<boolean>(true);
+  var [see, setSee] = useState(false);
+  var [whiteLabel, setWhiteLabel] = useState<any>({});
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
     if (user) {
@@ -54,8 +59,26 @@ export function HomePage({ headers }: HeadersProps) {
       onLoggOut();
       return;
     }
+
     updateInfo(id, headers);
   }, []);
+
+  var seeFee = async () => {
+    if (_StudentId !== "") {
+      console.log("Student ID is set, proceeding with fee check.");
+
+      var response = await axios.get(
+        `${backDomain}/api/v1/studentfeeuptodate/${_StudentId}`
+      );
+      if (response.data.feeUpToDate === false) {
+        onLoggOutFee();
+      } else {
+        console.log("Fee is up to date");
+      }
+    } else {
+      console.log("Student ID is not set, skipping fee check.");
+    }
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -63,7 +86,30 @@ export function HomePage({ headers }: HeadersProps) {
     }, 850);
   }, []);
 
-  const appRoutes = [
+  useEffect(() => {
+    setInterval(() => {
+      seeFee();
+      // console.log("Checking fee status 30...");
+    }, 30000);
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      seeFee();
+      console.log("Checking fee status first...");
+    }, 2000);
+  }, [_StudentId]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      var WL = localStorage.getItem("whiteLabel");
+      if (WL) {
+        setLoading(false);
+      }
+    }, 1500);
+  }, []);
+
+  var appRoutes = [
     {
       title: "Blog",
       path: "/",
@@ -178,51 +224,59 @@ export function HomePage({ headers }: HeadersProps) {
   ];
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100vh",
-        justifyContent: "space-between",
-      }}
-    >
-      <TopBar />
-      <Routes>
-        {appRoutes.map((component, index) => {
-          return (
-            <Route
-              key={index}
-              path={`${
-                component.path ? component.path : pathGenerator(component.title)
-              }/*`}
-              element={
-                verifyToken() ? (
-                  <>
-                    <BlogRouteSizeControlBox
-                      style={{ gap: "1rem" }}
-                    >
-                      {component.component}
-                      {component.levelcard && (
-                        <LevelCard
-                          change={change}
-                          headers={headers}
-                          _StudentId={_StudentId}
-                          picture={picture}
-                        />
-                      )}
-                    </BlogRouteSizeControlBox>
-                  </>
-                ) : (
-                  <Login />
-                )
-              }
-            />
-          );
-        })}
-      </Routes>
-      <AppFooter see={see} />
-      <Outlet />
-    </div>
+    <>
+      {loading ? (
+        <RouteDiv>
+          <CircularProgress />
+        </RouteDiv>
+      ) : (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            justifyContent: "space-between",
+          }}
+        >
+          <TopBar />
+          <Routes>
+            {appRoutes.map((component, index) => {
+              return (
+                <Route
+                  key={index}
+                  path={`${
+                    component.path
+                      ? component.path
+                      : pathGenerator(component.title)
+                  }/*`}
+                  element={
+                    verifyToken() ? (
+                      <>
+                        <BlogRouteSizeControlBox style={{ gap: "1rem" }}>
+                          {component.component}
+                          {component.levelcard && (
+                            <LevelCard
+                              change={change}
+                              headers={headers}
+                              _StudentId={_StudentId}
+                              picture={picture}
+                            />
+                          )}
+                        </BlogRouteSizeControlBox>
+                      </>
+                    ) : (
+                      <Login />
+                    )
+                  }
+                />
+              );
+            })}
+          </Routes>
+          <AppFooter see={see} />
+          <Outlet />
+        </div>
+      )}
+    </>
   );
 }
 
