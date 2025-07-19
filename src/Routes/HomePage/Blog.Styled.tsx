@@ -96,19 +96,11 @@ export const IFrameAsaas = styled.iframe`
   margin-left: auto;
   position: relative;
   border: none;
-  @media (max-width: 860px) {
+  @media (max-width: 1500px) {
     min-width: 700px;
     min-height: 360px;
   }
-  @media (max-width: 780px) {
-    min-width: 660px;
-    min-height: 340px;
-  }
-  @media (max-width: 740px) {
-    min-width: 610px;
-    min-height: 315px;
-  }
-  @media (max-width: 700px) {
+  @media (max-width: 1380px) {
     min-width: 550px;
     min-height: 285px;
   }

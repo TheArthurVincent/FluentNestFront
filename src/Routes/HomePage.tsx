@@ -116,7 +116,7 @@ export function HomePage({ headers }: HeadersProps) {
           JSON.parse(WL).backgroundColor || "#e3e3e3ff";
         setLoading(false);
       }
-    }, 1000);
+    }, 2000);
   }, []);
 
   var appRoutes = [
