@@ -36,6 +36,15 @@ import Redirect from "../Redirect";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 
+import {
+  partnerColor,
+  theBackgroundColor,
+  textPrimaryColorContrast,
+  logoPartner,
+  textTitleFont,
+  textGeneralFont,
+} from "../Styles/Styles";
+
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
   var [thePermissions, setPermissions] = useState<string>("");
@@ -45,7 +54,6 @@ export function HomePage({ headers }: HeadersProps) {
   var [picture, setPicture] = useState<string>("");
   var [change, setChange] = useState<boolean>(true);
   var [see, setSee] = useState(false);
-  var [whiteLabel, setWhiteLabel] = useState<any>({});
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
     if (user) {
@@ -104,9 +112,11 @@ export function HomePage({ headers }: HeadersProps) {
     setTimeout(() => {
       var WL = localStorage.getItem("whiteLabel");
       if (WL) {
+        document.body.style.backgroundColor =
+          JSON.parse(WL).backgroundColor || "#e3e3e3ff";
         setLoading(false);
       }
-    }, 1500);
+    }, 1000);
   }, []);
 
   var appRoutes = [
@@ -226,9 +236,214 @@ export function HomePage({ headers }: HeadersProps) {
   return (
     <>
       {loading ? (
-        <RouteDiv>
-          <CircularProgress />
-        </RouteDiv>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "100vh",
+            background: `linear-gradient(135deg, ${partnerColor()} 0%, ${theBackgroundColor()} 100%)`,
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {/* Animated background elements */}
+          <div
+            style={{
+              position: "absolute",
+              width: "200px",
+              height: "200px",
+              borderRadius: "50%",
+              background: `${textPrimaryColorContrast()}20`,
+              top: "10%",
+              left: "10%",
+              animation: "float 6s ease-in-out infinite",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              width: "150px",
+              height: "150px",
+              borderRadius: "50%",
+              background: `${textPrimaryColorContrast()}15`,
+              bottom: "20%",
+              right: "15%",
+              animation: "float 8s ease-in-out infinite reverse",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              width: "100px",
+              height: "100px",
+              borderRadius: "50%",
+              background: `${textPrimaryColorContrast()}10`,
+              top: "50%",
+              right: "10%",
+              animation: "float 4s ease-in-out infinite",
+            }}
+          />
+
+          {/* Main loading content */}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "2rem",
+              zIndex: 1,
+              textAlign: "center",
+            }}
+          >
+            {/* Logo Partner */}
+            <div
+              style={{
+                width: "120px",
+                height: "120px",
+                borderRadius: "20px",
+                background: `${textPrimaryColorContrast()}15`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                backdropFilter: "blur(10px)",
+                border: `2px solid ${textPrimaryColorContrast()}30`,
+                animation: "pulse 2s ease-in-out infinite",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={logoPartner()}
+                alt="Logo"
+                style={{
+                  width: "90%",
+                  height: "90%",
+                  objectFit: "contain",
+                }}
+                onError={(e) => {
+                  // Fallback se a imagem não carregar
+                  e.currentTarget.style.display = "none";
+                  if (e.currentTarget.parentElement) {
+                    e.currentTarget.parentElement.innerHTML = `
+                <div style="
+                  font-family: ${textTitleFont()};
+                  font-size: 2.5rem;
+                  font-weight: bold;
+                  color: ${textPrimaryColorContrast()};
+                ">
+                  A
+                </div>
+              `;
+                  }
+                }}
+              />
+            </div>
+
+            {/* Loading spinner with custom styling */}
+            <div style={{ position: "relative" }}>
+              <CircularProgress
+                size={60}
+                thickness={3}
+                style={{
+                  color: textPrimaryColorContrast(),
+                  filter: `drop-shadow(0 0 10px ${textPrimaryColorContrast()}50)`,
+                }}
+              />
+              <div
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: `${textPrimaryColorContrast()}10`,
+                  backdropFilter: "blur(10px)",
+                }}
+              />
+            </div>
+
+            {/* Loading text */}
+            <div
+              style={{
+                color: textPrimaryColorContrast(),
+                fontSize: "2rem",
+                fontFamily: textTitleFont(),
+                animation: "fadeInOut 2s ease-in-out infinite",
+              }}
+            >
+              Loading...
+            </div>
+            {/* Loading dots */}
+            <div
+              style={{
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+              }}
+            >
+              {[0, 1, 2].map((i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    backgroundColor: `${textPrimaryColorContrast()}80`,
+                    animation: `bounce 1.4s ease-in-out infinite both`,
+                    animationDelay: `${i * 0.2}s`,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Add CSS keyframes to document head */}
+          <style>{`
+      @keyframes float {
+        0%, 100% { 
+          transform: translateY(0px) rotate(0deg); 
+        }
+        33% { 
+          transform: translateY(-20px) rotate(5deg); 
+        }
+        66% { 
+          transform: translateY(-10px) rotate(-5deg); 
+        }
+      }
+      
+      @keyframes pulse {
+        0%, 100% { 
+          transform: scale(1); 
+          box-shadow: 0 0 20px ${textPrimaryColorContrast()}30;
+        }
+        50% { 
+          transform: scale(1.05); 
+          box-shadow: 0 0 30px ${textPrimaryColorContrast()}50;
+        }
+      }
+      
+      @keyframes fadeInOut {
+        0%, 100% { 
+          opacity: 0.6; 
+        }
+        50% { 
+          opacity: 1; 
+        }
+      }
+      
+      @keyframes bounce {
+        0%, 80%, 100% { 
+          transform: scale(0); 
+        } 
+        40% { 
+          transform: scale(1); 
+        }
+      }
+    `}</style>
+        </div>
       ) : (
         <div
           style={{
@@ -281,20 +496,51 @@ export function HomePage({ headers }: HeadersProps) {
 }
 
 export default HomePage;
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-  // QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DURAÇÃO DA AULA nos eventos
+// BLOG DO TEACHER
+// DURAÇÃO DA AULA
+// DURAÇÃO DA AULA
+// LINK HOMEWORK QD MARCA SOSZINHO
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+// 🎁 Seu código promocional: yara14cal2
+
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO
+//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
+// DATAS DE NASCIMENTO

@@ -1,7 +1,7 @@
 (function ensureWhiteLabel() {
   try {
     const wl = localStorage.getItem("whiteLabel");
-    if (!wl || wl === "undefined") {
+    if (!wl) {
       // Monta objeto padrão
       const defaultWL = {
         backgroundType: "color",
