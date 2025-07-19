@@ -8,6 +8,7 @@ import { CircularProgress } from "@mui/material";
 import FindStudent from "./FindStudent";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { HOne } from "../../../../Resources/Components/RouteBox";
 
 export function AllStudents({ headers, id }) {
   const [formData, setFormData] = useState({
@@ -43,7 +44,7 @@ export function AllStudents({ headers, id }) {
 
   const validateForm = () => {
     const { name, lastname, email, password, cpf, confirmPassword } = formData;
-    
+
     if (!name || !lastname || !email || !password || !confirmPassword) {
       notifyAlert("Preencha todos os campos obrigatórios!");
       return false;
@@ -58,7 +59,7 @@ export function AllStudents({ headers, id }) {
       notifyAlert("As senhas não coincidem!");
       return false;
     }
-    
+
     return true;
   };
 
@@ -110,39 +111,43 @@ export function AllStudents({ headers, id }) {
     { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
     { label: "CPF", type: "text", key: "cpf", required: true },
     { label: "Senha", type: "password", key: "password", required: true },
-    { label: "Confirme a Senha", type: "password", key: "confirmPassword", required: true },
+    {
+      label: "Confirme a Senha",
+      type: "password",
+      key: "confirmPassword",
+      required: true,
+    },
   ];
 
   return (
     <>
       <FindStudent id={id} uploadStatus={upload} headers={headers} />
-      
-      <div style={{
-        maxWidth: "90%",
-        margin: "1rem auto",
-        padding: "1rem",
-        borderRadius: "8px",
-      }}>
-        <h2 style={{
-          textAlign: "center",
-          marginBottom: "2rem",
-          color: "#333",
-          fontWeight: "600"
-        }}>
-          Novo Aluno
-        </h2>
-
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      <div
+        style={{
+          maxWidth: "90%",
+          margin: "1rem auto",
+          padding: "1rem",
+          borderRadius: "8px",
+        }}
+      >
+        <HOne> Novo Aluno</HOne>
+        <form
+          onSubmit={handleSubmit}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
           {formFields.map(({ label, type, key, required }) => (
             <div key={key}>
-              <label style={{
-                display: "block",
-                marginBottom: "6px",
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#555"
-              }}>
-                {label} {required && <span style={{ color: "#e74c3c" }}>*</span>}
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#555",
+                }}
+              >
+                {label}{" "}
+                {required && <span style={{ color: "#e74c3c" }}>*</span>}
               </label>
               <input
                 type={type}
@@ -150,10 +155,14 @@ export function AllStudents({ headers, id }) {
                 onChange={handleChange(key)}
                 style={{
                   ...inputStyle,
-                  borderColor: formData[key] ? partnerColor() : "#ddd"
+                  borderColor: formData[key] ? partnerColor() : "#ddd",
                 }}
-                onFocus={(e) => e.target.style.borderColor = partnerColor()}
-                onBlur={(e) => e.target.style.borderColor = formData[key] ? partnerColor() : "#ddd"}
+                onFocus={(e) => (e.target.style.borderColor = partnerColor())}
+                onBlur={(e) =>
+                  (e.target.style.borderColor = formData[key]
+                    ? partnerColor()
+                    : "#ddd")
+                }
                 maxLength={key === "cpf" ? 11 : undefined}
               />
             </div>
@@ -175,7 +184,7 @@ export function AllStudents({ headers, id }) {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              transition: "background-color 0.2s"
+              transition: "background-color 0.2s",
             }}
           >
             {isLoading ? (
