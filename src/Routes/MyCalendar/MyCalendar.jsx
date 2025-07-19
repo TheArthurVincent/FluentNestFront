@@ -2779,7 +2779,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     alignItems: "center",
                     gap: "0.5rem",
                   }}
-                  onClick={() => handleSeeModal(false)}
+                  onClick={() => {
+                    fetchStudents();
+                    handleSeeModal(false);
+                  }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = partnerColor();
                     e.target.style.color = "white";
