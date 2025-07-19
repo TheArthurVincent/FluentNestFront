@@ -1485,7 +1485,16 @@ export const onLoggOut = () => {
 export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
   localStorage.removeItem("loggedIn");
-  window.location.assign("/feenotuptodate");
+  localStorage.removeItem("flashcardsToday");
+  localStorage.removeItem("notifications");
+  localStorage.removeItem("voiceGender");
+  localStorage.removeItem("voiceLang");
+  localStorage.removeItem("voiceOption");
+
+  notifyAlert("Sua mensalidade não está em dia. Faça login novamente");
+  setTimeout(() => {
+    window.location.assign("/login");
+  }, 1000);
 };
 
 const socket = io(backDomain);
