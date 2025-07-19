@@ -235,7 +235,53 @@ export function HomePage({ headers }: HeadersProps) {
 
   return (
     <>
-      {loading ? (
+      {!loading ? (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100vh",
+            justifyContent: "space-between",
+          }}
+        >
+          <TopBar />
+          <Routes>
+            {appRoutes.map((component, index) => {
+              return (
+                <Route
+                  key={index}
+                  path={`${
+                    component.path
+                      ? component.path
+                      : pathGenerator(component.title)
+                  }/*`}
+                  element={
+                    verifyToken() ? (
+                      <>
+                        <BlogRouteSizeControlBox style={{ gap: "1rem" }}>
+                          {component.component}
+                          {component.levelcard && (
+                            <LevelCard
+                              change={change}
+                              headers={headers}
+                              _StudentId={_StudentId}
+                              picture={picture}
+                            />
+                          )}
+                        </BlogRouteSizeControlBox>
+                      </>
+                    ) : (
+                      <Login />
+                    )
+                  }
+                />
+              );
+            })}
+          </Routes>
+          <AppFooter see={see} />
+          <Outlet />
+        </div>
+      ) : (
         <div
           style={{
             display: "flex",
@@ -443,52 +489,6 @@ export function HomePage({ headers }: HeadersProps) {
         }
       }
     `}</style>
-        </div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100vh",
-            justifyContent: "space-between",
-          }}
-        >
-          <TopBar />
-          <Routes>
-            {appRoutes.map((component, index) => {
-              return (
-                <Route
-                  key={index}
-                  path={`${
-                    component.path
-                      ? component.path
-                      : pathGenerator(component.title)
-                  }/*`}
-                  element={
-                    verifyToken() ? (
-                      <>
-                        <BlogRouteSizeControlBox style={{ gap: "1rem" }}>
-                          {component.component}
-                          {component.levelcard && (
-                            <LevelCard
-                              change={change}
-                              headers={headers}
-                              _StudentId={_StudentId}
-                              picture={picture}
-                            />
-                          )}
-                        </BlogRouteSizeControlBox>
-                      </>
-                    ) : (
-                      <Login />
-                    )
-                  }
-                />
-              );
-            })}
-          </Routes>
-          <AppFooter see={see} />
-          <Outlet />
         </div>
       )}
     </>
