@@ -7,12 +7,12 @@ import { lightGreyColor, partnerColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function NewTutoring({ headers, id }) {
   const [newDate, setNewDate] = useState("");
   const [newVideoUrl, setNewVideoUrl] = useState("");
-  const [newAttachments, setAttachments] = useState("");
+  const [importantLink, setImportantLink] = useState("");
   const [dueDate, setDueDate] = useState("");
   const [seeHW, setSeeHW] = useState(false);
   const [loadingHW, setLoadingHW] = useState(false);
@@ -48,7 +48,7 @@ export function NewTutoring({ headers, id }) {
       setStudent(response.data.listOfStudents);
       setLoadingS(false);
     } catch (error) {
-      notifyError("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar alunos");
     }
   };
   useEffect(() => {
@@ -60,41 +60,57 @@ export function NewTutoring({ headers, id }) {
       selectedStudentID === "" ||
       selectedStudentID === "Aluno"
     ) {
-      notifyError("Selecione um aluno antes de adicionar a aula!");
+      notifyAlert("Selecione um aluno antes de adicionar a aula!");
       return;
     }
     const newTutoring = {
       date: "",
       studentID: selectedStudentID,
       videoUrl: "",
-      attachments: "",
+      importantLink: "",
     };
     setTutorings([...tutorings, newTutoring]);
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setButton(<CircularProgress style={{ color: partnerColor() }} />);
+
     try {
+      // Configurar timeout maior para uploads de arquivos
+      const config = {
+        headers: {
+          ...headers,
+          "Content-Type": "application/json",
+        },
+        timeout: 60000, // 60 segundos
+      };
+
       const response = await axios.post(
         `${backDomain}/api/v1/tutoring/`,
         { tutorings, description: newHWDescription, dueDate, newFlashcards },
-        {
-          headers,
-        }
+        config
       );
-      notifyError("Aulas criadas com sucesso!");
+      notifyAlert("Aulas criadas com sucesso!", "green");
       setTutorings([]);
       setNewHWDescription("");
+      setNewFlashcardsList("");
+      setDueDate("");
+      setShowHW(false);
+      setShowFC(false);
       setButton("Criar");
     } catch (error) {
+      console.error("Erro ao enviar dados:", error);
       setButton("Criar");
-      notifyError("Erro ao salvar aulas");
-      setStandardValue("Aluno");
+      if (error.code === "ECONNABORTED") {
+        notifyAlert("Timeout: Arquivo muito grande ou conexão lenta");
+      } else {
+        notifyAlert("Erro ao salvar aulas");
+      }
     }
   };
 
   const postHW = async () => {
-    setLoadingHW(true);
     setLoadingHW(true);
     try {
       const response = await axios.post(
@@ -104,20 +120,20 @@ export function NewTutoring({ headers, id }) {
           headers,
         }
       );
-      notifyError("HW criado com sucesso!");
+      notifyAlert("HW criado com sucesso!");
       setTutorings([]);
       setNewHWDescription("");
       setLoadingHW(false);
     } catch (error) {
       setLoadingHW(false);
-      notifyError("Erro ao salvar aulas");
+      notifyAlert("Erro ao salvar aulas");
       setStandardValue("Aluno");
     }
   };
 
   const isFormValid =
     tutorings.length > 0 &&
-    tutorings.every((t) => t.videoUrl && t.attachments && t.date);
+    tutorings.every((t) => t.videoUrl && t.importantLink && t.date);
 
   useEffect(() => {
     console.log("New Flashcards:", newFlashcards);
@@ -223,11 +239,12 @@ export function NewTutoring({ headers, id }) {
                     newTutorings[index] = {
                       ...newTutorings[index],
                       videoUrl: e.target.value,
-                      studentID: selectedStudentID, // mantém o studentID atualizado
+                      studentID: selectedStudentID,
                     };
                     setTutorings(newTutorings);
                   }}
                 />
+
                 <input
                   style={{
                     padding: "0.5rem",
@@ -238,10 +255,10 @@ export function NewTutoring({ headers, id }) {
                   required
                   type="text"
                   placeholder="Pasta da Aula"
-                  value={tutoring.attachments}
+                  value={tutoring.importantLink}
                   onChange={(e) => {
                     const newTutorings = [...tutorings];
-                    newTutorings[index].attachments = e.target.value;
+                    newTutorings[index].importantLink = e.target.value;
                     setTutorings(newTutorings);
                   }}
                 />
@@ -260,6 +277,125 @@ export function NewTutoring({ headers, id }) {
                     borderRadius: 6,
                     border: `1px solid ${lightGreyColor()}`,
                     fontSize: "1rem",
+                  }}
+                />
+                <input
+                  style={{
+                    padding: "0.5rem",
+                    borderRadius: 6,
+                    border: `1px solid ${lightGreyColor()}`,
+                    fontSize: "1rem",
+                  }}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.txt,.xlsx,.xls,.ppt,.pptx"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+
+                    // Validação de tipo mais rigorosa
+                    const allowedTypes = [
+                      "application/pdf",
+                      "application/msword",
+                      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                      "text/plain",
+                      "application/vnd.ms-excel",
+                      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                      "application/vnd.ms-powerpoint",
+                      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    ];
+
+                    const allowedExtensions = [
+                      ".pdf",
+                      ".doc",
+                      ".docx",
+                      ".txt",
+                      ".xlsx",
+                      ".xls",
+                      ".ppt",
+                      ".pptx",
+                      ".jpg",
+                      ".jpeg",
+                      ".png",
+                    ];
+                    const fileExtension = file.name
+                      .toLowerCase()
+                      .substring(file.name.lastIndexOf("."));
+
+                    if (
+                      !allowedTypes.includes(file.type) &&
+                      !allowedExtensions.includes(fileExtension)
+                    ) {
+                      notifyAlert("Tipo de arquivo não permitido!");
+                      e.target.value = "";
+                      return;
+                    }
+                    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
+                    if (file.size > maxSizeInBytes) {
+                      notifyAlert("Arquivo muito grande! O limite é de 10MB.");
+                      e.target.value = "";
+                      return;
+                    }
+                    if (file.size === 0) {
+                      notifyAlert("Arquivo está vazio!");
+                      e.target.value = "";
+                      return;
+                    }
+
+                    const reader = new FileReader();
+
+                    reader.onload = (event) => {
+                      try {
+                        const base64String = event.target.result;
+
+                        // Validar se o base64 foi gerado corretamente
+                        if (!base64String || base64String.length < 100) {
+                          notifyAlert(
+                            "Erro ao processar o arquivo. Tente novamente."
+                          );
+                          e.target.value = "";
+                          return;
+                        }
+
+                        // Remover o prefixo data:mime/type;base64, se necessário
+                        const base64Data = base64String.includes(",")
+                          ? base64String.split(",")[1]
+                          : base64String;
+
+                        console.log("Arquivo processado com sucesso:", {
+                          fileName: file.name,
+                          fileSize: file.size,
+                          fileType: file.type,
+                          base64Length: base64Data.length,
+                        });
+
+                        const newTutorings = [...tutorings];
+                        newTutorings[index] = {
+                          ...newTutorings[index],
+                          base64String: base64Data,
+                          fileName: file.name,
+                          fileType: file.type,
+                          fileSize: file.size,
+                        };
+                        setTutorings(newTutorings);
+                      } catch (error) {
+                        console.error("Erro ao processar arquivo:", error);
+                        notifyAlert("Erro ao processar o arquivo!");
+                        e.target.value = "";
+                      }
+                    };
+
+                    reader.onerror = (error) => {
+                      console.error("Erro ao ler arquivo:", error);
+                      notifyAlert("Erro ao ler o arquivo!");
+                      e.target.value = "";
+                    };
+
+                    reader.onabort = () => {
+                      notifyAlert("Leitura do arquivo foi cancelada!");
+                      e.target.value = "";
+                    };
+
+                    reader.readAsDataURL(file);
                   }}
                 />
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -426,7 +562,6 @@ export function NewTutoring({ headers, id }) {
             </div>
           ))}
           <ArvinButton
-            // disabled={disabled || !isFormValid}
             style={{
               marginLeft: "auto",
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",

@@ -11,7 +11,7 @@ import axios from "axios";
 import { levels } from "./RankingLevelsList";
 import { partnerColor } from "../../../Styles/Styles";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
-import { notifyError } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const [students, setStudents] = useState<any>([]);
@@ -61,7 +61,7 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
       console.error(error);
       setLoading(false);
       setFIRST(false);
-      notifyError("Erro ao encontrar alunos");
+      notifyAlert("Erro ao encontrar alunos");
     } finally {
       setFIRST(false);
       setLoading(false);

@@ -14,7 +14,7 @@ export const DivCardLevel = styled.div`
   width: 7rem;
   height: 7rem;
   margin: auto;
-  @media (max-width: 1380px) {
+  @media (max-width: 1000px) {
     display: none;
   }
 `;
@@ -36,14 +36,14 @@ export const ExternalDivCardBlogLevel = styled.div`
 `;
 export const DivDisapearBig = styled.div`
   margin-top: 0.3rem;
-  @media (max-width: 1380px) {
+  @media (max-width: 1000px) {
     display: none;
   }
 `;
 export const DivSeeBig = styled.div`
   display: none;
   font-size: 10px;
-  @media (max-width: 1380px) {
+  @media (max-width: 1000px) {
     display: flex;
     gap: 1rem;
     justify-content: space-between;
@@ -81,7 +81,7 @@ export const NewLevelCardComponent = styled.div`
   font-size: 14px;
   justify-content: center;
   text-align: center;
-  @media (max-width: 1380px) {
+  @media (max-width: 1000px) {
     width: 93vw;
     display: flex;
     padding: 10spx;
@@ -93,7 +93,7 @@ export const TextLevelCard = styled.div`
   position: relative;
   top: 30%;
   left: 0%;
-  @media (max-width: 1380px) {
+  @media (max-width: 1000px) {
     position: static;
     align-items: center;
   }
@@ -115,7 +115,7 @@ export const LevelCardLevel = styled.img`
   z-index: 3;
   transform: translate(-50%, -40%);
   animation: ${spinAnimation} 1s ease-out forwards;
-  @media (max-width: 1380px) {
+  @media (max-width: 1000px) {
     top: 26.5%;
     left: -40%;
     width: 6rem;

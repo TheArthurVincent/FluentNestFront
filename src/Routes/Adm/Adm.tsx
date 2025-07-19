@@ -17,6 +17,7 @@ import { localStorageLoggedIn } from "../../App";
 import NewHomeworkAssignment from "./AdmComponents/ClassesManagement/NewHomework";
 import { Tooltip } from "@mui/material";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
+import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignments/PendingHomeworkAssignments";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
@@ -42,7 +43,12 @@ export function Adm({ headers }: HeadersProps) {
       value: "3",
       tooltip:
         "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
-      component: <NewHomeworkAssignment id={id} headers={headers} />,
+      component: (
+        <>
+          <NewHomeworkAssignment id={id} headers={headers} />
+          <PendingHomeworkAssignment id={id} headers={headers} />
+        </>
+      ),
     },
     {
       title: "Comentários",

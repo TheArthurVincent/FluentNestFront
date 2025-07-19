@@ -13,12 +13,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 import { levels } from "../Routes/Ranking/RankingComponents/RankingLevelsList";
-import { notifyError } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
-
-
-
-
-
+import { notifyAlert } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
 
 const items = levels();
 export var colorOfTheTShirt;
@@ -127,10 +122,7 @@ export const FormGrid = styled.form`
 export const DivGrid = styled.div`
   display: grid;
   gap: 1rem;
-  grid-template-columns: 1fr 1fr 1fr;
-  @media (max-width: 675px) {
-    grid-template-columns: 1fr;
-  }
+  grid-template-columns: 1fr;
 `;
 export const DivMarginBorder = styled.div.attrs({
   className: "box-shadow-white",
@@ -1486,7 +1478,7 @@ export const onLoggOut = () => {
   if (auth) {
     localStorage.removeItem("authorization");
   }
-  notifyError("Faça login novamente");
+  notifyAlert("Faça login novamente");
   window.location.assign("/login");
 };
 
@@ -1504,9 +1496,8 @@ export const registerUser = (studentID) => {
 
 export default socket;
 
-
 export function isValidCPF(cpf) {
-  cpf = cpf.replace(/[^\d]+/g, '');
+  cpf = cpf.replace(/[^\d]+/g, "");
   if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
 
   let sum = 0;

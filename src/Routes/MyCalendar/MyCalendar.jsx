@@ -332,11 +332,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setNewStudentId(eTargetValue);
     setShowClasses(true);
   };
+
   const postNewEvent = async () => {
     setLoadingInfo(true);
+    const user = JSON.parse(localStorage.getItem("loggedIn"));
+    const id = user.id;
     try {
       const response = await axios.post(
-        `${backDomain}/api/v1/event/`,
+        `${backDomain}/api/v1/event/${id}`,
         {
           category,
           studentID: isTutoring ? newStudentId : null,
@@ -603,6 +606,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const seeEditOneTutoring = (e) => {
     setSeeEditTutoring(true);
+    fetchStudents();
     setTutoringId(e.id);
     setSeeReplenish(false);
     setLink(e.link);
@@ -689,30 +693,22 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const handleCategoryChange = (e) => {
     setLoadingInfo(true);
     if (e.target.value == "Rep") {
-      setLink(
-        "https://us06web.zoom.us/j/85428761031?pwd=NUrme8jYCSNMjlGfyEPehIKXsFQJ0r.1"
-      );
+      setLink("");
       setDescription("Aula de Reposição referente ao dia");
       setIsTutoring(true);
     }
     if (e.target.value == "Marcar Reposição") {
-      setLink(
-        "https://us06web.zoom.us/j/85428761031?pwd=NUrme8jYCSNMjlGfyEPehIKXsFQJ0r.1"
-      );
+      setLink("");
       setDescription("");
       setIsTutoring(false);
     }
     if (e.target.value == "Standalone") {
-      setLink(
-        "https://us06web.zoom.us/j/85428761031?pwd=NUrme8jYCSNMjlGfyEPehIKXsFQJ0r.1"
-      );
+      setLink("");
       setDescription("Aula única de");
       setIsTutoring(false);
     }
     if (e.target.value == "Group Class") {
-      setLink(
-        "https://us06web.zoom.us/j/82907112201?pwd=fF9Bv9Ll9U9pPXmdOS7KJsak2SHngM.1"
-      );
+      setLink("");
       setDescription("Class Theme:");
       setIsTutoring(false);
     }
@@ -1201,7 +1197,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   isEventTimeNow(event, hj, date) && (
                                     <div
                                       style={{
-                                        background: `linear-gradient(90deg, ${partnerColor()}, ${partnerColor()}dd)`,
+                                        background: "green",
                                         padding: "2px",
                                         position: "relative",
                                         overflow: "hidden",
@@ -1213,7 +1209,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                           alignItems: "center",
                                           justifyContent: "center",
                                           color: "white",
-
                                           fontWeight: "600",
                                           textTransform: "uppercase",
                                           letterSpacing: "0.5px",
@@ -2697,7 +2692,45 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <i className="fa fa-calendar" />
                 </div>
               </div>
-
+              {/* Botão Hoje (Reativado) */}
+              <button
+                disabled={!disabledAvoid}
+                style={{
+                  padding: "0.6rem 1.2rem",
+                  backgroundColor: !disabledAvoid ? "#f8f9fa" : "white",
+                  border: `2px solid ${!disabledAvoid ? "#6c757d" : "#17a2b8"}`,
+                  borderRadius: "20px",
+                  color: !disabledAvoid ? "#6c757d" : "#17a2b8",
+                  cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                  fontSize: "0.85rem",
+                  fontWeight: "600",
+                  transition: "all 0.2s ease",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.5rem",
+                  opacity: !disabledAvoid ? 0.6 : 1,
+                }}
+                onClick={handleBackToToday}
+                onMouseEnter={(e) => {
+                  if (disabledAvoid) {
+                    e.target.style.backgroundColor = "#17a2b8";
+                    e.target.style.color = "white";
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (disabledAvoid) {
+                    e.target.style.backgroundColor = "white";
+                    e.target.style.color = "#17a2b8";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "none";
+                  }
+                }}
+              >
+                <i className="fa fa-home" />
+                <span>Hoje</span>
+              </button>
               {/* Botão de Atualizar */}
               <button
                 disabled={!disabledAvoid}
@@ -2783,7 +2816,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     alignItems: "center",
                     gap: "0.5rem",
                   }}
-                  onClick={() => handleSeeModal(false)}
+                  onClick={() => {
+                    fetchStudents();
+                    handleSeeModal(false);
+                  }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = partnerColor();
                     e.target.style.color = "white";
@@ -2800,7 +2836,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <i className="fa fa-calendar-plus-o" />
                   <span>Aula Única</span>
                 </button>
-
                 {/* Botão Recurrent */}
                 <button
                   disabled={!disabledAvoid}
@@ -2842,49 +2877,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <i className="fa fa-repeat" />
                   <span>Aulas Recorrentes</span>
                 </button>
-
-                {/* Botão Hoje (Reativado) */}
-                {/* <button
-                    disabled={!disabledAvoid}
-                    style={{
-                      padding: "0.6rem 1.2rem",
-                      backgroundColor: !disabledAvoid ? "#f8f9fa" : "white",
-                      border: `2px solid ${
-                        !disabledAvoid ? "#6c757d" : "#17a2b8"
-                      }`,
-                      borderRadius: "20px",
-                      color: !disabledAvoid ? "#6c757d" : "#17a2b8",
-                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      fontSize: "0.85rem",
-                      fontWeight: "600",
-                      transition: "all 0.2s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      opacity: !disabledAvoid ? 0.6 : 1,
-                    }}
-                    onClick={handleBackToToday}
-                    onMouseEnter={(e) => {
-                      if (disabledAvoid) {
-                        e.target.style.backgroundColor = "#17a2b8";
-                        e.target.style.color = "white";
-                        e.target.style.transform = "translateY(-2px)";
-                        e.target.style.boxShadow =
-                          "0 4px 12px rgba(0,0,0,0.15)";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (disabledAvoid) {
-                        e.target.style.backgroundColor = "white";
-                        e.target.style.color = "#17a2b8";
-                        e.target.style.transform = "translateY(0)";
-                        e.target.style.boxShadow = "none";
-                      }
-                    }}
-                  >
-                    <i className="fa fa-home" />
-                    <span>Hoje</span>
-                  </button> */}
               </div>
             )}
           </div>

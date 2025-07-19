@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
 import { TextField, Grid, CircularProgress, Alert } from "@mui/material";
@@ -175,13 +175,13 @@ export default function Subscription() {
         return;
       }
 
-      notifyError(`Pagamento aprovado!`, "green");
+      notifyAlert(`Pagamento aprovado!`, "green");
       setTimeout(() => {
         window.location.assign("/verify-email");
       }, 1000);
     } catch (err: any) {
       setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
-      notifyError(err.response?.data?.message || "Tente novamente");
+      notifyAlert(err.response?.data?.message || "Tente novamente");
       console.log(err.response?.data?.message || "Tente novamente");
     } finally {
       setLoading(false);
@@ -282,7 +282,7 @@ export default function Subscription() {
         );
 
         if (response.data.erro) {
-          notifyError("CEP não encontrado.");
+          notifyAlert("CEP não encontrado.");
           return;
         }
 
@@ -296,7 +296,7 @@ export default function Subscription() {
           state: uf,
         }));
       } catch (error) {
-        notifyError("Erro ao buscar endereço.");
+        notifyAlert("Erro ao buscar endereço.");
         console.error("Erro ViaCEP:", error);
       }
     };

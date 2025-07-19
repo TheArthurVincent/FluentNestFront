@@ -1,21 +1,21 @@
 import React, { useState } from "react";
-import { HOne } from "../../../../Resources/Components/RouteBox";
 import axios from "axios";
 import {
   backDomain,
   isValidCPF,
 } from "../../../../Resources/UniversalComponents";
-import { CircularProgress, TextField } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import FindStudent from "./FindStudent";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
-import { notifyError } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { HOne } from "../../../../Resources/Components/RouteBox";
 
 export function AllStudents({ headers, id }) {
   const [formData, setFormData] = useState({
     name: "",
     lastname: "",
     email: "",
-    dateOfBirth: new Date(),
+    dateOfBirth: "",
     cpf: "",
     password: "",
     confirmPassword: "",
@@ -33,32 +33,33 @@ export function AllStudents({ headers, id }) {
       name: "",
       lastname: "",
       email: "",
-      dateOfBirth: new Date(),
+      dateOfBirth: "",
       cpf: "",
       password: "",
       confirmPassword: "",
     });
     setUpload((prev) => !prev);
-    notifyError("Usuário cadastrado com sucesso!", "green");
+    notifyAlert("Usuário cadastrado com sucesso!", "green");
   };
 
   const validateForm = () => {
     const { name, lastname, email, password, cpf, confirmPassword } = formData;
+
     if (!name || !lastname || !email || !password || !confirmPassword) {
-      notifyError("Preencha todos os campos obrigatórios!", "red");
+      notifyAlert("Preencha todos os campos obrigatórios!");
       return false;
     }
 
-    const isValid = isValidCPF(cpf)
-    if (!isValid) {
-      notifyError("CPF inválido!", "red");
+    if (!isValidCPF(cpf)) {
+      notifyAlert("CPF inválido!");
       return false;
     }
 
     if (password !== confirmPassword) {
-      notifyError("As senhas não coincidem!", "red");
+      notifyAlert("As senhas não coincidem!");
       return false;
     }
+
     return true;
   };
 
@@ -87,106 +88,110 @@ export function AllStudents({ headers, id }) {
       resetForm();
     } catch (error) {
       console.error(error);
-      notifyError("Erro ao cadastrar aluno: " + error.message, "red");
+      notifyAlert("Erro ao cadastrar aluno");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const formContainerStyle = {
-    margin: "2rem",
-    flexDirection: "column",
-    display: "flex",
-    gap: "1rem",
+  const inputStyle = {
+    width: "100%",
+    padding: "12px",
+    border: "1px solid #ddd",
+    borderRadius: "6px",
+    fontSize: "14px",
+    outline: "none",
+    transition: "border-color 0.2s",
   };
+
+  const formFields = [
+    { label: "Nome", type: "text", key: "name", required: true },
+    { label: "Sobrenome", type: "text", key: "lastname", required: true },
+    { label: "E-mail", type: "email", key: "email", required: true },
+    { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
+    { label: "CPF", type: "text", key: "cpf", required: true },
+    { label: "Senha", type: "password", key: "password", required: true },
+    {
+      label: "Confirme a Senha",
+      type: "password",
+      key: "confirmPassword",
+      required: true,
+    },
+  ];
 
   return (
     <>
       <FindStudent id={id} uploadStatus={upload} headers={headers} />
-      {/* //new student */}
-      <div style={formContainerStyle}>
-        <h1
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            fontSize: "1.8rem",
-            textAlign: "center",
-            marginBottom: "1rem",
-          }}
-        >
-          Novo Aluno
-        </h1>
-
+      <div
+        style={{
+          maxWidth: "90%",
+          margin: "1rem auto",
+          padding: "1rem",
+          borderRadius: "8px",
+        }}
+      >
+        <HOne> Novo Aluno</HOne>
         <form
           onSubmit={handleSubmit}
-          style={{
-            display: "grid",
-            gap: "1rem",
-            gridTemplateColumns: "1fr",
-          }}
+          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
         >
-          {[
-            { label: "Nome", type: "text", key: "name" },
-            { label: "Sobrenome", type: "text", key: "lastname" },
-            { label: "E-mail", type: "email", key: "email" },
-            { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
-            {
-              label: "CPF",
-              type: "number",
-              key: "cpf",
-              inputProps: { maxLength: 11 },
-            },
-            { label: "Senha", type: "password", key: "password" },
-            {
-              label: "Confirme a Senha",
-              type: "password",
-              key: "confirmPassword",
-            },
-          ].map(({ label, inputProps, type, key }) => (
-            <TextField
-              key={key}
-              label={label}
-              type={type}
-              fullWidth
-              variant="outlined"
-              value={formData[key]}
-              onChange={handleChange(key)}
-              InputLabelProps={type === "date" ? { shrink: true } : {}}
-              inputProps={inputProps ? inputProps : {}}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: partnerColor() },
-                  "&:hover fieldset": { borderColor: partnerColor() },
-                  "&.Mui-focused fieldset": {
-                    borderColor: partnerColor(),
-                  },
-                },
-                "& label": { color: partnerColor() },
-                "& label.Mui-focused": { color: partnerColor() },
-              }}
-              variant="outlined"
-            />
+          {formFields.map(({ label, type, key, required }) => (
+            <div key={key}>
+              <label
+                style={{
+                  display: "block",
+                  marginBottom: "6px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  color: "#555",
+                }}
+              >
+                {label}{" "}
+                {required && <span style={{ color: "#e74c3c" }}>*</span>}
+              </label>
+              <input
+                type={type}
+                value={formData[key]}
+                onChange={handleChange(key)}
+                style={{
+                  ...inputStyle,
+                  borderColor: formData[key] ? partnerColor() : "#ddd",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = partnerColor())}
+                onBlur={(e) =>
+                  (e.target.style.borderColor = formData[key]
+                    ? partnerColor()
+                    : "#ddd")
+                }
+                maxLength={key === "cpf" ? 11 : undefined}
+              />
+            </div>
           ))}
+
           <button
             type="submit"
             disabled={isLoading}
             style={{
-              backgroundColor: partnerColor(),
+              backgroundColor: isLoading ? "#ccc" : partnerColor(),
               color: "#fff",
-              padding: "12px",
-              fontSize: "1rem",
+              padding: "14px",
+              fontSize: "16px",
+              fontWeight: "600",
               border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
+              borderRadius: "6px",
+              cursor: isLoading ? "not-allowed" : "pointer",
               marginTop: "1rem",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              transition: "background 0.3s",
+              transition: "background-color 0.2s",
             }}
           >
             {isLoading ? (
-              <CircularProgress size={24} style={{ color: "#fff" }} />
+              <>
+                <CircularProgress size={20} style={{ color: "#fff" }} />
+                Cadastrando...
+              </>
             ) : (
               "Cadastrar"
             )}

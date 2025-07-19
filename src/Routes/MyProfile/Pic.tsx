@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { notifyError } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 interface Av {
   user: any;
   setUser: any;
@@ -21,7 +21,7 @@ export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
         const url = await uploadStudentPhoto(file);
         setUser((prev: any) => ({ ...prev, picture: url }));
       } catch (error) {
-        notifyError("Erro ao fazer upload da foto.");
+        notifyAlert("Erro ao fazer upload da foto.");
         console.error(error);
       }
     }

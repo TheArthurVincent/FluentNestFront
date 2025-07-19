@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { notifyError, readText } from "../Functions/FunctionLessons";
+import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import {
   ImgLesson,
   LiGridImageLessons,
@@ -65,9 +65,9 @@ export default function ImageLessonModel({
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
-      notifyError(showThis, "green");
+      notifyAlert(showThis, "green");
     } catch (error) {
-      notifyError("Erro ao enviar cards");
+      notifyAlert("Erro ao enviar cards");
       onLoggOut();
     }
   };
@@ -81,7 +81,7 @@ export default function ImageLessonModel({
         { refs: element.images },
         { headers: actualHeaders }
       );
-      notifyError(
+      notifyAlert(
         `Atualizados: ${response.data.updatedCount} flashcards`,
         "green"
       );
@@ -89,7 +89,7 @@ export default function ImageLessonModel({
     SetLoa(false)
     
     } catch (e) {
-      notifyError("Erro ao atualizar imagens nos flashcards");
+      notifyAlert("Erro ao atualizar imagens nos flashcards");
       console.log(e, "Erro ao atualizar imagens nos flashcards");
     }
   };

@@ -249,7 +249,7 @@ export default LandingPage;
             padding: isMobile ? "1rem" : "0",
             alignItems: isMobile ? "stretch" : "center",
             width: isMobile ? "100%" : "auto",
-            maxWidth: "1380px",
+            maxWidth: "1000px",
           }}
         >
           <TextField
