@@ -12,6 +12,8 @@ import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function NewPost({ headers }) {
   const [newTitle, setNewTitle] = useState("");
@@ -35,12 +37,16 @@ export function NewPost({ headers }) {
       text: newText,
     };
     try {
-      await axios.post(`${backDomain}/api/v1/blogposts/`, newPost, { headers });
-      alert("Post criado com sucesso!");
+      const { id } = JSON.parse(localStorage.getItem("loggedIn"));
+      await axios.post(`${backDomain}/api/v1/blogposts/${id}`, newPost, {
+        headers,
+      });
+      notifyAlert("Post criado com sucesso!", "green");
       window.location.href = "/";
       setLoading(false);
     } catch (error) {
-      alert("Erro ao fazer post");
+      notifyAlert(error.response.data.message, "red");
+      console.error("Error creating post:", error);
       setLoading(false);
     }
   };
@@ -58,7 +64,14 @@ export function NewPost({ headers }) {
         Nova Postagem
       </HOne>
       <Paper sx={{ padding: 3 }} elevation={3}>
-        <form style={{ display: "grid", gap: "1rem" }} onSubmit={handleSubmit}>
+        <form
+          style={{
+            display: "grid",
+            gap: "1rem",
+            fontFamily: textTitleFont(),
+          }}
+          onSubmit={handleSubmit}
+        >
           <TextField
             label="Novo Título"
             fullWidth
@@ -107,9 +120,17 @@ export function NewPost({ headers }) {
             onChange={(e) => setNewText(e.target.value)}
             required
           />
-          <Button variant="contained" color="primary" type="submit">
-            Criar
-          </Button>
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "end",
+              alignItems: "center",
+            }}
+          >
+            <ArvinButton color={partnerColor()} type="submit">
+              Criar
+            </ArvinButton>
+          </span>
         </form>
       </Paper>
     </div>

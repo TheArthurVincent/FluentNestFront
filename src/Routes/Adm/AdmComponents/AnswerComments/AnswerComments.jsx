@@ -72,7 +72,7 @@ export function AllComments({ headers }) {
   };
 
   return (
-    <div sx={{ padding: 2 }}>
+    <div>
       <HOne
         style={{
           fontFamily: textTitleFont(),

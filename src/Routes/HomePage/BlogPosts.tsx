@@ -136,16 +136,27 @@ export function BlogPosts({ headers }: BlogPostsProps) {
   async function fetchData(): Promise<void> {
     setLoading(true);
     try {
-      const response = await axios.get(`${backDomain}/api/v1/blogposts`, {
-        headers: actualHeaders,
-      });
-      setTimeout(() => {
-        const filteredPosts = response.data.listOfPosts.filter(
-          (post: any) => post !== null
-        );
-        setPosts(filteredPosts);
+      const { teacherID } = JSON.parse(localStorage.getItem("loggedIn") || "");
+      const response = await axios.get(
+        `${backDomain}/api/v1/blogposts/${teacherID}`,
+        {
+          headers: actualHeaders,
+        }
+      );
+      console.log(response.data, "aqui");
+      if (response.data.listOfPosts) {
+        setTimeout(() => {
+          const filteredPosts = response.data.listOfPosts.filter(
+            (post: any) => post !== null
+          );
+          console.log(response);
+          setPosts(filteredPosts);
+          setLoading(false);
+        }, 1000);
+      } else {
+        setPosts([]);
         setLoading(false);
-      }, 300);
+      }
     } catch (error: any) {
       notifyAlert(error.response.data.error);
       onLoggOut();
@@ -170,76 +181,87 @@ export function BlogPosts({ headers }: BlogPostsProps) {
         >
           {UniversalTexts.mural}
         </HOne>
-        <div>
-          {posts.map((post: any, index: number) => (
-            <div
-              key={index}
-              style={{
-                maxWidth: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-                textDecoration: "none",
-              }}
-            >
-              {post.title && (
-                <BlogPostTitle>
-                  <span
+        {posts.length > 0 ? (
+          <div>
+            {posts.map((post: any, index: number) => (
+              <div
+                key={index}
+                style={{
+                  maxWidth: "100%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                }}
+              >
+                {post.title && (
+                  <BlogPostTitle>
+                    <span
+                      style={{
+                        maxWidth: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      {!loading && (
+                        <button
+                          style={{
+                            cursor: "pointer",
+                            display:
+                              permissions == "superadmin" ||
+                              permissions == "teacher"
+                                ? "grid"
+                                : "none",
+                          }}
+                          onClick={() => seeEdition(post._id)}
+                        >
+                          <i className="fa fa-edit" aria-hidden="true" />
+                        </button>
+                      )}
+                      <HTwo style={{ fontFamily: textGeneralFont() }}>
+                        {post.title}
+                      </HTwo>
+                    </span>
+                    {post.createdAt && (
+                      <span>{formatDate(post.createdAt)}</span>
+                    )}
+                  </BlogPostTitle>
+                )}
+                {post.videoUrl ? (
+                  <div
                     style={{
-                      maxWidth: "100%",
                       display: "flex",
-                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "1rem",
                     }}
                   >
-                    {!loading && (
-                      <button
-                        style={{
-                          cursor: "pointer",
-                          display:
-                            permissions == "superadmin" ? "grid" : "none",
-                        }}
-                        onClick={() => seeEdition(post._id)}
-                      >
-                        <i className="fa fa-edit" aria-hidden="true" />
-                      </button>
-                    )}
-                    <HTwo style={{ fontFamily: textGeneralFont() }}>
-                      {post.title}
-                    </HTwo>
-                  </span>
-                  {post.createdAt && <span>{formatDate(post.createdAt)}</span>}
-                </BlogPostTitle>
-              )}
-              {post.videoUrl ? (
+                    <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
+                  </div>
+                ) : post.img ? (
+                  <ImgBlog src={post.img} alt="logo" />
+                ) : null}
                 <div
                   style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "1rem",
+                    margin: "1rem auto",
+                    fontSize: "0.8rem",
+                    padding: "1rem",
+                    backgroundColor: "#ffffff",
+                    borderRadius: "10px",
+                    maxWidth: "800px",
+                    lineHeight: "1",
+                    color: "#222",
                   }}
+                  className="limited-text"
                 >
-                  <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
+                  <div dangerouslySetInnerHTML={{ __html: post.text }} />
                 </div>
-              ) : post.img ? (
-                <ImgBlog src={post.img} alt="logo" />
-              ) : null}
-              <div
-                style={{
-                  margin: "1rem auto",
-                  fontSize: "0.8rem",
-                  padding: "1rem",
-                  backgroundColor: "#ffffff",
-                  borderRadius: "10px",
-                  maxWidth: "800px",
-                  lineHeight: "1",
-                  color: "#222",
-                }}
-                className="limited-text"
-              >
-                <div dangerouslySetInnerHTML={{ __html: post.text }} />
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <>
+            <p>Nenhum post encontrado.</p>
+          </>
+        )}
       </div>
       <DivModal
         className="modal"

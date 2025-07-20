@@ -3,6 +3,7 @@ import {
   logoPartner,
   partnerColor,
   textGeneralFont,
+  textPrimaryColorContrast,
 } from "../../Styles/Styles";
 import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
@@ -17,13 +18,17 @@ export function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [fail, setFail] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const [button, setButton] = useState<any>("Entrar");
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setFail(false);
+    setLoading(true);
 
-    setButton(<CircularProgress style={{ color: partnerColor() }} />);
+    setButton(
+      <CircularProgress style={{ color: textPrimaryColorContrast() }} />
+    );
 
     try {
       const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
@@ -48,9 +53,11 @@ export function Login() {
       localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
 
       setButton("Sucesso");
-      window.location.reload();
       window.location.assign("/");
+      // window.location.reload();
+      // setLoading(false);
     } catch (error) {
+      setLoading(false);
       setFail(true);
       setButton("Entrar");
     }
@@ -87,62 +94,66 @@ export function Login() {
               }}
               className="box-shadow-white"
             >
-              <img
-                src={myLogoPartner}
-                alt="arvin logo"
-                style={{
-                  margin: "auto",
-                  height: "6rem",
-                  width: "auto",
-                  maxWidth: "100%",
-                  objectFit: "contain",
-                }}
-              />
-              <Grid item xs={12}>
-                <Grid item xs={12}>
-                  <TextField
-                    label="E-mail"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={(event: any) => setEmail(event.target.value)}
-                    required
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: "#555" },
-                        "&:hover fieldset": { borderColor: "#555" },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#555",
-                        },
-                      },
-                      "& label": { color: "#555" },
-                      "& label.Mui-focused": { color: "#555" },
+              {!loading && (
+                <>
+                  <img
+                    src={myLogoPartner}
+                    alt="arvin logo"
+                    style={{
+                      margin: "auto",
+                      height: "6rem",
+                      width: "auto",
+                      maxWidth: "100%",
+                      objectFit: "contain",
                     }}
                   />
-                </Grid>
-                <br />
-                <TextField
-                  label="Senha"
-                  name="password"
-                  type="password"
-                  value={password}
-                  onChange={(event: any) => setPassword(event.target.value)}
-                  required
-                  fullWidth
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#555" },
-                      "&:hover fieldset": { borderColor: "#555" },
-                      "&.Mui-focused fieldset": {
-                        borderColor: "#555",
-                      },
-                    },
-                    "& label": { color: "#555" },
-                    "& label.Mui-focused": { color: "#555" },
-                  }}
-                />
-              </Grid>
+                  <Grid item xs={12}>
+                    <Grid item xs={12}>
+                      <TextField
+                        label="E-mail"
+                        name="email"
+                        type="email"
+                        value={email}
+                        onChange={(event: any) => setEmail(event.target.value)}
+                        required
+                        fullWidth
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": { borderColor: "#555" },
+                            "&:hover fieldset": { borderColor: "#555" },
+                            "&.Mui-focused fieldset": {
+                              borderColor: "#555",
+                            },
+                          },
+                          "& label": { color: "#555" },
+                          "& label.Mui-focused": { color: "#555" },
+                        }}
+                      />
+                    </Grid>
+                    <br />
+                    <TextField
+                      label="Senha"
+                      name="password"
+                      type="password"
+                      value={password}
+                      onChange={(event: any) => setPassword(event.target.value)}
+                      required
+                      fullWidth
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: "#555" },
+                          "&:hover fieldset": { borderColor: "#555" },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#555",
+                          },
+                        },
+                        "& label": { color: "#555" },
+                        "& label.Mui-focused": { color: "#555" },
+                      }}
+                    />
+                  </Grid>
+                </>
+              )}
               <div
                 style={{
                   display: "flex",
