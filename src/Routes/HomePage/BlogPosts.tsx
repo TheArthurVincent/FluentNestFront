@@ -160,6 +160,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
     } catch (error: any) {
       notifyAlert(error.response.data.error);
       onLoggOut();
+      console.log("BlogPosts.tsx fetchData error:", error);
       setLoading(false);
     }
   }

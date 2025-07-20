@@ -346,7 +346,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       timerDisabled();
     } catch (error) {
       onLoggOut();
-      console.log(error);
+      console.log(error, "ReviewFC");
     }
   };
 
