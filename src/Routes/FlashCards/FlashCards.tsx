@@ -29,7 +29,8 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       const { permissions } = JSON.parse(user);
       setPermissions(permissions);
     } else {
-      onLoggOut("Here FC");
+      onLoggOut();
+      console.log("Here FC");
     }
   }, []);
 
