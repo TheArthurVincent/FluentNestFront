@@ -1469,7 +1469,7 @@ export const updateInfo = async (id, headers) => {
   }
 };
 
-export const onLoggOut = () => {
+export const onLoggOut = (message) => {
   const user = localStorage.getItem("loggedIn");
   const auth = localStorage.getItem("authorization");
   if (user) {
@@ -1478,7 +1478,7 @@ export const onLoggOut = () => {
   if (auth) {
     localStorage.removeItem("authorization");
   }
-  notifyAlert("Faça login novamente");
+  notifyAlert(`Faça login novamente, ${message ? message : ""}`);
   window.location.assign("/login");
 };
 
