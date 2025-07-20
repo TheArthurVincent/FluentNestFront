@@ -65,7 +65,7 @@ export function HomePage({ headers }: HeadersProps) {
       setAdmin(permissions === "superadmin" ? true : false);
       setTeacher(permissions === "teacher" ? true : false);
     } else {
-      onLoggOut("here");
+      onLoggOut("HP");
       return;
     }
 

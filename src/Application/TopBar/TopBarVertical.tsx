@@ -1,23 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import {
-  TopBarVerticalContainer,
-  TopBarNavigation,
-  TopBarNavigationBurger,
-  BackgroundClick,
-  LogoStyle,
-  Hamburguer,
-} from "./TopBar.Styled";
-import {
-  LogoSVG,
-  onLoggOut,
-  SpanHover,
-} from "../../Resources/UniversalComponents";
+import { TopBarVerticalContainer, TopBarNavigation } from "./TopBar.Styled";
+import { SpanHover } from "../../Resources/UniversalComponents";
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
 import { partnerColor } from "../../Styles/Styles";
 import { ItemSideBarProps, ItemTopBarProps, LinkItem } from "./TopBarTypes";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 
 export const TopBarVertical: FC<ItemSideBarProps> = ({
   theGoogleDriveLink,
