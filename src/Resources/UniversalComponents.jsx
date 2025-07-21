@@ -1478,7 +1478,7 @@ export const onLoggOut = () => {
   if (auth) {
     localStorage.removeItem("authorization");
   }
-  notifyAlert("Faça login novamente");
+  notifyAlert(`Faça login novamente`);
   window.location.assign("/login");
 };
 

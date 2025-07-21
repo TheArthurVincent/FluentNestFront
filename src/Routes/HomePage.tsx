@@ -54,6 +54,7 @@ export function HomePage({ headers }: HeadersProps) {
   var [picture, setPicture] = useState<string>("");
   var [change, setChange] = useState<boolean>(true);
   var [see, setSee] = useState(false);
+
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
     if (user) {
@@ -65,6 +66,7 @@ export function HomePage({ headers }: HeadersProps) {
       setTeacher(permissions === "teacher" ? true : false);
     } else {
       onLoggOut();
+      console.log("HP");
       return;
     }
 

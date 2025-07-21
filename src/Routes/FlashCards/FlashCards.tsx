@@ -30,6 +30,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       setPermissions(permissions);
     } else {
       onLoggOut();
+      console.log("Here FC");
     }
   }, []);
 
