@@ -337,7 +337,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/reviewflashcard/${myId}`,
-        { flashcardId: id, difficulty, timerCardCount },
+        { flashcardId: id, difficulty, timerCardCount, dayToday: new Date() },
         { headers: actualHeaders }
       );
       setAnswer(false);
@@ -352,6 +352,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   var [streak, setStreak] = useState<any>(0);
   var [lastR, setLastR] = useState<any>(0);
+
   const getHistory = async (id: string) => {
     try {
       const response = await axios.get(
