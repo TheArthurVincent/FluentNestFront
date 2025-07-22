@@ -149,12 +149,16 @@ const ListeningExercise = ({
     var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
     // @ts-ignore
     var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
-    if (user) {
-      const { id } = JSON.parse(user);
-      setId(id);
-      setFlashcardsToday(flashcardsTodayNumber);
-    }
-    updateInfo(myId, actualHeaders);
+    setTimeout(() => {
+      updateInfo(myId, actualHeaders);
+    }, 100);
+    setTimeout(() => {
+      if (user) {
+        const { id } = JSON.parse(user);
+        setId(id);
+        setFlashcardsToday(flashcardsTodayNumber);
+      }
+    }, 250);
   }, [change]);
 
   const reviewListeningExercise = async (score: number, percentage: number) => {
@@ -162,7 +166,13 @@ const ListeningExercise = ({
     try {
       await axios.put(
         `${backDomain}/api/v1/reviewflashcardlistening/${myId}`,
-        { flashcardId: cards[0]?._id, score, percentage, transcript },
+        {
+          flashcardId: cards[0]?._id,
+          score,
+          percentage,
+          transcript,
+          dayToday: new Date(),
+        },
         { headers: actualHeaders || {} }
       );
 
@@ -170,6 +180,21 @@ const ListeningExercise = ({
       setNext(false);
       setTranscript("");
       setLoading(false);
+
+      var user = localStorage.getItem("loggedIn");
+      var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
+      // @ts-ignore
+      var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
+      setTimeout(() => {
+        updateInfo(myId, actualHeaders);
+      }, 100);
+      setTimeout(() => {
+        if (user) {
+          const { id } = JSON.parse(user);
+          setId(id);
+          setFlashcardsToday(flashcardsTodayNumber);
+        }
+      }, 250);
       seeCardsToReview();
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
