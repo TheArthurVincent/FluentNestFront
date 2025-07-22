@@ -419,6 +419,7 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setMESSAGE(
         `Congratulations for reviewing ${flashcardsToday} cards today! I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
       );
+      
     } else if (daysSinceLastReview !== null && daysSinceLastReview <= 3) {
       setMascot(mascotThinking(colorOfTheTShirt, size));
       setMESSAGE(
