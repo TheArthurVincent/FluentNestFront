@@ -62,7 +62,6 @@ export function MyClasses({ headers }) {
         headers,
       });
       setClasses(response.data.formattedTutoringFromParticularStudent);
-      console.log(response.data);
       setLoading(false);
     } catch (error) {
       console.error("Erro ao buscar aulas do aluno:", error);
@@ -208,7 +207,6 @@ export function MyClasses({ headers }) {
         `${backDomain}/api/v1/tutoring/${tutoringID}`,
         { headers }
       );
-      console.log(`Aula com ID ${tutoringID} excluída`);
       notifyAlert(`Aula com ID ${tutoringID} excluída`);
       fetchNextStudentClasses(studentNXTId);
     } catch (error) {

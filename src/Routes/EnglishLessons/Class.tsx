@@ -174,7 +174,6 @@ export default function EnglishClassCourse2({
         setIsCompleted(false);
       }
       setheClass(clss);
-      console.log(response.data.classDetails, clss);
       setLoading(false);
       setCommentsTrigger(true);
     } catch (error) {

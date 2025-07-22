@@ -215,7 +215,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
           ? response.data.formattedStudentData.flashcards25Reviews
           : ""
       );
-      console.log(response.data.formattedStudentData);
     } catch (error) {
       notifyAlert(error);
       console.error(error);

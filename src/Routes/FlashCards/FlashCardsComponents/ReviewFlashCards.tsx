@@ -58,11 +58,15 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   var [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
   var [timerCardCount, setTimerCardCount] = useState(19);
   var [flashcardsToday, setFlashcardsToday] = useState<number>(0);
-  var [myVeryLastReview, setMyVeryLastReview] = useState<Date>(new Date());
+  var [myVerydaysSinceLastRevieweview, setMyVerydaysSinceLastRevieweview] =
+    useState<Date>(new Date());
   var [streak, setStreak] = useState<any>(0);
-  var [lastR, setLastR] = useState<any>(0);
+  var [daysSinceLastReview, setDaysSinceLReview] = useState<any>(0);
   var [selectedVoice, setSelectedVoice] = useState<any>("");
   var [changeNumber, setChangeNumber] = useState<boolean>(true);
+  var [MESSAGE, setMESSAGE] = useState<string>("How are you?");
+  var [mascot, setMascot] = useState<any>(null);
+  var [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
 
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
@@ -366,12 +370,12 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         { dateToday, headers: actualHeaders }
       );
       var st = response.data.streak;
-      var lr = response.data.daysSinceLastReview;
-      var mvlr = response.data.veryLastReview;
+      var lr = response.data.daysSincedaysSinceLastRevieweview;
+      var mvlr = response.data.verydaysSinceLastRevieweview;
       setStreak(st);
-      setLastR(lr);
-      setMyVeryLastReview(new Date(mvlr));
-      console.log(response.data);
+      setDaysSinceLReview(lr);
+      setMyVerydaysSinceLastRevieweview(new Date(mvlr));
+      console.log("myVerydaysSinceLastRevieweview", response.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -380,19 +384,16 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   };
 
   useEffect(() => {
-    setTimeout(() => {
+    if (myId !== "" || myId !== null) {
       getHistory(myId);
-    }, 1000);
+    }
+    console.log("myId", myId);
   }, [myId]);
 
   useEffect(() => {
     var storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
   }, [selectedVoice, changeNumber]);
-
-  var [MESSAGE, setMESSAGE] = useState<string>("How are you?");
-  var [mascot, setMascot] = useState<any>(null);
-  var [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
 
   useEffect(() => {
     var handleResize = () => {
@@ -418,28 +419,32 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setMESSAGE(
         `Congratulations for reviewing ${flashcardsToday} cards today! I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
       );
-    } else if (lastR !== null && lastR <= 3) {
+    } else if (daysSinceLastReview !== null && daysSinceLastReview <= 3) {
       setMascot(mascotThinking(colorOfTheTShirt, size));
       setMESSAGE(
         `Don't give up! Last time you studied was ${
-          lastR === 1 ? `yesterday` : `${lastR} days ago`
+          daysSinceLastReview === 1
+            ? `yesterday`
+            : `${daysSinceLastReview} days ago`
         }!`
       );
-    } else if (lastR !== null && lastR > 3) {
+    } else if (daysSinceLastReview !== null && daysSinceLastReview > 3) {
       setMascot(mascotWeak(colorOfTheTShirt, size));
-      setMESSAGE(`I'm dying, you haven't studied in ${lastR} days`);
+      setMESSAGE(
+        `I'm dying, you haven't studied in ${daysSinceLastReview} days`
+      );
     } else if (streak >= 50) {
       setMascot(mascotStrong(colorOfTheTShirt, size));
       setMESSAGE(
         `I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
       );
-    } else if (streak < 50 && streak > lastR) {
+    } else if (streak < 50 && streak > daysSinceLastReview) {
       setMascot(mascotSkinny(colorOfTheTShirt, size));
       setMESSAGE(
         `Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
       );
     }
-  }, [flashcardsToday, lastR, streak]);
+  }, [flashcardsToday, daysSinceLastReview, streak]);
   var cardRef = useRef<HTMLDivElement>(null);
   var [cardHeight, setCardHeight] = useState<number>(0);
 
@@ -474,7 +479,7 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                 textDecoration: "none",
               }}
             >
-              Last Review: {formatDateBr(myVeryLastReview)}
+              Last Review: {formatDateBr(myVerydaysSinceLastRevieweview)}
             </div>
             <HOne
               style={{
@@ -891,7 +896,7 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           </div>
           <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
           <br />
-          <Streak message={MESSAGE} streak={lastR ? 0 : streak} />
+          <Streak message={MESSAGE} streak={daysSinceLastReview ? 0 : streak} />
           {isArthurVincent && (
             <a
               href="/words-of-the-day"

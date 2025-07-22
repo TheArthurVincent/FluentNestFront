@@ -89,7 +89,6 @@ export default function SignUp() {
       setUsernameEdited(newUsername);
       setForm((prev) => ({ ...prev, username: newUsername }));
     }
-    console.log("Username gerado:", form.username, usernameEdited);
   }, [form]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -107,8 +106,6 @@ export default function SignUp() {
       const response = await axios.post(`${backDomain}/api/v1/students`, form);
 
       notifyAlert(`Registrado!`, "green");
-
-      console.log("Dados completos:", response.data);
 
       setTimeout(() => {
         login();
@@ -210,7 +207,6 @@ export default function SignUp() {
           `${backDomain}/api/v1/leads`,
           theContent
         );
-        console.log("Foi pro banco!", response);
         setLeadsCapture(false);
       } catch (error) {
         console.error("Erro ao capturar lead", error);

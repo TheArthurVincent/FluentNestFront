@@ -25,7 +25,6 @@ export function NewTutoring({ headers, id }) {
   };
   const handleFC = (htmlContent) => {
     setNewFlashcardsList(htmlContent);
-    console.log(htmlContent);
   };
 
   const [showHW, setShowHW] = useState(false);
@@ -135,10 +134,6 @@ export function NewTutoring({ headers, id }) {
     tutorings.length > 0 &&
     tutorings.every((t) => t.videoUrl && t.importantLink && t.date);
 
-  useEffect(() => {
-    console.log("New Flashcards:", newFlashcards);
-  }, [newFlashcards]);
-
   return (
     <div style={{ background: "#fff", fontFamily: "inherit" }}>
       <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
@@ -175,12 +170,6 @@ export function NewTutoring({ headers, id }) {
                 setTutorings(
                   tutorings.map((t) => ({ ...t, studentID: e.target.value }))
                 );
-                console.log(
-                  e.target.value,
-                  "selectedStudentID",
-                  selectedStudentID
-                );
-                console.log(tutorings, "tutorings after change");
               }}
               value={selectedStudentID}
             >

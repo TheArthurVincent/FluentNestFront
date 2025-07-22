@@ -91,8 +91,6 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
       setFinalWord(response.data.adaptedWord);
       setExplanation(response.data.explanation);
-      console.log(response);
-
       setExamples(
         response.data.examples.map((ex: any) => ({
           sentence: ex.sentence,

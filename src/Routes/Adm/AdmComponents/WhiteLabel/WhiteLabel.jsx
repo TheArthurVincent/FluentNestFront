@@ -318,7 +318,6 @@ export default function WhiteLabelPreview({ headers }) {
       );
       notifyAlert("Tema salvo com sucesso!", "green");
       setFormData(finalFormData);
-      console.log(response.data);
       updateInfo(studentID, headers);
       setTimeout(() => {
         window.location.reload();

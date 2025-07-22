@@ -66,7 +66,6 @@ export function HomePage({ headers }: HeadersProps) {
       setTeacher(permissions === "teacher" ? true : false);
     } else {
       onLoggOut();
-      console.log("HP");
       return;
     }
 
@@ -75,8 +74,6 @@ export function HomePage({ headers }: HeadersProps) {
 
   var seeFee = async () => {
     if (_StudentId !== "") {
-      console.log("Student ID is set, proceeding with fee check.");
-
       var response = await axios.get(
         `${backDomain}/api/v1/studentfeeuptodate/${_StudentId}`
       );
@@ -99,14 +96,12 @@ export function HomePage({ headers }: HeadersProps) {
   useEffect(() => {
     setInterval(() => {
       seeFee();
-      // console.log("Checking fee status 30...");
     }, 30000);
   }, []);
 
   useEffect(() => {
     setTimeout(() => {
       seeFee();
-      console.log("Checking fee status first...");
     }, 2000);
   }, [_StudentId]);
 
