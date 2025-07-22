@@ -10,10 +10,6 @@ interface Av {
 export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  useEffect(() => {
-    console.log("fileInputRef:", fileInputRef.current);
-  }, []);
-
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -39,7 +35,10 @@ export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
     >
       {/* Avatar clicável */}
       <img
-        src={user.picture || "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"}
+        src={
+          user.picture ||
+          "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+        }
         alt="Profile"
         onClick={() => fileInputRef.current?.click()}
         style={{

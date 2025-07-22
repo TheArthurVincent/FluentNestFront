@@ -371,7 +371,6 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setStreak(st);
       setLastR(lr);
       setMyVeryLastReview(new Date(mvlr));
-      console.log(response.data);
       setLoading(false);
     } catch (error) {
       console.log(error);

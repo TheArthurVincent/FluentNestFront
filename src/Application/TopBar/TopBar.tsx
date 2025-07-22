@@ -191,13 +191,11 @@ export const TopBar: FC = () => {
     setVisible(visible === "flex" ? "none" : "flex");
   };
   const location = useLocation();
-  const myLogo = LogoSVG("#000", partnerColor(), 1);
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
 
   const [selectedNotification, setSelectedNotification] = useState<any>({});
 
   const openModal = (notification: any) => {
-    console.log(notification);
     setSelectedNotification(notification);
     updateViewed(notification._id);
 

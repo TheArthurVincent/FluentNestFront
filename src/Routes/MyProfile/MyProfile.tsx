@@ -60,10 +60,6 @@ export function MyProfile({ headers }: HeadersProps) {
     });
   };
   const { UniversalTexts } = useUserContext();
-  useEffect(() => {
-    console.log("fileInputRef.current:", fileInputRef.current);
-  }, []);
-
   const [user, setUser] = useState<User>({} as User);
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -155,8 +151,6 @@ export function MyProfile({ headers }: HeadersProps) {
         localStorage.getItem("loggedIn") || ""
       );
       setUser(getLoggedUser);
-      console.log(getLoggedUser);
-      console.log(user);
       setLoading(false);
     } catch (e) {
       console.log(e);
@@ -191,7 +185,6 @@ export function MyProfile({ headers }: HeadersProps) {
         console.error(err);
         alert("Erro ao cancelar a assinatura.");
       }
-      console.log("user.paymentId", user.paymentId, "cancel payment refund");
     } else if (user.paymentId) {
       notifyAlert(
         "Fale comigo por WhatsApp, e prosseguiei com seu cancelamento. :)"

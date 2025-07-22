@@ -15,7 +15,6 @@
         textTitleFont: "Athiti",
       };
       localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
-      console.log("[App] WhiteLabel padrão criado no localStorage.");
     }
   } catch (err) {
     console.error("[App] Erro ao garantir whiteLabel no localStorage:", err);
@@ -122,16 +121,6 @@ var headers: MyHeadersType = {
 
 function App() {
   var [_StudentId, setStudentId] = useState<string>("");
-
-  useEffect(() => {
-    try {
-      console.log("[App] isArvin?", isArvin);
-      console.log("[App] isArthurVincent?", isArthurVincent);
-      console.log("[App] isLocalHost?", isLocalHost);
-    } catch (err) {
-      console.error("[App] Erro nos logs iniciais:", err);
-    }
-  }, []);
 
   try {
     if (isArthurVincent) {

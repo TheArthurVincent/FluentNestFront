@@ -25,7 +25,6 @@ export function NewHomeworkAssignment({ headers, id }) {
   };
   const handleFC = (htmlContent) => {
     setNewFlashcardsList(htmlContent);
-    console.log(htmlContent);
   };
 
   const [selectedStudentID, setSelectedStudentID] = useState("");
@@ -109,10 +108,6 @@ export function NewHomeworkAssignment({ headers, id }) {
     setSelectedStudentID(e);
     setDisabled(false);
   };
-
-  useEffect(() => {
-    console.log("New Flashcards:", newFlashcards);
-  }, [newFlashcards]);
 
   return (
     <div style={{ background: "#fff", fontFamily: "inherit" }}>

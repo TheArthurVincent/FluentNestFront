@@ -26,7 +26,6 @@ const TimelineComponent = (headers) => {
       const response = await axios.get(`${backDomain}/api/v1/timeline`, {
         headers,
       });
-      console.log(response.data.timeline);
       const setT = response.data.timeline;
       setTimelineData(setT);
       setLoading(false);

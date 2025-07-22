@@ -71,10 +71,10 @@ export default function ImageLessonModel({
       onLoggOut();
     }
   };
-  const [loa,SetLoa] = useState(false)
+  const [loa, SetLoa] = useState(false);
   const handleAddImages = async () => {
     console.log(element.images);
-    SetLoa(true)
+    SetLoa(true);
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/flashcard/add-images`,
@@ -85,9 +85,7 @@ export default function ImageLessonModel({
         `Atualizados: ${response.data.updatedCount} flashcards`,
         "green"
       );
-      console.log(response.data);
-    SetLoa(false)
-    
+      SetLoa(false);
     } catch (e) {
       notifyAlert("Erro ao atualizar imagens nos flashcards");
       console.log(e, "Erro ao atualizar imagens nos flashcards");

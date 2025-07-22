@@ -24,7 +24,6 @@ function RequestResetPassword() {
       }, 2500);
     } catch (error: any) {
       window.alert(error.response.data.message);
-      console.log(error.response.data.message);
       setEmail("");
     }
   };

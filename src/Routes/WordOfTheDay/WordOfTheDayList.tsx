@@ -50,9 +50,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
     try {
       const response = await axios.get(`${backDomain}/api/v1/wordoftheday`);
       setWords(response.data.words);
-      console.log(response.data.words);
     } catch (error: any) {
-      // alert(error.response?.data?.error || "Error.");
       console.log(error.response?.data?.error || "Error.");
     } finally {
       setLoading(false);
