@@ -370,8 +370,8 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         { dateToday, headers: actualHeaders }
       );
       var st = response.data.streak;
-      var lr = response.data.daysSincedaysSinceLastRevieweview;
-      var mvlr = response.data.verydaysSinceLastRevieweview;
+      var lr = response.data.daysSinceLastReview;
+      var mvlr = response.data.veryLastReview;
       setStreak(st);
       setDaysSinceLReview(lr);
       setMyVerydaysSinceLastRevieweview(new Date(mvlr));
@@ -456,50 +456,50 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   return (
     <section id="review">
+      {" "}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            marginTop: "10px",
+            marginRight: "auto",
+            fontSize: "10px",
+            color: "#999",
+            textDecoration: "none",
+          }}
+        >
+          Last Review: {formatDateBr(myVerydaysSinceLastRevieweview)}
+        </div>
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          Review Flashcards
+        </HOne>
+
+        <a
+          style={{
+            fontSize: "13px",
+            color: "#999",
+            textDecoration: "none",
+          }}
+          href="/sentence-mining"
+        >
+          Adicione palavras em seus flashcards!
+        </a>
+      </div>
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <>
-          {" "}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <div
-              style={{
-                marginTop: "10px",
-                marginRight: "auto",
-                fontSize: "10px",
-                color: "#999",
-                textDecoration: "none",
-              }}
-            >
-              Last Review: {formatDateBr(myVerydaysSinceLastRevieweview)}
-            </div>
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              Review Flashcards
-            </HOne>
-
-            <a
-              style={{
-                fontSize: "13px",
-                color: "#999",
-                textDecoration: "none",
-              }}
-              href="/sentence-mining"
-            >
-              Adicione palavras em seus flashcards!
-            </a>
-          </div>
           <div
             style={{
               display: "flex",
@@ -893,23 +893,23 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               </div>
             </div>
           </div>
-          <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
-          <br />
-          <Streak message={MESSAGE} streak={daysSinceLastReview ? 0 : streak} />
-          {isArthurVincent && (
-            <a
-              href="/words-of-the-day"
-              style={{
-                marginTop: "10px",
-                fontSize: "10px",
-                color: "#999",
-                textDecoration: "none",
-              }}
-            >
-              Previous Words of the Day
-            </a>
-          )}
         </>
+      )}
+      <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
+      <br />
+      <Streak message={MESSAGE} streak={daysSinceLastReview ? 0 : streak} />
+      {isArthurVincent && (
+        <a
+          href="/words-of-the-day"
+          style={{
+            marginTop: "10px",
+            fontSize: "10px",
+            color: "#999",
+            textDecoration: "none",
+          }}
+        >
+          Previous Words of the Day
+        </a>
       )}
     </section>
   );
