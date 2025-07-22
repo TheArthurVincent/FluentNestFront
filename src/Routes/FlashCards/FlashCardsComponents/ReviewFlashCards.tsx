@@ -39,29 +39,33 @@ interface FlashCardsPropsRv {
   onChange: any;
   change: boolean;
 }
-const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
+var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   useState<number>(0);
-  const [myId, setId] = useState<string>("");
-  const [myPermissions, setPermissions] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-  const [theName, setName] = useState<string>("");
-  const [cards, setCards] = useState<any[]>([]);
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [answer, setAnswer] = useState<boolean>(false);
-  const [cardsLength, setCardsLength] = useState<boolean>(true);
-  const [see, setSee] = useState<boolean>(false);
-  const [seeConf, setSeeConf] = useState<boolean>(false);
-  const [count, setCount] = useState<number>(4);
-  const [backCardVisible, setBackCardVisible] = useState<boolean>(false);
-  const [category, setCategory] = useState<string>("nofilter");
-  const [textColor, setTextColor] = useState<string>("#000");
-  const [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
-  const [timerCardCount, setTimerCardCount] = useState(19);
-  const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
-  const [myVeryLastReview, setMyVeryLastReview] = useState<Date>(new Date());
+  var [myId, setId] = useState<string>("");
+  var [myPermissions, setPermissions] = useState<string>("");
+  var [loading, setLoading] = useState<boolean>(false);
+  var [theName, setName] = useState<string>("");
+  var [cards, setCards] = useState<any[]>([]);
+  var [isDisabled, setIsDisabled] = useState<boolean>(true);
+  var [answer, setAnswer] = useState<boolean>(false);
+  var [cardsLength, setCardsLength] = useState<boolean>(true);
+  var [see, setSee] = useState<boolean>(false);
+  var [seeConf, setSeeConf] = useState<boolean>(false);
+  var [count, setCount] = useState<number>(4);
+  var [backCardVisible, setBackCardVisible] = useState<boolean>(false);
+  var [category, setCategory] = useState<string>("nofilter");
+  var [textColor, setTextColor] = useState<string>("#000");
+  var [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
+  var [timerCardCount, setTimerCardCount] = useState(19);
+  var [flashcardsToday, setFlashcardsToday] = useState<number>(0);
+  var [myVeryLastReview, setMyVeryLastReview] = useState<Date>(new Date());
+  var [streak, setStreak] = useState<any>(0);
+  var [lastR, setLastR] = useState<any>(0);
+  var [selectedVoice, setSelectedVoice] = useState<any>("");
+  var [changeNumber, setChangeNumber] = useState<boolean>(true);
 
   useEffect(() => {
-    const user = localStorage.getItem("loggedIn");
+    var user = localStorage.getItem("loggedIn");
     // @ts-ignore
     if (user) {
       var { permissions, id, name, isArthurStudent } = JSON.parse(user);
@@ -206,7 +210,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   }, [category]);
 
-  const timerDisabled = () => {
+  var timerDisabled = () => {
     if (myPermissions !== "superadmin") {
       setCount(3);
       setIsDisabled(true);
@@ -227,9 +231,9 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
-  const actualHeaders = headers || {};
+  var actualHeaders = headers || {};
 
-  const timerCard = () => {
+  var timerCard = () => {
     setTimerCardCount(20);
 
     setTimeout(() => {
@@ -293,7 +297,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }, 19000);
   };
 
-  const seeCardsToReview = async () => {
+  var seeCardsToReview = async () => {
     updateInfo(myId, actualHeaders);
     timerCard();
     setLoading(true);
@@ -301,15 +305,14 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     setBackCardVisible(false);
     setSee(true);
     try {
-      const response = await axios.get(
+      var response = await axios.get(
         `${backDomain}/api/v1/flashcards/${myId}`,
         {
           headers: actualHeaders,
           params: { category },
         }
       );
-      const thereAreCards =
-        response.data.dueFlashcards.length > 0 ? false : true;
+      var thereAreCards = response.data.dueFlashcards.length > 0 ? false : true;
       {
         response.data.dueFlashcards.length > 0 &&
         response.data.dueFlashcards[0].front.language &&
@@ -336,10 +339,10 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
-  const reviewCard = async (id: string, difficulty: string) => {
+  var reviewCard = async (id: string, difficulty: string) => {
     setLoading(true);
     try {
-      const response = await axios.put(
+      var response = await axios.put(
         `${backDomain}/api/v1/reviewflashcard/${myId}`,
         { flashcardId: id, difficulty, timerCardCount, dayToday: new Date() },
         { headers: actualHeaders }
@@ -354,12 +357,11 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
-  var [streak, setStreak] = useState<any>(0);
-  var [lastR, setLastR] = useState<any>(0);
-  const dateToday = new Date();
-  const getHistory = async (id: string) => {
+  var dateToday = new Date();
+  var getHistory = async (id: string) => {
+    setLoading(true);
     try {
-      const response = await axios.post(
+      var response = await axios.post(
         `${backDomain}/api/v1/flashcardhistory/${id}`,
         { dateToday, headers: actualHeaders }
       );
@@ -368,10 +370,12 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       var mvlr = response.data.veryLastReview;
       setStreak(st);
       setLastR(lr);
-      setMyVeryLastReview(mvlr);
+      setMyVeryLastReview(new Date(mvlr));
       console.log(response.data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -381,21 +385,17 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }, 1000);
   }, [myId]);
 
-  const [selectedVoice, setSelectedVoice] = useState<any>("");
-  const [changeNumber, setChangeNumber] = useState<boolean>(true);
-
   useEffect(() => {
-    const storedVoice = localStorage.getItem("chosenVoice");
+    var storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
-    console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
-  const [MESSAGE, setMESSAGE] = useState<string>("How are you?");
-  const [mascot, setMascot] = useState<any>(null);
-  const [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
+  var [MESSAGE, setMESSAGE] = useState<string>("How are you?");
+  var [mascot, setMascot] = useState<any>(null);
+  var [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
 
   useEffect(() => {
-    const handleResize = () => {
+    var handleResize = () => {
       setSize(window.innerWidth <= 600 ? 2 : 4);
     };
     window.addEventListener("resize", handleResize);
@@ -440,8 +440,8 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       );
     }
   }, [flashcardsToday, lastR, streak]);
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [cardHeight, setCardHeight] = useState<number>(0);
+  var cardRef = useRef<HTMLDivElement>(null);
+  var [cardHeight, setCardHeight] = useState<number>(0);
 
   useEffect(() => {
     if (cardRef.current) {
@@ -452,266 +452,205 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   return (
     <section id="review">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <div
-          style={{
-            marginTop: "10px",
-            marginRight: "auto",
-            fontSize: "10px",
-            color: "#999",
-            textDecoration: "none",
-          }}
-        >
-          Last Review: {formatDateBr(myVeryLastReview)}
-        </div>
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          Review Flashcards
-        </HOne>
-        <a
-          style={{
-            fontSize: "13px",
-            color: "#999",
-            textDecoration: "none",
-          }}
-          href="/sentence-mining"
-        >
-          Adicione palavras em seus flashcards!
-        </a>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "flex-end",
-          marginTop: "20px",
-        }}
-      >
-        <div
-          style={{
-            position: "relative",
-            left: -15,
-            cursor: isArthurStudentBoolean ? "pointer" : "default",
-            display: "flex",
-            alignItems: "flex-end",
-            visibility: isArthurStudentBoolean ? "visible" : "hidden",
-            minWidth: "100px",
-            justifyContent: "center",
-          }}
-          onClick={() => {
-            readText(
-              `Hi ${theName}, I'm Arvin! ${MESSAGE}`,
-              false,
-              "en",
-              selectedVoice,
-              1.2
-            );
-          }}
-        >
-          {!loading && mascot}
-        </div>
-        <div
-          style={{
-            flex: 1,
-            position: "relative",
-            left: -50,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {isArthurVincent && (
-            <WordOfTheDay
-              change={change}
-              onChange={onChange}
-              headers={headers}
-            />
-          )}
-          {see && (
-            <div ref={cardRef}>
-              {loading ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <div
-                  style={{
-                    margin: "auto",
-                    textAlign: "center",
-                    color: "black",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  <div>
-                    {!cardsLength ? (
-                      <>
-                        <ArvinButton
-                          disabled={isDisabled}
-                          cursor={isDisabled ? "not-allowed" : "pointer"}
-                          color={isDisabled ? "grey" : partnerColor()}
-                          style={{
-                            color: textPrimaryColorContrast(),
-                          }}
-                          onClick={() => {
-                            setBackCardVisible(!backCardVisible);
-                            setAnswer(!answer);
-                          }}
-                        >
-                          {isDisabled ? (
-                            <span>{count}</span>
-                          ) : (
-                            <span>{answer ? "Back" : "Answer"}</span>
-                          )}
-                        </ArvinButton>
-                        <br />
-                        <br />
-                        {answer && (
-                          <div>
+      {loading ? (
+        <CircularProgress style={{ color: partnerColor() }} />
+      ) : (
+        <>
+          {" "}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <div
+              style={{
+                marginTop: "10px",
+                marginRight: "auto",
+                fontSize: "10px",
+                color: "#999",
+                textDecoration: "none",
+              }}
+            >
+              Last Review: {formatDateBr(myVeryLastReview)}
+            </div>
+            <HOne
+              style={{
+                fontFamily: textTitleFont(),
+                color: partnerColor(),
+              }}
+            >
+              Review Flashcards
+            </HOne>
+
+            <a
+              style={{
+                fontSize: "13px",
+                color: "#999",
+                textDecoration: "none",
+              }}
+              href="/sentence-mining"
+            >
+              Adicione palavras em seus flashcards!
+            </a>
+          </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "flex-end",
+              marginTop: "20px",
+            }}
+          >
+            <div
+              style={{
+                position: "relative",
+                left: -15,
+                cursor: isArthurStudentBoolean ? "pointer" : "default",
+                display: "flex",
+                alignItems: "flex-end",
+                visibility: isArthurStudentBoolean ? "visible" : "hidden",
+                minWidth: "100px",
+                justifyContent: "center",
+              }}
+              onClick={() => {
+                readText(
+                  `Hi ${theName}, I'm Arvin! ${MESSAGE}`,
+                  false,
+                  "en",
+                  selectedVoice,
+                  1.2
+                );
+              }}
+            >
+              {!loading && mascot}
+            </div>
+            <div
+              style={{
+                flex: 1,
+                position: "relative",
+                left: -50,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              {isArthurVincent && (
+                <WordOfTheDay
+                  change={change}
+                  onChange={onChange}
+                  headers={headers}
+                />
+              )}
+              {see && (
+                <div ref={cardRef}>
+                  {loading ? (
+                    <CircularProgress style={{ color: partnerColor() }} />
+                  ) : (
+                    <div
+                      style={{
+                        margin: "auto",
+                        textAlign: "center",
+                        color: "black",
+                        marginBottom: "1rem",
+                      }}
+                    >
+                      <div>
+                        {!cardsLength ? (
+                          <>
+                            <ArvinButton
+                              disabled={isDisabled}
+                              cursor={isDisabled ? "not-allowed" : "pointer"}
+                              color={isDisabled ? "grey" : partnerColor()}
+                              style={{
+                                color: textPrimaryColorContrast(),
+                              }}
+                              onClick={() => {
+                                setBackCardVisible(!backCardVisible);
+                                setAnswer(!answer);
+                              }}
+                            >
+                              {isDisabled ? (
+                                <span>{count}</span>
+                              ) : (
+                                <span>{answer ? "Back" : "Answer"}</span>
+                              )}
+                            </ArvinButton>
+                            <br />
+                            <br />
+                            {answer && (
+                              <div>
+                                <div
+                                  style={{
+                                    justifyContent: "center",
+                                    display: "flex",
+                                    gap: "5px",
+                                    marginBottom: "10px",
+                                    marginTop: "5px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: "grid",
+                                      gap: "5px",
+                                    }}
+                                  >
+                                    <ArvinButton
+                                      onClick={() => {
+                                        reviewCard(cards[0]._id, "hard");
+                                      }}
+                                      color="red"
+                                    >
+                                      I missed (Errei)
+                                    </ArvinButton>
+                                  </div>
+                                  <div style={{ display: "grid", gap: "5px" }}>
+                                    <ArvinButton
+                                      onClick={() =>
+                                        reviewCard(cards[0]._id, "easy")
+                                      }
+                                      style={{
+                                        color: textPrimaryColorContrast(),
+                                      }}
+                                      color={partnerColor()}
+                                    >
+                                      I got it! (Acertei)
+                                    </ArvinButton>
+                                  </div>
+                                </div>
+                                <br />
+                              </div>
+                            )}
                             <div
                               style={{
-                                justifyContent: "center",
-                                display: "flex",
-                                gap: "5px",
-                                marginBottom: "10px",
-                                marginTop: "5px",
+                                margin: "auto",
                               }}
+                              className={`flashcard ${answer ? "flip" : ""}`}
                             >
                               <div
                                 style={{
-                                  display: "grid",
-                                  gap: "5px",
+                                  backgroundColor: textColor,
+                                  display: !backCardVisible ? "none" : "block",
                                 }}
+                                className="flashcard-front"
                               >
-                                <ArvinButton
-                                  onClick={() => {
-                                    reviewCard(cards[0]._id, "hard");
-                                  }}
-                                  color="red"
-                                >
-                                  I missed (Errei)
-                                </ArvinButton>
-                              </div>
-                              <div style={{ display: "grid", gap: "5px" }}>
-                                <ArvinButton
-                                  onClick={() =>
-                                    reviewCard(cards[0]._id, "easy")
-                                  }
-                                  style={{
-                                    color: textPrimaryColorContrast(),
-                                  }}
-                                  color={partnerColor()}
-                                >
-                                  I got it! (Acertei)
-                                </ArvinButton>
-                              </div>
-                            </div>
-                            <br />
-                          </div>
-                        )}
-                        <div
-                          style={{
-                            margin: "auto",
-                          }}
-                          className={`flashcard ${answer ? "flip" : ""}`}
-                        >
-                          <div
-                            style={{
-                              backgroundColor: textColor,
-                              display: !backCardVisible ? "none" : "block",
-                            }}
-                            className="flashcard-front"
-                          >
-                            <div>
-                              <span
-                                style={{
-                                  fontSize: "12px",
-                                }}
-                              >
-                                {Math.round(cards[0]?.numberOfReviews) || "no"}{" "}
-                                {Math.round(cards[0]?.numberOfReviews) == 1
-                                  ? "review"
-                                  : "reviews"}
-                              </span>
-                              <br />
-                              <br />
-                              <span>
-                                <div
-                                  style={{
-                                    fontSize: "20px",
-                                    marginBottom: "15px",
-                                    fontStyle: "italic",
-                                  }}
-                                >
-                                  {cards[0]?.front?.text}
-                                </div>
-                              </span>
-                              {cards[0].front.language &&
-                                cards[0].front.language !== "pt" && (
-                                  <button
-                                    className="audio-button bgwhite"
-                                    onClick={() =>
-                                      readText(
-                                        cards[0].front.text,
-                                        true,
-                                        cards[0].front.language,
-                                        selectedVoice
-                                      )
-                                    }
-                                  >
-                                    <i
-                                      className="fa fa-volume-up"
-                                      aria-hidden="true"
-                                    />
-                                  </button>
-                                )}
-                              {cards[0]?.img &&
-                                cards[0]?.front?.language == "pt" && (
-                                  <img
+                                <div>
+                                  <span
                                     style={{
-                                      width: "100%",
-                                      maxWidth: "8rem",
-                                      aspectRatio: "1 / 1",
-                                      objectFit: "cover",
-                                      display: "block",
-                                      margin: "1rem auto",
-                                      objectPosition: "center",
-                                      borderRadius: "6px",
-                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                      fontSize: "12px",
                                     }}
-                                    src={cards[0]?.img}
-                                    alt={cards[0]?.front?.text}
-                                  />
-                                )}
-                            </div>
-                          </div>
-                          <div
-                            style={{
-                              display: backCardVisible ? "none" : "block",
-                            }}
-                            className="flashcard-back"
-                          >
-                            <div>
-                              <span>
-                                {(
-                                  <>
-                                    {" "}
-                                    <div
-                                      style={{
-                                        fontSize: "11px",
-                                        marginBottom: "15px",
-                                      }}
-                                    >
-                                      {cards[0]?.front?.text}
-                                    </div>
+                                  >
+                                    {Math.round(cards[0]?.numberOfReviews) ||
+                                      "no"}{" "}
+                                    {Math.round(cards[0]?.numberOfReviews) == 1
+                                      ? "review"
+                                      : "reviews"}
+                                  </span>
+                                  <br />
+                                  <br />
+                                  <span>
                                     <div
                                       style={{
                                         fontSize: "20px",
@@ -719,187 +658,254 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                                         fontStyle: "italic",
                                       }}
                                     >
-                                      {cards[0]?.back?.text}
+                                      {cards[0]?.front?.text}
                                     </div>
-                                    <div
+                                  </span>
+                                  {cards[0].front.language &&
+                                    cards[0].front.language !== "pt" && (
+                                      <button
+                                        className="audio-button bgwhite"
+                                        onClick={() =>
+                                          readText(
+                                            cards[0].front.text,
+                                            true,
+                                            cards[0].front.language,
+                                            selectedVoice
+                                          )
+                                        }
+                                      >
+                                        <i
+                                          className="fa fa-volume-up"
+                                          aria-hidden="true"
+                                        />
+                                      </button>
+                                    )}
+                                  {cards[0]?.img &&
+                                    cards[0]?.front?.language == "pt" && (
+                                      <img
+                                        style={{
+                                          width: "100%",
+                                          maxWidth: "8rem",
+                                          aspectRatio: "1 / 1",
+                                          objectFit: "cover",
+                                          display: "block",
+                                          margin: "1rem auto",
+                                          objectPosition: "center",
+                                          borderRadius: "6px",
+                                          boxShadow: "1px 1px 12px 3px #bbb",
+                                        }}
+                                        src={cards[0]?.img}
+                                        alt={cards[0]?.front?.text}
+                                      />
+                                    )}
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  display: backCardVisible ? "none" : "block",
+                                }}
+                                className="flashcard-back"
+                              >
+                                <div>
+                                  <span>
+                                    {(
+                                      <>
+                                        {" "}
+                                        <div
+                                          style={{
+                                            fontSize: "11px",
+                                            marginBottom: "15px",
+                                          }}
+                                        >
+                                          {cards[0]?.front?.text}
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "20px",
+                                            marginBottom: "15px",
+                                            fontStyle: "italic",
+                                          }}
+                                        >
+                                          {cards[0]?.back?.text}
+                                        </div>
+                                        <div
+                                          style={{
+                                            fontSize: "12px",
+                                            fontStyle: "italic",
+                                            marginBottom: "15px",
+                                          }}
+                                          dangerouslySetInnerHTML={{
+                                            __html: cards[0]?.backComments,
+                                          }}
+                                        />
+                                      </>
+                                    ) || " "}
+                                  </span>
+                                  {cards[0].back.language &&
+                                    cards[0].back.language !== "pt" && (
+                                      <button
+                                        className="audio-button bgwhite"
+                                        onClick={() =>
+                                          readText(
+                                            cards[0].back.text,
+                                            true,
+                                            cards[0].back.language,
+                                            selectedVoice
+                                          )
+                                        }
+                                      >
+                                        <i
+                                          className="fa fa-volume-up"
+                                          aria-hidden="true"
+                                        />
+                                      </button>
+                                    )}
+                                </div>
+                                {cards[0]?.img &&
+                                  cards[0]?.back?.language == "pt" && (
+                                    <img
                                       style={{
-                                        fontSize: "12px",
-                                        fontStyle: "italic",
-                                        marginBottom: "15px",
+                                        width: "100%",
+                                        maxWidth: "8rem",
+                                        aspectRatio: "1 / 1",
+                                        objectFit: "cover",
+                                        display: "block",
+                                        margin: "1rem auto",
+                                        objectPosition: "center",
+                                        borderRadius: "6px",
+                                        boxShadow: "1px 1px 12px 3px #bbb",
                                       }}
-                                      dangerouslySetInnerHTML={{
-                                        __html: cards[0]?.backComments,
-                                      }}
+                                      src={cards[0]?.img}
+                                      alt={cards[0]?.front?.text}
                                     />
-                                  </>
-                                ) || " "}
-                              </span>
-                              {cards[0].back.language &&
-                                cards[0].back.language !== "pt" && (
-                                  <button
-                                    className="audio-button bgwhite"
-                                    onClick={() =>
-                                      readText(
-                                        cards[0].back.text,
-                                        true,
-                                        cards[0].back.language,
-                                        selectedVoice
-                                      )
-                                    }
-                                  >
-                                    <i
-                                      className="fa fa-volume-up"
-                                      aria-hidden="true"
-                                    />
-                                  </button>
-                                )}
+                                  )}
+                              </div>
                             </div>
-                            {cards[0]?.img &&
-                              cards[0]?.back?.language == "pt" && (
-                                <img
-                                  style={{
-                                    width: "100%",
-                                    maxWidth: "8rem",
-                                    aspectRatio: "1 / 1",
-                                    objectFit: "cover",
-                                    display: "block",
-                                    margin: "1rem auto",
-                                    objectPosition: "center",
-                                    borderRadius: "6px",
-                                    boxShadow: "1px 1px 12px 3px #bbb",
-                                  }}
-                                  src={cards[0]?.img}
-                                  alt={cards[0]?.front?.text}
-                                />
-                              )}
-                          </div>
-                        </div>
-                      </>
-                    ) : (
-                      <p>
-                        No flashcards
-                        <br />
-                        Nenhum flashcard
-                      </p>
-                    )}
-                  </div>
+                          </>
+                        ) : (
+                          <p>
+                            No flashcards
+                            <br />
+                            Nenhum flashcard
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
+              <div
+                style={{
+                  display: !isDisabled ? "none" : "grid",
+                  justifyContent: "center",
+                  marginTop: "20px",
+                }}
+              >
+                <ArvinButton
+                  style={{
+                    margin: "auto",
+                    display: "block",
+                  }}
+                  onClick={seeCardsToReview}
+                >
+                  {!see ? (
+                    "Start"
+                  ) : (
+                    <i className="fa fa-refresh" aria-hidden="true" />
+                  )}
+                </ArvinButton>
+              </div>
+              <div
+                style={{
+                  marginTop: cardHeight ? cardHeight / 3 : "1rem",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "10px",
+                  maxWidth: "fit-content",
+                  margin: "auto",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
+                }}
+              >
+                <Voice
+                  maxW="6rem"
+                  changeB={changeNumber}
+                  setChangeB={setChangeNumber}
+                />
+                <select
+                  id="category-select"
+                  value={category}
+                  onChange={(e) => {
+                    setCategory(e.target.value);
+                  }}
+                  style={{
+                    maxWidth: "6rem",
+                    borderRadius: "6px",
+                    border: "1px solid #ccc",
+                    margin: "auto",
+                    backgroundColor: "#f9f9f9",
+                    fontSize: "0.9rem",
+                    color: "#333",
+                    outline: "none",
+                    transition: "border-color 0.3s",
+                  }}
+                >
+                  <option value="nofilter">All cards</option>
+                  <option value="vocabulary">Vocabulary</option>
+                  <option value="be">To be</option>
+                  <option value="possessive">Possessivos</option>
+                  <option value="modal">Modal verbs</option>
+                  <option value="question">Question words</option>
+                  <option value="do">Do & Does</option>
+                  <option value="dont">Don't & Doesn't</option>
+                  <option value="did">Did & Didn't</option>
+                  <option value="irregularpast">Irregular Past</option>
+                  <option value="presentperfect">Present Perfect</option>
+                  <option value="pastperfect">Past Perfect</option>
+                  <option value="travel">Viagem</option>
+                  <option value="bodyparts">Partes do corpo</option>
+                  <option value="businessenglish">Inglês para negócios</option>
+                  <option value="family">Família</option>
+                  <option value="animals">Animais</option>
+                  <option value="fruits">Frutas</option>
+                  <option value="food">Comida</option>
+                  <option value="colors">Cores</option>
+                  <option value="house">Casa</option>
+                  <option value="supermarket">Supermercado</option>
+                  <option value="weather">Clima</option>
+                  <option value="clothes">Roupas</option>
+                  <option value="time">Horários</option>
+                  <option value="daysanddates">Dias e Datas</option>
+                  <option value="car">Carro</option>
+                  <option value="road">Estrada</option>
+                  <option value="personality">Personalidade</option>
+                  <option value="nature">Natureza</option>
+                  <option value="numbers">Números</option>
+                  <option value="transportation">Transporte</option>
+                  <option value="office">Escritório</option>
+                  <option value="professions">Profissões</option>
+                  <option value="weather">Clima</option>
+                </select>
+              </div>
             </div>
+          </div>
+          <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
+          <br />
+          <Streak message={MESSAGE} streak={lastR ? 0 : streak} />
+          {isArthurVincent && (
+            <a
+              href="/words-of-the-day"
+              style={{
+                marginTop: "10px",
+                fontSize: "10px",
+                color: "#999",
+                textDecoration: "none",
+              }}
+            >
+              Previous Words of the Day
+            </a>
           )}
-          <div
-            style={{
-              display: !isDisabled ? "none" : "grid",
-              justifyContent: "center",
-              marginTop: "20px",
-            }}
-          >
-            <ArvinButton
-              style={{
-                margin: "auto",
-                display: "block",
-              }}
-              onClick={seeCardsToReview}
-            >
-              {!see ? (
-                "Start"
-              ) : (
-                <i className="fa fa-refresh" aria-hidden="true" />
-              )}
-            </ArvinButton>
-          </div>
-          <div
-            style={{
-              marginTop: cardHeight ? cardHeight / 3 : "1rem",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "10px",
-              maxWidth: "fit-content",
-              margin: "auto",
-              justifyContent: "space-evenly",
-              alignItems: "center",
-            }}
-          >
-            <Voice
-              maxW="6rem"
-              changeB={changeNumber}
-              setChangeB={setChangeNumber}
-            />
-            <select
-              id="category-select"
-              value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
-              }}
-              style={{
-                maxWidth: "6rem",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                margin: "auto",
-                backgroundColor: "#f9f9f9",
-                fontSize: "0.9rem",
-                color: "#333",
-                outline: "none",
-                transition: "border-color 0.3s",
-              }}
-            >
-              <option value="nofilter">All cards</option>
-              <option value="vocabulary">Vocabulary</option>
-              <option value="be">To be</option>
-              <option value="possessive">Possessivos</option>
-              <option value="modal">Modal verbs</option>
-              <option value="question">Question words</option>
-              <option value="do">Do & Does</option>
-              <option value="dont">Don't & Doesn't</option>
-              <option value="did">Did & Didn't</option>
-              <option value="irregularpast">Irregular Past</option>
-              <option value="presentperfect">Present Perfect</option>
-              <option value="pastperfect">Past Perfect</option>
-              <option value="travel">Viagem</option>
-              <option value="bodyparts">Partes do corpo</option>
-              <option value="businessenglish">Inglês para negócios</option>
-              <option value="family">Família</option>
-              <option value="animals">Animais</option>
-              <option value="fruits">Frutas</option>
-              <option value="food">Comida</option>
-              <option value="colors">Cores</option>
-              <option value="house">Casa</option>
-              <option value="supermarket">Supermercado</option>
-              <option value="weather">Clima</option>
-              <option value="clothes">Roupas</option>
-              <option value="time">Horários</option>
-              <option value="daysanddates">Dias e Datas</option>
-              <option value="car">Carro</option>
-              <option value="road">Estrada</option>
-              <option value="personality">Personalidade</option>
-              <option value="nature">Natureza</option>
-              <option value="numbers">Números</option>
-              <option value="transportation">Transporte</option>
-              <option value="office">Escritório</option>
-              <option value="professions">Profissões</option>
-              <option value="weather">Clima</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
-      <br />
-
-      <Streak message={MESSAGE} streak={lastR ? 0 : streak} />
-
-      {isArthurVincent && (
-        <a
-          href="/words-of-the-day"
-          style={{
-            marginTop: "10px",
-            fontSize: "10px",
-            color: "#999",
-            textDecoration: "none",
-          }}
-        >
-          Previous Words of the Day
-        </a>
+        </>
       )}
     </section>
   );
