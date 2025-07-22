@@ -204,7 +204,12 @@ export default function Modules({
           {filtered
             .sort((a: any, b: any) => a.order - b.order)
             .map((module: any, index: number) => (
-              <div key={index}>
+              <div
+                key={index}
+                style={{
+                  display: module.classes.length > 0 ? "block" : "none",
+                }}
+              >
                 <HThreeModule onClick={() => toggleModuleVisibility(index)}>
                   {index + 1} |{" "}
                   {module.moduleTitle ? module.moduleTitle : `Module #${index}`}{" "}
