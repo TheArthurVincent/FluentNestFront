@@ -12,6 +12,8 @@ import {
   onLoggOut,
   updateInfo,
   mascotWeak,
+  formatDate,
+  formatDateBr,
 } from "../../../Resources/UniversalComponents";
 
 import {
@@ -30,6 +32,7 @@ import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 import { Streak } from "../../FlashCardsToday/Streak";
+import { isArthurVincent } from "../../../App";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -55,6 +58,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
   const [timerCardCount, setTimerCardCount] = useState(19);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
+  const [myVeryLastReview, setMyVeryLastReview] = useState<Date>(new Date());
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
@@ -352,17 +356,19 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   var [streak, setStreak] = useState<any>(0);
   var [lastR, setLastR] = useState<any>(0);
-
+  const dateToday = new Date();
   const getHistory = async (id: string) => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${backDomain}/api/v1/flashcardhistory/${id}`,
-        { headers: actualHeaders }
+        { dateToday, headers: actualHeaders }
       );
       var st = response.data.streak;
-      var lr = response.data.diasDesdeUltimaRevisao;
+      var lr = response.data.daysSinceLastReview;
+      var mvlr = response.data.veryLastReview;
       setStreak(st);
       setLastR(lr);
+      setMyVeryLastReview(mvlr);
       console.log(response.data);
     } catch (error) {
       console.log(error);
@@ -414,7 +420,11 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       );
     } else if (lastR !== null && lastR <= 3) {
       setMascot(mascotThinking(colorOfTheTShirt, size));
-      setMESSAGE(`I'm worried about you, you haven't studied in ${lastR} days`);
+      setMESSAGE(
+        `Don't give up! Last time you studied was ${
+          lastR === 1 ? `yesterday` : `${lastR} days ago`
+        }!`
+      );
     } else if (lastR !== null && lastR > 3) {
       setMascot(mascotWeak(colorOfTheTShirt, size));
       setMESSAGE(`I'm dying, you haven't studied in ${lastR} days`);
@@ -450,6 +460,17 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
+        <div
+          style={{
+            marginTop: "10px",
+            marginRight: "auto",
+            fontSize: "10px",
+            color: "#999",
+            textDecoration: "none",
+          }}
+        >
+          Last Review: {formatDateBr(myVeryLastReview)}
+        </div>
         <HOne
           style={{
             fontFamily: textTitleFont(),
@@ -510,7 +531,13 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             alignItems: "center",
           }}
         >
-          <WordOfTheDay change={change} onChange={onChange} headers={headers} />
+          {isArthurVincent && (
+            <WordOfTheDay
+              change={change}
+              onChange={onChange}
+              headers={headers}
+            />
+          )}
           {see && (
             <div ref={cardRef}>
               {loading ? (
@@ -860,17 +887,20 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       <br />
 
       <Streak message={MESSAGE} streak={lastR ? 0 : streak} />
-      <a
-        href="/words-of-the-day"
-        style={{
-          marginTop: "10px",
-          fontSize: "10px",
-          color: "#999",
-          textDecoration: "none",
-        }}
-      >
-        Previous Words of the Day
-      </a>
+
+      {isArthurVincent && (
+        <a
+          href="/words-of-the-day"
+          style={{
+            marginTop: "10px",
+            fontSize: "10px",
+            color: "#999",
+            textDecoration: "none",
+          }}
+        >
+          Previous Words of the Day
+        </a>
+      )}
     </section>
   );
 };
