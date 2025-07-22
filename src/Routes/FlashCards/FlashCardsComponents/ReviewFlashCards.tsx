@@ -454,7 +454,6 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setCardHeight(cardRef.current.offsetHeight);
     }
   }, [cards, answer, backCardVisible, loading, see]);
-  // ...existing code...
 
   return (
     <section id="review">
