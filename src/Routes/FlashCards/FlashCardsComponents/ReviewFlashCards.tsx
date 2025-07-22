@@ -384,7 +384,7 @@ var ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   };
 
   useEffect(() => {
-    if (myId !== "" || myId !== null) {
+    if (myId !== "" && myId !== null) {
       getHistory(myId);
     }
     console.log("myId", myId);
