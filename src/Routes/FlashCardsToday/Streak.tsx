@@ -103,18 +103,6 @@ export const Streak: React.FC<StreakProps> = ({
             {Math.round(progressPercentage)}%
           </div>
         </div>
-
-        {/* Hint para clicar */}
-        {/* <div
-          style={{
-            fontSize: "8px",
-            color: "#999",
-            marginTop: "4px",
-            opacity: 0.7,
-          }}
-        >
-          👆 Click for details
-        </div> */}
       </div>
 
       {/* Modal */}
