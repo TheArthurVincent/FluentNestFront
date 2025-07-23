@@ -38,8 +38,9 @@ const ListeningHistory = ({ headers }: HeadersProps) => {
   const actualHeaders = headers || {};
   const getNewCards = async (id?: string) => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${backDomain}/api/v1/flashcardscore/${id}`,
+        { dayToday: new Date() },
         {
           // @ts-ignore
           headers: actualHeaders,

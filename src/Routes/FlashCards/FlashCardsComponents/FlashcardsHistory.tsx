@@ -38,8 +38,9 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
     setLoading(true);
     console.log(days);
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${backDomain}/api/v1/flashcardscore/${id}`,
+        { dayToday: new Date() },
         {
           params: { days },
           headers: actualHeaders,

@@ -303,6 +303,13 @@ const ListeningExercise = ({
         { headers: actualHeaders || {} }
       );
       const thereAreCards = response.data.dueFlashcards.length === 0;
+      const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
+      localStorage.setItem(
+        "flashcardsToday",
+        JSON.stringify(response.data.flashCardsReviewsToday)
+      );
+      setFlashcardsToday(theFlashcardsTodayNumber);
+
       setCards(response.data.dueFlashcards);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
 
