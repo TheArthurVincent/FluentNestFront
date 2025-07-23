@@ -162,7 +162,7 @@ export function LevelCard({
                   {UniversalTexts.homework}: {formatNumber(assignmentsDone)}
                 </p>
                 <p style={{ color: "#fff" }}>
-                  {UniversalTexts.flashcardsDailyReviews}: {formatNumber(FC)}
+                  {UniversalTexts.flashcardsDailyReviews}: {formatNumber(FC) || FC}
                 </p>
               </DivDisapearBig>
               <div
