@@ -338,7 +338,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
                   </li>
 
-                  {user.tutoree && (
+                  {user.tutoree && isArthurVincent && (
                     <li
                       style={{
                         listStyle: "none",
