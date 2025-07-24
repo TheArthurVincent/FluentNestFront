@@ -529,7 +529,7 @@ const ListeningExercise = ({
     console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
-  return !isAPPLE ? (
+  return isAPPLE ? (
     <section
       style={{
         display: "flex",
