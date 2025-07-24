@@ -42,7 +42,6 @@ import {
   textPrimaryColorContrast,
   logoPartner,
   textTitleFont,
-  textGeneralFont,
 } from "../Styles/Styles";
 
 export function HomePage({ headers }: HeadersProps) {
@@ -73,17 +72,22 @@ export function HomePage({ headers }: HeadersProps) {
   }, []);
 
   var seeFee = async () => {
-    if (_StudentId !== "") {
-      var response = await axios.get(
-        `${backDomain}/api/v1/studentfeeuptodate/${_StudentId}`
-      );
-      if (response.data.feeUpToDate === false) {
-        onLoggOutFee();
-      } else {
-        console.log("Fee is up to date");
+    try {
+      var userHere = localStorage.getItem("loggedIn");
+      if (userHere) {
+        //@ts-ignore
+        var { id } = JSON.parse(userHere);
+        var response = await axios.get(
+          `${backDomain}/api/v1/studentfeeuptodate/${id}`
+        );
+        if (response.data.feeUpToDate === false) {
+          onLoggOutFee();
+        } else {
+          console.log("Student ID is not set, skipping fee check.");
+        }
       }
-    } else {
-      console.log("Student ID is not set, skipping fee check.");
+    } catch (error) {
+      console.error("Error checking fee status:", error);
     }
   };
 
@@ -103,7 +107,7 @@ export function HomePage({ headers }: HeadersProps) {
     setTimeout(() => {
       seeFee();
     }, 2000);
-  }, [_StudentId]);
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
