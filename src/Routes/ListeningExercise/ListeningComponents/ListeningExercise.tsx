@@ -670,7 +670,7 @@ const ListeningExercise = ({
           }}
         >
           <a
-            href="/flashcards"
+            href="/flash-cards"
             style={{
               display: "inline-block",
               padding: "12px 24px",
