@@ -19,6 +19,7 @@ import { SpanDisapear } from "../HomePage/Blog.Styled";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
+import { isArthurVincent } from "../../App";
 const styles = {
   container: {
     display: "flex",
@@ -259,53 +260,55 @@ export function MyProfile({ headers }: HeadersProps) {
                 className="box-shadow-white"
               >
                 <ul>
-                  <li
-                    style={{
-                      listStyle: "none",
-                      padding: "1rem",
-                      margin: "1rem 0",
-                      backgroundColor: "#f9f9f9",
-                      border: "1px solid #ddd",
-                      borderRadius: "8px",
-                      fontSize: "1rem",
-                      lineHeight: "1.6",
-                      color: "#333",
-                      position: "relative",
-                    }}
-                  >
-                    <strong>🎁 Seu código promocional:</strong>{" "}
-                    <button
-                      onClick={copyToClipboard}
+                  {isArthurVincent && (
+                    <li
                       style={{
-                        marginLeft: "1rem",
-                        padding: "0.3rem 0.6rem",
-                        fontSize: "0.9rem",
-                        cursor: "pointer",
-                        border: "none",
-                        borderRadius: "4px",
-                        backgroundColor: partnerColor(),
-                        color: "#fff",
+                        listStyle: "none",
+                        padding: "1rem",
+                        margin: "1rem 0",
+                        backgroundColor: "#f9f9f9",
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        fontSize: "1rem",
+                        lineHeight: "1.6",
+                        color: "#333",
+                        position: "relative",
                       }}
                     >
-                      {user.username}
-                    </button>
-                    {copied && (
-                      <span
+                      <strong>🎁 Seu código promocional:</strong>{" "}
+                      <button
+                        onClick={copyToClipboard}
                         style={{
-                          marginLeft: "0.5rem",
+                          marginLeft: "1rem",
+                          padding: "0.3rem 0.6rem",
                           fontSize: "0.9rem",
-                          color: "green",
+                          cursor: "pointer",
+                          border: "none",
+                          borderRadius: "4px",
+                          backgroundColor: partnerColor(),
+                          color: "#fff",
                         }}
                       >
-                        Copiado!
+                        {user.username}
+                      </button>
+                      {copied && (
+                        <span
+                          style={{
+                            marginLeft: "0.5rem",
+                            fontSize: "0.9rem",
+                            color: "green",
+                          }}
+                        >
+                          Copiado!
+                        </span>
+                      )}
+                      <br />
+                      <span style={{ display: "block", marginTop: "0.5rem" }}>
+                        Recomende a plataforma a alguém para que a pessoa ganhe{" "}
+                        <strong>20% de desconto </strong>nos 3 primeiros meses!
                       </span>
-                    )}
-                    <br />
-                    <span style={{ display: "block", marginTop: "0.5rem" }}>
-                      Recomende a plataforma a alguém para que a pessoa ganhe{" "}
-                      <strong>20% de desconto </strong>nos 3 primeiros meses!
-                    </span>
-                  </li>
+                    </li>
+                  )}
                   {myProfileList.map((item, index) => (
                     <li
                       key={index}

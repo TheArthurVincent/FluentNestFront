@@ -441,6 +441,21 @@ const ListeningExercise = ({
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
+  const [isAPPLE, setISAPPLE] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isIOSs =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+    const isSafaris = /^((?!chrome|android).)*safari/i.test(
+      navigator.userAgent
+    );
+
+    if (isIOSs || isSafaris) {
+      setISAPPLE(true);
+    } else {
+      setISAPPLE(false);
+    }
+  }, []);
   const startRecording = async () => {
     const isIOS =
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
@@ -448,7 +463,7 @@ const ListeningExercise = ({
 
     if (isIOS || isSafari) {
       notifyAlert(
-        "Seu dispositivo ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
+        "Seu dispositivo Apple ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
       );
       return;
     }
@@ -514,7 +529,210 @@ const ListeningExercise = ({
     console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
-  return (
+  return isAPPLE ? (
+    <section
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "60vh",
+        padding: "2rem",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "500px",
+          padding: "2rem",
+          borderRadius: "16px",
+          backgroundColor: "#fff",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #e0e0e0",
+        }}
+      >
+        {/* Icon */}
+        <div
+          style={{
+            fontSize: "3rem",
+            marginBottom: "1.5rem",
+            color: "#ff6b6b",
+          }}
+        >
+          🚫
+        </div>
+
+        {/* Title */}
+        <h2
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: "600",
+            color: "#333",
+            marginBottom: "1rem",
+            lineHeight: "1.4",
+          }}
+        >
+          Audio Recording Not Supported
+        </h2>
+
+        {/* Subtitle */}
+        <h3
+          style={{
+            fontSize: "1.1rem",
+            fontWeight: "500",
+            color: "#666",
+            marginBottom: "1.5rem",
+            lineHeight: "1.4",
+          }}
+        >
+          Gravação de áudio não suportada
+        </h3>
+
+        {/* Main message */}
+        <p
+          style={{
+            fontSize: "1rem",
+            color: "#555",
+            lineHeight: "1.6",
+            marginBottom: "1.5rem",
+          }}
+        >
+          Your Apple device or Safari browser doesn't support audio recording
+          features required for this exercise.
+        </p>
+
+        <p
+          style={{
+            fontSize: "0.95rem",
+            color: "#666",
+            lineHeight: "1.6",
+            marginBottom: "2rem",
+          }}
+        >
+          Seu dispositivo Apple ou navegador Safari não suporta os recursos de
+          gravação de áudio necessários para este exercício.
+        </p>
+
+        {/* Recommendations */}
+        <div
+          style={{
+            backgroundColor: "#f8f9fa",
+            padding: "1.5rem",
+            borderRadius: "12px",
+            marginBottom: "1.5rem",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          <h4
+            style={{
+              fontSize: "1rem",
+              fontWeight: "600",
+              color: "#495057",
+              marginBottom: "1rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+            }}
+          >
+            💡 Recommended Solutions
+          </h4>
+
+          <div
+            style={{
+              textAlign: "left",
+              fontSize: "0.9rem",
+              color: "#555",
+              lineHeight: "1.5",
+            }}
+          >
+            <div style={{ marginBottom: "0.8rem" }}>
+              <strong>🖥️ Desktop/Laptop:</strong>
+              <br />
+              Use Google Chrome or Firefox on your computer
+            </div>
+
+            <div style={{ marginBottom: "0.8rem" }}>
+              <strong>📱 Mobile Alternative:</strong>
+              <br />
+              Try Google Chrome mobile browser (on some Android devices)
+            </div>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.8rem",
+            alignItems: "center",
+          }}
+        >
+          <a
+            href="/flashcards"
+            style={{
+              display: "inline-block",
+              padding: "12px 24px",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              textDecoration: "none",
+              borderRadius: "8px",
+              fontSize: "0.95rem",
+              fontWeight: "500",
+              transition: "all 0.2s",
+              minWidth: "200px",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            📚 Try Regular Flashcards
+          </a>
+
+          <a
+            href="/"
+            style={{
+              display: "inline-block",
+              padding: "10px 20px",
+              backgroundColor: "transparent",
+              color: "#666",
+              textDecoration: "none",
+              borderRadius: "8px",
+              fontSize: "0.9rem",
+              border: "1px solid #ddd",
+              transition: "all 0.2s",
+              minWidth: "200px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+              e.currentTarget.style.borderColor = "#bbb";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.borderColor = "#ddd";
+            }}
+          >
+            🏠 Back to Home
+          </a>
+        </div>
+
+        {/* Footer note */}
+        <div
+          style={{
+            marginTop: "2rem",
+            paddingTop: "1rem",
+            borderTop: "1px solid #eee",
+            fontSize: "0.8rem",
+            color: "#999",
+            fontStyle: "italic",
+          }}
+        >
+          This limitation is due to browser security policies on iOS/Safari
+          devices
+        </div>
+      </div>
+    </section>
+  ) : (
     <section id="review">
       <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
       {see && (
@@ -634,7 +852,7 @@ const ListeningExercise = ({
                       </div>
                       <p>
                         This sentence has <b>{words}</b> words
-                      </p>{" "}
+                      </p>
                       <p>
                         You scored <b>{score.toFixed()}</b> points
                       </p>
@@ -672,7 +890,7 @@ const ListeningExercise = ({
                             const estimatedTime = Math.min(
                               6000,
                               wordsInSentence * 350
-                            ); // máximo 6s, 350ms por palavra
+                            );
 
                             setTimeout(() => {
                               setEnableVoice(true);
@@ -685,11 +903,7 @@ const ListeningExercise = ({
                             marginTop: !isDisabled ? "1rem" : 0,
                           }}
                         >
-                          {!isDisabled ? (
-                            <i className="fa fa-volume-up" aria-hidden="true" />
-                          ) : (
-                            <i className="fa fa-volume-up" aria-hidden="true" />
-                          )}
+                          <i className="fa fa-volume-up" aria-hidden="true" />
                         </ArvinButton>
                         <ArvinButton
                           style={{
@@ -706,15 +920,13 @@ const ListeningExercise = ({
                             )
                               return;
                             if (isIOS || isSafari) {
-                              // if (!isIOS && !isSafari) {
-                              // Só inicia, não para
                               if (!listening) {
                                 cardTextRef.current =
                                   cards[0]?.front?.text || "";
 
                                 (window as any).startSpeechRecognition();
                                 setListening(true);
-                                setTimeout(() => setListening(false), 4000); // desliga o estado de listening visualmente
+                                setTimeout(() => setListening(false), 4000);
                               }
                             } else {
                               !listening ? startRecording() : stopRecording();
@@ -722,10 +934,10 @@ const ListeningExercise = ({
                           }}
                           color={
                             !enableVoice
-                              ? "lightgrey" // Bloqueado: esperando leitura terminar
+                              ? "lightgrey"
                               : listening
-                              ? "red" // Gravando
-                              : "green" // Pronto para gravar
+                              ? "red"
+                              : "green"
                           }
                         >
                           <i
