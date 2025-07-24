@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste PPT - Acentos</title>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+</head>
+<body>
+    <h1>Teste de Geração de PPT com Acentos</h1>
+    <button onclick="testPPT()">Gerar PPT de Teste</button>
+
+    <script>
+        function testPPT() {
+            const pptx = new PptxGenJS();
+            
+            // Slide de teste com acentos
+            const slide = pptx.addSlide();
+            
+            slide.addText('Teste de Acentuação', {
+                x: 1,
+                y: 1,
+                w: 8,
+                h: 1,
+                fontSize: 32,
+                bold: true,
+                color: '437DAC'
+            });
+            
+            slide.addText('Frases com acentos: ção, ã, é, ê, ô, ú, ç', {
+                x: 1,
+                y: 2.5,
+                w: 8,
+                h: 2,
+                fontSize: 18,
+                color: '333333'
+            });
+            
+            slide.addText('Exemplo: João está aprendendo inglês na escola.', {
+                x: 1,
+                y: 4,
+                w: 8,
+                h: 1,
+                fontSize: 16,
+                color: '666666'
+            });
+            
+            pptx.writeFile({ fileName: 'teste_acentos.pptx' });
+            alert('PPT de teste gerado!');
+        }
+    </script>
+</body>
+</html>
