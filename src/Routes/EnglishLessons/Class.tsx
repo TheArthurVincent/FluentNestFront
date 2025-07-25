@@ -252,376 +252,694 @@ export default function EnglishClassCourse2({
 
   // Função para sanitizar texto
   const sanitizeText = (text: string, maxLength: number = 500): string => {
-    if (!text) return '';
-    
+    if (!text) return "";
+
     // Remover apenas caracteres perigosos, mantendo acentos e caracteres especiais normais
     let cleaned = text
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ' ') // Remove caracteres de controle
-      .replace(/\s+/g, ' ') // Normaliza espaços
+      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, " ") // Remove caracteres de controle
+      .replace(/\s+/g, " ") // Normaliza espaços
       .trim();
-    
+
     // Limitar o comprimento
     if (cleaned.length > maxLength) {
-      cleaned = cleaned.substring(0, maxLength) + '...';
+      cleaned = cleaned.substring(0, maxLength) + "...";
     }
-    
+
     return cleaned;
   };
 
   // Função para limpar HTML
   const cleanHtml = (html: string): string => {
-    if (!html) return '';
-    
+    if (!html) return "";
+
     // Remover tags HTML
-    let cleaned = html.replace(/<[^>]*>/g, '');
-    
+    let cleaned = html.replace(/<[^>]*>/g, "");
+
     // Decodificar entidades HTML básicas
     cleaned = cleaned
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
       .replace(/&quot;/g, '"')
       .replace(/&#39;/g, "'");
-    
+
     return cleaned.trim();
+  };
+
+  // Função para calcular dimensões proporcionais da imagem
+  const calculateImageDimensions = (maxWidth: number, maxHeight: number) => {
+    // Definir largura fixa e calcular altura proporcionalmente
+    const targetWidth = Math.min(maxWidth, 1.5); // Largura máxima de 1.5
+
+    // Assumir uma proporção padrão width:height (pode ser ajustada)
+    const aspectRatio = 1.2; // width é 1.2x maior que height
+
+    // Calcular altura baseada na largura
+    const calculatedHeight = targetWidth / aspectRatio;
+
+    // Verificar se a altura calculada não excede o limite
+    const finalHeight = Math.min(calculatedHeight, maxHeight);
+
+    // Se a altura foi limitada, recalcular a largura para manter proporção
+    const finalWidth =
+      finalHeight > calculatedHeight ? targetWidth : finalHeight * aspectRatio;
+
+    return {
+      width: Number(Math.min(finalWidth, maxWidth).toFixed(2)),
+      height: Number(finalHeight.toFixed(2)),
+    };
   };
 
   // Função para gerar PPT
   const generatePPT = async () => {
     try {
-      console.log('🎯 Iniciando geração de PPT...');
-      notifyAlert('Gerando PowerPoint...', partnerColor());
-      
+      console.log("🎯 Iniciando geração de PPT...");
+      notifyAlert("Gerando PowerPoint...", partnerColor());
+
       const pptx = new PptxGenJS();
-      
+
       // Configurações básicas
-      pptx.author = 'Arvin Education';
-      pptx.title = sanitizeText(classTitle || 'Aula de Inglês');
-      pptx.subject = 'Aula de Inglês';
-      
-      // Slide de título com logo
+      pptx.author = "Arvin Education";
+      pptx.title = sanitizeText(classTitle || "Aula de Inglês");
+      pptx.subject = "Aula de Inglês";
+
+      // Slide de título
       const titleSlide = pptx.addSlide();
-      
-      // Adicionar logo do partner
+
+      // Título principal centralizado - 40
+      const safeTitle = sanitizeText(classTitle || "Aula de Inglês", 100);
+      titleSlide.addText(safeTitle, {
+        x: 0.5,
+        y: 0.3,
+        w: 9,
+        h: 1.2,
+        fontSize: 36,
+        bold: true,
+        align: "center",
+        color: partnerColor().replace("#", ""),
+        fontFace: textTitleFont(),
+      });
+
+      // Imagem da aula (quadrado - se houver) - centralizado
+      if (theclass.image) {
+        try {
+          titleSlide.addImage({
+            path: theclass.image,
+            x: 3.75, // Centralizado (10 - 2.5) / 2 = 3.75
+            y: 1.8,
+            w: 2.5,
+            h: 2.5,
+          });
+        } catch (imageError) {
+          console.log(
+            "⚠️ Não foi possível carregar a imagem da aula:",
+            imageError
+          );
+        }
+      }
+
+      // Subtítulo centralizado - 20
+      const safeSubtitle = sanitizeText(`${courseTitle}`, 60);
+      const subtitleY = theclass.image ? 4.2 : 2; // Ajustar posição baseado na presença da imagem
+      titleSlide.addText(safeSubtitle, {
+        x: 0.5,
+        y: subtitleY,
+        w: 9,
+        h: 0.8,
+        fontSize: 18,
+        align: "center",
+        color: darkGreyColor().replace("#", ""),
+        fontFace: textGeneralFont(),
+      });
+
+      // Data centralizada - 10
+      const dateY = theclass.image ? 4.8 : 2.9; // Ajustar posição baseado na presença da imagem
+      titleSlide.addText(`${new Date().toLocaleDateString("pt-BR")}`, {
+        x: 0.5,
+        y: dateY,
+        w: 9,
+        h: 0.4,
+        fontSize: 10,
+        align: "center",
+        color: darkGreyColor().replace("#", ""),
+        fontFace: textGeneralFont(),
+      });
+
+      // Logo do partner - Canto direito pequenininho
       try {
         const logoUrl = logoPartner();
         if (logoUrl) {
           titleSlide.addImage({
             path: logoUrl,
-            x: 1,
-            y: 0.5,
-            w: 2,
-            h: 1
+            x: 9, // Canto direito
+            y: 0.1, // Topo
+            w: 0.8,
+            h: 0.4,
           });
         }
       } catch (logoError) {
-        console.log('⚠️ Não foi possível carregar o logo:', logoError);
+        console.log("⚠️ Não foi possível carregar o logo:", logoError);
       }
-      
-      const safeTitle = sanitizeText(classTitle || 'Aula de Inglês', 100);
-      titleSlide.addText(safeTitle, {
-        x: 1,
-        y: 2.5,
-        w: 8,
-        h: 1.5,
-        fontSize: 36,
-        bold: true,
-        align: 'center',
-        color: partnerColor().replace('#', ''),
-        fontFace: textTitleFont()
-      });
-      
-      const safeSubtitle = sanitizeText(`Curso: ${courseTitle}`, 80);
-      titleSlide.addText(safeSubtitle, {
-        x: 1,
-        y: 4.5,
-        w: 8,
-        h: 1,
-        fontSize: 24,
-        align: 'center',
-        color: darkGreyColor().replace('#', ''),
-        fontFace: textGeneralFont()
-      });
-      
-      titleSlide.addText(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, {
-        x: 1,
-        y: 6,
-        w: 8,
-        h: 1,
-        fontSize: 18,
-        align: 'center',
-        color: darkGreyColor().replace('#', ''),
-        fontFace: textGeneralFont()
-      });
-      
+
       // Processar elementos da aula
       if (theclass.elements && Array.isArray(theclass.elements)) {
-        const sortedElements = theclass.elements.sort((a: any, b: any) => (a.order || 0) - (b.order || 0));
+        const sortedElements = theclass.elements.sort(
+          (a: any, b: any) => (a.order || 0) - (b.order || 0)
+        );
         console.log(`🔄 Processando ${sortedElements.length} elementos...`);
-        
+
         for (const element of sortedElements) {
-          console.log(`📄 Processando elemento: ${element.type} - ${element.subtitle || 'Sem título'}`);
-          
-          if (element.type === 'text') {
-            const textSlide = pptx.addSlide();
-            
-            // Título do slide
+          console.log(
+            `📄 Processando elemento: ${element.type} - ${
+              element.subtitle || "Sem título"
+            }`
+          );
+
+          // Slide de subtítulo para cada elemento
+          if (element.subtitle || element.description) {
+            const subtitleSlide = pptx.addSlide();
+
+            // Adicionar borda ao slide
+            subtitleSlide.addShape(pptx.ShapeType.rect, {
+              x: 0.2,
+              y: 0.2,
+              w: 9.6,
+              h: 5.2,
+              fill: { color: "FFFFFF" },
+              line: { color: partnerColor().replace("#", ""), width: 4 },
+            });
+
+            // Adicionar imagem - primeiro verificar se há imagem do elemento, senão usar da aula
+            const imageToUse = element.image || theclass.image;
+            if (imageToUse) {
+              try {
+                subtitleSlide.addImage({
+                  path: imageToUse,
+                  x: 0.5, // Canto esquerdo
+                  y: 4.2, // Parte inferior
+                  w: 1,
+                  h: 1,
+                });
+              } catch (imageError) {
+                console.log(
+                  "⚠️ Não foi possível carregar a imagem:",
+                  imageError
+                );
+              }
+            }
+
+            // Título principal centralizado
             if (element.subtitle) {
               const safeSubtitle = sanitizeText(element.subtitle, 100);
-              textSlide.addText(safeSubtitle, {
-                x: 0.5,
-                y: 0.5,
-                w: 9,
-                h: 1,
-                fontSize: 28,
+              subtitleSlide.addText(safeSubtitle, {
+                x: 1,
+                y: 2,
+                w: 8,
+                h: 2,
+                fontSize: 36,
                 bold: true,
-                color: partnerColor().replace('#', ''),
-                fontFace: textTitleFont()
+                align: "center",
+                color: partnerColor().replace("#", ""),
+                fontFace: textTitleFont(),
               });
             }
-            
-            // Conteúdo
-            if (element.text) {
-              const safeText = sanitizeText(element.text, 1000);
-              textSlide.addText(safeText, {
-                x: 0.5,
-                y: element.subtitle ? 2 : 1,
-                w: 9,
-                h: 5,
+
+            // Descrição centralizada (se houver)
+            if (element.description) {
+              const safeDescription = sanitizeText(element.description, 300);
+              subtitleSlide.addText(safeDescription, {
+                x: 1,
+                y: 4.2,
+                w: 8,
+                h: 1.5,
                 fontSize: 18,
-                color: darkGreyColor().replace('#', ''),
-                fontFace: textGeneralFont()
+                align: "center",
+                color: darkGreyColor().replace("#", ""),
+                fontFace: textGeneralFont(),
               });
+            }
+
+            // Subtítulo da sessão no canto inferior esquerdo
+            const sessionSubtitle = `Sessão: ${element.subtitle || "Conteúdo"}`;
+            subtitleSlide.addText(sessionSubtitle, {
+              x: imageToUse ? 4 : 1, // Ajustar posição se há imagem
+              y: 6.2,
+              w: 5,
+              h: 0.8,
+              fontSize: 14,
+              bold: true,
+              align: "left",
+              color: partnerColor().replace("#", ""),
+              fontFace: textGeneralFont(),
+            });
+
+            // Logo do partner no canto superior direito (pequeno)
+            try {
+              const logoUrl = logoPartner();
+              if (logoUrl) {
+                subtitleSlide.addImage({
+                  path: logoUrl,
+                  x: 8.5,
+                  y: 0.5,
+                  w: 0.8,
+                  h: 0.6,
+                });
+              }
+            } catch (logoError) {
+              console.log("⚠️ Não foi possível carregar o logo:", logoError);
             }
           }
-          
-          else if (element.type === 'sentences') {
-            // Dividir as frases em grupos de 2
-            if (element.sentences && Array.isArray(element.sentences)) {
-              const sentenceGroups = [];
-              for (let i = 0; i < element.sentences.length; i += 2) {
-                sentenceGroups.push(element.sentences.slice(i, i + 2));
-              }
-              
-              sentenceGroups.forEach((sentenceGroup, groupIndex) => {
-                const sentencesSlide = pptx.addSlide();
-                
-                // Título
-                const safeSubtitle = sanitizeText(
-                  `${element.subtitle || 'Frases'}${sentenceGroups.length > 1 ? ` (${groupIndex + 1}/${sentenceGroups.length})` : ''}`, 
-                  100
-                );
-                sentencesSlide.addText(safeSubtitle, {
+
+          // Processar diferentes tipos de elementos
+          switch (element.type) {
+            case "text":
+              const textSlide = pptx.addSlide();
+
+              // Conteúdo
+              if (element.text) {
+                const safeText = sanitizeText(element.text, 800);
+                textSlide.addText(safeText, {
                   x: 0.5,
-                  y: 0.5,
+                  y: 1,
                   w: 9,
-                  h: 1,
-                  fontSize: 28,
-                  bold: true,
-                  color: partnerColor().replace('#', ''),
-                  fontFace: textTitleFont()
+                  h: 6,
+                  fontSize: 16,
+                  color: darkGreyColor().replace("#", ""),
+                  fontFace: textGeneralFont(),
                 });
-                
-                // Frases (máximo 2 por slide)
-                let yPos = 2.5;
-                sentenceGroup.forEach((sentence) => {
-                  if (sentence.english) {
-                    const safeEnglish = sanitizeText(sentence.english, 200);
-                    sentencesSlide.addText(`• ${safeEnglish}`, {
+              }
+              break;
+
+            case "sentences":
+              if (element.sentences && Array.isArray(element.sentences)) {
+                // Dividir as frases em grupos de 2
+                const sentenceGroups = [];
+                for (let i = 0; i < element.sentences.length; i += 2) {
+                  sentenceGroups.push(element.sentences.slice(i, i + 2));
+                }
+
+                sentenceGroups.forEach((sentenceGroup, groupIndex) => {
+                  const sentencesSlide = pptx.addSlide();
+
+                  // Título
+                  const safeSubtitle = sanitizeText(
+                    `${element.subtitle || "Frases"}${
+                      sentenceGroups.length > 1
+                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                        : ""
+                    }`,
+                    100
+                  );
+                  sentencesSlide.addText(safeSubtitle, {
+                    x: 0.5,
+                    y: 0.5,
+                    w: 9,
+                    h: 0.8,
+                    fontSize: 24,
+                    bold: true,
+                    color: partnerColor().replace("#", ""),
+                    fontFace: textTitleFont(),
+                  });
+
+                  // Frases (máximo 2 por slide)
+                  let yPos = 2;
+                  sentenceGroup.forEach((sentence) => {
+                    if (sentence.english) {
+                      const safeEnglish = sanitizeText(sentence.english, 200);
+                      sentencesSlide.addText(`• ${safeEnglish}`, {
+                        x: 0.5,
+                        y: yPos,
+                        w: 9,
+                        h: 0.6,
+                        fontSize: 18,
+                        bold: true,
+                        color: partnerColor().replace("#", ""),
+                        fontFace: textGeneralFont(),
+                      });
+
+                      if (sentence.portuguese) {
+                        const safePortuguese = sanitizeText(
+                          sentence.portuguese,
+                          200
+                        );
+                        sentencesSlide.addText(`  ${safePortuguese}`, {
+                          x: 0.5,
+                          y: yPos + 0.6,
+                          w: 9,
+                          h: 0.5,
+                          fontSize: 16,
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                        });
+                      }
+                      yPos += 1.5;
+                    }
+                  });
+                });
+              }
+              break;
+
+            case "exercise":
+              if (element.items && Array.isArray(element.items)) {
+                const exerciseSlide = pptx.addSlide();
+
+                // Exercícios
+                let yPos = 1;
+                for (const item of element.items.slice(0, 2)) {
+                  // Máximo 2 exercícios por slide
+                  if (item.question) {
+                    const safeQuestion = sanitizeText(item.question, 150);
+                    exerciseSlide.addText(`• ${safeQuestion}`, {
                       x: 0.5,
                       y: yPos,
                       w: 9,
-                      h: 0.8,
-                      fontSize: 20,
+                      h: 0.5,
+                      fontSize: 16,
                       bold: true,
-                      color: partnerColor().replace('#', ''),
-                      fontFace: textGeneralFont()
+                      color: partnerColor().replace("#", ""),
+                      fontFace: textGeneralFont(),
                     });
-                    
-                    if (sentence.portuguese) {
-                      const safePortuguese = sanitizeText(sentence.portuguese, 200);
-                      sentencesSlide.addText(`  ${safePortuguese}`, {
-                        x: 0.5,
-                        y: yPos + 0.8,
-                        w: 9,
-                        h: 0.6,
-                        fontSize: 16,
-                        color: darkGreyColor().replace('#', ''),
-                        fontFace: textGeneralFont()
-                      });
+
+                    if (item.options && Array.isArray(item.options)) {
+                      for (let i = 0; i < item.options.length && i < 4; i++) {
+                        const safeOption = sanitizeText(item.options[i], 100);
+                        exerciseSlide.addText(
+                          `  ${String.fromCharCode(97 + i)}) ${safeOption}`,
+                          {
+                            x: 0.8,
+                            y: yPos + 0.5 + i * 0.3,
+                            w: 8,
+                            h: 0.3,
+                            fontSize: 14,
+                            color: darkGreyColor().replace("#", ""),
+                            fontFace: textGeneralFont(),
+                          }
+                        );
+                      }
                     }
-                    yPos += 2;
+                    yPos += 2.5;
                   }
-                });
-              });
-            }
-          }
-          
-          else if (element.type === 'exercise') {
-            const exerciseSlide = pptx.addSlide();
-            
-            // Título
-            const safeExerciseTitle = sanitizeText(element.subtitle || 'Exercício', 100);
-            exerciseSlide.addText(safeExerciseTitle, {
-              x: 0.5,
-              y: 0.5,
-              w: 9,
-              h: 1,
-              fontSize: 28,
-              bold: true,
-              color: partnerColor().replace('#', ''),
-              fontFace: textTitleFont()
-            });
-            
-            // Exercícios
-            if (element.items && Array.isArray(element.items)) {
-              let yPos = 2;
-              for (const item of element.items.slice(0, 3)) { // Máximo 3 exercícios por slide
-                if (item.question) {
-                  const safeQuestion = sanitizeText(item.question, 200);
-                  exerciseSlide.addText(`• ${safeQuestion}`, {
-                    x: 0.5,
-                    y: yPos,
-                    w: 9,
-                    h: 0.6,
-                    fontSize: 18,
-                    bold: true,
-                    color: partnerColor().replace('#', ''),
-                    fontFace: textGeneralFont()
-                  });
-                  
-                  if (item.options && Array.isArray(item.options)) {
-                    for (let i = 0; i < item.options.length && i < 4; i++) {
-                      const safeOption = sanitizeText(item.options[i], 150);
-                      exerciseSlide.addText(`  ${String.fromCharCode(97 + i)}) ${safeOption}`, {
-                        x: 0.8,
-                        y: yPos + 0.6 + (i * 0.4),
-                        w: 8,
-                        h: 0.4,
-                        fontSize: 16,
-                        color: darkGreyColor().replace('#', ''),
-                        fontFace: textGeneralFont()
-                      });
-                    }
-                  }
-                  yPos += 2.5;
                 }
               }
-            }
-          }
-          
-          else if (element.type === 'html') {
-            const htmlSlide = pptx.addSlide();
-            
-            // Título
-            const safeHtmlTitle = sanitizeText(element.subtitle || 'Conteúdo', 100);
-            htmlSlide.addText(safeHtmlTitle, {
-              x: 0.5,
-              y: 0.5,
-              w: 9,
-              h: 1,
-              fontSize: 28,
-              bold: true,
-              color: partnerColor().replace('#', ''),
-              fontFace: textTitleFont()
-            });
-            
-            // Remover tags HTML e adicionar como texto limpo
-            if (element.text) {
-              const cleanText = cleanHtml(element.text);
-              const safeText = sanitizeText(cleanText, 1000);
-              htmlSlide.addText(safeText, {
-                x: 0.5,
-                y: 2,
-                w: 9,
-                h: 5,
-                fontSize: 18,
-                color: darkGreyColor().replace('#', ''),
-                fontFace: textGeneralFont()
-              });
-            }
-          }
-          
-          else if (element.type === 'images') {
-            const imageSlide = pptx.addSlide();
-            
-            // Título
-            const safeImageTitle = sanitizeText(element.subtitle || 'Imagens', 100);
-            imageSlide.addText(safeImageTitle, {
-              x: 0.5,
-              y: 0.5,
-              w: 9,
-              h: 1,
-              fontSize: 28,
-              bold: true,
-              color: partnerColor().replace('#', ''),
-              fontFace: textTitleFont()
-            });
-            
-            // Adicionar imagens
-            if (element.images && Array.isArray(element.images)) {
-              const maxImages = 4; // Máximo 4 imagens por slide
-              const imagesToShow = element.images.slice(0, maxImages);
-              
-              imagesToShow.forEach((imageItem, index) => {
-                try {
-                  if (imageItem.image) {
-                    const positions = [
-                      { x: 1, y: 2, w: 3.5, h: 2.5 },     // Top left
-                      { x: 5.5, y: 2, w: 3.5, h: 2.5 },   // Top right
-                      { x: 1, y: 4.5, w: 3.5, h: 2.5 },   // Bottom left
-                      { x: 5.5, y: 4.5, w: 3.5, h: 2.5 }  // Bottom right
-                    ];
-                    
-                    const pos = positions[index] || positions[0];
-                    
-                    imageSlide.addImage({
-                      path: imageItem.image,
-                      x: pos.x,
-                      y: pos.y,
-                      w: pos.w,
-                      h: pos.h
-                    });
-                    
-                    // Adicionar texto da imagem se houver
-                    if (imageItem.text) {
-                      const safeImageText = sanitizeText(imageItem.text, 100);
-                      imageSlide.addText(safeImageText, {
+              break;
+
+            case "html":
+              const htmlSlide = pptx.addSlide();
+
+              // Remover tags HTML e adicionar como texto limpo
+              if (element.text) {
+                const cleanText = cleanHtml(element.text);
+                const safeText = sanitizeText(cleanText, 800);
+                htmlSlide.addText(safeText, {
+                  x: 0.5,
+                  y: 1,
+                  w: 9,
+                  h: 6,
+                  fontSize: 16,
+                  color: darkGreyColor().replace("#", ""),
+                  fontFace: textGeneralFont(),
+                });
+              }
+              break;
+
+            case "images":
+              if (element.images && Array.isArray(element.images)) {
+                const imageSlide = pptx.addSlide();
+
+                // Adicionar imagens
+                const maxImages = 4; // Máximo 4 imagens por slide
+                const imagesToShow = element.images.slice(0, maxImages);
+
+                imagesToShow.forEach((imageItem, index) => {
+                  try {
+                    if (imageItem.image) {
+                      const positions = [
+                        { x: 1, y: 1.5, w: 3.5, h: 2.5 }, // Top left
+                        { x: 5.5, y: 1.5, w: 3.5, h: 2.5 }, // Top right
+                        { x: 1, y: 4.5, w: 3.5, h: 2.5 }, // Bottom left
+                        { x: 5.5, y: 4.5, w: 3.5, h: 2.5 }, // Bottom right
+                      ];
+
+                      const pos = positions[index] || positions[0];
+
+                      imageSlide.addImage({
+                        path: imageItem.image,
                         x: pos.x,
-                        y: pos.y + pos.h + 0.1,
+                        y: pos.y,
                         w: pos.w,
-                        h: 0.4,
-                        fontSize: 12,
-                        align: 'center',
-                        color: darkGreyColor().replace('#', ''),
-                        fontFace: textGeneralFont()
+                        h: pos.h,
                       });
+
+                      // Adicionar texto da imagem se houver
+                      if (imageItem.text) {
+                        const safeImageText = sanitizeText(imageItem.text, 100);
+                        imageSlide.addText(safeImageText, {
+                          x: pos.x,
+                          y: pos.y + pos.h + 0.1,
+                          w: pos.w,
+                          h: 0.4,
+                          fontSize: 12,
+                          align: "center",
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                        });
+                      }
                     }
+                  } catch (imageError) {
+                    console.log("⚠️ Erro ao adicionar imagem:", imageError);
                   }
-                } catch (imageError) {
-                  console.log('⚠️ Erro ao adicionar imagem:', imageError);
+                });
+              }
+              break;
+
+            case "audiosoundtrack":
+              // Slide para o texto do audiotrack
+              if (element.text) {
+                const audioTextSlide = pptx.addSlide();
+
+                // Título
+                const safeAudioTitle = sanitizeText(
+                  element.subtitle || "Audio Content",
+                  100
+                );
+                audioTextSlide.addText(safeAudioTitle, {
+                  x: 0.5,
+                  y: 0.5,
+                  w: 9,
+                  h: 0.8,
+                  fontSize: 24,
+                  bold: true,
+                  align: "center",
+                  color: partnerColor().replace("#", ""),
+                  fontFace: textTitleFont(),
+                });
+
+                // Texto do audio limpo de HTML
+                const cleanAudioText = cleanHtml(element.text);
+                const safeAudioText = sanitizeText(cleanAudioText, 3000);
+                audioTextSlide.addText(safeAudioText, {
+                  x: 0.8,
+                  y: 0.5,
+                  w: 9,
+                  h: 5.5,
+                  fontSize: 16,
+                  color: darkGreyColor().replace("#", ""),
+                  fontFace: textGeneralFont(),
+                });
+              }
+
+              // Slide para as sentences do audiotrack (se houver)
+              if (element.sentences && Array.isArray(element.sentences)) {
+                // Dividir as frases em grupos de 3 para melhor visualização
+                const sentenceGroups = [];
+                for (let i = 0; i < element.sentences.length; i += 3) {
+                  sentenceGroups.push(element.sentences.slice(i, i + 3));
                 }
-              });
-            }
+
+                sentenceGroups.forEach((sentenceGroup, groupIndex) => {
+                  const audioSentencesSlide = pptx.addSlide();
+
+                  // Título
+                  const safeTitle = sanitizeText(
+                    `${element.subtitle || "Audio"} - Frases${
+                      sentenceGroups.length > 1
+                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                        : ""
+                    }`,
+                    100
+                  );
+                  audioSentencesSlide.addText(safeTitle, {
+                    x: 0.5,
+                    y: 0.5,
+                    w: 9,
+                    h: 0.8,
+                    fontSize: 24,
+                    bold: true,
+                    align: "center",
+                    color: partnerColor().replace("#", ""),
+                    fontFace: textTitleFont(),
+                  });
+
+                  // Frases (máximo 3 por slide)
+                  let yPos = 1.5;
+                  sentenceGroup.forEach((sentence) => {
+                    if (sentence.english) {
+                      const safeEnglish = sanitizeText(sentence.english, 200);
+                      audioSentencesSlide.addText(`🔊 ${safeEnglish}`, {
+                        x: 0.5,
+                        y: yPos,
+                        w: 9,
+                        h: 0.6,
+                        fontSize: 18,
+                        bold: true,
+                        color: partnerColor().replace("#", ""),
+                        fontFace: textGeneralFont(),
+                      });
+
+                      if (sentence.portuguese) {
+                        const safePortuguese = sanitizeText(
+                          sentence.portuguese,
+                          200
+                        );
+                        audioSentencesSlide.addText(`   ${safePortuguese}`, {
+                          x: 0.5,
+                          y: yPos + 0.6,
+                          w: 9,
+                          h: 0.5,
+                          fontSize: 16,
+                          fontStyle: "italic",
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                        });
+                      }
+                      yPos += 1.4;
+                    }
+                  });
+                });
+              }
+              break;
+
+            case "exercise":
+              if (element.item && Array.isArray(element.item)) {
+                // Dividir os itens em grupos de 6 por slide
+                const itemGroups = [];
+                for (let i = 0; i < element.item.length; i += 6) {
+                  itemGroups.push(element.item.slice(i, i + 6));
+                }
+
+                itemGroups.forEach((itemGroup, groupIndex) => {
+                  const exerciseSlide = pptx.addSlide();
+
+                  // Título
+                  const safeExerciseTitle = sanitizeText(
+                    `${element.subtitle || "Exercise"}${
+                      itemGroups.length > 1
+                        ? ` (${groupIndex + 1}/${itemGroups.length})`
+                        : ""
+                    }`,
+                    100
+                  );
+                  exerciseSlide.addText(safeExerciseTitle, {
+                    x: 0.5,
+                    y: 0.5,
+                    w: 9,
+                    h: 0.8,
+                    fontSize: 24,
+                    bold: true,
+                    align: "center",
+                    color: partnerColor().replace("#", ""),
+                    fontFace: textTitleFont(),
+                  });
+
+                  // Lista de exercícios (máximo 6 por slide)
+                  let yPos = 1.5;
+                  itemGroup.forEach((item, index) => {
+                    const itemNumber = groupIndex * 6 + index + 1;
+                    const safeItem = sanitizeText(item, 200);
+                    exerciseSlide.addText(`${itemNumber}. ${safeItem}`, {
+                      x: 0.8,
+                      y: yPos,
+                      w: 8.2,
+                      h: 0.8,
+                      fontSize: 16,
+                      color: darkGreyColor().replace("#", ""),
+                      fontFace: textGeneralFont(),
+                    });
+                    yPos += 0.8;
+                  });
+                });
+              }
+              break;
+
+            default:
+              // Suporte para outros tipos de elementos (fallback)
+              if (
+                [
+                  "multipletexts",
+                  "selectexercise",
+                  "qanda",
+                  "personalqanda",
+                  "dialogue",
+                  "singleimages",
+                  "listenandtranslate",
+                  "listinenglish",
+                  "nfsentences",
+                ].includes(element.type)
+              ) {
+                const genericSlide = pptx.addSlide();
+
+                // Título
+                const safeGenericTitle = sanitizeText(
+                  element.subtitle || `Elemento: ${element.type}`,
+                  100
+                );
+                genericSlide.addText(safeGenericTitle, {
+                  x: 0.5,
+                  y: 2,
+                  w: 9,
+                  h: 1,
+                  fontSize: 24,
+                  bold: true,
+                  align: "center",
+                  color: partnerColor().replace("#", ""),
+                  fontFace: textTitleFont(),
+                });
+
+                // Texto genérico
+                const genericText = `Este slide representa um elemento do tipo "${element.type}". \\n\\nEdite este conteúdo conforme necessário.`;
+                genericSlide.addText(genericText, {
+                  x: 1,
+                  y: 4,
+                  w: 8,
+                  h: 2,
+                  fontSize: 18,
+                  align: "center",
+                  color: darkGreyColor().replace("#", ""),
+                  fontFace: textGeneralFont(),
+                });
+              }
+              break;
           }
         }
       }
-      
-      console.log('🎯 Gerando arquivo PPT...');
-      
+
+      console.log("🎯 Gerando arquivo PPT...");
+
       // Gerar arquivo
-      const safeFileName = sanitizeText((classTitle || 'aula'), 30).replace(/\s+/g, '_');
+      const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
+        /\s+/g,
+        "_"
+      );
       const fileName = `${safeFileName}.pptx`;
-      
+
       await pptx.writeFile({ fileName });
-      
-      console.log('✅ PPT gerado com sucesso!');
-      notifyAlert('PowerPoint gerado com sucesso!', 'green');
-      
+
+      console.log("✅ PPT gerado com sucesso!");
+      notifyAlert("PowerPoint gerado com sucesso!", "green");
     } catch (error) {
-      console.error('❌ Erro ao gerar PPT:', error);
-      notifyAlert('Erro ao gerar PowerPoint. Tente novamente.', 'red');
+      console.error("❌ Erro ao gerar PPT:", error);
+      notifyAlert("Erro ao gerar PowerPoint. Tente novamente.", "red");
     }
   };
 
@@ -912,7 +1230,11 @@ export default function EnglishClassCourse2({
             See Board
           </ArvinButton>
           <ArvinButton
-            style={{ margin: "1rem auto", display: "block", backgroundColor: partnerColor() }}
+            style={{
+              margin: "1rem auto",
+              display: "block",
+              backgroundColor: partnerColor(),
+            }}
             onClick={generatePPT}
           >
             📄 Generate PowerPoint
@@ -1211,7 +1533,11 @@ export default function EnglishClassCourse2({
             See Board
           </ArvinButton>
           <ArvinButton
-            style={{ margin: "1rem auto", display: "block", backgroundColor: partnerColor() }}
+            style={{
+              margin: "1rem auto",
+              display: "block",
+              backgroundColor: partnerColor(),
+            }}
             onClick={generatePPT}
           >
             📄 Generate PowerPoint
