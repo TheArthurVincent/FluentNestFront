@@ -146,7 +146,7 @@ export function Blog({
               gap: "1rem",
             }}
           >
-            <i className="fa fa-user " aria-hidden="true" />
+            <i className="fa fa-user" aria-hidden="true" />
             <p>
               {UniversalTexts.hello}
               {name}!
