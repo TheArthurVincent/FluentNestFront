@@ -57,7 +57,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
   const [timerCardCount, setTimerCardCount] = useState(19);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
-  const [lastReviewDay, setLastReviewDay] = useState<Date>(new Date());
+  const [lastReviewDay, setLastReviewDay] = useState<any>(null);
   const [streak, setStreak] = useState<any>(0);
   const [daysSinceLastReview, setDaysSinceLReview] = useState<any>(0);
   const [selectedVoice, setSelectedVoice] = useState<any>("");
@@ -235,6 +235,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         { headers: actualHeaders }
       );
       setLastReviewDay(response.data.flashcardsStreakLastDay);
+      setCards(response.data.dueFlashcards);
       setAnswer(false);
       onChange(!change);
       seeCardsToReview();
@@ -269,7 +270,9 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setFlashcardsToday(response.data.flashCardsReviewsToday);
       setStreak(st);
       setDaysSinceLReview(lr);
-      setLastReviewDay(new Date(mvlr));
+      setLastReviewDay(mvlr);
+      console.log("ReviewFlashCards response:", response.data);
+
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -367,7 +370,11 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             textDecoration: "none",
           }}
         >
-          Last Review: {formatDateBr(lastReviewDay)}
+          {lastReviewDay ? (
+            <>Last Review: {formatDateBr(lastReviewDay)}</>
+          ) : (
+            " No reviews yet "
+          )}
         </div>
 
         <HOne
