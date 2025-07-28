@@ -39,7 +39,6 @@ export function AllStudents({ headers, id }) {
       confirmPassword: "",
     });
     setUpload((prev) => !prev);
-    notifyAlert("Usuário cadastrado com sucesso!", "green");
   };
 
   const validateForm = () => {
@@ -80,15 +79,21 @@ export function AllStudents({ headers, id }) {
     };
 
     try {
-      await axios.post(
+      const response = await axios.post(
         `${backDomain}/api/v1/newstudentbyteacher/${id}`,
         newStudent,
         { headers }
       );
       resetForm();
+      console.log("here", response.data);
+      notifyAlert(
+        `Usuário cadastrado com sucesso! ${response.data.message}`,
+        "green"
+      );
     } catch (error) {
-      console.error(error);
-      notifyAlert("Erro ao cadastrar aluno");
+      notifyAlert(
+        `Erro ao cadastrar aluno ${formData.name}. ${error.response.data.message}`
+      );
     } finally {
       setIsLoading(false);
     }
