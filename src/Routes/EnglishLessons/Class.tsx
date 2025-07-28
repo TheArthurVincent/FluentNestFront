@@ -2427,27 +2427,8 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-          <ArvinButton
-            style={{ margin: "1rem auto", display: "block" }}
-            onClick={() => {
-              setSeeSlides(!seeSlides);
-            }}
-          >
-            See Board
-          </ArvinButton>
-          <ArvinButton
-            style={{
-              margin: "1rem auto",
-              display: "block",
-              backgroundColor: partnerColor(),
-            }}
-            onClick={generatePPT}
-          >
-            📄 Generate PowerPoint
-          </ArvinButton>
           <div>
             <HTwo>{UniversalTexts.leaveAComment}</HTwo>
-
             <div
               style={{
                 display: "flex",
@@ -2457,8 +2438,7 @@ export default function EnglishClassCourse2({
               {" "}
               <img
                 //@ts-ignore
-
-                style={styles.userImage} //klç
+                style={styles.userImage}
                 src={thePicture}
                 alt="User"
               />

@@ -127,9 +127,9 @@ export default function WhiteLabelPreview({ headers }) {
     }
   };
   const [formData, setFormData] = useState({
-    backgroundType: backgroundType(), // "image" ou "color"
+    backgroundType: "color", // "image" ou "color"
     backgroundImage: backgroundImage(),
-    backgroundColor: theBackgroundColor(),
+    backgroundColor: "#eee",
     logo: logoPartner(),
     color: partnerColor(),
     contrastColor: textPrimaryColorContrast(),
@@ -432,7 +432,7 @@ export default function WhiteLabelPreview({ headers }) {
               </select>
             </div> */}
             {/* Se for imagem, mostra o input de upload */}
-            {formData.backgroundType === "image" && (
+            {/* {formData.backgroundType === "image" && (
               <div className="form-group" style={{ marginBottom: "15 px" }}>
                 <label>Imagem de fundo (upload): </label>
                 <input
@@ -442,19 +442,17 @@ export default function WhiteLabelPreview({ headers }) {
                   ref={backgroundInputRef}
                 />
               </div>
-            )}
+            )} */}
 
-            {formData.backgroundType === "color" && (
-              <div className="form-group" style={{ marginBottom: "15px" }}>
-                <label>Cor de fundo: </label>
-                <input
-                  type="color"
-                  name="backgroundColor"
-                  value={formData.backgroundColor}
-                  onChange={handleChange}
-                />
-              </div>
-            )}
+            <div className="form-group" style={{ marginBottom: "15px" }}>
+              <label>Cor de fundo: </label>
+              <input
+                type="color"
+                name="backgroundColor"
+                value={formData.backgroundColor}
+                onChange={handleChange}
+              />
+            </div>
             <div className="form-group" style={{ marginBottom: "15px" }}>
               <label>Logo (upload): </label>
               <input
