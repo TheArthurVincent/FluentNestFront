@@ -758,20 +758,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   size="small"
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth size="small">
-                  <InputLabel>Permissões</InputLabel>
-                  <Select
-                    value={permissions}
-                    label="Permissões"
-                    onChange={(e) => setPermissions(e.target.value)}
-                  >
-                    <MenuItem value="student">Aluno</MenuItem>
-                    <MenuItem value="teacher">Professor</MenuItem>
-                    <MenuItem value="superadmin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
             </Grid>
 
             <div
@@ -795,6 +781,46 @@ export function FindStudent({ uploadStatus, headers, id }) {
             </div>
           </div>
 
+          {/* SEÇÃO 1.5: PERMISSIONS */}
+          <div
+            style={{
+              backgroundColor: "#d2e6f5ff",
+              padding: "1.5rem",
+              borderRadius: "8px",
+              marginBottom: "2rem",
+              border: "1px solid #4165c6ff",
+            }}
+          >
+            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
+              🏆 Permissões
+            </Typography>
+            <Grid item xs={12} md={6}>
+              <FormControl fullWidth size="small">
+                <InputLabel>Permissões</InputLabel>
+                <Select
+                  value={permissions}
+                  label="Permissões"
+                  onChange={(e) => setPermissions(e.target.value)}
+                >
+                  <MenuItem value="student">Aluno</MenuItem>
+                  <MenuItem value="teacher">Professor</MenuItem>
+                  <MenuItem value="superadmin">Admin</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant="contained"
+                onClick={() => editStudentPermissions(ID)}
+                style={{
+                  marginTop: "1rem",
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  fontWeight: "600",
+                }}
+              >
+                💾 Salvar Permissões
+              </Button>
+            </Grid>
+          </div>
           {/* SEÇÃO 2: PONTUAÇÃO */}
           <div
             style={{
