@@ -235,6 +235,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         { headers: actualHeaders }
       );
       setLastReviewDay(response.data.flashcardsStreakLastDay);
+      setStreak(response.data.streak);
       setCards(response.data.dueFlashcards);
       setAnswer(false);
       onChange(!change);
