@@ -86,14 +86,13 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   useEffect(() => {
     setTimeout(() => {
-      const flashcardsTodayLocalStorage =
-        localStorage.getItem("flashcardsToday");
-      if (flashcardsTodayLocalStorage) {
-        const flashcardsTodayNumber: number = parseFloat(
-          flashcardsTodayLocalStorage
-        );
-        setFlashcardsToday(flashcardsTodayNumber);
-      }
+      // const flashcardsTodayLocalStorage = localStorage.getItem("flashcardsToday");
+      // if (flashcardsTodayLocalStorage) {
+      //   const flashcardsTodayNumber: number = parseFloat(
+      //     flashcardsTodayLocalStorage
+      //   );
+      //   setFlashcardsToday(flashcardsTodayNumber);
+      // }
       setSeeConf(seeConf);
     }, 1000);
   }, [change]);
@@ -259,7 +258,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         streak: st,
         daysSinceLastReview: lr,
         lastDayFlashcardReview: mvlr,
-        longestStreakAtAll: lgst,
+        longestStreakOfAll: lgst,
         theStudentWithLongestStreak: studentLongest,
         longestStreakME,
       } = response.data;
@@ -267,6 +266,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setYourLongest(longestStreakME);
       setStudentLongest(studentLongest);
       setLongest(lgst);
+      setFlashcardsToday(response.data.flashCardsReviewsToday);
       setStreak(st);
       setDaysSinceLReview(lr);
       setLastReviewDay(new Date(mvlr));
