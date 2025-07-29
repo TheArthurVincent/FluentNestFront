@@ -100,6 +100,7 @@ const FlashcardsHistory = ({ headers }: HeadersProps) => {
         <option value={10}>Últimos 10 dias</option>
         <option value={15}>Últimos 15 dias</option>
         <option value={30}>Últimos 30 dias</option>
+        <option value={2000}>Tudo</option>
       </select>
       <HOne
         style={{
