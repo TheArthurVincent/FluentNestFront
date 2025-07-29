@@ -247,6 +247,19 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
+  const [streaksAll, setStreaksAll] = useState<any[]>([]);
+
+  const adjustStreak = async () => {
+    try {
+      const response = await axios.post(`${backDomain}/api/v1/adjuststreak`);
+
+      setStreaksAll(response.data.studentsWithQualifiedDays);
+
+      console.log("Streak adjusted:", response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const getHistory = async (id: string) => {
     setLoading(true);
     try {
@@ -354,6 +367,222 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   return (
     <section id="review">
+      {/* <button onClick={adjustStreak}>Adjust Streak</button> */}
+      {/*
+            <div>
+        {streaksAll.length > 0 && (
+          <div
+            style={{
+              maxHeight: "300px",
+              overflowY: "auto",
+              margin: "1rem 0",
+              padding: "1rem",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              backgroundColor: "#f9f9f9",
+            }}
+          >
+            <h3
+              style={{
+                margin: "0 0 1rem 0",
+                fontSize: "16px",
+                color: partnerColor(),
+              }}
+            >
+              Students Streak Report ({streaksAll.length} students)
+            </h3>
+            <div style={{ display: "grid", gap: "0.5rem" }}>
+              {streaksAll.map((student, index) => (
+                <div
+                  key={student.studentId}
+                  style={{
+                    padding: "1rem",
+                    backgroundColor: "white",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    border: "1px solid #eee",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
+                      gap: "0.5rem",
+                      marginBottom: "0.5rem",
+                      alignItems: "center",
+                      borderBottom: "1px solid #f0f0f0",
+                      paddingBottom: "0.5rem",
+                    }}
+                  >
+                    <div style={{ fontWeight: "bold", fontSize: "14px" }}>
+                      {student.name} {student.lastname}
+                    </div>
+                    <div style={{ color: partnerColor() }}>
+                      Current: {student.currentStreak}
+                    </div>
+                    <div style={{ color: "#666" }}>
+                      Longest: {student.longestStreak}
+                    </div>
+                    <div style={{ color: "#888" }}>
+                      Qualified: {student.currentQualifiedStreak}
+                    </div>
+                    <div style={{ color: "#999", fontSize: "10px" }}>
+                      {student.reviewsToday} reviews today
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr 1fr",
+                      gap: "0.5rem",
+                      marginBottom: "0.5rem",
+                      fontSize: "10px",
+                      color: "#666",
+                    }}
+                  >
+                    <div>Total Qualified: {student.totalQualifiedReviews}</div>
+                    <div>Total Entries: {student.totalHistoryEntries}</div>
+                    <div>
+                      Today Counted: {student.todayAccountedFor ? "✅" : "❌"}
+                    </div>
+                  </div>
+
+                  {student.qualifiedStreaks &&
+                    student.qualifiedStreaks.length > 0 && (
+                      <div style={{ marginBottom: "0.5rem" }}>
+                        <div
+                          style={{
+                            fontSize: "11px",
+                            fontWeight: "bold",
+                            marginBottom: "0.3rem",
+                            color: partnerColor(),
+                          }}
+                        >
+                          Qualified Streaks ({student.qualifiedStreaks.length}):
+                        </div>
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                              "repeat(auto-fit, minmax(120px, 1fr))",
+                            gap: "0.3rem",
+                          }}
+                        >
+                          {student.qualifiedStreaks.slice(0, 20).map(
+                            (streak: any, streakIndex: number) =>
+                              streak.days > 1 && (
+                                <div
+                                  key={streakIndex}
+                                  style={{
+                                    backgroundColor: "#f8f9fa",
+                                    padding: "0.3rem",
+                                    borderRadius: "4px",
+                                    fontSize: "9px",
+                                  }}
+                                >
+                                  <div style={{ fontWeight: "bold" }}>
+                                    #{streak.streakNumber}
+                                  </div>
+                                  <div>{streak.days} days</div>
+                                  <div>{streak.totalReviews} reviews</div>
+                                  <div
+                                    style={{ fontSize: "8px", color: "#888" }}
+                                  >
+                                    {new Date(
+                                      streak.startDate
+                                    ).toLocaleDateString()}{" "}
+                                    -{" "}
+                                    {new Date(
+                                      streak.endDate
+                                    ).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              )
+                          )}
+                          {student.qualifiedStreaks.length > 20 && (
+                            <div
+                              style={{
+                                fontSize: "9px",
+                                color: "#666",
+                                alignSelf: "center",
+                              }}
+                            >
+                              +{student.qualifiedStreaks.length - 20} more...
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                  {student.reviewsByDate &&
+                    student.reviewsByDate.length > 0 && (
+                      <div>
+                        <div
+                          style={{
+                            fontSize: "11px",
+                            fontWeight: "bold",
+                            marginBottom: "0.3rem",
+                            color: partnerColor(),
+                          }}
+                        >
+                          Recent Reviews:
+                        </div>
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns:
+                              "repeat(auto-fit, minmax(100px, 1fr))",
+                            gap: "0.3rem",
+                          }}
+                        >
+                          {student.reviewsByDate
+                            .slice(0, 300)
+                            .map((reviewDay: any, dayIndex: number) => (
+                              <div
+                                key={dayIndex}
+                                style={{
+                                  backgroundColor: "#f0f8ff",
+                                  padding: "0.3rem",
+                                  borderRadius: "4px",
+                                  fontSize: "9px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                <div style={{ fontWeight: "bold" }}>
+                                  <span>#{dayIndex + 1} --- </span>
+                                  {new Date(
+                                    reviewDay.date
+                                  ).toLocaleDateString()}
+                                </div>
+                                <div style={{ color: partnerColor() }}>
+                                  {reviewDay.totalReviews} reviews
+                                </div>
+                              </div>
+                            ))}
+                          {student.reviewsByDate.length > 300 && (
+                            <div
+                              style={{
+                                fontSize: "9px",
+                                color: "#666",
+                                alignSelf: "center",
+                              }}
+                            >
+                              +{student.reviewsByDate.length - 300} more days...
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+      
+      */}
+
       <div
         style={{
           display: "flex",
@@ -416,12 +645,12 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             style={{
               display: "flex",
               justifyContent: "center",
-              alignItems: "flex-end",
+              // alignItems: "flex-end",
               marginTop: "20px",
             }}
           >
             {/* Mascot */}
-            <div
+            {/* <div
               style={{
                 position: "relative",
                 left: -15,
@@ -443,14 +672,14 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
               }}
             >
               {!loading && mascot}
-            </div>
+            </div> */}
 
             {/* Main content area */}
             <div
               style={{
                 flex: 1,
-                position: "relative",
-                left: -50,
+                // position: "relative",
+                // left: -50,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -810,7 +1039,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       </div>
 
       {/* Streak component with modal */}
-      <div style={{ marginBottom: "2rem" }}>
+      {/* <div style={{ marginBottom: "2rem" }}>
         <Streak
           longest={longest}
           yourLongest={yourLongest}
@@ -818,7 +1047,7 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           message={MESSAGE}
           streak={streak}
         />
-      </div>
+      </div> */}
 
       {isArthurVincent && (
         <a

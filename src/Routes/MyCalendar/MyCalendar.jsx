@@ -33,6 +33,7 @@ import moment from "moment";
 import { StyledDiv } from "./MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
+import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -139,7 +140,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setEvents(eventsLoop);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      notifyAlert(error.response.data.error, partnerColor());
+      setTimeout(() => {
+        onLoggOut();
+      }, 1000);
     }
   };
   useEffect(() => {
