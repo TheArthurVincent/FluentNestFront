@@ -3,6 +3,7 @@ import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import {
   backDomain,
+  formatDate,
   formatDateBr,
   onLoggOut,
   updateInfo,
@@ -165,7 +166,14 @@ export function MyProfile({ headers }: HeadersProps) {
     { title: UniversalTexts.phoneNumber, data: user.phoneNumber },
     { title: UniversalTexts.email, data: user.email },
     { title: UniversalTexts.username, data: user.username },
-    { title: UniversalTexts.dateOfBirth, data: formatDateBr(user.dateOfBirth) },
+    {
+      title: UniversalTexts.dateOfBirth,
+      data: formatDateBr(
+        new Date(user.dateOfBirth).setDate(
+          new Date(user.dateOfBirth).getDate() + 1
+        )
+      ),
+    },
   ];
 
   const [showModal, setShowModal] = useState(false);

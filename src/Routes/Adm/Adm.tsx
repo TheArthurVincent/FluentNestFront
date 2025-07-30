@@ -18,6 +18,7 @@ import NewHomeworkAssignment from "./AdmComponents/ClassesManagement/NewHomework
 import { Tooltip } from "@mui/material";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignments/PendingHomeworkAssignments";
+import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
@@ -47,6 +48,17 @@ export function Adm({ headers }: HeadersProps) {
         <>
           <NewHomeworkAssignment id={id} headers={headers} />
           <PendingHomeworkAssignment id={id} headers={headers} />
+        </>
+      ),
+    },
+    {
+      title: "Financeiro",
+      value: "33",
+      tooltip:
+        "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
+      component: (
+        <>
+          <FinancialResources id={id} headers={headers} />
         </>
       ),
     },

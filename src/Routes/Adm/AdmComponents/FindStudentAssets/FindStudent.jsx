@@ -4,6 +4,7 @@ import {
   DivModal,
   Xp,
   backDomain,
+  formatDate,
   formatDateBr,
   formatNumber,
   onLoggOut,
@@ -60,6 +61,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [newAddress, setNewAddress] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newDateOfBirth, setNewDateOfBirth] = useState("");
   const [permissions, setPermissions] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -105,92 +107,33 @@ export function FindStudent({ uploadStatus, headers, id }) {
       const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
         headers,
       });
-      setNewName(
-        response.data.formattedStudentData.name
-          ? response.data.formattedStudentData.name
+      setNewName(response.data.formattedStudentData.name);
+      setNewLastName(response.data.formattedStudentData.lastname);
+      setNewUsername(response.data.formattedStudentData.username);
+      setNewPhone(response.data.formattedStudentData.phoneNumber);
+      setNewEmail(response.data.formattedStudentData.email);
+      setNewDateOfBirth(
+        response.data.formattedStudentData.dateOfBirth
+          ? response.data.formattedStudentData.dateOfBirth.split('T')[0]
           : ""
       );
-      setNewLastName(
-        response.data.formattedStudentData.lastname
-          ? response.data.formattedStudentData.lastname
-          : ""
-      );
-      setNewUsername(
-        response.data.formattedStudentData.username
-          ? response.data.formattedStudentData.username
-          : ""
-      );
-      setNewPhone(
-        response.data.formattedStudentData.phoneNumber
-          ? response.data.formattedStudentData.phoneNumber
-          : ""
-      );
-      setNewEmail(
-        response.data.formattedStudentData.email
-          ? response.data.formattedStudentData.email
-          : ""
-      );
-      setFeeUpToDate(response.data.formattedStudentData.feeUpToDate || false);
-      setReplenishTarget(
-        response.data.formattedStudentData.replenishTarget || false
-      );
-      setTutoree(response.data.formattedStudentData.tutoree || false);
-
-      setPermissions(
-        response.data.formattedStudentData.permissions
-          ? response.data.formattedStudentData.permissions
-          : ""
-      );
-      setWeeklyClasses(
-        response.data.formattedStudentData.weeklyClasses
-          ? response.data.formattedStudentData.weeklyClasses
-          : ""
-      );
-      setID(
-        response.data.formattedStudentData.id
-          ? response.data.formattedStudentData.id
-          : ""
-      );
-
-      setGoogleDriveLink(
-        response.data.formattedStudentData.googleDriveLink
-          ? response.data.formattedStudentData.googleDriveLink
-          : ""
-      );
-      setTotalScore(
-        response.data.formattedStudentData.totalScore
-          ? response.data.formattedStudentData.totalScore
-          : ""
-      );
-      setMonthlyScore(
-        response.data.formattedStudentData.monthlyScore
-          ? response.data.formattedStudentData.monthlyScore
-          : ""
-      );
-      setPicture(
-        response.data.formattedStudentData.picture
-          ? response.data.formattedStudentData.picture
-          : ""
-      );
-      setFee(
-        response.data.formattedStudentData.fee
-          ? response.data.formattedStudentData.fee
-          : ""
-      );
-      setNewAddress(
-        response.data.formattedStudentData.address
-          ? response.data.formattedStudentData.address
-          : ""
-      );
+      setFeeUpToDate(response.data.formattedStudentData.feeUpToDate);
+      setReplenishTarget(response.data.formattedStudentData.replenishTarget);
+      setTutoree(response.data.formattedStudentData.tutoree);
+      setPermissions(response.data.formattedStudentData.permissions);
+      setWeeklyClasses(response.data.formattedStudentData.weeklyClasses);
+      setID(response.data.formattedStudentData.id);
+      setGoogleDriveLink(response.data.formattedStudentData.googleDriveLink);
+      setTotalScore(response.data.formattedStudentData.totalScore);
+      setMonthlyScore(response.data.formattedStudentData.monthlyScore);
+      setPicture(response.data.formattedStudentData.picture);
+      setFee(response.data.formattedStudentData.fee);
+      setNewAddress(response.data.formattedStudentData.address);
       setHomeworkAssignmentsDone(
         response.data.formattedStudentData.homeworkAssignmentsDone
-          ? response.data.formattedStudentData.homeworkAssignmentsDone
-          : ""
       );
       setFlashcards25Reviews(
         response.data.formattedStudentData.flashcards25Reviews
-          ? response.data.formattedStudentData.flashcards25Reviews
-          : ""
       );
     } catch (error) {
       notifyAlert(error);
@@ -207,13 +150,9 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setMonthlyScore(response.data.formattedStudentData.monthlyScore);
       setHomeworkAssignmentsDone(
         response.data.formattedStudentData.homeworkAssignmentsDone
-          ? response.data.formattedStudentData.homeworkAssignmentsDone
-          : ""
       );
       setFlashcards25Reviews(
         response.data.formattedStudentData.flashcards25Reviews
-          ? response.data.formattedStudentData.flashcards25Reviews
-          : ""
       );
     } catch (error) {
       notifyAlert(error);
@@ -226,13 +165,13 @@ export function FindStudent({ uploadStatus, headers, id }) {
       username: newUsername,
       password: newPassword,
       email: newEmail,
+      dateOfBirth: newDateOfBirth,
       name: newName,
       lastname: newLastName,
       phoneNumber: newPhone,
       weeklyClasses,
       permissions: permissions,
       googleDriveLink: googleDriveLink,
-
       address: newAddress,
       fee,
       picture: picture,
@@ -347,6 +286,21 @@ export function FindStudent({ uploadStatus, headers, id }) {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/feeuptodate/${id}`,
+        {},
+        {
+          headers,
+        }
+      );
+      fetchStudents();
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  const [onHold, setOnHold] = useState(false);
+  const updateOnHold = async (id) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/onhold/${id}`,
         {},
         {
           headers,
@@ -589,7 +543,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       </TableCell>
                       <TableCell>
                         <span style={cellTable}>
-                          {formatDateBr(student.dateOfBirth)}
+                          {formatDateBr(
+                            new Date(student.dateOfBirth).setDate(
+                              new Date(student.dateOfBirth).getDate() + 1
+                            )
+                          )}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -747,6 +705,19 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   value={weeklyClasses}
                   onChange={(e) => setWeeklyClasses(e.target.value)}
                   size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Data de Nascimento"
+                  value={newDateOfBirth}
+                  onChange={(e) => setNewDateOfBirth(e.target.value)}
+                  size="small"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1011,6 +982,21 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       ? "💰 Mensalidade em dia"
                       : "⚠️ Mensalidade atrasada"
                   }
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={!onHold}
+                      onChange={() => {
+                        updateOnHold(ID);
+                        setOnHold(!onHold);
+                      }}
+                      color="primary"
+                    />
+                  }
+                  label={onHold ? "Matrícula Trancada" : "Matrícula Ativa"}
                 />
               </Grid>
               <Grid item xs={12} md={4}>

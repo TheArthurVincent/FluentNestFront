@@ -301,24 +301,6 @@ export default function EnglishClassCourse2({
     return cleaned.trim();
   };
 
-  const calculateImageDimensions = (maxWidth: number, maxHeight: number) => {
-    const targetWidth = Math.min(maxWidth, 1.5);
-
-    const aspectRatio = 1.2;
-
-    const calculatedHeight = targetWidth / aspectRatio;
-
-    const finalHeight = Math.min(calculatedHeight, maxHeight);
-
-    const finalWidth =
-      finalHeight > calculatedHeight ? targetWidth : finalHeight * aspectRatio;
-
-    return {
-      width: Number(Math.min(finalWidth, maxWidth).toFixed(2)),
-      height: Number(finalHeight.toFixed(2)),
-    };
-  };
-
   const isValidImageUrl = (url: string): boolean => {
     if (!url) {
       return false;
@@ -642,12 +624,12 @@ export default function EnglishClassCourse2({
                     sentenceGroup.forEach((sentence) => {
                       if (sentence.english) {
                         const safeEnglish = sanitizeText(sentence.english, 200);
-                        sentencesSlide.addText(`• ${safeEnglish}`, {
+                        sentencesSlide.addText(`${safeEnglish}`, {
                           x: 0.5,
                           y: yPos,
                           w: 9,
                           h: 0.6,
-                          fontSize: 18,
+                          fontSize: 16,
                           bold: true,
                           color: partnerColor().replace("#", ""),
                           fontFace: textGeneralFont(),
@@ -658,7 +640,7 @@ export default function EnglishClassCourse2({
                             sentence.portuguese,
                             200
                           );
-                          sentencesSlide.addText(`  ${safePortuguese}`, {
+                          sentencesSlide.addText(`${safePortuguese}`, {
                             x: 0.5,
                             y: yPos + 0.6,
                             w: 9,
@@ -710,7 +692,7 @@ export default function EnglishClassCourse2({
                     sentenceGroup.forEach((sentence) => {
                       if (sentence.english) {
                         const safeEnglish = sanitizeText(sentence.english, 200);
-                        sentencesSlide.addText(`• ${safeEnglish}`, {
+                        sentencesSlide.addText(`${safeEnglish}`, {
                           x: 0.5,
                           y: yPos,
                           w: 9,
@@ -726,7 +708,7 @@ export default function EnglishClassCourse2({
                             sentence.portuguese,
                             200
                           );
-                          sentencesSlide.addText(`  ${safePortuguese}`, {
+                          sentencesSlide.addText(` ${safePortuguese}`, {
                             x: 0.5,
                             y: yPos + 0.6,
                             w: 9,
@@ -746,7 +728,7 @@ export default function EnglishClassCourse2({
               case "exercise":
                 try {
                   if (element.items && Array.isArray(element.items)) {
-                    const itemsPerSlide = 4;
+                    const itemsPerSlide = 6; // Número de exercícios por slide
                     const exerciseGroups = [];
                     for (
                       let i = 0;
@@ -775,7 +757,7 @@ export default function EnglishClassCourse2({
                           y: 0.5,
                           w: 9,
                           h: 0.5,
-                          fontSize: 32,
+                          fontSize: 28,
                           bold: true,
                           align: "center",
                           color: partnerColor().replace("#", ""),
@@ -797,7 +779,7 @@ export default function EnglishClassCourse2({
                               y: yPos,
                               w: 9,
                               h: 0.5,
-                              fontSize: 20,
+                              fontSize: 24,
                               color: darkGreyColor().replace("#", ""),
                               fontFace: textGeneralFont(),
                               valign: "top",
@@ -1425,8 +1407,9 @@ export default function EnglishClassCourse2({
                           new Paragraph({
                             children: [
                               new TextRun({
-                                text: `   ${safePortuguese}`,
-                                size: 20,
+                                text: `  ${safePortuguese}`,
+                                size: 16,
+                                italics: true,
                                 color: darkGreyColor().replace("#", ""),
                                 font: textGeneralFont(),
                               }),
