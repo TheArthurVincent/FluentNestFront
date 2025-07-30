@@ -10,7 +10,6 @@ import {
 import {
   backDomain,
   formatDateBr,
-  LogoSVG,
   onLoggOut,
   SpanHover,
 } from "../../Resources/UniversalComponents";
@@ -28,7 +27,8 @@ import { isArvin } from "../../App";
 
 export const TopBar: FC = () => {
   const [visible, setVisible] = useState<string>("none");
-  const { handleLanguageChange, UniversalTexts } = useUserContext();
+  const context = useUserContext();
+  const { handleLanguageChange, UniversalTexts } = context || { handleLanguageChange: () => {}, UniversalTexts: {} };
   const [permissions, setPermissions] = useState<string>("");
   const [theNotifications, setNotifications] = useState<number>(0);
   const [id, setid] = useState<string>("");
@@ -220,6 +220,11 @@ export const TopBar: FC = () => {
     borderRadius: "6px",
     textAlign: "center",
   };
+
+  // Don't render until context is ready
+  if (!context || !UniversalTexts) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <TopBarContainer>

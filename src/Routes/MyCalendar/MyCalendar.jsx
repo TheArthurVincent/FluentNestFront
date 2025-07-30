@@ -34,6 +34,31 @@ import { StyledDiv } from "./MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import HTMLEditor from "../../Resources/Components/HTMLEditor";
+
+// Function to convert video URLs to embed URLs
+const getEmbedUrl = (url) => {
+  if (!url) return null;
+  
+  // YouTube URL patterns
+  if (url.includes("youtube.com/watch?v=")) {
+    const videoId = url.split("v=")[1]?.split("&")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  if (url.includes("youtu.be/")) {
+    const videoId = url.split("youtu.be/")[1]?.split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  
+  // Vimeo URL patterns
+  if (url.includes("vimeo.com/")) {
+    const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
+    return `https://player.vimeo.com/video/${videoId}`;
+  }
+  
+  // If it's already an embed URL or other format, return as is
+  return url;
+};
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
   const [isVisible, setIsVisible] = useState(false);
@@ -49,6 +74,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [showClasses, setShowClasses] = useState(false);
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
+  const [video, setVideo] = useState("");
+  const [homework, setHomework] = useState("");
   const [category, setCategory] = useState("");
   const [newStudentId, setNewStudentId] = useState("");
   const [tutoringsListOfOneStudent, setTutoringsListOfOneStudent] = useState(
@@ -135,6 +162,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
+        // Garantir que todos os eventos tenham um status
+        if (!event.status) {
+          event.status = "Scheduled"; // Status padrão para eventos sem status
+        }
         return event;
       });
       setEvents(eventsLoop);
@@ -166,6 +197,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           const nextDay = new Date(event.date);
           nextDay.setDate(nextDay.getDate() + 1);
           event.date = formattedDates(nextDay);
+          // Garantir que todos os eventos tenham um status
+          if (!event.status) {
+            event.status = "marcado"; // Status padrão para eventos sem status
+          }
           return event;
         });
         setEvents(eventsLoop);
@@ -195,6 +230,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
+        // Garantir que todos os eventos tenham um status
+        if (!event.status) {
+          event.status = "marcado"; // Status padrão para eventos sem status
+        }
         return event;
       });
       setEvents(eventsLoop);
@@ -227,6 +266,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
+        // Garantir que todos os eventos tenham um status
+        if (!event.status) {
+          event.status = "marcado"; // Status padrão para eventos sem status
+        }
         return event;
       });
       setEvents(eventsLoop);
@@ -260,6 +303,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
+        // Garantir que todos os eventos tenham um status
+        if (!event.status) {
+          event.status = "marcado"; // Status padrão para eventos sem status
+        }
         return event;
       });
       setEvents(eventsLoop);
@@ -298,20 +345,37 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newLink = response.data.event.link;
       const newDescription = response.data.event.description;
       const newDate = response.data.event.date;
+      const newVideo = response.data.event.video;
+      const newHomework = response.data.event.homework;
       const newTime = response.data.event.time;
       const newEventId = response.data.event._id;
-      setStatus(newStatus);
+
+      // Mapear status do backend para frontend
+      let mappedStatus = newStatus;
+      if (newStatus === "marcado") {
+        mappedStatus = "Scheduled";
+      } else if (newStatus === "desmarcado") {
+        mappedStatus = "Canceled";
+      } else if (newStatus === "realizada") {
+        mappedStatus = "Realized";
+      }
+
+      setStatus(mappedStatus);
       setCategory(newCategory);
       setNewStudentId(newStudentID);
       setNewEventId(newEventId);
       setLink(newLink);
       setTheTime(newTime);
+      setVideo(newVideo);
+      setHomework(newHomework);
       setDescription(newDescription);
       setDate(newDate);
       setLoadingModalInfo(false);
+      console.log("Evento carregado:", response.data.event);
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
       console.log(error);
+      setLoadingModalInfo(false);
     }
   };
   const fetchOneSetOfTutorings = async (studentId) => {
@@ -406,6 +470,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           category,
           status,
           link,
+          video,
+          homework,
           description,
         },
         {
@@ -430,6 +496,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const updateScheduled = async (id) => {
+    console.log(status, "STATUS");
+
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -441,7 +509,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       if (response) {
-        setStatus("Scheduled");
+        // Buscar o evento atualizado do backend para garantir o status correto
+        fetchOneEvent(id);
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
@@ -449,6 +518,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
   const updateUnscheduled = async (id) => {
+    console.log(status, "STATUS");
+
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -459,7 +530,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-      setStatus("Canceled");
+      if (response) {
+        // Buscar o evento atualizado do backend para garantir o status correto
+        fetchOneEvent(id);
+      }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
@@ -481,6 +555,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const updateRealizedClass = async (id) => {
+    console.log(status, "STATUS");
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -491,7 +566,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-      setStatus("Realized");
+      if (response) {
+        // Buscar o evento atualizado do backend para garantir o status correto
+        fetchOneEvent(id);
+      }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
       console.log(error);
@@ -602,6 +680,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTheTime("");
     setTheNewLink("");
     setTimeOfTutoring("");
+    setHomework("");
+    setDescription("");
+    setVideo("");
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
     setWeekDay("");
@@ -690,6 +771,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTheNewTimeOfTutoring(e.target.value);
   };
 
+  const handleHomeworkChange = (htmlContent) => {
+    setHomework(htmlContent);
+  };
+
   const seeDelete = () => {
     setDeleteVisible(!deleteVisible);
   };
@@ -708,12 +793,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
     if (e.target.value == "Standalone") {
       setLink("");
-      setDescription("Aula única de");
+      setDescription(UniversalTexts.calendarModal.singleClassOf);
       setIsTutoring(false);
     }
     if (e.target.value == "Group Class") {
       setLink("");
-      setDescription("Class Theme:");
+      setDescription(UniversalTexts.calendarModal.classTheme);
       setIsTutoring(false);
     }
     if (e.target.value == "Test") {
@@ -745,6 +830,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const handleSeeModal = (e) => {
+    fetchStudents();
     const checkIfNew = e ? false : true;
     setIsVisible(true);
     setLoadingInfo(true);
@@ -1303,33 +1389,36 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     borderTop: `1px solid ${statusColor.border}`,
                                   }}
                                 >
-                                  {event.status === "desmarcado" && (
-                                    <>
-                                      <i
-                                        className="fa fa-times-circle"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      Canceled
-                                    </>
-                                  )}
-                                  {event.status === "marcado" && (
-                                    <>
-                                      <i
-                                        className="fa fa-calendar-check-o"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      Scheduled
-                                    </>
-                                  )}
-                                  {event.status === "realizada" && (
-                                    <>
-                                      <i
-                                        className="fa fa-check-circle"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      Completed
-                                    </>
-                                  )}
+                                  {event.status === "desmarcado" ||
+                                    (event.status === "Canceled" && (
+                                      <>
+                                        <i
+                                          className="fa fa-times-circle"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        Canceled
+                                      </>
+                                    ))}
+                                  {event.status === "marcado" ||
+                                    (event.status === "Scheduled" && (
+                                      <>
+                                        <i
+                                          className="fa fa-calendar-check-o"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        Scheduled
+                                      </>
+                                    ))}
+                                  {event.status === "realizada" ||
+                                    (event.status === "Completed" && (
+                                      <>
+                                        <i
+                                          className="fa fa-check-circle"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        Completed
+                                      </>
+                                    ))}
                                 </div>
                               </div>
                             );
@@ -1421,7 +1510,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         color: partnerColor(),
                       }}
                     >
-                      Access the event
+                      {UniversalTexts.calendarModal.accessEvent}
                     </HTwo>
                     <Xp
                       onClick={handleCloseModal}
@@ -1448,96 +1537,356 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   padding: "1.2rem",
                   borderRadius: "8px",
                   border: "1px solid #e9ecef",
+                  fontSize: "12px",
                   display: "flex",
                   flexDirection: "column",
                   gap: "0.8rem",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                  }}
-                >
-                  <span
+                {!postNew && (
+                  <div
                     style={{
-                      fontWeight: "600",
-                      color: "#495057",
-                      minWidth: "80px",
+                      display: "grid",
+                      gap: "1rem",
                     }}
                   >
-                    Category:
-                  </span>
-                  <span
-                    style={{
-                      backgroundColor: partnerColor(),
-                      color: "white",
-                      padding: "2px 5px",
-                      borderRadius: "8px",
+                    {/* Link de Acesso */}
+                    {link && status == "Scheduled" && (
+                      <div
+                        style={{
+                          textAlign: "center",
+                        }}
+                      >
+                        <Link
+                          to={link}
+                          target="_blank"
+                          style={{
+                            color: partnerColor(),
+                            textDecoration: "none",
+                            padding: "0.75rem 1.5rem",
+                            backgroundColor: "white",
+                            border: `2px solid ${partnerColor()}`,
+                            borderRadius: "10px",
+                            textAlign: "center",
+                            transition: "all 0.3s ease",
+                            minWidth: "100%",
+                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = partnerColor();
+                            e.target.style.color = "white";
+                            e.target.style.transform = "translateY(-2px)";
+                            e.target.style.boxShadow =
+                              "0 4px 8px rgba(0,0,0,0.15)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = "white";
+                            e.target.style.color = partnerColor();
+                            e.target.style.transform = "translateY(0)";
+                            e.target.style.boxShadow =
+                              "0 2px 4px rgba(0,0,0,0.1)";
+                          }}
+                        >
+                          {UniversalTexts.calendarModal.clickToAccessClass}
+                        </Link>
+                      </div>
+                    )}
+                    {/* Descrição */}
+                    {description && (
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          padding: "10px",
+                          borderRadius: "10px",
+                          border: "1px solid #dee2e6",
+                          borderLeft: `4px solid ${partnerColor()}`,
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                        }}
+                      >
+                        <p
+                          style={{
+                            margin: 0,
+                            color: "#495057",
+                          }}
+                        >
+                          {description}
+                        </p>
+                      </div>
+                    )}
 
-                      fontWeight: "500",
-                    }}
-                  >
-                    {category == "Test"
-                      ? "Test Class"
-                      : category == "Standalone"
-                      ? "Standalone Class"
-                      : category == "Group Class"
-                      ? "Group Class"
-                      : category == "Rep"
-                      ? "Marcar Reposição"
-                      : category == "Marcar Reposição"
-                      ? "Janela de Marcar Reposição"
-                      : category == "Prize Class"
-                      ? "Prize Class"
-                      : category == "Tutoring"
-                      ? "Tutoring: Private Class"
-                      : ""}
-                  </span>
-                </div>
+                    {/* Informações do Evento */}
+                    <div
+                      style={{
+                        backgroundColor: "white",
+                        padding: "0.75rem",
+                        borderRadius: "8px",
+                        border: "1px solid #e9ecef",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      }}
+                    >
+                      {/* Categoria */}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginBottom: "0.5rem",
+                          flexWrap: "wrap",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontWeight: "600",
+                            color: "#6c757d",
+                            fontSize: "0.8rem",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.25rem",
+                          }}
+                        >
+                          📋 {UniversalTexts.calendarModal.category}
+                        </span>
+                        <span
+                          style={{
+                            backgroundColor: partnerColor(),
+                            color: "white",
+                            padding: "0.2rem 0.6rem",
+                            borderRadius: "12px",
+                            fontWeight: "500",
+                            fontSize: "0.75rem",
+                            textAlign: "center",
+                            boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                          }}
+                        >
+                          {category === "Test"
+                            ? "Test Class"
+                            : category === "Standalone"
+                            ? "Standalone Class"
+                            : category === "Group Class"
+                            ? "Group Class"
+                            : category === "Rep"
+                            ? "Marcar Reposição"
+                            : category === "Marcar Reposição"
+                            ? "Janela de Marcar Reposição"
+                            : category === "Prize Class"
+                            ? "Prize Class"
+                            : category === "Tutoring"
+                            ? "Tutoring: Private Class"
+                            : ""}
+                        </span>
+                      </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: "600",
-                      color: "#495057",
-                      minWidth: "80px",
-                    }}
-                  >
-                    Date:
-                  </span>
-                  <span style={{ color: "#6c757d", fontWeight: "500" }}>
-                    {newFormatDate(date)}
-                  </span>
-                </div>
+                      {/* Data e Hora */}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontWeight: "600",
+                              color: "#6c757d",
+                              fontSize: "0.8rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.25rem",
+                            }}
+                          >
+                            📅 {newFormatDate(date)}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontWeight: "600",
+                              color: "#6c757d",
+                              fontSize: "0.8rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.25rem",
+                            }}
+                          >
+                            ⏰ {theTime}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: "600",
-                      color: "#495057",
-                      minWidth: "80px",
-                    }}
-                  >
-                    Time:
-                  </span>
-                  <span style={{ color: "#6c757d", fontWeight: "500" }}>
-                    {theTime}
-                  </span>
-                </div>
+                    {/* Vídeo da Aula */}
+                    {video && (
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #e9ecef",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                          marginTop: "0.5rem",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                            marginBottom: "0.5rem",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontWeight: "600",
+                              color: "#6c757d",
+                              fontSize: "0.8rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.25rem",
+                            }}
+                          >
+                            🎥 {UniversalTexts.calendarModal.video}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            backgroundColor: "#f8f9fa",
+                            padding: "0.75rem",
+                            borderRadius: "6px",
+                            border: "1px solid #dee2e6",
+                          }}
+                        >
+                          <div
+                            style={{
+                              position: "relative",
+                              paddingBottom: "56.25%", // 16:9 aspect ratio
+                              height: 0,
+                              overflow: "hidden",
+                              borderRadius: "6px",
+                              backgroundColor: "#000",
+                            }}
+                          >
+                            <iframe
+                              src={getEmbedUrl(video)}
+                              style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                border: "none",
+                                borderRadius: "6px",
+                              }}
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              title="Class Video"
+                            />
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "0.5rem",
+                              textAlign: "center",
+                            }}
+                          >
+                            <a
+                              href={video}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              style={{
+                                color: partnerColor(),
+                                textDecoration: "none",
+                                fontWeight: "500",
+                                fontSize: "0.8rem",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "0.25rem",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.textDecoration = "underline";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.textDecoration = "none";
+                              }}
+                            >
+                              <i className="fa fa-external-link" />
+                              {video.includes("youtube.com") ||
+                              video.includes("youtu.be")
+                                ? "Abrir no YouTube"
+                                : video.includes("vimeo.com")
+                                ? "Abrir no Vimeo"
+                                : "Abrir Vídeo"}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Homework (HTML Content) */}
+                    {homework && (
+                      <div
+                        style={{
+                          backgroundColor: "white",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #e9ecef",
+                          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                          marginTop: "0.5rem",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                            marginBottom: "0.5rem",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontWeight: "600",
+                              color: "#6c757d",
+                              fontSize: "0.8rem",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.25rem",
+                            }}
+                          >
+                            📝 {UniversalTexts.calendarModal.homework}
+                          </span>
+                        </div>
+                        <div
+                          style={{
+                            backgroundColor: "#f8f9fa",
+                            padding: "1rem",
+                            borderRadius: "6px",
+                            border: "1px solid #dee2e6",
+                            lineHeight: "1.6",
+                            fontSize: "0.9rem",
+                            color: "#495057",
+                            maxHeight: "100px",
+                            overflowY: "auto",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: homework }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Admin Section */}
                 {(thePermissions == "superadmin" ||
                   thePermissions == "teacher") && (
@@ -1545,21 +1894,20 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     style={{
                       maxHeight: "20rem",
                       overflowY: "auto",
-                      display: "flex",
                     }}
                   >
                     {
                       <div
                         style={{
                           borderTop: "2px solid #e9ecef",
-                          paddingTop: "1.5rem",
+                          padding: "1.5rem",
                           display: "flex",
                           flexDirection: "column",
                           gap: "1.5rem",
                         }}
                       >
                         <HTwo style={{ margin: 0, color: partnerColor() }}>
-                          {UniversalTexts.editPost}
+                          {UniversalTexts.calendarModal.scheduleOneClass}
                         </HTwo>
 
                         {loadingInfo ? (
@@ -1571,105 +1919,108 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         ) : (
                           <>
                             {/* Status Icons */}
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                gap: "1rem",
-                                padding: "0.5rem",
-                                backgroundColor: "#f8f9fa",
-                                borderRadius: "8px",
-                              }}
-                            >
+                            {!postNew && (
                               <div
                                 style={{
-                                  textAlign: "center",
-                                  cursor: "pointer",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  gap: "1rem",
+                                  padding: "0.5rem",
+                                  backgroundColor: "#f8f9fa",
+                                  borderRadius: "8px",
                                 }}
-                                onClick={() => updateScheduled(newEventId)}
                               >
-                                <i
-                                  className="fa fa-clock-o"
-                                  style={{
-                                    fontSize:
-                                      status == "Scheduled" ? "24px" : "18px",
-                                    color:
-                                      status == "Scheduled"
-                                        ? "#007bff"
-                                        : "#6c757d",
-                                    transition: "all 0.2s",
-                                  }}
-                                />
                                 <div
                                   style={{
-                                    color: "#6c757d",
-                                    marginTop: "2px",
+                                    textAlign: "center",
+                                    cursor: "pointer",
                                   }}
+                                  onClick={() => updateScheduled(newEventId)}
                                 >
-                                  Scheduled
+                                  <i
+                                    className="fa fa-clock-o"
+                                    style={{
+                                      fontSize:
+                                        status == "Scheduled" ? "24px" : "18px",
+                                      color:
+                                        status == "Scheduled"
+                                          ? "#007bff"
+                                          : "#6c757d",
+                                      transition: "all 0.2s",
+                                    }}
+                                  />
+                                  <div
+                                    style={{
+                                      color: "#6c757d",
+                                      marginTop: "2px",
+                                    }}
+                                  >
+                                    {UniversalTexts.calendarModal.scheduled}
+                                  </div>
                                 </div>
-                              </div>
 
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => updateRealizedClass(newEventId)}
-                              >
-                                <i
-                                  className="fa fa-check-circle"
-                                  style={{
-                                    fontSize:
-                                      status == "Realized" ? "24px" : "18px",
-                                    color:
-                                      status == "Realized"
-                                        ? "#28a745"
-                                        : "#6c757d",
-                                    transition: "all 0.2s",
-                                  }}
-                                />
                                 <div
                                   style={{
-                                    color: "#6c757d",
-                                    marginTop: "2px",
+                                    textAlign: "center",
+                                    cursor: "pointer",
                                   }}
+                                  onClick={() =>
+                                    updateRealizedClass(newEventId)
+                                  }
                                 >
-                                  Realized
+                                  <i
+                                    className="fa fa-check-circle"
+                                    style={{
+                                      fontSize:
+                                        status == "Realized" ? "24px" : "18px",
+                                      color:
+                                        status == "Realized"
+                                          ? "#28a745"
+                                          : "#6c757d",
+                                      transition: "all 0.2s",
+                                    }}
+                                  />
+                                  <div
+                                    style={{
+                                      color: "#6c757d",
+                                      marginTop: "2px",
+                                    }}
+                                  >
+                                    {UniversalTexts.calendarModal.realized}
+                                  </div>
                                 </div>
-                              </div>
 
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() => updateUnscheduled(newEventId)}
-                              >
-                                <i
-                                  className="fa fa-times-circle-o"
-                                  style={{
-                                    fontSize:
-                                      status == "Canceled" ? "24px" : "18px",
-                                    color:
-                                      status == "Canceled"
-                                        ? "#dc3545"
-                                        : "#6c757d",
-                                    transition: "all 0.2s",
-                                  }}
-                                />
                                 <div
                                   style={{
-                                    color: "#6c757d",
-                                    marginTop: "2px",
+                                    textAlign: "center",
+                                    cursor: "pointer",
                                   }}
+                                  onClick={() => updateUnscheduled(newEventId)}
                                 >
-                                  Canceled
+                                  <i
+                                    className="fa fa-times-circle-o"
+                                    style={{
+                                      fontSize:
+                                        status == "Canceled" ? "24px" : "18px",
+                                      color:
+                                        status == "Canceled"
+                                          ? "#dc3545"
+                                          : "#6c757d",
+                                      transition: "all 0.2s",
+                                    }}
+                                  />
+                                  <div
+                                    style={{
+                                      color: "#6c757d",
+                                      marginTop: "2px",
+                                    }}
+                                  >
+                                    {UniversalTexts.calendarModal.canceled}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-
+                            )}
                             {/* Form */}
                             <form
                               style={{
@@ -1692,7 +2043,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 }}
                               >
                                 <option value="category" hidden>
-                                  Select category
+                                  {UniversalTexts.calendarModal.selectCategory}
                                 </option>
                                 {[
                                   "Test",
@@ -1722,7 +2073,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   }}
                                 >
                                   <option value="category" hidden>
-                                    Select student
+                                    {UniversalTexts.calendarModal.selectStudent}
                                   </option>
                                   {studentsList.map((student, index) => (
                                     <option key={index} value={student.id}>
@@ -1762,7 +2113,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 className="inputs-style"
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
-                                placeholder="Link"
+                                placeholder={UniversalTexts.calendarModal.link}
                                 type="text"
                                 style={{
                                   padding: "5px",
@@ -1772,11 +2123,68 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 required
                               />
 
+                              <div style={{ marginBottom: "1rem" }}>
+                                <label
+                                  style={{
+                                    display: "block",
+                                    marginBottom: "5px",
+                                    fontWeight: "600",
+                                    color: "#495057",
+                                    fontSize: "0.9rem",
+                                  }}
+                                >
+                                  {
+                                    UniversalTexts.calendarModal
+                                      .classDescription
+                                  }
+                                </label>
+                                <input
+                                  className="inputs-style"
+                                  type="text"
+                                  value={description}
+                                  onChange={(e) =>
+                                    setDescription(e.target.value)
+                                  }
+                                  placeholder={
+                                    UniversalTexts.calendarModal
+                                      .classDescriptionPlaceholder
+                                  }
+                                  style={{
+                                    width: "100%",
+                                    padding: "10px",
+                                    borderRadius: "8px",
+                                    border: "1px solid #ced4da",
+                                    resize: "vertical",
+                                    fontFamily: "inherit",
+                                    fontSize: "14px",
+                                    lineHeight: "1.5",
+                                  }}
+                                  required
+                                />
+                              </div>
+
+                              <div style={{ marginBottom: "1rem" }}>
+                                <label
+                                  style={{
+                                    display: "block",
+                                    marginBottom: "5px",
+                                    fontWeight: "600",
+                                    color: "#495057",
+                                    fontSize: "0.9rem",
+                                  }}
+                                >
+                                  {UniversalTexts.calendarModal.homework}
+                                </label>
+                                <HTMLEditor
+                                  onChange={handleHomeworkChange}
+                                  initialContent={homework}
+                                />
+                              </div>
                               <input
                                 className="inputs-style"
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                placeholder="Description"
+                                value={video}
+                                onChange={(e) => setVideo(e.target.value)}
+                                placeholder={UniversalTexts.calendarModal.video}
                                 type="text"
                                 style={{
                                   padding: "5px",
@@ -1788,90 +2196,97 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </form>
 
                             {/* Checklist */}
-                            <div
-                              style={{
-                                backgroundColor: "#f8f9fa",
-                                padding: "1.5rem",
-                                borderRadius: "8px",
-                                border: "1px solid #e9ecef",
-                              }}
-                            >
-                              <h4
+                            {!postNew && (
+                              <div
                                 style={{
-                                  margin: "0 0 1rem 0",
-                                  color: partnerColor(),
+                                  backgroundColor: "#f8f9fa",
+                                  padding: "1.5rem",
+                                  borderRadius: "8px",
+                                  border: "1px solid #e9ecef",
                                 }}
                               >
-                                Task Checklist
-                              </h4>
-                              <div style={{ display: "grid", gap: "5px" }}>
-                                {[
-                                  {
-                                    key: "checkList1",
-                                    text: "0. Subir Vídeo",
-                                    handler: handleCheckbox1Change,
-                                  },
-                                  {
-                                    key: "checkList2",
-                                    text: "1. Subir Aulas na Plataforma",
-                                    handler: handleCheckbox2Change,
-                                  },
-                                  {
-                                    key: "checkList3",
-                                    text: "2. Adicionar Atividades de Homework",
-                                    handler: handleCheckbox3Change,
-                                  },
-                                  {
-                                    key: "checkList4",
-                                    text: "3. Subir Flashcards",
-                                    handler: handleCheckbox4Change,
-                                  },
-                                  {
-                                    key: "checkList5",
-                                    text: "4. Formatar Material",
-                                    handler: handleCheckbox5Change,
-                                  },
-                                ].map((item, index) => (
-                                  <label
-                                    key={index}
-                                    style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "5px",
-                                      padding: "5px",
-                                      backgroundColor: eventFull[item.key]
-                                        ? "#d4edda"
-                                        : "white",
-                                      borderRadius: "8px",
-                                      border: "1px solid #dee2e6",
-                                      cursor: "pointer",
-                                      transition: "all 0.2s",
-                                    }}
-                                  >
-                                    <input
-                                      checked={eventFull[item.key] || false}
-                                      type="checkbox"
-                                      onChange={item.handler}
+                                <h4
+                                  style={{
+                                    margin: "0 0 1rem 0",
+                                    color: partnerColor(),
+                                  }}
+                                >
+                                  {UniversalTexts.calendarModal.taskChecklist}
+                                </h4>
+                                <div style={{ display: "grid", gap: "5px" }}>
+                                  {[
+                                    {
+                                      key: "checkList1",
+                                      text: UniversalTexts.calendarModal
+                                        .uploadVideo,
+                                      handler: handleCheckbox1Change,
+                                    },
+                                    {
+                                      key: "checkList2",
+                                      text: UniversalTexts.calendarModal
+                                        .uploadClassesToPlatform,
+                                      handler: handleCheckbox2Change,
+                                    },
+                                    {
+                                      key: "checkList3",
+                                      text: UniversalTexts.calendarModal
+                                        .addHomeworkActivities,
+                                      handler: handleCheckbox3Change,
+                                    },
+                                    {
+                                      key: "checkList4",
+                                      text: UniversalTexts.calendarModal
+                                        .uploadFlashcards,
+                                      handler: handleCheckbox4Change,
+                                    },
+                                    {
+                                      key: "checkList5",
+                                      text: UniversalTexts.calendarModal
+                                        .formatMaterial,
+                                      handler: handleCheckbox5Change,
+                                    },
+                                  ].map((item, index) => (
+                                    <label
+                                      key={index}
                                       style={{
-                                        width: "18px",
-                                        height: "18px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "5px",
+                                        padding: "5px",
+                                        backgroundColor: eventFull[item.key]
+                                          ? "#d4edda"
+                                          : "white",
+                                        borderRadius: "8px",
+                                        border: "1px solid #dee2e6",
                                         cursor: "pointer",
-                                      }}
-                                    />
-                                    <span
-                                      style={{
-                                        color: "#495057",
-                                        textDecoration: eventFull[item.key]
-                                          ? "line-through"
-                                          : "none",
+                                        transition: "all 0.2s",
                                       }}
                                     >
-                                      {item.text}
-                                    </span>
-                                  </label>
-                                ))}
+                                      <input
+                                        checked={eventFull[item.key] || false}
+                                        type="checkbox"
+                                        onChange={item.handler}
+                                        style={{
+                                          width: "18px",
+                                          height: "18px",
+                                          cursor: "pointer",
+                                        }}
+                                      />
+                                      <span
+                                        style={{
+                                          color: "#495057",
+                                          textDecoration: eventFull[item.key]
+                                            ? "line-through"
+                                            : "none",
+                                        }}
+                                      >
+                                        {item.text}
+                                      </span>
+                                    </label>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
+                            )}
                           </>
                         )}
 
@@ -1941,7 +2356,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 color: "#721c24",
                               }}
                             >
-                              ⚠️ Are you sure you want to delete this event?
+                              ⚠️{" "}
+                              {UniversalTexts.calendarModal.deleteConfirmation}
                             </p>
                             <div
                               style={{
@@ -1963,7 +2379,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   fontWeight: "500",
                                 }}
                               >
-                                No, Cancel
+                                {UniversalTexts.calendarModal.noCancel}
                               </button>
                               <button
                                 onClick={deleteOneMaterialInside}
@@ -1978,63 +2394,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   fontWeight: "500",
                                 }}
                               >
-                                Yes, Delete
+                                {UniversalTexts.calendarModal.yesDelete}
                               </button>
                             </div>
                           </div>
                         )}
                       </div>
                     }
-                  </div>
-                )}
-
-                {category !== "Marcar Reposição" && (
-                  <Link
-                    to={link}
-                    target="_blank"
-                    style={{
-                      color: partnerColor(),
-                      textDecoration: "none",
-                      fontWeight: "500",
-                      padding: "5px 1rem",
-                      backgroundColor: "white",
-                      border: `2px solid ${partnerColor()}`,
-                      borderRadius: "8px",
-                      textAlign: "center",
-                      transition: "all 0.2s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = partnerColor();
-                      e.target.style.color = "white";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = "white";
-                      e.target.style.color = partnerColor();
-                    }}
-                  >
-                    🔗 Click here to access the class
-                  </Link>
-                )}
-
-                {description && (
-                  <div
-                    style={{
-                      backgroundColor: "white",
-                      padding: "0.5rem",
-                      borderRadius: "8px",
-                      border: "1px solid #dee2e6",
-                      borderLeft: `4px solid ${partnerColor()}`,
-                    }}
-                  >
-                    <p
-                      style={{
-                        margin: 0,
-
-                        color: "#495057",
-                      }}
-                    >
-                      {description}
-                    </p>
                   </div>
                 )}
               </div>
@@ -2059,7 +2425,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         fontWeight: "500",
                       }}
                     >
-                      📅 Reservar este horário para Marcar Reposição
+                      {UniversalTexts.calendarModal.reserveTimeForReplacement}
                     </ArvinButton>
                   </div>
 
@@ -2080,8 +2446,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         fontWeight: "500",
                       }}
                     >
-                      ⚠️ Deseja marcar este horário para marcar reposição? Esta
-                      ação não pode ser desfeita.
+                      {UniversalTexts.calendarModal.replaceClassConfirmation}
                     </p>
                     <div
                       style={{
@@ -2194,7 +2559,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       color: "#495057",
                     }}
                   >
-                    Select Student:
+                    {UniversalTexts.calendarModal.selectStudent}:
                   </label>
                   <select
                     onChange={(e) => {
@@ -2237,7 +2602,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       <h4
                         style={{ color: partnerColor(), marginBottom: "1rem" }}
                       >
-                        Current Classes:
+                        {UniversalTexts.calendarModal.currentClasses}
                       </h4>
                       <div style={{ display: "grid", gap: "5px" }}>
                         {tutoringsListOfOneStudent
@@ -2354,7 +2719,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     marginBottom: "1rem",
                   }}
                 >
-                  <h4 style={{ margin: 0, color: "#856404" }}>Edit Class</h4>
+                  <h4 style={{ margin: 0, color: "#856404" }}>
+                    {UniversalTexts.calendarModal.editClass}
+                  </h4>
                   <button
                     onClick={closeEditOneTutoring}
                     style={{
@@ -2382,7 +2749,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     }}
                   >
                     <option value="select week day" hidden>
-                      Select week day
+                      {UniversalTexts.calendarModal.selectWeekDay}
                     </option>
                     {weekDays.map((weekDay, index) => {
                       return (
@@ -2404,7 +2771,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     }}
                   >
                     <option value="select time" hidden>
-                      Select time
+                      {UniversalTexts.calendarModal.selectTime}
                     </option>
                     {times.map((time, index) => {
                       return (
@@ -2419,7 +2786,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     onChange={(e) => {
                       setLink(e.target.value);
                     }}
-                    placeholder="Meeting Link"
+                    placeholder={UniversalTexts.calendarModal.meetingLink}
                     type="text"
                     style={{
                       padding: "5px",
@@ -2441,7 +2808,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       fontWeight: "500",
                     }}
                   >
-                    Save Changes
+                    {UniversalTexts.calendarModal.saveChanges}
                   </button>
                 </div>
               </div>
@@ -2457,7 +2824,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                 >
                   <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
-                    Add New Class
+                    {UniversalTexts.calendarModal.addNewClass}
                   </h4>
                   <div style={{ display: "grid", gap: "1rem" }}>
                     <select
@@ -2472,7 +2839,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                     >
                       <option hidden value="select week day">
-                        Select Week Day
+                        {UniversalTexts.calendarModal.selectWeekDayOption}
                       </option>
                       {weekDays.map((weekDay, index) => {
                         return (
@@ -2494,7 +2861,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                     >
                       <option hidden value="Select Time">
-                        Select Time
+                        {UniversalTexts.calendarModal.selectTimeOption}
                       </option>
                       {times.map((time, index) => {
                         return (
@@ -2505,7 +2872,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       })}
                     </select>
                     <input
-                      placeholder="Meeting Link"
+                      placeholder={UniversalTexts.calendarModal.meetingLink}
                       value={theNewLink}
                       onChange={(e) => {
                         setTheNewLink(e.target.value);
@@ -2531,7 +2898,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         fontWeight: "500",
                       }}
                     >
-                      Add New Class
+                      {UniversalTexts.calendarModal.addNewClass}
                     </button>
                   </div>
                 </div>
@@ -2733,7 +3100,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 }}
               >
                 <i className="fa fa-home" />
-                <span>Hoje</span>
+                <span>{UniversalTexts.calendarModal.today}</span>
               </button>
               {/* Botão de Atualizar */}
               <button
@@ -2801,7 +3168,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                 >
                   <i className="fa fa-plus-circle" />
-                  <span>Criar Evento:</span>
+                  <span>{UniversalTexts.calendarModal.createEvent}</span>
                 </div>
 
                 {/* Botão Standalone */}
@@ -2838,7 +3205,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                 >
                   <i className="fa fa-calendar-plus-o" />
-                  <span>Aula Única</span>
+                  <span>{UniversalTexts.calendarModal.singleClass}</span>
                 </button>
                 {/* Botão Recurrent */}
                 <button
@@ -2879,7 +3246,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                 >
                   <i className="fa fa-repeat" />
-                  <span>Aulas Recorrentes</span>
+                  <span>{UniversalTexts.calendarModal.recurringClasses}</span>
                 </button>
               </div>
             )}
