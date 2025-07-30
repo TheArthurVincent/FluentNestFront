@@ -438,7 +438,7 @@ export function FinancialResources({ headers, id }) {
                   Alunos Ativos
                 </div>
               </div>
-
+              {/* 
               <div
                 style={{
                   padding: "12px",
@@ -466,7 +466,7 @@ export function FinancialResources({ headers, id }) {
                 <div style={{ fontSize: "12px", color: "#666" }}>
                   Valor Médio
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Lista técnica de estudantes */}
@@ -716,16 +716,16 @@ export function FinancialResources({ headers, id }) {
                   />
                 </Grid>
               )}{" "}
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    type="string"
-                    label="Mensalidade"
-                    value={fee}
-                    onChange={(e) => setFee(e.target.value)}
-                    size="small"
-                  />
-                </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  type="string"
+                  label="Mensalidade"
+                  value={fee}
+                  onChange={(e) => setFee(e.target.value)}
+                  size="small"
+                />
+              </Grid>
             </Grid>
 
             <div

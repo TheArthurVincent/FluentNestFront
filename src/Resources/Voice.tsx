@@ -12,16 +12,64 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
 
   const voiceOptions = [
     {
-      label: "Male",
+      label: "Female American",
+      value: "female-us",
+      lang: "en-US",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male American",
       value: "male-us",
       lang: "en-US",
       gender: "MALE",
     },
     {
-      label: "Female",
-      value: "female-us",
-      lang: "en-US",
+      label: "Female Canadian",
+      value: "female-ca",
+      lang: "en-CA",
       gender: "FEMALE",
+    },
+    {
+      label: "Male Canadian",
+      value: "male-ca",
+      lang: "en-CA",
+      gender: "MALE",
+    },
+    {
+      label: "Female British",
+      value: "female-gb",
+      lang: "en-GB",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male British",
+      value: "male-gb",
+      lang: "en-GB",
+      gender: "MALE",
+    },
+    {
+      label: "Female Australian",
+      value: "female-au",
+      lang: "en-AU",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male Australian",
+      value: "male-au",
+      lang: "en-AU",
+      gender: "MALE",
+    },
+    {
+      label: "Female Indian",
+      value: "female-in",
+      lang: "en-IN",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male Indian",
+      value: "male-in",
+      lang: "en-IN",
+      gender: "MALE",
     },
   ];
 
