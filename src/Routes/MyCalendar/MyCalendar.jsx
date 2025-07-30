@@ -39,7 +39,7 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 // Function to convert video URLs to embed URLs
 const getEmbedUrl = (url) => {
   if (!url) return null;
-  
+
   // YouTube URL patterns
   if (url.includes("youtube.com/watch?v=")) {
     const videoId = url.split("v=")[1]?.split("&")[0];
@@ -49,13 +49,13 @@ const getEmbedUrl = (url) => {
     const videoId = url.split("youtu.be/")[1]?.split("?")[0];
     return `https://www.youtube.com/embed/${videoId}`;
   }
-  
+
   // Vimeo URL patterns
   if (url.includes("vimeo.com/")) {
     const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
     return `https://player.vimeo.com/video/${videoId}`;
   }
-  
+
   // If it's already an embed URL or other format, return as is
   return url;
 };
@@ -65,6 +65,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
   const [seeEditTutoring, setSeeEditTutoring] = useState(false);
+  const [showEditForm, setShowEditForm] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
     useState(false);
@@ -728,6 +729,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTimeOfTutoring("");
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
+    setShowEditForm(false); // Reset do formulário de edição
     fetchGeneralEventsNoLoading();
   };
   const handleSeeModalOfTutorings = () => {
@@ -1389,36 +1391,36 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     borderTop: `1px solid ${statusColor.border}`,
                                   }}
                                 >
-                                  {event.status === "desmarcado" ||
-                                    (event.status === "Canceled" && (
-                                      <>
-                                        <i
-                                          className="fa fa-times-circle"
-                                          style={{ marginRight: "2px" }}
-                                        />
-                                        Canceled
-                                      </>
-                                    ))}
-                                  {event.status === "marcado" ||
-                                    (event.status === "Scheduled" && (
-                                      <>
-                                        <i
-                                          className="fa fa-calendar-check-o"
-                                          style={{ marginRight: "2px" }}
-                                        />
-                                        Scheduled
-                                      </>
-                                    ))}
-                                  {event.status === "realizada" ||
-                                    (event.status === "Completed" && (
-                                      <>
-                                        <i
-                                          className="fa fa-check-circle"
-                                          style={{ marginRight: "2px" }}
-                                        />
-                                        Completed
-                                      </>
-                                    ))}
+                                  {(event.status === "desmarcado" ||
+                                    event.status === "Canceled") && (
+                                    <>
+                                      <i
+                                        className="fa fa-times-circle"
+                                        style={{ marginRight: "2px" }}
+                                      />
+                                      Canceled
+                                    </>
+                                  )}
+                                  {(event.status === "marcado" ||
+                                    event.status === "Scheduled") && (
+                                    <>
+                                      <i
+                                        className="fa fa-calendar-check-o"
+                                        style={{ marginRight: "2px" }}
+                                      />
+                                      Scheduled
+                                    </>
+                                  )}
+                                  {(event.status === "realizada" ||
+                                    event.status === "Completed") && (
+                                    <>
+                                      <i
+                                        className="fa fa-check-circle"
+                                        style={{ marginRight: "2px" }}
+                                      />
+                                      Completed
+                                    </>
+                                  )}
                                 </div>
                               </div>
                             );
@@ -1477,7 +1479,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width: window.innerWidth <= 768 ? "90vw" : "35rem",
+                width: "90vw",
+                height: "85vh",
+                overflowY: "auto",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
@@ -1550,857 +1554,1213 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       gap: "1rem",
                     }}
                   >
-                    {/* Link de Acesso */}
-                    {link && status == "Scheduled" && (
-                      <div
-                        style={{
-                          textAlign: "center",
-                        }}
-                      >
-                        <Link
-                          to={link}
-                          target="_blank"
+                    {/* Admin Section */}
+                    {(thePermissions == "superadmin" ||
+                      thePermissions == "teacher") && (
+                      <div>
+                        <div
                           style={{
-                            color: partnerColor(),
-                            textDecoration: "none",
-                            padding: "0.75rem 1.5rem",
-                            backgroundColor: "white",
-                            border: `2px solid ${partnerColor()}`,
-                            borderRadius: "10px",
-                            textAlign: "center",
-                            transition: "all 0.3s ease",
-                            minWidth: "100%",
-                            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.backgroundColor = partnerColor();
-                            e.target.style.color = "white";
-                            e.target.style.transform = "translateY(-2px)";
-                            e.target.style.boxShadow =
-                              "0 4px 8px rgba(0,0,0,0.15)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.backgroundColor = "white";
-                            e.target.style.color = partnerColor();
-                            e.target.style.transform = "translateY(0)";
-                            e.target.style.boxShadow =
-                              "0 2px 4px rgba(0,0,0,0.1)";
-                          }}
-                        >
-                          {UniversalTexts.calendarModal.clickToAccessClass}
-                        </Link>
-                      </div>
-                    )}
-                    {/* Descrição */}
-                    {description && (
-                      <div
-                        style={{
-                          backgroundColor: "white",
-                          padding: "10px",
-                          borderRadius: "10px",
-                          border: "1px solid #dee2e6",
-                          borderLeft: `4px solid ${partnerColor()}`,
-                          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                        }}
-                      >
-                        <p
-                          style={{
-                            margin: 0,
-                            color: "#495057",
-                          }}
-                        >
-                          {description}
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Informações do Evento */}
-                    <div
-                      style={{
-                        backgroundColor: "white",
-                        padding: "0.75rem",
-                        borderRadius: "8px",
-                        border: "1px solid #e9ecef",
-                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                      }}
-                    >
-                      {/* Categoria */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          marginBottom: "0.5rem",
-                          flexWrap: "wrap",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <span
-                          style={{
-                            fontWeight: "600",
-                            color: "#6c757d",
-                            fontSize: "0.8rem",
+                            borderTop: "2px solid #e9ecef",
+                            padding: "1.5rem",
                             display: "flex",
-                            alignItems: "center",
-                            gap: "0.25rem",
+                            flexDirection: "column",
+                            gap: "1.5rem",
                           }}
                         >
-                          📋 {UniversalTexts.calendarModal.category}
-                        </span>
-                        <span
-                          style={{
-                            backgroundColor: partnerColor(),
-                            color: "white",
-                            padding: "0.2rem 0.6rem",
-                            borderRadius: "12px",
-                            fontWeight: "500",
-                            fontSize: "0.75rem",
-                            textAlign: "center",
-                            boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
-                          }}
-                        >
-                          {category === "Test"
-                            ? "Test Class"
-                            : category === "Standalone"
-                            ? "Standalone Class"
-                            : category === "Group Class"
-                            ? "Group Class"
-                            : category === "Rep"
-                            ? "Marcar Reposição"
-                            : category === "Marcar Reposição"
-                            ? "Janela de Marcar Reposição"
-                            : category === "Prize Class"
-                            ? "Prize Class"
-                            : category === "Tutoring"
-                            ? "Tutoring: Private Class"
-                            : ""}
-                        </span>
-                      </div>
+                          {/* Botão Editar */}
+                          {!postNew && !showEditForm && (
+                            <div style={{ textAlign: "center" }}>
+                              <button
+                                onClick={() => setShowEditForm(true)}
+                                style={{
+                                  padding: "0.5rem 1rem",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "10px",
+                                  cursor: "pointer",
+                                  transition: "all 0.3s ease",
+                                  boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                  margin: "0 auto",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.transform = "translateY(-2px)";
+                                  e.target.style.boxShadow =
+                                    "0 6px 20px rgba(0,0,0,0.2)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.transform = "translateY(0)";
+                                  e.target.style.boxShadow =
+                                    "0 4px 12px rgba(0,0,0,0.15)";
+                                }}
+                              >
+                                <i className="fa fa-edit" />
+                                Editar Evento
+                              </button>
+                              {/* Status Icons */}
+                              {!postNew && (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "1rem",
+                                    padding: "0.5rem",
+                                    backgroundColor: "#f8f9fa",
+                                    borderRadius: "8px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      textAlign: "center",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() => updateScheduled(newEventId)}
+                                  >
+                                    <i
+                                      className="fa fa-clock-o"
+                                      style={{
+                                        fontSize:
+                                          status == "Scheduled" ||
+                                          status == "marcado"
+                                            ? "24px"
+                                            : "18px",
+                                        color:
+                                          status == "Scheduled" ||
+                                          status == "marcado"
+                                            ? "#007bff"
+                                            : "#6c757d",
+                                        transition: "all 0.2s",
+                                      }}
+                                    />
+                                    <div
+                                      style={{
+                                        color: "#6c757d",
+                                        marginTop: "2px",
+                                      }}
+                                    >
+                                      {UniversalTexts.calendarModal.scheduled}
+                                    </div>
+                                  </div>
 
-                      {/* Data e Hora */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          gap: "0.5rem",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "600",
-                              color: "#6c757d",
-                              fontSize: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.25rem",
-                            }}
-                          >
-                            📅 {newFormatDate(date)}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "600",
-                              color: "#6c757d",
-                              fontSize: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.25rem",
-                            }}
-                          >
-                            ⏰ {theTime}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
+                                  <div
+                                    style={{
+                                      textAlign: "center",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      updateRealizedClass(newEventId)
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-check-circle"
+                                      style={{
+                                        fontSize:
+                                          status == "Realized" ||
+                                          status == "realizado"
+                                            ? "24px"
+                                            : "18px",
+                                        color:
+                                          status == "Realized" ||
+                                          status == "realizado"
+                                            ? "#28a745"
+                                            : "#6c757d",
+                                        transition: "all 0.2s",
+                                      }}
+                                    />
+                                    <div
+                                      style={{
+                                        color: "#6c757d",
+                                        marginTop: "2px",
+                                      }}
+                                    >
+                                      {UniversalTexts.calendarModal.realized}
+                                    </div>
+                                  </div>
 
-                    {/* Vídeo da Aula */}
-                    {video && (
-                      <div
-                        style={{
-                          backgroundColor: "white",
-                          padding: "0.75rem",
-                          borderRadius: "8px",
-                          border: "1px solid #e9ecef",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                          marginTop: "0.5rem",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                            marginBottom: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "600",
-                              color: "#6c757d",
-                              fontSize: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.25rem",
-                            }}
-                          >
-                            🎥 {UniversalTexts.calendarModal.video}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            backgroundColor: "#f8f9fa",
-                            padding: "0.75rem",
-                            borderRadius: "6px",
-                            border: "1px solid #dee2e6",
-                          }}
-                        >
-                          <div
-                            style={{
-                              position: "relative",
-                              paddingBottom: "56.25%", // 16:9 aspect ratio
-                              height: 0,
-                              overflow: "hidden",
-                              borderRadius: "6px",
-                              backgroundColor: "#000",
-                            }}
-                          >
-                            <iframe
-                              src={getEmbedUrl(video)}
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                border: "none",
-                                borderRadius: "6px",
-                              }}
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                              title="Class Video"
-                            />
-                          </div>
-                          <div
-                            style={{
-                              marginTop: "0.5rem",
-                              textAlign: "center",
-                            }}
-                          >
-                            <a
-                              href={video}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                fontWeight: "500",
-                                fontSize: "0.8rem",
-                                display: "inline-flex",
-                                alignItems: "center",
-                                gap: "0.25rem",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.textDecoration = "underline";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.textDecoration = "none";
-                              }}
-                            >
-                              <i className="fa fa-external-link" />
-                              {video.includes("youtube.com") ||
-                              video.includes("youtu.be")
-                                ? "Abrir no YouTube"
-                                : video.includes("vimeo.com")
-                                ? "Abrir no Vimeo"
-                                : "Abrir Vídeo"}
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                                  <div
+                                    style={{
+                                      textAlign: "center",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      updateUnscheduled(newEventId)
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-times-circle-o"
+                                      style={{
+                                        fontSize:
+                                          status == "Canceled" ||
+                                          status == "desmarcado"
+                                            ? "24px"
+                                            : "18px",
+                                        color:
+                                          status == "Canceled" ||
+                                          status == "desmarcado"
+                                            ? "#dc3545"
+                                            : "#6c757d",
+                                        transition: "all 0.2s",
+                                      }}
+                                    />
+                                    <div
+                                      style={{
+                                        color: "#6c757d",
+                                        marginTop: "2px",
+                                      }}
+                                    >
+                                      {UniversalTexts.calendarModal.canceled}
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
 
-                    {/* Homework (HTML Content) */}
-                    {homework && (
-                      <div
-                        style={{
-                          backgroundColor: "white",
-                          padding: "0.75rem",
-                          borderRadius: "8px",
-                          border: "1px solid #e9ecef",
-                          boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                          marginTop: "0.5rem",
-                        }}
-                      >
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                            marginBottom: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontWeight: "600",
-                              color: "#6c757d",
-                              fontSize: "0.8rem",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.25rem",
-                            }}
-                          >
-                            📝 {UniversalTexts.calendarModal.homework}
-                          </span>
-                        </div>
-                        <div
-                          style={{
-                            backgroundColor: "#f8f9fa",
-                            padding: "1rem",
-                            borderRadius: "6px",
-                            border: "1px solid #dee2e6",
-                            lineHeight: "1.6",
-                            fontSize: "0.9rem",
-                            color: "#495057",
-                            maxHeight: "100px",
-                            overflowY: "auto",
-                          }}
-                          dangerouslySetInnerHTML={{ __html: homework }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Admin Section */}
-                {(thePermissions == "superadmin" ||
-                  thePermissions == "teacher") && (
-                  <div
-                    style={{
-                      maxHeight: "20rem",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {
-                      <div
-                        style={{
-                          borderTop: "2px solid #e9ecef",
-                          padding: "1.5rem",
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "1.5rem",
-                        }}
-                      >
-                        <HTwo style={{ margin: 0, color: partnerColor() }}>
-                          {UniversalTexts.calendarModal.scheduleOneClass}
-                        </HTwo>
-
-                        {loadingInfo ? (
-                          <div style={{ textAlign: "center", padding: "2rem" }}>
-                            <CircularProgress
-                              style={{ color: partnerColor() }}
-                            />
-                          </div>
-                        ) : (
-                          <>
-                            {/* Status Icons */}
-                            {!postNew && (
+                          {/* Formulário de Edição - só aparece quando showEditForm é true */}
+                          {showEditForm && (
+                            <>
                               <div
                                 style={{
                                   display: "flex",
+                                  justifyContent: "space-between",
                                   alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "1rem",
-                                  padding: "0.5rem",
-                                  backgroundColor: "#f8f9fa",
-                                  borderRadius: "8px",
+                                  marginBottom: "1rem",
                                 }}
                               >
-                                <div
-                                  style={{
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => updateScheduled(newEventId)}
-                                >
-                                  <i
-                                    className="fa fa-clock-o"
-                                    style={{
-                                      fontSize:
-                                        status == "Scheduled" ? "24px" : "18px",
-                                      color:
-                                        status == "Scheduled"
-                                          ? "#007bff"
-                                          : "#6c757d",
-                                      transition: "all 0.2s",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      color: "#6c757d",
-                                      marginTop: "2px",
-                                    }}
-                                  >
-                                    {UniversalTexts.calendarModal.scheduled}
-                                  </div>
-                                </div>
-
-                                <div
-                                  style={{
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() =>
-                                    updateRealizedClass(newEventId)
-                                  }
-                                >
-                                  <i
-                                    className="fa fa-check-circle"
-                                    style={{
-                                      fontSize:
-                                        status == "Realized" ? "24px" : "18px",
-                                      color:
-                                        status == "Realized"
-                                          ? "#28a745"
-                                          : "#6c757d",
-                                      transition: "all 0.2s",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      color: "#6c757d",
-                                      marginTop: "2px",
-                                    }}
-                                  >
-                                    {UniversalTexts.calendarModal.realized}
-                                  </div>
-                                </div>
-
-                                <div
-                                  style={{
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => updateUnscheduled(newEventId)}
-                                >
-                                  <i
-                                    className="fa fa-times-circle-o"
-                                    style={{
-                                      fontSize:
-                                        status == "Canceled" ? "24px" : "18px",
-                                      color:
-                                        status == "Canceled"
-                                          ? "#dc3545"
-                                          : "#6c757d",
-                                      transition: "all 0.2s",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      color: "#6c757d",
-                                      marginTop: "2px",
-                                    }}
-                                  >
-                                    {UniversalTexts.calendarModal.canceled}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                            {/* Form */}
-                            <form
-                              style={{
-                                display: "grid",
-                                gap: "1rem",
-                                backgroundColor: "#f8f9fa",
-                                padding: "1.5rem",
-                                borderRadius: "8px",
-                              }}
-                            >
-                              <select
-                                onChange={handleCategoryChange}
-                                name="category"
-                                value={category}
-                                className="inputs-style"
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "8px",
-                                  border: "1px solid #ced4da",
-                                }}
-                              >
-                                <option value="category" hidden>
-                                  {UniversalTexts.calendarModal.selectCategory}
-                                </option>
-                                {[
-                                  "Test",
-                                  "Standalone",
-                                  "Group Class",
-                                  "Rep",
-                                  "Prize Class",
-                                  "Tutoring",
-                                  "Marcar Reposição",
-                                ].map((cat, index) => (
-                                  <option key={index} value={cat}>
-                                    {cat}
-                                  </option>
-                                ))}
-                              </select>
-
-                              {isTutoring && (
-                                <select
-                                  className="inputs-style"
-                                  onChange={handleStudentChange}
-                                  name="students"
-                                  value={newStudentId}
-                                  style={{
-                                    padding: "5px",
-                                    borderRadius: "8px",
-                                    border: "1px solid #ced4da",
-                                  }}
-                                >
-                                  <option value="category" hidden>
-                                    {UniversalTexts.calendarModal.selectStudent}
-                                  </option>
-                                  {studentsList.map((student, index) => (
-                                    <option key={index} value={student.id}>
-                                      {student.name + " " + student.lastname}
-                                    </option>
-                                  ))}
-                                </select>
-                              )}
-
-                              <input
-                                className="inputs-style"
-                                value={date}
-                                onChange={(e) => setDate(e.target.value)}
-                                type="date"
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "8px",
-                                  border: "1px solid #ced4da",
-                                }}
-                                required
-                              />
-
-                              <input
-                                className="inputs-style"
-                                value={theTime}
-                                onChange={(e) => setTheTime(e.target.value)}
-                                type="time"
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "8px",
-                                  border: "1px solid #ced4da",
-                                }}
-                                required
-                              />
-
-                              <input
-                                className="inputs-style"
-                                value={link}
-                                onChange={(e) => setLink(e.target.value)}
-                                placeholder={UniversalTexts.calendarModal.link}
-                                type="text"
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "8px",
-                                  border: "1px solid #ced4da",
-                                }}
-                                required
-                              />
-
-                              <div style={{ marginBottom: "1rem" }}>
-                                <label
-                                  style={{
-                                    display: "block",
-                                    marginBottom: "5px",
-                                    fontWeight: "600",
-                                    color: "#495057",
-                                    fontSize: "0.9rem",
-                                  }}
+                                <HTwo
+                                  style={{ margin: 0, color: partnerColor() }}
                                 >
                                   {
                                     UniversalTexts.calendarModal
-                                      .classDescription
+                                      .scheduleOneClass
                                   }
-                                </label>
-                                <input
-                                  className="inputs-style"
-                                  type="text"
-                                  value={description}
-                                  onChange={(e) =>
-                                    setDescription(e.target.value)
-                                  }
-                                  placeholder={
-                                    UniversalTexts.calendarModal
-                                      .classDescriptionPlaceholder
-                                  }
+                                </HTwo>
+                                <button
+                                  onClick={() => setShowEditForm(false)}
                                   style={{
-                                    width: "100%",
-                                    padding: "10px",
-                                    borderRadius: "8px",
-                                    border: "1px solid #ced4da",
-                                    resize: "vertical",
-                                    fontFamily: "inherit",
-                                    fontSize: "14px",
-                                    lineHeight: "1.5",
-                                  }}
-                                  required
-                                />
-                              </div>
-
-                              <div style={{ marginBottom: "1rem" }}>
-                                <label
-                                  style={{
-                                    display: "block",
-                                    marginBottom: "5px",
-                                    fontWeight: "600",
-                                    color: "#495057",
+                                    padding: "0.5rem 1rem",
+                                    backgroundColor: "#6c757d",
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "6px",
                                     fontSize: "0.9rem",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s ease",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = "#5a6268";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = "#6c757d";
                                   }}
                                 >
-                                  {UniversalTexts.calendarModal.homework}
-                                </label>
-                                <HTMLEditor
-                                  onChange={handleHomeworkChange}
-                                  initialContent={homework}
-                                />
+                                  <i
+                                    className="fa fa-times"
+                                    style={{ marginRight: "0.5rem" }}
+                                  />
+                                  Fechar Edição
+                                </button>
                               </div>
-                              <input
-                                className="inputs-style"
-                                value={video}
-                                onChange={(e) => setVideo(e.target.value)}
-                                placeholder={UniversalTexts.calendarModal.video}
-                                type="text"
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "8px",
-                                  border: "1px solid #ced4da",
-                                }}
-                                required
-                              />
-                            </form>
 
-                            {/* Checklist */}
-                            {!postNew && (
-                              <div
-                                style={{
-                                  backgroundColor: "#f8f9fa",
-                                  padding: "1.5rem",
-                                  borderRadius: "8px",
-                                  border: "1px solid #e9ecef",
-                                }}
-                              >
-                                <h4
+                              {loadingInfo ? (
+                                <div
                                   style={{
-                                    margin: "0 0 1rem 0",
-                                    color: partnerColor(),
+                                    textAlign: "center",
+                                    padding: "2rem",
                                   }}
                                 >
-                                  {UniversalTexts.calendarModal.taskChecklist}
-                                </h4>
-                                <div style={{ display: "grid", gap: "5px" }}>
-                                  {[
-                                    {
-                                      key: "checkList1",
-                                      text: UniversalTexts.calendarModal
-                                        .uploadVideo,
-                                      handler: handleCheckbox1Change,
-                                    },
-                                    {
-                                      key: "checkList2",
-                                      text: UniversalTexts.calendarModal
-                                        .uploadClassesToPlatform,
-                                      handler: handleCheckbox2Change,
-                                    },
-                                    {
-                                      key: "checkList3",
-                                      text: UniversalTexts.calendarModal
-                                        .addHomeworkActivities,
-                                      handler: handleCheckbox3Change,
-                                    },
-                                    {
-                                      key: "checkList4",
-                                      text: UniversalTexts.calendarModal
-                                        .uploadFlashcards,
-                                      handler: handleCheckbox4Change,
-                                    },
-                                    {
-                                      key: "checkList5",
-                                      text: UniversalTexts.calendarModal
-                                        .formatMaterial,
-                                      handler: handleCheckbox5Change,
-                                    },
-                                  ].map((item, index) => (
-                                    <label
-                                      key={index}
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "5px",
-                                        padding: "5px",
-                                        backgroundColor: eventFull[item.key]
-                                          ? "#d4edda"
-                                          : "white",
-                                        borderRadius: "8px",
-                                        border: "1px solid #dee2e6",
-                                        cursor: "pointer",
-                                        transition: "all 0.2s",
-                                      }}
-                                    >
-                                      <input
-                                        checked={eventFull[item.key] || false}
-                                        type="checkbox"
-                                        onChange={item.handler}
-                                        style={{
-                                          width: "18px",
-                                          height: "18px",
-                                          cursor: "pointer",
-                                        }}
-                                      />
-                                      <span
-                                        style={{
-                                          color: "#495057",
-                                          textDecoration: eventFull[item.key]
-                                            ? "line-through"
-                                            : "none",
-                                        }}
-                                      >
-                                        {item.text}
-                                      </span>
-                                    </label>
-                                  ))}
+                                  <CircularProgress
+                                    style={{ color: partnerColor() }}
+                                  />
                                 </div>
-                              </div>
-                            )}
-                          </>
-                        )}
-
-                        {/* Action Buttons */}
-                        {!deleteVisible ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "1rem",
-                              justifyContent: "center",
-                              paddingTop: "1rem",
-                            }}
-                          >
-                            {[
-                              {
-                                text: "Delete",
-                                color: "red",
-                                onClick: seeDelete,
-                                visible: !postNew,
-                              },
-                              {
-                                text: "Cancel",
-                                color: "blue",
-                                onClick: handleCloseModal,
-                                visible: true,
-                              },
-                              {
-                                text: "Save",
-                                color: "green",
-                                onClick: postNew ? postNewEvent : editInside,
-                                visible: true,
-                              },
-                            ].map(
-                              (item, index) =>
-                                item.visible && (
-                                  <ArvinButton
-                                    key={index}
-                                    color={item.color}
-                                    onClick={item.onClick}
+                              ) : (
+                                <>
+                                  {/* Form */}
+                                  <form
                                     style={{
-                                      padding: "5px 1.5rem",
-
-                                      fontWeight: "500",
-                                      minWidth: "100px",
+                                      display: "grid",
+                                      gap: "1.2rem",
+                                      backgroundColor: "#f8f9fa",
+                                      padding: "2rem",
+                                      borderRadius: "12px",
+                                      border: "1px solid #e9ecef",
                                     }}
                                   >
-                                    {item.text}
-                                  </ArvinButton>
-                                )
-                            )}
-                          </div>
-                        ) : (
+                                    {/* Categoria */}
+                                    <div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          marginBottom: "0.5rem",
+                                          fontWeight: "600",
+                                          color: "#495057",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      >
+                                        📋{" "}
+                                        {
+                                          UniversalTexts.calendarModal
+                                            .selectCategory
+                                        }
+                                      </label>
+                                      <select
+                                        onChange={handleCategoryChange}
+                                        name="category"
+                                        value={category}
+                                        // className="inputs-style"
+                                        style={{
+                                          width: "100%",
+                                          padding: "0.75rem",
+                                          borderRadius: "8px",
+                                          border: "1px solid #ced4da",
+                                          fontSize: "0.9rem",
+                                          backgroundColor: "white",
+                                        }}
+                                      >
+                                        <option value="category" hidden>
+                                          Select category...
+                                        </option>
+                                        {[
+                                          "Test",
+                                          "Standalone",
+                                          "Group Class",
+                                          "Rep",
+                                          "Prize Class",
+                                          "Tutoring",
+                                          "Marcar Reposição",
+                                        ].map((cat, index) => (
+                                          <option key={index} value={cat}>
+                                            {cat}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+
+                                    {/* Estudante (se for tutoring) */}
+                                    {isTutoring && (
+                                      <div>
+                                        <label
+                                          style={{
+                                            display: "block",
+                                            marginBottom: "0.5rem",
+                                            fontWeight: "600",
+                                            color: "#495057",
+                                            fontSize: "0.9rem",
+                                          }}
+                                        >
+                                          👤{" "}
+                                          {
+                                            UniversalTexts.calendarModal
+                                              .selectStudent
+                                          }
+                                        </label>
+                                        <select
+                                          // className="inputs-style"
+                                          onChange={handleStudentChange}
+                                          name="students"
+                                          value={newStudentId}
+                                          style={{
+                                            width: "100%",
+                                            padding: "0.75rem",
+                                            borderRadius: "8px",
+                                            border: "1px solid #ced4da",
+                                            fontSize: "0.9rem",
+                                            backgroundColor: "white",
+                                          }}
+                                        >
+                                          <option value="category" hidden>
+                                            Select student...
+                                          </option>
+                                          {studentsList.map(
+                                            (student, index) => (
+                                              <option
+                                                key={index}
+                                                value={student.id}
+                                              >
+                                                {student.name +
+                                                  " " +
+                                                  student.lastname}
+                                              </option>
+                                            )
+                                          )}
+                                        </select>
+                                      </div>
+                                    )}
+
+                                    {/* Data e Hora */}
+                                    <div
+                                      style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "1fr 1fr",
+                                        gap: "1rem",
+                                      }}
+                                    >
+                                      <div>
+                                        <label
+                                          style={{
+                                            display: "block",
+                                            marginBottom: "0.5rem",
+                                            fontWeight: "600",
+                                            color: "#495057",
+                                            fontSize: "0.9rem",
+                                          }}
+                                        >
+                                          📅 Date
+                                        </label>
+                                        <input
+                                          // className="inputs-style"
+                                          value={date}
+                                          onChange={(e) =>
+                                            setDate(e.target.value)
+                                          }
+                                          type="date"
+                                          style={{
+                                            width: "100%",
+                                            padding: "0.75rem",
+                                            borderRadius: "8px",
+                                            border: "1px solid #ced4da",
+                                            fontSize: "0.9rem",
+                                          }}
+                                          required
+                                        />
+                                      </div>
+                                      <div>
+                                        <label
+                                          style={{
+                                            display: "block",
+                                            marginBottom: "0.5rem",
+                                            fontWeight: "600",
+                                            color: "#495057",
+                                            fontSize: "0.9rem",
+                                          }}
+                                        >
+                                          ⏰ Time
+                                        </label>
+                                        <input
+                                          // className="inputs-style"
+                                          value={theTime}
+                                          onChange={(e) =>
+                                            setTheTime(e.target.value)
+                                          }
+                                          type="time"
+                                          style={{
+                                            width: "100%",
+                                            padding: "0.75rem",
+                                            borderRadius: "8px",
+                                            border: "1px solid #ced4da",
+                                            fontSize: "0.9rem",
+                                          }}
+                                          required
+                                        />
+                                      </div>
+                                    </div>
+
+                                    {/* Link da Reunião */}
+                                    <div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          marginBottom: "0.5rem",
+                                          fontWeight: "600",
+                                          color: "#495057",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      >
+                                        🔗 {UniversalTexts.calendarModal.link}
+                                      </label>
+                                      <input
+                                        // className="inputs-style"
+                                        value={link}
+                                        onChange={(e) =>
+                                          setLink(e.target.value)
+                                        }
+                                        placeholder="https://meet.google.com/..."
+                                        type="url"
+                                        style={{
+                                          width: "100%",
+                                          padding: "0.75rem",
+                                          borderRadius: "8px",
+                                          border: "1px solid #ced4da",
+                                          fontSize: "0.9rem",
+                                        }}
+                                        required
+                                      />
+                                    </div>
+
+                                    {/* Descrição */}
+                                    <div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          marginBottom: "0.5rem",
+                                          fontWeight: "600",
+                                          color: "#495057",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      >
+                                        📝{" "}
+                                        {
+                                          UniversalTexts.calendarModal
+                                            .classDescription
+                                        }
+                                      </label>
+                                      <input
+                                        // className="inputs-style"
+                                        type="text"
+                                        value={description}
+                                        onChange={(e) =>
+                                          setDescription(e.target.value)
+                                        }
+                                        placeholder={
+                                          UniversalTexts.calendarModal
+                                            .classDescriptionPlaceholder
+                                        }
+                                        style={{
+                                          width: "100%",
+                                          padding: "0.75rem",
+                                          borderRadius: "8px",
+                                          border: "1px solid #ced4da",
+                                          fontSize: "0.9rem",
+                                          fontFamily: "inherit",
+                                          lineHeight: "1.5",
+                                        }}
+                                        required
+                                      />
+                                    </div>
+
+                                    {/* Vídeo */}
+                                    <div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          marginBottom: "0.5rem",
+                                          fontWeight: "600",
+                                          color: "#495057",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      >
+                                        🎥 {UniversalTexts.calendarModal.video}
+                                      </label>
+                                      <input
+                                        // className="inputs-style"
+                                        value={video}
+                                        onChange={(e) =>
+                                          setVideo(e.target.value)
+                                        }
+                                        placeholder="https://youtube.com/... or https://vimeo.com/..."
+                                        type="url"
+                                        style={{
+                                          width: "100%",
+                                          padding: "0.75rem",
+                                          borderRadius: "8px",
+                                          border: "1px solid #ced4da",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      />
+                                    </div>
+                                    {/* Homework */}
+                                    <div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          marginBottom: "0.5rem",
+                                          fontWeight: "600",
+                                          color: "#495057",
+                                          fontSize: "0.9rem",
+                                        }}
+                                      >
+                                        📚{" "}
+                                        {UniversalTexts.calendarModal.homework}
+                                      </label>
+                                      <HTMLEditor
+                                        onChange={handleHomeworkChange}
+                                        initialContent={homework}
+                                      />
+                                    </div>
+                                  </form>
+
+                                  {/* Checklist */}
+                                  {!postNew && (
+                                    <div
+                                      style={{
+                                        backgroundColor: "#f8f9fa",
+                                        padding: "1.5rem",
+                                        borderRadius: "8px",
+                                        border: "1px solid #e9ecef",
+                                      }}
+                                    >
+                                      <h4
+                                        style={{
+                                          margin: "0 0 1rem 0",
+                                          color: partnerColor(),
+                                        }}
+                                      >
+                                        {
+                                          UniversalTexts.calendarModal
+                                            .taskChecklist
+                                        }
+                                      </h4>
+                                      <div
+                                        style={{ display: "grid", gap: "5px" }}
+                                      >
+                                        {[
+                                          {
+                                            key: "checkList1",
+                                            text: UniversalTexts.calendarModal
+                                              .uploadVideo,
+                                            handler: handleCheckbox1Change,
+                                          },
+                                          {
+                                            key: "checkList2",
+                                            text: UniversalTexts.calendarModal
+                                              .uploadClassesToPlatform,
+                                            handler: handleCheckbox2Change,
+                                          },
+                                          {
+                                            key: "checkList3",
+                                            text: UniversalTexts.calendarModal
+                                              .addHomeworkActivities,
+                                            handler: handleCheckbox3Change,
+                                          },
+                                          {
+                                            key: "checkList4",
+                                            text: UniversalTexts.calendarModal
+                                              .uploadFlashcards,
+                                            handler: handleCheckbox4Change,
+                                          },
+                                          {
+                                            key: "checkList5",
+                                            text: UniversalTexts.calendarModal
+                                              .formatMaterial,
+                                            handler: handleCheckbox5Change,
+                                          },
+                                        ].map((item, index) => (
+                                          <label
+                                            key={index}
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "5px",
+                                              padding: "5px",
+                                              backgroundColor: eventFull[
+                                                item.key
+                                              ]
+                                                ? "#d4edda"
+                                                : "white",
+                                              borderRadius: "8px",
+                                              border: "1px solid #dee2e6",
+                                              cursor: "pointer",
+                                              transition: "all 0.2s",
+                                            }}
+                                          >
+                                            <input
+                                              checked={
+                                                eventFull[item.key] || false
+                                              }
+                                              type="checkbox"
+                                              onChange={item.handler}
+                                              style={{
+                                                width: "18px",
+                                                height: "18px",
+                                                cursor: "pointer",
+                                              }}
+                                            />
+                                            <span
+                                              style={{
+                                                color: "#495057",
+                                                textDecoration: eventFull[
+                                                  item.key
+                                                ]
+                                                  ? "line-through"
+                                                  : "none",
+                                              }}
+                                            >
+                                              {item.text}
+                                            </span>
+                                          </label>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
+                                </>
+                              )}
+
+                              {/* Action Buttons */}
+                              {!deleteVisible ? (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: "1rem",
+                                    justifyContent: "center",
+                                    paddingTop: "1rem",
+                                  }}
+                                >
+                                  {[
+                                    {
+                                      text: "Delete",
+                                      color: "red",
+                                      onClick: seeDelete,
+                                      visible: !postNew,
+                                    },
+                                    {
+                                      text: "Cancel",
+                                      color: "blue",
+                                      onClick: () => setShowEditForm(false),
+                                      visible: true,
+                                    },
+                                    {
+                                      text: "Save",
+                                      color: "green",
+                                      onClick: postNew
+                                        ? postNewEvent
+                                        : editInside,
+                                      visible: true,
+                                    },
+                                  ].map(
+                                    (item, index) =>
+                                      item.visible && (
+                                        <ArvinButton
+                                          key={index}
+                                          color={item.color}
+                                          onClick={item.onClick}
+                                          style={{
+                                            padding: "5px 1.5rem",
+
+                                            fontWeight: "500",
+                                            minWidth: "100px",
+                                          }}
+                                        >
+                                          {item.text}
+                                        </ArvinButton>
+                                      )
+                                  )}
+                                </div>
+                              ) : (
+                                <div
+                                  style={{
+                                    backgroundColor: "#f8d7da",
+                                    padding: "1.5rem",
+                                    borderRadius: "8px",
+                                    border: "1px solid #f5c6cb",
+                                    textAlign: "center",
+                                  }}
+                                >
+                                  <p
+                                    style={{
+                                      margin: "0 0 1rem 0",
+
+                                      fontWeight: "500",
+                                      color: "#721c24",
+                                    }}
+                                  >
+                                    ⚠️{" "}
+                                    {
+                                      UniversalTexts.calendarModal
+                                        .deleteConfirmation
+                                    }
+                                  </p>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: "1rem",
+                                      justifyContent: "center",
+                                    }}
+                                  >
+                                    <button
+                                      onClick={seeDelete}
+                                      style={{
+                                        padding: "5px 1.5rem",
+                                        backgroundColor: partnerColor(),
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      {UniversalTexts.calendarModal.noCancel}
+                                    </button>
+                                    <button
+                                      onClick={deleteOneMaterialInside}
+                                      style={{
+                                        padding: "5px 1.5rem",
+                                        backgroundColor: "#dc3545",
+                                        color: "white",
+                                        border: "none",
+                                        borderRadius: "8px",
+                                        cursor: "pointer",
+
+                                        fontWeight: "500",
+                                      }}
+                                    >
+                                      {UniversalTexts.calendarModal.yesDelete}
+                                    </button>
+                                  </div>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    {!showEditForm && (
+                      <span>
+                        {/* Link de Acesso */}
+                        {link && status == "Scheduled" && (
                           <div
                             style={{
-                              backgroundColor: "#f8d7da",
-                              padding: "1.5rem",
-                              borderRadius: "8px",
-                              border: "1px solid #f5c6cb",
                               textAlign: "center",
+                            }}
+                          >
+                            <Link
+                              to={link}
+                              target="_blank"
+                              style={{
+                                color: partnerColor(),
+                                textDecoration: "none",
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: "white",
+                                border: `2px solid ${partnerColor()}`,
+                                borderRadius: "10px",
+                                textAlign: "center",
+                                transition: "all 0.3s ease",
+                                minWidth: "100%",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = partnerColor();
+                                e.target.style.color = "white";
+                                e.target.style.transform = "translateY(-2px)";
+                                e.target.style.boxShadow =
+                                  "0 4px 8px rgba(0,0,0,0.15)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = "white";
+                                e.target.style.color = partnerColor();
+                                e.target.style.transform = "translateY(0)";
+                                e.target.style.boxShadow =
+                                  "0 2px 4px rgba(0,0,0,0.1)";
+                              }}
+                            >
+                              {UniversalTexts.calendarModal.clickToAccessClass}
+                            </Link>
+                          </div>
+                        )}
+                        {/* Descrição */}
+                        {description && (
+                          <div
+                            style={{
+                              backgroundColor: "white",
+                              padding: "10px",
+                              borderRadius: "10px",
+                              border: "1px solid #dee2e6",
+                              borderLeft: `4px solid ${partnerColor()}`,
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                             }}
                           >
                             <p
                               style={{
-                                margin: "0 0 1rem 0",
-
-                                fontWeight: "500",
-                                color: "#721c24",
+                                margin: 0,
+                                color: "#495057",
                               }}
                             >
-                              ⚠️{" "}
-                              {UniversalTexts.calendarModal.deleteConfirmation}
+                              {description}
                             </p>
+                          </div>
+                        )}
+
+                        {/* Informações do Evento */}
+                        <div
+                          style={{
+                            backgroundColor: "white",
+                            padding: "0.75rem",
+                            borderRadius: "8px",
+                            border: "1px solid #e9ecef",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                          }}
+                        >
+                          {/* Container flex para Informações + Vídeo */}
+                          {video ? (
                             <div
                               style={{
                                 display: "flex",
                                 gap: "1rem",
-                                justifyContent: "center",
+                                flexWrap: "wrap",
+                                alignItems: "flex-start",
                               }}
                             >
-                              <button
-                                onClick={seeDelete}
-                                style={{
-                                  padding: "5px 1.5rem",
-                                  backgroundColor: partnerColor(),
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "8px",
-                                  cursor: "pointer",
+                              {/* Coluna das Informações */}
+                              <div style={{ flex: "1", minWidth: "250px" }}>
+                                {/* Categoria */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    marginBottom: "0.5rem",
+                                    flexWrap: "wrap",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#6c757d",
+                                      fontSize: "0.8rem",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    📋 {UniversalTexts.calendarModal.category}
+                                  </span>
+                                  <span
+                                    style={{
+                                      backgroundColor: partnerColor(),
+                                      color: "white",
+                                      padding: "0.2rem 0.6rem",
+                                      borderRadius: "12px",
+                                      fontWeight: "500",
+                                      fontSize: "0.75rem",
+                                      textAlign: "center",
+                                      boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                                    }}
+                                  >
+                                    {category === "Test"
+                                      ? "Test Class"
+                                      : category === "Standalone"
+                                      ? "Standalone Class"
+                                      : category === "Group Class"
+                                      ? "Group Class"
+                                      : category === "Rep"
+                                      ? "Marcar Reposição"
+                                      : category === "Marcar Reposição"
+                                      ? "Janela de Marcar Reposição"
+                                      : category === "Prize Class"
+                                      ? "Prize Class"
+                                      : category === "Tutoring"
+                                      ? "Tutoring: Private Class"
+                                      : ""}
+                                  </span>
+                                </div>
 
-                                  fontWeight: "500",
+                                {/* Data e Hora */}
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#6c757d",
+                                        fontSize: "0.8rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                    >
+                                      📅 {newFormatDate(date)}
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#6c757d",
+                                        fontSize: "0.8rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                    >
+                                      ⏰ {theTime}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Coluna do Vídeo */}
+                              <div
+                                style={{
+                                  flex: "1",
+                                  minWidth: "300px",
+                                  maxWidth: "400px",
                                 }}
                               >
-                                {UniversalTexts.calendarModal.noCancel}
-                              </button>
-                              <button
-                                onClick={deleteOneMaterialInside}
-                                style={{
-                                  padding: "5px 1.5rem",
-                                  backgroundColor: "#dc3545",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "8px",
-                                  cursor: "pointer",
-
-                                  fontWeight: "500",
-                                }}
-                              >
-                                {UniversalTexts.calendarModal.yesDelete}
-                              </button>
+                                <div
+                                  style={{
+                                    marginBottom: "0.5rem",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#6c757d",
+                                      fontSize: "0.8rem",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    🎥 {UniversalTexts.calendarModal.video}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    backgroundColor: "#f8f9fa",
+                                    padding: "0.5rem",
+                                    borderRadius: "6px",
+                                    border: "1px solid #dee2e6",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      position: "relative",
+                                      paddingBottom: "56.25%", // 16:9 aspect ratio
+                                      height: 0,
+                                      overflow: "hidden",
+                                      borderRadius: "4px",
+                                      backgroundColor: "#000",
+                                    }}
+                                  >
+                                    <iframe
+                                      src={getEmbedUrl(video)}
+                                      style={{
+                                        position: "absolute",
+                                        top: 0,
+                                        left: 0,
+                                        width: "100%",
+                                        height: "100%",
+                                        border: "none",
+                                        borderRadius: "4px",
+                                      }}
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                      allowFullScreen
+                                      title="Class Video"
+                                    />
+                                  </div>
+                                  <div
+                                    style={{
+                                      marginTop: "0.5rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    <a
+                                      href={video}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{
+                                        color: partnerColor(),
+                                        textDecoration: "none",
+                                        fontWeight: "500",
+                                        fontSize: "0.75rem",
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.target.style.textDecoration =
+                                          "underline";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.target.style.textDecoration = "none";
+                                      }}
+                                    >
+                                      <i className="fa fa-external-link" />
+                                      {video.includes("youtube.com") ||
+                                      video.includes("youtu.be")
+                                        ? "YouTube"
+                                        : video.includes("vimeo.com")
+                                        ? "Vimeo"
+                                        : "Vídeo"}
+                                    </a>
+                                  </div>
+                                </div>
+                              </div>
                             </div>
+                          ) : (
+                            // Layout sem vídeo - apenas informações
+                            <div>
+                              {/* Categoria */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  marginBottom: "0.5rem",
+                                  flexWrap: "wrap",
+                                  gap: "0.5rem",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "#6c757d",
+                                    fontSize: "0.8rem",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.25rem",
+                                  }}
+                                >
+                                  📋 {UniversalTexts.calendarModal.category}
+                                </span>
+                                <span
+                                  style={{
+                                    backgroundColor: partnerColor(),
+                                    color: "white",
+                                    padding: "0.2rem 0.6rem",
+                                    borderRadius: "12px",
+                                    fontWeight: "500",
+                                    fontSize: "0.75rem",
+                                    textAlign: "center",
+                                    boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
+                                  }}
+                                >
+                                  {category === "Test"
+                                    ? "Test Class"
+                                    : category === "Standalone"
+                                    ? "Standalone Class"
+                                    : category === "Group Class"
+                                    ? "Group Class"
+                                    : category === "Rep"
+                                    ? "Marcar Reposição"
+                                    : category === "Marcar Reposição"
+                                    ? "Janela de Marcar Reposição"
+                                    : category === "Prize Class"
+                                    ? "Prize Class"
+                                    : category === "Tutoring"
+                                    ? "Tutoring: Private Class"
+                                    : ""}
+                                </span>
+                              </div>
+
+                              {/* Data e Hora */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  gap: "0.5rem",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#6c757d",
+                                      fontSize: "0.8rem",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    📅 {newFormatDate(date)}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#6c757d",
+                                      fontSize: "0.8rem",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    ⏰ {theTime}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Homework (HTML Content) */}
+                        {homework && (
+                          <div
+                            style={{
+                              backgroundColor: "white",
+                              padding: "0.75rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e9ecef",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                              marginTop: "0.5rem",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                marginBottom: "0.5rem",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontWeight: "600",
+                                  color: "#6c757d",
+                                  fontSize: "0.8rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.25rem",
+                                }}
+                              >
+                                📝 {UniversalTexts.calendarModal.homework}
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                backgroundColor: "#f8f9fa",
+                                padding: "1rem",
+                                borderRadius: "6px",
+                                border: "1px solid #dee2e6",
+                                lineHeight: "1.6",
+                                fontSize: "0.9rem",
+                                color: "#495057",
+                                // maxHeight: "300px",
+                                // overflowY: "auto",
+                              }}
+                              dangerouslySetInnerHTML={{ __html: homework }}
+                            />
                           </div>
                         )}
-                      </div>
-                    }
+                      </span>
+                    )}
                   </div>
                 )}
               </div>
