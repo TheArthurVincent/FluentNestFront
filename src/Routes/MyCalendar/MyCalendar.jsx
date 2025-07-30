@@ -1784,12 +1784,208 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     style={{
                                       width: "90%",
                                       display: "grid",
-                                      gap: "1.2rem",
-                                      backgroundColor: "#f8f9fa",
-                                      borderRadius: "12px",
-                                      border: "1px solid #e9ecef",
+                                      gap: "1.5rem",
+                                      backgroundColor: "#f9f9f9",
+                                      borderRadius: "8px",
+                                      border: "1px solid #e5e7eb",
+                                      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                                     }}
                                   >
+                            
+                                    {/* Seção para Aulas Realizadas */}
+                                    {(status == "marcado" ||
+                                      status == "Realized") ? (
+                                      <div
+                                        style={{
+                                          backgroundColor: "#f9f9f9",
+                                          padding: "0.5rem",
+                                          maxWidth:" 90%",
+                                          boxSizing : "border-box",
+                                          borderRadius: "8px",
+                                          border: "1px solid #e5e7eb",
+                                          borderLeft: "4px solid #059669",
+                                          marginTop: "1.5rem",
+                                          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                                        }}
+                                      >
+                                           <div
+                                          style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "0.75rem",
+                                            marginBottom: "1.5rem",
+                                            borderBottom: "1px solid #e5e7eb",
+                                          }}
+                                        >
+                                          <div
+                                            style={{
+                                              width: "28px",
+                                              height: "28px",
+                                              backgroundColor: "#059669",
+                                              borderRadius: "6px",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                            }}
+                                          >
+                                            <i
+                                              className="fa fa-check"
+                                              style={{
+                                                color: "white",
+                                                fontSize: "0.8rem",
+                                              }}
+                                            />
+                                          </div>
+                                          <h4
+                                            style={{
+                                              margin: 0,
+                                              color: "#374151",
+                                              fontWeight: "500",
+                                              fontSize: "1rem",
+                                            }}
+                                          >
+                                            Conteúdo da Aula Realizada
+                                          </h4>
+                                        </div>
+                                                     {/* Descrição */}
+                                    <div>
+                                      <label
+                                        style={{
+                                          display: "block",
+                                          marginBottom: "0.5rem",
+                                          fontWeight: "500",
+                                          color: "#374151",
+                                          fontSize: "0.875rem",
+                                        }}
+                                      >
+                                        {
+                                          UniversalTexts.calendarModal
+                                            .classDescription
+                                        }
+                                      </label>
+                                      <input
+                                        type="text"
+                                        value={description}
+                                        onChange={(e) =>
+                                          setDescription(e.target.value)
+                                        }
+                                        placeholder={
+                                          UniversalTexts.calendarModal
+                                            .classDescriptionPlaceholder
+                                        }
+                                        style={{
+                                          width: "90%",
+                                          padding: "0.75rem",
+                                          borderRadius: "6px",
+                                          border: "1px solid #d1d5db",
+                                          fontSize: "0.875rem",
+                                          fontFamily: "inherit",
+                                          lineHeight: "1.5",
+                                          backgroundColor: "#ffffff",
+                                          transition: "border-color 0.2s ease",
+                                        }}
+                                        onFocus={(e) => {
+                                          e.target.style.borderColor = partnerColor();
+                                          e.target.style.outline = "none";
+                                          e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                        }}
+                                        onBlur={(e) => {
+                                          e.target.style.borderColor = "#d1d5db";
+                                          e.target.style.boxShadow = "none";
+                                        }}
+                                        required
+                                      />
+                                    </div>
+                                     
+
+                                        <div
+                                          style={{
+                                            display: "grid",
+                                            gap: "1.5rem",
+                                          }}
+                                        >
+                                          {/* Vídeo */}
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "500",
+                                          width: "90%",
+                                                color: "#374151",
+                                                fontSize: "0.875rem",
+                                              }}
+                                            >
+                                              {
+                                                UniversalTexts.calendarModal
+                                                  .video
+                                              }
+                                            </label>
+                                            <input
+                                              value={video}
+                                              onChange={(e) =>
+                                                setVideo(e.target.value)
+                                              }
+                                              placeholder="https://youtube.com/... ou https://vimeo.com/..."
+                                              type="url"
+                                              style={{
+                                          width: "90%",
+                                                padding: "0.75rem",
+                                                borderRadius: "6px",
+                                                border: "1px solid #d1d5db",
+                                                fontSize: "0.875rem",
+                                                backgroundColor: "#ffffff",
+                                                fontFamily: "inherit",
+                                                lineHeight: "1.5",
+                                                transition: "border-color 0.2s ease",
+                                              }}
+                                              onFocus={(e) => {
+                                                e.target.style.borderColor = partnerColor();
+                                                e.target.style.outline = "none";
+                                                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                              }}
+                                              onBlur={(e) => {
+                                                e.target.style.borderColor = "#d1d5db";
+                                                e.target.style.boxShadow = "none";
+                                              }}
+                                            />
+                                          </div>
+
+                                          {/* Homework */}
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "500",
+                                                color: "#374151",
+                                                fontSize: "0.875rem",
+                                              }}
+                                            >
+                                              {
+                                                UniversalTexts.calendarModal
+                                                  .homework
+                                              }
+                                            </label>
+                                            <div
+                                              style={{
+                                                backgroundColor: "white",
+                                                borderRadius: "8px",
+                                                border: "1px solid #ced4da",
+                                                overflow: "hidden",
+                                              }}
+                                            >
+                                              <HTMLEditor
+                                                onChange={handleHomeworkChange}
+                                                initialContent={homework}
+                                              />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )
+                                  :(
+                                     <span>
                                     {/* Categoria */}
                                     <div>
                                       <label
@@ -1993,7 +2189,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         required
                                       />
                                     </div>
-
                                     {/* Descrição */}
                                     <div>
                                       <label
@@ -2034,56 +2229,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         required
                                       />
                                     </div>
-
-                                    {/* Vídeo */}
-                                    <div>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          marginBottom: "0.5rem",
-                                          fontWeight: "600",
-                                          color: "#495057",
-                                          fontSize: "0.9rem",
-                                        }}
-                                      >
-                                        🎥 {UniversalTexts.calendarModal.video}
-                                      </label>
-                                      <input
-                                        // className="inputs-style"
-                                        value={video}
-                                        onChange={(e) =>
-                                          setVideo(e.target.value)
-                                        }
-                                        placeholder="https://youtube.com/... or https://vimeo.com/..."
-                                        type="url"
-                                        style={{
-                                          width: "100%",
-                                          padding: "0.75rem",
-                                          borderRadius: "8px",
-                                          border: "1px solid #ced4da",
-                                          fontSize: "0.9rem",
-                                        }}
-                                      />
-                                    </div>
-                                    {/* Homework */}
-                                    <div>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          marginBottom: "0.5rem",
-                                          fontWeight: "600",
-                                          color: "#495057",
-                                          fontSize: "0.9rem",
-                                        }}
-                                      >
-                                        📚{" "}
-                                        {UniversalTexts.calendarModal.homework}
-                                      </label>
-                                      <HTMLEditor
-                                        onChange={handleHomeworkChange}
-                                        initialContent={homework}
-                                      />
-                                    </div>
+</span>)
+                                  
+                                  }
                                   </form>
 
                                   {/* Checklist */}
