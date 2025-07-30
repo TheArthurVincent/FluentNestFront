@@ -1561,7 +1561,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         <div
                           style={{
                             borderTop: "2px solid #e9ecef",
-                            padding: "1.5rem",
                             display: "flex",
                             flexDirection: "column",
                             gap: "1.5rem",
@@ -1746,6 +1745,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     backgroundColor: "#6c757d",
                                     color: "white",
                                     border: "none",
+                                    marginLeft: "auto",
                                     borderRadius: "6px",
                                     fontSize: "0.9rem",
                                     cursor: "pointer",
@@ -1782,10 +1782,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   {/* Form */}
                                   <form
                                     style={{
+                                      width: "90%",
                                       display: "grid",
                                       gap: "1.2rem",
                                       backgroundColor: "#f8f9fa",
-                                      padding: "2rem",
                                       borderRadius: "12px",
                                       border: "1px solid #e9ecef",
                                     }}
@@ -1895,7 +1895,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     <div
                                       style={{
                                         display: "grid",
-                                        gridTemplateColumns: "1fr 1fr",
+                                        gridTemplateColumns:
+                                          window.innerWidth < 768
+                                            ? "1fr"
+                                            : "1fr 1fr",
                                         gap: "1rem",
                                       }}
                                     >
