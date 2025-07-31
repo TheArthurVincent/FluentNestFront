@@ -85,42 +85,42 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [alternateText, setAlternateText] = useState("... Updating Class");
 
   useEffect(() => {
-      setTimeout(() => {
-        setAlternateText("... Formatting Flashcards");
-      }, 2000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Homework");
-      }, 4000);
-      setTimeout(() => {
-        setAlternateText("... Updating Class");
-      }, 6000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Flashcards");
-      }, 8000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Homework");
-      }, 10000);
-      setTimeout(() => {
-        setAlternateText("... Updating Class");
-      }, 12000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Flashcards");
-      }, 14000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Homework");
-      }, 14000);
-      setTimeout(() => {
-        setAlternateText("... Updating Class");
-      }, 16000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Flashcards");
-      }, 18000);
-      setTimeout(() => {
-        setAlternateText("... Formatting Homework");
-      }, 20000);
-      setTimeout(() => {
-        setAlternateText("... Updating Class");
-      }, 22000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Flashcards");
+    }, 2000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Homework");
+    }, 4000);
+    setTimeout(() => {
+      setAlternateText("... Updating Class");
+    }, 6000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Flashcards");
+    }, 8000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Homework");
+    }, 10000);
+    setTimeout(() => {
+      setAlternateText("... Updating Class");
+    }, 12000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Flashcards");
+    }, 14000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Homework");
+    }, 14000);
+    setTimeout(() => {
+      setAlternateText("... Updating Class");
+    }, 16000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Flashcards");
+    }, 18000);
+    setTimeout(() => {
+      setAlternateText("... Formatting Homework");
+    }, 20000);
+    setTimeout(() => {
+      setAlternateText("... Updating Class");
+    }, 22000);
   }, [loadingInfo]);
 
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
@@ -3002,7 +3002,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     {!showEditForm && (
                       <span>
                         {/* Link de Acesso */}
-                        {link && status == "Scheduled" && (
+                        {link && (
                           <div
                             style={{
                               textAlign: "center",
