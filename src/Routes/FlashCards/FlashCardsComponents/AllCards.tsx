@@ -249,7 +249,7 @@ var AllCards = ({ headers }: HeadersProps) => {
           <ArvinButton onClick={() => fetchMoreCards(true)}>
             <i className="fa fa-refresh" aria-hidden="true" />
           </ArvinButton>
-          {perm === "superadmin" && (
+          {(perm === "superadmin" || perm === "teacher") && (
             <div style={{ display: "inline" }}>
               {loadingStudents ? (
                 <CircularProgress style={{ color: partnerColor() }} />

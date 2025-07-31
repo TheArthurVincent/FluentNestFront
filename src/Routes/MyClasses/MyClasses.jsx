@@ -296,7 +296,7 @@ export function MyClasses({ headers }) {
         }}
       >
         {/* Student Selector for Superadmin */}
-        {permissions === "superadmin" && (
+        {(permissions === "superadmin" || permissions === "teacher") && (
           <div style={{ marginBottom: "20px" }}>
             <select
               onChange={handleStudentChange}
@@ -465,32 +465,32 @@ export function MyClasses({ headers }) {
                   )}
 
                   {/* Video Section */}
-{classItem.videoUrl && (
-  <>
-                  <IFrameVideoClass
-                    src={getVideoEmbedUrl(classItem.videoUrl)}
-                    title={`Aula - ${classItem.date}`}
-                  />
-                
+                  {classItem.videoUrl && (
+                    <>
+                      <IFrameVideoClass
+                        src={getVideoEmbedUrl(classItem.videoUrl)}
+                        title={`Aula - ${classItem.date}`}
+                      />
+
                       <Link
-                            to={classItem.videoUrl}
-                            target="_blank"
-                            style={{
-                              color: partnerColor(),
-                              textDecoration: "none",
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                          >
-                            <i className="fa fa-external-link" />
-                            {classItem.videoUrlName || "Video Link"}
-                          </Link>
-                        </>
-                )}
-              </div>
+                        to={classItem.videoUrl}
+                        target="_blank"
+                        style={{
+                          color: partnerColor(),
+                          textDecoration: "none",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <i className="fa fa-external-link" />
+                        {classItem.videoUrlName || "Video Link"}
+                      </Link>
+                    </>
+                  )}
+                </div>
               </ClassBox>
             ))}
 

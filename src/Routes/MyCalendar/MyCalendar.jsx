@@ -60,12 +60,27 @@ const getEmbedUrl = (url) => {
   return url;
 };
 
+// File handling functions
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const base64String = reader.result;
+      const base64Data = base64String.split(",")[1];
+      resolve(base64Data);
+    };
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export default function MyCalendar({ headers, thePermissions, myId }) {
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
   const [seeEditTutoring, setSeeEditTutoring] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false); // Novo estado para controlar a exibição do formulário de edição
+  const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
     useState(false);
@@ -76,7 +91,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
   const [video, setVideo] = useState("");
+  const [googleDriveLink, setGoogleDriveLink] = useState("");
   const [homework, setHomework] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [base64String, setBase64String] = useState("");
+  const [fileName, setFileName] = useState("");
+  const [fileType, setFileType] = useState("");
+  const [flashcards, setFlashcards] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
   const [category, setCategory] = useState("");
   const [newStudentId, setNewStudentId] = useState("");
   const [tutoringsListOfOneStudent, setTutoringsListOfOneStudent] = useState(
@@ -90,6 +113,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [studentsList, setStudentsList] = useState([]);
   const [events, setEvents] = useState([]);
   const [isTutoring, setIsTutoring] = useState(false);
+  const [homeworkAdded, setHomeworkAdded] = useState(false);
+  const [flashcardsAdded, setFlashcardsAdded] = useState(false);
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
   const [name, setName] = useState("");
@@ -351,6 +376,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         fetchStudents();
       }
 
+      const newFlashcardsAdded = response.data.event.flashcardsAdded || false;
+      const newHomeworkAdded = response.data.event.homeworkAdded || false;
       const newCategory = response.data.event.category;
       const newStudentID = response.data.event.studentID;
       const newStudent = response.data.event.student;
@@ -360,6 +387,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newDate = response.data.event.date;
       const newVideo = response.data.event.video;
       const newHomework = response.data.event.homework;
+      const newGoogleDriveLink = response.data.event.googleDriveLink || "";
+      const newDueDate = response.data.event.dueDate || "";
+      const newBase64String = response.data.event.base64String || "";
+      const newFileName = response.data.event.fileName || "";
+      const newFileType = response.data.event.fileType || "";
+      const newFlashcards = response.data.event.flashcards || "";
       const newTime = response.data.event.time;
       const newEventId = response.data.event._id;
 
@@ -372,6 +405,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
+      setFlashcardsAdded(newFlashcardsAdded);
+      setHomeworkAdded(newHomeworkAdded);
       setName(newStudent);
       setStatus(mappedStatus);
       setCategory(newCategory);
@@ -381,6 +416,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setTheTime(newTime);
       setVideo(newVideo);
       setHomework(newHomework);
+      setGoogleDriveLink(newGoogleDriveLink);
+      setDueDate(newDueDate);
+      setBase64String(newBase64String);
+      setFileName(newFileName);
+      setFileType(newFileType);
+      setFlashcards(newFlashcards);
       setDescription(newDescription);
       setDate(newDate);
       setLoadingModalInfo(false);
@@ -472,6 +513,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const editOneEvent = async (id) => {
     setLoadingInfo(true);
     try {
+      // Converter status do frontend para o backend
+      let backendStatus = status;
+      if (status === "Scheduled") {
+        backendStatus = "marcado";
+      } else if (status === "Canceled") {
+        backendStatus = "desmarcado";
+      } else if (status === "Realized") {
+        backendStatus = "realizada";
+      }
+
       const response = await axios.put(
         `${backDomain}/api/v1/event/${id}`,
         {
@@ -479,11 +530,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           date,
           time: theTime,
           category,
-          status,
+          status: backendStatus,
           link,
           video,
           homework,
+          googleDriveLink,
+          dueDate,
+          base64String,
+          fileName,
+          fileType,
+          newFlashcards: flashcards,
           description,
+          POSTNEWINFOCLASS,
         },
         {
           headers,
@@ -822,8 +880,62 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
     setShowEditForm(false); // Reset do formulário de edição
+
+    // Clear file upload fields
+    clearFile();
+    setDueDate("");
+    setFlashcards("");
+
     fetchGeneralEventsNoLoading();
   };
+
+  // File handling functions
+  const handleFileChange = async (event) => {
+    const file = event.target.files?.[0];
+    setSelectedFile(file || null);
+
+    if (file) {
+      try {
+        setUploading(true);
+        const base64File = await convertToBase64(file);
+        setBase64String(base64File);
+        setFileName(file.name);
+        setFileType(file.type);
+        setUploading(false);
+      } catch (error) {
+        console.error("Erro ao processar arquivo:", error);
+        setUploading(false);
+      }
+    } else {
+      clearFile();
+    }
+  };
+
+  const handleFileUpload = async () => {
+    if (!selectedFile) {
+      return;
+    }
+
+    try {
+      setUploading(true);
+      const base64File = await convertToBase64(selectedFile);
+      setBase64String(base64File);
+      setFileName(selectedFile.name);
+      setFileType(selectedFile.type);
+      setUploading(false);
+    } catch (error) {
+      console.error("Erro ao processar arquivo:", error);
+      setUploading(false);
+    }
+  };
+
+  const clearFile = () => {
+    setSelectedFile(null);
+    setBase64String("");
+    setFileName("");
+    setFileType("");
+  };
+
   const handleSeeModalOfTutorings = () => {
     setNewStudentId("");
     setSeeReplenish(false);
@@ -1673,7 +1785,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 </p>
                               )}
                               <button
-                                onClick={() => setShowEditForm(true)}
+                                onClick={() => {
+                                  setShowEditForm(true);
+                                  setPOSTNEWINFOCLASS(true);
+                                  console.log("Abrindo Edição");
+                                }}
                                 style={{
                                   padding: "0.5rem 1rem",
                                   backgroundColor: partnerColor(),
@@ -1740,7 +1856,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     />
                                     <div
                                       style={{
-                                        color: "#6c757d",
+                                        color:
+                                          status == "Scheduled" ||
+                                          status == "marcado"
+                                            ? "#007bff"
+                                            : "#6c757d",
                                         marginTop: "2px",
                                       }}
                                     >
@@ -1775,7 +1895,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     />
                                     <div
                                       style={{
-                                        color: "#6c757d",
+                                        color:
+                                          status == "Realized" ||
+                                          status == "realizado"
+                                            ? "#28a745"
+                                            : "#6c757d",
                                         marginTop: "2px",
                                       }}
                                     >
@@ -1810,7 +1934,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     />
                                     <div
                                       style={{
-                                        color: "#6c757d",
+                                        color:
+                                          status == "Canceled" ||
+                                          status == "desmarcado"
+                                            ? "#dc3545"
+                                            : "#6c757d",
                                         marginTop: "2px",
                                       }}
                                     >
@@ -1842,7 +1970,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   }
                                 </HTwo>
                                 <button
-                                  onClick={() => setShowEditForm(false)}
+                                  onClick={() => {
+                                    setShowEditForm(false);
+                                    setPOSTNEWINFOCLASS(false);
+                                    console.log("Fechando Edição");
+                                  }}
                                   style={{
                                     padding: "0.5rem 1rem",
                                     backgroundColor: "#6c757d",
@@ -2059,37 +2191,291 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               }}
                                             />
                                           </div>
-
-                                          {/* Homework */}
+                                          {/* Important Link Class */}
                                           <div>
                                             <label
                                               style={{
                                                 display: "block",
                                                 marginBottom: "0.5rem",
                                                 fontWeight: "500",
+                                                width: "90%",
                                                 color: "#374151",
                                                 fontSize: "0.875rem",
                                               }}
                                             >
-                                              {
-                                                UniversalTexts.calendarModal
-                                                  .homework
-                                              }
+                                              GDLink
                                             </label>
-                                            <div
+                                            <input
+                                              value={googleDriveLink}
+                                              onChange={(e) =>
+                                                setGoogleDriveLink(
+                                                  e.target.value
+                                                )
+                                              }
+                                              placeholder="https://drive.google.com/..."
+                                              type="url"
                                               style={{
-                                                backgroundColor: "white",
-                                                borderRadius: "8px",
-                                                border: "1px solid #ced4da",
-                                                overflow: "hidden",
+                                                width: "90%",
+                                                padding: "0.75rem",
+                                                borderRadius: "6px",
+                                                border: "1px solid #d1d5db",
+                                                fontSize: "0.875rem",
+                                                backgroundColor: "#ffffff",
+                                                fontFamily: "inherit",
+                                                lineHeight: "1.5",
+                                                transition:
+                                                  "border-color 0.2s ease",
                                               }}
-                                            >
-                                              <HTMLEditor
-                                                onChange={handleHomeworkChange}
-                                                initialContent={homework}
+                                              onFocus={(e) => {
+                                                e.target.style.borderColor =
+                                                  partnerColor();
+                                                e.target.style.outline = "none";
+                                                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                              }}
+                                              onBlur={(e) => {
+                                                e.target.style.borderColor =
+                                                  "#d1d5db";
+                                                e.target.style.boxShadow =
+                                                  "none";
+                                              }}
+                                            />
+                                          </div>
+                                          {/* Homework */}
+                                          {!homeworkAdded && (
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                {
+                                                  UniversalTexts.calendarModal
+                                                    .homework
+                                                }
+                                              </label>
+                                              <div
+                                                style={{
+                                                  backgroundColor: "white",
+                                                  borderRadius: "8px",
+                                                  border: "1px solid #ced4da",
+                                                  overflow: "hidden",
+                                                }}
+                                              >
+                                                <HTMLEditor
+                                                  onChange={
+                                                    handleHomeworkChange
+                                                  }
+                                                  initialContent={homework}
+                                                />
+                                              </div>
+                                            </div>
+                                          )}
+                                          {/* Due Date */}
+                                          {!homeworkAdded && (
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                📅 Data de Entrega
+                                              </label>
+                                              <input
+                                                value={
+                                                  dueDate
+                                                    ? dueDate.split("T")[0]
+                                                    : ""
+                                                }
+                                                onChange={(e) =>
+                                                  setDueDate(e.target.value)
+                                                }
+                                                type="date"
+                                                style={{
+                                                  width: "90%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "6px",
+                                                  border: "1px solid #d1d5db",
+                                                  fontSize: "0.875rem",
+                                                  backgroundColor: "#ffffff",
+                                                  fontFamily: "inherit",
+                                                  lineHeight: "1.5",
+                                                  transition:
+                                                    "border-color 0.2s ease",
+                                                }}
+                                                onFocus={(e) => {
+                                                  e.target.style.borderColor =
+                                                    partnerColor();
+                                                  e.target.style.outline =
+                                                    "none";
+                                                  e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                }}
+                                                onBlur={(e) => {
+                                                  e.target.style.borderColor =
+                                                    "#d1d5db";
+                                                  e.target.style.boxShadow =
+                                                    "none";
+                                                }}
                                               />
                                             </div>
-                                          </div>
+                                          )}
+
+                                          {/* File Upload */}
+                                          {!homeworkAdded && (
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                📎 Anexar Arquivo
+                                              </label>
+                                              <input
+                                                type="file"
+                                                onChange={handleFileChange}
+                                                accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                                                style={{
+                                                  width: "90%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "6px",
+                                                  border: "1px solid #d1d5db",
+                                                  fontSize: "0.875rem",
+                                                  backgroundColor: "#ffffff",
+                                                  fontFamily: "inherit",
+                                                  cursor: "pointer",
+                                                }}
+                                              />
+                                              {uploading && (
+                                                <div
+                                                  style={{
+                                                    fontSize: "0.8rem",
+                                                    color: "#666",
+                                                    marginTop: "0.5rem",
+                                                    fontStyle: "italic",
+                                                  }}
+                                                >
+                                                  Processando arquivo...
+                                                </div>
+                                              )}
+                                              {selectedFile && !uploading && (
+                                                <div
+                                                  style={{
+                                                    fontSize: "0.8rem",
+                                                    color: "#28a745",
+                                                    marginTop: "0.5rem",
+                                                    fontStyle: "italic",
+                                                  }}
+                                                >
+                                                  ✅ {selectedFile.name}
+                                                  <button
+                                                    type="button"
+                                                    onClick={clearFile}
+                                                    style={{
+                                                      marginLeft: "0.5rem",
+                                                      background: "none",
+                                                      border: "none",
+                                                      color: "#dc3545",
+                                                      cursor: "pointer",
+                                                      fontSize: "0.8rem",
+                                                    }}
+                                                  >
+                                                    ❌ Remover
+                                                  </button>
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
+
+                                          {/* Flashcards */}
+                                          {!flashcardsAdded && (
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                🃏{" "}
+                                                {
+                                                  UniversalTexts.calendarModal
+                                                    .uploadFlashcards
+                                                }
+                                              </label>
+                                              <textarea
+                                                value={flashcards || ""}
+                                                onChange={(e) => {
+                                                  const newValue =
+                                                    e.target.value;
+                                                  if (newValue.length <= 2000) {
+                                                    setFlashcards(newValue);
+                                                  }
+                                                }}
+                                                placeholder={
+                                                  UniversalTexts.calendarModal
+                                                    .enterFlashcards
+                                                }
+                                                rows={4}
+                                                maxLength={1000}
+                                                style={{
+                                                  width: "90%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "6px",
+                                                  border: "1px solid #d1d5db",
+                                                  fontSize: "0.875rem",
+                                                  backgroundColor: "#ffffff",
+                                                  fontFamily: "inherit",
+                                                  lineHeight: "1.5",
+                                                  transition:
+                                                    "border-color 0.2s ease",
+                                                  resize: "vertical",
+                                                }}
+                                                onFocus={(e) => {
+                                                  e.target.style.borderColor =
+                                                    partnerColor();
+                                                  e.target.style.outline =
+                                                    "none";
+                                                  e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                }}
+                                                onBlur={(e) => {
+                                                  e.target.style.borderColor =
+                                                    "#d1d5db";
+                                                  e.target.style.boxShadow =
+                                                    "none";
+                                                }}
+                                              />
+                                              <div
+                                                style={{
+                                                  fontSize: "0.75rem",
+                                                  color:
+                                                    flashcards &&
+                                                    flashcards.length > 900
+                                                      ? "#dc3545"
+                                                      : "#6c757d",
+                                                  marginTop: "0.25rem",
+                                                  textAlign: "right",
+                                                  width: "90%",
+                                                }}
+                                              >
+                                                {flashcards
+                                                  ? `${flashcards.length}/1000 caracteres`
+                                                  : "0/1000 caracteres"}
+                                              </div>
+                                            </div>
+                                          )}
                                         </div>
                                       </div>
                                     ) : (
@@ -3019,6 +3405,166 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             />
                           </div>
                         )}
+
+                        {/* Due Date */}
+                        {dueDate && (
+                          <div
+                            style={{
+                              backgroundColor: "white",
+                              padding: "0.75rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e9ecef",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                              marginTop: "0.5rem",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                marginBottom: "0.5rem",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontWeight: "600",
+                                  color: "#6c757d",
+                                  fontSize: "0.8rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.25rem",
+                                }}
+                              >
+                                📅 Data de Entrega
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                backgroundColor: "#f8f9fa",
+                                padding: "1rem",
+                                borderRadius: "6px",
+                                border: "1px solid #dee2e6",
+                                lineHeight: "1.6",
+                                fontSize: "0.9rem",
+                                color: "#495057",
+                              }}
+                            >
+                              {new Date(dueDate).toLocaleDateString("pt-BR")}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* File Attachment */}
+                        {fileName && (
+                          <div
+                            style={{
+                              backgroundColor: "white",
+                              padding: "0.75rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e9ecef",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                              marginTop: "0.5rem",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                marginBottom: "0.5rem",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontWeight: "600",
+                                  color: "#6c757d",
+                                  fontSize: "0.8rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.25rem",
+                                }}
+                              >
+                                📎 Arquivo Anexado
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                backgroundColor: "#f8f9fa",
+                                padding: "1rem",
+                                borderRadius: "6px",
+                                border: "1px solid #dee2e6",
+                                lineHeight: "1.6",
+                                fontSize: "0.9rem",
+                                color: "#495057",
+                                cursor: base64String ? "pointer" : "default",
+                              }}
+                              onClick={() => {
+                                if (base64String) {
+                                  // Create download link for the file
+                                  const link = document.createElement("a");
+                                  link.href = `data:${fileType};base64,${base64String}`;
+                                  link.download = fileName;
+                                  link.click();
+                                }
+                              }}
+                            >
+                              {fileName}{" "}
+                              {base64String && "👆 Clique para baixar"}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Flashcards */}
+                        {flashcards && (
+                          <div
+                            style={{
+                              backgroundColor: "white",
+                              padding: "0.75rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e9ecef",
+                              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                              marginTop: "0.5rem",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                marginBottom: "0.5rem",
+                              }}
+                            >
+                              <span
+                                style={{
+                                  fontWeight: "600",
+                                  color: "#6c757d",
+                                  fontSize: "0.8rem",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.25rem",
+                                }}
+                              >
+                                🃏{" "}
+                                {UniversalTexts.calendarModal.uploadFlashcards}
+                              </span>
+                            </div>
+                            <div
+                              style={{
+                                backgroundColor: "#f8f9fa",
+                                padding: "1rem",
+                                borderRadius: "6px",
+                                border: "1px solid #dee2e6",
+                                lineHeight: "1.6",
+                                fontSize: "0.9rem",
+                                color: "#495057",
+                                whiteSpace: "pre-wrap",
+                              }}
+                            >
+                              {flashcards}
+                            </div>
+                          </div>
+                        )}
                       </span>
                     )}
                   </div>
@@ -3168,6 +3714,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               {loadingModalTutoringsInfo ? (
                 <div style={{ textAlign: "center", padding: "2rem" }}>
                   <CircularProgress style={{ color: partnerColor() }} />
+                  ...
                 </div>
               ) : (
                 <div style={{ marginBottom: "1.5rem" }}>
