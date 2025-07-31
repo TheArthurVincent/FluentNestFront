@@ -1748,11 +1748,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 backgroundColor: alwaysWhite(),
                 width:
                   thePermissions == "superadmin" || thePermissions == "teacher"
-                    ? "80vw"
+                    ? "95vw"
                     : "25rem",
                 height:
                   thePermissions == "superadmin" || thePermissions == "teacher"
-                    ? "90vh"
+                    ? "80vh"
                     : "40rem",
                 overflowY: "auto",
                 top: "50%",
@@ -1836,6 +1836,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             borderTop: "2px solid #e9ecef",
                             display: "flex",
                             flexDirection: "column",
+                            alignItems:"center",
                             gap: "1.5rem",
                           }}
                         >
@@ -1846,11 +1847,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 <p
                                   style={{
                                     fontWeight: "600",
+                                    fontSize: "1rem",
                                     color: "#6c757d",
-                                    margin: "0.5rem",
+                                    margin: "1rem",
                                   }}
                                 >
-                                  {name}
+                                  {name} - {theTime}
                                 </p>
                               )}
                               <button
@@ -2028,6 +2030,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   justifyContent: "space-between",
                                   alignItems: "center",
                                   marginBottom: "1rem",
+                                  width: "80%",
                                 }}
                               >
                                 <HTwo
@@ -2066,7 +2069,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     className="fa fa-times"
                                     style={{ marginRight: "0.5rem" }}
                                   />
-                                  Fechar Edição
                                 </button>
                               </div>
 
@@ -2087,14 +2089,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   {/* Form */}
                                   <form
                                     style={{
-                                      width: "90%",
+                                      width: "80%",
                                       display: "grid",
                                       gap: "1.5rem",
-                                      backgroundColor: "#f9f9f9",
                                       borderRadius: "8px",
                                       padding: "8px",
-                                      border: "1px solid #e5e7eb",
-                                      boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                                     }}
                                   >
                                     {/* Seção para Aulas Realizadas */}
@@ -2102,7 +2101,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     status == "Realized" ? (
                                       <div
                                         style={{
-                                          maxWidth: "90%",
                                           boxSizing: "border-box",
                                           borderRadius: "8px",
                                           marginTop: "0.5rem",
@@ -2940,7 +2938,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             padding: "5px 1.5rem",
 
                                             fontWeight: "500",
-                                            minWidth: "100px",
+                                            width: "80px",
                                           }}
                                         >
                                           {item.text}
@@ -3065,6 +3063,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           <div
                             style={{
                               backgroundColor: "white",
+                              marginTop: "2rem",
                               padding: "10px",
                               borderRadius: "10px",
                               border: "1px solid #dee2e6",
