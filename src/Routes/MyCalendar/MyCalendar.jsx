@@ -2514,6 +2514,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 {flashcards
                                                   ? `${flashcards.length}/1000 caracteres`
                                                   : "0/1000 caracteres"}
+
+                                                <br />
+                                                {flashcards.length > 900 &&
+                                                  "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
                                               </div>
                                             </div>
                                           )}
