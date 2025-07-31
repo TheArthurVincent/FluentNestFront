@@ -1728,8 +1728,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width: "90vw",
-                height: "85vh",
+                width:
+                  thePermissions == "superadmin" || thePermissions == "teacher"
+                    ? "80vw"
+                    : "25rem",
+                height:
+                  thePermissions == "superadmin" || thePermissions == "teacher"
+                    ? "90vh"
+                    : "40rem",
                 overflowY: "auto",
                 top: "50%",
                 left: "50%",
