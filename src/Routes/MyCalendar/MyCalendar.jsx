@@ -248,7 +248,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         return event;
       });
       setEvents(eventsLoop);
-      console.log(eventsLoop);
+      setShowEditForm(false)
       setLoading(false);
     } catch (error) {
       notifyAlert(error.response.data.error, partnerColor());
@@ -1998,6 +1998,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   </div>
                                 </div>
                               )}
+                              
                             </div>
                           )}
 
@@ -2779,109 +2780,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     )}
                                   </form>
 
-                                  {/* Checklist */}
-                                  {!postNew && (
-                                    <div
-                                      style={{
-                                        backgroundColor: "#f8f9fa",
-                                        padding: "1.5rem",
-                                        borderRadius: "8px",
-                                        border: "1px solid #e9ecef",
-                                      }}
-                                    >
-                                      <h4
-                                        style={{
-                                          margin: "0 0 1rem 0",
-                                          color: partnerColor(),
-                                        }}
-                                      >
-                                        {
-                                          UniversalTexts.calendarModal
-                                            .taskChecklist
-                                        }
-                                      </h4>
-                                      <div
-                                        style={{ display: "grid", gap: "5px" }}
-                                      >
-                                        {[
-                                          {
-                                            key: "checkList1",
-                                            text: UniversalTexts.calendarModal
-                                              .uploadVideo,
-                                            handler: handleCheckbox1Change,
-                                          },
-                                          {
-                                            key: "checkList2",
-                                            text: UniversalTexts.calendarModal
-                                              .uploadClassesToPlatform,
-                                            handler: handleCheckbox2Change,
-                                          },
-                                          {
-                                            key: "checkList3",
-                                            text: UniversalTexts.calendarModal
-                                              .addHomeworkActivities,
-                                            handler: handleCheckbox3Change,
-                                          },
-                                          {
-                                            key: "checkList4",
-                                            text: UniversalTexts.calendarModal
-                                              .uploadFlashcards,
-                                            handler: handleCheckbox4Change,
-                                          },
-                                          {
-                                            key: "checkList5",
-                                            text: UniversalTexts.calendarModal
-                                              .formatMaterial,
-                                            handler: handleCheckbox5Change,
-                                          },
-                                        ].map((item, index) => (
-                                          <label
-                                            key={index}
-                                            style={{
-                                              display: "flex",
-                                              alignItems: "center",
-                                              gap: "5px",
-                                              padding: "5px",
-                                              backgroundColor: eventFull[
-                                                item.key
-                                              ]
-                                                ? "#d4edda"
-                                                : "white",
-                                              borderRadius: "8px",
-                                              border: "1px solid #dee2e6",
-                                              cursor: "pointer",
-                                              transition: "all 0.2s",
-                                            }}
-                                          >
-                                            <input
-                                              checked={
-                                                eventFull[item.key] || false
-                                              }
-                                              type="checkbox"
-                                              onChange={item.handler}
-                                              style={{
-                                                width: "18px",
-                                                height: "18px",
-                                                cursor: "pointer",
-                                              }}
-                                            />
-                                            <span
-                                              style={{
-                                                color: "#495057",
-                                                textDecoration: eventFull[
-                                                  item.key
-                                                ]
-                                                  ? "line-through"
-                                                  : "none",
-                                              }}
-                                            >
-                                              {item.text}
-                                            </span>
-                                          </label>
-                                        ))}
-                                      </div>
-                                    </div>
-                                  )}
                                 </>
                               )}
 
@@ -3457,55 +3355,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           </div>
                         )}
 
-                        {/* Due Date */}
-                        {dueDate && (
-                          <div
-                            style={{
-                              backgroundColor: "white",
-                              padding: "0.75rem",
-                              borderRadius: "8px",
-                              border: "1px solid #e9ecef",
-                              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                              marginTop: "0.5rem",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                marginBottom: "0.5rem",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontWeight: "600",
-                                  color: "#6c757d",
-                                  fontSize: "0.8rem",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.25rem",
-                                }}
-                              >
-                                📅 Data de Entrega
-                              </span>
-                            </div>
-                            <div
-                              style={{
-                                backgroundColor: "#f8f9fa",
-                                padding: "1rem",
-                                borderRadius: "6px",
-                                border: "1px solid #dee2e6",
-                                lineHeight: "1.6",
-                                fontSize: "0.9rem",
-                                color: "#495057",
-                              }}
-                            >
-                              {new Date(dueDate).toLocaleDateString("pt-BR")}
-                            </div>
-                          </div>
-                        )}
-
+       
                         {/* File Attachment */}
                         {fileName && (
                           <div
@@ -3566,56 +3416,116 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           </div>
                         )}
 
-                        {/* Flashcards */}
-                        {flashcards && (
-                          <div
-                            style={{
-                              backgroundColor: "white",
-                              padding: "0.75rem",
-                              borderRadius: "8px",
-                              border: "1px solid #e9ecef",
-                              boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                              marginTop: "0.5rem",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                marginBottom: "0.5rem",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontWeight: "600",
-                                  color: "#6c757d",
-                                  fontSize: "0.8rem",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.25rem",
-                                }}
-                              >
-                                🃏{" "}
-                                {UniversalTexts.calendarModal.uploadFlashcards}
-                              </span>
-                            </div>
-                            <div
-                              style={{
-                                backgroundColor: "#f8f9fa",
-                                padding: "1rem",
-                                borderRadius: "6px",
-                                border: "1px solid #dee2e6",
-                                lineHeight: "1.6",
-                                fontSize: "0.9rem",
-                                color: "#495057",
-                                whiteSpace: "pre-wrap",
-                              }}
-                            >
-                              {flashcards}
-                            </div>
-                          </div>
-                        )}
+                                  {/* Checklist */}
+                                  {!postNew && 
+                                  
+                                  (
+                                    thePermissions == "teacher" ||
+                                    thePermissions == "superadmin"
+                                  )
+                                  &&
+                                  (
+                                    <div
+                                      style={{
+                                        backgroundColor: "#f8f9fa",
+                                        padding: "1.5rem",
+                                        borderRadius: "8px",
+                                        border: "1px solid #e9ecef",
+                                      }}
+                                    >
+                                      <h4
+                                        style={{
+                                          margin: "0 0 1rem 0",
+                                          color: partnerColor(),
+                                        }}
+                                      >
+                                        {
+                                          UniversalTexts.calendarModal
+                                            .taskChecklist
+                                        }
+                                      </h4>
+                                      <div
+                                        style={{ display: "grid", gap: "5px" }}
+                                      >
+                                        {[
+                                          {
+                                            key: "checkList1",
+                                            text: UniversalTexts.calendarModal
+                                              .uploadVideo,
+                                            handler: handleCheckbox1Change,
+                                          },
+                                          {
+                                            key: "checkList2",
+                                            text: UniversalTexts.calendarModal
+                                              .uploadClassesToPlatform,
+                                            handler: handleCheckbox2Change,
+                                          },
+                                          {
+                                            key: "checkList3",
+                                            text: UniversalTexts.calendarModal
+                                              .addHomeworkActivities,
+                                            handler: handleCheckbox3Change,
+                                          },
+                                          {
+                                            key: "checkList4",
+                                            text: UniversalTexts.calendarModal
+                                              .uploadFlashcards,
+                                            handler: handleCheckbox4Change,
+                                          },
+                                          {
+                                            key: "checkList5",
+                                            text: UniversalTexts.calendarModal
+                                              .formatMaterial,
+                                            handler: handleCheckbox5Change,
+                                          },
+                                        ].map((item, index) => (
+                                          <label
+                                            key={index}
+                                            style={{
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "5px",
+                                              padding: "5px",
+                                              backgroundColor: eventFull[
+                                                item.key
+                                              ]
+                                                ? "#d4edda"
+                                                : "white",
+                                              borderRadius: "8px",
+                                              border: "1px solid #dee2e6",
+                                              cursor: "pointer",
+                                              transition: "all 0.2s",
+                                            }}
+                                          >
+                                            <input
+                                              checked={
+                                                eventFull[item.key] || false
+                                              }
+                                              type="checkbox"
+                                              onChange={item.handler}
+                                              style={{
+                                                width: "18px",
+                                                height: "18px",
+                                                cursor: "pointer",
+                                              }}
+                                            />
+                                            <span
+                                              style={{
+                                                color: "#495057",
+                                                textDecoration: eventFull[
+                                                  item.key
+                                                ]
+                                                  ? "line-through"
+                                                  : "none",
+                                              }}
+                                            >
+                                              {item.text}
+                                            </span>
+                                          </label>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  )}
                       </span>
                     )}
                   </div>
@@ -4663,22 +4573,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     color: "#495057",
                     backgroundColor: "transparent",
                     cursor: "pointer",
-                    minWidth: "120px",
                   }}
                 />
-                <div
-                  style={{
-                    position: "absolute",
-                    right: "8px",
-                    top: "50%",
-                    transform: "translateY(-50%)",
-                    pointerEvents: "none",
-                    color: "#6c757d",
-                    fontSize: "11px",
-                  }}
-                >
-                  <i className="fa fa-calendar" />
-                </div>
               </div>
 
               {/* Ações rápidas - Compactas */}
