@@ -2077,8 +2077,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     status == "Realized" ? (
                                       <div
                                         style={{
-                                          backgroundColor: "#f9f9f9",
-                                          maxWidth: " 90%",
+                                          maxWidth: "90%",
                                           boxSizing: "border-box",
                                           borderRadius: "8px",
                                           marginTop: "0.5rem",
