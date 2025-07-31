@@ -2078,15 +2078,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       <div
                                         style={{
                                           backgroundColor: "#f9f9f9",
-                                          padding: "0.5rem",
                                           maxWidth: " 90%",
                                           boxSizing: "border-box",
                                           borderRadius: "8px",
-                                          border: "1px solid #e5e7eb",
-                                          borderLeft: "4px solid #059669",
-                                          marginTop: "1.5rem",
-                                          boxShadow:
-                                            "0 2px 4px rgba(0,0,0,0.05)",
+                                          marginTop: "0.5rem",
                                         }}
                                       >
                                         <div
