@@ -2068,6 +2068,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       gap: "1.5rem",
                                       backgroundColor: "#f9f9f9",
                                       borderRadius: "8px",
+                                      padding: "8px",
                                       border: "1px solid #e5e7eb",
                                       boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                                     }}
