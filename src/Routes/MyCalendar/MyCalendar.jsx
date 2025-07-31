@@ -92,6 +92,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [isTutoring, setIsTutoring] = useState(false);
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
+  const [name, setName] = useState("");
   const [isModalOfTutoringsVisible, setIsModalOfTutoringsVisible] =
     useState("");
   const [timeOfTutoring, setTimeOfTutoring] = useState("");
@@ -101,6 +102,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [theNewTimeOfTutoring, setTheNewTimeOfTutoring] = useState("");
   const [eventId, setEventId] = useState("");
   const [theNewLink, setTheNewLink] = useState("");
+
+  // Estados específicos para criar nova aula
+  const [showNewClassForm, setShowNewClassForm] = useState(false);
+  const [newClass, setNewClass] = useState({
+    date: "",
+    time: "",
+    link: "",
+    description: "",
+    category: "",
+    studentID: "",
+  });
+  const [loadingNewClass, setLoadingNewClass] = useState(false);
   const getLastMonday = (targetDate) => {
     const date = new Date(targetDate);
     const dayOfWeek = date.getDay();
@@ -163,13 +176,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
-        // Garantir que todos os eventos tenham um status
-        if (!event.status) {
-          event.status = "Scheduled"; // Status padrão para eventos sem status
-        }
+
         return event;
       });
       setEvents(eventsLoop);
+      console.log(eventsLoop);
       setLoading(false);
     } catch (error) {
       notifyAlert(error.response.data.error, partnerColor());
@@ -342,6 +353,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
       const newCategory = response.data.event.category;
       const newStudentID = response.data.event.studentID;
+      const newStudent = response.data.event.student;
       const newStatus = response.data.event.status;
       const newLink = response.data.event.link;
       const newDescription = response.data.event.description;
@@ -360,7 +372,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
-
+      setName(newStudent);
       setStatus(mappedStatus);
       setCategory(newCategory);
       setNewStudentId(newStudentID);
@@ -428,8 +440,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setDate("");
       fetchGeneralEvents();
     } catch (error) {
-      console.log(error);
-
       console.log(error, "Erro ao criar evento");
     }
   };
@@ -674,20 +684,102 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   // ModalControls
   const handleSeeModalNew = () => {
-    setPostNew(true);
+    // Abre a seção de criar nova aula ao invés do modal
+    setShowNewClassForm(true);
     fetchStudents();
-    setSeeReplenish(false);
-    setNewStudentId("");
-    setTheTime("");
-    setTheNewLink("");
-    setTimeOfTutoring("");
-    setHomework("");
-    setDescription("");
-    setVideo("");
-    setTheNewWeekDay("");
-    setTheNewTimeOfTutoring("");
-    setWeekDay("");
-    handleSeeModal();
+    // Reset dos campos da nova aula
+    setNewClass({
+      date: "",
+      time: "",
+      link: "",
+      description: "",
+      category: "",
+      studentId: "",
+    });
+  };
+
+  // Funções para gerenciar a nova seção de criar aula
+  const handleCloseNewClassForm = () => {
+    setShowNewClassForm(false);
+    setNewClass({
+      date: "",
+      time: "",
+      link: "",
+      description: "",
+      category: "",
+      studentId: "",
+    });
+  };
+
+  const handleNewClassChange = (field, value) => {
+    setNewClass((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleNewClassCategoryChange = (e) => {
+    const category = e.target.value;
+    let description = "";
+    let isTutoringClass = false;
+
+    switch (category) {
+      case "Rep":
+        description = "Aula de Reposição referente ao dia";
+        isTutoringClass = true;
+        break;
+      case "Standalone":
+        description = UniversalTexts.calendarModal.singleClassOf;
+        break;
+      case "Group Class":
+        description = UniversalTexts.calendarModal.classTheme;
+        break;
+      case "Prize Class":
+        isTutoringClass = true;
+        break;
+      case "Tutoring":
+        isTutoringClass = true;
+        break;
+    }
+
+    setNewClass((prev) => ({
+      ...prev,
+      category,
+      description,
+    }));
+  };
+
+  const handleCreateNewClass = async () => {
+    setLoadingNewClass(true);
+    try {
+      const payload = {
+        date: newClass.date,
+        time: newClass.time,
+        link: newClass.link,
+        description: newClass.description,
+        category: newClass.category,
+        studentID: newClass.studentId || null,
+        teacherId: myId,
+        status: "marcado",
+      };
+
+      const response = await axios.post(
+        `${backDomain}/api/v1/event/${myId}`,
+        payload,
+        { headers }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        notifyAlert("Aula criada com sucesso!", partnerColor());
+        handleCloseNewClassForm();
+        fetchGeneralEvents(); // Atualiza a lista de eventos
+      }
+    } catch (error) {
+      console.log(error, "Erro ao criar nova aula");
+      notifyAlert("Erro ao criar aula. Tente novamente.", partnerColor());
+    } finally {
+      setLoadingNewClass(false);
+    }
   };
 
   const seeEditOneTutoring = (e) => {
@@ -837,7 +929,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setIsVisible(true);
     setLoadingInfo(true);
     setPostNew(checkIfNew);
-    setEventId(e._id);
+    setEventId(e ? e._id : "");
     if (checkIfNew) {
       setLink("");
       setDate("");
@@ -1569,6 +1661,17 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           {/* Botão Editar */}
                           {!postNew && !showEditForm && (
                             <div style={{ textAlign: "center" }}>
+                              {name && (
+                                <p
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "#6c757d",
+                                    margin: "0.5rem",
+                                  }}
+                                >
+                                  {name}
+                                </p>
+                              )}
                               <button
                                 onClick={() => setShowEditForm(true)}
                                 style={{
@@ -1720,7 +1823,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           )}
 
                           {/* Formulário de Edição - só aparece quando showEditForm é true */}
-                          {showEditForm && (
+                          {(showEditForm || postNew) && (
                             <>
                               <div
                                 style={{
@@ -1791,24 +1894,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                                     }}
                                   >
-                            
                                     {/* Seção para Aulas Realizadas */}
-                                    {(status == "marcado" ||
-                                      status == "Realized") ? (
+                                    {status == "marcado" ||
+                                    status == "Realized" ? (
                                       <div
                                         style={{
                                           backgroundColor: "#f9f9f9",
                                           padding: "0.5rem",
-                                          maxWidth:" 90%",
-                                          boxSizing : "border-box",
+                                          maxWidth: " 90%",
+                                          boxSizing: "border-box",
                                           borderRadius: "8px",
                                           border: "1px solid #e5e7eb",
                                           borderLeft: "4px solid #059669",
                                           marginTop: "1.5rem",
-                                          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                                          boxShadow:
+                                            "0 2px 4px rgba(0,0,0,0.05)",
                                         }}
                                       >
-                                           <div
+                                        <div
                                           style={{
                                             display: "flex",
                                             alignItems: "center",
@@ -1847,56 +1950,58 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             Conteúdo da Aula Realizada
                                           </h4>
                                         </div>
-                                                     {/* Descrição */}
-                                    <div>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          marginBottom: "0.5rem",
-                                          fontWeight: "500",
-                                          color: "#374151",
-                                          fontSize: "0.875rem",
-                                        }}
-                                      >
-                                        {
-                                          UniversalTexts.calendarModal
-                                            .classDescription
-                                        }
-                                      </label>
-                                      <input
-                                        type="text"
-                                        value={description}
-                                        onChange={(e) =>
-                                          setDescription(e.target.value)
-                                        }
-                                        placeholder={
-                                          UniversalTexts.calendarModal
-                                            .classDescriptionPlaceholder
-                                        }
-                                        style={{
-                                          width: "90%",
-                                          padding: "0.75rem",
-                                          borderRadius: "6px",
-                                          border: "1px solid #d1d5db",
-                                          fontSize: "0.875rem",
-                                          fontFamily: "inherit",
-                                          lineHeight: "1.5",
-                                          backgroundColor: "#ffffff",
-                                          transition: "border-color 0.2s ease",
-                                        }}
-                                        onFocus={(e) => {
-                                          e.target.style.borderColor = partnerColor();
-                                          e.target.style.outline = "none";
-                                          e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                        }}
-                                        onBlur={(e) => {
-                                          e.target.style.borderColor = "#d1d5db";
-                                          e.target.style.boxShadow = "none";
-                                        }}
-                                        required
-                                      />
-                                    </div>
-                                     
+                                        {/* Descrição */}
+                                        <div>
+                                          <label
+                                            style={{
+                                              display: "block",
+                                              marginBottom: "0.5rem",
+                                              fontWeight: "500",
+                                              color: "#374151",
+                                              fontSize: "0.875rem",
+                                            }}
+                                          >
+                                            {
+                                              UniversalTexts.calendarModal
+                                                .classDescription
+                                            }
+                                          </label>
+                                          <input
+                                            type="text"
+                                            value={description}
+                                            onChange={(e) =>
+                                              setDescription(e.target.value)
+                                            }
+                                            placeholder={
+                                              UniversalTexts.calendarModal
+                                                .classDescriptionPlaceholder
+                                            }
+                                            style={{
+                                              width: "90%",
+                                              padding: "0.75rem",
+                                              borderRadius: "6px",
+                                              border: "1px solid #d1d5db",
+                                              fontSize: "0.875rem",
+                                              fontFamily: "inherit",
+                                              lineHeight: "1.5",
+                                              backgroundColor: "#ffffff",
+                                              transition:
+                                                "border-color 0.2s ease",
+                                            }}
+                                            onFocus={(e) => {
+                                              e.target.style.borderColor =
+                                                partnerColor();
+                                              e.target.style.outline = "none";
+                                              e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                            }}
+                                            onBlur={(e) => {
+                                              e.target.style.borderColor =
+                                                "#d1d5db";
+                                              e.target.style.boxShadow = "none";
+                                            }}
+                                            required
+                                          />
+                                        </div>
 
                                         <div
                                           style={{
@@ -1911,7 +2016,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 display: "block",
                                                 marginBottom: "0.5rem",
                                                 fontWeight: "500",
-                                          width: "90%",
+                                                width: "90%",
                                                 color: "#374151",
                                                 fontSize: "0.875rem",
                                               }}
@@ -1929,7 +2034,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               placeholder="https://youtube.com/... ou https://vimeo.com/..."
                                               type="url"
                                               style={{
-                                          width: "90%",
+                                                width: "90%",
                                                 padding: "0.75rem",
                                                 borderRadius: "6px",
                                                 border: "1px solid #d1d5db",
@@ -1937,16 +2042,20 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 backgroundColor: "#ffffff",
                                                 fontFamily: "inherit",
                                                 lineHeight: "1.5",
-                                                transition: "border-color 0.2s ease",
+                                                transition:
+                                                  "border-color 0.2s ease",
                                               }}
                                               onFocus={(e) => {
-                                                e.target.style.borderColor = partnerColor();
+                                                e.target.style.borderColor =
+                                                  partnerColor();
                                                 e.target.style.outline = "none";
                                                 e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
                                               }}
                                               onBlur={(e) => {
-                                                e.target.style.borderColor = "#d1d5db";
-                                                e.target.style.boxShadow = "none";
+                                                e.target.style.borderColor =
+                                                  "#d1d5db";
+                                                e.target.style.boxShadow =
+                                                  "none";
                                               }}
                                             />
                                           </div>
@@ -1983,255 +2092,254 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                           </div>
                                         </div>
                                       </div>
-                                    )
-                                  :(
-                                     <span>
-                                    {/* Categoria */}
-                                    <div>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          marginBottom: "0.5rem",
-                                          fontWeight: "600",
-                                          color: "#495057",
-                                          fontSize: "0.9rem",
-                                        }}
-                                      >
-                                        📋{" "}
-                                        {
-                                          UniversalTexts.calendarModal
-                                            .selectCategory
-                                        }
-                                      </label>
-                                      <select
-                                        onChange={handleCategoryChange}
-                                        name="category"
-                                        value={category}
-                                        // className="inputs-style"
-                                        style={{
-                                          width: "100%",
-                                          padding: "0.75rem",
-                                          borderRadius: "8px",
-                                          border: "1px solid #ced4da",
-                                          fontSize: "0.9rem",
-                                          backgroundColor: "white",
-                                        }}
-                                      >
-                                        <option value="category" hidden>
-                                          Select category...
-                                        </option>
-                                        {[
-                                          "Test",
-                                          "Standalone",
-                                          "Group Class",
-                                          "Rep",
-                                          "Prize Class",
-                                          "Tutoring",
-                                          "Marcar Reposição",
-                                        ].map((cat, index) => (
-                                          <option key={index} value={cat}>
-                                            {cat}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-
-                                    {/* Estudante (se for tutoring) */}
-                                    {isTutoring && (
-                                      <div>
-                                        <label
-                                          style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "600",
-                                            color: "#495057",
-                                            fontSize: "0.9rem",
-                                          }}
-                                        >
-                                          👤{" "}
-                                          {
-                                            UniversalTexts.calendarModal
-                                              .selectStudent
-                                          }
-                                        </label>
-                                        <select
-                                          // className="inputs-style"
-                                          onChange={handleStudentChange}
-                                          name="students"
-                                          value={newStudentId}
-                                          style={{
-                                            width: "100%",
-                                            padding: "0.75rem",
-                                            borderRadius: "8px",
-                                            border: "1px solid #ced4da",
-                                            fontSize: "0.9rem",
-                                            backgroundColor: "white",
-                                          }}
-                                        >
-                                          <option value="category" hidden>
-                                            Select student...
-                                          </option>
-                                          {studentsList.map(
-                                            (student, index) => (
-                                              <option
-                                                key={index}
-                                                value={student.id}
-                                              >
-                                                {student.name +
-                                                  " " +
-                                                  student.lastname}
+                                    ) : (
+                                      <span>
+                                        {/* Categoria */}
+                                        <div>
+                                          <label
+                                            style={{
+                                              display: "block",
+                                              marginBottom: "0.5rem",
+                                              fontWeight: "600",
+                                              color: "#495057",
+                                              fontSize: "0.9rem",
+                                            }}
+                                          >
+                                            📋{" "}
+                                            {
+                                              UniversalTexts.calendarModal
+                                                .selectCategory
+                                            }
+                                          </label>
+                                          <select
+                                            onChange={handleCategoryChange}
+                                            name="category"
+                                            value={category}
+                                            // className="inputs-style"
+                                            style={{
+                                              width: "100%",
+                                              padding: "0.75rem",
+                                              borderRadius: "8px",
+                                              border: "1px solid #ced4da",
+                                              fontSize: "0.9rem",
+                                              backgroundColor: "white",
+                                            }}
+                                          >
+                                            <option value="category" hidden>
+                                              Select category...
+                                            </option>
+                                            {[
+                                              "Test",
+                                              "Standalone",
+                                              "Group Class",
+                                              "Rep",
+                                              "Prize Class",
+                                              "Tutoring",
+                                              "Marcar Reposição",
+                                            ].map((cat, index) => (
+                                              <option key={index} value={cat}>
+                                                {cat}
                                               </option>
-                                            )
-                                          )}
-                                        </select>
-                                      </div>
+                                            ))}
+                                          </select>
+                                        </div>
+
+                                        {/* Estudante (se for tutoring) */}
+                                        {isTutoring && (
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              👤{" "}
+                                              {
+                                                UniversalTexts.calendarModal
+                                                  .selectStudent
+                                              }
+                                            </label>
+                                            <select
+                                              // className="inputs-style"
+                                              onChange={handleStudentChange}
+                                              name="students"
+                                              value={newStudentId}
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "8px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                                backgroundColor: "white",
+                                              }}
+                                            >
+                                              <option value="category" hidden>
+                                                Select student...
+                                              </option>
+                                              {studentsList.map(
+                                                (student, index) => (
+                                                  <option
+                                                    key={index}
+                                                    value={student.id}
+                                                  >
+                                                    {student.name +
+                                                      " " +
+                                                      student.lastname}
+                                                  </option>
+                                                )
+                                              )}
+                                            </select>
+                                          </div>
+                                        )}
+
+                                        {/* Data e Hora */}
+                                        <div
+                                          style={{
+                                            display: "grid",
+                                            gridTemplateColumns:
+                                              window.innerWidth < 768
+                                                ? "1fr"
+                                                : "1fr 1fr",
+                                            gap: "1rem",
+                                          }}
+                                        >
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              📅 Date
+                                            </label>
+                                            <input
+                                              // className="inputs-style"
+                                              value={date}
+                                              onChange={(e) =>
+                                                setDate(e.target.value)
+                                              }
+                                              type="date"
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "8px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                              }}
+                                              required
+                                            />
+                                          </div>
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              ⏰ Time
+                                            </label>
+                                            <input
+                                              // className="inputs-style"
+                                              value={theTime}
+                                              onChange={(e) =>
+                                                setTheTime(e.target.value)
+                                              }
+                                              type="time"
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "8px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                              }}
+                                              required
+                                            />
+                                          </div>
+                                        </div>
+
+                                        {/* Link da Reunião */}
+                                        <div>
+                                          <label
+                                            style={{
+                                              display: "block",
+                                              marginBottom: "0.5rem",
+                                              fontWeight: "600",
+                                              color: "#495057",
+                                              fontSize: "0.9rem",
+                                            }}
+                                          >
+                                            🔗{" "}
+                                            {UniversalTexts.calendarModal.link}
+                                          </label>
+                                          <input
+                                            // className="inputs-style"
+                                            value={link}
+                                            onChange={(e) =>
+                                              setLink(e.target.value)
+                                            }
+                                            placeholder="https://meet.google.com/..."
+                                            type="url"
+                                            style={{
+                                              width: "100%",
+                                              padding: "0.75rem",
+                                              borderRadius: "8px",
+                                              border: "1px solid #ced4da",
+                                              fontSize: "0.9rem",
+                                            }}
+                                            required
+                                          />
+                                        </div>
+                                        {/* Descrição */}
+                                        <div>
+                                          <label
+                                            style={{
+                                              display: "block",
+                                              marginBottom: "0.5rem",
+                                              fontWeight: "600",
+                                              color: "#495057",
+                                              fontSize: "0.9rem",
+                                            }}
+                                          >
+                                            📝{" "}
+                                            {
+                                              UniversalTexts.calendarModal
+                                                .classDescription
+                                            }
+                                          </label>
+                                          <input
+                                            // className="inputs-style"
+                                            type="text"
+                                            value={description}
+                                            onChange={(e) =>
+                                              setDescription(e.target.value)
+                                            }
+                                            placeholder={
+                                              UniversalTexts.calendarModal
+                                                .classDescriptionPlaceholder
+                                            }
+                                            style={{
+                                              width: "100%",
+                                              padding: "0.75rem",
+                                              borderRadius: "8px",
+                                              border: "1px solid #ced4da",
+                                              fontSize: "0.9rem",
+                                              fontFamily: "inherit",
+                                              lineHeight: "1.5",
+                                            }}
+                                            required
+                                          />
+                                        </div>
+                                      </span>
                                     )}
-
-                                    {/* Data e Hora */}
-                                    <div
-                                      style={{
-                                        display: "grid",
-                                        gridTemplateColumns:
-                                          window.innerWidth < 768
-                                            ? "1fr"
-                                            : "1fr 1fr",
-                                        gap: "1rem",
-                                      }}
-                                    >
-                                      <div>
-                                        <label
-                                          style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "600",
-                                            color: "#495057",
-                                            fontSize: "0.9rem",
-                                          }}
-                                        >
-                                          📅 Date
-                                        </label>
-                                        <input
-                                          // className="inputs-style"
-                                          value={date}
-                                          onChange={(e) =>
-                                            setDate(e.target.value)
-                                          }
-                                          type="date"
-                                          style={{
-                                            width: "100%",
-                                            padding: "0.75rem",
-                                            borderRadius: "8px",
-                                            border: "1px solid #ced4da",
-                                            fontSize: "0.9rem",
-                                          }}
-                                          required
-                                        />
-                                      </div>
-                                      <div>
-                                        <label
-                                          style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "600",
-                                            color: "#495057",
-                                            fontSize: "0.9rem",
-                                          }}
-                                        >
-                                          ⏰ Time
-                                        </label>
-                                        <input
-                                          // className="inputs-style"
-                                          value={theTime}
-                                          onChange={(e) =>
-                                            setTheTime(e.target.value)
-                                          }
-                                          type="time"
-                                          style={{
-                                            width: "100%",
-                                            padding: "0.75rem",
-                                            borderRadius: "8px",
-                                            border: "1px solid #ced4da",
-                                            fontSize: "0.9rem",
-                                          }}
-                                          required
-                                        />
-                                      </div>
-                                    </div>
-
-                                    {/* Link da Reunião */}
-                                    <div>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          marginBottom: "0.5rem",
-                                          fontWeight: "600",
-                                          color: "#495057",
-                                          fontSize: "0.9rem",
-                                        }}
-                                      >
-                                        🔗 {UniversalTexts.calendarModal.link}
-                                      </label>
-                                      <input
-                                        // className="inputs-style"
-                                        value={link}
-                                        onChange={(e) =>
-                                          setLink(e.target.value)
-                                        }
-                                        placeholder="https://meet.google.com/..."
-                                        type="url"
-                                        style={{
-                                          width: "100%",
-                                          padding: "0.75rem",
-                                          borderRadius: "8px",
-                                          border: "1px solid #ced4da",
-                                          fontSize: "0.9rem",
-                                        }}
-                                        required
-                                      />
-                                    </div>
-                                    {/* Descrição */}
-                                    <div>
-                                      <label
-                                        style={{
-                                          display: "block",
-                                          marginBottom: "0.5rem",
-                                          fontWeight: "600",
-                                          color: "#495057",
-                                          fontSize: "0.9rem",
-                                        }}
-                                      >
-                                        📝{" "}
-                                        {
-                                          UniversalTexts.calendarModal
-                                            .classDescription
-                                        }
-                                      </label>
-                                      <input
-                                        // className="inputs-style"
-                                        type="text"
-                                        value={description}
-                                        onChange={(e) =>
-                                          setDescription(e.target.value)
-                                        }
-                                        placeholder={
-                                          UniversalTexts.calendarModal
-                                            .classDescriptionPlaceholder
-                                        }
-                                        style={{
-                                          width: "100%",
-                                          padding: "0.75rem",
-                                          borderRadius: "8px",
-                                          border: "1px solid #ced4da",
-                                          fontSize: "0.9rem",
-                                          fontFamily: "inherit",
-                                          lineHeight: "1.5",
-                                        }}
-                                        required
-                                      />
-                                    </div>
-</span>)
-                                  
-                                  }
                                   </form>
 
                                   {/* Checklist */}
@@ -2755,6 +2863,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             // Layout sem vídeo - apenas informações
                             <div>
                               {/* Categoria */}
+
                               <div
                                 style={{
                                   display: "flex",
@@ -2775,7 +2884,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     gap: "0.25rem",
                                   }}
                                 >
-                                  📋 {UniversalTexts.calendarModal.category}
+                                  {UniversalTexts.calendarModal.category}
                                 </span>
                                 <span
                                   style={{
@@ -2833,7 +2942,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       gap: "0.25rem",
                                     }}
                                   >
-                                    📅 {newFormatDate(date)}
+                                    {newFormatDate(date)}
                                   </span>
                                 </div>
                                 <div
@@ -2853,7 +2962,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       gap: "0.25rem",
                                     }}
                                   >
-                                    ⏰ {theTime}
+                                    {theTime}
                                   </span>
                                 </div>
                               </div>
@@ -3417,69 +3526,468 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
             </div>
           </>
 
+          {/* Nova Seção: Criar Nova Aula */}
+          <>
+            <div
+              style={{
+                backgroundColor: transparentWhite(),
+                width: "10000px",
+                height: "10000px",
+                top: "0",
+                left: "0",
+                position: "fixed",
+                zIndex: 99,
+                display: showNewClassForm ? "block" : "none",
+              }}
+              onClick={handleCloseNewClassForm}
+            />
+
+            <div
+              className="modal box-shadow-white"
+              style={{
+                position: "fixed",
+                display: showNewClassForm ? "block" : "none",
+                zIndex: 100,
+                backgroundColor: alwaysWhite(),
+                width: "90vw",
+                maxWidth: "800px",
+                maxHeight: "90vh",
+                overflowY: "auto",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                borderRadius: "12px",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+              }}
+            >
+              {loadingNewClass ? (
+                <div style={{ textAlign: "center", padding: "3rem" }}>
+                  <CircularProgress style={{ color: partnerColor() }} />
+                  <p style={{ marginTop: "1rem", color: "#666" }}>
+                    Criando nova aula...
+                  </p>
+                </div>
+              ) : (
+                <div style={{ padding: "2rem" }}>
+                  {/* Header */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "2rem",
+                      paddingBottom: "1rem",
+                      borderBottom: "2px solid #e9ecef",
+                    }}
+                  >
+                    <HTwo
+                      style={{
+                        margin: 0,
+                        color: partnerColor(),
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <i className="fa fa-plus-circle" />
+                      Criar Nova Aula
+                    </HTwo>
+                    <button
+                      onClick={handleCloseNewClassForm}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        fontSize: "1.5rem",
+                        color: "#999",
+                        cursor: "pointer",
+                        padding: "0.5rem",
+                        borderRadius: "50%",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = "#f8f9fa";
+                        e.target.style.color = partnerColor();
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = "transparent";
+                        e.target.style.color = "#999";
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  {/* Form */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gap: "1.5rem",
+                    }}
+                  >
+                    {/* Categoria */}
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "600",
+                          color: "#495057",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        📋 Categoria da Aula
+                      </label>
+                      <select
+                        value={newClass.category}
+                        onChange={handleNewClassCategoryChange}
+                        style={{
+                          width: "100%",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          fontSize: "0.9rem",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <option value="" hidden>
+                          Selecione a categoria...
+                        </option>
+                        {[
+                          "Test",
+                          "Standalone",
+                          "Group Class",
+                          "Rep",
+                          "Prize Class",
+                          "Tutoring",
+                          "Marcar Reposição",
+                        ].map((cat, index) => (
+                          <option key={index} value={cat}>
+                            {cat}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Student Selection (if tutoring) */}
+                    {(newClass.category === "Tutoring" ||
+                      newClass.category === "Prize Class" ||
+                      newClass.category === "Rep") && (
+                      <div>
+                        <label
+                          style={{
+                            display: "block",
+                            marginBottom: "0.5rem",
+                            fontWeight: "600",
+                            color: "#495057",
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          👤 Selecionar Aluno
+                        </label>
+                        <select
+                          value={newClass.studentId}
+                          onChange={(e) =>
+                            handleNewClassChange("studentId", e.target.value)
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            fontSize: "0.9rem",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="" hidden>
+                            Selecione o aluno...
+                          </option>
+                          {studentsList.map((student, index) => (
+                            <option key={index} value={student.id}>
+                              {student.name} {student.lastname}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+
+                    {/* Data e Hora */}
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                          window.innerWidth < 768 ? "1fr" : "1fr 1fr",
+                        gap: "1rem",
+                      }}
+                    >
+                      <div>
+                        <label
+                          style={{
+                            display: "block",
+                            marginBottom: "0.5rem",
+                            fontWeight: "600",
+                            color: "#495057",
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          📅 Data
+                        </label>
+                        <input
+                          type="date"
+                          value={newClass.date}
+                          onChange={(e) =>
+                            handleNewClassChange("date", e.target.value)
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            fontSize: "0.9rem",
+                          }}
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label
+                          style={{
+                            display: "block",
+                            marginBottom: "0.5rem",
+                            fontWeight: "600",
+                            color: "#495057",
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          ⏰ Horário
+                        </label>
+                        <input
+                          type="time"
+                          value={newClass.time}
+                          onChange={(e) =>
+                            handleNewClassChange("time", e.target.value)
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            fontSize: "0.9rem",
+                          }}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    {/* Link */}
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "600",
+                          color: "#495057",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        🔗 Link da Reunião
+                      </label>
+                      <input
+                        type="url"
+                        value={newClass.link}
+                        onChange={(e) =>
+                          handleNewClassChange("link", e.target.value)
+                        }
+                        placeholder="https://meet.google.com/..."
+                        style={{
+                          width: "100%",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          fontSize: "0.9rem",
+                        }}
+                        required
+                      />
+                    </div>
+
+                    {/* Descrição */}
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "600",
+                          color: "#495057",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        📝 Descrição da Aula
+                      </label>
+                      <input
+                        type="text"
+                        value={newClass.description}
+                        onChange={(e) =>
+                          handleNewClassChange("description", e.target.value)
+                        }
+                        placeholder="Descreva o conteúdo da aula..."
+                        style={{
+                          width: "100%",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          fontSize: "0.9rem",
+                        }}
+                        required
+                      />
+                    </div>
+
+                    {/* Botões */}
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        justifyContent: "flex-end",
+                        paddingTop: "1rem",
+                        borderTop: "1px solid #e9ecef",
+                      }}
+                    >
+                      <button
+                        onClick={handleCloseNewClassForm}
+                        style={{
+                          padding: "0.75rem 1.5rem",
+                          backgroundColor: "#6c757d",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                          fontSize: "0.9rem",
+                          fontWeight: "500",
+                          transition: "all 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#5a6268";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "#6c757d";
+                        }}
+                      >
+                        <i
+                          className="fa fa-times"
+                          style={{ marginRight: "0.5rem" }}
+                        />
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={handleCreateNewClass}
+                        disabled={
+                          !newClass.category ||
+                          !newClass.date ||
+                          !newClass.time ||
+                          !newClass.link ||
+                          !newClass.description
+                        }
+                        style={{
+                          padding: "0.75rem 1.5rem",
+                          backgroundColor: partnerColor(),
+                          color: "white",
+                          border: "none",
+                          borderRadius: "8px",
+                          cursor: "pointer",
+                          fontSize: "0.9rem",
+                          fontWeight: "500",
+                          opacity:
+                            !newClass.category ||
+                            !newClass.date ||
+                            !newClass.time ||
+                            !newClass.link ||
+                            !newClass.description
+                              ? 0.6
+                              : 1,
+                          transition: "all 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (!e.target.disabled) {
+                            e.target.style.transform = "translateY(-2px)";
+                            e.target.style.boxShadow =
+                              "0 4px 12px rgba(0,0,0,0.15)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = "translateY(0)";
+                          e.target.style.boxShadow = "none";
+                        }}
+                      >
+                        <i
+                          className="fa fa-plus"
+                          style={{ marginRight: "0.5rem" }}
+                        />
+                        Criar Aula
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </>
+
           {/* Toolbar moderna do calendário */}
           <div
             style={{
-              marginBottom: "1.5rem",
-              padding: "0.5rem",
-              backgroundColor: "#f8f9fa",
-              borderRadius: "12px",
-              border: "1px solid #e9ecef",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              marginBottom: "1rem",
+              background: "#ffffff",
+              borderRadius: "8px",
+              border: "1px solid #e1e5e9",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+              padding: "12px 16px",
             }}
           >
-            {/* Seção Principal - Navegação e Data */}
+            {/* Seção Principal - Navegação compacta */}
             <div
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
                 flexWrap: "wrap",
-                gap: "1rem",
-                marginBottom: "1rem",
+                gap: "8px",
               }}
             >
-              {/* Navegação de Semana */}
+              {/* Navegação de Semana - Compacta */}
               <div
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.5rem",
-                  backgroundColor: "white",
-                  padding: "0.5rem",
-                  borderRadius: "8px",
-                  border: "1px solid #dee2e6",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  gap: "4px",
+                  background: "#f8f9fa",
+                  borderRadius: "6px",
+                  padding: "2px",
                 }}
               >
                 <button
                   disabled={!disabledAvoid}
                   style={{
-                    width: "40px",
-                    height: "40px",
-                    backgroundColor: !disabledAvoid
-                      ? "#6c757d"
-                      : partnerColor(),
-                    border: "none",
-                    borderRadius: "6px",
-                    color: "white",
+                    width: "28px",
+                    height: "28px",
+                    background: !disabledAvoid ? "#e9ecef" : "#ffffff",
+                    border: "1px solid #dee2e6",
+                    borderRadius: "4px",
+                    color: !disabledAvoid ? "#adb5bd" : "#495057",
                     cursor: !disabledAvoid ? "not-allowed" : "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "all 0.2s ease",
-                    opacity: !disabledAvoid ? 0.6 : 1,
+                    transition: "all 0.15s ease",
+                    fontSize: "12px",
                   }}
                   onClick={() => handleChangeWeek(-7)}
                   onMouseEnter={(e) => {
                     if (disabledAvoid) {
-                      e.target.style.transform = "translateX(-2px)";
-                      e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+                      e.target.style.background = "#f8f9fa";
+                      e.target.style.borderColor = "#ced4da";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = "translateX(0)";
-                    e.target.style.boxShadow = "none";
+                    if (disabledAvoid) {
+                      e.target.style.background = "#ffffff";
+                      e.target.style.borderColor = "#dee2e6";
+                    }
                   }}
                 >
                   <i className="fa fa-chevron-left" />
@@ -3487,11 +3995,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
                 <div
                   style={{
-                    padding: "0 1rem",
-                    fontWeight: "600",
+                    padding: "0 12px",
+                    fontWeight: "500",
                     color: "#495057",
-                    fontSize: "0.95rem",
-                    minWidth: "120px",
+                    fontSize: "13px",
+                    minWidth: "80px",
                     textAlign: "center",
                   }}
                 >
@@ -3504,45 +4012,44 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 <button
                   disabled={!disabledAvoid}
                   style={{
-                    width: "40px",
-                    height: "40px",
-                    backgroundColor: !disabledAvoid
-                      ? "#6c757d"
-                      : partnerColor(),
-                    border: "none",
-                    borderRadius: "6px",
-                    color: "white",
+                    width: "28px",
+                    height: "28px",
+                    background: !disabledAvoid ? "#e9ecef" : "#ffffff",
+                    border: "1px solid #dee2e6",
+                    borderRadius: "4px",
+                    color: !disabledAvoid ? "#adb5bd" : "#495057",
                     cursor: !disabledAvoid ? "not-allowed" : "pointer",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    transition: "all 0.2s ease",
-                    opacity: !disabledAvoid ? 0.6 : 1,
+                    transition: "all 0.15s ease",
+                    fontSize: "12px",
                   }}
                   onClick={() => handleChangeWeek(7)}
                   onMouseEnter={(e) => {
                     if (disabledAvoid) {
-                      e.target.style.transform = "translateX(2px)";
-                      e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.15)";
+                      e.target.style.background = "#f8f9fa";
+                      e.target.style.borderColor = "#ced4da";
                     }
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = "translateX(0)";
-                    e.target.style.boxShadow = "none";
+                    if (disabledAvoid) {
+                      e.target.style.background = "#ffffff";
+                      e.target.style.borderColor = "#dee2e6";
+                    }
                   }}
                 >
                   <i className="fa fa-chevron-right" />
                 </button>
               </div>
 
-              {/* Seletor de Data Customizado */}
+              {/* Seletor de Data - Minimalista */}
               <div
                 style={{
                   position: "relative",
-                  backgroundColor: "white",
-                  borderRadius: "8px",
-                  border: "1px solid #dee2e6",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  background: "#f8f9fa",
+                  borderRadius: "6px",
+                  border: "1px solid #e9ecef",
                   overflow: "hidden",
                 }}
               >
@@ -3550,217 +4057,202 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   type="date"
                   onChange={changeToday}
                   style={{
-                    padding: "0.75rem 1rem",
+                    padding: "6px 32px 6px 10px",
                     border: "none",
                     outline: "none",
-                    fontSize: "0.9rem",
-                    fontWeight: "500",
+                    fontSize: "13px",
+                    fontWeight: "400",
                     color: "#495057",
                     backgroundColor: "transparent",
                     cursor: "pointer",
-                    minWidth: "150px",
+                    minWidth: "120px",
                   }}
                 />
                 <div
                   style={{
                     position: "absolute",
-                    right: "0.75rem",
+                    right: "8px",
                     top: "50%",
                     transform: "translateY(-50%)",
                     pointerEvents: "none",
-                    color: partnerColor(),
+                    color: "#6c757d",
+                    fontSize: "11px",
                   }}
                 >
                   <i className="fa fa-calendar" />
                 </div>
               </div>
-              {/* Botão Hoje (Reativado) */}
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  padding: "0.6rem 1.2rem",
-                  backgroundColor: !disabledAvoid ? "#f8f9fa" : "white",
-                  border: `2px solid ${!disabledAvoid ? "#6c757d" : "#17a2b8"}`,
-                  borderRadius: "20px",
-                  color: !disabledAvoid ? "#6c757d" : "#17a2b8",
-                  cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                  fontSize: "0.85rem",
-                  fontWeight: "600",
-                  transition: "all 0.2s ease",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  opacity: !disabledAvoid ? 0.6 : 1,
-                }}
-                onClick={handleBackToToday}
-                onMouseEnter={(e) => {
-                  if (disabledAvoid) {
-                    e.target.style.backgroundColor = "#17a2b8";
-                    e.target.style.color = "white";
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (disabledAvoid) {
-                    e.target.style.backgroundColor = "white";
-                    e.target.style.color = "#17a2b8";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
-                  }
-                }}
-              >
-                <i className="fa fa-home" />
-                <span>{UniversalTexts.calendarModal.today}</span>
-              </button>
-              {/* Botão de Atualizar */}
-              <button
-                disabled={!disabledAvoid}
-                style={{
-                  padding: "0.75rem",
-                  backgroundColor: !disabledAvoid ? "#6c757d" : "white",
-                  border: `2px solid ${
-                    !disabledAvoid ? "#6c757d" : partnerColor()
-                  }`,
-                  borderRadius: "8px",
-                  color: !disabledAvoid ? "white" : partnerColor(),
-                  cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                  fontSize: "1rem",
-                  transition: "all 0.2s ease",
-                  opacity: !disabledAvoid ? 0.6 : 1,
-                  minWidth: "50px",
-                  height: "50px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-                onClick={() => fetchGeneralEvents()}
-                onMouseEnter={(e) => {
-                  if (disabledAvoid) {
-                    e.target.style.backgroundColor = partnerColor();
-                    e.target.style.color = "white";
-                    e.target.style.transform = "rotate(180deg)";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (disabledAvoid) {
-                    e.target.style.backgroundColor = "white";
-                    e.target.style.color = partnerColor();
-                    e.target.style.transform = "rotate(0deg)";
-                  }
-                }}
-              >
-                <i className="fa fa-refresh" />
-              </button>
-            </div>
 
-            {/* Seção de Ações - Criar Eventos */}
-            {(thePermissions === "superadmin" ||
-              thePermissions === "teacher") && (
+              {/* Ações rápidas - Compactas */}
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.75rem",
-                  flexWrap: "wrap",
-                  paddingTop: "1rem",
-                  borderTop: "1px solid #e9ecef",
-                }}
+                style={{ display: "flex", gap: "6px", alignItems: "center" }}
               >
-                <div
-                  style={{
-                    fontSize: "0.85rem",
-                    fontWeight: "600",
-                    color: "#6c757d",
-                    marginRight: "0.5rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.25rem",
-                  }}
-                >
-                  <i className="fa fa-plus-circle" />
-                  <span>{UniversalTexts.calendarModal.createEvent}</span>
-                </div>
-
-                {/* Botão Standalone */}
-                <button
-                  style={{
-                    padding: "0.6rem 1.2rem",
-                    backgroundColor: "white",
-                    border: `2px solid ${partnerColor()}`,
-                    borderRadius: "20px",
-                    color: partnerColor(),
-                    cursor: "pointer",
-                    fontSize: "0.85rem",
-                    fontWeight: "600",
-                    transition: "all 0.2s ease",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                  onClick={() => {
-                    fetchStudents();
-                    handleSeeModal(false);
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = partnerColor();
-                    e.target.style.color = "white";
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "white";
-                    e.target.style.color = partnerColor();
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "none";
-                  }}
-                >
-                  <i className="fa fa-calendar-plus-o" />
-                  <span>{UniversalTexts.calendarModal.singleClass}</span>
-                </button>
-                {/* Botão Recurrent */}
+                {/* Botão Hoje */}
                 <button
                   disabled={!disabledAvoid}
                   style={{
-                    padding: "0.6rem 1.2rem",
-                    backgroundColor: !disabledAvoid ? "#f8f9fa" : "white",
-                    border: `2px solid ${
-                      !disabledAvoid ? "#6c757d" : "#28a745"
-                    }`,
-                    borderRadius: "20px",
-                    color: !disabledAvoid ? "#6c757d" : "#28a745",
+                    padding: "6px 12px",
+                    background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                    border: "1px solid #dee2e6",
+                    borderRadius: "6px",
+                    color: !disabledAvoid ? "#adb5bd" : "#495057",
                     cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                    fontSize: "0.85rem",
-                    fontWeight: "600",
-                    transition: "all 0.2s ease",
+                    fontSize: "12px",
+                    fontWeight: "400",
+                    transition: "all 0.15s ease",
                     display: "flex",
                     alignItems: "center",
-                    gap: "0.5rem",
-                    opacity: !disabledAvoid ? 0.6 : 1,
+                    gap: "4px",
                   }}
-                  onClick={() => handleSeeModalOfTutorings()}
+                  onClick={handleBackToToday}
                   onMouseEnter={(e) => {
                     if (disabledAvoid) {
-                      e.target.style.backgroundColor = "#28a745";
-                      e.target.style.color = "white";
-                      e.target.style.transform = "translateY(-2px)";
-                      e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                      e.target.style.background = "#f8f9fa";
+                      e.target.style.borderColor = partnerColor();
+                      e.target.style.color = partnerColor();
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (disabledAvoid) {
-                      e.target.style.backgroundColor = "white";
-                      e.target.style.color = "#28a745";
-                      e.target.style.transform = "translateY(0)";
-                      e.target.style.boxShadow = "none";
+                      e.target.style.background = "#ffffff";
+                      e.target.style.borderColor = "#dee2e6";
+                      e.target.style.color = "#495057";
                     }
                   }}
                 >
-                  <i className="fa fa-repeat" />
-                  <span>{UniversalTexts.calendarModal.recurringClasses}</span>
+                  <i className="fa fa-home" style={{ fontSize: "10px" }} />
+                  <span>{UniversalTexts.calendarModal.today}</span>
                 </button>
+
+                {/* Botão Atualizar */}
+                <button
+                  disabled={!disabledAvoid}
+                  style={{
+                    width: "32px",
+                    height: "32px",
+                    background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                    border: "1px solid #dee2e6",
+                    borderRadius: "6px",
+                    color: !disabledAvoid ? "#adb5bd" : "#6c757d",
+                    cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                    fontSize: "12px",
+                    transition: "all 0.15s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                  onClick={() => fetchGeneralEvents()}
+                  onMouseEnter={(e) => {
+                    if (disabledAvoid) {
+                      e.target.style.background = "#f8f9fa";
+                      e.target.style.borderColor = partnerColor();
+                      e.target.style.color = partnerColor();
+                      e.target.style.transform = "rotate(90deg)";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (disabledAvoid) {
+                      e.target.style.background = "#ffffff";
+                      e.target.style.borderColor = "#dee2e6";
+                      e.target.style.color = "#6c757d";
+                      e.target.style.transform = "rotate(0deg)";
+                    }
+                  }}
+                >
+                  <i className="fa fa-refresh" />
+                </button>
+
+                {/* Separador */}
+                <div
+                  style={{
+                    width: "1px",
+                    height: "20px",
+                    background: "#e9ecef",
+                    margin: "0 4px",
+                  }}
+                />
+
+                {/* Botões de Criação - Compactos */}
+                {(thePermissions === "superadmin" ||
+                  thePermissions === "teacher") && (
+                  <>
+                    {/* Botão Nova Aula */}
+                    <button
+                      style={{
+                        padding: "6px 12px",
+                        background: "#ffffff",
+                        border: `1px solid ${partnerColor()}`,
+                        borderRadius: "6px",
+                        color: partnerColor(),
+                        cursor: "pointer",
+                        fontSize: "12px",
+                        fontWeight: "500",
+                        transition: "all 0.15s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                      onClick={() => {
+                        handleSeeModalNew();
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = partnerColor();
+                        e.target.style.color = "white";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = "#ffffff";
+                        e.target.style.color = partnerColor();
+                      }}
+                    >
+                      <i className="fa fa-plus" style={{ fontSize: "10px" }} />
+                      <span>{UniversalTexts.calendarModal.singleClass}</span>
+                    </button>
+
+                    {/* Botão Recorrentes */}
+                    <button
+                      disabled={!disabledAvoid}
+                      style={{
+                        padding: "6px 12px",
+                        background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                        border: `1px solid ${
+                          !disabledAvoid ? "#dee2e6" : "#22c55e"
+                        }`,
+                        borderRadius: "6px",
+                        color: !disabledAvoid ? "#adb5bd" : "#22c55e",
+                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                        fontSize: "12px",
+                        fontWeight: "500",
+                        transition: "all 0.15s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                      }}
+                      onClick={() => handleSeeModalOfTutorings()}
+                      onMouseEnter={(e) => {
+                        if (disabledAvoid) {
+                          e.target.style.background = "#22c55e";
+                          e.target.style.color = "white";
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (disabledAvoid) {
+                          e.target.style.background = "#ffffff";
+                          e.target.style.color = "#22c55e";
+                        }
+                      }}
+                    >
+                      <i
+                        className="fa fa-repeat"
+                        style={{ fontSize: "10px" }}
+                      />
+                      <span>
+                        {UniversalTexts.calendarModal.recurringClasses}
+                      </span>
+                    </button>
+                  </>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </RouteDiv>
       ) : (
