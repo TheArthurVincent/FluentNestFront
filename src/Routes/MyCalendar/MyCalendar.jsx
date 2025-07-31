@@ -82,6 +82,47 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [showEditForm, setShowEditForm] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [loadingInfo, setLoadingInfo] = useState(true);
+  const [alternateText, setAlternateText] = useState("... Updating Class");
+
+  useEffect(() => {
+      setTimeout(() => {
+        setAlternateText("... Formatting Flashcards");
+      }, 2000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Homework");
+      }, 4000);
+      setTimeout(() => {
+        setAlternateText("... Updating Class");
+      }, 6000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Flashcards");
+      }, 8000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Homework");
+      }, 10000);
+      setTimeout(() => {
+        setAlternateText("... Updating Class");
+      }, 12000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Flashcards");
+      }, 14000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Homework");
+      }, 14000);
+      setTimeout(() => {
+        setAlternateText("... Updating Class");
+      }, 16000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Flashcards");
+      }, 18000);
+      setTimeout(() => {
+        setAlternateText("... Formatting Homework");
+      }, 20000);
+      setTimeout(() => {
+        setAlternateText("... Updating Class");
+      }, 22000);
+  }, [loadingInfo]);
+
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
     useState(false);
   const [loading, setLoading] = useState(true);
@@ -93,7 +134,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [video, setVideo] = useState("");
   const [googleDriveLink, setGoogleDriveLink] = useState("");
   const [homework, setHomework] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [dueDate, setDueDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
   const [base64String, setBase64String] = useState("");
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("");
@@ -388,7 +431,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newVideo = response.data.event.video;
       const newHomework = response.data.event.homework;
       const newGoogleDriveLink = response.data.event.googleDriveLink || "";
-      const newDueDate = response.data.event.dueDate || "";
       const newBase64String = response.data.event.base64String || "";
       const newFileName = response.data.event.fileName || "";
       const newFileType = response.data.event.fileType || "";
@@ -417,7 +459,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setVideo(newVideo);
       setHomework(newHomework);
       setGoogleDriveLink(newGoogleDriveLink);
-      setDueDate(newDueDate);
+      //somar 7 dias abaixo para pegar a data correta
+      const newDueDate = new Date(newDate);
+      newDueDate.setDate(newDueDate.getDate() + 7);
+      setDueDate(newDueDate.toISOString().split("T")[0]);
       setBase64String(newBase64String);
       setFileName(newFileName);
       setFileType(newFileType);
@@ -883,7 +928,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
     // Clear file upload fields
     clearFile();
-    setDueDate("");
+    setDueDate(new Date().toISOString().split("T")[0]);
     setFlashcards("");
 
     fetchGeneralEventsNoLoading();
@@ -2011,6 +2056,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   <CircularProgress
                                     style={{ color: partnerColor() }}
                                   />
+                                  {alternateText}
                                 </div>
                               ) : (
                                 <>
