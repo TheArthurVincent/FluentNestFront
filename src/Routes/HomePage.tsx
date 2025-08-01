@@ -83,7 +83,7 @@ export function HomePage({ headers }: HeadersProps) {
         if (response.data.feeUpToDate === false) {
           onLoggOutFee();
         } else {
-          console.log("Student ID is not set, skipping fee check.");
+          console.log("SFC");
         }
       }
     } catch (error) {

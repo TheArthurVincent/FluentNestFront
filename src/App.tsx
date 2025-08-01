@@ -175,7 +175,6 @@ function App() {
         try {
           var { id } = JSON.parse(user);
           setStudentId(id || _StudentId);
-          console.log("[App] ID do estudante setado:", id);
         } catch (error) {
           console.error(
             "[App] Erro ao fazer parse do JSON do usuário:",

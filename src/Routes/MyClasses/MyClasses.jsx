@@ -5,6 +5,7 @@ import { RouteDiv, HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import {
   IFrameVideoClass,
+  ResponsiveIframe,
   backDomain,
   getVideoEmbedUrl,
   onLoggOut,
@@ -18,7 +19,6 @@ import {
 import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { IFrameVideoBlog } from "../HomePage/Blog.Styled";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function MyClasses({ headers }) {
@@ -130,74 +130,114 @@ export function MyClasses({ headers }) {
 
   function ClassesSideBar() {
     return (
-      <TransectionMenu
+      <div
         style={{
           display: "flex",
           gap: "1rem",
           justifyContent: "space-between",
           alignItems: "center",
+          padding: "10px 14px",
+          backgroundColor: "#f9f9f9",
+          border: "1px solid #ddd",
+          borderRadius: "4px",
+          flexWrap: "wrap",
         }}
       >
         <div
           style={{
             display: "flex",
             gap: "0.5rem",
-            justifyContent: "space-between",
             alignItems: "center",
           }}
         >
-          <ArvinButton onClick={handlePrevPage} disabled={currentPage === 1}>
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            style={{
+              padding: "4px 12px",
+              fontSize: "13px",
+              borderRadius: "4px",
+              backgroundColor: currentPage === 1 ? "#f5f5f5" : partnerColor(),
+              color: currentPage === 1 ? "#999" : "white",
+              border: "1px solid #ccc",
+              cursor: currentPage === 1 ? "not-allowed" : "pointer",
+              transition: "all 0.2s ease",
+            }}
+          >
             {UniversalTexts.previousButton}
-          </ArvinButton>
+          </button>
+
           <span
             style={{
-              color: alwaysBlack(),
+              padding: "6px 10px",
+              fontSize: "14px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              color: "#333",
+              minWidth: "60px",
+              textAlign: "center",
             }}
           >
             {currentPage}/{totalPages}
           </span>
-          <ArvinButton
+
+          <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
-          >
-            {UniversalTexts.nextButton}
-          </ArvinButton>
-        </div>
-        <div style={{ display: "flex", gap: "3rem" }}>
-          <div
             style={{
-              display: "flex",
-              gap: "1rem",
-              alignItems: "center",
-              justifyContent: "space-between",
+              padding: "4px 12px",
+              fontSize: "13px",
+              borderRadius: "4px",
+              backgroundColor:
+                currentPage === totalPages ? "#f5f5f5" : partnerColor(),
+              color: currentPage === totalPages ? "#999" : "white",
+              border: "1px solid #ccc",
+              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+              transition: "all 0.2s ease",
             }}
           >
-            <label>{UniversalTexts.itemsPerPage}</label>
-            <select
-              style={{
-                minWidth: "4.5rem",
-                padding: "0.1rem",
-                fontSize: "1rem",
-                cursor: "pointer",
-              }}
-              value={itemsPerPage}
-              onChange={handleItemsPerPageChange}
-            >
-              {[1, 5, 10].map((option, index) => {
-                return (
-                  <option
-                    style={{ cursor: "pointer" }}
-                    key={index}
-                    value={option}
-                  >
-                    {option}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
+            {UniversalTexts.nextButton}
+          </button>
         </div>
-      </TransectionMenu>
+
+        <div
+          style={{
+            display: "flex",
+            gap: "0.5rem",
+            alignItems: "center",
+          }}
+        >
+          <label
+            style={{
+              fontSize: "13px",
+              color: "#333",
+              fontWeight: "500",
+            }}
+          >
+            {UniversalTexts.itemsPerPage}
+          </label>
+          <select
+            style={{
+              padding: "6px 10px",
+              fontSize: "14px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              backgroundColor: "white",
+              cursor: "pointer",
+              minWidth: "60px",
+            }}
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+          >
+            {[1, 5, 10].map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
     );
   }
 
@@ -221,144 +261,257 @@ export function MyClasses({ headers }) {
   };
 
   return (
-    <RouteDiv style={{ transition: "all 0.3s ease" }}>
+    <RouteDiv>
       <Helmets text="My Classes" />
 
-      {permissions === "superadmin" && (
-        <div style={{ marginBottom: "16px" }}>
-          <select
-            onChange={handleStudentChange}
-            name="students"
-            value={newID}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              fontSize: "16px",
-              width: "100%",
-              maxWidth: "300px",
-              boxSizing: "border-box",
-            }}
-          >
-            <option value="" hidden>
-              Selecione um aluno
-            </option>
-            {studentsList.map((student) => (
-              <option key={student.id} value={student.id}>
-                {student.name} {student.lastname}
-              </option>
-            ))}
-          </select>
-        </div>
-      )}
+      {/* Header centralizado como no SentenceMining */}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <HOne
+          style={{
+            fontFamily: "inherit",
+            color: partnerColor(),
+            textAlign: "center",
+            margin: "0.5rem",
+            fontSize: "24px",
+            fontWeight: "bold",
+          }}
+        >
+          {UniversalTexts.myClasses}
+        </HOne>
+      </div>
 
-      {!loading ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-          <HOne
-            style={{
-              fontSize: "24px",
-              fontWeight: "bold",
-              marginBottom: "16px",
-            }}
-          >
-            {UniversalTexts.myClasses}
-          </HOne>
-          <ClassesSideBar />
-          {currentClasses.map((classItem) => (
-            <ClassBox
-              key={classItem.id}
+      <section
+        style={{
+          padding: "20px",
+          maxWidth: "800px",
+          margin: "auto",
+        }}
+      >
+        {/* Student Selector for Superadmin */}
+        {(permissions === "superadmin" || permissions === "teacher") && (
+          <div style={{ marginBottom: "20px" }}>
+            <select
+              onChange={handleStudentChange}
+              name="students"
+              value={newID}
               style={{
-                border: "1px solid #ddd",
-                borderRadius: "6px",
-                padding: "16px",
-                backgroundColor: "#fff",
-                marginBottom: "16px",
+                width: "100%",
+                padding: "6px 10px",
+                fontSize: "14px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                backgroundColor: "white",
+                maxWidth: "400px",
               }}
-              className="box-shadow-white"
             >
-              <div
-                style={{ display: "flex", flexDirection: "column", gap: "8px" }}
+              <option value="" hidden>
+                Selecione um aluno
+              </option>
+              {studentsList.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.name} {student.lastname}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {!loading ? (
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          >
+            <ClassesSideBar />
+
+            {/* Classes List */}
+            {currentClasses.map((classItem) => (
+              <ClassBox
+                key={classItem.id}
+                style={{
+                  backgroundColor: "#f9f9f9",
+                  border: "1px solid #ddd",
+                  borderRadius: "4px",
+                  padding: "15px 20px",
+                  transition: "all 0.2s ease",
+                }}
+                className="box-shadow-white"
               >
-                {permissions === "superadmin" && (
-                  <ArvinButton
-                    color="red"
-                    onClick={() =>
-                      handleDelete(classItem.id, studentNXTId || studentId)
-                    }
-                    style={{
-                      backgroundColor: "red",
-                      color: "#fff",
-                      border: "none",
-                      padding: "8px 16px",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      marginBottom: "8px",
-                    }}
-                  >
-                    Apagar aula
-                  </ArvinButton>
-                )}
-                <HTwo
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "normal",
-                    margin: "0",
-                  }}
-                >
-                  {classItem.date}
-                </HTwo>
-                {classItem.attachments && (
-                  <Link
-                    to={classItem.attachments}
-                    style={{
-                      color: "#007bff",
-                      textDecoration: "none",
-                      fontSize: "14px",
-                    }}
-                  >
-                    {classItem.fileName || "Class File"}
-                  </Link>
-                )}{" "}
-                {classItem.importantLink && (
-                  <Link
-                    to={classItem.importantLink}
-                    target="_blank"
-                    style={{
-                      color: "#007bff",
-                      textDecoration: "none",
-                      fontSize: "14px",
-                    }}
-                  >
-                    {classItem.importantLinkName || "Important Link"}
-                  </Link>
-                )}
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "center",
-                    marginTop: "1rem",
+                    flexDirection: "column",
+                    gap: "20px",
                   }}
                 >
-                  <IFrameVideoBlog src={getVideoEmbedUrl(classItem.videoUrl)} />
+                  {/* Header with Date and Delete Button */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      borderBottom: "1px solid #ddd",
+                      paddingBottom: "10px",
+                    }}
+                  >
+                    <HTwo
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "600",
+                        margin: "0",
+                        color: "#333",
+                      }}
+                    >
+                      {classItem.date}
+                    </HTwo>
+
+                    {permissions === "superadmin" && (
+                      <button
+                        onClick={() =>
+                          handleDelete(classItem.id, studentNXTId || studentId)
+                        }
+                        style={{
+                          padding: "4px 12px",
+                          fontSize: "13px",
+                          borderRadius: "4px",
+                          backgroundColor: "#dc3545",
+                          color: "white",
+                          border: "1px solid #dc3545",
+                          cursor: "pointer",
+                          transition: "all 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.backgroundColor = "#c82333";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.backgroundColor = "#dc3545";
+                        }}
+                      >
+                        Apagar aula
+                      </button>
+                    )}
+                  </div>
+
+                  {/* Links Section */}
+                  {(classItem.attachments || classItem.importantLink) && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "8px",
+                      }}
+                    >
+                      {classItem.attachments && (
+                        <div
+                          style={{
+                            padding: "8px",
+                            backgroundColor: "white",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <Link
+                            to={classItem.attachments}
+                            style={{
+                              color: partnerColor(),
+                              textDecoration: "none",
+                              fontSize: "14px",
+                              fontWeight: "500",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            <i className="fa fa-file-o" />
+                            {classItem.fileName || "Class File"}
+                          </Link>
+                        </div>
+                      )}
+
+                      {classItem.importantLink && (
+                        <div
+                          style={{
+                            padding: "8px",
+                            backgroundColor: "white",
+                            border: "1px solid #ccc",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <Link
+                            to={classItem.importantLink}
+                            target="_blank"
+                            style={{
+                              color: partnerColor(),
+                              textDecoration: "none",
+                              fontSize: "14px",
+                              fontWeight: "500",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                            }}
+                          >
+                            <i className="fa fa-external-link" />
+                            {classItem.importantLinkName || "Important Link"}
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Video Section */}
+                  {classItem.videoUrl && (
+                    <>
+                      <IFrameVideoClass
+                        src={getVideoEmbedUrl(classItem.videoUrl)}
+                        title={`Aula - ${classItem.date}`}
+                      />
+
+                      <Link
+                        to={classItem.videoUrl}
+                        target="_blank"
+                        style={{
+                          color: partnerColor(),
+                          textDecoration: "none",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                        }}
+                      >
+                        <i className="fa fa-external-link" />
+                        {classItem.videoUrlName || "Video Link"}
+                      </Link>
+                    </>
+                  )}
                 </div>
-              </div>
-            </ClassBox>
-          ))}
-          {itemsPerPage > 2 && classes.length > 2 && <ClassesSideBar />}
-        </div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <CircularProgress style={{ color: partnerColor() }} />
-        </div>
-      )}
+              </ClassBox>
+            ))}
+
+            {itemsPerPage > 2 && classes.length > 2 && <ClassesSideBar />}
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "200px",
+              backgroundColor: "#f9f9f9",
+              border: "1px solid #ddd",
+              borderRadius: "4px",
+            }}
+          >
+            <CircularProgress style={{ color: partnerColor() }} />
+          </div>
+        )}
+      </section>
     </RouteDiv>
   );
 }

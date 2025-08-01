@@ -372,29 +372,216 @@ export const linkReset2 = {
 export const ContainerClass = styled.div`
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
   height: 0;
   overflow: hidden;
+  border-radius: 8px;
+  background-color: #000;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  
   iframe {
     position: absolute;
     top: 0;
     left: 0;
-    width: 98%;
+    width: 100%;
     height: 100%;
+    border: none;
+    border-radius: 8px;
   }
 `;
 
 export const IFrameVideoClass = styled.iframe`
-  min-width: 98%;
-  min-height: 100%;
+  width: 100%;
+  height: 100%;
   border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 `;
 
 export const IFrameVideoClass2 = styled.iframe`
-  min-width: 98%;
+  width: 100%;
   height: 100%;
   border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 `;
+
+// Componente avançado para iframes responsivos com diferentes aspect ratios
+export const ResponsiveIframeContainer = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: ${props => props.aspectRatio || '75%'}; /* 4:3 para vídeos maiores */
+  height: 0;
+  overflow: hidden;
+  border-radius: ${props => props.borderRadius || '8px'};
+  background-color: ${props => props.backgroundColor || '#000'};
+  box-shadow: ${props => props.boxShadow || '0 2px 8px rgba(0,0,0,0.1)'};
+  
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: ${props => props.borderRadius || '8px'};
+  }
+  
+  /* Aspect ratios comuns */
+  &.ratio-16-9 { padding-bottom: 56.25%; }
+  &.ratio-4-3 { padding-bottom: 75%; }
+  &.ratio-1-1 { padding-bottom: 100%; }
+  &.ratio-21-9 { padding-bottom: 42.86%; }
+  &.ratio-large { padding-bottom: 85%; } /* Novo tamanho maior */
+  
+  /* Responsividade aprimorada */
+  @media (max-width: 768px) {
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    padding-bottom: ${props => props.aspectRatio || '85%'}; /* Ainda maior em mobile */
+  }
+  
+  @media (max-width: 480px) {
+    border-radius: 4px;
+    margin: 0.25rem 0;
+  }
+`;
+
+// Keyframe animations
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+`;
+
+// Componente para iframes com loading e fallback
+export const EnhancedIframeContainer = styled.div`
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
+              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
+              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
+              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  animation: ${fadeIn} 0.3s ease-in-out;
+  
+  iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 8px;
+    transition: opacity 0.3s ease;
+    
+    &:hover {
+      transform: scale(1.02);
+      transition: transform 0.2s ease;
+    }
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid ${partnerColor()};
+    border-top: 3px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+  }
+  
+  @keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+`;
+
+// Função utilitária para gerar URLs de embed responsivos
+export const getResponsiveEmbedUrl = (url) => {
+  if (!url) return '';
+  
+  // YouTube
+  if (url.includes('youtube.com/watch?v=')) {
+    const videoId = url.split('v=')[1]?.split('&')[0];
+    return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1`;
+  }
+  
+  if (url.includes('youtu.be/')) {
+    const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+    return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1`;
+  }
+  
+  // Vimeo
+  if (url.includes('vimeo.com/')) {
+    const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+    return `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0&autoplay=0`;
+  }
+  
+  // Google Drive
+  if (url.includes('drive.google.com')) {
+    const fileId = url.match(/[-\w]{25,}/);
+    return fileId ? `https://drive.google.com/file/d/${fileId[0]}/preview` : url;
+  }
+  
+  return url;
+};
+
+// Função para determinar aspect ratio baseado no tipo de conteúdo
+export const getAspectRatio = (url) => {
+  if (!url) return '75%'; // 4:3 padrão (maior que 16:9)
+  
+  if (url.includes('youtube.com') || url.includes('youtu.be')) {
+    return '75%'; // 4:3 para YouTube (maior)
+  }
+  
+  if (url.includes('vimeo.com')) {
+    return '75%'; // 4:3 para Vimeo (maior)
+  }
+  
+  if (url.includes('drive.google.com')) {
+    return '85%'; // Ainda maior para documentos Google Drive
+  }
+  
+  return '75%'; // Default 4:3 (maior)
+};
+
+// Componente React para iframe responsivo
+export const ResponsiveIframe = ({ src, title, className, aspectRatio, ...props }) => {
+  const embedUrl = getResponsiveEmbedUrl(src);
+  const ratio = aspectRatio || getAspectRatio(src);
+  
+  return (
+    <ResponsiveIframeContainer
+      aspectRatio={ratio}
+      className={className} 
+      {...props}
+    >
+      <iframe
+        src={embedUrl}
+        title={title || "Responsive Content"}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+        loading="lazy"
+      />
+    </ResponsiveIframeContainer>
+  );
+};
 
 export const abreviateName = (word) => {
   const words = word.split(" ");
@@ -414,17 +601,6 @@ export const pathGenerator = (text) => {
   const lowerCase = spacelessText.toLowerCase();
   return lowerCase;
 };
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transfor: translateX(0);
-  }
-`;
 
 export const DivModal = styled.div`
   position: fixed;
