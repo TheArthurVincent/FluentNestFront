@@ -162,6 +162,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [showFlashcards, setShowFlashcards] = useState(false);
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
+  const [duration, setDuration] = useState(60);
   const [name, setName] = useState("");
   const [isModalOfTutoringsVisible, setIsModalOfTutoringsVisible] =
     useState("");
@@ -181,9 +182,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     link: "",
     description: "",
     category: "",
+    duration: 45,
     studentID: "",
   });
   const [loadingNewClass, setLoadingNewClass] = useState(false);
+  
+  // Função helper para formatar horário de início e fim
+  const formatTimeRange = (startTime, durationMinutes = 60) => {
+    const [hours, minutes] = startTime.split(':').map(Number);
+    const startFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    
+    const totalMinutes = hours * 60 + minutes + durationMinutes;
+    const endHours = Math.floor(totalMinutes / 60);
+    const endMinutes = totalMinutes % 60;
+    const endFormatted = `${endHours.toString().padStart(2, '0')}:${endMinutes.toString().padStart(2, '0')}`;
+    
+    return `${startFormatted} - ${endFormatted}`;
+  };
+
   const getLastMonday = (targetDate) => {
     const date = new Date(targetDate);
     const dayOfWeek = date.getDay();
@@ -438,6 +454,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newFlashcardsAdded = response.data.event.flashcardsAdded || false;
       const newHomeworkAdded = response.data.event.homeworkAdded || false;
       const newCategory = response.data.event.category;
+      const newDuration = response.data.event.duration || 55;
       const newStudentID = response.data.event.studentID;
       const newStudent = response.data.event.student;
       const newStatus = response.data.event.status;
@@ -463,6 +480,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
+      setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
       setHomeworkAdded(newHomeworkAdded);
       setName(newStudent);
@@ -597,6 +615,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           homework,
           googleDriveLink,
           dueDate,
+          duration,
           base64String,
           fileName,
           showHomework,
@@ -771,6 +790,32 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
     return false;
   }
+  function isEventTimeNowConsideringDuration(
+    eventTime,
+    hj,
+    date,
+    durationInMinutes
+  ) {
+    const [eventHour, eventMinute] = eventTime.time.split(":").map(Number);
+    // Verificar se é o mesmo dia
+    if (
+      hj.getDate() !== date.getDate() ||
+      hj.getMonth() !== date.getMonth() ||
+      hj.getFullYear() !== date.getFullYear()
+    ) {
+      return false;
+    }
+
+    // Criar objetos Date para o início e fim da aula
+    const eventStartTime = new Date(date);
+    eventStartTime.setHours(eventHour, eventMinute, 0, 0);
+
+    const eventEndTime = new Date(eventStartTime);
+    eventEndTime.setMinutes(eventEndTime.getMinutes() + durationInMinutes);
+
+    // Verificar se o horário atual está dentro do intervalo da aula
+    return hj >= eventStartTime && hj <= eventEndTime;
+  }
 
   const deleteTutoring = async (item) => {
     try {
@@ -833,16 +878,37 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const handleNewClassChange = (field, value) => {
-    setNewClass((prev) => ({
-      ...prev,
+    const updatedClass = {
+      ...newClass,
       [field]: value,
-    }));
+    };
+    setNewClass(updatedClass);
+
+    // Debug: mostrar estado atual e campos faltando
+    console.log(`🔄 Campo ${field} atualizado para:`, value);
+    console.log("📋 Estado completo:", updatedClass);
+
+    const missingFields = [];
+    if (!updatedClass.category) missingFields.push("category");
+    if (!updatedClass.date) missingFields.push("date");
+    if (!updatedClass.time) missingFields.push("time");
+    if (!updatedClass.link) missingFields.push("link");
+    if (!updatedClass.description) missingFields.push("description");
+
+    if (missingFields.length > 0) {
+      console.log("❌ Campos faltando:", missingFields);
+      console.log("🔒 Botão permanece desabilitado");
+    } else {
+      console.log("✅ Todos os campos preenchidos! Botão habilitado");
+    }
   };
 
   const handleNewClassCategoryChange = (e) => {
     const category = e.target.value;
     let description = "";
     let isTutoringClass = false;
+
+    console.log("🏷️ Categoria selecionada:", category);
 
     switch (category) {
       case "Rep":
@@ -863,14 +929,37 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         break;
     }
 
-    setNewClass((prev) => ({
-      ...prev,
+    const updatedClass = {
+      ...newClass,
       category,
       description,
-    }));
+    };
+
+    setNewClass(updatedClass);
+
+    console.log("📝 Descrição definida:", description);
+    console.log("📋 Estado após categoria:", updatedClass);
+
+    const missingFields = [];
+    if (!updatedClass.category) missingFields.push("category");
+    if (!updatedClass.date) missingFields.push("date");
+    if (!updatedClass.time) missingFields.push("time");
+    if (!updatedClass.link) missingFields.push("link");
+    if (!updatedClass.description) missingFields.push("description");
+
+    if (missingFields.length > 0) {
+      console.log("❌ Campos faltando após categoria:", missingFields);
+    } else {
+      console.log("✅ Todos os campos preenchidos após categoria!");
+    }
   };
 
   const handleCreateNewClass = async () => {
+    console.log("🚀 handleCreateNewClass chamada");
+    console.log("📋 Estado atual do newClass:", newClass);
+    console.log("👤 myId:", myId);
+    console.log("🔗 backDomain:", backDomain);
+
     setLoadingNewClass(true);
     try {
       const payload = {
@@ -879,10 +968,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         link: newClass.link,
         description: newClass.description,
         category: newClass.category,
+        duration: newClass.duration || 55, // Duração padrão de 55 minutos
         studentID: newClass.studentId || null,
         teacherId: myId,
         status: "marcado",
       };
+
+      console.log("📦 Payload que será enviado:", payload);
 
       const response = await axios.post(
         `${backDomain}/api/v1/event/${myId}`,
@@ -890,13 +982,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         { headers }
       );
 
+      console.log("✅ Resposta do servidor:", response);
+
       if (response.status === 200 || response.status === 201) {
         notifyAlert("Aula criada com sucesso!", partnerColor());
         handleCloseNewClassForm();
         fetchGeneralEvents(); // Atualiza a lista de eventos
       }
     } catch (error) {
-      console.log(error, "Erro ao criar nova aula");
+      console.log("❌ Erro ao criar nova aula:", error);
+      console.log("❌ Detalhes do erro:", error.response?.data);
       notifyAlert("Erro ao criar aula. Tente novamente.", partnerColor());
     } finally {
       setLoadingNewClass(false);
@@ -1553,7 +1648,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               >
                                 {/* Live Event Indicator */}
                                 {event.status !== "desmarcado" &&
-                                  isEventTimeNow(event, hj, date) && (
+                                  isEventTimeNowConsideringDuration(
+                                    event,
+                                    hj,
+                                    date,
+                                    event.duration
+                                  ) && (
                                     <div
                                       style={{
                                         background: "green",
@@ -1582,7 +1682,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             marginRight: "5px",
                                             animation: "pulse 2s infinite",
                                           }}
-                                        ></span>
+                                        />
                                         Live Now
                                       </div>
                                     </div>
@@ -1595,6 +1695,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     color: categoryColor.text,
                                     padding: "5px",
                                     position: "relative",
+                                  paddingBottom: `${event.duration/3}px`,
+
                                   }}
                                 >
                                   {/* Category Badge */}
@@ -1640,7 +1742,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     }}
                                   >
                                     <i className="fa fa-clock-o" style={{}} />
-                                    {event.time}
+                                    {formatTimeRange(event.time, event.duration)}
                                   </div>
                                 </div>
 
@@ -1836,7 +1938,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             borderTop: "2px solid #e9ecef",
                             display: "flex",
                             flexDirection: "column",
-                            alignItems:"center",
+                            alignItems: "center",
                             gap: "1.5rem",
                           }}
                         >
@@ -2816,6 +2918,43 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               required
                                             />
                                           </div>
+                                                         <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              ⏰ Duration in minutes:
+                              {duration < 60
+                                ? `${duration} min`
+                                : duration === 60
+                                ? "1h"
+                                : duration % 60 === 0
+                                ? `${Math.floor(duration / 60)}h`
+                                : `${Math.floor(duration / 60)}h ${
+                                    duration % 60
+                                  }min`}
+                                            </label>
+                                            <input
+                                              value={duration}
+                                              onChange={(e) =>
+                                                setDuration(e.target.value)
+                                              }
+                                              type="number"
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "8px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                              }}
+                                              required
+                                            />
+                                          </div>
                                         </div>
 
                                         {/* Link da Reunião */}
@@ -3079,6 +3218,47 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             >
                               {description}
                             </p>
+                          </div>
+                        )}
+                        {duration && (
+                          <div
+                            style={{
+                              backgroundColor: "#f8f9fa",
+                              marginTop: "0.5rem",
+                              padding: "0.5rem 0.75rem",
+                              borderRadius: "6px",
+                              border: "1px solid #e9ecef",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "0.5rem",
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: "0.9rem",
+                                opacity: 0.7,
+                              }}
+                            >
+                              ⏱️
+                            </span>
+                            <span
+                              style={{
+                                fontSize: "0.85rem",
+                                color: "#6c757d",
+                                fontWeight: "500",
+                              }}
+                            >
+                              Duração:{" "}
+                              {duration < 60
+                                ? `${duration} min`
+                                : duration === 60
+                                ? "1h"
+                                : duration % 60 === 0
+                                ? `${Math.floor(duration / 60)}h`
+                                : `${Math.floor(duration / 60)}h ${
+                                    duration % 60
+                                  }min`}
+                            </span>
                           </div>
                         )}
 
@@ -4316,72 +4496,162 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     )}
 
                     {/* Data e Hora */}
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          window.innerWidth < 768 ? "1fr" : "1fr 1fr",
-                        gap: "1rem",
-                      }}
-                    >
-                      <div>
-                        <label
+
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "600",
+                          color: "#495057",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        📅 Data
+                      </label>
+                      <input
+                        type="date"
+                        value={newClass.date}
+                        onChange={(e) =>
+                          handleNewClassChange("date", e.target.value)
+                        }
+                        style={{
+                          width: "100%",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          fontSize: "0.9rem",
+                        }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.5rem",
+                          fontWeight: "600",
+                          color: "#495057",
+                          fontSize: "0.9rem",
+                        }}
+                      >
+                        ⏰ Horário
+                      </label>
+                      <input
+                        type="time"
+                        value={newClass.time}
+                        onChange={(e) =>
+                          handleNewClassChange("time", e.target.value)
+                        }
+                        style={{
+                          width: "100%",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          fontSize: "0.9rem",
+                        }}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label
+                        style={{
+                          display: "block",
+                          marginBottom: "0.3rem",
+                          fontWeight: "500",
+                          color: "#6c757d",
+                          fontSize: "0.8rem",
+                        }}
+                      >
+                        Duração
+                      </label>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.25rem",
+                          marginBottom: "0.5rem",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {[30, 45, 60, 90, 120].map((minutes) => (
+                          <button
+                            key={minutes}
+                            type="button"
+                            onClick={() =>
+                              handleNewClassChange("duration", minutes)
+                            }
+                            style={{
+                              padding: "0.25rem 0.5rem",
+                              border: `1px solid ${
+                                newClass.duration == minutes
+                                  ? "#adb5bd"
+                                  : "#e9ecef"
+                              }`,
+                              backgroundColor:
+                                newClass.duration == minutes
+                                  ? "#f8f9fa"
+                                  : "white",
+                              color:
+                                newClass.duration == minutes
+                                  ? "#495057"
+                                  : "#6c757d",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              fontSize: "0.75rem",
+                              fontWeight: "400",
+                              transition: "all 0.15s ease",
+                              minWidth: "auto",
+                            }}
+                            onMouseEnter={(e) => {
+                              if (newClass.duration != minutes) {
+                                e.target.style.backgroundColor = "#f8f9fa";
+                              }
+                            }}
+                            onMouseLeave={(e) => {
+                              if (newClass.duration != minutes) {
+                                e.target.style.backgroundColor = "white";
+                              }
+                            }}
+                          >
+                            {minutes < 60
+                              ? `${minutes}min`
+                              : `${minutes / 60}h${
+                                  minutes % 60 ? ` ${minutes % 60}min` : ""
+                                }`}
+                          </button>
+                        ))}
+                        <input
+                          type="number"
+                          value={newClass.duration}
+                          onChange={(e) =>
+                            handleNewClassChange(
+                              "duration",
+                              parseInt(e.target.value) || 60
+                            )
+                          }
+                          min="15"
+                          max="240"
                           style={{
-                            display: "block",
-                            marginBottom: "0.5rem",
-                            fontWeight: "600",
-                            color: "#495057",
-                            fontSize: "0.9rem",
+                            width: "50px",
+                            padding: "0.25rem",
+                            borderRadius: "4px",
+                            border: "1px solid #e9ecef",
+                            fontSize: "0.75rem",
+                            textAlign: "center",
+                            marginLeft: "0.25rem",
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "#adb5bd",
+                            alignSelf: "center",
                           }}
                         >
-                          📅 Data
-                        </label>
-                        <input
-                          type="date"
-                          value={newClass.date}
-                          onChange={(e) =>
-                            handleNewClassChange("date", e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "8px",
-                            border: "1px solid #ced4da",
-                            fontSize: "0.9rem",
-                          }}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label
-                          style={{
-                            display: "block",
-                            marginBottom: "0.5rem",
-                            fontWeight: "600",
-                            color: "#495057",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          ⏰ Horário
-                        </label>
-                        <input
-                          type="time"
-                          value={newClass.time}
-                          onChange={(e) =>
-                            handleNewClassChange("time", e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "8px",
-                            border: "1px solid #ced4da",
-                            fontSize: "0.9rem",
-                          }}
-                          required
-                        />
+                          min
+                        </span>
                       </div>
                     </div>
-
                     {/* Link */}
                     <div>
                       <label
@@ -4481,7 +4751,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         Cancelar
                       </button>
                       <button
-                        onClick={handleCreateNewClass}
+                        type="button"
+                        onClick={() => {
+                          console.log("🔘 Botão clicado!");
+                          console.log("📋 Estado do formulário:", {
+                            category: newClass.category,
+                            date: newClass.date,
+                            time: newClass.time,
+                            link: newClass.link,
+                            description: newClass.description,
+                          });
+                          handleCreateNewClass();
+                        }}
                         disabled={
                           !newClass.category ||
                           !newClass.date ||
@@ -4495,7 +4776,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           color: "white",
                           border: "none",
                           borderRadius: "8px",
-                          cursor: "pointer",
+                          cursor:
+                            !newClass.category ||
+                            !newClass.date ||
+                            !newClass.time ||
+                            !newClass.link ||
+                            !newClass.description
+                              ? "not-allowed"
+                              : "pointer",
                           fontSize: "0.9rem",
                           fontWeight: "500",
                           opacity:
