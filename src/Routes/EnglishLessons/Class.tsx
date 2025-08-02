@@ -11,6 +11,7 @@ import {
   ImageRun,
 } from "docx";
 import { saveAs } from "file-saver";
+import jsPDF from "jspdf";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import {
   backDomain,
@@ -1387,7 +1388,7 @@ export default function EnglishClassCourse2({
                         new Paragraph({
                           children: [
                             new TextRun({
-                              text: `${index + 1}. ${safeEnglish}`,
+                              text: safeEnglish,
                               bold: true,
                               size: 22,
                               color: partnerColor().replace("#", ""),
@@ -1446,7 +1447,7 @@ export default function EnglishClassCourse2({
                       new Paragraph({
                         children: [
                           new TextRun({
-                            text: `${index + 1}. ${safeItem}`,
+                            text: safeItem,
                             size: 20,
                             font: textGeneralFont(),
                           }),
@@ -1541,7 +1542,7 @@ export default function EnglishClassCourse2({
                         new Paragraph({
                           children: [
                             new TextRun({
-                              text: `${index + 1}. ${safeEnglish}`,
+                              text: safeEnglish,
                               bold: true,
                               size: 20,
                               color: partnerColor().replace("#", ""),
@@ -1600,7 +1601,7 @@ export default function EnglishClassCourse2({
                         new Paragraph({
                           children: [
                             new TextRun({
-                              text: `${index + 1}. ${safeEnglish}`,
+                              text: safeEnglish,
                               size: 20,
                               font: textTitleFont(),
                             }),
@@ -1742,12 +1743,331 @@ export default function EnglishClassCourse2({
       // Gerar e fazer download do arquivo
       const blob = await Packer.toBlob(doc);
       saveAs(blob, fileName);
-
       console.log("✅ Word gerado com sucesso!");
       notifyAlert("Documento Word gerado com sucesso!", "green");
     } catch (error) {
       console.error("❌ Erro ao gerar Word:", error);
       notifyAlert("Erro ao gerar documento Word. Tente novamente.", "red");
+    }
+  };
+
+  const generatePDF = async () => {
+    try {
+      console.log("🎯 Iniciando geração de PDF...");
+      notifyAlert("Gerando documento PDF...", partnerColor());
+
+      const pdf = new jsPDF();
+      let yPosition = 20;
+      const pageHeight = pdf.internal.pageSize.height;
+      const margin = 20;
+      const maxWidth = pdf.internal.pageSize.width - 2 * margin;
+
+      // Função para adicionar nova página se necessário
+      const checkPageBreak = (neededHeight: number) => {
+        if (yPosition + neededHeight > pageHeight - margin) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+      };
+
+      // Função para quebrar texto em linhas
+      const splitTextToSize = (
+        text: string,
+        maxWidth: number,
+        fontSize: number
+      ) => {
+        pdf.setFontSize(fontSize);
+        return pdf.splitTextToSize(text, maxWidth);
+      };
+
+      // Título principal
+      const safeTitle = sanitizeText(classTitle || "Aula de Inglês", 100);
+      pdf.setFontSize(20);
+      const partnerColorHex = partnerColor().replace("#", "");
+      const r = parseInt(partnerColorHex.substring(0, 2), 16);
+      const g = parseInt(partnerColorHex.substring(2, 4), 16);
+      const b = parseInt(partnerColorHex.substring(4, 6), 16);
+      pdf.setTextColor(r, g, b);
+      const titleLines = splitTextToSize(safeTitle, maxWidth, 20);
+      checkPageBreak(titleLines.length * 7);
+      pdf.text(titleLines, margin, yPosition);
+      yPosition += titleLines.length * 7 + 5;
+
+      // Subtítulo do curso
+      const safeSubtitle = sanitizeText(`${courseTitle}`, 60);
+      pdf.setFontSize(12);
+      pdf.setTextColor(100, 100, 100);
+      const subtitleLines = splitTextToSize(safeSubtitle, maxWidth, 12);
+      checkPageBreak(subtitleLines.length * 5);
+      pdf.text(subtitleLines, margin, yPosition);
+      yPosition += subtitleLines.length * 5 + 15;
+
+      // Processar elementos da aula (apenas conteúdo essencial)
+      if (theclass.elements && Array.isArray(theclass.elements)) {
+        const sortedElements = theclass.elements.sort(
+          (a: any, b: any) => (a.order || 0) - (b.order || 0)
+        );
+
+        for (const element of sortedElements) {
+          try {
+            // Título da sessão
+            if (element.subtitle) {
+              checkPageBreak(8);
+              pdf.setFontSize(16);
+              pdf.setTextColor(r, g, b);
+              const subtitleLines = splitTextToSize(
+                element.subtitle,
+                maxWidth,
+                16
+              );
+              pdf.text(subtitleLines, margin, yPosition);
+              yPosition += subtitleLines.length * 6 + 8;
+            }
+
+            // Comentários/descrição da sessão
+            if (element.comments) {
+              const safeComments = sanitizeText(element.comments, 300);
+              pdf.setFontSize(10);
+              pdf.setTextColor(120, 120, 120);
+              const commentsLines = splitTextToSize(safeComments, maxWidth, 10);
+              checkPageBreak(commentsLines.length * 4);
+              pdf.text(commentsLines, margin, yPosition);
+              yPosition += commentsLines.length * 4 + 6;
+            }
+
+            // Processar apenas conteúdo visualizável (sem interações)
+            switch (element.type) {
+              case "text":
+                if (element.text) {
+                  const cleanText = cleanHtml(element.text);
+                  const safeText = sanitizeText(cleanText, 1500);
+                  pdf.setFontSize(11);
+                  pdf.setTextColor(0, 0, 0);
+                  const textLines = splitTextToSize(safeText, maxWidth, 11);
+                  checkPageBreak(textLines.length * 4);
+                  pdf.text(textLines, margin, yPosition);
+                  yPosition += textLines.length * 4 + 8;
+                }
+                break;
+
+              case "html":
+                if (element.text) {
+                  const cleanText = cleanHtml(element.text);
+                  const safeText = sanitizeText(cleanText, 1500);
+                  pdf.setFontSize(11);
+                  pdf.setTextColor(0, 0, 0);
+                  const textLines = splitTextToSize(safeText, maxWidth, 11);
+                  checkPageBreak(textLines.length * 4);
+                  pdf.text(textLines, margin, yPosition);
+                  yPosition += textLines.length * 4 + 8;
+                }
+                break;
+
+              case "sentences":
+              case "nfsentences":
+                if (element.sentences && Array.isArray(element.sentences)) {
+                  element.sentences.forEach((sentence: any, index: number) => {
+                    if (sentence.english) {
+                      const safeEnglish = sanitizeText(sentence.english, 200);
+                      pdf.setFontSize(11);
+                      pdf.setTextColor(0, 0, 0);
+                      const englishLines = splitTextToSize(safeEnglish, maxWidth, 11);
+                      checkPageBreak(englishLines.length * 4);
+                      pdf.text(englishLines, margin, yPosition);
+                      yPosition += englishLines.length * 4 + 2;
+
+                      if (sentence.portuguese) {
+                        const safePortuguese = sanitizeText(sentence.portuguese, 200);
+                        pdf.setFontSize(9);
+                        pdf.setTextColor(120, 120, 120);
+                        const portugueseLines = splitTextToSize(`   ${safePortuguese}`, maxWidth, 9);
+                        checkPageBreak(portugueseLines.length * 3);
+                        pdf.text(portugueseLines, margin, yPosition);
+                        yPosition += portugueseLines.length * 3 + 6;
+                      }
+                    }
+                  });
+                }
+                break;
+
+              case "exercise":
+                if (element.items && Array.isArray(element.items)) {
+                  pdf.setFontSize(12);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(5);
+                  pdf.text("Exercícios:", margin, yPosition);
+                  yPosition += 8;
+
+                  element.items.forEach((item: any, index: number) => {
+                    const safeItem = sanitizeText(item, 300);
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(0, 0, 0);
+                    const itemText = `${index + 1}. ${safeItem}`;
+                    const itemLines = splitTextToSize(itemText, maxWidth, 10);
+                    checkPageBreak(itemLines.length * 3);
+                    pdf.text(itemLines, margin, yPosition);
+                    yPosition += itemLines.length * 3 + 4;
+                  });
+                }
+                break;
+
+              case "audio":
+                if (element.text) {
+                  const cleanAudioText = cleanHtml(element.text);
+                  const safeAudioText = sanitizeText(cleanAudioText, 3000);
+
+                  pdf.setFontSize(14);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(7);
+                  pdf.text("🎵 Conteúdo do Áudio:", margin, yPosition);
+                  yPosition += 12;
+
+                  pdf.setFontSize(11);
+                  pdf.setTextColor(0, 0, 0);
+                  const audioLines = splitTextToSize(
+                    safeAudioText,
+                    maxWidth,
+                    11
+                  );
+                  checkPageBreak(audioLines.length * 4);
+                  pdf.text(audioLines, margin, yPosition);
+                  yPosition += audioLines.length * 4 + 8;
+                }
+
+                if (element.sentences && Array.isArray(element.sentences)) {
+                  element.sentences.forEach((sentence: any) => {
+                    if (sentence && sentence.english) {
+                      const safeEnglish = sanitizeText(sentence.english, 200);
+                      pdf.setFontSize(10);
+                      pdf.setTextColor(0, 0, 0);
+                      const englishLines = splitTextToSize(safeEnglish, maxWidth, 10);
+                      checkPageBreak(englishLines.length * 3);
+                      pdf.text(englishLines, margin, yPosition);
+                      yPosition += englishLines.length * 3 + 2;
+
+                      if (sentence.portuguese) {
+                        const safePortuguese = sanitizeText(sentence.portuguese, 200);
+                        pdf.setFontSize(9);
+                        pdf.setTextColor(120, 120, 120);
+                        const portugueseLines = splitTextToSize(`   ${safePortuguese}`, maxWidth, 9);
+                        checkPageBreak(portugueseLines.length * 3);
+                        pdf.text(portugueseLines, margin, yPosition);
+                        yPosition += portugueseLines.length * 3 + 4;
+                      }
+                    }
+                  });
+                }
+                break;
+
+              case "images":
+                if (element.images && Array.isArray(element.images)) {
+                  pdf.setFontSize(14);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(7);
+                  pdf.text("🖼️ Imagens da sessão:", margin, yPosition);
+                  yPosition += 12;
+
+                  element.images.forEach((imageItem: any, index: number) => {
+                    if (imageItem.english) {
+                      const safeEnglish = sanitizeText(imageItem.english, 100);
+                      pdf.setFontSize(11);
+                      pdf.setTextColor(0, 0, 0);
+                      const englishLines = splitTextToSize(
+                        safeEnglish,
+                        maxWidth,
+                        11
+                      );
+                      checkPageBreak(englishLines.length * 4);
+                      pdf.text(englishLines, margin, yPosition);
+                      yPosition += englishLines.length * 4 + 3;
+                      pdf.text(englishLines, margin, yPosition);
+                      yPosition += englishLines.length * 4 + 3;
+                    }
+                    if (imageItem.portuguese) {
+                      const safePortuguese = sanitizeText(
+                        imageItem.portuguese,
+                        100
+                      );
+                    }
+                  });
+                }
+                break;
+
+              case "images":
+                if (element.images && Array.isArray(element.images)) {
+                  pdf.setFontSize(12);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(5);
+                  pdf.text("🖼️ Imagens:", margin, yPosition);
+                  yPosition += 8;
+
+                  element.images.forEach((imageItem: any, index: number) => {
+                    if (imageItem.english) {
+                      const safeEnglish = sanitizeText(imageItem.english, 150);
+                      pdf.setFontSize(10);
+                      pdf.setTextColor(0, 0, 0);
+                      const englishLines = splitTextToSize(`• ${safeEnglish}`, maxWidth, 10);
+                      checkPageBreak(englishLines.length * 3);
+                      pdf.text(englishLines, margin, yPosition);
+                      yPosition += englishLines.length * 3 + 2;
+                    }
+                    if (imageItem.portuguese) {
+                      const safePortuguese = sanitizeText(imageItem.portuguese, 150);
+                      pdf.setFontSize(9);
+                      pdf.setTextColor(120, 120, 120);
+                      const portugueseLines = splitTextToSize(`   ${safePortuguese}`, maxWidth, 9);
+                      checkPageBreak(portugueseLines.length * 3);
+                      pdf.text(portugueseLines, margin, yPosition);
+                      yPosition += portugueseLines.length * 3 + 4;
+                    }
+                  });
+                }
+                break;
+
+              // Pular elementos interativos completamente
+              case "multipletexts":
+              case "selectexercise":
+              case "personalqanda":
+              case "dialogue":
+              case "listenandtranslate":
+              case "singleimages":
+                // Não incluir elementos que requerem interação
+                break;
+
+              default:
+                // Outros tipos de elemento são ignorados no PDF simples
+                break;
+            }
+
+            // Espaço menor entre sessões
+            yPosition += 10;
+          } catch (elementError) {
+            console.log(
+              `⚠️ Erro ao processar elemento "${
+                element.subtitle || element.type
+              }" no PDF, pulando sessão:`,
+              elementError
+            );
+          }
+        }
+      }
+
+      console.log("🎯 Gerando arquivo PDF...");
+
+      const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
+        /\s+/g,
+        "_"
+      );
+      const fileName = `${safeFileName}_conteudo.pdf`;
+
+      // Salvar o PDF
+      pdf.save(fileName);
+
+      console.log("✅ PDF gerado com sucesso!");
+      notifyAlert("PDF da aula gerado com sucesso!", "green");
+    } catch (error) {
+      console.error("❌ Erro ao gerar PDF:", error);
+      notifyAlert("Erro ao gerar documento PDF. Tente novamente.", "red");
     }
   };
 
@@ -2091,7 +2411,6 @@ export default function EnglishClassCourse2({
             <button
               title="Gerar Word"
               style={{
-                backgroundColor: "none",
                 padding: "8px 16px",
                 fontSize: "14px",
                 fontWeight: "600",
@@ -2103,6 +2422,7 @@ export default function EnglishClassCourse2({
                 justifyContent: "center",
                 gap: "6px",
                 border: "none",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 transition: "all 0.2s ease",
                 cursor: "pointer",
               }}
@@ -2121,6 +2441,43 @@ export default function EnglishClassCourse2({
               <img
                 src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
                 alt="Word"
+                style={{ width: "20px", height: "20px" }}
+              />
+            </button>
+
+            <button
+              title="Gerar PDF"
+              style={{
+                padding: "8px 16px",
+                fontSize: "14px",
+                fontWeight: "600",
+                borderRadius: "8px",
+                minWidth: "50px",
+                height: "36px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                border: "none",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+              }}
+              onClick={generatePDF}
+              onMouseEnter={(e) => {
+                const target = e.target as HTMLElement;
+                target.style.transform = "translateY(-1px)";
+                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                const target = e.target as HTMLElement;
+                target.style.transform = "translateY(0)";
+                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+              }}
+            >
+              <img
+                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                alt="PDF"
                 style={{ width: "20px", height: "20px" }}
               />
             </button>
@@ -2644,4 +3001,3 @@ export default function EnglishClassCourse2({
     </div>
   );
 }
-//
