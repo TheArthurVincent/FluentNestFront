@@ -10,11 +10,12 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "target": "es2016",
+    "target": "es2020",
     "jsx": "react",
-    "module": "commonjs",
+    "module": "es2020",
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["vite/client"]
   },
   "include": [
     "./src/**/*.tsx",
