@@ -161,7 +161,7 @@ export function Invoice({ headers }: HeadersProps) {
         <div>
           <p>
             Recibo referente ao recebimento da importância de R${" "}
-            {formatCurrency(fee)}
+            {formatCurrency(fee)}{" "}
             recebida de {name}, (CPF: {doc}), no mês de {thisMonth}.
           </p>
           {comments && (
