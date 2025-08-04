@@ -76,7 +76,7 @@ export default function Ranking({ headers }: HeadersProps) {
     setValue(newValue);
   };
 
-  const targetDate = new Date("2025-08-31T23:59:59");
+  const targetDate = new Date(import.meta.env.VITE_TARGET_DATABASE);
 
   return (
     <RouteDiv>
