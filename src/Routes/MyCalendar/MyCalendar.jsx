@@ -786,6 +786,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           studentID: newStudentId,
           day: weekDay,
           time: timeOfTutoring,
+          duration,
           link,
         },
         {
@@ -1077,15 +1078,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const seeEditOneTutoring = (e) => {
     setSeeEditTutoring(true);
     fetchStudents();
-    setTutoringId(e.id);
     setSeeReplenish(false);
-    setLink(e.link);
     setTheNewLink("");
-    setTimeOfTutoring("");
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
+    setTutoringId(e.id);
     setTimeOfTutoring(e.time);
+    setLink(e.link);
     setWeekDay(e.day);
+    setDuration(e.duration);
   };
 
   const closeEditOneTutoring = () => {
@@ -1974,13 +1975,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       style={{
                         cursor: "pointer",
 
-                        color: "#999",
+                        color: "#998",
                         transition: "color 0.2s",
                       }}
                       onMouseEnter={(e) =>
                         (e.target.style.color = partnerColor())
                       }
-                      onMouseLeave={(e) => (e.target.style.color = "#999")}
+                      onMouseLeave={(e) => (e.target.style.color = "#998")}
                     >
                       ×
                     </Xp>
@@ -4021,11 +4022,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   onClick={handleCloseModalOfTutorings}
                   style={{
                     cursor: "pointer",
-                    color: "#999",
+                    color: "#998",
                     transition: "color 0.2s",
                   }}
                   onMouseEnter={(e) => (e.target.style.color = partnerColor())}
-                  onMouseLeave={(e) => (e.target.style.color = "#999")}
+                  onMouseLeave={(e) => (e.target.style.color = "#998")}
                 >
                   ×
                 </Xp>
@@ -4287,7 +4288,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       padding: "5px",
                       borderRadius: "8px",
                       border: "1px solid #ced4da",
-
                       backgroundColor: "white",
                     }}
                   >
@@ -4309,7 +4309,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       padding: "5px",
                       borderRadius: "8px",
                       border: "1px solid #ced4da",
-
                       backgroundColor: "white",
                     }}
                   >
@@ -4338,6 +4337,28 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     }}
                     required
                   />
+                  <input
+                    value={duration}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Limitar a 3 dígitos e apenas números positivos até 300
+                      if (value === '' || (value.length <= 3 && Number(value) >= 0 && Number(value) <= 300)) {
+                        setDuration(value);
+                      }
+                    }}
+                    placeholder={UniversalTexts.duration}
+                    type="number"
+                    min="1"
+                    max="300"
+                    style={{
+                      padding: "5px",
+                      borderRadius: "8px",
+                      border: "1px solid #ced4da",
+                      maxWidth: "80px",
+                      textAlign: "center"
+                    }}
+                    required
+                  />
                   <button
                     onClick={updateOneTutoring}
                     style={{
@@ -4347,7 +4368,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       border: "none",
                       borderRadius: "8px",
                       cursor: "pointer",
-
                       fontWeight: "500",
                     }}
                   >
@@ -4628,14 +4648,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 value === "" ||
                                 (value.length <= 3 &&
                                   Number(value) >= 0 &&
-                                  Number(value) <= 999)
+                                  Number(value) <= 300)
                               ) {
                                 setDuration(value);
                               }
                             }}
                             type="number"
                             min="1"
-                            max="999"
+                            max="300"
                             style={{
                               padding: "6px",
                               maxWidth: "60px",
@@ -4824,7 +4844,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         background: "none",
                         border: "none",
                         fontSize: "1.5rem",
-                        color: "#999",
+                        color: "#998",
                         cursor: "pointer",
                         padding: "0.5rem",
                         borderRadius: "50%",
@@ -4836,7 +4856,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.backgroundColor = "transparent";
-                        e.target.style.color = "#999";
+                        e.target.style.color = "#998";
                       }}
                     >
                       ×
