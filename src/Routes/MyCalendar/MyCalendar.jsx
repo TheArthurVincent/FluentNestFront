@@ -4342,7 +4342,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     onChange={(e) => {
                       const value = e.target.value;
                       // Limitar a 3 dígitos e apenas números positivos até 300
-                      if (value === '' || (value.length <= 3 && Number(value) >= 0 && Number(value) <= 300)) {
+                      if (
+                        value === "" ||
+                        (value.length <= 3 &&
+                          Number(value) >= 0 &&
+                          Number(value) <= 300)
+                      ) {
                         setDuration(value);
                       }
                     }}
@@ -4355,7 +4360,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       borderRadius: "8px",
                       border: "1px solid #ced4da",
                       maxWidth: "80px",
-                      textAlign: "center"
+                      textAlign: "center",
                     }}
                     required
                   />
