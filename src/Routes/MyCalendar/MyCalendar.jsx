@@ -173,6 +173,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [theNewTimeOfTutoring, setTheNewTimeOfTutoring] = useState("");
   const [eventId, setEventId] = useState("");
   const [theNewLink, setTheNewLink] = useState("");
+  const [endDateForTutoring, setEndDateForTutoring] = useState(null);
+  const [numberOfWeeks, setNumberOfWeeks] = useState(4);
 
   // Estados específicos para criar nova aula
   const [showNewClassForm, setShowNewClassForm] = useState(false);
@@ -186,17 +188,21 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     studentID: "",
   });
   const [loadingNewClass, setLoadingNewClass] = useState(false);
-  
+
   // Função helper para formatar horário de início e fim
   const formatTimeRange = (startTime, durationMinutes = 60) => {
-    const [hours, minutes] = startTime.split(':').map(Number);
-    const startFormatted = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-    
+    const [hours, minutes] = startTime.split(":").map(Number);
+    const startFormatted = `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}`;
+
     const totalMinutes = hours * 60 + minutes + durationMinutes;
     const endHours = Math.floor(totalMinutes / 60);
     const endMinutes = totalMinutes % 60;
-    const endFormatted = `${endHours.toString().padStart(2, '0')}:${endMinutes.toString().padStart(2, '0')}`;
-    
+    const endFormatted = `${endHours.toString().padStart(2, "0")}:${endMinutes
+      .toString()
+      .padStart(2, "0")}`;
+
     return `${startFormatted} - ${endFormatted}`;
   };
 
@@ -208,12 +214,56 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     return lastMonday;
   };
 
+  // Função para verificar se a tutoria expira em menos de 1 mês
+  const isTutoringExpiringWithinMonth = (tutoring) => {
+    if (!tutoring.endDate) return false;
+
+    const today = new Date();
+    const oneMonthFromNow = new Date(today);
+    oneMonthFromNow.setMonth(today.getMonth() + 1);
+
+    const endDate = new Date(tutoring.endDate);
+    return endDate < oneMonthFromNow;
+  };
+
+  // Função para calcular dias restantes
+  const getDaysUntilExpiration = (tutoring) => {
+    if (!tutoring.endDate) return null;
+
+    const today = new Date();
+    const endDate = new Date(tutoring.endDate);
+    const diffTime = endDate - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    return diffDays;
+  };
+
   var hj = new Date();
   var lm = getLastMonday(hj);
 
   const [disabledAvoid, setDisabledAvoid] = useState(true);
   const [today, setTheToday] = useState(lm);
   const { UniversalTexts } = useUserContext();
+
+  // useEffect para calcular endDateForTutoring sempre que numberOfWeeks mudar
+  useEffect(() => {
+    if (numberOfWeeks && numberOfWeeks > 0) {
+      const today = new Date();
+      const nextWeekDay = new Date(today);
+      // Encontrar a próxima segunda-feira (ou hoje se for segunda)
+      const dayOfWeek = today.getDay();
+      const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
+      nextWeekDay.setDate(today.getDate() + daysUntilMonday);
+
+      // Calcular data final
+      const endDate = new Date(nextWeekDay);
+      endDate.setDate(nextWeekDay.getDate() + numberOfWeeks * 7 - 1);
+
+      setEndDateForTutoring(endDate);
+    } else {
+      setEndDateForTutoring(null);
+    }
+  }, [numberOfWeeks]);
 
   const futureDates = [];
 
@@ -736,6 +786,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           studentID: newStudentId,
           day: weekDay,
           time: timeOfTutoring,
+          duration,
           link,
         },
         {
@@ -752,14 +803,41 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const newTutoring = async () => {
+    // Validação: verificar se endDate é em menos de 1 mês
+    if (endDateForTutoring) {
+      const today = new Date();
+      const oneMonthFromNow = new Date(today);
+      oneMonthFromNow.setMonth(today.getMonth() + 1);
+
+      if (endDateForTutoring < oneMonthFromNow) {
+        const endDateFormatted = endDateForTutoring.toLocaleDateString(
+          "pt-BR",
+          {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }
+        );
+
+        const confirmMessage = `⚠️ ATENÇÃO: O período selecionado termina em ${endDateFormatted}, que é em menos de 1 mês.\n\nPara períodos curtos, recomendamos:\n• Excluir esta configuração de tutoria recorrente\n• Criar eventos únicos através do botão "Criar Evento"\n\nDeseja continuar mesmo assim?`;
+
+        if (!confirm(confirmMessage)) {
+          return; // Cancela a criação se o usuário não confirmar
+        }
+      }
+    }
+
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/tutoringevent`,
         {
           day: theNewWeekDay,
           time: theNewTimeOfTutoring,
+          duration,
           link: theNewLink,
           studentID: newStudentId,
+          numberOfWeeks: numberOfWeeks || 4,
+          endDate: endDateForTutoring,
         },
         {
           headers,
@@ -767,7 +845,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       );
       if (response) {
         setSeeEditTutoring(false);
-
         fetchOneSetOfTutorings(newStudentId);
       }
     } catch (error) {
@@ -1001,15 +1078,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const seeEditOneTutoring = (e) => {
     setSeeEditTutoring(true);
     fetchStudents();
-    setTutoringId(e.id);
     setSeeReplenish(false);
-    setLink(e.link);
     setTheNewLink("");
-    setTimeOfTutoring("");
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
+    setTutoringId(e.id);
     setTimeOfTutoring(e.time);
+    setLink(e.link);
     setWeekDay(e.day);
+    setDuration(e.duration);
   };
 
   const closeEditOneTutoring = () => {
@@ -1103,7 +1180,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTimeOfTutoring("");
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
-    setLoadingModalTutoringsInfo(true);
+    // setLoadingModalTutoringsInfo(true);
     setSeeEditTutoring(false);
     fetchStudents();
     setIsModalOfTutoringsVisible(true);
@@ -1695,8 +1772,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     color: categoryColor.text,
                                     padding: "5px",
                                     position: "relative",
-                                  paddingBottom: `${event.duration/3}px`,
-
+                                    paddingBottom: `${event.duration / 3}px`,
                                   }}
                                 >
                                   {/* Category Badge */}
@@ -1742,7 +1818,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     }}
                                   >
                                     <i className="fa fa-clock-o" style={{}} />
-                                    {formatTimeRange(event.time, event.duration)}
+                                    {formatTimeRange(
+                                      event.time,
+                                      event.duration
+                                    )}
                                   </div>
                                 </div>
 
@@ -1896,13 +1975,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       style={{
                         cursor: "pointer",
 
-                        color: "#999",
+                        color: "#998",
                         transition: "color 0.2s",
                       }}
                       onMouseEnter={(e) =>
                         (e.target.style.color = partnerColor())
                       }
-                      onMouseLeave={(e) => (e.target.style.color = "#999")}
+                      onMouseLeave={(e) => (e.target.style.color = "#998")}
                     >
                       ×
                     </Xp>
@@ -2918,7 +2997,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               required
                                             />
                                           </div>
-                                                         <div>
+                                          <div>
                                             <label
                                               style={{
                                                 display: "block",
@@ -2929,15 +3008,17 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               }}
                                             >
                                               ⏰ Duration in minutes:
-                              {duration < 60
-                                ? `${duration} min`
-                                : duration === 60
-                                ? "1h"
-                                : duration % 60 === 0
-                                ? `${Math.floor(duration / 60)}h`
-                                : `${Math.floor(duration / 60)}h ${
-                                    duration % 60
-                                  }min`}
+                                              {duration < 60
+                                                ? `${duration} min`
+                                                : duration === 60
+                                                ? "1h"
+                                                : duration % 60 === 0
+                                                ? `${Math.floor(
+                                                    duration / 60
+                                                  )}h`
+                                                : `${Math.floor(
+                                                    duration / 60
+                                                  )}h ${duration % 60}min`}
                                             </label>
                                             <input
                                               value={duration}
@@ -3194,6 +3275,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               }}
                             >
                               {UniversalTexts.calendarModal.clickToAccessClass}
+                              {" - "}
+                              {link}
                             </Link>
                           </div>
                         )}
@@ -3939,11 +4022,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   onClick={handleCloseModalOfTutorings}
                   style={{
                     cursor: "pointer",
-                    color: "#999",
+                    color: "#998",
                     transition: "color 0.2s",
                   }}
                   onMouseEnter={(e) => (e.target.style.color = partnerColor())}
-                  onMouseLeave={(e) => (e.target.style.color = "#999")}
+                  onMouseLeave={(e) => (e.target.style.color = "#998")}
                 >
                   ×
                 </Xp>
@@ -4017,16 +4100,58 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               moment(b.day, "dddd").day()
                           )
                           .map((item, index) => {
+                            const isExpiring =
+                              isTutoringExpiringWithinMonth(item);
+                            const daysLeft = getDaysUntilExpiration(item);
+
                             return (
                               <div
                                 key={index}
                                 style={{
-                                  backgroundColor: "#f8f9fa",
+                                  backgroundColor: isExpiring
+                                    ? "#ffebee"
+                                    : "#f8f9fa",
                                   padding: "0.5rem",
                                   borderRadius: "8px",
-                                  border: "1px solid #dee2e6",
+                                  border: isExpiring
+                                    ? "2px solid #f44336"
+                                    : "1px solid #dee2e6",
+                                  boxShadow: isExpiring
+                                    ? "0 2px 8px rgba(244, 67, 54, 0.2)"
+                                    : "none",
                                 }}
                               >
+                                {/* Alerta de expiração */}
+                                {isExpiring && (
+                                  <div
+                                    style={{
+                                      backgroundColor: "#f44336",
+                                      color: "white",
+                                      padding: "4px 8px",
+                                      borderRadius: "4px",
+                                      fontSize: "11px",
+                                      fontWeight: "600",
+                                      marginBottom: "8px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "4px",
+                                    }}
+                                  >
+                                    ⚠️
+                                    {daysLeft > 0
+                                      ? `Termina em ${daysLeft} dia${
+                                          daysLeft > 1 ? "s" : ""
+                                        } (${new Date(
+                                          item.endDate
+                                        ).toLocaleDateString("pt-BR")})`
+                                      : `Expirou em ${new Date(
+                                          item.endDate
+                                        ).toLocaleDateString("pt-BR")}`}
+                                    Exclua este evento e crie um novo com as
+                                    mesmas características.
+                                  </div>
+                                )}
+
                                 <div
                                   style={{
                                     display: "flex",
@@ -4063,6 +4188,20 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       >
                                         Access Link
                                       </Link>
+                                      {item.endDate && (
+                                        <span
+                                          style={{
+                                            marginLeft: "5px",
+                                            color: "#6c757d",
+                                          }}
+                                        >
+                                          (Ends on:{" "}
+                                          {moment(item.endDate).format(
+                                            "DD/MM/YYYY"
+                                          )}
+                                          )
+                                        </span>
+                                      )}
                                     </div>
                                   </div>
                                   <div style={{ display: "flex", gap: "5px" }}>
@@ -4149,7 +4288,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       padding: "5px",
                       borderRadius: "8px",
                       border: "1px solid #ced4da",
-
                       backgroundColor: "white",
                     }}
                   >
@@ -4171,7 +4309,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       padding: "5px",
                       borderRadius: "8px",
                       border: "1px solid #ced4da",
-
                       backgroundColor: "white",
                     }}
                   >
@@ -4200,6 +4337,33 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     }}
                     required
                   />
+                  <input
+                    value={duration}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Limitar a 3 dígitos e apenas números positivos até 300
+                      if (
+                        value === "" ||
+                        (value.length <= 3 &&
+                          Number(value) >= 0 &&
+                          Number(value) <= 300)
+                      ) {
+                        setDuration(value);
+                      }
+                    }}
+                    placeholder={UniversalTexts.duration}
+                    type="number"
+                    min="1"
+                    max="300"
+                    style={{
+                      padding: "5px",
+                      borderRadius: "8px",
+                      border: "1px solid #ced4da",
+                      maxWidth: "80px",
+                      textAlign: "center",
+                    }}
+                    required
+                  />
                   <button
                     onClick={updateOneTutoring}
                     style={{
@@ -4209,7 +4373,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       border: "none",
                       borderRadius: "8px",
                       cursor: "pointer",
-
                       fontWeight: "500",
                     }}
                   >
@@ -4219,95 +4382,398 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               </div>
 
               {/* New Class Form */}
-              <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                <div
-                  style={{
-                    backgroundColor: "#d4edda",
-                    padding: "1.5rem",
-                    borderRadius: "8px",
-                    border: "1px solid #c3e6cb",
-                  }}
-                >
-                  <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
-                    {UniversalTexts.calendarModal.addNewClass}
-                  </h4>
-                  <div style={{ display: "grid", gap: "1rem" }}>
-                    <select
-                      onChange={handleTheNewWeekDayChange}
-                      value={theNewWeekDay}
-                      style={{
-                        padding: "5px",
-                        borderRadius: "8px",
-                        border: "1px solid #ced4da",
-
-                        backgroundColor: "white",
-                      }}
-                    >
-                      <option hidden value="select week day">
-                        {UniversalTexts.calendarModal.selectWeekDayOption}
-                      </option>
-                      {weekDays.map((weekDay, index) => {
-                        return (
-                          <option key={index} value={weekDay}>
-                            {weekDay}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <select
-                      onChange={handleTheNewTimeChange}
-                      value={theNewTimeOfTutoring}
-                      style={{
-                        padding: "5px",
-                        borderRadius: "8px",
-                        border: "1px solid #ced4da",
-
-                        backgroundColor: "white",
-                      }}
-                    >
-                      <option hidden value="Select Time">
-                        {UniversalTexts.calendarModal.selectTimeOption}
-                      </option>
-                      {times.map((time, index) => {
-                        return (
-                          <option key={index} value={time}>
-                            {time}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <input
-                      placeholder={UniversalTexts.calendarModal.meetingLink}
-                      value={theNewLink}
-                      onChange={(e) => {
-                        setTheNewLink(e.target.value);
-                      }}
-                      type="text"
-                      style={{
-                        padding: "5px",
-                        borderRadius: "8px",
-                        border: "1px solid #ced4da",
-                      }}
-                      required
-                    />
-                    <button
-                      onClick={newTutoring}
-                      style={{
-                        padding: "5px 1.5rem",
-                        backgroundColor: partnerColor(),
-                        color: "white",
-                        border: "none",
-                        borderRadius: "8px",
-                        cursor: "pointer",
-
-                        fontWeight: "500",
-                      }}
-                    >
+              {newStudentId !== "" && (
+                <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
+                  <div
+                    style={{
+                      backgroundColor: "#d4edda",
+                      padding: "1.5rem",
+                      borderRadius: "8px",
+                      border: "1px solid #c3e6cb",
+                    }}
+                  >
+                    <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
                       {UniversalTexts.calendarModal.addNewClass}
-                    </button>
+                    </h4>
+                    <div style={{ display: "grid", gap: "1rem" }}>
+                      <select
+                        onChange={handleTheNewWeekDayChange}
+                        value={theNewWeekDay}
+                        style={{
+                          padding: "5px",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <option hidden value="select week day">
+                          {UniversalTexts.calendarModal.selectWeekDayOption}
+                        </option>
+                        {weekDays.map((weekDay, index) => {
+                          return (
+                            <option key={index} value={weekDay}>
+                              {weekDay}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <select
+                        onChange={handleTheNewTimeChange}
+                        value={theNewTimeOfTutoring}
+                        style={{
+                          padding: "5px",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <option hidden value="Select Time">
+                          {UniversalTexts.calendarModal.selectTimeOption}
+                        </option>
+                        {times.map((time, index) => {
+                          return (
+                            <option key={index} value={time}>
+                              {time}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <input
+                        placeholder={UniversalTexts.calendarModal.meetingLink}
+                        value={theNewLink}
+                        onChange={(e) => {
+                          setTheNewLink(e.target.value);
+                        }}
+                        type="text"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                        }}
+                        required
+                      />
+                      <div>
+                        <p
+                          style={{
+                            display: "block",
+                            marginBottom: "5px",
+                            fontSize: "12px",
+                            color: "#6c757d",
+                            fontWeight: "500",
+                            margin: "0 0 5px 0",
+                          }}
+                        >
+                          {UniversalTexts.repeatFor}:
+                        </p>
+
+                        {/* Botões de atalho discretos */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "4px",
+                            marginBottom: "8px",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {[
+                            { label: "1m", weeks: 4, tooltip: "1 mês" },
+                            { label: "3m", weeks: 12, tooltip: "3 meses" },
+                            { label: "6m", weeks: 24, tooltip: "6 meses" },
+                            { label: "1a", weeks: 52, tooltip: "1 ano" },
+                            { label: "2a", weeks: 104, tooltip: "2 anos" },
+                          ].map(({ label, weeks, tooltip }) => (
+                            <button
+                              key={label}
+                              title={tooltip}
+                              style={{
+                                backgroundColor:
+                                  numberOfWeeks == weeks
+                                    ? "#e3f2fd"
+                                    : "#f8f9fa",
+                                border:
+                                  numberOfWeeks == weeks
+                                    ? "1px solid #2196f3"
+                                    : "1px solid #e0e0e0",
+                                cursor: "pointer",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                                fontSize: "10px",
+                                fontWeight: "500",
+                                color:
+                                  numberOfWeeks == weeks
+                                    ? "#1976d2"
+                                    : "#6c757d",
+                                transition: "all 0.2s ease",
+                                minWidth: "24px",
+                                height: "20px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              onClick={() => setNumberOfWeeks(weeks)}
+                              onMouseEnter={(e) => {
+                                if (numberOfWeeks != weeks) {
+                                  e.target.style.backgroundColor = "#f0f0f0";
+                                  e.target.style.borderColor = "#bdbdbd";
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (numberOfWeeks != weeks) {
+                                  e.target.style.backgroundColor = "#f8f9fa";
+                                  e.target.style.borderColor = "#e0e0e0";
+                                }
+                              }}
+                            >
+                              {label}
+                            </button>
+                          ))}
+
+                          <input
+                            placeholder="Ex: 8"
+                            value={numberOfWeeks}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Limitar a 2 dígitos e apenas números positivos
+                              if (
+                                value === "" ||
+                                (value.length <= 2 &&
+                                  Number(value) >= 0 &&
+                                  Number(value) <= 99)
+                              ) {
+                                setNumberOfWeeks(value);
+                              }
+                            }}
+                            type="number"
+                            min="1"
+                            max="99"
+                            style={{
+                              padding: "6px",
+                              maxWidth: "60px",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "12px",
+                              textAlign: "center",
+                            }}
+                            required
+                          />
+
+                          <p
+                            style={{
+                              display: "block",
+                              marginBottom: "5px",
+                              fontSize: "12px",
+                              color: "#6c757d",
+                              fontWeight: "500",
+                              margin: "0 0 5px 0",
+                            }}
+                          >
+                            {UniversalTexts.duration}:
+                          </p>
+                        </div>
+                        {/* Botões de duração discretos */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "4px",
+                            marginBottom: "8px",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {[
+                            {
+                              label: "30min",
+                              minutes: 30,
+                              tooltip: "30 minutos",
+                            },
+                            {
+                              label: "45min",
+                              minutes: 45,
+                              tooltip: "45 minutos",
+                            },
+                            { label: "1h", minutes: 60, tooltip: "1 hora" },
+                            {
+                              label: "1h30min",
+                              minutes: 90,
+                              tooltip: "1 hora e 30 minutos",
+                            },
+                            { label: "2h", minutes: 120, tooltip: "2 horas" },
+                          ].map(({ label, minutes, tooltip }) => (
+                            <button
+                              key={label}
+                              title={tooltip}
+                              style={{
+                                backgroundColor:
+                                  duration == minutes ? "#e3f2fd" : "#f8f9fa",
+                                border:
+                                  duration == minutes
+                                    ? "1px solid #2196f3"
+                                    : "1px solid #e0e0e0",
+                                cursor: "pointer",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                                fontSize: "10px",
+                                fontWeight: "500",
+                                color:
+                                  duration == minutes ? "#1976d2" : "#6c757d",
+                                transition: "all 0.2s ease",
+                                minWidth: "24px",
+                                height: "20px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              onClick={() => setDuration(minutes)}
+                              onMouseEnter={(e) => {
+                                if (duration != minutes) {
+                                  e.target.style.backgroundColor = "#f0f0f0";
+                                  e.target.style.borderColor = "#bdbdbd";
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (duration != minutes) {
+                                  e.target.style.backgroundColor = "#f8f9fa";
+                                  e.target.style.borderColor = "#e0e0e0";
+                                }
+                              }}
+                            >
+                              {label}
+                            </button>
+                          ))}
+
+                          <input
+                            placeholder="Ex: 55"
+                            value={duration}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Limitar a 2 dígitos e apenas números positivos
+                              if (
+                                value === "" ||
+                                (value.length <= 3 &&
+                                  Number(value) >= 0 &&
+                                  Number(value) <= 300)
+                              ) {
+                                setDuration(value);
+                              }
+                            }}
+                            type="number"
+                            min="1"
+                            max="300"
+                            style={{
+                              padding: "6px",
+                              maxWidth: "60px",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "12px",
+                              textAlign: "center",
+                            }}
+                            required
+                          />
+                        </div>
+
+                        {/* Mostrar período das aulas */}
+                        <div
+                          style={{
+                            //se faltar menos de uma semana pro endDate, tem que ser vermelho, avisar pra apagar essa e criar uma nova
+
+                            marginTop: "8px",
+                            padding: "6px 8px",
+                            backgroundColor: "#f8f9fa",
+                            border: "1px solid #e9ecef",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                            color: "#6c757d",
+                            lineHeight: "1.3",
+                          }}
+                        >
+                          {numberOfWeeks && numberOfWeeks > 0 ? (
+                            <div>
+                              {(() => {
+                                const today = new Date();
+                                const nextWeekDay = new Date(today);
+                                // Encontrar a próxima segunda-feira (ou hoje se for segunda)
+                                const dayOfWeek = today.getDay();
+                                const daysUntilMonday =
+                                  dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
+                                nextWeekDay.setDate(
+                                  today.getDate() + daysUntilMonday
+                                );
+
+                                // Calcular data final
+                                const endDate = new Date(nextWeekDay);
+                                endDate.setDate(
+                                  nextWeekDay.getDate() + numberOfWeeks * 7 - 1
+                                );
+
+                                const formatDate = (date) => {
+                                  return date.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                  });
+                                };
+
+                                return `${formatDate(
+                                  nextWeekDay
+                                )} até ${formatDate(
+                                  endDate
+                                )} (${numberOfWeeks} semana${
+                                  numberOfWeeks > 1 ? "s" : ""
+                                })`;
+                              })()}
+                            </div>
+                          ) : (
+                            <div>
+                              {UniversalTexts.calendarModal.selectNumberOfWeeks}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {(() => {
+                        const isFormIncomplete =
+                          !theNewWeekDay ||
+                          !theNewTimeOfTutoring ||
+                          !theNewLink ||
+                          !newStudentId ||
+                          !numberOfWeeks ||
+                          numberOfWeeks <= 0 ||
+                          duration <= 0;
+
+                        return (
+                          <button
+                            onClick={newTutoring}
+                            disabled={isFormIncomplete}
+                            style={{
+                              padding: "5px 1.5rem",
+                              backgroundColor: isFormIncomplete
+                                ? "#6c757d"
+                                : partnerColor(),
+                              color: "white",
+                              border: "none",
+                              borderRadius: "8px",
+                              cursor: isFormIncomplete
+                                ? "not-allowed"
+                                : "pointer",
+                              fontWeight: "500",
+                              opacity: isFormIncomplete ? 0.6 : 1,
+                              transition: "all 0.2s ease",
+                            }}
+                            title={
+                              isFormIncomplete
+                                ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas"
+                                : "Clique para criar a tutoria recorrente"
+                            }
+                          >
+                            {UniversalTexts.calendarModal.addNewClass}
+                          </button>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </>
 
@@ -4383,7 +4849,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         background: "none",
                         border: "none",
                         fontSize: "1.5rem",
-                        color: "#999",
+                        color: "#998",
                         cursor: "pointer",
                         padding: "0.5rem",
                         borderRadius: "50%",
@@ -4395,7 +4861,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       onMouseLeave={(e) => {
                         e.target.style.backgroundColor = "transparent";
-                        e.target.style.color = "#999";
+                        e.target.style.color = "#998";
                       }}
                     >
                       ×
