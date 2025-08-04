@@ -217,11 +217,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   // Função para verificar se a tutoria expira em menos de 1 mês
   const isTutoringExpiringWithinMonth = (tutoring) => {
     if (!tutoring.endDate) return false;
-    
+
     const today = new Date();
     const oneMonthFromNow = new Date(today);
     oneMonthFromNow.setMonth(today.getMonth() + 1);
-    
+
     const endDate = new Date(tutoring.endDate);
     return endDate < oneMonthFromNow;
   };
@@ -229,12 +229,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   // Função para calcular dias restantes
   const getDaysUntilExpiration = (tutoring) => {
     if (!tutoring.endDate) return null;
-    
+
     const today = new Date();
     const endDate = new Date(tutoring.endDate);
     const diffTime = endDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
+
     return diffDays;
   };
 
@@ -254,11 +254,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const dayOfWeek = today.getDay();
       const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
       nextWeekDay.setDate(today.getDate() + daysUntilMonday);
-      
+
       // Calcular data final
       const endDate = new Date(nextWeekDay);
       endDate.setDate(nextWeekDay.getDate() + numberOfWeeks * 7 - 1);
-      
+
       setEndDateForTutoring(endDate);
     } else {
       setEndDateForTutoring(null);
@@ -807,16 +807,19 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const today = new Date();
       const oneMonthFromNow = new Date(today);
       oneMonthFromNow.setMonth(today.getMonth() + 1);
-      
+
       if (endDateForTutoring < oneMonthFromNow) {
-        const endDateFormatted = endDateForTutoring.toLocaleDateString('pt-BR', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-        
+        const endDateFormatted = endDateForTutoring.toLocaleDateString(
+          "pt-BR",
+          {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }
+        );
+
         const confirmMessage = `⚠️ ATENÇÃO: O período selecionado termina em ${endDateFormatted}, que é em menos de 1 mês.\n\nPara períodos curtos, recomendamos:\n• Excluir esta configuração de tutoria recorrente\n• Criar eventos únicos através do botão "Criar Evento"\n\nDeseja continuar mesmo assim?`;
-        
+
         if (!confirm(confirmMessage)) {
           return; // Cancela a criação se o usuário não confirmar
         }
@@ -829,6 +832,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         {
           day: theNewWeekDay,
           time: theNewTimeOfTutoring,
+          duration,
           link: theNewLink,
           studentID: newStudentId,
           numberOfWeeks: numberOfWeeks || 4,
@@ -3270,6 +3274,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               }}
                             >
                               {UniversalTexts.calendarModal.clickToAccessClass}
+                              {" - "}
+                              {link}
                             </Link>
                           </div>
                         )}
@@ -4093,18 +4099,25 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               moment(b.day, "dddd").day()
                           )
                           .map((item, index) => {
-                            const isExpiring = isTutoringExpiringWithinMonth(item);
+                            const isExpiring =
+                              isTutoringExpiringWithinMonth(item);
                             const daysLeft = getDaysUntilExpiration(item);
-                            
+
                             return (
                               <div
                                 key={index}
                                 style={{
-                                  backgroundColor: isExpiring ? "#ffebee" : "#f8f9fa",
+                                  backgroundColor: isExpiring
+                                    ? "#ffebee"
+                                    : "#f8f9fa",
                                   padding: "0.5rem",
                                   borderRadius: "8px",
-                                  border: isExpiring ? "2px solid #f44336" : "1px solid #dee2e6",
-                                  boxShadow: isExpiring ? "0 2px 8px rgba(244, 67, 54, 0.2)" : "none",
+                                  border: isExpiring
+                                    ? "2px solid #f44336"
+                                    : "1px solid #dee2e6",
+                                  boxShadow: isExpiring
+                                    ? "0 2px 8px rgba(244, 67, 54, 0.2)"
+                                    : "none",
                                 }}
                               >
                                 {/* Alerta de expiração */}
@@ -4123,15 +4136,21 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       gap: "4px",
                                     }}
                                   >
-                                    ⚠️ 
-                                    {daysLeft > 0 
-                                      ? `Termina em ${daysLeft} dia${daysLeft > 1 ? 's' : ''} (${new Date(item.endDate).toLocaleDateString('pt-BR')})`
-                                      : `Expirou em ${new Date(item.endDate).toLocaleDateString('pt-BR')}`
-                                    }
-                                    Exclua este evento e crie um novo com as mesmas características.
+                                    ⚠️
+                                    {daysLeft > 0
+                                      ? `Termina em ${daysLeft} dia${
+                                          daysLeft > 1 ? "s" : ""
+                                        } (${new Date(
+                                          item.endDate
+                                        ).toLocaleDateString("pt-BR")})`
+                                      : `Expirou em ${new Date(
+                                          item.endDate
+                                        ).toLocaleDateString("pt-BR")}`}
+                                    Exclua este evento e crie um novo com as
+                                    mesmas características.
                                   </div>
                                 )}
-                                
+
                                 <div
                                   style={{
                                     display: "flex",
@@ -4338,268 +4357,398 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               </div>
 
               {/* New Class Form */}
-              <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                <div
-                  style={{
-                    backgroundColor: "#d4edda",
-                    padding: "1.5rem",
-                    borderRadius: "8px",
-                    border: "1px solid #c3e6cb",
-                  }}
-                >
-                  <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
-                    {UniversalTexts.calendarModal.addNewClass}
-                  </h4>
-                  <div style={{ display: "grid", gap: "1rem" }}>
-                    <select
-                      onChange={handleTheNewWeekDayChange}
-                      value={theNewWeekDay}
-                      style={{
-                        padding: "5px",
-                        borderRadius: "8px",
-                        border: "1px solid #ced4da",
-                        backgroundColor: "white",
-                      }}
-                    >
-                      <option hidden value="select week day">
-                        {UniversalTexts.calendarModal.selectWeekDayOption}
-                      </option>
-                      {weekDays.map((weekDay, index) => {
-                        return (
-                          <option key={index} value={weekDay}>
-                            {weekDay}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <select
-                      onChange={handleTheNewTimeChange}
-                      value={theNewTimeOfTutoring}
-                      style={{
-                        padding: "5px",
-                        borderRadius: "8px",
-                        border: "1px solid #ced4da",
-
-                        backgroundColor: "white",
-                      }}
-                    >
-                      <option hidden value="Select Time">
-                        {UniversalTexts.calendarModal.selectTimeOption}
-                      </option>
-                      {times.map((time, index) => {
-                        return (
-                          <option key={index} value={time}>
-                            {time}
-                          </option>
-                        );
-                      })}
-                    </select>
-                    <input
-                      placeholder={UniversalTexts.calendarModal.meetingLink}
-                      value={theNewLink}
-                      onChange={(e) => {
-                        setTheNewLink(e.target.value);
-                      }}
-                      type="text"
-                      style={{
-                        padding: "5px",
-                        borderRadius: "8px",
-                        border: "1px solid #ced4da",
-                      }}
-                      required
-                    />
-                    <div>
-                      <p
+              {newStudentId !== "" && (
+                <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
+                  <div
+                    style={{
+                      backgroundColor: "#d4edda",
+                      padding: "1.5rem",
+                      borderRadius: "8px",
+                      border: "1px solid #c3e6cb",
+                    }}
+                  >
+                    <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
+                      {UniversalTexts.calendarModal.addNewClass}
+                    </h4>
+                    <div style={{ display: "grid", gap: "1rem" }}>
+                      <select
+                        onChange={handleTheNewWeekDayChange}
+                        value={theNewWeekDay}
                         style={{
-                          display: "block",
-                          marginBottom: "5px",
-                          fontSize: "12px",
-                          color: "#6c757d",
-                          fontWeight: "500",
-                          margin: "0 0 5px 0",
+                          padding: "5px",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          backgroundColor: "white",
                         }}
                       >
-                        {UniversalTexts.repeatFor}:
-                      </p>
-
-                      {/* Botões de atalho discretos */}
-                      <div
+                        <option hidden value="select week day">
+                          {UniversalTexts.calendarModal.selectWeekDayOption}
+                        </option>
+                        {weekDays.map((weekDay, index) => {
+                          return (
+                            <option key={index} value={weekDay}>
+                              {weekDay}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <select
+                        onChange={handleTheNewTimeChange}
+                        value={theNewTimeOfTutoring}
                         style={{
-                          display: "flex",
-                          gap: "4px",
-                          marginBottom: "8px",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                          padding: "5px",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+
+                          backgroundColor: "white",
                         }}
                       >
-                        {[
-                          { label: "1m", weeks: 4, tooltip: "1 mês" },
-                          { label: "3m", weeks: 12, tooltip: "3 meses" },
-                          { label: "6m", weeks: 24, tooltip: "6 meses" },
-                          { label: "1a", weeks: 52, tooltip: "1 ano" },
-                          { label: "2a", weeks: 104, tooltip: "2 anos" },
-                        ].map(({ label, weeks, tooltip }) => (
-                          <button
-                            key={label}
-                            title={tooltip}
+                        <option hidden value="Select Time">
+                          {UniversalTexts.calendarModal.selectTimeOption}
+                        </option>
+                        {times.map((time, index) => {
+                          return (
+                            <option key={index} value={time}>
+                              {time}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <input
+                        placeholder={UniversalTexts.calendarModal.meetingLink}
+                        value={theNewLink}
+                        onChange={(e) => {
+                          setTheNewLink(e.target.value);
+                        }}
+                        type="text"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                        }}
+                        required
+                      />
+                      <div>
+                        <p
+                          style={{
+                            display: "block",
+                            marginBottom: "5px",
+                            fontSize: "12px",
+                            color: "#6c757d",
+                            fontWeight: "500",
+                            margin: "0 0 5px 0",
+                          }}
+                        >
+                          {UniversalTexts.repeatFor}:
+                        </p>
+
+                        {/* Botões de atalho discretos */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "4px",
+                            marginBottom: "8px",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          {[
+                            { label: "1m", weeks: 4, tooltip: "1 mês" },
+                            { label: "3m", weeks: 12, tooltip: "3 meses" },
+                            { label: "6m", weeks: 24, tooltip: "6 meses" },
+                            { label: "1a", weeks: 52, tooltip: "1 ano" },
+                            { label: "2a", weeks: 104, tooltip: "2 anos" },
+                          ].map(({ label, weeks, tooltip }) => (
+                            <button
+                              key={label}
+                              title={tooltip}
+                              style={{
+                                backgroundColor:
+                                  numberOfWeeks == weeks
+                                    ? "#e3f2fd"
+                                    : "#f8f9fa",
+                                border:
+                                  numberOfWeeks == weeks
+                                    ? "1px solid #2196f3"
+                                    : "1px solid #e0e0e0",
+                                cursor: "pointer",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                                fontSize: "10px",
+                                fontWeight: "500",
+                                color:
+                                  numberOfWeeks == weeks
+                                    ? "#1976d2"
+                                    : "#6c757d",
+                                transition: "all 0.2s ease",
+                                minWidth: "24px",
+                                height: "20px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              onClick={() => setNumberOfWeeks(weeks)}
+                              onMouseEnter={(e) => {
+                                if (numberOfWeeks != weeks) {
+                                  e.target.style.backgroundColor = "#f0f0f0";
+                                  e.target.style.borderColor = "#bdbdbd";
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (numberOfWeeks != weeks) {
+                                  e.target.style.backgroundColor = "#f8f9fa";
+                                  e.target.style.borderColor = "#e0e0e0";
+                                }
+                              }}
+                            >
+                              {label}
+                            </button>
+                          ))}
+
+                          <input
+                            placeholder="Ex: 8"
+                            value={numberOfWeeks}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Limitar a 2 dígitos e apenas números positivos
+                              if (
+                                value === "" ||
+                                (value.length <= 2 &&
+                                  Number(value) >= 0 &&
+                                  Number(value) <= 99)
+                              ) {
+                                setNumberOfWeeks(value);
+                              }
+                            }}
+                            type="number"
+                            min="1"
+                            max="99"
                             style={{
-                              backgroundColor:
-                                numberOfWeeks == weeks ? "#e3f2fd" : "#f8f9fa",
-                              border:
-                                numberOfWeeks == weeks
-                                  ? "1px solid #2196f3"
-                                  : "1px solid #e0e0e0",
-                              cursor: "pointer",
-                              padding: "2px 6px",
+                              padding: "6px",
+                              maxWidth: "60px",
                               borderRadius: "4px",
-                              fontSize: "10px",
+                              border: "1px solid #ced4da",
+                              fontSize: "12px",
+                              textAlign: "center",
+                            }}
+                            required
+                          />
+
+                          <p
+                            style={{
+                              display: "block",
+                              marginBottom: "5px",
+                              fontSize: "12px",
+                              color: "#6c757d",
                               fontWeight: "500",
-                              color:
-                                numberOfWeeks == weeks ? "#1976d2" : "#6c757d",
-                              transition: "all 0.2s ease",
-                              minWidth: "24px",
-                              height: "20px",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                            }}
-                            onClick={() => setNumberOfWeeks(weeks)}
-                            onMouseEnter={(e) => {
-                              if (numberOfWeeks != weeks) {
-                                e.target.style.backgroundColor = "#f0f0f0";
-                                e.target.style.borderColor = "#bdbdbd";
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (numberOfWeeks != weeks) {
-                                e.target.style.backgroundColor = "#f8f9fa";
-                                e.target.style.borderColor = "#e0e0e0";
-                              }
+                              margin: "0 0 5px 0",
                             }}
                           >
-                            {label}
-                          </button>
-                        ))}
-
-                        <input
-                          placeholder="Ex: 8"
-                          value={numberOfWeeks}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            // Limitar a 2 dígitos e apenas números positivos
-                            if (
-                              value === "" ||
-                              (value.length <= 2 &&
-                                Number(value) >= 0 &&
-                                Number(value) <= 99)
-                            ) {
-                              setNumberOfWeeks(value);
-                            }
-                          }}
-                          type="number"
-                          min="1"
-                          max="99"
+                            {UniversalTexts.duration}:
+                          </p>
+                        </div>
+                        {/* Botões de duração discretos */}
+                        <div
                           style={{
-                            padding: "6px",
-                            maxWidth: "60px",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                            fontSize: "12px",
-                            textAlign: "center",
+                            display: "flex",
+                            gap: "4px",
+                            marginBottom: "8px",
+                            alignItems: "center",
+                            justifyContent: "space-between",
                           }}
-                          required
-                        />
-                      </div>
+                        >
+                          {[
+                            {
+                              label: "30min",
+                              minutes: 30,
+                              tooltip: "30 minutos",
+                            },
+                            {
+                              label: "45min",
+                              minutes: 45,
+                              tooltip: "45 minutos",
+                            },
+                            { label: "1h", minutes: 60, tooltip: "1 hora" },
+                            {
+                              label: "1h30min",
+                              minutes: 90,
+                              tooltip: "1 hora e 30 minutos",
+                            },
+                            { label: "2h", minutes: 120, tooltip: "2 horas" },
+                          ].map(({ label, minutes, tooltip }) => (
+                            <button
+                              key={label}
+                              title={tooltip}
+                              style={{
+                                backgroundColor:
+                                  duration == minutes ? "#e3f2fd" : "#f8f9fa",
+                                border:
+                                  duration == minutes
+                                    ? "1px solid #2196f3"
+                                    : "1px solid #e0e0e0",
+                                cursor: "pointer",
+                                padding: "2px 6px",
+                                borderRadius: "4px",
+                                fontSize: "10px",
+                                fontWeight: "500",
+                                color:
+                                  duration == minutes ? "#1976d2" : "#6c757d",
+                                transition: "all 0.2s ease",
+                                minWidth: "24px",
+                                height: "20px",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                              onClick={() => setDuration(minutes)}
+                              onMouseEnter={(e) => {
+                                if (duration != minutes) {
+                                  e.target.style.backgroundColor = "#f0f0f0";
+                                  e.target.style.borderColor = "#bdbdbd";
+                                }
+                              }}
+                              onMouseLeave={(e) => {
+                                if (duration != minutes) {
+                                  e.target.style.backgroundColor = "#f8f9fa";
+                                  e.target.style.borderColor = "#e0e0e0";
+                                }
+                              }}
+                            >
+                              {label}
+                            </button>
+                          ))}
 
-                      {/* Mostrar período das aulas */}
-                      <div
-                        style={{
+                          <input
+                            placeholder="Ex: 55"
+                            value={duration}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              // Limitar a 2 dígitos e apenas números positivos
+                              if (
+                                value === "" ||
+                                (value.length <= 3 &&
+                                  Number(value) >= 0 &&
+                                  Number(value) <= 999)
+                              ) {
+                                setDuration(value);
+                              }
+                            }}
+                            type="number"
+                            min="1"
+                            max="999"
+                            style={{
+                              padding: "6px",
+                              maxWidth: "60px",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "12px",
+                              textAlign: "center",
+                            }}
+                            required
+                          />
+                        </div>
+
+                        {/* Mostrar período das aulas */}
+                        <div
+                          style={{
                             //se faltar menos de uma semana pro endDate, tem que ser vermelho, avisar pra apagar essa e criar uma nova
 
-                          marginTop: "8px",
-                          padding: "6px 8px",
-                          backgroundColor: "#f8f9fa",
-                          border: "1px solid #e9ecef",
-                          borderRadius: "4px",
-                          fontSize: "11px",
-                          color: "#6c757d",
-                          lineHeight: "1.3",
-                        }}
-                      >
-                        {numberOfWeeks && numberOfWeeks > 0 ? (
-                          <div>
-                            {(() => {
-                              const today = new Date();
-                              const nextWeekDay = new Date(today);
-                              // Encontrar a próxima segunda-feira (ou hoje se for segunda)
-                              const dayOfWeek = today.getDay();
-                              const daysUntilMonday =
-                                dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
-                              nextWeekDay.setDate(
-                                today.getDate() + daysUntilMonday
-                              );
-
-                              // Calcular data final
-                              const endDate = new Date(nextWeekDay);
-                              endDate.setDate(
-                                nextWeekDay.getDate() + numberOfWeeks * 7 - 1
-                              );
-
-
-                              const formatDate = (date) => {
-                                return date.toLocaleDateString("pt-BR", {
-                                  day: "2-digit",
-                                  month: "2-digit",
-                                  year: "numeric",
-                                });
-                              };
-
-                              return `${formatDate(
-                                nextWeekDay
-                              )} até ${formatDate(
-                                endDate
-                              )} (${numberOfWeeks} semana${
-                                numberOfWeeks > 1 ? "s" : ""
-                              })`;
-                            })()
-                            }
-                          </div>
-                        ) : (
-                          <div>
-                            {UniversalTexts.calendarModal.selectNumberOfWeeks}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    {(() => {
-                      const isFormIncomplete = !theNewWeekDay || !theNewTimeOfTutoring || !theNewLink || !newStudentId || !numberOfWeeks || numberOfWeeks <= 0;
-                      
-                      return (
-                        <button
-                          onClick={newTutoring}
-                          disabled={isFormIncomplete}
-                          style={{
-                            padding: "5px 1.5rem",
-                            backgroundColor: isFormIncomplete ? "#6c757d" : partnerColor(),
-                            color: "white",
-                            border: "none",
-                            borderRadius: "8px",
-                            cursor: isFormIncomplete ? "not-allowed" : "pointer",
-                            fontWeight: "500",
-                            opacity: isFormIncomplete ? 0.6 : 1,
-                            transition: "all 0.2s ease"
+                            marginTop: "8px",
+                            padding: "6px 8px",
+                            backgroundColor: "#f8f9fa",
+                            border: "1px solid #e9ecef",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                            color: "#6c757d",
+                            lineHeight: "1.3",
                           }}
-                          title={isFormIncomplete 
-                            ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas" 
-                            : "Clique para criar a tutoria recorrente"}
                         >
-                          {UniversalTexts.calendarModal.addNewClass}
-                        </button>
-                      );
-                    })()}
+                          {numberOfWeeks && numberOfWeeks > 0 ? (
+                            <div>
+                              {(() => {
+                                const today = new Date();
+                                const nextWeekDay = new Date(today);
+                                // Encontrar a próxima segunda-feira (ou hoje se for segunda)
+                                const dayOfWeek = today.getDay();
+                                const daysUntilMonday =
+                                  dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
+                                nextWeekDay.setDate(
+                                  today.getDate() + daysUntilMonday
+                                );
+
+                                // Calcular data final
+                                const endDate = new Date(nextWeekDay);
+                                endDate.setDate(
+                                  nextWeekDay.getDate() + numberOfWeeks * 7 - 1
+                                );
+
+                                const formatDate = (date) => {
+                                  return date.toLocaleDateString("pt-BR", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                  });
+                                };
+
+                                return `${formatDate(
+                                  nextWeekDay
+                                )} até ${formatDate(
+                                  endDate
+                                )} (${numberOfWeeks} semana${
+                                  numberOfWeeks > 1 ? "s" : ""
+                                })`;
+                              })()}
+                            </div>
+                          ) : (
+                            <div>
+                              {UniversalTexts.calendarModal.selectNumberOfWeeks}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {(() => {
+                        const isFormIncomplete =
+                          !theNewWeekDay ||
+                          !theNewTimeOfTutoring ||
+                          !theNewLink ||
+                          !newStudentId ||
+                          !numberOfWeeks ||
+                          numberOfWeeks <= 0 ||
+                          duration <= 0;
+
+                        return (
+                          <button
+                            onClick={newTutoring}
+                            disabled={isFormIncomplete}
+                            style={{
+                              padding: "5px 1.5rem",
+                              backgroundColor: isFormIncomplete
+                                ? "#6c757d"
+                                : partnerColor(),
+                              color: "white",
+                              border: "none",
+                              borderRadius: "8px",
+                              cursor: isFormIncomplete
+                                ? "not-allowed"
+                                : "pointer",
+                              fontWeight: "500",
+                              opacity: isFormIncomplete ? 0.6 : 1,
+                              transition: "all 0.2s ease",
+                            }}
+                            title={
+                              isFormIncomplete
+                                ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas"
+                                : "Clique para criar a tutoria recorrente"
+                            }
+                          >
+                            {UniversalTexts.calendarModal.addNewClass}
+                          </button>
+                        );
+                      })()}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </>
 
