@@ -137,6 +137,21 @@ export function FinancialResources({ headers, id }) {
     }
   };
 
+  const seeReports = async () => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/finance/${id}`,
+        {
+          headers,
+          params: { month: "2025-08" },
+        }
+      );
+      console.log("response", response);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   const updateScoreNow = async (id) => {
     try {
       const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
@@ -311,11 +326,9 @@ export function FinancialResources({ headers, id }) {
     deleteStudent(ID);
   };
 
-  // Calculate monthly revenue prediction (only active students)
   const calculateMonthlyRevenue = () => {
     return students.reduce((total, student) => {
       const fee = parseFloat(student.fee) || 0;
-      // Only count if student is not on hold
       if (!student.onHold && fee > 0) {
         return total + fee;
       }
@@ -326,9 +339,6 @@ export function FinancialResources({ headers, id }) {
   // Get students with fees for the financial table
   const getStudentsWithFees = () => {
     return students;
-    // .filter(
-    //   (student) => student.fee && parseFloat(student.fee) > 0
-    // );
   };
 
   // Get only active students (not on hold) with fees
@@ -361,6 +371,9 @@ export function FinancialResources({ headers, id }) {
             marginBottom: "2rem",
           }}
         >
+          <button
+          onClick={seeReports}
+          >vê aq</button>
           <div
             style={{
               display: "flex",
@@ -438,35 +451,6 @@ export function FinancialResources({ headers, id }) {
                   Alunos Ativos
                 </div>
               </div>
-              {/* 
-              <div
-                style={{
-                  padding: "12px",
-                  backgroundColor: "#fff",
-                  border: "1px solid #ccc",
-                  borderRadius: "4px",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "24px",
-                    fontWeight: "600",
-                    color: "#666",
-                  }}
-                >
-                  R${" "}
-                  {getActiveStudentsWithFees().length > 0
-                    ? formatNumber(
-                        calculateMonthlyRevenue() /
-                          getActiveStudentsWithFees().length
-                      )
-                    : "0"}
-                </div>
-                <div style={{ fontSize: "12px", color: "#666" }}>
-                  Valor Médio
-                </div>
-              </div> */}
             </div>
 
             {/* Lista técnica de estudantes */}

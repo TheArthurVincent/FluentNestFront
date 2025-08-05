@@ -18,7 +18,7 @@ export const backgroundType = (): string => {
 
 export const partnerColor = (): string => {
   const wl = getWhiteLabel();
-  return wl.color || "rgba(67, 125, 172, 1)";
+  return wl.color || "#ff5b1e";
 };
 
 export const theBackgroundColor = (): string => {
@@ -43,7 +43,7 @@ export const logoPartner = (): string => {
   const wl = getWhiteLabel();
   return (
     wl.logo ||
-    "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166"
+    "https://ik.imagekit.io/vjz75qw96/assets/icons/Ingl%C3%AAs%20de%20Neg%C3%B3cios%20(Miniatura%20do%20YouTube)%20(3).png?updatedAt=1754392979150"
   );
 };
 
