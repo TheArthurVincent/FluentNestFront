@@ -35,30 +35,7 @@ import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
-
-// Function to convert video URLs to embed URLs
-const getEmbedUrl = (url) => {
-  if (!url) return null;
-
-  // YouTube URL patterns
-  if (url.includes("youtube.com/watch?v=")) {
-    const videoId = url.split("v=")[1]?.split("&")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-  if (url.includes("youtu.be/")) {
-    const videoId = url.split("youtu.be/")[1]?.split("?")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-
-  // Vimeo URL patterns
-  if (url.includes("vimeo.com/")) {
-    const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
-    return `https://player.vimeo.com/video/${videoId}`;
-  }
-
-  // If it's already an embed URL or other format, return as is
-  return url;
-};
+import { getEmbedUrl } from "./CalendarComponents/MyCalendarFuncions";
 
 // File handling functions
 const convertToBase64 = (file) => {
@@ -137,6 +114,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [dueDate, setDueDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
   const [base64String, setBase64String] = useState("");
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("");
@@ -145,6 +123,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [uploading, setUploading] = useState(false);
   const [category, setCategory] = useState("");
   const [newStudentId, setNewStudentId] = useState("");
+  const [showSeeEditTutoring, setShowSeeEditTutoring] = useState(false);
   const [tutoringsListOfOneStudent, setTutoringsListOfOneStudent] = useState(
     []
   );
@@ -178,6 +157,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   // Estados específicos para criar nova aula
   const [showNewClassForm, setShowNewClassForm] = useState(false);
+
   const [newClass, setNewClass] = useState({
     date: "",
     time: "",
@@ -188,6 +168,53 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     studentID: "",
   });
   const [loadingNewClass, setLoadingNewClass] = useState(false);
+
+  const resetEverything = () => {
+    setShowEditForm(false);
+    setShowHomework(false);
+    setShowFlashcards(false);
+    setLoading(false);
+    setShowNewClassForm(false);
+    setEventId("");
+    setTheNewLink("");
+    setNumberOfWeeks(4);
+    setNewClass({
+      date: "",
+      time: "",
+      link: "",
+      description: "",
+      category: "",
+      duration: 45,
+      studentID: "",
+    });
+    setTheNewTimeOfTutoring("");
+    setEndDateForTutoring(null);
+    setBase64String("");
+    setFileName("");
+    setFileType("");
+    setEndDateForTutoring(null);
+    setFlashcards("");
+    setSelectedFile(null);
+    setUploading(false);
+    setCategory("");
+    setNewStudentId("");
+    setShowSeeEditTutoring(false);
+    setTutoringsListOfOneStudent([]);
+    setTheTime("");
+    setShowClasses(false);
+    setLink("");
+    setDescription("");
+    setVideo("");
+    setGoogleDriveLink("");
+    setHomework("");
+    setDueDate(new Date().toISOString().split("T")[0]);
+    setStudentsList([]);
+    setShowSeeEditTutoring(false);
+    setShowEditForm(false);
+    setShowHomework(false);
+    setShowFlashcards(false);
+    setLoading(false);
+  };
 
   // Função helper para formatar horário de início e fim
   const formatTimeRange = (startTime, durationMinutes = 60) => {
@@ -288,6 +315,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const [isFee, setIsFee] = useState(true);
 
+  const resetEveryThing = () => {
+    setStudentsList([]);
+    setEvents([]);
+    setShowSeeEditTutoring(false);
+    setShowEditForm(false);
+    setShowHomework(false);
+    setShowFlashcards(false);
+    setLoading(false);
+  };
+
   const fetchGeneralEvents = async () => {
     setLoading(true);
     try {
@@ -316,10 +353,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         return event;
       });
       setEvents(eventsLoop);
-      setShowEditForm(false);
-      setShowHomework(false);
-      setShowFlashcards(false);
-      setLoading(false);
+      resetEverything();
     } catch (error) {
       notifyAlert(error.response.data.error, partnerColor());
       setTimeout(() => {
@@ -330,77 +364,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   useEffect(() => {
     fetchGeneralEvents();
   }, []);
-  const fetchGeneralEventsNoLoading = async () => {
-    setPostNew(false);
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
-    const id = user.id;
-    if (user.permissions == "superadmin" || user.permissions == "teacher") {
-      try {
-        const response = await axios.get(
-          `${backDomain}/api/v1/eventsgeneral/${id}?today=${today}`,
-          {
-            headers,
-          }
-        );
-        const res = response.data.eventsList;
-        const eventsLoop = res.map((event) => {
-          const nextDay = new Date(event.date);
-          nextDay.setDate(nextDay.getDate() + 1);
-          event.date = formattedDates(nextDay);
-          // Garantir que todos os eventos tenham um status
-          if (!event.status) {
-            event.status = "marcado"; // Status padrão para eventos sem status
-          }
-          return event;
-        });
-        setEvents(eventsLoop);
-        setShowEditForm(false);
-        setShowHomework(false);
-        setShowFlashcards(false);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      null;
-    }
-  };
-  const changeToday = async (e) => {
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
-    const id = user.id;
-    setLoading(true);
-    const targetDate = new Date(e.target.value);
-    const newDate = getLastMonday(targetDate); // Obtém a última segunda-feira em relação à data escolhida
-    setTheToday(newDate);
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
-        {
-          headers,
-        }
-      );
-      const res = response.data.eventsList;
-      const eventsLoop = res.map((event) => {
-        const nextDay = new Date(event.date);
-        nextDay.setDate(nextDay.getDate() + 1);
-        event.date = formattedDates(nextDay);
-        // Garantir que todos os eventos tenham um status
-        if (!event.status) {
-          event.status = "marcado"; // Status padrão para eventos sem status
-        }
-        return event;
-      });
-      setEvents(eventsLoop);
-      setShowEditForm(false);
-      setShowHomework(false);
-      setShowFlashcards(false);
-      setTimeout(() => {
-        setLoading(false);
-      }, 200);
-    } catch (error) {
-      console.log(error, "Erro ao encontrar alunos");
-      console.log(error);
-    }
-  };
+
   const handleChangeWeek = async (sum) => {
     setDisabledAvoid(false);
     const user = JSON.parse(localStorage.getItem("loggedIn"));
@@ -429,9 +393,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         return event;
       });
       setEvents(eventsLoop);
-      setShowEditForm(false);
-      setShowHomework(false);
-      setShowFlashcards(false);
+      resetEverything();
       setTimeout(() => {
         setLoading(false);
         setDisabledAvoid(true);
@@ -441,16 +403,17 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       console.log(error);
     }
   };
-  const handleBackToToday = async () => {
-    setDisabledAvoid(false);
+
+  const handleDateChange = async (e) => {
     const user = JSON.parse(localStorage.getItem("loggedIn"));
     const id = user.id;
     setLoading(true);
-    const todayy = new Date();
-    const newDate = getLastMonday(todayy);
-    setTheToday(newDate);
 
     try {
+      const targetDate = new Date(e.target.value);
+      const newDate = getLastMonday(targetDate); // Obtém a última segunda-feira em relação à data escolhida
+      setTheToday(newDate);
+
       const response = await axios.get(
         `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
         {
@@ -464,21 +427,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         event.date = formattedDates(nextDay);
         // Garantir que todos os eventos tenham um status
         if (!event.status) {
-          event.status = "marcado"; // Status padrão para eventos sem status
+          event.status = "marcado";
         }
         return event;
       });
       setEvents(eventsLoop);
+
+      // Reset formulários sem afetar o loading
       setShowEditForm(false);
       setShowHomework(false);
       setShowFlashcards(false);
+      setShowNewClassForm(false);
+    } catch (error) {
+      console.log(error, "Erro ao encontrar eventos para a data selecionada");
+    } finally {
+      // Garantir que o loading sempre seja definido como false no final
       setTimeout(() => {
         setLoading(false);
-        setDisabledAvoid(true);
-      }, 100);
-    } catch (error) {
-      console.log(error, "Erro ao encontrar alunos");
-      console.log(error);
+      }, 200);
     }
   };
   const fetchOneEvent = async (id) => {
@@ -845,6 +811,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       );
       if (response) {
         setSeeEditTutoring(false);
+        setShowSeeEditTutoring(false);
         fetchOneSetOfTutorings(newStudentId);
       }
     } catch (error) {
@@ -1120,8 +1087,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     clearFile();
     setDueDate(new Date().toISOString().split("T")[0]);
     setFlashcards("");
-
-    fetchGeneralEventsNoLoading();
+    fetchGeneralEvents();
   };
 
   // File handling functions
@@ -1929,11 +1895,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 backgroundColor: alwaysWhite(),
                 width:
                   thePermissions == "superadmin" || thePermissions == "teacher"
-                    ? "95vw"
+                    ? "85vw"
                     : "25rem",
                 height:
                   thePermissions == "superadmin" || thePermissions == "teacher"
-                    ? "80vh"
+                    ? "75vh"
                     : "40rem",
                 overflowY: "auto",
                 top: "50%",
@@ -1974,7 +1940,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       onClick={handleCloseModal}
                       style={{
                         cursor: "pointer",
-
                         color: "#998",
                         transition: "color 0.2s",
                       }}
@@ -3817,31 +3782,31 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   {
                                     key: "checkList1",
                                     text: UniversalTexts.calendarModal
-                                      .uploadVideo,
+                                      .realizedClass,
                                     handler: handleCheckbox1Change,
                                   },
                                   {
                                     key: "checkList2",
                                     text: UniversalTexts.calendarModal
-                                      .uploadClassesToPlatform,
+                                      .uploadVideo,
                                     handler: handleCheckbox2Change,
                                   },
                                   {
                                     key: "checkList3",
                                     text: UniversalTexts.calendarModal
-                                      .addHomeworkActivities,
+                                      .uploadClassesToPlatform,
                                     handler: handleCheckbox3Change,
                                   },
                                   {
                                     key: "checkList4",
                                     text: UniversalTexts.calendarModal
-                                      .uploadFlashcards,
+                                      .addHomeworkActivities,
                                     handler: handleCheckbox4Change,
                                   },
                                   {
                                     key: "checkList5",
                                     text: UniversalTexts.calendarModal
-                                      .formatMaterial,
+                                      .uploadFlashcards,
                                     handler: handleCheckbox5Change,
                                   },
                                 ].map((item, index) => (
@@ -4139,16 +4104,17 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   >
                                     ⚠️
                                     {daysLeft > 0
-                                      ? `Termina em ${daysLeft} dia${
+                                      ? `${
+                                          UniversalTexts.endsIn
+                                        } ${daysLeft} dia${
                                           daysLeft > 1 ? "s" : ""
                                         } (${new Date(
                                           item.endDate
                                         ).toLocaleDateString("pt-BR")})`
-                                      : `Expirou em ${new Date(
+                                      : `${UniversalTexts.expired} ${new Date(
                                           item.endDate
-                                        ).toLocaleDateString("pt-BR")}`}
-                                    Exclua este evento e crie um novo com as
-                                    mesmas características.
+                                        ).toLocaleDateString("pt-BR")}`}{" "}
+                                    {UniversalTexts.tutoringExpiring}
                                   </div>
                                 )}
 
@@ -4168,7 +4134,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         color: "#495057",
                                       }}
                                     >
-                                      Class #{index + 1}
+                                      {UniversalTexts.Class} #{index + 1}
                                     </span>
                                     <div
                                       style={{
@@ -4186,7 +4152,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                           marginLeft: "5px",
                                         }}
                                       >
-                                        Access Link
+                                        {UniversalTexts.accessClass}
                                       </Link>
                                       {item.endDate && (
                                         <span
@@ -4380,15 +4346,53 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   </button>
                 </div>
               </div>
-
-              {/* New Class Form */}
               {newStudentId !== "" && (
+                <button
+                  onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
+                  style={{
+                    padding: "8px 1.5rem",
+                    marginBottom: "5px",
+                    borderRadius: "8px",
+                    backgroundColor: !showSeeEditTutoring
+                      ? "#f0f9f0"
+                      : "#fdf2f2",
+                    border: !showSeeEditTutoring
+                      ? "1px solid #d4e6d4"
+                      : "1px solid #f5c6c6",
+                    color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    transition: "all 0.2s ease",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = !showSeeEditTutoring
+                      ? "#e8f5e8"
+                      : "#fce8e8";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = !showSeeEditTutoring
+                      ? "#f0f9f0"
+                      : "#fdf2f2";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                  }}
+                >
+                  {showSeeEditTutoring
+                    ? UniversalTexts.hideShowClasses
+                    : UniversalTexts.showShowClasses}
+                </button>
+              )}
+              {/* New Class Form */}
+              {newStudentId !== "" && showSeeEditTutoring && (
                 <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
                   <div
                     style={{
-                      backgroundColor: "#d4edda",
                       padding: "1.5rem",
                       borderRadius: "8px",
+                      backgroundColor: "#d4edda",
                       border: "1px solid #c3e6cb",
                     }}
                   >
@@ -5414,16 +5418,19 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               >
                 <input
                   type="date"
-                  onChange={changeToday}
+                  onChange={handleDateChange}
+                  value={today.toISOString().split("T")[0]}
+                  disabled={loading}
                   style={{
                     padding: "6px 32px 6px 10px",
                     border: "none",
                     outline: "none",
                     fontSize: "13px",
                     fontWeight: "400",
-                    color: "#495057",
+                    color: loading ? "#adb5bd" : "#495057",
                     backgroundColor: "transparent",
-                    cursor: "pointer",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.6 : 1,
                   }}
                 />
               </div>
@@ -5449,7 +5456,52 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     alignItems: "center",
                     gap: "4px",
                   }}
-                  onClick={handleBackToToday}
+                  onClick={async () => {
+                    if (!disabledAvoid) return; // Não executar se estiver desabilitado
+
+                    setDisabledAvoid(false);
+                    setLoading(true);
+
+                    try {
+                      const user = JSON.parse(localStorage.getItem("loggedIn"));
+                      const id = user.id;
+                      const todayy = new Date();
+                      const newDate = getLastMonday(todayy);
+                      setTheToday(newDate);
+
+                      const response = await axios.get(
+                        `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
+                        {
+                          headers,
+                        }
+                      );
+                      const res = response.data.eventsList;
+                      const eventsLoop = res.map((event) => {
+                        const nextDay = new Date(event.date);
+                        nextDay.setDate(nextDay.getDate() + 1);
+                        event.date = formattedDates(nextDay);
+                        // Garantir que todos os eventos tenham um status
+                        if (!event.status) {
+                          event.status = "marcado";
+                        }
+                        return event;
+                      });
+                      setEvents(eventsLoop);
+
+                      // Reset formulários
+                      setShowEditForm(false);
+                      setShowHomework(false);
+                      setShowFlashcards(false);
+                      setShowNewClassForm(false);
+                    } catch (error) {
+                      console.log(error, "Erro ao voltar para hoje");
+                    } finally {
+                      setTimeout(() => {
+                        setLoading(false);
+                        setDisabledAvoid(true);
+                      }, 200);
+                    }
+                  }}
                   onMouseEnter={(e) => {
                     if (disabledAvoid) {
                       e.target.style.background = "#f8f9fa";

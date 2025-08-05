@@ -1,27 +1,3 @@
-// Function to convert video URLs to embed URLs
-export const getEmbedUrl = (url) => {
-  if (!url) return null;
-
-  // YouTube URL patterns
-  if (url.includes("youtube.com/watch?v=")) {
-    const videoId = url.split("v=")[1]?.split("&")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-  if (url.includes("youtu.be/")) {
-    const videoId = url.split("youtu.be/")[1]?.split("?")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-
-  // Vimeo URL patterns
-  if (url.includes("vimeo.com/")) {
-    const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
-    return `https://player.vimeo.com/video/${videoId}`;
-  }
-
-  // If it's already an embed URL or other format, return as is
-  return url;
-};
-
 // File handling functions
 export const convertToBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -49,6 +25,35 @@ export const formattedDates = (dateString) => {
     timeZoneName: "short",
   });
   return new Date(date);
+};
+
+
+// Function to convert video URLs to embed URLs
+export const getEmbedUrl = (url) => {
+  if (!url) return null;
+
+  // YouTube URL patterns
+  if (url.includes("youtube.com/watch?v=")) {
+    const videoId = url.split("v=")[1]?.split("&")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  if (url.includes("youtu.be/")) {
+    const videoId = url.split("youtu.be/")[1]?.split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  if (url.includes("youtube.com/live/")) {
+    const videoId = url.split("youtube.com/live/")[1]?.split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+
+  // Vimeo URL patterns
+  if (url.includes("vimeo.com/")) {
+    const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
+    return `https://player.vimeo.com/video/${videoId}`;
+  }
+
+  // If it's already an embed URL or other format, return as is
+  return url;
 };
 
 export const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

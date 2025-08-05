@@ -13,12 +13,13 @@ import Contract from "./AdmComponents/Contract/Contract";
 import Invoice from "./AdmComponents/Invoice/Invoice";
 import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
 import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
-import { localStorageLoggedIn } from "../../App";
+import { isArthurVincent, localStorageLoggedIn } from "../../App";
 import NewHomeworkAssignment from "./AdmComponents/ClassesManagement/NewHomework";
 import { Tooltip } from "@mui/material";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignments/PendingHomeworkAssignments";
 import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
+import Manual from "./AdmComponents/Manual/Manual";
 
 export function Adm({ headers }: HeadersProps) {
   const [value, setValue] = useState("1");
@@ -27,6 +28,7 @@ export function Adm({ headers }: HeadersProps) {
   const componentsToRender = [
     {
       title: "Alunos",
+      displayArthur: "block",
       value: "1",
       tooltip:
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
@@ -34,6 +36,7 @@ export function Adm({ headers }: HeadersProps) {
     },
     {
       title: "Aulas",
+      displayArthur: "block",
       value: "2",
       tooltip:
         "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
@@ -41,6 +44,7 @@ export function Adm({ headers }: HeadersProps) {
     },
     {
       title: "Homework",
+      displayArthur: "block",
       value: "3",
       tooltip:
         "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
@@ -53,7 +57,8 @@ export function Adm({ headers }: HeadersProps) {
     },
     {
       title: "Financeiro",
-      value: "33",
+      displayArthur: "block",
+      value: "4",
       tooltip:
         "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
       component: (
@@ -62,15 +67,10 @@ export function Adm({ headers }: HeadersProps) {
         </>
       ),
     },
-    {
-      title: "Comentários",
-      value: "4",
-      tooltip:
-        "Visualize e responda aos comentários enviados pelos alunos. Utilize este espaço para esclarecer dúvidas, dar feedbacks e manter uma comunicação ativa.",
-      component: <AllComments headers={headers} />,
-    },
+
     {
       title: "Postagens",
+      displayArthur: "block",
       value: "5",
       tooltip:
         "Crie novas postagens para serem exibidas na página inicial de todos os alunos. Compartilhe avisos, novidades, materiais extras ou mensagens importantes.",
@@ -78,6 +78,7 @@ export function Adm({ headers }: HeadersProps) {
     },
     {
       title: "Aparência",
+      displayArthur: "block",
       value: "6",
       tooltip:
         "Personalize a aparência da plataforma para os alunos. Ajuste cores, logotipo, textos e outros elementos visuais para deixar o ambiente com a identidade da sua escola.",
@@ -89,6 +90,7 @@ export function Adm({ headers }: HeadersProps) {
       tooltip:
         "Gere contratos personalizados para cada aluno. Preencha os dados necessários e disponibilize o documento para assinatura ou download.",
       component: <Contract headers={headers} />,
+      displayArthur: "block",
     },
     {
       title: "Recibo",
@@ -96,18 +98,31 @@ export function Adm({ headers }: HeadersProps) {
       tooltip:
         "Emita recibos de pagamento para os alunos. Gere documentos oficiais com os dados do aluno, valores e datas de pagamento.",
       component: <Invoice headers={headers} />,
+      displayArthur: "block",
+    },
+    {
+      title: "Comentários",
+      value: "9",
+      tooltip:
+        "Visualize e responda aos comentários enviados pelos alunos. Utilize este espaço para esclarecer dúvidas, dar feedbacks e manter uma comunicação ativa.",
+      component: <AllComments headers={headers} />,
+      displayArthur: isArthurVincent ? "block" : "none ",
+    },
+    {
+      title: "Manual do aluno",
+      value: "10",
+      tooltip:
+        "Acesse o manual do aluno com orientações e dicas de uso da plataforma.",
+      component: <Manual />,
+      displayArthur: isArthurVincent ? "block" : "none ",
     },
     // {
-    //   title: "Manual do aluno",
-    //   value: "9",
-    //   tooltip: "Acesse o manual do aluno com orientações e dicas de uso da plataforma.",
-    //   component: <Manual />,
-    // },
-    // {
     //   title: "Timeline",
-    //   value: "10",
-    //   tooltip: "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
+    //   value: "11",
+    //   tooltip:
+    //     "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
     //   component: <TimelineComponent headers={headers} />,
+    //   displayArthur: isArthurVincent ? "block" : "none ",
     // },
   ];
 
@@ -152,21 +167,24 @@ export function Adm({ headers }: HeadersProps) {
             >
               {componentsToRender.map((component, index) => {
                 return (
-                  <Tooltip
+                  <span
                     key={index + component.value}
-                    title={component.tooltip}
-                    placement="bottom"
+                    style={{
+                      display: component.displayArthur,
+                    }}
                   >
-                    <Tab
-                      style={{
-                        color: partnerColor(),
-                        fontWeight:
-                          (index + 1).toString() === value ? 800 : 500,
-                      }}
-                      label={component.title}
-                      value={component.value}
-                    />
-                  </Tooltip>
+                    <Tooltip title={component.tooltip} placement="bottom">
+                      <Tab
+                        style={{
+                          color: partnerColor(),
+                          fontWeight:
+                            (index + 1).toString() === value ? 800 : 500,
+                        }}
+                        label={component.title}
+                        value={component.value}
+                      />
+                    </Tooltip>
+                  </span>
                 );
               })}
             </TabList>

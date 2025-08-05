@@ -40,7 +40,7 @@ const TimelineComponent = (headers) => {
 
   if (loading) {
     return (
-      <div style={{display="flex", justifyContent="center"}} mt={4}>
+      <div style={{display: "flex", justifyContent: "center"}}>
         <CircularProgress style={{ color: partnerColor() }} />
       </div>
     );

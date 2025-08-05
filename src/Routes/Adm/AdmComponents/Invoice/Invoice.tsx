@@ -72,6 +72,10 @@ export function Invoice({ headers }: HeadersProps) {
     window.print();
   };
 
+  const formatCurrency = (value: number) => {
+    return value.toFixed(2).replace(".", ",");
+  };
+
   return (
     <div>
       {loading ? (
@@ -156,7 +160,8 @@ export function Invoice({ headers }: HeadersProps) {
         </HOne>
         <div>
           <p>
-            Recibo referente ao recebimento da importância de R$ {fee},00
+            Recibo referente ao recebimento da importância de R${" "}
+            {formatCurrency(fee)}{" "}
             recebida de {name}, (CPF: {doc}), no mês de {thisMonth}.
           </p>
           {comments && (
