@@ -49,6 +49,10 @@ const getEmbedUrl = (url) => {
     const videoId = url.split("youtu.be/")[1]?.split("?")[0];
     return `https://www.youtube.com/embed/${videoId}`;
   }
+  if (url.includes("youtube.com/live/")) {
+    const videoId = url.split("youtube.com/live/")[1]?.split("?")[0];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
 
   // Vimeo URL patterns
   if (url.includes("vimeo.com/")) {
