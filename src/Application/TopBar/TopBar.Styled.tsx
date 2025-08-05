@@ -15,7 +15,7 @@ export const TopBarContainer = styled.header.attrs({
   justify-content: space-evenly;
   align-items: center;
   display: flex;
-  padding: 6px;
+  padding: 7px;
   width: 100%;
   height: 40px;
   @media print {

@@ -290,7 +290,7 @@ export function HomePage({ headers }: HeadersProps) {
             justifyContent: "center",
             alignItems: "center",
             minHeight: "100vh",
-            background: `linear-gradient(135deg, ${partnerColor()} 0%, ${theBackgroundColor()} 100%)`,
+            background: `linear-gradient(135deg, ${partnerColor()} 0%, black 100%)`,
             position: "relative",
             overflow: "hidden",
           }}
@@ -332,7 +332,6 @@ export function HomePage({ headers }: HeadersProps) {
               animation: "float 4s ease-in-out infinite",
             }}
           />
-
           {/* Main loading content */}
           <div
             style={{
@@ -349,12 +348,14 @@ export function HomePage({ headers }: HeadersProps) {
               style={{
                 width: "120px",
                 height: "120px",
-                borderRadius: "20px",
-                background: `${textPrimaryColorContrast()}15`,
+                padding: "40px",
+                borderRadius: "50%",
+                background: "white",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 backdropFilter: "blur(10px)",
+                boxShadow: `0 0 20px grey`,
                 border: `2px solid ${textPrimaryColorContrast()}30`,
                 animation: "pulse 2s ease-in-out infinite",
                 overflow: "hidden",
@@ -364,12 +365,12 @@ export function HomePage({ headers }: HeadersProps) {
                 src={logoPartner()}
                 alt="Logo"
                 style={{
-                  width: "90%",
-                  height: "90%",
-                  objectFit: "contain",
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "scale-down",
+                  filter: `drop-shadow(0 0 10px ${textPrimaryColorContrast()}50)`,
                 }}
                 onError={(e) => {
-                  // Fallback se a imagem não carregar
                   e.currentTarget.style.display = "none";
                   if (e.currentTarget.parentElement) {
                     e.currentTarget.parentElement.innerHTML = `
@@ -383,31 +384,6 @@ export function HomePage({ headers }: HeadersProps) {
                 </div>
               `;
                   }
-                }}
-              />
-            </div>
-
-            {/* Loading spinner with custom styling */}
-            <div style={{ position: "relative" }}>
-              <CircularProgress
-                size={60}
-                thickness={3}
-                style={{
-                  color: textPrimaryColorContrast(),
-                  filter: `drop-shadow(0 0 10px ${textPrimaryColorContrast()}50)`,
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  background: `${textPrimaryColorContrast()}10`,
-                  backdropFilter: "blur(10px)",
                 }}
               />
             </div>
