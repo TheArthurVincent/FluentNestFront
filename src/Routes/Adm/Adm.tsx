@@ -117,14 +117,14 @@ export function Adm({ headers }: HeadersProps) {
       component: <Manual />,
       displayArthur: isArthurVincent ? "block" : "none ",
     },
-    {
-      title: "Timeline",
-      value: "11",
-      tooltip:
-        "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
-      component: <TimelineComponent headers={headers} />,
-      displayArthur: isArthurVincent ? "block" : "none ",
-    },
+    // {
+    //   title: "Timeline",
+    //   value: "11",
+    //   tooltip:
+    //     "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
+    //   component: <TimelineComponent headers={headers} />,
+    //   displayArthur: isArthurVincent ? "block" : "none ",
+    // },
   ];
 
   const handleChange = (event: any, newValue: string) => {
