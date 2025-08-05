@@ -3240,8 +3240,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               }}
                             >
                               {UniversalTexts.calendarModal.clickToAccessClass}
-                              {" - "}
-                              {link}
                             </Link>
                           </div>
                         )}
