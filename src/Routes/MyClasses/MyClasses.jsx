@@ -20,6 +20,7 @@ import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
 
 export function MyClasses({ headers }) {
   const [loading, setLoading] = useState(false);
@@ -468,7 +469,7 @@ export function MyClasses({ headers }) {
                   {classItem.videoUrl && (
                     <>
                       <IFrameVideoClass
-                        src={getVideoEmbedUrl(classItem.videoUrl)}
+                        src={getEmbedUrl(classItem.videoUrl)}
                         title={`Aula - ${classItem.date}`}
                       />
 

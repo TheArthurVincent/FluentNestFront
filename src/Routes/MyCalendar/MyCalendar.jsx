@@ -35,34 +35,7 @@ import Helmets from "../../Resources/Helmets";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
-
-// Function to convert video URLs to embed URLs
-const getEmbedUrl = (url) => {
-  if (!url) return null;
-
-  // YouTube URL patterns
-  if (url.includes("youtube.com/watch?v=")) {
-    const videoId = url.split("v=")[1]?.split("&")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-  if (url.includes("youtu.be/")) {
-    const videoId = url.split("youtu.be/")[1]?.split("?")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-  if (url.includes("youtube.com/live/")) {
-    const videoId = url.split("youtube.com/live/")[1]?.split("?")[0];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-
-  // Vimeo URL patterns
-  if (url.includes("vimeo.com/")) {
-    const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
-    return `https://player.vimeo.com/video/${videoId}`;
-  }
-
-  // If it's already an embed URL or other format, return as is
-  return url;
-};
+import { getEmbedUrl } from "./CalendarComponents/MyCalendarFuncions";
 
 // File handling functions
 const convertToBase64 = (file) => {
