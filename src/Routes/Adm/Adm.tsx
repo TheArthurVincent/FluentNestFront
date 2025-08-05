@@ -33,14 +33,14 @@ export function Adm({ headers }: HeadersProps) {
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
       component: <AllStudents id={id} headers={headers} />,
     },
-    {
-      title: "Aulas",
-      displayArthur: "block",
-      value: "2",
-      tooltip:
-        "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
-      component: <NewTutoring id={id} headers={headers} />,
-    },
+    // {
+    //   title: "Aulas",
+    //   displayArthur: "block",
+    //   value: "2",
+    //   tooltip:
+    //     "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
+    //   component: <NewTutoring id={id} headers={headers} />,
+    // },
     {
       title: "Homework",
       displayArthur: "block",
@@ -49,7 +49,7 @@ export function Adm({ headers }: HeadersProps) {
         "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
       component: (
         <>
-          <NewHomeworkAssignment id={id} headers={headers} />
+          {/* <NewHomeworkAssignment id={id} headers={headers} /> */}
           <PendingHomeworkAssignment id={id} headers={headers} />
         </>
       ),
