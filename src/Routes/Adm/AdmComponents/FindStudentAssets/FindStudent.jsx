@@ -52,11 +52,13 @@ import {
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
+import { isArthurVincent } from "../../../../App";
 
 export function FindStudent({ uploadStatus, headers, id }) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
+  const [newCpf, setNewCpf] = useState("");
   const [newUsername, setNewUsername] = useState("");
   const [newAddress, setNewAddress] = useState("");
   const [newPhone, setNewPhone] = useState("");
@@ -72,8 +74,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [seeConfirmDelete, setSeeConfirmDelete] = useState(false);
   const [ID, setID] = useState("");
   const [value, setValue] = useState("1");
-  const [homeworkAssignmentsDone, setHomeworkAssignmentsDone] = useState("1");
-  const [flashcards25Reviews, setFlashcards25Reviews] = useState("1");
+  const [homeworkAssignmentsDone, setHomeworkAssignmentsDone] = useState(0);
+  const [flashcards25Reviews, setFlashcards25Reviews] = useState(0);
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [weeklyClasses, setWeeklyClasses] = useState(1);
@@ -108,13 +110,18 @@ export function FindStudent({ uploadStatus, headers, id }) {
         headers,
       });
       setNewName(response.data.formattedStudentData.name);
+      setNewCpf(
+        response.data.formattedStudentData.doc
+          ? formatCpf(response.data.formattedStudentData.doc)
+          : ""
+      );
       setNewLastName(response.data.formattedStudentData.lastname);
       setNewUsername(response.data.formattedStudentData.username);
       setNewPhone(response.data.formattedStudentData.phoneNumber);
       setNewEmail(response.data.formattedStudentData.email);
       setNewDateOfBirth(
         response.data.formattedStudentData.dateOfBirth
-          ? response.data.formattedStudentData.dateOfBirth.split('T')[0]
+          ? response.data.formattedStudentData.dateOfBirth.split("T")[0]
           : ""
       );
       setFeeUpToDate(response.data.formattedStudentData.feeUpToDate);
@@ -124,16 +131,16 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setWeeklyClasses(response.data.formattedStudentData.weeklyClasses);
       setID(response.data.formattedStudentData.id);
       setGoogleDriveLink(response.data.formattedStudentData.googleDriveLink);
-      setTotalScore(response.data.formattedStudentData.totalScore);
-      setMonthlyScore(response.data.formattedStudentData.monthlyScore);
+      setTotalScore(response.data.formattedStudentData.totalScore || 0);
+      setMonthlyScore(response.data.formattedStudentData.monthlyScore || 0);
       setPicture(response.data.formattedStudentData.picture);
       setFee(response.data.formattedStudentData.fee);
       setNewAddress(response.data.formattedStudentData.address);
       setHomeworkAssignmentsDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone
+        response.data.formattedStudentData.homeworkAssignmentsDone || 0
       );
       setFlashcards25Reviews(
-        response.data.formattedStudentData.flashcards25Reviews
+        response.data.formattedStudentData.flashcards25Reviews || 0
       );
     } catch (error) {
       notifyAlert(error);
@@ -146,13 +153,13 @@ export function FindStudent({ uploadStatus, headers, id }) {
       const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
         headers,
       });
-      setTotalScore(response.data.formattedStudentData.totalScore);
-      setMonthlyScore(response.data.formattedStudentData.monthlyScore);
+      setTotalScore(response.data.formattedStudentData.totalScore || 0);
+      setMonthlyScore(response.data.formattedStudentData.monthlyScore || 0);
       setHomeworkAssignmentsDone(
-        response.data.formattedStudentData.homeworkAssignmentsDone
+        response.data.formattedStudentData.homeworkAssignmentsDone || 0
       );
       setFlashcards25Reviews(
-        response.data.formattedStudentData.flashcards25Reviews
+        response.data.formattedStudentData.flashcards25Reviews || 0
       );
     } catch (error) {
       notifyAlert(error);
@@ -161,6 +168,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
   };
 
   const editStudent = async (id) => {
+    // Validar CPF antes de salvar
+    if (newCpf && !validateCpf(newCpf)) {
+      notifyAlert(
+        "CPF inválido. Verifique o formato e tente novamente.",
+        "red"
+      );
+      return;
+    }
+
     let editedStudent = {
       username: newUsername,
       password: newPassword,
@@ -175,6 +191,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       address: newAddress,
       fee,
       picture: picture,
+      doc: newCpf.replace(/\D/g, ""), // Salva apenas números no banco
     };
 
     try {
@@ -217,6 +234,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
         headers,
       });
       setStudents(response.data.listOfStudents);
+      console.log(response.data.listOfStudents);
       setLoading(false);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
@@ -248,6 +266,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [resetVisible, setResetVisible] = useState(false);
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [disabled, setDisabled] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   const handleResetMonth = async () => {
     const headersBack = {
@@ -262,7 +281,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setResetVisible(true);
       setTimeout(() => {
         setHasReset(true);
-      }, 2000);
+      }, 800);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       notifyAlert("Erro ao resetar");
     }
@@ -273,13 +295,26 @@ export function FindStudent({ uploadStatus, headers, id }) {
   };
   const cellTable = {
     whiteSpace: "nowrap",
+    padding: "12px 16px",
+    fontSize: "14px",
+    fontWeight: "400",
+    color: "#2c3e50",
+    borderBottom: "1px solid #ecf0f1",
   };
+
   const stickyHeaderStyle = {
     position: "sticky",
     top: 0,
-    backgroundColor: "#f6f6f6",
+    backgroundColor: "#fafbfc",
     zIndex: 1,
     whiteSpace: "nowrap",
+    padding: "16px",
+    fontSize: "13px",
+    fontWeight: "600",
+    color: "#34495e",
+    borderBottom: "2px solid #e8eaed",
+    textTransform: "uppercase",
+    letterSpacing: "0.5px",
   };
 
   const updateFeeStatus = async (id) => {
@@ -344,6 +379,66 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [descSpecial, setDescSpecial] = useState("");
   const [plusScore, setPlusScore] = useState(0);
 
+  // Função para validar e formatar CPF
+  const formatCpf = (value) => {
+    // Remove tudo que não é dígito
+    const onlyNumbers = value.replace(/\D/g, "");
+
+    // Limita a 11 dígitos
+    const limitedNumbers = onlyNumbers.slice(0, 11);
+
+    // Aplica a máscara progressivamente
+    if (limitedNumbers.length <= 3) {
+      return limitedNumbers;
+    } else if (limitedNumbers.length <= 6) {
+      return limitedNumbers.replace(/(\d{3})(\d+)/, "$1.$2");
+    } else if (limitedNumbers.length <= 9) {
+      return limitedNumbers.replace(/(\d{3})(\d{3})(\d+)/, "$1.$2.$3");
+    } else {
+      return limitedNumbers.replace(
+        /(\d{3})(\d{3})(\d{3})(\d+)/,
+        "$1.$2.$3-$4"
+      );
+    }
+  };
+
+  // Função para validar CPF
+  const validateCpf = (cpf) => {
+    const onlyNumbers = cpf.replace(/\D/g, "");
+
+    if (onlyNumbers.length !== 11) return false;
+
+    // Verifica se todos os dígitos são iguais
+    if (/^(\d)\1+$/.test(onlyNumbers)) return false;
+
+    // Validação do primeiro dígito verificador
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += parseInt(onlyNumbers[i]) * (10 - i);
+    }
+    let digit1 = 11 - (sum % 11);
+    if (digit1 > 9) digit1 = 0;
+
+    if (parseInt(onlyNumbers[9]) !== digit1) return false;
+
+    // Validação do segundo dígito verificador
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += parseInt(onlyNumbers[i]) * (11 - i);
+    }
+    let digit2 = 11 - (sum % 11);
+    if (digit2 > 9) digit2 = 0;
+
+    return parseInt(onlyNumbers[10]) === digit2;
+  };
+
+  const handleCpfChange = (e) => {
+    const formattedCpf = formatCpf(e.target.value);
+    setNewCpf(formattedCpf);
+  };
+
+  const isCpfValid = newCpf ? validateCpf(newCpf) : true;
+
   const submitPlusScore = async (id, score, description, type) => {
     try {
       setDisabled(true);
@@ -391,116 +486,459 @@ export function FindStudent({ uploadStatus, headers, id }) {
       >
         {UniversalTexts.myStudents}
       </HOne>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          marginBottom: "1rem",
-        }}
-      >
-        <div style={{ display: hasReset ? "none" : "block" }}>
-          {" "}
-          <MyButton
-            style={{ display: isConfirmVisible ? "none" : "block" }}
-            onDoubleClick={() => handleShowResetMonth()}
+      {/* SEÇÃO DE INFORMAÇÕES DETALHADAS DO ALUNO SELECIONADO */}
+      {selectedStudent && (
+        <div
+          style={{
+            backgroundColor: "#ffffff",
+            margin: "auto",
+            marginBottom: "24px",
+            borderRadius: "12px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+            border: "1px solid #e8eaed",
+            maxWidth: "70rem",
+            padding: "24px",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
           >
-            {" "}
-            Resetar pontuações do mês
-          </MyButton>
-          <div style={{ display: isConfirmVisible ? "block" : "none" }}>
-            <p> Tem certeza que deseja resetar pontuações do mês?</p>
-            <MyButton
-              firstcolor="red"
-              secondcolor="#FA7A71"
-              textcolor="white"
-              onDoubleClick={() => handleResetMonth()}
-            >
-              Sim
-            </MyButton>
-            <MyButton
-              style={{ marginLeft: "1rem" }}
-              onMouseOver={() => handleShowResetMonth()}
-              onClick={() => handleShowResetMonth()}
-            >
-              Não
-            </MyButton>
-            <p
+            <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+              <img
+                style={{
+                  width: "60px",
+                  height: "60px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "3px solid #e8eaed",
+                }}
+                src={
+                  selectedStudent.picture ||
+                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                }
+                alt=""
+              />
+              <div>
+                <Typography
+                  variant="h6"
+                  style={{
+                    fontWeight: "600",
+                    color: "#2c3e50",
+                    fontSize: "18px",
+                    marginBottom: "4px",
+                  }}
+                >
+                  {selectedStudent.fullname}
+                </Typography>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.email}
+                </Typography>
+              </div>
+            </div>
+
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => setSelectedStudent(null)}
               style={{
-                display: resetVisible ? "block" : "none",
+                minWidth: "auto",
+                padding: "8px",
+                borderRadius: "8px",
+                color: "#6c757d",
+                borderColor: "#e8eaed",
+                marginRight: "8px",
               }}
             >
-              Pontuações do mês resetadas
-            </p>
+              ✕
+            </Button>
+
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => {
+                setID(selectedStudent._id);
+                setNewName(selectedStudent.name);
+                setNewLastName(selectedStudent.lastName);
+                setNewCpf(selectedStudent.doc);
+                setNewEmail(selectedStudent.email);
+                setNewPhone(selectedStudent.phoneNumber);
+                setNewAddress(selectedStudent.address);
+                setWeeklyClasses(selectedStudent.weeklyClasses);
+                setNewDateOfBirth(
+                  selectedStudent.dateOfBirth
+                    ? selectedStudent.dateOfBirth.split("T")[0]
+                    : ""
+                );
+                setGoogleDriveLink(selectedStudent.googleDriveLink);
+                setPermissions(selectedStudent.permissions);
+                setFeeUpToDate(selectedStudent.feeUpToDate);
+                setOnHold(selectedStudent.onHold);
+                setTutoree(selectedStudent.tutoree);
+                setTotalScore(selectedStudent.totalScore || 0);
+                setMonthlyScore(selectedStudent.monthlyScore || 0);
+                setHomeworkAssignmentsDone(
+                  selectedStudent.homeworkAssignmentsDone || 0
+                );
+                setFlashcards25Reviews(
+                  selectedStudent.flashcards25Reviews || 0
+                );
+                handleSeeModal();
+              }}
+              style={{
+                minWidth: "auto",
+                padding: "8px 12px",
+                borderRadius: "8px",
+                color: partnerColor(),
+                borderColor: partnerColor(),
+                fontSize: "12px",
+                fontWeight: "500",
+              }}
+            >
+              ✏️ Editar
+            </Button>
           </div>
+
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Username
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.username || "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  CPF/Documento
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {selectedStudent.doc || "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Telefone
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.phoneNumber || "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Data Nascimento
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.dateOfBirth
+                    ? formatDateBr(
+                        new Date(selectedStudent.dateOfBirth).setDate(
+                          new Date(selectedStudent.dateOfBirth).getDate() + 1
+                        )
+                      )
+                    : "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Pontuação Total
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "600",
+                    color: "#2c3e50",
+                    fontSize: "16px",
+                  }}
+                >
+                  {selectedStudent.totalScore || "0"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Pontuação Mensal
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "600",
+                    color: "#34495e",
+                    fontSize: "16px",
+                  }}
+                >
+                  {selectedStudent.monthlyScore || "0"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Aulas/Semana
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.weeklyClasses || "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Google Drive
+                </Typography>
+                {selectedStudent.googleDriveLink ? (
+                  <a
+                    href={selectedStudent.googleDriveLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      color: partnerColor(),
+                      textDecoration: "none",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.textDecoration = "underline";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.textDecoration = "none";
+                    }}
+                  >
+                    Acessar Drive
+                  </a>
+                ) : (
+                  <Typography
+                    style={{
+                      fontWeight: "500",
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    }}
+                  >
+                    N/A
+                  </Typography>
+                )}
+              </div>
+            </Grid>
+
+            {selectedStudent.address && (
+              <Grid item xs={12}>
+                <div style={{ marginBottom: "16px" }}>
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Endereço
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontWeight: "500",
+                      color: "#2c3e50",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {selectedStudent.address}
+                  </Typography>
+                </div>
+              </Grid>
+            )}
+          </Grid>
         </div>
-        <input
-          className="inputs-style"
-          type="text"
-          placeholder="Pesquisar aluno"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+      )}
+
       {!loading ? (
         <div
           style={{
-            backgroundColor: "rgb(246, 246, 246)",
+            backgroundColor: "#ffffff",
             margin: "auto",
-            boxShadow: "inset 0px 10px 10px rgb(197, 197, 197)",
+            borderRadius: "12px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            border: "1px solid #e8eaed",
             maxWidth: "70rem",
             maxHeight: "30rem",
-            overflow: "auto",
+            overflow: "hidden",
           }}
         >
-          <TableContainer>
-            <Table>
+          <div
+            style={{
+              display: "grid",
+              marginBottom: "1rem",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <input
+              style={{
+                width: "100%",
+                padding: "12px 16px",
+                margin: "12px",
+                border: "1px solid #e8eaed",
+                borderRadius: "8px",
+                fontSize: "14px",
+                outline: "none",
+                transition: "all 0.2s ease",
+                backgroundColor: "#ffffff",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+              }}
+              type="text"
+              placeholder="Pesquisar aluno..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={(e) => {
+                e.target.style.borderColor = partnerColor();
+                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                ("");
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#e8eaed";
+                e.target.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+              }}
+            />
+          </div>
+          <TableContainer
+            style={{
+              maxHeight: "30rem",
+              overflowX: "auto",
+              scrollbarWidth: "thin",
+              scrollbarColor: "#ddd transparent",
+            }}
+          >
+            <Table stickyHeader>
               <TableHead>
                 <TableRow>
                   <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>Picture</span>
+                    <span style={cellTable}>Foto</span>
                   </TableCell>
                   <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.name}</span>
+                    <span style={cellTable}>Nome Completo</span>
                   </TableCell>
                   <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.username}</span>
+                    <span style={cellTable}>Email</span>
                   </TableCell>
                   <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.document}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.dateOfBirth}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.email}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.phoneNumber}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.permissions}</span>
-                  </TableCell>
-                  {/* <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.fee}</span>
-                  </TableCell> */}
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.totalScore}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.monthlyScore}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>{UniversalTexts.address}</span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>
-                      {UniversalTexts.weeklyClasses}
-                    </span>
-                  </TableCell>
-                  <TableCell style={stickyHeaderStyle}>
-                    <span style={cellTable}>
-                      {UniversalTexts.googleDriveLink}
-                    </span>
+                    <span style={cellTable}>Permissões</span>
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -513,17 +951,32 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   )
                   .map((student, index) => (
                     <TableRow
-                      className="the-hover"
                       key={index}
-                      onClick={() => seeEdition(student.id)}
+                      onClick={() => {
+                        setSelectedStudent(student);
+                      }}
+                      style={{
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                        "&:hover": {
+                          backgroundColor: "#f8f9fa",
+                        },
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f8f9fa";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }}
                     >
-                      <TableCell>
+                      <TableCell style={cellTable}>
                         <img
                           style={{
-                            width: "2.5rem",
-                            height: "2.5rem",
+                            width: "40px",
+                            height: "40px",
                             borderRadius: "50%",
                             objectFit: "cover",
+                            border: "2px solid #e8eaed",
                           }}
                           src={
                             student.picture ||
@@ -532,59 +985,39 @@ export function FindStudent({ uploadStatus, headers, id }) {
                           alt=""
                         />
                       </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.fullname}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.username}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.doc}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>
-                          {formatDateBr(
-                            new Date(student.dateOfBirth).setDate(
-                              new Date(student.dateOfBirth).getDate() + 1
-                            )
-                          )}
+                      <TableCell style={cellTable}>
+                        <span style={{ fontWeight: "500", color: "#2c3e50" }}>
+                          {student.fullname}
                         </span>
                       </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.email}</span>
+                      <TableCell style={cellTable}>
+                        <span style={{ color: "#495057" }}>
+                          {student.email}
+                        </span>
                       </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.phoneNumber}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.permissions}</span>
-                      </TableCell>
-                      {/* <TableCell>
-                        <span style={cellTable}>R$ {student.fee}</span>
-                      </TableCell> */}
-                      <TableCell>
-                        <span style={cellTable}>{student.totalScore}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.monthlyScore}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.address}</span>
-                      </TableCell>
-                      <TableCell>
-                        <span style={cellTable}>{student.weeklyClasses}</span>
-                      </TableCell>
-                      <TableCell>
-                        <a
-                          style={{ color: "#000" }}
-                          href={
-                            student.googleDriveLink || "http://www.google.com/"
-                          }
-                          target="_blank"
-                          rel="noopener noreferrer"
+                      <TableCell style={cellTable}>
+                        <span
+                          style={{
+                            padding: "4px 8px",
+                            borderRadius: "12px",
+                            fontSize: "12px",
+                            fontWeight: "500",
+                            backgroundColor:
+                              student.permissions === "superadmin"
+                                ? "#e3f2fd"
+                                : student.permissions === "teacher"
+                                ? "#f3e5f5"
+                                : "#e8f5e8",
+                            color:
+                              student.permissions === "superadmin"
+                                ? "#1976d2"
+                                : student.permissions === "teacher"
+                                ? "#7b1fa2"
+                                : "#388e3c",
+                          }}
                         >
-                          {UniversalTexts.clickHere}
-                        </a>
+                          {student.permissions}
+                        </span>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -606,59 +1039,284 @@ export function FindStudent({ uploadStatus, headers, id }) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       )}
+
+      {/* SEÇÃO DE ESTATÍSTICAS GERAIS */}
+      {!loading && students.length > 0 && (
+        <div
+          style={{
+            backgroundColor: "#fafbfc",
+            margin: "auto",
+            marginTop: "16px",
+            borderRadius: "8px",
+            border: "1px solid #e8eaed",
+            maxWidth: "70rem",
+            padding: "12px 16px",
+          }}
+        >
+          <Typography
+            variant="body2"
+            style={{
+              marginBottom: "8px",
+              fontWeight: "500",
+              color: "#6c757d",
+              fontSize: "11px",
+              textTransform: "uppercase",
+              letterSpacing: "0.5px",
+            }}
+          >
+            Resumo
+          </Typography>
+
+          <Grid container spacing={1}>
+            <Grid item xs={3}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "8px 4px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "6px",
+                  border: "1px solid #e8eaed",
+                }}
+              >
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "10px",
+                    marginBottom: "2px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Total
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "600",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {students.length}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={3}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "8px 4px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "6px",
+                  border: "1px solid #e8eaed",
+                }}
+              >
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "10px",
+                    marginBottom: "2px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Professores
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "600",
+                    color: "#7b1fa2",
+                    fontSize: "14px",
+                  }}
+                >
+                  {students.filter((s) => s.permissions === "teacher").length}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={3}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "8px 4px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "6px",
+                  border: "1px solid #e8eaed",
+                }}
+              >
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "10px",
+                    marginBottom: "2px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Alunos
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "600",
+                    color: "#388e3c",
+                    fontSize: "14px",
+                  }}
+                >
+                  {students.filter((s) => s.permissions === "student").length}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={3}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "8px 4px",
+                  backgroundColor: "#ffffff",
+                  borderRadius: "6px",
+                  border: "1px solid #e8eaed",
+                }}
+              >
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "10px",
+                    marginBottom: "2px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.3px",
+                  }}
+                >
+                  Admins
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "600",
+                    color: "#1976d2",
+                    fontSize: "14px",
+                  }}
+                >
+                  {
+                    students.filter((s) => s.permissions === "superadmin")
+                      .length
+                  }
+                </Typography>
+              </div>
+            </Grid>
+          </Grid>
+        </div>
+      )}
+
       <Dialog
         open={isVisible}
         onClose={handleSeeModal}
         fullWidth
-        maxWidth="md"
+        maxWidth="lg"
         PaperProps={{
-          style: { borderRadius: "12px" },
+          style: {
+            borderRadius: "16px",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.1)",
+            border: "1px solid #e8eaed",
+          },
         }}
       >
-        <DialogTitle>
+        <DialogTitle style={{ padding: 0 }}>
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              borderBottom: "1px solid #eee",
-              paddingBottom: "1rem",
+              padding: "24px 32px",
+              borderBottom: "1px solid #e8eaed",
+              backgroundColor: "#fafbfc",
             }}
           >
-            <Typography variant="h5" fontWeight="600" color="#333">
-              {newName} {newLastName}
-            </Typography>
+            <div>
+              <Typography
+                variant="h5"
+                style={{
+                  fontWeight: "600",
+                  color: "#2c3e50",
+                  marginBottom: "4px",
+                }}
+              >
+                {newName} {newLastName}
+              </Typography>
+              <Typography
+                variant="body2"
+                style={{
+                  color: "#6c757d",
+                  fontWeight: "400",
+                }}
+              >
+                Gerenciar informações do aluno
+              </Typography>
+            </div>
             <Button
               onClick={handleSeeModal}
-              style={{ minWidth: "auto", padding: "8px" }}
+              style={{
+                minWidth: "auto",
+                padding: "8px",
+                borderRadius: "8px",
+                color: "#6c757d",
+              }}
             >
               <CloseIcon />
             </Button>
           </div>
         </DialogTitle>
 
-        <DialogContent style={{ padding: "2rem" }}>
+        <DialogContent style={{ padding: "32px", backgroundColor: "#ffffff" }}>
           {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
           <div
             style={{
-              backgroundColor: "#f8f9fa",
-              padding: "1.5rem",
-              borderRadius: "8px",
-              marginBottom: "2rem",
+              backgroundColor: "#ffffff",
+              padding: "24px",
+              borderRadius: "12px",
+              marginBottom: "24px",
+              border: "1px solid #e8eaed",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             }}
           >
-            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-              📝 Informações Básicas
+            <Typography
+              variant="h6"
+              style={{
+                marginBottom: "20px",
+                fontWeight: "600",
+                color: "#2c3e50",
+                fontSize: "16px",
+              }}
+            >
+              Informações Básicas
             </Typography>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
                   label="Nome"
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
+                  variant="outlined"
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& fieldset": {
+                        borderColor: "#e8eaed",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#c3c4c7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: partnerColor(),
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -667,7 +1325,66 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   label="Sobrenome"
                   value={newLastName}
                   onChange={(e) => setNewLastName(e.target.value)}
+                  variant="outlined"
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& fieldset": {
+                        borderColor: "#e8eaed",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#c3c4c7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: partnerColor(),
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                  }}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="CPF"
+                  value={newCpf}
+                  onChange={handleCpfChange}
+                  variant="outlined"
+                  size="small"
+                  error={!isCpfValid}
+                  helperText={
+                    !isCpfValid && newCpf
+                      ? "CPF inválido. Formato: 000.000.000-00"
+                      : ""
+                  }
+                  placeholder="000.000.000-00"
+                  inputProps={{
+                    maxLength: 14,
+                  }}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& fieldset": {
+                        borderColor: !isCpfValid ? "#e74c3c" : "#e8eaed",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: !isCpfValid ? "#e74c3c" : "#c3c4c7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: !isCpfValid ? "#e74c3c" : partnerColor(),
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -676,7 +1393,21 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   label="E-mail"
                   value={newEmail}
                   onChange={(e) => setNewEmail(e.target.value)}
+                  variant="outlined"
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& fieldset": { borderColor: "#e8eaed" },
+                      "&:hover fieldset": { borderColor: "#c3c4c7" },
+                      "&.Mui-focused fieldset": { borderColor: partnerColor() },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -685,7 +1416,21 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   label="Telefone"
                   value={newPhone}
                   onChange={(e) => setNewPhone(e.target.value)}
+                  variant="outlined"
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& fieldset": { borderColor: "#e8eaed" },
+                      "&:hover fieldset": { borderColor: "#c3c4c7" },
+                      "&.Mui-focused fieldset": { borderColor: partnerColor() },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -694,7 +1439,21 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   label="Endereço"
                   value={newAddress}
                   onChange={(e) => setNewAddress(e.target.value)}
+                  variant="outlined"
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& fieldset": { borderColor: "#e8eaed" },
+                      "&:hover fieldset": { borderColor: "#c3c4c7" },
+                      "&.Mui-focused fieldset": { borderColor: partnerColor() },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -735,7 +1494,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               style={{
                 display: "flex",
                 justifyContent: "flex-end",
-                marginTop: "1rem",
+                marginTop: "24px",
               }}
             >
               <Button
@@ -744,227 +1503,400 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 style={{
                   backgroundColor: partnerColor(),
                   color: "#fff",
-                  fontWeight: "600",
+                  fontWeight: "500",
+                  padding: "10px 24px",
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 }}
               >
-                💾 Salvar Informações
+                Salvar Informações
               </Button>
             </div>
           </div>
 
-          {/* SEÇÃO 1.5: PERMISSIONS */}
+          {/* SEÇÃO 2: PERMISSÕES */}
           <div
             style={{
-              backgroundColor: "#d2e6f5ff",
-              padding: "1.5rem",
-              borderRadius: "8px",
-              marginBottom: "2rem",
-              border: "1px solid #4165c6ff",
+              backgroundColor: "#ffffff",
+              padding: "24px",
+              borderRadius: "12px",
+              marginBottom: "24px",
+              border: "1px solid #e8eaed",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             }}
           >
-            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-              🏆 Permissões
-            </Typography>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth size="small">
-                <InputLabel>Permissões</InputLabel>
-                <Select
-                  value={permissions}
-                  label="Permissões"
-                  onChange={(e) => setPermissions(e.target.value)}
-                >
-                  <MenuItem value="student">Aluno</MenuItem>
-                  <MenuItem value="teacher">Professor</MenuItem>
-                  <MenuItem value="superadmin">Admin</MenuItem>
-                </Select>
-              </FormControl>
-              <Button
-                variant="contained"
-                onClick={() => editStudentPermissions(ID)}
-                style={{
-                  marginTop: "1rem",
-                  backgroundColor: partnerColor(),
-                  color: "#fff",
-                  fontWeight: "600",
-                }}
-              >
-                💾 Salvar Permissões
-              </Button>
-            </Grid>
-          </div>
-          {/* SEÇÃO 2: PONTUAÇÃO */}
-          <div
-            style={{
-              backgroundColor: "#fff3cd",
-              padding: "1.5rem",
-              borderRadius: "8px",
-              marginBottom: "2rem",
-              border: "1px solid #ffeaa7",
-            }}
-          >
-            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-              🏆 Pontuação
-            </Typography>
-
-            <Grid container spacing={2} style={{ marginBottom: "1rem" }}>
-              <Grid item xs={6} md={3}>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "1rem",
-                    backgroundColor: "#fff",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <Typography variant="body2" color="#666">
-                    Total
-                  </Typography>
-                  <Typography variant="h6" fontWeight="600">
-                    {formatNumber(totalScore)}
-                  </Typography>
-                </div>
-              </Grid>
-              <Grid item xs={6} md={3}>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "1rem",
-                    backgroundColor: "#fff",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <Typography variant="body2" color="#666">
-                    Mensal
-                  </Typography>
-                  <Typography variant="h6" fontWeight="600">
-                    {formatNumber(monthlyScore)}
-                  </Typography>
-                </div>
-              </Grid>
-              <Grid item xs={6} md={3}>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "1rem",
-                    backgroundColor: "#fff",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <Typography variant="body2" color="#666">
-                    Homework
-                  </Typography>
-                  <Typography variant="h6" fontWeight="600">
-                    {formatNumber(homeworkAssignmentsDone)}
-                  </Typography>
-                </div>
-              </Grid>
-              <Grid item xs={6} md={3}>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "1rem",
-                    backgroundColor: "#fff",
-                    borderRadius: "6px",
-                  }}
-                >
-                  <Typography variant="body2" color="#666">
-                    Flashcards
-                  </Typography>
-                  <Typography variant="h6" fontWeight="600">
-                    {formatNumber(flashcards25Reviews)}
-                  </Typography>
-                </div>
-              </Grid>
-            </Grid>
-
-            <div
+            <Typography
+              variant="h6"
               style={{
-                display: "flex",
-                gap: "0.5rem",
-                flexWrap: "wrap",
-                marginBottom: "1rem",
+                marginBottom: "20px",
+                fontWeight: "600",
+                color: "#2c3e50",
+                fontSize: "16px",
               }}
             >
-              {listOfButtons.map((item, index) => (
-                <ArvinButton
-                  key={index}
+              Permissões
+            </Typography>
+            <Grid container spacing={3}>
+              <Grid item xs={12} md={6}>
+                <FormControl fullWidth variant="outlined" size="small">
+                  <InputLabel style={{ color: "#6c757d", fontSize: "14px" }}>
+                    Permissões
+                  </InputLabel>
+                  <Select
+                    value={permissions}
+                    label="Permissões"
+                    onChange={(e) => setPermissions(e.target.value)}
+                    sx={{
+                      borderRadius: "8px",
+                      backgroundColor: "#fafbfc",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#e8eaed",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        borderColor: "#c3c4c7",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        borderColor: partnerColor(),
+                      },
+                    }}
+                  >
+                    <MenuItem value="student">Aluno</MenuItem>
+                    <MenuItem value="teacher">Professor</MenuItem>
+                    <MenuItem value="superadmin">Admin</MenuItem>
+                  </Select>
+                </FormControl>
+                <Button
+                  variant="contained"
+                  onClick={() => editStudentPermissions(ID)}
+                  style={{
+                    marginTop: "16px",
+                    backgroundColor: partnerColor(),
+                    color: "#fff",
+                    fontWeight: "500",
+                    padding: "10px 24px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "14px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  Salvar Permissões
+                </Button>
+              </Grid>
+            </Grid>
+          </div>
+          {/* SEÇÃO 3: PONTUAÇÃO */}
+          {isArthurVincent && (
+            <div
+              style={{
+                backgroundColor: "#ffffff",
+                padding: "24px",
+                borderRadius: "12px",
+                marginBottom: "24px",
+                border: "1px solid #e8eaed",
+                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              }}
+            >
+              <Typography
+                variant="h6"
+                style={{
+                  marginBottom: "20px",
+                  fontWeight: "600",
+                  color: "#2c3e50",
+                  fontSize: "16px",
+                }}
+              >
+                Pontuação
+              </Typography>
+
+              <Grid container spacing={3} style={{ marginBottom: "24px" }}>
+                <Grid item xs={6} md={3}>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      border: "1px solid #e8eaed",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "12px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Total
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {formatNumber(totalScore || 0)}
+                    </Typography>
+                  </div>
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      border: "1px solid #e8eaed",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "12px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Mensal
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {formatNumber(monthlyScore || 0)}
+                    </Typography>
+                  </div>
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      border: "1px solid #e8eaed",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "12px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Homework
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {formatNumber(homeworkAssignmentsDone || 0)}
+                    </Typography>
+                  </div>
+                </Grid>
+                <Grid item xs={6} md={3}>
+                  <div
+                    style={{
+                      textAlign: "center",
+                      padding: "20px",
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      border: "1px solid #e8eaed",
+                    }}
+                  >
+                    <Typography
+                      variant="body2"
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "12px",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Flashcards
+                    </Typography>
+                    <Typography
+                      variant="h6"
+                      style={{
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        fontSize: "20px",
+                      }}
+                    >
+                      {formatNumber(flashcards25Reviews || 0)}
+                    </Typography>
+                  </div>
+                </Grid>
+              </Grid>
+
+              <div
+                style={{
+                  display: "flex",
+                  gap: "12px",
+                  flexWrap: "wrap",
+                  marginBottom: "24px",
+                }}
+              >
+                {listOfButtons.map((item, index) => (
+                  <ArvinButton
+                    key={index}
+                    disabled={disabled}
+                    style={{
+                      fontSize: "14px",
+                      padding: "8px 16px",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      fontWeight: "500",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    }}
+                    color={item.color}
+                    onClick={() =>
+                      submitPlusScore(
+                        ID,
+                        item.score,
+                        item.description,
+                        item.category
+                      )
+                    }
+                  >
+                    {item.text}
+                  </ArvinButton>
+                ))}
+              </div>
+
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    type="number"
+                    label="Pontuação extra"
+                    placeholder="Score"
+                    onChange={(e) => setPlusScore(Number(e.target.value))}
+                    size="small"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        backgroundColor: "#fafbfc",
+                        borderRadius: "8px",
+                        "& fieldset": {
+                          borderColor: "#e8eaed",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#c3c4c7",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: partnerColor(),
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#6c757d",
+                        fontSize: "14px",
+                      },
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        color: "#2c3e50",
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Descrição da pontuação"
+                    placeholder="Ex: Participação extra"
+                    onChange={(e) => setDescSpecial(e.target.value)}
+                    size="small"
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        backgroundColor: "#fafbfc",
+                        borderRadius: "8px",
+                        "& fieldset": {
+                          borderColor: "#e8eaed",
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#c3c4c7",
+                        },
+                        "&.Mui-focused fieldset": {
+                          borderColor: partnerColor(),
+                        },
+                      },
+                      "& .MuiInputLabel-root": {
+                        color: "#6c757d",
+                        fontSize: "14px",
+                      },
+                      "& .MuiInputBase-input": {
+                        fontSize: "14px",
+                        color: "#2c3e50",
+                      },
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "20px",
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  onClick={() =>
+                    submitPlusScore(ID, plusScore, descSpecial, "Others")
+                  }
                   disabled={disabled}
                   style={{
-                    fontSize: "0.75rem",
-                    padding: "6px 12px",
+                    fontWeight: "500",
+                    padding: "10px 24px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "14px",
+                    borderColor: partnerColor(),
+                    color: partnerColor(),
                   }}
-                  color={item.color}
-                  onClick={() =>
-                    submitPlusScore(
-                      ID,
-                      item.score,
-                      item.description,
-                      item.category
-                    )
-                  }
                 >
-                  {item.text}
-                </ArvinButton>
-              ))}
+                  Adicionar Pontuação
+                </Button>
+              </div>
             </div>
-
-            <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  type="number"
-                  label="Pontuação extra"
-                  placeholder="Score"
-                  onChange={(e) => setPlusScore(Number(e.target.value))}
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <TextField
-                  fullWidth
-                  label="Descrição da pontuação"
-                  placeholder="Ex: Participação extra"
-                  onChange={(e) => setDescSpecial(e.target.value)}
-                  size="small"
-                />
-              </Grid>
-            </Grid>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "1rem",
-              }}
-            >
-              <Button
-                variant="outlined"
-                onClick={() =>
-                  submitPlusScore(ID, plusScore, descSpecial, "Others")
-                }
-                disabled={disabled}
-                style={{ fontWeight: "600" }}
-              >
-                ➕ Adicionar Pontuação
-              </Button>
-            </div>
-          </div>
-
-          {/* SEÇÃO 3: CONFIGURAÇÕES */}
+          )}
+          {/* SEÇÃO 4: CONFIGURAÇÕES */}
           <div
             style={{
-              backgroundColor: "#e3f2fd",
-              padding: "1.5rem",
-              borderRadius: "8px",
-              marginBottom: "2rem",
-              border: "1px solid #bbdefb",
+              backgroundColor: "#ffffff",
+              padding: "24px",
+              borderRadius: "12px",
+              marginBottom: "24px",
+              border: "1px solid #e8eaed",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             }}
           >
-            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-              ⚙️ Configurações
+            <Typography
+              variant="h6"
+              style={{
+                marginBottom: "20px",
+                fontWeight: "600",
+                color: "#2c3e50",
+                fontSize: "16px",
+              }}
+            >
+              Configurações
             </Typography>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12} md={4}>
                 <FormControlLabel
                   control={
@@ -974,13 +1906,23 @@ export function FindStudent({ uploadStatus, headers, id }) {
                         updateFeeStatus(ID);
                         setFeeUpToDate(!feeUpToDate);
                       }}
-                      color="primary"
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: partnerColor(),
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                          {
+                            backgroundColor: partnerColor(),
+                          },
+                      }}
                     />
                   }
                   label={
-                    feeUpToDate
-                      ? "💰 Mensalidade em dia"
-                      : "⚠️ Mensalidade atrasada"
+                    <Typography style={{ fontSize: "14px", color: "#2c3e50" }}>
+                      {feeUpToDate
+                        ? "Mensalidade em dia"
+                        : "Mensalidade atrasada"}
+                    </Typography>
                   }
                 />
               </Grid>
@@ -993,10 +1935,22 @@ export function FindStudent({ uploadStatus, headers, id }) {
                         updateOnHold(ID);
                         setOnHold(!onHold);
                       }}
-                      color="primary"
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: partnerColor(),
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                          {
+                            backgroundColor: partnerColor(),
+                          },
+                      }}
                     />
                   }
-                  label={onHold ? "Matrícula Trancada" : "Matrícula Ativa"}
+                  label={
+                    <Typography style={{ fontSize: "14px", color: "#2c3e50" }}>
+                      {onHold ? "Matrícula Trancada" : "Matrícula Ativa"}
+                    </Typography>
+                  }
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -1008,30 +1962,51 @@ export function FindStudent({ uploadStatus, headers, id }) {
                         updateTutoree(ID);
                         setTutoree(!tutoree);
                       }}
-                      color="primary"
+                      sx={{
+                        "& .MuiSwitch-switchBase.Mui-checked": {
+                          color: partnerColor(),
+                        },
+                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                          {
+                            backgroundColor: partnerColor(),
+                          },
+                      }}
                     />
                   }
-                  label={tutoree ? "📚 Aluno de monitoria" : "📖 Sem monitoria"}
+                  label={
+                    <Typography style={{ fontSize: "14px", color: "#2c3e50" }}>
+                      {tutoree ? "Aluno de monitoria" : "Sem monitoria"}
+                    </Typography>
+                  }
                 />
               </Grid>
             </Grid>
           </div>
 
-          {/* SEÇÃO 4: ALTERAR SENHA */}
+          {/* SEÇÃO 5: ALTERAR SENHA */}
           <div
             style={{
-              backgroundColor: "#fce4ec",
-              padding: "1.5rem",
-              borderRadius: "8px",
-              marginBottom: "2rem",
-              border: "1px solid #f8bbd9",
+              backgroundColor: "#ffffff",
+              padding: "24px",
+              borderRadius: "12px",
+              marginBottom: "24px",
+              border: "1px solid #e8eaed",
+              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             }}
           >
-            <Typography variant="h6" gutterBottom fontWeight="600" color="#333">
-              🔒 Alterar Senha
+            <Typography
+              variant="h6"
+              style={{
+                marginBottom: "20px",
+                fontWeight: "600",
+                color: "#2c3e50",
+                fontSize: "16px",
+              }}
+            >
+              Alterar Senha
             </Typography>
 
-            <Grid container spacing={2}>
+            <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <TextField
                   fullWidth
@@ -1040,6 +2015,29 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      "& fieldset": {
+                        borderColor: "#e8eaed",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#c3c4c7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: partnerColor(),
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      color: "#2c3e50",
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -1050,6 +2048,29 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   size="small"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      "& fieldset": {
+                        borderColor: "#e8eaed",
+                      },
+                      "&:hover fieldset": {
+                        borderColor: "#c3c4c7",
+                      },
+                      "&.Mui-focused fieldset": {
+                        borderColor: partnerColor(),
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "#6c757d",
+                      fontSize: "14px",
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: "14px",
+                      color: "#2c3e50",
+                    },
+                  }}
                 />
               </Grid>
             </Grid>
@@ -1058,7 +2079,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               style={{
                 display: "flex",
                 justifyContent: "flex-end",
-                marginTop: "1rem",
+                marginTop: "20px",
               }}
             >
               <Button
@@ -1066,12 +2087,17 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 onClick={() => editStudentPassword(ID)}
                 disabled={!newPassword || newPassword !== confirmPassword}
                 style={{
-                  backgroundColor: "#e91e63",
+                  backgroundColor: partnerColor(),
                   color: "#fff",
-                  fontWeight: "600",
+                  fontWeight: "500",
+                  padding: "10px 24px",
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 }}
               >
-                🔑 Alterar Senha
+                Alterar Senha
               </Button>
             </div>
           </div>
@@ -1079,9 +2105,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
 
         <DialogActions
           style={{
-            padding: "1.5rem",
-            borderTop: "1px solid #eee",
+            padding: "24px",
+            borderTop: "1px solid #e8eaed",
             justifyContent: "space-between",
+            backgroundColor: "#fafbfc",
           }}
         >
           {!seeConfirmDelete ? (
@@ -1090,24 +2117,71 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 color="error"
                 variant="outlined"
                 onClick={() => setSeeConfirmDelete(true)}
-                style={{ fontWeight: "600" }}
+                style={{
+                  fontWeight: "500",
+                  padding: "10px 20px",
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  borderColor: "#dc3545",
+                  color: "#dc3545",
+                }}
               >
-                🗑️ Excluir Aluno
+                Excluir Aluno
               </Button>
-              <div style={{ display: "flex", gap: "1rem" }}>
-                <Button onClick={handleSeeModal} style={{ fontWeight: "600" }}>
+              <div style={{ display: "flex", gap: "12px" }}>
+                <Button
+                  onClick={handleSeeModal}
+                  style={{
+                    fontWeight: "500",
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "14px",
+                    color: "#6c757d",
+                  }}
+                >
                   Cancelar
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleSaveAll}
+                  style={{
+                    backgroundColor: partnerColor(),
+                    color: "#fff",
+                    fontWeight: "500",
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "14px",
+                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  }}
+                >
+                  Salvar Tudo
                 </Button>
               </div>
             </>
           ) : (
             <div style={{ width: "100%", textAlign: "center" }}>
-              <Typography color="error" variant="h6" gutterBottom>
-                ⚠️ Confirmar Exclusão
+              <Typography
+                style={{
+                  color: "#dc3545",
+                  fontWeight: "600",
+                  fontSize: "16px",
+                  marginBottom: "12px",
+                }}
+              >
+                Confirmar Exclusão
               </Typography>
-              <Typography color="textSecondary" gutterBottom>
+              <Typography
+                style={{
+                  color: "#6c757d",
+                  fontSize: "14px",
+                  marginBottom: "20px",
+                }}
+              >
                 Tem certeza que deseja excluir{" "}
-                <strong>
+                <strong style={{ color: "#2c3e50" }}>
                   {newName} {newLastName}
                 </strong>
                 ?
@@ -1118,13 +2192,20 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  gap: "1rem",
-                  marginTop: "1rem",
+                  gap: "12px",
+                  marginTop: "20px",
                 }}
               >
                 <Button
                   onClick={() => setSeeConfirmDelete(false)}
-                  style={{ fontWeight: "600" }}
+                  style={{
+                    fontWeight: "500",
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "14px",
+                    color: "#6c757d",
+                  }}
                 >
                   Cancelar
                 </Button>
@@ -1132,7 +2213,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   color="error"
                   variant="contained"
                   onClick={handleDelete}
-                  style={{ fontWeight: "600" }}
+                  style={{
+                    fontWeight: "500",
+                    padding: "10px 20px",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    fontSize: "14px",
+                    backgroundColor: "#dc3545",
+                    color: "#fff",
+                  }}
                 >
                   Confirmar Exclusão
                 </Button>
@@ -1141,6 +2230,154 @@ export function FindStudent({ uploadStatus, headers, id }) {
           )}
         </DialogActions>
       </Dialog>
+
+      {isArthurVincent && (
+        <Button
+          variant="outlined"
+          style={{
+            display: isConfirmVisible ? "none" : "block",
+            marginTop: "20px",
+            backgroundColor: "#ffffff",
+            borderColor: "#dc3545",
+            color: "#dc3545",
+            fontWeight: "500",
+            padding: "12px 24px",
+            borderRadius: "8px",
+            textTransform: "none",
+            fontSize: "14px",
+            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+            transition: "all 0.2s ease",
+            "&:hover": {
+              backgroundColor: "#dc3545",
+              color: "#ffffff",
+              transform: "translateY(-1px)",
+              boxShadow: "0 2px 6px rgba(220,53,69,0.2)",
+            },
+          }}
+          onDoubleClick={() => handleShowResetMonth()}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = "#dc3545";
+            e.target.style.color = "#ffffff";
+            e.target.style.transform = "translateY(-1px)";
+            e.target.style.boxShadow = "0 2px 6px rgba(220,53,69,0.2)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = "#ffffff";
+            e.target.style.color = "#dc3545";
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+          }}
+        >
+          🔄 Resetar pontuações do mês
+        </Button>
+      )}
+      <div style={{ display: hasReset ? "none" : "block" }}>
+        <div style={{ display: isConfirmVisible ? "block" : "none" }}>
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              padding: "24px",
+              borderRadius: "12px",
+              marginTop: "20px",
+              border: "1px solid #ffeaa7",
+              boxShadow: "0 2px 8px rgba(255,193,7,0.1)",
+              textAlign: "center",
+            }}
+          >
+            <Typography
+              variant="h6"
+              style={{
+                color: "#856404",
+                fontWeight: "600",
+                fontSize: "16px",
+                marginBottom: "16px",
+              }}
+            >
+              ⚠️ Confirmar Ação
+            </Typography>
+            <Typography
+              style={{
+                color: "#6c757d",
+                fontSize: "14px",
+                marginBottom: "24px",
+                lineHeight: "1.5",
+              }}
+            >
+              Tem certeza que deseja resetar pontuações do mês?
+              <br />
+              <small style={{ color: "#856404" }}>
+                Esta ação irá zerar todas as pontuações mensais dos alunos.
+              </small>
+            </Typography>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "16px",
+                flexWrap: "wrap",
+              }}
+            >
+              <Button
+                variant="contained"
+                onDoubleClick={() => handleResetMonth()}
+                style={{
+                  backgroundColor: "#dc3545",
+                  color: "#ffffff",
+                  fontWeight: "500",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  boxShadow: "0 2px 4px rgba(220,53,69,0.2)",
+                  minWidth: "100px",
+                }}
+              >
+                Sim, Resetar
+              </Button>
+              <Button
+                variant="outlined"
+                onMouseOver={() => handleShowResetMonth()}
+                onClick={() => handleShowResetMonth()}
+                style={{
+                  borderColor: "#6c757d",
+                  color: "#6c757d",
+                  fontWeight: "500",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  textTransform: "none",
+                  fontSize: "14px",
+                  backgroundColor: "#ffffff",
+                  minWidth: "100px",
+                }}
+              >
+                Cancelar
+              </Button>
+            </div>
+
+            <div
+              style={{
+                display: resetVisible ? "block" : "none",
+                marginTop: "20px",
+                padding: "12px",
+                backgroundColor: "#d4edda",
+                borderRadius: "8px",
+                border: "1px solid #c3e6cb",
+              }}
+            >
+              <Typography
+                style={{
+                  color: "#155724",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                ✅ Pontuações do mês resetadas com sucesso!
+              </Typography>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }

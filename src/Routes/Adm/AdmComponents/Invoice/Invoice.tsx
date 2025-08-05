@@ -185,8 +185,6 @@ export function Invoice({ headers }: HeadersProps) {
           <br />
           <br />
           <br />
-          <br />
-          <br />
           <div
             style={{
               borderTop: "solid 2px",

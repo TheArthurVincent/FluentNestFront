@@ -13,7 +13,7 @@ import {
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
-import { localStorageLoggedIn } from "../../../../App";
+import { isArthurVincent, localStorageLoggedIn } from "../../../../App";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 export function Contract({ headers }: HeadersProps) {
@@ -432,11 +432,13 @@ export function Contract({ headers }: HeadersProps) {
             >
               <p style={topSignature}> {name} (ou RESPONSÁVEL) ___/___/___</p>
               <div>
-                <img
-                  style={{ maxWidth: "6rem", borderBottom: "solid 2px" }}
-                  src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
-                  alt="signatureArth"
-                />
+                {isArthurVincent && (
+                  <img
+                    style={{ maxWidth: "6rem", borderBottom: "solid 2px" }}
+                    src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
+                    alt="signatureArth"
+                  />
+                )}
                 <p>ASSINATURA DO PROFESSOR</p>
               </div>
             </div>

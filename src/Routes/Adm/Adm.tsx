@@ -22,9 +22,8 @@ import FinancialResources from "./AdmComponents/FinancialResources/FinancialReso
 import Manual from "./AdmComponents/Manual/Manual";
 
 export function Adm({ headers }: HeadersProps) {
-  const [value, setValue] = useState("1");
-
   const { id } = localStorageLoggedIn;
+
   const componentsToRender = [
     {
       title: "Alunos",
@@ -34,14 +33,14 @@ export function Adm({ headers }: HeadersProps) {
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
       component: <AllStudents id={id} headers={headers} />,
     },
-    {
-      title: "Aulas",
-      displayArthur: "block",
-      value: "2",
-      tooltip:
-        "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
-      component: <NewTutoring id={id} headers={headers} />,
-    },
+    // {
+    //   title: "Aulas",
+    //   displayArthur: "block",
+    //   value: "2",
+    //   tooltip:
+    //     "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
+    //   component: <NewTutoring id={id} headers={headers} />,
+    // },
     {
       title: "Homework",
       displayArthur: "block",
@@ -50,7 +49,7 @@ export function Adm({ headers }: HeadersProps) {
         "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
       component: (
         <>
-          <NewHomeworkAssignment id={id} headers={headers} />
+          {/* <NewHomeworkAssignment id={id} headers={headers} /> */}
           <PendingHomeworkAssignment id={id} headers={headers} />
         </>
       ),
@@ -67,7 +66,6 @@ export function Adm({ headers }: HeadersProps) {
         </>
       ),
     },
-
     {
       title: "Postagens",
       displayArthur: "block",
@@ -92,7 +90,7 @@ export function Adm({ headers }: HeadersProps) {
       component: <Contract headers={headers} />,
       displayArthur: "block",
     },
-    {
+    isArthurVincent && {
       title: "Recibo",
       value: "8",
       tooltip:
@@ -100,31 +98,38 @@ export function Adm({ headers }: HeadersProps) {
       component: <Invoice headers={headers} />,
       displayArthur: "block",
     },
-    {
+    isArthurVincent && {
       title: "Comentários",
       value: "9",
       tooltip:
         "Visualize e responda aos comentários enviados pelos alunos. Utilize este espaço para esclarecer dúvidas, dar feedbacks e manter uma comunicação ativa.",
       component: <AllComments headers={headers} />,
-      displayArthur: isArthurVincent ? "block" : "none ",
+      displayArthur: "block",
     },
-    {
+    isArthurVincent && {
       title: "Manual do aluno",
       value: "10",
       tooltip:
         "Acesse o manual do aluno com orientações e dicas de uso da plataforma.",
       component: <Manual />,
-      displayArthur: isArthurVincent ? "block" : "none ",
+      displayArthur: "block",
     },
-    // {
+    // isArthurVincent && {
     //   title: "Timeline",
     //   value: "11",
     //   tooltip:
     //     "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
     //   component: <TimelineComponent headers={headers} />,
-    //   displayArthur: isArthurVincent ? "block" : "none ",
+    //   displayArthur: "block",
     // },
-  ];
+  ].filter(Boolean); // Remove elementos false do array
+
+  // Encontrar a primeira tab visível para inicializar o estado
+  const firstVisibleTab = componentsToRender.find(
+    (component) => component && component.displayArthur !== "none"
+  );
+  //@ts-ignore
+  const [value, setValue] = useState(firstVisibleTab?.value || "1");
 
   const handleChange = (event: any, newValue: string) => {
     event.preventDefault();
@@ -167,24 +172,28 @@ export function Adm({ headers }: HeadersProps) {
             >
               {componentsToRender.map((component, index) => {
                 return (
-                  <span
+                  <Tooltip
+                    //@ts-ignore
+                    title={component.tooltip}
+                    placement="bottom"
+                    //@ts-ignore
+
                     key={index + component.value}
-                    style={{
-                      display: component.displayArthur,
-                    }}
                   >
-                    <Tooltip title={component.tooltip} placement="bottom">
-                      <Tab
-                        style={{
-                          color: partnerColor(),
-                          fontWeight:
-                            (index + 1).toString() === value ? 800 : 500,
-                        }}
-                        label={component.title}
-                        value={component.value}
-                      />
-                    </Tooltip>
-                  </span>
+                    <Tab
+                      style={{
+                        color: partnerColor(),
+                        //@ts-ignore
+
+                        fontWeight: component.value === value ? 800 : 500,
+                      }}
+                      //@ts-ignore
+
+                      label={component.title}
+                      //@ts-ignore
+                      value={component.value}
+                    />
+                  </Tooltip>
                 );
               })}
             </TabList>
@@ -194,9 +203,13 @@ export function Adm({ headers }: HeadersProps) {
           return (
             <TabPanel
               style={{ padding: 0, margin: "1rem auto" }}
+              //@ts-ignore
+
               key={index + component.value}
+              //@ts-ignore
               value={component.value}
             >
+              {/* @ts-ignore */}
               {component.component}
             </TabPanel>
           );
