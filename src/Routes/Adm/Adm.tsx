@@ -22,9 +22,8 @@ import FinancialResources from "./AdmComponents/FinancialResources/FinancialReso
 import Manual from "./AdmComponents/Manual/Manual";
 
 export function Adm({ headers }: HeadersProps) {
-  const [value, setValue] = useState("1");
-
   const { id } = localStorageLoggedIn;
+
   const componentsToRender = [
     {
       title: "Alunos",
@@ -67,7 +66,6 @@ export function Adm({ headers }: HeadersProps) {
         </>
       ),
     },
-
     {
       title: "Postagens",
       displayArthur: "block",
@@ -126,6 +124,12 @@ export function Adm({ headers }: HeadersProps) {
     // },
   ];
 
+  // Encontrar a primeira tab visível para inicializar o estado
+  const firstVisibleTab = componentsToRender.find(
+    (component) => component.displayArthur !== "none"
+  );
+  const [value, setValue] = useState(firstVisibleTab?.value || "1");
+
   const handleChange = (event: any, newValue: string) => {
     event.preventDefault();
     setValue(newValue);
@@ -165,42 +169,45 @@ export function Adm({ headers }: HeadersProps) {
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
             >
-              {componentsToRender.map((component, index) => {
-                return (
-                  <span
-                    key={index + component.value}
-                    style={{
-                      display: component.displayArthur,
-                    }}
-                  >
-                    <Tooltip title={component.tooltip} placement="bottom">
+              {componentsToRender
+                .filter((component) => component.displayArthur !== "none")
+                .map((component, index) => {
+                  return (
+                    <Tooltip
+                      title={component.tooltip}
+                      placement="bottom"
+                      key={index + component.value}
+                      // style={{
+                      //   display: component.displayArthur,
+                      // }}
+                    >
                       <Tab
                         style={{
                           color: partnerColor(),
-                          fontWeight:
-                            (index + 1).toString() === value ? 800 : 500,
+                          fontWeight: component.value === value ? 800 : 500,
                         }}
                         label={component.title}
                         value={component.value}
                       />
                     </Tooltip>
-                  </span>
-                );
-              })}
+                  );
+                })}
             </TabList>
           </div>
         </span>
-        {componentsToRender.map((component, index) => {
-          return (
-            <TabPanel
-              style={{ padding: 0, margin: "1rem auto" }}
-              key={index + component.value}
-              value={component.value}
-            >
-              {component.component}
-            </TabPanel>
-          );
-        })}
+        {componentsToRender
+          .filter((component) => component.displayArthur !== "none")
+          .map((component, index) => {
+            return (
+              <TabPanel
+                style={{ padding: 0, margin: "1rem auto" }}
+                key={index + component.value}
+                value={component.value}
+              >
+                {component.component}
+              </TabPanel>
+            );
+          })}
       </TabContext>
     </RouteDiv>
   );
