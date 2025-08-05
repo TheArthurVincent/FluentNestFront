@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import {
   backDomain,
-  formatDate,
   formatDateBr,
   onLoggOut,
   updateInfo,
 } from "../../Resources/UniversalComponents";
-import { alwaysBlack, partnerColor, textTitleFont } from "../../Styles/Styles";
-import { NavLink } from "react-router-dom";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
 import { User } from "./types.MyProfile";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import { SpanDisapear } from "../HomePage/Blog.Styled";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
@@ -25,29 +20,60 @@ const styles = {
   container: {
     display: "flex",
     justifyContent: "center",
-    marginTop: "40px",
+    marginTop: "24px",
   },
   card: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "column" as const,
     alignItems: "center",
     gap: "16px",
-    padding: "24px",
-    backgroundColor: "#f9f9f9",
-    borderRadius: "16px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    maxWidth: "400px",
-    textAlign: "center",
+    padding: "32px",
+    backgroundColor: "#ffffff",
+    borderRadius: "12px",
+    boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+    border: "1px solid #e8eaed",
+    maxWidth: "480px",
+    textAlign: "center" as const,
   },
   button: {
     padding: "12px 24px",
-    fontSize: "16px",
-    backgroundColor: "#25D366", // cor do WhatsApp
+    fontSize: "14px",
+    fontWeight: "500",
+    backgroundColor: "#25D366",
     color: "#fff",
     border: "none",
-    borderRadius: "10px",
+    borderRadius: "8px",
     cursor: "pointer",
-    transition: "transform 0.2s ease",
+    transition: "all 0.2s ease",
+    textDecoration: "none",
+  },
+  modernSection: {
+    backgroundColor: "#ffffff",
+    borderRadius: "12px",
+    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+    border: "1px solid #e8eaed",
+    padding: "24px",
+    marginBottom: "16px",
+  },
+  profileItem: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: "12px 0",
+    borderBottom: "1px solid #f1f3f5",
+    fontSize: "14px",
+  },
+  profileLabel: {
+    color: "#6c757d",
+    fontWeight: "500",
+    textTransform: "uppercase" as const,
+    fontSize: "11px",
+    letterSpacing: "0.5px",
+  },
+  profileValue: {
+    color: "#2c3e50",
+    fontWeight: "500",
+    textAlign: "right" as const,
   },
 };
 
@@ -209,222 +235,289 @@ export function MyProfile({ headers }: HeadersProps) {
     <>
       {headers ? (
         // @ts-ignore
-        <RouteDiv className="grid-flex">
+        <div
+          style={{
+            maxWidth: "800px",
+            margin: "0 auto",
+            padding: "24px 16px",
+            backgroundColor: "#fafbfc",
+            minHeight: "100vh",
+          }}
+        >
           <Helmets text="My Profile" />
           {loading ? (
-            <CircularProgress style={{ color: partnerColor() }} />
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                minHeight: "200px",
+              }}
+            >
+              <CircularProgress style={{ color: partnerColor() }} />
+            </div>
           ) : (
             <>
-              <div>
+              {/* Header Section */}
+              <div style={styles.modernSection}>
                 <div
                   style={{
-                    display: "grid",
-                    gap: "10px",
-                    color: alwaysBlack(),
-                    padding: "1rem",
-                    backgroundColor: "#f7f9fc",
-                    borderRadius: "6px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "20px",
                   }}
-                  className="box-shadow-white"
                 >
-                  <ArvinButton
+                  <div>
+                    <h1
+                      style={{
+                        fontSize: "24px",
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        margin: "0 0 4px 0",
+                        fontFamily: textTitleFont(),
+                      }}
+                    >
+                      {UniversalTexts.myProfile}
+                    </h1>
+                    <p
+                      style={{
+                        color: "#6c757d",
+                        fontSize: "14px",
+                        margin: "0",
+                      }}
+                    >
+                      Gerencie suas informações pessoais
+                    </p>
+                  </div>
+                  <button
                     onClick={() => {
                       alert("Atualizando Perfil");
                       updateInfo(user.id, headers);
                       window.location.reload();
                     }}
-                    color={partnerColor()}
                     style={{
+                      padding: "8px 12px",
+                      backgroundColor: partnerColor(),
                       color: "#fff",
-                      padding: "0.5rem 1rem",
-                      borderRadius: "6px",
-                      transition: "opacity 0.3s ease",
+                      border: "none",
+                      borderRadius: "8px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      transition: "all 0.2s ease",
                     }}
                   >
-                    <i className="fa fa-refresh" aria-hidden="true" />
-                  </ArvinButton>
-                  <HOne
-                    style={{
-                      fontFamily: textTitleFont(),
-                      color: partnerColor(),
-                    }}
-                  >
-                    {UniversalTexts.myProfile}
-                  </HOne>
-                  <AvatarUpload
-                    user={user}
-                    setUser={setUser}
-                    uploadStudentPhoto={uploadStudentPhoto}
-                  />
+                    <i
+                      className="fa fa-refresh"
+                      aria-hidden="true"
+                      style={{ marginRight: "6px" }}
+                    />
+                    Atualizar
+                  </button>
                 </div>
+
+                <AvatarUpload
+                  user={user}
+                  setUser={setUser}
+                  uploadStudentPhoto={uploadStudentPhoto}
+                />
               </div>
-              <div
-                style={{
-                  padding: "2rem",
-                  backgroundColor: "#fff",
-                  borderRadius: "6px",
-                  marginTop: "2rem",
-                }}
-                className="box-shadow-white"
-              >
-                <ul>
-                  {isArthurVincent && (
-                    <li
+
+              {/* Profile Information */}
+              <div style={styles.modernSection}>
+                <h2
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#2c3e50",
+                    margin: "0 0 20px 0",
+                  }}
+                >
+                  Informações Pessoais
+                </h2>
+
+                {isArthurVincent && (
+                  <div
+                    style={{
+                      backgroundColor: "#f8f9fa",
+                      padding: "16px",
+                      borderRadius: "8px",
+                      border: "1px solid #e9ecef",
+                      marginBottom: "20px",
+                    }}
+                  >
+                    <div
                       style={{
-                        listStyle: "none",
-                        padding: "1rem",
-                        margin: "1rem 0",
-                        backgroundColor: "#f9f9f9",
-                        border: "1px solid #ddd",
-                        borderRadius: "8px",
-                        fontSize: "1rem",
-                        lineHeight: "1.6",
-                        color: "#333",
-                        position: "relative",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        flexWrap: "wrap",
+                        gap: "12px",
                       }}
                     >
-                      <strong>🎁 Seu código promocional:</strong>{" "}
+                      <div>
+                        <span style={styles.profileLabel}>
+                          🎁 Código promocional
+                        </span>
+                        <p
+                          style={{
+                            margin: "4px 0 0 0",
+                            fontSize: "12px",
+                            color: "#6c757d",
+                          }}
+                        >
+                          Recomende a plataforma para ganhar{" "}
+                          <strong>20% de desconto</strong> nos 3 primeiros
+                          meses!
+                        </p>
+                      </div>
                       <button
                         onClick={copyToClipboard}
                         style={{
-                          marginLeft: "1rem",
-                          padding: "0.3rem 0.6rem",
-                          fontSize: "0.9rem",
+                          padding: "8px 16px",
+                          fontSize: "12px",
+                          fontWeight: "600",
                           cursor: "pointer",
                           border: "none",
-                          borderRadius: "4px",
+                          borderRadius: "6px",
                           backgroundColor: partnerColor(),
                           color: "#fff",
+                          transition: "all 0.2s ease",
                         }}
                       >
                         {user.username}
+                        {copied && (
+                          <span style={{ marginLeft: "8px", fontSize: "10px" }}>
+                            ✓ Copiado!
+                          </span>
+                        )}
                       </button>
-                      {copied && (
-                        <span
-                          style={{
-                            marginLeft: "0.5rem",
-                            fontSize: "0.9rem",
-                            color: "green",
-                          }}
-                        >
-                          Copiado!
-                        </span>
-                      )}
-                      <br />
-                      <span style={{ display: "block", marginTop: "0.5rem" }}>
-                        Recomende a plataforma a alguém para que a pessoa ganhe{" "}
-                        <strong>20% de desconto </strong>nos 3 primeiros meses!
-                      </span>
-                    </li>
-                  )}
+                    </div>
+                  </div>
+                )}
+
+                <div>
                   {myProfileList.map((item, index) => (
-                    <li
-                      key={index}
+                    <div key={index} style={styles.profileItem}>
+                      <span style={styles.profileLabel}>{item.title}</span>
+                      <span style={styles.profileValue}>{item.data}</span>
+                    </div>
+                  ))}
+
+                  <div style={styles.profileItem}>
+                    <span style={styles.profileLabel}>Aluno Particular</span>
+                    <span
                       style={{
-                        listStyle: "none",
-                        padding: "0.5rem 0",
-                        fontSize: "1rem",
-                        lineHeight: "1.5",
-                        color: "#333",
+                        ...styles.profileValue,
+                        padding: "4px 8px",
+                        borderRadius: "12px",
+                        fontSize: "12px",
+                        backgroundColor: user.tutoree ? "#e8f5e8" : "#f1f3f5",
+                        color: user.tutoree ? "#388e3c" : "#6c757d",
                       }}
                     >
-                      <SpanDisapear>
-                        <b>{item.title}: </b>
-                      </SpanDisapear>
-                      <span>{item.data}</span>
-                    </li>
-                  ))}
-                  <li
-                    style={{
-                      listStyle: "none",
-                      padding: "0.5rem 0",
-                      fontSize: "1rem",
-                      lineHeight: "1.5",
-                      color: "#333",
-                    }}
-                  >
-                    Tutoree/Aluno Particular? {user.tutoree ? "Yes" : "No"}
-                  </li>
+                      {user.tutoree ? "Sim" : "Não"}
+                    </span>
+                  </div>
 
                   {user.tutoree && isArthurVincent && (
-                    <li
-                      style={{
-                        listStyle: "none",
-                        padding: "0.5rem 0",
-                        fontSize: "1rem",
-                        lineHeight: "1.5",
-                        color: "#333",
-                      }}
+                    <div
+                      style={{ ...styles.profileItem, borderBottom: "none" }}
                     >
-                      <NavLink to={user.googleDriveLink} target="blank">
-                        {UniversalTexts.googleDriveLink}
-                      </NavLink>
-                    </li>
+                      <span style={styles.profileLabel}>Google Drive</span>
+                      <a
+                        href={user.googleDriveLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          color: partnerColor(),
+                          textDecoration: "none",
+                          fontSize: "14px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Acessar Drive →
+                      </a>
+                    </div>
                   )}
-                </ul>
+                </div>
               </div>
-              <div
-                style={{
-                  padding: "2rem",
-                  backgroundColor: "#fff",
-                  borderRadius: "6px",
-                  marginTop: "2rem",
-                }}
-                className="box-shadow-white"
-              >
+              {/* Subscription Management */}
+              <div style={styles.modernSection}>
                 {user.askedToCancel && (
                   <div style={styles.container}>
-                    {/* @ts-ignore */}
                     <div style={styles.card}>
                       <Countdown
                         text="Você ainda pode usar a plataforma até."
                         targetDate={new Date(user.limitDate)}
                       />
-                      <ArvinButton
+                      <button
                         onClick={() =>
                           window.location.assign("https://wa.me/5511915857807")
                         }
                         style={styles.button}
                       >
                         Solicite a reativação do seu cadastro
-                      </ArvinButton>
+                      </button>
                     </div>
                   </div>
                 )}
+
                 {new Date(user.limitCancelDate) > new Date() &&
                 !user.subscriptionAsaas &&
                 !user.tutoree ? (
                   <div style={styles.container}>
-                    {/* @ts-ignore */}
                     <div style={styles.card}>
                       <Countdown
                         text="Você ainda pode solicitar seu reembolso."
                         targetDate={new Date(user.limitCancelDate)}
                       />
-                      <ArvinButton
+                      <button
                         onClick={() =>
                           window.location.assign("https://wa.me/5511915857807")
                         }
                         style={styles.button}
                       >
                         💬 Solicitar Reembolso via WhatsApp
-                      </ArvinButton>
+                      </button>
                     </div>
                   </div>
                 ) : (
                   <>
                     {!user.askedToCancel && !user.tutoree && (
-                      <>
-                        <ArvinButton
+                      <div style={{ textAlign: "center" }}>
+                        <h3
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            color: "#2c3e50",
+                            margin: "0 0 16px 0",
+                          }}
+                        >
+                          Gerenciar Assinatura
+                        </h3>
+                        <button
                           onClick={() => setShowModal(true)}
-                          color="red"
+                          style={{
+                            padding: "10px 20px",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            backgroundColor: "#dc3545",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                          }}
                         >
                           Cancelar Minha Assinatura
-                        </ArvinButton>
-                      </>
+                        </button>
+                      </div>
                     )}
                   </>
                 )}
+
                 {showModal && (
                   <div
                     style={{
@@ -443,17 +536,20 @@ export function MyProfile({ headers }: HeadersProps) {
                     <div
                       style={{
                         background: "#fff",
-                        padding: "2rem",
-                        borderRadius: "8px",
+                        padding: "32px",
+                        borderRadius: "12px",
                         width: "90%",
                         maxWidth: "400px",
                         textAlign: "center",
+                        boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
                       }}
                     >
                       <h2
                         style={{
-                          marginBottom: "1.5rem",
-                          color: "#d32f2f",
+                          marginBottom: "24px",
+                          color: "#dc3545",
+                          fontSize: "18px",
+                          fontWeight: "600",
                         }}
                       >
                         Tem certeza que deseja cancelar sua assinatura?
@@ -461,42 +557,60 @@ export function MyProfile({ headers }: HeadersProps) {
                       <div
                         style={{
                           display: "flex",
-                          justifyContent: "space-around",
+                          justifyContent: "center",
+                          gap: "12px",
                         }}
                       >
-                        <ArvinButton
+                        <button
                           onClick={() => setShowModal(false)}
-                          color="green"
+                          style={{
+                            padding: "10px 20px",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            backgroundColor: "#28a745",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                          }}
                         >
                           Não
-                        </ArvinButton>
-                        <ArvinButton onClick={cancelSubscription} color="red">
+                        </button>
+                        <button
+                          onClick={cancelSubscription}
+                          style={{
+                            padding: "10px 20px",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            backgroundColor: "#dc3545",
+                            color: "#fff",
+                            border: "none",
+                            borderRadius: "8px",
+                            cursor: "pointer",
+                          }}
+                        >
                           Sim
-                        </ArvinButton>
+                        </button>
                       </div>
                     </div>
                   </div>
                 )}
               </div>
-              <div
-                style={{
-                  padding: "2rem",
-                  backgroundColor: "#fff",
-                  borderRadius: "6px",
-                  marginTop: "2rem",
-                }}
-                className="box-shadow-white"
-              >
-                <div style={{ textAlign: "center" }}>
-                  <HOne
-                    style={{
-                      fontFamily: textTitleFont(),
-                      color: partnerColor(),
-                    }}
-                  >
-                    {UniversalTexts.newPassword}
-                  </HOne>
 
+              {/* Password Change */}
+              <div style={styles.modernSection}>
+                <h2
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#2c3e50",
+                    margin: "0 0 20px 0",
+                  }}
+                >
+                  Alterar Senha
+                </h2>
+
+                <div style={{ display: "grid", gap: "16px" }}>
                   <TextField
                     value={newPassword}
                     onChange={(event) => setNewPassword(event.target.value)}
@@ -504,20 +618,24 @@ export function MyProfile({ headers }: HeadersProps) {
                     type="password"
                     required
                     fullWidth
+                    size="small"
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: partnerColor() },
-                        "&:hover fieldset": { borderColor: partnerColor() },
+                        borderRadius: "8px",
+                        backgroundColor: "#fafbfc",
+                        "& fieldset": { borderColor: "#e8eaed" },
+                        "&:hover fieldset": { borderColor: "#c3c4c7" },
                         "&.Mui-focused fieldset": {
                           borderColor: partnerColor(),
                         },
                       },
-                      "& label": { color: partnerColor() },
-                      "& label.Mui-focused": { color: partnerColor() },
+                      "& .MuiInputLabel-root": {
+                        color: "#6c757d",
+                        fontSize: "14px",
+                      },
                     }}
                   />
-                  <br />
-                  <br />
+
                   <TextField
                     value={confirmPassword}
                     onChange={(event) => setConfirmPassword(event.target.value)}
@@ -525,28 +643,59 @@ export function MyProfile({ headers }: HeadersProps) {
                     type="password"
                     required
                     fullWidth
+                    size="small"
                     sx={{
                       "& .MuiOutlinedInput-root": {
-                        "& fieldset": { borderColor: partnerColor() },
-                        "&:hover fieldset": { borderColor: partnerColor() },
+                        borderRadius: "8px",
+                        backgroundColor: "#fafbfc",
+                        "& fieldset": { borderColor: "#e8eaed" },
+                        "&:hover fieldset": { borderColor: "#c3c4c7" },
                         "&.Mui-focused fieldset": {
                           borderColor: partnerColor(),
                         },
                       },
-                      "& label": { color: partnerColor() },
-                      "& label.Mui-focused": { color: partnerColor() },
+                      "& .MuiInputLabel-root": {
+                        color: "#6c757d",
+                        fontSize: "14px",
+                      },
                     }}
                   />
-                  <ArvinButton onClick={() => editStudentPassword()}>
-                    {UniversalTexts.save}
-                  </ArvinButton>
+
+                  <div style={{ textAlign: "center", marginTop: "8px" }}>
+                    <button
+                      onClick={() => editStudentPassword()}
+                      style={{
+                        padding: "12px 24px",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        backgroundColor: partnerColor(),
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "8px",
+                        cursor: "pointer",
+                        transition: "all 0.2s ease",
+                      }}
+                    >
+                      {UniversalTexts.save}
+                    </button>
+                  </div>
                 </div>
               </div>
             </>
           )}
-        </RouteDiv>
+        </div>
       ) : (
-        <RouteDiv>Nenhum usuário logado</RouteDiv>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "50vh",
+            color: "#6c757d",
+          }}
+        >
+          Nenhum usuário logado
+        </div>
       )}
     </>
   );
