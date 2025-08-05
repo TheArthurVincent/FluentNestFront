@@ -19,7 +19,6 @@ import { Tooltip } from "@mui/material";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignments/PendingHomeworkAssignments";
 import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
-import TimelineComponent from "./AdmComponents/Timeline/Timeline";
 import Manual from "./AdmComponents/Manual/Manual";
 
 export function Adm({ headers }: HeadersProps) {
