@@ -90,7 +90,7 @@ export function Adm({ headers }: HeadersProps) {
       component: <Contract headers={headers} />,
       displayArthur: "block",
     },
-    {
+    isArthurVincent && {
       title: "Recibo",
       value: "8",
       tooltip:
@@ -98,36 +98,37 @@ export function Adm({ headers }: HeadersProps) {
       component: <Invoice headers={headers} />,
       displayArthur: "block",
     },
-    {
+    isArthurVincent && {
       title: "Comentários",
       value: "9",
       tooltip:
         "Visualize e responda aos comentários enviados pelos alunos. Utilize este espaço para esclarecer dúvidas, dar feedbacks e manter uma comunicação ativa.",
       component: <AllComments headers={headers} />,
-      displayArthur: isArthurVincent ? "block" : "none ",
+      displayArthur: "block",
     },
-    {
+    isArthurVincent && {
       title: "Manual do aluno",
       value: "10",
       tooltip:
         "Acesse o manual do aluno com orientações e dicas de uso da plataforma.",
       component: <Manual />,
-      displayArthur: isArthurVincent ? "block" : "none ",
+      displayArthur: "block",
     },
-    // {
+    // isArthurVincent && {
     //   title: "Timeline",
     //   value: "11",
     //   tooltip:
     //     "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
     //   component: <TimelineComponent headers={headers} />,
-    //   displayArthur: isArthurVincent ? "block" : "none ",
+    //   displayArthur: "block",
     // },
-  ];
+  ].filter(Boolean); // Remove elementos false do array
 
   // Encontrar a primeira tab visível para inicializar o estado
   const firstVisibleTab = componentsToRender.find(
-    (component) => component.displayArthur !== "none"
+    (component) => component && component.displayArthur !== "none"
   );
+  //@ts-ignore
   const [value, setValue] = useState(firstVisibleTab?.value || "1");
 
   const handleChange = (event: any, newValue: string) => {
@@ -169,45 +170,50 @@ export function Adm({ headers }: HeadersProps) {
               scrollButtons="auto"
               aria-label="scrollable auto tabs example"
             >
-              {componentsToRender
-                .filter((component) => component.displayArthur !== "none")
-                .map((component, index) => {
-                  return (
-                    <Tooltip
-                      title={component.tooltip}
-                      placement="bottom"
-                      key={index + component.value}
-                      // style={{
-                      //   display: component.displayArthur,
-                      // }}
-                    >
-                      <Tab
-                        style={{
-                          color: partnerColor(),
-                          fontWeight: component.value === value ? 800 : 500,
-                        }}
-                        label={component.title}
-                        value={component.value}
-                      />
-                    </Tooltip>
-                  );
-                })}
+              {componentsToRender.map((component, index) => {
+                return (
+                  <Tooltip
+                    //@ts-ignore
+                    title={component.tooltip}
+                    placement="bottom"
+                    //@ts-ignore
+
+                    key={index + component.value}
+                  >
+                    <Tab
+                      style={{
+                        color: partnerColor(),
+                        //@ts-ignore
+
+                        fontWeight: component.value === value ? 800 : 500,
+                      }}
+                      //@ts-ignore
+
+                      label={component.title}
+                      //@ts-ignore
+                      value={component.value}
+                    />
+                  </Tooltip>
+                );
+              })}
             </TabList>
           </div>
         </span>
-        {componentsToRender
-          .filter((component) => component.displayArthur !== "none")
-          .map((component, index) => {
-            return (
-              <TabPanel
-                style={{ padding: 0, margin: "1rem auto" }}
-                key={index + component.value}
-                value={component.value}
-              >
-                {component.component}
-              </TabPanel>
-            );
-          })}
+        {componentsToRender.map((component, index) => {
+          return (
+            <TabPanel
+              style={{ padding: 0, margin: "1rem auto" }}
+              //@ts-ignore
+
+              key={index + component.value}
+              //@ts-ignore
+              value={component.value}
+            >
+              {/* @ts-ignore */}
+              {component.component}
+            </TabPanel>
+          );
+        })}
       </TabContext>
     </RouteDiv>
   );
