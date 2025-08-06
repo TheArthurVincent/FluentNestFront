@@ -53,6 +53,7 @@ import {
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
+import { isArthurVincent } from "../../../../App";
 
 export function FinancialResources({ headers, id }) {
   // ===== CONTEXT =====
@@ -116,7 +117,7 @@ export function FinancialResources({ headers, id }) {
   const [newItemTypeOfItem, setNewItemTypeOfItem] = useState("others");
   const [newItemAccountFor, setNewItemAccountFor] = useState(true);
   const [newItemPaidFor, setNewItemPaidFor] = useState(false);
-
+  const [includeThisMonth, setIncludeThisMonth] = useState(false);
   // Student data
   const [students, setStudents] = useState([]);
   const [ID, setID] = useState("");
@@ -183,6 +184,8 @@ export function FinancialResources({ headers, id }) {
   };
 
   const handleNewCostModal = () => {
+    setIncludeThisMonth(false);
+
     setNewCostModalOpen(!newCostModalOpen);
     if (!newCostModalOpen) {
       // Reset form when opening
@@ -251,7 +254,7 @@ export function FinancialResources({ headers, id }) {
     }
   };
 
-  const handleSaveCost = async () => {
+  const handleSaveCost = async (typeOfItem) => {
     if (!newCostAmount || !newCostDescription) {
       notifyAlert("Preencha todos os campos");
       return;
@@ -276,7 +279,8 @@ export function FinancialResources({ headers, id }) {
       await newFixedCost(
         parseFloat(newCostAmount),
         currentMonthYear,
-        newCostDescription
+        newCostDescription,
+        typeOfItem
       );
       notifyAlert("Custo fixo adicionado com sucesso!", "green");
       handleNewCostModal();
@@ -541,7 +545,7 @@ export function FinancialResources({ headers, id }) {
     }
   };
 
-  const newFixedCost = async (amount, month, description) => {
+  const newFixedCost = async (amount, month, description, typeOfItem) => {
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/fixed-cost/${id}`,
@@ -549,12 +553,21 @@ export function FinancialResources({ headers, id }) {
           amount,
           month,
           description,
+          addThisMonth: includeThisMonth,
+          typeOfItem,
         },
         {
           headers,
         }
       );
       setFixedCosts(response.data.fixedCosts);
+      setFinancialReports(
+        response.data.reportsThisMonth.length > 0
+          ? response.data.reportsThisMonth
+          : financialReports
+      );
+      console.log(response.data);
+      setIncludeThisMonth(false);
     } catch (error) {
       console.log("error", error);
     }
@@ -1068,7 +1081,7 @@ export function FinancialResources({ headers, id }) {
                   className="linguee-btn linguee-btn-primary"
                   onClick={handleNewItemModal}
                 >
-                  + Novo Item
+                  + Novo Item para: {selectedMonth}
                 </button>
               </div>
 
@@ -2147,7 +2160,31 @@ export function FinancialResources({ headers, id }) {
                 />
               </div>
             </DialogContent>
-
+            {financialReports.length > 0 && (
+              <DialogContent>
+                {/* um check que dê um toggle num estado Incluir esse mês entre true ou false */}
+                <div
+                  onClick={() => setIncludeThisMonth(!includeThisMonth)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                  }}
+                  className="linguee-form-group"
+                >
+                  <input
+                    type="checkbox"
+                    className="linguee-input linguee-input-checkbox"
+                    checked={includeThisMonth}
+                    onChange={() => setIncludeThisMonth(!includeThisMonth)}
+                  />
+                  <label>
+                    Incluir este mês?{" "}
+                    {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
+                  </label>
+                </div>
+              </DialogContent>
+            )}
             <DialogActions
               style={{
                 padding: "16px 24px 24px",
@@ -2162,7 +2199,7 @@ export function FinancialResources({ headers, id }) {
                 className={`linguee-btn ${
                   !isSaveButtonDisabled() ? "linguee-btn-primary" : ""
                 }`}
-                onClick={handleSaveCost}
+                onClick={() => handleSaveCost("debt")}
                 disabled={isSaveButtonDisabled()}
                 style={{
                   backgroundColor: isSaveButtonDisabled()
@@ -3097,7 +3134,7 @@ export function FinancialResources({ headers, id }) {
                     <input
                       type="number"
                       className="linguee-input linguee-input-number"
-                      value={newItemDiscount}
+                      value={newItemTypeOfItem == "debt" ? 0 : newItemDiscount}
                       onChange={(e) => setNewItemDiscount(e.target.value)}
                       placeholder="0,00"
                       min="0"
