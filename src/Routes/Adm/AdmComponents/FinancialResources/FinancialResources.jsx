@@ -40,6 +40,7 @@ import {
 import {
   alwaysWhite,
   partnerColor,
+  primaryColor,
   textGeneralFont,
   textPrimaryColorContrast,
   textTitleFont,
@@ -279,11 +280,9 @@ export function FinancialResources({ headers, id }) {
       );
       notifyAlert("Custo fixo adicionado com sucesso!", "green");
       handleNewCostModal();
-
-      // Refresh the fixed costs
-      generateReports(selectedMonth);
     } catch (error) {
       notifyAlert("Erro ao adicionar custo fixo");
+      console.log("error", error);
     }
   };
 
@@ -810,8 +809,82 @@ export function FinancialResources({ headers, id }) {
     }
   }, [myFirstMonth]);
 
+  // Dados do resumo financeiro
+  const calculateFinancialData = () => {
+    const entradas = financialReports
+      .filter((report) => report.accountFor && report.typeOfItem !== "debt")
+      .reduce(
+        (total, report) =>
+          total + (Math.abs(report.amount || 0) - (report.discount || 0)),
+        0
+      );
+
+    const entradasRecebidas = financialReports
+      .filter(
+        (report) =>
+          report.accountFor && report.typeOfItem !== "debt" && report.paidFor
+      )
+      .reduce(
+        (total, report) =>
+          total + (Math.abs(report.amount || 0) - (report.discount || 0)),
+        0
+      );
+
+    const saidas = financialReports
+      .filter((report) => report.accountFor && report.typeOfItem === "debt")
+      .reduce((total, report) => total + Math.abs(report.amount || 0), 0);
+
+    const saidasPagas = financialReports
+      .filter(
+        (report) =>
+          report.accountFor && report.typeOfItem === "debt" && report.paidFor
+      )
+      .reduce((total, report) => total + Math.abs(report.amount || 0), 0);
+
+    const saldo = entradas - saidas;
+
+    return [
+      {
+        id: "entradas",
+        title: "Entradas Esperadas",
+        value: entradas,
+        color: "#059669",
+      },
+      {
+        id: "entradas-recebidas",
+        title: "Entradas Recebidas",
+        value: entradasRecebidas,
+        color: "#04865dff",
+      },
+      {
+        id: "saidas",
+        title: "Saídas Esperadas",
+        value: saidas,
+        color: "#dc2626",
+      },
+      {
+        id: "saidas-pagas",
+        title: "Saídas Pagas",
+        value: saidasPagas,
+        color: "rgba(203, 38, 38, 1)",
+      },
+      {
+        id: "saldo",
+        title: "Saldo Previsto",
+        value: saldo,
+        color: saldo < 0 ? "#dc2626" : "#16a34a",
+      },
+    ];
+  };
+
+  const financialSummaryData = calculateFinancialData();
+
   return (
-    <>
+    <div
+      style={{
+        padding: isMobile ? "8px" : "16px",
+      }}
+    >
       <style>
         {`
           @keyframes fadeIn {
@@ -886,7 +959,7 @@ export function FinancialResources({ headers, id }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: window.innerWidth <= 768 ? "1fr" : "1fr 0.3fr",
+          gridTemplateColumns: window.innerWidth <= 768 ? "1fr" : "1fr 0.6fr",
           justifyContent: "top",
           gap: "1rem",
           margin: "16px auto",
@@ -908,249 +981,66 @@ export function FinancialResources({ headers, id }) {
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                  //quero que o ultimo item fique sozinho na linha de baixo
+                  gridTemplateAreas: `
+                    "item1 item2"
+                    "item3 item4"
+                    "item5 item5"
+                  `,
                   gap: "12px",
                   marginBottom: "20px",
                 }}
               >
-                {/* Entradas */}
-
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "6px",
-                    padding: "20px",
-                    textAlign: "center",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
+                {financialSummaryData.map((item, index) => (
                   <div
+                    key={item.id}
                     style={{
-                      fontSize: "11px",
-                      color: "#6b7280",
-                      marginBottom: "8px",
-                      fontFamily: textGeneralFont(),
-                      fontWeight: "400",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
+                      gridArea: `item${index + 1}`,
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "6px",
+                      padding: "12px",
+                      textAlign: "center",
+                      transition: "all 0.2s ease",
                     }}
                   >
-                    Entradas Esperadas
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: "#059669",
-                      marginBottom: "4px",
-                      fontFamily: textTitleFont(),
-                    }}
-                  >
-                    R${" "}
-                    {formatNumber(
-                      financialReports
-                        .filter(
-                          (report) =>
-                            report.accountFor && report.typeOfItem !== "debt"
-                        )
-                        .reduce(
-                          (total, report) =>
-                            total +
-                            (Math.abs(report.amount || 0) -
-                              (report.discount || 0)),
-                          0
-                        )
+                    <div
+                      style={{
+                        fontSize: "11px",
+                        color: "#6b7280",
+                        marginBottom: "8px",
+                        fontFamily: textGeneralFont(),
+                        fontWeight: "400",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.5px",
+                      }}
+                    >
+                      {item.title}
+                    </div>
+                    <div
+                      style={{
+                        fontWeight: "600",
+                        color: item.color,
+                        marginBottom: "4px",
+                        fontFamily: textTitleFont(),
+                      }}
+                    >
+                      R$ {formatNumber(item.value)}
+                    </div>
+                    {item.subtitle && (
+                      <div
+                        style={{
+                          color: "#9ca3af",
+                          fontFamily: textGeneralFont(),
+                          fontWeight: "400",
+                          ...item.subtitleStyle,
+                        }}
+                      >
+                        {item.subtitle}
+                      </div>
                     )}
                   </div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#9ca3af",
-                      fontFamily: textGeneralFont(),
-                      fontWeight: "400",
-                    }}
-                  >
-                    Já recebido: R${" "}
-                    {formatNumber(
-                      financialReports
-                        .filter(
-                          (report) =>
-                            report.accountFor &&
-                            report.typeOfItem !== "debt" &&
-                            report.paidFor
-                        )
-                        .reduce(
-                          (total, report) =>
-                            total +
-                            (Math.abs(report.amount || 0) -
-                              (report.discount || 0)),
-                          0
-                        )
-                    )}
-                  </div>
-                </div>
-
-                {/* Saídas */}
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "6px",
-                    padding: "20px",
-                    textAlign: "center",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "#6b7280",
-                      marginBottom: "8px",
-                      fontFamily: textGeneralFont(),
-                      fontWeight: "400",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Saídas Esperadas
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: "#dc2626",
-                      marginBottom: "4px",
-                      fontFamily: textTitleFont(),
-                    }}
-                  >
-                    R${" "}
-                    {formatNumber(
-                      financialReports
-                        .filter(
-                          (report) =>
-                            report.accountFor && report.typeOfItem === "debt"
-                        )
-                        .reduce(
-                          (total, report) =>
-                            total + Math.abs(report.amount || 0),
-                          0
-                        )
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#9ca3af",
-                      fontFamily: textGeneralFont(),
-                      fontWeight: "400",
-                    }}
-                  >
-                    Já pago: R${" "}
-                    {formatNumber(
-                      financialReports
-                        .filter(
-                          (report) =>
-                            report.accountFor &&
-                            report.typeOfItem === "debt" &&
-                            report.paidFor
-                        )
-                        .reduce(
-                          (total, report) =>
-                            total + Math.abs(report.amount || 0),
-                          0
-                        )
-                    )}
-                  </div>
-                </div>
-
-                {/* Saldo */}
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "6px",
-                    padding: "20px",
-                    textAlign: "center",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                    transition: "all 0.2s ease",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "11px",
-                      color: "#6b7280",
-                      marginBottom: "8px",
-                      fontFamily: textGeneralFont(),
-                      fontWeight: "400",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                    }}
-                  >
-                    Saldo Previsto
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "24px",
-                      fontWeight: "600",
-                      color: (() => {
-                        const entradas = financialReports
-                          .filter(
-                            (report) =>
-                              report.accountFor && report.typeOfItem !== "debt"
-                          )
-                          .reduce(
-                            (total, report) =>
-                              total +
-                              (Math.abs(report.amount || 0) -
-                                (report.discount || 0)),
-                            0
-                          );
-                        const saidas = financialReports
-                          .filter(
-                            (report) =>
-                              report.accountFor && report.typeOfItem === "debt"
-                          )
-                          .reduce(
-                            (total, report) =>
-                              total + Math.abs(report.amount || 0),
-                            0
-                          );
-                        const saldo = entradas - saidas;
-                        return saldo < 0 ? "#dc2626" : "#16a34a";
-                      })(),
-                      fontFamily: textTitleFont(),
-                    }}
-                  >
-                    R${" "}
-                    {formatNumber(
-                      financialReports
-                        .filter(
-                          (report) =>
-                            report.accountFor && report.typeOfItem !== "debt"
-                        )
-                        .reduce(
-                          (total, report) =>
-                            total +
-                            (Math.abs(report.amount || 0) -
-                              (report.discount || 0)),
-                          0
-                        ) -
-                        financialReports
-                          .filter(
-                            (report) =>
-                              report.accountFor && report.typeOfItem === "debt"
-                          )
-                          .reduce(
-                            (total, report) =>
-                              total + Math.abs(report.amount || 0),
-                            0
-                          )
-                    )}
-                  </div>
-                </div>
+                ))}
               </div>
 
               {/* TÍTULO DO RELATÓRIO */}
@@ -1175,42 +1065,8 @@ export function FinancialResources({ headers, id }) {
                   Relatórios Financeiros • {selectedMonth}
                 </div>
                 <button
+                  className="linguee-btn linguee-btn-primary"
                   onClick={handleNewItemModal}
-                  style={{
-                    border: "1px solid #3b82f6",
-                    backgroundColor: "#3b82f6",
-                    color: "#fff",
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    fontFamily: textGeneralFont(),
-                    padding: "10px 18px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    boxShadow: "0 2px 4px 0 rgba(59, 130, 246, 0.2)",
-                    outline: "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#2563eb";
-                    e.target.style.borderColor = "#2563eb";
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow = "0 4px 8px 0 rgba(59, 130, 246, 0.3)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "#3b82f6";
-                    e.target.style.borderColor = "#3b82f6";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "0 2px 4px 0 rgba(59, 130, 246, 0.2)";
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1), 0 2px 4px 0 rgba(59, 130, 246, 0.2)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.boxShadow = "0 2px 4px 0 rgba(59, 130, 246, 0.2)";
-                  }}
                 >
                   + Novo Item
                 </button>
@@ -1225,7 +1081,7 @@ export function FinancialResources({ headers, id }) {
                     backgroundColor: "#fff",
                     border: "1px solid #e5e7eb",
                     borderRadius: "6px",
-                    padding: "20px",
+                    padding: "12px",
                     marginBottom: "20px",
                     boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
                   }}
@@ -1241,7 +1097,6 @@ export function FinancialResources({ headers, id }) {
                   >
                     Entradas
                   </div>
-
                   <div
                     style={{
                       display: "flex",
@@ -1260,24 +1115,46 @@ export function FinancialResources({ headers, id }) {
                           onClick={() => handleFinancialReportModal(report)}
                           style={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "16px",
-                            backgroundColor: "#f9fafb",
-                            border: "1px solid #f3f4f6",
+                            justifyContent: "space-evenly",
+                            alignItems: "left",
+                            padding: "12px",
+                            gap: "12px",
+                            backgroundColor: "#fff",
+                            border: "1px solid #eee",
                             borderRadius: "4px",
                             transition: "all 0.2s ease",
                             cursor: "pointer",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#f0f9ff";
-                            e.currentTarget.style.borderColor = "#0ea5e9";
+                            e.currentTarget.style.backgroundColor = "#e7f4ebff";
+                            e.currentTarget.style.borderColor = "#daf9e4ff";
                           }}
                           onMouseLeave={(e) => {
                             e.currentTarget.style.backgroundColor = "#fff";
-                            e.currentTarget.style.borderColor = "#bae6fd";
+                            e.currentTarget.style.borderColor = "#eee";
                           }}
                         >
+                          <div
+                            style={{
+                              textAlign: "center",
+                              borderRadius: "12px",
+                              color: report.paidFor ? "#2e7d32" : "#c62828",
+                              fontFamily: textGeneralFont(),
+                            }}
+                          >
+                            {report.paidFor ? (
+                              <i
+                                className="fa fa-check-circle-o"
+                                style={{ color: "#2e7d32" }}
+                              />
+                            ) : (
+                              <i
+                                className="fa fa-circle-o"
+                                style={{ color: "#c62828" }}
+                              />
+                            )}
+                          </div>
+
                           <div style={{ flex: 1 }}>
                             <div
                               style={{
@@ -1297,9 +1174,10 @@ export function FinancialResources({ headers, id }) {
                                 fontFamily: textGeneralFont(),
                               }}
                             >
-                              Tipo: {report.typeOfItem}
                               {report.discount > 0 &&
-                                ` • Desconto: R$ ${formatNumber(
+                                `Original: R$ ${formatNumber(
+                                  report.amount
+                                )} • Desconto: R$ ${formatNumber(
                                   report.discount
                                 )}`}
                             </div>
@@ -1316,7 +1194,7 @@ export function FinancialResources({ headers, id }) {
                               style={{
                                 fontSize: "16px",
                                 fontWeight: "600",
-                                color: "#0369a1",
+                                color: "#0f8311ff",
                                 fontFamily: textGeneralFont(),
                               }}
                             >
@@ -1324,24 +1202,6 @@ export function FinancialResources({ headers, id }) {
                               {formatNumber(
                                 Math.abs(report.amount) - (report.discount || 0)
                               )}
-                            </div>
-
-                            <div
-                              style={{
-                                fontSize: "10px",
-                                fontWeight: "500",
-                                textAlign: "center",
-                                padding: "3px 8px",
-                                borderRadius: "12px",
-                                backgroundColor: report.paidFor
-                                  ? "#e8f5e8"
-                                  : "#ffebee",
-                                color: report.paidFor ? "#2e7d32" : "#c62828",
-                                fontFamily: textGeneralFont(),
-                                minWidth: "60px",
-                              }}
-                            >
-                              {report.paidFor ? "Recebido" : "Pendente"}
                             </div>
                           </div>
                         </div>
@@ -1359,7 +1219,7 @@ export function FinancialResources({ headers, id }) {
                     backgroundColor: "#fff",
                     border: "1px solid #e5e7eb",
                     borderRadius: "6px",
-                    padding: "20px",
+                    padding: "12px",
                     marginBottom: "20px",
                     boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
                   }}
@@ -1394,24 +1254,46 @@ export function FinancialResources({ headers, id }) {
                           onClick={() => handleFinancialReportModal(report)}
                           style={{
                             display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "16px",
-                            backgroundColor: "#f9fafb",
-                            border: "1px solid #f3f4f6",
+                            justifyContent: "space-evenly",
+                            alignItems: "left",
+                            padding: "12px",
+                            gap: "12px",
+                            backgroundColor: "#fff",
+                            border: "1px solid #eee",
                             borderRadius: "4px",
                             transition: "all 0.2s ease",
                             cursor: "pointer",
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#f3f4f6";
-                            e.currentTarget.style.borderColor = "#d1d5db";
+                            e.currentTarget.style.backgroundColor = "#fef2f2ff";
+                            e.currentTarget.style.borderColor = "#fecacaff";
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "#f9fafb";
-                            e.currentTarget.style.borderColor = "#f3f4f6";
+                            e.currentTarget.style.backgroundColor = "#fff";
+                            e.currentTarget.style.borderColor = "#eee";
                           }}
                         >
+                          <div
+                            style={{
+                              textAlign: "center",
+                              borderRadius: "12px",
+                              color: report.paidFor ? "#2e7d32" : "#c62828",
+                              fontFamily: textGeneralFont(),
+                            }}
+                          >
+                            {report.paidFor ? (
+                              <i
+                                className="fa fa-check-circle-o"
+                                style={{ color: "#2e7d32" }}
+                              />
+                            ) : (
+                              <i
+                                className="fa fa-circle-o"
+                                style={{ color: "#c62828" }}
+                              ></i>
+                            )}
+                          </div>
+
                           <div style={{ flex: 1 }}>
                             <div
                               style={{
@@ -1431,9 +1313,10 @@ export function FinancialResources({ headers, id }) {
                                 fontFamily: textGeneralFont(),
                               }}
                             >
-                              Tipo: {report.typeOfItem}
                               {report.discount > 0 &&
-                                ` • Desconto: R$ ${formatNumber(
+                                `Original: R$ ${formatNumber(
+                                  report.amount
+                                )} • Desconto: R$ ${formatNumber(
                                   report.discount
                                 )}`}
                             </div>
@@ -1458,24 +1341,6 @@ export function FinancialResources({ headers, id }) {
                               {formatNumber(
                                 Math.abs(report.amount) - (report.discount || 0)
                               )}
-                            </div>
-
-                            <div
-                              style={{
-                                fontSize: "10px",
-                                fontWeight: "500",
-                                textAlign: "center",
-                                padding: "3px 8px",
-                                borderRadius: "12px",
-                                backgroundColor: report.paidFor
-                                  ? "#e8f5e8"
-                                  : "#ffebee",
-                                color: report.paidFor ? "#2e7d32" : "#c62828",
-                                fontFamily: textGeneralFont(),
-                                minWidth: "60px",
-                              }}
-                            >
-                              {report.paidFor ? "Pago" : "Pendente"}
                             </div>
                           </div>
                         </div>
@@ -1621,40 +1486,9 @@ export function FinancialResources({ headers, id }) {
                 Nenhum relatório disponível para este mês.
               </p>
               {isCurrentOrFutureMonth(selectedMonth) && (
-                <button 
+                <button
+                  className="linguee-btn linguee-btn-outline"
                   onClick={() => generateReports(selectedMonth)}
-                  style={{
-                    padding: "12px 24px",
-                    border: "1px solid #3b82f6",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    fontFamily: textGeneralFont(),
-                    fontWeight: "500",
-                    color: "#3b82f6",
-                    backgroundColor: "#fff",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                    outline: "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#3b82f6";
-                    e.target.style.color = "#fff";
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "#fff";
-                    e.target.style.color = "#3b82f6";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-                  }}
                 >
                   Gerar relatório para {selectedMonth}
                 </button>
@@ -2124,49 +1958,13 @@ export function FinancialResources({ headers, id }) {
                 }}
               >
                 <button
+                  className="linguee-btn linguee-btn-ghost"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleNewCostModal();
                   }}
-                  style={{
-                    border: "1px solid #d1d5db",
-                    backgroundColor: "#fff",
-                    color: "#6b7280",
-                    fontSize: "12px",
-                    fontWeight: "500",
-                    fontFamily: textGeneralFont(),
-                    padding: "8px 16px",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                    outline: "none",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.borderColor = "#3b82f6";
-                    e.target.style.color = "#3b82f6";
-                    e.target.style.backgroundColor = "#f8fafc";
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.borderColor = "#d1d5db";
-                    e.target.style.color = "#6b7280";
-                    e.target.style.backgroundColor = "#fff";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
-                  }}
                 >
-                  + Novo
+                  + Novo Custo Fixo
                 </button>
               </div>
 
@@ -2293,92 +2091,61 @@ export function FinancialResources({ headers, id }) {
                 >
                   Novo Custo Mensal
                 </h2>
-                <Button
+                <ArvinButton
                   onClick={handleNewCostModal}
                   style={{
                     minWidth: "auto",
                     padding: "8px",
-                    color: "#6b7280",
                   }}
                 >
-                  <CloseIcon />
-                </Button>
+                  X
+                </ArvinButton>
               </div>
             </DialogTitle>
 
             <DialogContent style={{ padding: "24px 24px 16px" }}>
-              <div style={{ marginBottom: "20px" }}>
-                <h2
-                  variant="body2"
-                  style={{
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    marginBottom: "12px",
-                  }}
-                >
+              <div className="linguee-form-group">
+                <label className="linguee-label">
                   Mês:{" "}
                   {new Date().toLocaleDateString("pt-BR", {
                     month: "long",
                     year: "numeric",
                   })}
-                </h2>
+                </label>
               </div>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Descrição"
-                    value={newCostDescription}
-                    onChange={(e) => setNewCostDescription(e.target.value)}
-                    placeholder="Ex: Aluguel, Energia, Internet..."
-                    variant="outlined"
-                    style={{ marginBottom: "16px" }}
-                    InputLabelProps={{
-                      style: { color: "#6b7280" },
-                    }}
-                    InputProps={{
-                      style: {
-                        fontSize: "15px",
-                        color: "#374151",
-                      },
-                    }}
-                    error={checkDuplicateCost()}
-                    helperText={
-                      checkDuplicateCost()
-                        ? "Já existe um custo com esta descrição"
-                        : ""
-                    }
-                  />
-                </Grid>
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Descrição
+                </label>
+                <input
+                  type="text"
+                  className="linguee-input linguee-input-text"
+                  value={newCostDescription}
+                  onChange={(e) => setNewCostDescription(e.target.value)}
+                  placeholder="Ex: Aluguel, Energia, Internet..."
+                />
+                {checkDuplicateCost() && (
+                  <div className="linguee-error-text">
+                    Já existe um custo com esta descrição
+                  </div>
+                )}
+              </div>
 
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Valor (R$)"
-                    type="number"
-                    value={newCostAmount}
-                    onChange={(e) => setNewCostAmount(e.target.value)}
-                    placeholder="0,00"
-                    variant="outlined"
-                    InputLabelProps={{
-                      style: { color: "#6b7280" },
-                    }}
-                    InputProps={{
-                      style: {
-                        fontSize: "15px",
-                        color: "#374151",
-                        fontFamily:
-                          "SF Mono, Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace",
-                      },
-                      inputProps: {
-                        min: 0,
-                        step: 0.01,
-                      },
-                    }}
-                  />
-                </Grid>
-              </Grid>
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Valor (R$)
+                </label>
+                <input
+                  type="number"
+                  className="linguee-input linguee-input-number"
+                  value={Math.abs(newCostAmount)}
+                  onChange={(e) => setNewCostAmount(e.target.value)}
+                  placeholder="0,00"
+                  min="0"
+                  step="0.01"
+                />
+              </div>
             </DialogContent>
 
             <DialogActions
@@ -2388,38 +2155,24 @@ export function FinancialResources({ headers, id }) {
                 justifyContent: "flex-end",
               }}
             >
-              <Button
-                onClick={handleNewCostModal}
-                style={{
-                  color: "#6b7280",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "8px 16px",
-                }}
-              >
+              <button className="linguee-btn" onClick={handleNewCostModal}>
                 Cancelar
-              </Button>
-              <Button
+              </button>
+              <button
+                className={`linguee-btn ${
+                  !isSaveButtonDisabled() ? "linguee-btn-primary" : ""
+                }`}
                 onClick={handleSaveCost}
-                variant="contained"
+                disabled={isSaveButtonDisabled()}
                 style={{
                   backgroundColor: isSaveButtonDisabled()
                     ? "#9ca3af"
-                    : "#3b82f6",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "8px 20px",
-                  borderRadius: "6px",
-                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                    : undefined,
                   cursor: isSaveButtonDisabled() ? "not-allowed" : "pointer",
                 }}
-                disabled={isSaveButtonDisabled()}
               >
                 {checkDuplicateCost() ? "Nome já existe" : "Adicionar Custo"}
-              </Button>
+              </button>
             </DialogActions>
           </Dialog>
 
@@ -2457,7 +2210,7 @@ export function FinancialResources({ headers, id }) {
                 >
                   Detalhes do Custo
                 </div>
-                <Button
+                <ArvinButton
                   onClick={() => handleCostDetailModal()}
                   style={{
                     minWidth: "auto",
@@ -2465,8 +2218,8 @@ export function FinancialResources({ headers, id }) {
                     color: "#6b7280",
                   }}
                 >
-                  <CloseIcon />
-                </Button>
+                  X
+                </ArvinButton>
               </div>
             </DialogTitle>
 
@@ -2545,57 +2298,27 @@ export function FinancialResources({ headers, id }) {
 
               {selectedCost && isEditingCost && !showDeleteConfirmation && (
                 <div>
-                  <div style={{ marginBottom: "20px" }}>
-                    <TextField
-                      fullWidth
-                      label="Descrição"
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Descrição</label>
+                    <input
+                      type="text"
+                      className="linguee-input linguee-input-text"
                       value={editCostDescription}
                       onChange={(e) => setEditCostDescription(e.target.value)}
-                      variant="outlined"
-                      size="small"
-                      style={{ marginBottom: "16px" }}
-                      InputLabelProps={{
-                        style: {
-                          color: "#6b7280",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
-                      InputProps={{
-                        style: {
-                          fontSize: "14px",
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
+                      placeholder="Descrição do custo"
                     />
                   </div>
 
-                  <div style={{ marginBottom: "20px" }}>
-                    <TextField
-                      fullWidth
-                      label="Valor (R$)"
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Valor (R$)</label>
+                    <input
                       type="number"
-                      value={editCostAmount}
+                      className="linguee-input linguee-input-number"
+                      value={Math.abs(editCostAmount)}
                       onChange={(e) => setEditCostAmount(e.target.value)}
-                      variant="outlined"
-                      size="small"
-                      InputLabelProps={{
-                        style: {
-                          color: "#6b7280",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
-                      InputProps={{
-                        style: {
-                          fontSize: "14px",
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        },
-                        inputProps: {
-                          min: 0,
-                          step: 0.01,
-                        },
-                      }}
+                      placeholder="0,00"
+                      min="0"
+                      step="0.01"
                     />
                   </div>
 
@@ -2663,7 +2386,7 @@ export function FinancialResources({ headers, id }) {
               {!showDeleteConfirmation && !isEditingCost && (
                 <>
                   <div style={{ display: "flex", gap: "8px" }}>
-                    <Button
+                    <ArvinButton
                       onClick={() => setIsEditingCost(true)}
                       variant="outlined"
                       style={{
@@ -2671,47 +2394,40 @@ export function FinancialResources({ headers, id }) {
                         fontWeight: "500",
                         textTransform: "none",
                         padding: "6px 12px",
-                        fontFamily: textGeneralFont(),
-                        borderColor: "#3b82f6",
-                        color: "#3b82f6",
                       }}
                     >
                       ✏️ Editar
-                    </Button>
-                    <Button
+                    </ArvinButton>
+                    <ArvinButton
                       onClick={() => setShowDeleteConfirmation(true)}
-                      color="error"
-                      variant="outlined"
+                      color="grey"
                       style={{
                         fontSize: "12px",
                         fontWeight: "500",
                         textTransform: "none",
                         padding: "6px 12px",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       🗑️ Excluir
-                    </Button>
+                    </ArvinButton>
                   </div>
-                  <Button
+                  <ArvinButton
                     onClick={() => handleCostDetailModal()}
                     style={{
-                      color: "#6b7280",
                       fontSize: "12px",
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 12px",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Fechar
-                  </Button>
+                  </ArvinButton>
                 </>
               )}
 
               {isEditingCost && !showDeleteConfirmation && (
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <Button
+                  <ArvinButton
                     onClick={() => {
                       setIsEditingCost(false);
                       // Reset values to original
@@ -2721,7 +2437,6 @@ export function FinancialResources({ headers, id }) {
                       }
                     }}
                     style={{
-                      color: "#6b7280",
                       fontSize: "12px",
                       fontWeight: "500",
                       textTransform: "none",
@@ -2730,8 +2445,8 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Cancelar
-                  </Button>
-                  <Button
+                  </ArvinButton>
+                  <ArvinButton
                     onClick={() =>
                       selectedCost &&
                       handleEditCost(
@@ -2752,17 +2467,17 @@ export function FinancialResources({ headers, id }) {
                       backgroundColor:
                         !editCostDescription.trim() || !editCostAmount
                           ? "#9ca3af"
-                          : "#3b82f6",
+                          : primaryColor(),
                     }}
                   >
                     Salvar
-                  </Button>
+                  </ArvinButton>
                 </div>
               )}
 
               {showDeleteConfirmation && (
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <Button
+                  <ArvinButton
                     onClick={() => setShowDeleteConfirmation(false)}
                     style={{
                       color: "#6b7280",
@@ -2774,8 +2489,8 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Não
-                  </Button>
-                  <Button
+                  </ArvinButton>
+                  <ArvinButton
                     onClick={() =>
                       selectedCost &&
                       handleDeleteCost(
@@ -2783,19 +2498,17 @@ export function FinancialResources({ headers, id }) {
                         selectedCost.amount
                       )
                     }
-                    color="error"
-                    variant="contained"
+                    color="red"
                     style={{
                       fontSize: "12px",
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
                       fontFamily: textGeneralFont(),
-                      backgroundColor: "#ef4444",
                     }}
                   >
                     Sim, excluir
-                  </Button>
+                  </ArvinButton>
                 </div>
               )}
             </DialogActions>
@@ -2823,12 +2536,12 @@ export function FinancialResources({ headers, id }) {
                 <h2 variant="h5" fontWeight="600" color="#333">
                   {newName} {newLastName}
                 </h2>
-                <Button
+                <ArvinButton
                   onClick={handleSeeModal}
                   style={{ minWidth: "auto", padding: "8px" }}
                 >
-                  <CloseIcon />
-                </Button>
+                  X
+                </ArvinButton>
               </div>
             </DialogTitle>
 
@@ -2921,17 +2634,15 @@ export function FinancialResources({ headers, id }) {
                     marginTop: "1rem",
                   }}
                 >
-                  <Button
-                    variant="contained"
+                  <ArvinButton
                     onClick={() => editStudent(ID)}
                     style={{
                       backgroundColor: partnerColor(),
-                      color: "#fff",
                       fontWeight: "600",
                     }}
                   >
                     💾 Salvar Informações
-                  </Button>
+                  </ArvinButton>
                 </div>
               </div>
               {/* SEÇÃO 3: CONFIGURAÇÕES */}
@@ -3048,21 +2759,14 @@ export function FinancialResources({ headers, id }) {
             >
               {!seeConfirmDelete ? (
                 <>
-                  <Button
-                    color="error"
-                    variant="outlined"
+                  <ArvinButton
+                    color="red"
                     onClick={() => setSeeConfirmDelete(true)}
-                    style={{ fontWeight: "600" }}
                   >
                     🗑️ Excluir Aluno
-                  </Button>
+                  </ArvinButton>
                   <div style={{ display: "flex", gap: "1rem" }}>
-                    <Button
-                      onClick={handleSeeModal}
-                      style={{ fontWeight: "600" }}
-                    >
-                      Cancelar
-                    </Button>
+                    <ArvinButton onClick={handleSeeModal}>Cancelar</ArvinButton>
                   </div>
                 </>
               ) : (
@@ -3087,20 +2791,12 @@ export function FinancialResources({ headers, id }) {
                       marginTop: "1rem",
                     }}
                   >
-                    <Button
-                      onClick={() => setSeeConfirmDelete(false)}
-                      style={{ fontWeight: "600" }}
-                    >
+                    <ArvinButton onClick={() => setSeeConfirmDelete(false)}>
                       Cancelar
-                    </Button>
-                    <Button
-                      color="error"
-                      variant="contained"
-                      onClick={handleDelete}
-                      style={{ fontWeight: "600" }}
-                    >
+                    </ArvinButton>
+                    <ArvinButton color="red" onClick={handleDelete}>
                       Confirmar Exclusão
-                    </Button>
+                    </ArvinButton>
                   </div>
                 </div>
               )}
@@ -3142,191 +2838,130 @@ export function FinancialResources({ headers, id }) {
                 >
                   Editar Relatório Financeiro
                 </h2>
-                <Button
+                <ArvinButton
                   onClick={() => handleFinancialReportModal()}
                   style={{
                     minWidth: "auto",
                     padding: "8px",
-                    color: "#6b7280",
                   }}
                 >
                   <CloseIcon />
-                </Button>
+                </ArvinButton>
               </div>
             </DialogTitle>
 
             <DialogContent style={{ padding: "24px 24px 16px" }}>
               {selectedFinancialReport && (
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    width: "100%",
-                    gap: "16px",
-                    justifyContent: "space-between",
-                    margin: "auto",
-                    alignItems: "center",
-                  }}
-                >
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Descrição"
+                <div>
+                  <div className="linguee-form-group">
+                    <label className="linguee-label linguee-label-required">
+                      Descrição
+                    </label>
+                    <input
+                      type="text"
+                      className="linguee-input linguee-input-text"
                       value={editReportDescription}
                       onChange={(e) => setEditReportDescription(e.target.value)}
-                      variant="outlined"
-                      InputLabelProps={{
-                        style: {
-                          color: "#6b7280",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
-                      InputProps={{
-                        style: {
-                          fontSize: "15px",
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
+                      placeholder="Descrição do item financeiro"
                     />
-                  </Grid>
+                  </div>
 
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Valor (R$)"
-                      type="number"
-                      value={editReportAmount}
-                      onChange={(e) => setEditReportAmount(e.target.value)}
-                      variant="outlined"
-                      InputLabelProps={{
-                        style: {
-                          color: "#6b7280",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
-                      InputProps={{
-                        style: {
-                          fontSize: "15px",
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        },
-                        inputProps: {
-                          min: 0,
-                          step: 0.01,
-                        },
-                      }}
-                    />
-                  </Grid>
-
-                  {editReportTypeOfItem !== "debt" && (
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Desconto (R$)"
-                        type="number"
-                        value={editReportDiscount}
-                        onChange={(e) => setEditReportDiscount(e.target.value)}
-                        variant="outlined"
-                        InputLabelProps={{
-                          style: {
-                            color: "#6b7280",
-                            fontFamily: textGeneralFont(),
-                          },
-                        }}
-                        InputProps={{
-                          style: {
-                            fontSize: "15px",
-                            color: "#374151",
-                            fontFamily: textGeneralFont(),
-                          },
-                          inputProps: {
-                            min: 0,
-                            step: 0.01,
-                          },
-                        }}
-                      />
-                    </Grid>
-                  )}
-
-                  {editReportTypeOfItem !== "debt" && (
-                    <Grid item xs={12} md={6}>
-                      <FormControl fullWidth variant="outlined">
-                        <InputLabel
-                          style={{
-                            color: "#6b7280",
-                            fontFamily: textGeneralFont(),
-                          }}
-                        >
-                          Tipo de Item
-                        </InputLabel>
-                        <Select
-                          value={editReportTypeOfItem}
-                          onChange={(e) =>
-                            setEditReportTypeOfItem(e.target.value)
-                          }
-                          label="Tipo de Item"
-                          style={{
-                            fontSize: "15px",
-                            color: "#374151",
-                            fontFamily: textGeneralFont(),
-                          }}
-                        >
-                          <MenuItem value="fee">Mensalidade</MenuItem>
-                          <MenuItem value="others">Outro</MenuItem>
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                  )}
                   <div
                     style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
-
-                      width: "70%",
                       gap: "16px",
-                      justifyContent: "space-between",
-                      margin: "auto",
-                      alignItems: "center",
                     }}
                   >
-                    <Grid item xs={12} md={6}>
-                      <FormControlLabel
-                        control={
-                          <Switch
+                    <div className="linguee-form-group">
+                      <label className="linguee-label linguee-label-required">
+                        Valor (R$)
+                      </label>
+                      <input
+                        type="number"
+                        className="linguee-input linguee-input-number"
+                        value={Math.abs(editReportAmount)}
+                        onChange={(e) => setEditReportAmount(e.target.value)}
+                        placeholder="0,00"
+                        min="0"
+                        step="0.01"
+                      />
+                    </div>
+
+                    {editReportTypeOfItem !== "debt" && (
+                      <div className="linguee-form-group">
+                        <label className="linguee-label">Desconto (R$)</label>
+                        <input
+                          type="number"
+                          className="linguee-input linguee-input-number"
+                          value={editReportDiscount}
+                          onChange={(e) =>
+                            setEditReportDiscount(e.target.value)
+                          }
+                          placeholder="0,00"
+                          min="0"
+                          step="0.01"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  {editReportTypeOfItem !== "debt" && (
+                    <div className="linguee-form-group">
+                      <label className="linguee-label">Tipo de Item</label>
+                      <select
+                        className="linguee-select"
+                        value={editReportTypeOfItem}
+                        onChange={(e) =>
+                          setEditReportTypeOfItem(e.target.value)
+                        }
+                      >
+                        <option value="fee">Mensalidade</option>
+                        <option value="others">Outro</option>
+                      </select>
+                    </div>
+                  )}
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "16px",
+                    }}
+                  >
+                    <div className="linguee-form-group">
+                      <label className="linguee-checkbox-item">
+                        <div className="linguee-toggle">
+                          <input
+                            type="checkbox"
                             checked={editReportAccountFor}
                             onChange={(e) =>
                               setEditReportAccountFor(e.target.checked)
                             }
-                            color="primary"
                           />
-                        }
-                        label="Contabilizar"
-                        style={{
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        }}
-                      />
-                    </Grid>
+                          <div className="linguee-toggle-slider"></div>
+                        </div>
+                        <span className="linguee-checkbox-label">
+                          Contabilizar
+                        </span>
+                      </label>
+                    </div>
 
-                    <Grid item xs={12} md={6}>
-                      <FormControlLabel
-                        control={
-                          <Switch
+                    <div className="linguee-form-group">
+                      <label className="linguee-checkbox-item">
+                        <div className="linguee-toggle">
+                          <input
+                            type="checkbox"
                             checked={editReportPaidFor}
                             onChange={(e) =>
                               setEditReportPaidFor(e.target.checked)
                             }
-                            color="primary"
                           />
-                        }
-                        label="Quitado"
-                        style={{
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        }}
-                      />
-                    </Grid>
+                          <div className="linguee-toggle-slider"></div>
+                        </div>
+                        <span className="linguee-checkbox-label">Quitado</span>
+                      </label>
+                    </div>
                   </div>
                 </div>
               )}
@@ -3339,44 +2974,33 @@ export function FinancialResources({ headers, id }) {
                 justifyContent: "flex-end",
               }}
             >
-              <Button
+              <button
+                className="linguee-btn"
                 onClick={() => handleFinancialReportModal()}
-                style={{
-                  color: "#6b7280",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "8px 16px",
-                  fontFamily: textGeneralFont(),
-                }}
               >
                 Cancelar
-              </Button>
-              <Button
+              </button>
+              <button
+                className={`linguee-btn ${
+                  !editReportDescription.trim() || !editReportAmount
+                    ? ""
+                    : "linguee-btn-primary"
+                }`}
                 onClick={handleSaveFinancialReport}
-                variant="contained"
                 disabled={!editReportDescription.trim() || !editReportAmount}
                 style={{
                   backgroundColor:
                     !editReportDescription.trim() || !editReportAmount
                       ? "#9ca3af"
-                      : "#3b82f6",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "8px 20px",
-                  borderRadius: "6px",
-                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                      : undefined,
                   cursor:
                     !editReportDescription.trim() || !editReportAmount
                       ? "not-allowed"
                       : "pointer",
-                  fontFamily: textGeneralFont(),
                 }}
               >
                 Salvar
-              </Button>
+              </button>
             </DialogActions>
           </Dialog>
 
@@ -3415,198 +3039,119 @@ export function FinancialResources({ headers, id }) {
                 >
                   Novo Item Financeiro
                 </h2>
-                <Button
+                <ArvinButton
                   onClick={handleNewItemModal}
                   style={{
                     minWidth: "auto",
                     padding: "8px",
-                    color: "#6b7280",
                   }}
                 >
-                  <CloseIcon />
-                </Button>
+                  x{" "}
+                </ArvinButton>
               </div>
             </DialogTitle>
 
             <DialogContent style={{ padding: "24px 24px 16px" }}>
-              <div style={{ marginBottom: "20px" }}>
-                <h2
-                  style={{
-                    color: "#6b7280",
-                    fontSize: "14px",
-                    marginBottom: "12px",
-                    fontFamily: textGeneralFont(),
-                  }}
-                >
-                  Mês: {selectedMonth}
-                </h2>
+              <div className="linguee-form-group">
+                <label className="linguee-label">Mês: {selectedMonth}</label>
+              </div>
+
+              <div className="linguee-form-group">
+                <label className="linguee-label linguee-label-required">
+                  Descrição
+                </label>
+                <input
+                  type="text"
+                  className="linguee-input linguee-input-text"
+                  value={newItemDescription}
+                  onChange={(e) => setNewItemDescription(e.target.value)}
+                  placeholder="Ex: Venda de curso, Aluguel..."
+                />
               </div>
 
               <div
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1fr 1fr",
-                  width: "100%",
                   gap: "16px",
-                  justifyContent: "space-between",
-                  margin: "auto",
-                  alignItems: "center",
                 }}
               >
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Descrição"
-                    value={newItemDescription}
-                    onChange={(e) => setNewItemDescription(e.target.value)}
-                    variant="outlined"
-                    placeholder="Ex: Venda de curso, Aluguel..."
-                    InputLabelProps={{
-                      style: {
-                        color: "#6b7280",
-                        fontFamily: textGeneralFont(),
-                      },
-                    }}
-                    InputProps={{
-                      style: {
-                        fontSize: "15px",
-                        color: "#374151",
-                        fontFamily: textGeneralFont(),
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Valor (R$)"
+                <div className="linguee-form-group">
+                  <label className="linguee-label linguee-label-required">
+                    Valor (R$)
+                  </label>
+                  <input
                     type="number"
-                    value={newItemAmount}
+                    className="linguee-input linguee-input-number"
+                    value={Math.abs(newItemAmount)}
                     onChange={(e) => setNewItemAmount(e.target.value)}
-                    variant="outlined"
-                    InputLabelProps={{
-                      style: {
-                        color: "#6b7280",
-                        fontFamily: textGeneralFont(),
-                      },
-                    }}
-                    InputProps={{
-                      style: {
-                        fontSize: "15px",
-                        color: "#374151",
-                        fontFamily: textGeneralFont(),
-                      },
-                      inputProps: {
-                        min: 0,
-                        step: 0.01,
-                      },
-                    }}
+                    placeholder="0,00"
+                    min="0"
+                    step="0.01"
                   />
-                </Grid>
+                </div>
 
                 {newItemTypeOfItem !== "debt" && (
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Desconto (R$)"
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Desconto (R$)</label>
+                    <input
                       type="number"
+                      className="linguee-input linguee-input-number"
                       value={newItemDiscount}
                       onChange={(e) => setNewItemDiscount(e.target.value)}
-                      variant="outlined"
-                      InputLabelProps={{
-                        style: {
-                          color: "#6b7280",
-                          fontFamily: textGeneralFont(),
-                        },
-                      }}
-                      InputProps={{
-                        style: {
-                          fontSize: "15px",
-                          color: "#374151",
-                          fontFamily: textGeneralFont(),
-                        },
-                        inputProps: {
-                          min: 0,
-                          step: 0.01,
-                        },
-                      }}
+                      placeholder="0,00"
+                      min="0"
+                      step="0.01"
                     />
-                  </Grid>
+                  </div>
                 )}
+              </div>
 
-                <Grid item xs={12} md={6}>
-                  <FormControl fullWidth variant="outlined">
-                    <InputLabel
-                      style={{
-                        color: "#6b7280",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      Tipo de Item
-                    </InputLabel>
-                    <Select
-                      value={newItemTypeOfItem}
-                      onChange={(e) => setNewItemTypeOfItem(e.target.value)}
-                      label="Tipo de Item"
-                      style={{
-                        fontSize: "15px",
-                        color: "#374151",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      <MenuItem value="others">Entrada</MenuItem>
-                      <MenuItem value="debt">Saída</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    width: "70%",
-                    gap: "16px",
-                    justifyContent: "space-between",
-                    margin: "auto",
-                    alignItems: "center",
-                  }}
+              <div className="linguee-form-group">
+                <label className="linguee-label">Tipo de Item</label>
+                <select
+                  className="linguee-select"
+                  value={newItemTypeOfItem}
+                  onChange={(e) => setNewItemTypeOfItem(e.target.value)}
                 >
-                  <Grid item xs={12} md={6}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={newItemAccountFor}
-                          onChange={(e) =>
-                            setNewItemAccountFor(e.target.checked)
-                          }
-                          color="primary"
-                        />
-                      }
-                      label="Contabilizar"
-                      style={{
-                        color: "#374151",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    />
-                  </Grid>
+                  <option value="others">Entrada</option>
+                  <option value="debt">Saída</option>
+                </select>
+              </div>
 
-                  <Grid item xs={12} md={6}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={newItemPaidFor}
-                          onChange={(e) => setNewItemPaidFor(e.target.checked)}
-                          color="primary"
-                        />
-                      }
-                      label="Quitado"
-                      style={{
-                        color: "#374151",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    />
-                  </Grid>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "16px",
+                }}
+              >
+                <div className="linguee-form-group">
+                  <label className="linguee-checkbox-item">
+                    <div className="linguee-toggle">
+                      <input
+                        type="checkbox"
+                        checked={newItemAccountFor}
+                        onChange={(e) => setNewItemAccountFor(e.target.checked)}
+                      />
+                      <div className="linguee-toggle-slider"></div>
+                    </div>
+                    <span className="linguee-checkbox-label">Contabilizar</span>
+                  </label>
+                </div>
+
+                <div className="linguee-form-group">
+                  <label className="linguee-checkbox-item">
+                    <div className="linguee-toggle">
+                      <input
+                        type="checkbox"
+                        checked={newItemPaidFor}
+                        onChange={(e) => setNewItemPaidFor(e.target.checked)}
+                      />
+                      <div className="linguee-toggle-slider"></div>
+                    </div>
+                    <span className="linguee-checkbox-label">Quitado</span>
+                  </label>
                 </div>
               </div>
             </DialogContent>
@@ -3618,22 +3163,15 @@ export function FinancialResources({ headers, id }) {
                 justifyContent: "flex-end",
               }}
             >
-              <Button
+              <button
+                className="linguee-btn linguee-btn-ghost"
                 onClick={handleNewItemModal}
-                style={{
-                  color: "#6b7280",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "8px 16px",
-                  fontFamily: textGeneralFont(),
-                }}
               >
                 Cancelar
-              </Button>
-              <Button
+              </button>
+              <button
+                className="linguee-btn linguee-btn-primary"
                 onClick={newStandaloneItem}
-                variant="contained"
                 disabled={!newItemDescription.trim() || !newItemAmount}
                 style={{
                   backgroundColor:
@@ -3642,29 +3180,21 @@ export function FinancialResources({ headers, id }) {
                       : newItemTypeOfItem === "debt"
                       ? "#dc2626"
                       : "#16a34a",
-                  color: "#fff",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                  textTransform: "none",
-                  padding: "8px 20px",
-                  borderRadius: "6px",
-                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
                   cursor:
                     !newItemDescription.trim() || !newItemAmount
                       ? "not-allowed"
                       : "pointer",
-                  fontFamily: textGeneralFont(),
                 }}
               >
                 {newItemTypeOfItem === "debt"
                   ? "💸 Criar Saída"
                   : "💰 Criar Entrada"}
-              </Button>
+              </button>
             </DialogActions>
           </Dialog>
         </section>
       </div>
-    </>
+    </div>
   );
 }
 
