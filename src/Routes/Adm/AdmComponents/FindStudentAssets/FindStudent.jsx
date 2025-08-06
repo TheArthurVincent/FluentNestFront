@@ -202,29 +202,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
         { headers }
       );
       notifyAlert("Usuário editado com sucesso!", "green");
-
-      // Atualizar selectedStudent com os novos dados
-      if (selectedStudent && selectedStudent._id === id) {
-        setSelectedStudent({
-          ...selectedStudent,
-          username: newUsername,
-          email: newEmail,
-          dateOfBirth: newDateOfBirth,
-          fullname: `${newName} ${newLastName}`,
-          phoneNumber: newPhone,
-          weeklyClasses,
-          permissions: permissions,
-          googleDriveLink: googleDriveLink,
-          address: newAddress,
-          fee,
-          picture: picture,
-          doc: newCpf,
-        });
-      }
-      setSelectedStudent(response.data.updatedUser);
+      setSelectedStudent(null);
       console.log("response.data.updatedUser", response.data.updatedUser);
       setTimeout(() => {
-        console.log(selectedStudent)
+        console.log(selectedStudent);
       }, 2000);
 
       handleSeeModal();
@@ -1555,6 +1536,31 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       marginBottom: "2px",
                     }}
                   >
+                    Itens Parciais
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#856404",
+                    }}
+                  >
+                    {
+                      selectedStudent.financialReports.filter(
+                        (report) => !report.paidFor && report.paidSoFar > 0
+                      ).length
+                    }
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
                     Itens Pendentes
                   </Typography>
                   <Typography
@@ -1566,7 +1572,9 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   >
                     {
                       selectedStudent.financialReports.filter(
-                        (report) => !report.paidFor
+                        (report) =>
+                          !report.paidFor &&
+                          (!report.paidSoFar || report.paidSoFar === 0)
                       ).length
                     }
                   </Typography>
@@ -1602,13 +1610,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
             </div>
 
             {/* LISTINHA SIMPLES DE STATUS */}
-            <div style={{ 
-              marginTop: "16px",
-              padding: "8px 12px",
-              backgroundColor: "#f8f9fa",
-              borderRadius: "6px",
-              border: "1px solid #dee2e6"
-            }}>
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "8px 12px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "6px",
+                border: "1px solid #dee2e6",
+              }}
+            >
               <Typography
                 style={{
                   color: "#6c757d",
@@ -1621,24 +1631,27 @@ export function FindStudent({ uploadStatus, headers, id }) {
               >
                 Status dos Meses
               </Typography>
-              
+
               <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
                 {selectedStudent.financialReports
                   .sort((a, b) => {
                     // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
                     if (!a.month || !b.month) return 0;
-                    const [monthA, yearA] = a.month.split('-').map(Number);
-                    const [monthB, yearB] = b.month.split('-').map(Number);
-                    
+                    const [monthA, yearA] = a.month.split("-").map(Number);
+                    const [monthB, yearB] = b.month.split("-").map(Number);
+
                     if (yearA !== yearB) return yearB - yearA;
                     return monthB - monthA;
                   })
                   .map((report, index) => (
                     <span key={report._id || index}>
                       <span style={{ color: "#2c3e50", fontWeight: "500" }}>
-                        {report.month || "N/A"}
+                        {transformMonth(report.month) || "N/A"}
                       </span>
-                      <span style={{ color: "#6c757d", margin: "0 4px" }}> - </span>
+                      <span style={{ color: "#6c757d", margin: "0 4px" }}>
+                        {" "}
+                        -{" "}
+                      </span>
                       <span
                         style={{
                           color: report.paidFor
@@ -1649,10 +1662,16 @@ export function FindStudent({ uploadStatus, headers, id }) {
                           fontWeight: "600",
                         }}
                       >
-                        {report.paidFor ? "pag" : report.paidSoFar > 0 ? "parc" : "pend"}
+                        {report.paidFor
+                          ? "pago"
+                          : report.paidSoFar > 0
+                          ? "parcial"
+                          : "pendente"}
                       </span>
                       {index < selectedStudent.financialReports.length - 1 && (
-                        <span style={{ color: "#dee2e6", margin: "0 8px" }}>•</span>
+                        <span style={{ color: "#dee2e6", margin: "0 8px" }}>
+                          •
+                        </span>
                       )}
                     </span>
                   ))}
