@@ -223,6 +223,9 @@ export function FindStudent({ uploadStatus, headers, id }) {
       }
       setSelectedStudent(response.data.updatedUser);
       console.log("response.data.updatedUser", response.data.updatedUser);
+      setTimeout(() => {
+        console.log(selectedStudent)
+      }, 2000);
 
       handleSeeModal();
       fetchStudents();
@@ -1219,6 +1222,444 @@ export function FindStudent({ uploadStatus, headers, id }) {
           </Grid>
         </div>
       )}
+
+      {/* QUADRO DE RELATÓRIOS FINANCEIROS DETALHADOS */}
+      {selectedStudent &&
+        selectedStudent.financialReports &&
+        selectedStudent.financialReports.length > 0 && (
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              margin: "auto",
+              marginTop: "16px",
+              borderRadius: "12px",
+              boxShadow:
+                "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+              border: "1px solid #e8eaed",
+              maxWidth: "70rem",
+              padding: "20px",
+            }}
+          >
+            <Typography
+              style={{
+                color: "#2c3e50",
+                fontSize: "16px",
+                fontWeight: "600",
+                marginBottom: "16px",
+                borderBottom: "2px solid #e8eaed",
+                paddingBottom: "8px",
+              }}
+            >
+              Histórico Financeiro - {selectedStudent.name}{" "}
+              {selectedStudent.lastName}
+            </Typography>
+
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
+              {selectedStudent.financialReports
+                .sort((a, b) => {
+                  // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
+                  if (!a.month || !b.month) return 0;
+                  const [monthA, yearA] = a.month.split("-").map(Number);
+                  const [monthB, yearB] = b.month.split("-").map(Number);
+
+                  if (yearA !== yearB) return yearB - yearA; // Ano mais recente primeiro
+                  return monthB - monthA; // Mês mais recente primeiro
+                })
+                .map((report, index) => (
+                  <div
+                    key={report._id || index}
+                    style={{
+                      padding: "12px 16px",
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      border: "1px solid #e8eaed",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                    }}
+                  >
+                    {/* PRIMEIRA LINHA */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                        }}
+                      >
+                        <Typography
+                          style={{
+                            fontWeight: "600",
+                            color: "#2c3e50",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {report.month ? transformMonth(report.month) : "N/A"}
+                        </Typography>
+
+                        <Typography
+                          style={{
+                            fontWeight: "500",
+                            color: "#6c757d",
+                            fontSize: "12px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          {report.typeOfItem === "fee"
+                            ? "Mensalidade"
+                            : report.typeOfItem || "Item"}
+                        </Typography>
+
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            padding: "2px 6px",
+                            borderRadius: "8px",
+                            fontSize: "11px",
+                            fontWeight: "500",
+                            backgroundColor: report.paidFor
+                              ? "#d4f6d4"
+                              : report.paidSoFar > 0
+                              ? "#fff3cd"
+                              : "#ffe6e6",
+                            color: report.paidFor
+                              ? "#2d7d32"
+                              : report.paidSoFar > 0
+                              ? "#856404"
+                              : "#d32f2f",
+                          }}
+                        >
+                          {report.paidFor ? (
+                            <>
+                              <i
+                                className="fa fa-check-circle"
+                                style={{ marginRight: "3px", fontSize: "10px" }}
+                              />
+                              Pago
+                            </>
+                          ) : report.paidSoFar > 0 ? (
+                            <>
+                              <i
+                                className="fa fa-adjust"
+                                style={{ marginRight: "3px", fontSize: "10px" }}
+                              />
+                              Parcial
+                            </>
+                          ) : (
+                            <>
+                              <i
+                                className="fa fa-exclamation-circle"
+                                style={{ marginRight: "3px", fontSize: "10px" }}
+                              />
+                              Pendente
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <Typography
+                        style={{
+                          fontWeight: "600",
+                          color: "#2e7d32",
+                          fontSize: "14px",
+                        }}
+                      >
+                        R$ {formatNumber(report.amount || 0)}
+                      </Typography>
+                    </div>
+
+                    {/* SEGUNDA LINHA */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "16px",
+                        }}
+                      >
+                        {report.discount > 0 && (
+                          <Typography
+                            style={{
+                              fontSize: "12px",
+                              color: "#f59e0b",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Desconto: R$ {formatNumber(report.discount)}
+                          </Typography>
+                        )}
+
+                        {report.paidSoFar > 0 && (
+                          <Typography
+                            style={{
+                              fontSize: "12px",
+                              color: "#1976d2",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Pago: R$ {formatNumber(report.paidSoFar)}
+                          </Typography>
+                        )}
+
+                        {!report.paidFor && (
+                          <Typography
+                            style={{
+                              fontSize: "12px",
+                              color: "#d32f2f",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Pendente: R${" "}
+                            {formatNumber(
+                              (report.amount || 0) - (report.paidSoFar || 0)
+                            )}
+                          </Typography>
+                        )}
+                      </div>
+
+                      {report.dueDate && (
+                        <Typography
+                          style={{
+                            fontSize: "12px",
+                            color: "#6c757d",
+                            fontWeight: "400",
+                          }}
+                        >
+                          Vencimento:{" "}
+                          {new Date(report.dueDate).toLocaleDateString("pt-BR")}
+                        </Typography>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            {/* RESUMO TOTAL */}
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "12px 16px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "8px",
+                border: "1px solid #dee2e6",
+              }}
+            >
+              <Typography
+                style={{
+                  color: "#6c757d",
+                  fontSize: "11px",
+                  marginBottom: "8px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  fontWeight: "600",
+                }}
+              >
+                Resumo Total
+              </Typography>
+
+              <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Total de Itens
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#2c3e50",
+                    }}
+                  >
+                    {selectedStudent.financialReports.length}
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Valor Total
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#2e7d32",
+                    }}
+                  >
+                    R${" "}
+                    {formatNumber(
+                      selectedStudent.financialReports.reduce(
+                        (total, report) => total + (report.amount || 0),
+                        0
+                      )
+                    )}
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Itens Pagos
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#1976d2",
+                    }}
+                  >
+                    {
+                      selectedStudent.financialReports.filter(
+                        (report) => report.paidFor
+                      ).length
+                    }
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Itens Pendentes
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#d32f2f",
+                    }}
+                  >
+                    {
+                      selectedStudent.financialReports.filter(
+                        (report) => !report.paidFor
+                      ).length
+                    }
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Total Pago
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#28a745",
+                    }}
+                  >
+                    R${" "}
+                    {formatNumber(
+                      selectedStudent.financialReports.reduce(
+                        (total, report) => total + (report.paidSoFar || 0),
+                        0
+                      )
+                    )}
+                  </Typography>
+                </div>
+              </div>
+            </div>
+
+            {/* LISTINHA SIMPLES DE STATUS */}
+            <div style={{ 
+              marginTop: "16px",
+              padding: "8px 12px",
+              backgroundColor: "#f8f9fa",
+              borderRadius: "6px",
+              border: "1px solid #dee2e6"
+            }}>
+              <Typography
+                style={{
+                  color: "#6c757d",
+                  fontSize: "10px",
+                  marginBottom: "6px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  fontWeight: "600",
+                }}
+              >
+                Status dos Meses
+              </Typography>
+              
+              <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
+                {selectedStudent.financialReports
+                  .sort((a, b) => {
+                    // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
+                    if (!a.month || !b.month) return 0;
+                    const [monthA, yearA] = a.month.split('-').map(Number);
+                    const [monthB, yearB] = b.month.split('-').map(Number);
+                    
+                    if (yearA !== yearB) return yearB - yearA;
+                    return monthB - monthA;
+                  })
+                  .map((report, index) => (
+                    <span key={report._id || index}>
+                      <span style={{ color: "#2c3e50", fontWeight: "500" }}>
+                        {report.month || "N/A"}
+                      </span>
+                      <span style={{ color: "#6c757d", margin: "0 4px" }}> - </span>
+                      <span
+                        style={{
+                          color: report.paidFor
+                            ? "#2d7d32"
+                            : report.paidSoFar > 0
+                            ? "#856404"
+                            : "#d32f2f",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {report.paidFor ? "pag" : report.paidSoFar > 0 ? "parc" : "pend"}
+                      </span>
+                      {index < selectedStudent.financialReports.length - 1 && (
+                        <span style={{ color: "#dee2e6", margin: "0 8px" }}>•</span>
+                      )}
+                    </span>
+                  ))}
+              </div>
+            </div>
+          </div>
+        )}
 
       {!loading ? (
         <div
