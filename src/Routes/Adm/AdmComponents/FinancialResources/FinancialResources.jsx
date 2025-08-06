@@ -843,6 +843,38 @@ export function FinancialResources({ headers, id }) {
           setSelectedMonth(e.target.value);
           seeReports(e.target.value);
         }}
+        style={{
+          padding: "12px 16px",
+          border: "1px solid #d1d5db",
+          borderRadius: "8px",
+          fontSize: "14px",
+          fontFamily: textGeneralFont(),
+          color: "#374151",
+          backgroundColor: "#fff",
+          outline: "none",
+          cursor: "pointer",
+          transition: "all 0.2s ease",
+          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+          minWidth: "200px",
+          margin: "0 auto 24px auto",
+          display: "block",
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.borderColor = "#3b82f6";
+          e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.borderColor = "#d1d5db";
+          e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = "#3b82f6";
+          e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = "#d1d5db";
+          e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
+        }}
       >
         {generateMonthOptions().map((option) => (
           <option key={option.value} value={option.value}>
@@ -1151,21 +1183,33 @@ export function FinancialResources({ headers, id }) {
                     fontSize: "12px",
                     fontWeight: "500",
                     fontFamily: textGeneralFont(),
-                    padding: "8px 16px",
-                    borderRadius: "6px",
+                    padding: "10px 18px",
+                    borderRadius: "8px",
                     cursor: "pointer",
                     transition: "all 0.2s ease",
                     display: "flex",
                     alignItems: "center",
                     gap: "6px",
+                    boxShadow: "0 2px 4px 0 rgba(59, 130, 246, 0.2)",
+                    outline: "none",
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.backgroundColor = "#2563eb";
                     e.target.style.borderColor = "#2563eb";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 4px 8px 0 rgba(59, 130, 246, 0.3)";
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.backgroundColor = "#3b82f6";
                     e.target.style.borderColor = "#3b82f6";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 2px 4px 0 rgba(59, 130, 246, 0.2)";
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1), 0 2px 4px 0 rgba(59, 130, 246, 0.2)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.boxShadow = "0 2px 4px 0 rgba(59, 130, 246, 0.2)";
                   }}
                 >
                   + Novo Item
@@ -1566,9 +1610,52 @@ export function FinancialResources({ headers, id }) {
             </div>
           ) : (
             <div style={{ textAlign: "center", marginTop: "1rem" }}>
-              <p>Nenhum relatório disponível para este mês.</p>
+              <p
+                style={{
+                  fontSize: "16px",
+                  color: "#6b7280",
+                  fontFamily: textGeneralFont(),
+                  marginBottom: "20px",
+                }}
+              >
+                Nenhum relatório disponível para este mês.
+              </p>
               {isCurrentOrFutureMonth(selectedMonth) && (
-                <button onClick={() => generateReports(selectedMonth)}>
+                <button 
+                  onClick={() => generateReports(selectedMonth)}
+                  style={{
+                    padding: "12px 24px",
+                    border: "1px solid #3b82f6",
+                    borderRadius: "8px",
+                    fontSize: "14px",
+                    fontFamily: textGeneralFont(),
+                    fontWeight: "500",
+                    color: "#3b82f6",
+                    backgroundColor: "#fff",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+                    outline: "none",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#3b82f6";
+                    e.target.style.color = "#fff";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "#fff";
+                    e.target.style.color = "#3b82f6";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
+                  }}
+                >
                   Gerar relatório para {selectedMonth}
                 </button>
               )}
@@ -1863,9 +1950,12 @@ export function FinancialResources({ headers, id }) {
                               </div>
                             </div>
 
-                            <Tooltip
+                            <div
+                              style={{
+                                position: "relative",
+                                display: "inline-block",
+                              }}
                               title={student.onHold ? "Matrícula trancada" : ""}
-                              arrow
                             >
                               <div
                                 style={{
@@ -1882,7 +1972,7 @@ export function FinancialResources({ headers, id }) {
                               >
                                 R$ {formatNumber(student.fee)}
                               </div>
-                            </Tooltip>
+                            </div>
                             <div
                               style={{
                                 fontSize: "9px",
@@ -2040,23 +2130,40 @@ export function FinancialResources({ headers, id }) {
                   }}
                   style={{
                     border: "1px solid #d1d5db",
-                    backgroundColor: "transparent",
+                    backgroundColor: "#fff",
                     color: "#6b7280",
                     fontSize: "12px",
-                    fontWeight: "400",
+                    fontWeight: "500",
                     fontFamily: textGeneralFont(),
-                    padding: "4px 8px",
-                    borderRadius: "4px",
+                    padding: "8px 16px",
+                    borderRadius: "6px",
                     cursor: "pointer",
-                    transition: "all 0.15s ease",
+                    transition: "all 0.2s ease",
+                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+                    outline: "none",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = "#9ca3af";
-                    e.currentTarget.style.backgroundColor = "#f9fafb";
+                    e.target.style.borderColor = "#3b82f6";
+                    e.target.style.color = "#3b82f6";
+                    e.target.style.backgroundColor = "#f8fafc";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 4px 6px -1px rgba(0, 0, 0, 0.1)";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = "#d1d5db";
-                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.target.style.borderColor = "#d1d5db";
+                    e.target.style.color = "#6b7280";
+                    e.target.style.backgroundColor = "#fff";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.boxShadow = "0 0 0 3px rgba(59, 130, 246, 0.1)";
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.boxShadow = "0 1px 3px 0 rgba(0, 0, 0, 0.1)";
                   }}
                 >
                   + Novo
