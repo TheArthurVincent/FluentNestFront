@@ -22,7 +22,6 @@ import {
   FormControl,
   InputLabel,
   Grid,
-  Typography,
   Switch,
   FormControlLabel,
   Tooltip,
@@ -41,6 +40,7 @@ import {
 import {
   alwaysWhite,
   partnerColor,
+  textGeneralFont,
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
@@ -94,6 +94,27 @@ export function FinancialResources({ headers, id }) {
   const [isEditingCost, setIsEditingCost] = useState(false);
   const [editCostDescription, setEditCostDescription] = useState("");
   const [editCostAmount, setEditCostAmount] = useState("");
+
+  // Financial Report Edit Modal States
+  const [financialReportModalOpen, setFinancialReportModalOpen] =
+    useState(false);
+  const [selectedFinancialReport, setSelectedFinancialReport] = useState(null);
+  const [editReportDescription, setEditReportDescription] = useState("");
+  const [editReportAmount, setEditReportAmount] = useState("");
+  const [editReportDiscount, setEditReportDiscount] = useState("");
+  const [editReportAccountFor, setEditReportAccountFor] = useState(true);
+  const [editReportPaidFor, setEditReportPaidFor] = useState(false);
+  const [editReportTypeOfItem, setEditReportTypeOfItem] = useState("");
+  const [editReportMonth, setEditReportMonth] = useState("");
+
+  // New Standalone Item Modal States
+  const [newItemModalOpen, setNewItemModalOpen] = useState(false);
+  const [newItemDescription, setNewItemDescription] = useState("");
+  const [newItemAmount, setNewItemAmount] = useState("");
+  const [newItemDiscount, setNewItemDiscount] = useState("");
+  const [newItemTypeOfItem, setNewItemTypeOfItem] = useState("others");
+  const [newItemAccountFor, setNewItemAccountFor] = useState(true);
+  const [newItemPaidFor, setNewItemPaidFor] = useState(false);
 
   // Student data
   const [students, setStudents] = useState([]);
@@ -191,6 +212,44 @@ export function FinancialResources({ headers, id }) {
     setRevenueExpanded(!revenueExpanded);
   };
 
+  // Financial Report Modal Handlers
+  const handleFinancialReportModal = (report = null) => {
+    setFinancialReportModalOpen(!financialReportModalOpen);
+    if (report) {
+      setSelectedFinancialReport(report);
+      setEditReportDescription(report.description);
+      setEditReportAmount(report.amount.toString());
+      setEditReportDiscount(report.discount.toString());
+      setEditReportAccountFor(report.accountFor);
+      setEditReportPaidFor(report.paidFor);
+      setEditReportTypeOfItem(report.typeOfItem);
+      setEditReportMonth(report.month);
+    } else {
+      setSelectedFinancialReport(null);
+      setEditReportDescription("");
+      setEditReportAmount("");
+      setEditReportDiscount("");
+      setEditReportAccountFor(true);
+      setEditReportPaidFor(false);
+      setEditReportTypeOfItem("");
+      setEditReportMonth("");
+    }
+  };
+
+  // New Item Modal Handler
+  const handleNewItemModal = () => {
+    setNewItemModalOpen(!newItemModalOpen);
+    if (!newItemModalOpen) {
+      // Reset form when opening
+      setNewItemDescription("");
+      setNewItemAmount("");
+      setNewItemDiscount("");
+      setNewItemTypeOfItem("others");
+      setNewItemAccountFor(true);
+      setNewItemPaidFor(false);
+    }
+  };
+
   const handleSaveCost = async () => {
     if (!newCostAmount || !newCostDescription) {
       notifyAlert("Preencha todos os campos");
@@ -220,6 +279,7 @@ export function FinancialResources({ headers, id }) {
       );
       notifyAlert("Custo fixo adicionado com sucesso!", "green");
       handleNewCostModal();
+
       // Refresh the fixed costs
       generateReports(selectedMonth);
     } catch (error) {
@@ -274,15 +334,15 @@ export function FinancialResources({ headers, id }) {
       });
       console.log("response", response.data.financialReportsOfTheMonth);
       console.log("month", month);
-      if (response.data.financialReportsOfTheMonth.length === 0) {
+      if (response.data.financialReportsOfTheMonth?.length === 0) {
         setFinancialReports(
-          response.data.financialReportsOfTheMonth.length > 0
+          response.data.financialReportsOfTheMonth?.length > 0
             ? response.data.financialReportsOfTheMonth
             : []
         );
         setThereAreReports(false);
       } else {
-        setFinancialReports(response.data.financialReportsOfTheMonth);
+        setFinancialReports(response.data.financialReportsOfTheMonth || []);
         setTimeout(() => {
           setThereAreReports(true);
         }, 500);
@@ -375,13 +435,110 @@ export function FinancialResources({ headers, id }) {
         }
       );
       setFinancialReports(
-        response.data.thisMonthReceivables.length > 0
-          ? response.data.thisMonthReceivables
+        response.data.financialReportsOfTheMonth?.length > 0
+          ? response.data.financialReportsOfTheMonth
           : []
       );
       console.log("response", response.data);
     } catch (error) {
       console.log("error", error);
+    }
+  };
+
+  const updateReports = async (report) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/finance-item/${id}`,
+        {
+          report,
+        },
+        {
+          headers,
+        }
+      );
+      setFinancialReports(
+        response.data.financialReportsOfTheMonth?.length > 0
+          ? response.data.financialReportsOfTheMonth
+          : []
+      );
+      console.log("response", response.data);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
+  const newStandaloneItem = async () => {
+    if (!newItemDescription || !newItemAmount) {
+      notifyAlert("Preencha todos os campos obrigatórios");
+      return;
+    }
+
+    try {
+      const newItem = {
+        description: newItemDescription,
+        month: selectedMonth,
+        typeOfItem: newItemTypeOfItem,
+        amount:
+          newItemTypeOfItem === "debt"
+            ? -Math.abs(parseFloat(newItemAmount))
+            : Math.abs(parseFloat(newItemAmount)),
+        discount: parseFloat(newItemDiscount) || 0,
+        accountFor: newItemAccountFor,
+        paidFor: newItemPaidFor,
+        studentId: null, // Item standalone não tem aluno específico
+      };
+
+      const response = await axios.post(
+        `${backDomain}/api/v1/finance-item/${id}`,
+        newItem,
+        {
+          headers,
+        }
+      );
+
+      notifyAlert("Item financeiro criado com sucesso!", "green");
+      handleNewItemModal(); // Fechar o modal
+      seeReports(currentMonthYear);
+
+      console.log("response", response.data);
+    } catch (error) {
+      notifyAlert("Erro ao criar item financeiro");
+      console.log("error", error);
+    }
+  };
+
+  const handleSaveFinancialReport = async () => {
+    if (!selectedFinancialReport) return;
+
+    try {
+      const updatedReport = {
+        ...selectedFinancialReport,
+        description: editReportDescription,
+        amount: parseFloat(editReportAmount),
+        discount: parseFloat(editReportDiscount) || 0,
+        accountFor: editReportAccountFor,
+        paidFor: editReportPaidFor,
+        typeOfItem: editReportTypeOfItem,
+        month: editReportMonth,
+      };
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/finance-item/${id}`,
+        {
+          report: updatedReport,
+        },
+        {
+          headers,
+        }
+      );
+
+      seeReports(currentMonthYear);
+      handleFinancialReportModal(); // Close modal
+      notifyAlert("Relatório financeiro atualizado com sucesso!", "green");
+      console.log("response", response.data);
+    } catch (error) {
+      console.log("error", error);
+      notifyAlert("Erro ao atualizar relatório financeiro");
     }
   };
 
@@ -639,6 +796,7 @@ export function FinancialResources({ headers, id }) {
 
   // ===== USEEFFECTS =====
   useEffect(() => {
+    seeReports(currentMonthYear);
     fetchStudents();
     getAllCosts();
     seeMyFirstMonth();
@@ -711,6 +869,9 @@ export function FinancialResources({ headers, id }) {
                 margin: "16px auto",
               }}
             >
+              {/* <button onClick={() => updateReports(selectedMonth)}>
+                Atualizar mês
+              </button> */}
               {/* RESUMO FINANCEIRO */}
               <div
                 style={{
@@ -721,6 +882,7 @@ export function FinancialResources({ headers, id }) {
                 }}
               >
                 {/* Entradas */}
+
                 <div
                   style={{
                     backgroundColor: "#fff",
@@ -737,7 +899,7 @@ export function FinancialResources({ headers, id }) {
                       fontSize: "11px",
                       color: "#6b7280",
                       marginBottom: "8px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       fontWeight: "400",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -751,7 +913,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "600",
                       color: "#059669",
                       marginBottom: "4px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textTitleFont(),
                     }}
                   >
                     R${" "}
@@ -763,7 +925,9 @@ export function FinancialResources({ headers, id }) {
                         )
                         .reduce(
                           (total, report) =>
-                            total + Math.abs(report.amount || 0),
+                            total +
+                            (Math.abs(report.amount || 0) -
+                              (report.discount || 0)),
                           0
                         )
                     )}
@@ -772,7 +936,7 @@ export function FinancialResources({ headers, id }) {
                     style={{
                       fontSize: "12px",
                       color: "#9ca3af",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       fontWeight: "400",
                     }}
                   >
@@ -787,7 +951,9 @@ export function FinancialResources({ headers, id }) {
                         )
                         .reduce(
                           (total, report) =>
-                            total + Math.abs(report.amount || 0),
+                            total +
+                            (Math.abs(report.amount || 0) -
+                              (report.discount || 0)),
                           0
                         )
                     )}
@@ -811,7 +977,7 @@ export function FinancialResources({ headers, id }) {
                       fontSize: "11px",
                       color: "#6b7280",
                       marginBottom: "8px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       fontWeight: "400",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -825,7 +991,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "600",
                       color: "#dc2626",
                       marginBottom: "4px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textTitleFont(),
                     }}
                   >
                     R${" "}
@@ -846,7 +1012,7 @@ export function FinancialResources({ headers, id }) {
                     style={{
                       fontSize: "12px",
                       color: "#9ca3af",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       fontWeight: "400",
                     }}
                   >
@@ -885,7 +1051,7 @@ export function FinancialResources({ headers, id }) {
                       fontSize: "11px",
                       color: "#6b7280",
                       marginBottom: "8px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       fontWeight: "400",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -905,7 +1071,9 @@ export function FinancialResources({ headers, id }) {
                           )
                           .reduce(
                             (total, report) =>
-                              total + Math.abs(report.amount || 0),
+                              total +
+                              (Math.abs(report.amount || 0) -
+                                (report.discount || 0)),
                             0
                           );
                         const saidas = financialReports
@@ -921,7 +1089,7 @@ export function FinancialResources({ headers, id }) {
                         const saldo = entradas - saidas;
                         return saldo < 0 ? "#dc2626" : "#16a34a";
                       })(),
-                      fontFamily: partnerColor(),
+                      fontFamily: textTitleFont(),
                     }}
                   >
                     R${" "}
@@ -933,7 +1101,9 @@ export function FinancialResources({ headers, id }) {
                         )
                         .reduce(
                           (total, report) =>
-                            total + Math.abs(report.amount || 0),
+                            total +
+                            (Math.abs(report.amount || 0) -
+                              (report.discount || 0)),
                           0
                         ) -
                         financialReports
@@ -954,16 +1124,52 @@ export function FinancialResources({ headers, id }) {
               {/* TÍTULO DO RELATÓRIO */}
               <div
                 style={{
-                  fontSize: "18px",
-                  fontWeight: "600",
-                  color: "#374151",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
                   marginBottom: "24px",
                   marginTop: "32px",
-                  fontFamily: partnerColor(),
-                  textAlign: "left",
                 }}
               >
-                Relatórios Financeiros • {selectedMonth}
+                <div
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "#374151",
+                    fontFamily: textGeneralFont(),
+                    textAlign: "left",
+                  }}
+                >
+                  Relatórios Financeiros • {selectedMonth}
+                </div>
+                <button
+                  onClick={handleNewItemModal}
+                  style={{
+                    border: "1px solid #3b82f6",
+                    backgroundColor: "#3b82f6",
+                    color: "#fff",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    fontFamily: textGeneralFont(),
+                    padding: "8px 16px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = "#2563eb";
+                    e.target.style.borderColor = "#2563eb";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = "#3b82f6";
+                    e.target.style.borderColor = "#3b82f6";
+                  }}
+                >
+                  + Novo Item
+                </button>
               </div>
 
               {/* ENTRADAS */}
@@ -986,7 +1192,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "600",
                       color: "#374151",
                       marginBottom: "16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Entradas
@@ -1007,6 +1213,7 @@ export function FinancialResources({ headers, id }) {
                       .map((report, index) => (
                         <div
                           key={report.studentId || index}
+                          onClick={() => handleFinancialReportModal(report)}
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
@@ -1016,6 +1223,7 @@ export function FinancialResources({ headers, id }) {
                             border: "1px solid #f3f4f6",
                             borderRadius: "4px",
                             transition: "all 0.2s ease",
+                            cursor: "pointer",
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = "#f0f9ff";
@@ -1033,7 +1241,7 @@ export function FinancialResources({ headers, id }) {
                                 fontWeight: "500",
                                 color: "#374151",
                                 marginBottom: "2px",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               {report.description}
@@ -1042,7 +1250,7 @@ export function FinancialResources({ headers, id }) {
                               style={{
                                 fontSize: "11px",
                                 color: "#6b7280",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               Tipo: {report.typeOfItem}
@@ -1065,10 +1273,13 @@ export function FinancialResources({ headers, id }) {
                                 fontSize: "16px",
                                 fontWeight: "600",
                                 color: "#0369a1",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
-                              R$ {formatNumber(Math.abs(report.amount))}
+                              R${" "}
+                              {formatNumber(
+                                Math.abs(report.amount) - (report.discount || 0)
+                              )}
                             </div>
 
                             <div
@@ -1082,7 +1293,7 @@ export function FinancialResources({ headers, id }) {
                                   ? "#e8f5e8"
                                   : "#ffebee",
                                 color: report.paidFor ? "#2e7d32" : "#c62828",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                                 minWidth: "60px",
                               }}
                             >
@@ -1115,7 +1326,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "600",
                       color: "#374151",
                       marginBottom: "16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Saídas
@@ -1136,6 +1347,7 @@ export function FinancialResources({ headers, id }) {
                       .map((report, index) => (
                         <div
                           key={report.studentId || index}
+                          onClick={() => handleFinancialReportModal(report)}
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
@@ -1145,6 +1357,7 @@ export function FinancialResources({ headers, id }) {
                             border: "1px solid #f3f4f6",
                             borderRadius: "4px",
                             transition: "all 0.2s ease",
+                            cursor: "pointer",
                           }}
                           onMouseEnter={(e) => {
                             e.currentTarget.style.backgroundColor = "#f3f4f6";
@@ -1162,7 +1375,7 @@ export function FinancialResources({ headers, id }) {
                                 fontWeight: "500",
                                 color: "#374151",
                                 marginBottom: "2px",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               {report.description}
@@ -1171,7 +1384,7 @@ export function FinancialResources({ headers, id }) {
                               style={{
                                 fontSize: "11px",
                                 color: "#6b7280",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               Tipo: {report.typeOfItem}
@@ -1194,10 +1407,13 @@ export function FinancialResources({ headers, id }) {
                                 fontSize: "16px",
                                 fontWeight: "600",
                                 color: "#dc2626",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
-                              R$ {formatNumber(Math.abs(report.amount))}
+                              R${" "}
+                              {formatNumber(
+                                Math.abs(report.amount) - (report.discount || 0)
+                              )}
                             </div>
 
                             <div
@@ -1211,7 +1427,7 @@ export function FinancialResources({ headers, id }) {
                                   ? "#e8f5e8"
                                   : "#ffebee",
                                 color: report.paidFor ? "#2e7d32" : "#c62828",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                                 minWidth: "60px",
                               }}
                             >
@@ -1241,7 +1457,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "500",
                       color: "#6b7280",
                       marginBottom: "12px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     📋 Itens não contabilizados
@@ -1259,6 +1475,7 @@ export function FinancialResources({ headers, id }) {
                       .map((report, index) => (
                         <div
                           key={report.studentId || index}
+                          onClick={() => handleFinancialReportModal(report)}
                           style={{
                             display: "flex",
                             justifyContent: "space-between",
@@ -1268,6 +1485,14 @@ export function FinancialResources({ headers, id }) {
                             border: "1px solid #e5e7eb",
                             borderRadius: "6px",
                             opacity: 0.7,
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.opacity = "1";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.opacity = "0.7";
                           }}
                         >
                           <div style={{ flex: 1 }}>
@@ -1277,7 +1502,7 @@ export function FinancialResources({ headers, id }) {
                                 fontWeight: "400",
                                 color: "#6b7280",
                                 marginBottom: "2px",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               {report.description}
@@ -1286,7 +1511,7 @@ export function FinancialResources({ headers, id }) {
                               style={{
                                 fontSize: "11px",
                                 color: "#9ca3af",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               Tipo:{" "}
@@ -1308,10 +1533,13 @@ export function FinancialResources({ headers, id }) {
                                 fontSize: "16px",
                                 fontWeight: "500",
                                 color: "#9ca3af",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
-                              R$ {formatNumber(Math.abs(report.amount))}
+                              R${" "}
+                              {formatNumber(
+                                Math.abs(report.amount) - (report.discount || 0)
+                              )}
                             </div>
 
                             <div
@@ -1323,7 +1551,7 @@ export function FinancialResources({ headers, id }) {
                                 borderRadius: "12px",
                                 backgroundColor: "#f3f4f6",
                                 color: "#6b7280",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                                 minWidth: "60px",
                               }}
                             >
@@ -1398,7 +1626,7 @@ export function FinancialResources({ headers, id }) {
                 >
                   <div
                     style={{
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       color: "#374151",
                       fontSize: "14px",
                       fontWeight: "600",
@@ -1416,7 +1644,7 @@ export function FinancialResources({ headers, id }) {
                         padding: "2px 6px",
                         borderRadius: "4px",
                         fontWeight: "500",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       {getActiveStudentsWithFees().length}
@@ -1433,7 +1661,7 @@ export function FinancialResources({ headers, id }) {
                         fontSize: "12px",
                         fontWeight: "600",
                         color: "#6b7280",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       R$ {formatNumber(calculateMonthlyRevenue())}
@@ -1495,7 +1723,7 @@ export function FinancialResources({ headers, id }) {
                             fontSize: "18px",
                             fontWeight: "500",
                             color: partnerColor(),
-                            fontFamily: partnerColor(),
+                            fontFamily: textGeneralFont(),
                           }}
                         >
                           R$ {formatNumber(calculateMonthlyRevenue())}
@@ -1504,7 +1732,7 @@ export function FinancialResources({ headers, id }) {
                           style={{
                             fontSize: "10px",
                             color: "#666",
-                            fontFamily: partnerColor(),
+                            fontFamily: textGeneralFont(),
                           }}
                         >
                           Receita Total
@@ -1525,7 +1753,7 @@ export function FinancialResources({ headers, id }) {
                             fontSize: "18px",
                             fontWeight: "500",
                             color: "#333",
-                            fontFamily: partnerColor(),
+                            fontFamily: textGeneralFont(),
                           }}
                         >
                           {getActiveStudentsWithFees().length}
@@ -1534,7 +1762,7 @@ export function FinancialResources({ headers, id }) {
                           style={{
                             fontSize: "10px",
                             color: "#666",
-                            fontFamily: partnerColor(),
+                            fontFamily: textGeneralFont(),
                           }}
                         >
                           Alunos Ativos
@@ -1552,7 +1780,7 @@ export function FinancialResources({ headers, id }) {
                           marginBottom: "6px",
                           padding: "6px 0",
                           borderBottom: "1px solid #ddd",
-                          fontFamily: partnerColor(),
+                          fontFamily: textGeneralFont(),
                         }}
                       >
                         Mensalidades ({getStudentsWithFees().length} total •{" "}
@@ -1618,7 +1846,7 @@ export function FinancialResources({ headers, id }) {
                                   fontWeight: "500",
                                   fontSize: "12px",
                                   opacity: student.onHold ? 0.6 : 1,
-                                  fontFamily: partnerColor(),
+                                  fontFamily: textGeneralFont(),
                                 }}
                               >
                                 {student.name} {student.lastname}
@@ -1628,7 +1856,7 @@ export function FinancialResources({ headers, id }) {
                                   fontSize: "10px",
                                   color: "#666",
                                   opacity: student.onHold ? 0.6 : 1,
-                                  fontFamily: partnerColor(),
+                                  fontFamily: textGeneralFont(),
                                 }}
                               >
                                 {student.email}
@@ -1649,7 +1877,7 @@ export function FinancialResources({ headers, id }) {
                                   textDecoration: student.onHold
                                     ? "line-through"
                                     : "none",
-                                  fontFamily: partnerColor(),
+                                  fontFamily: textGeneralFont(),
                                 }}
                               >
                                 R$ {formatNumber(student.fee)}
@@ -1666,7 +1894,7 @@ export function FinancialResources({ headers, id }) {
                                   ? "#ffebee"
                                   : "#e8f5e8",
                                 color: student.onHold ? "#c62828" : "#2e7d32",
-                                fontFamily: partnerColor(),
+                                fontFamily: textGeneralFont(),
                               }}
                             >
                               {student.onHold ? "Trancado" : "Ativo"}
@@ -1686,7 +1914,7 @@ export function FinancialResources({ headers, id }) {
                     padding: "16px",
                     color: "#9ca3af",
                     fontSize: "11px",
-                    fontFamily: partnerColor(),
+                    fontFamily: textGeneralFont(),
                   }}
                 >
                   Clique para ver
@@ -1730,7 +1958,7 @@ export function FinancialResources({ headers, id }) {
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
               <div
                 style={{
-                  fontFamily: partnerColor(),
+                  fontFamily: textGeneralFont(),
                   color: "#374151",
                   fontSize: "14px",
                   fontWeight: "600",
@@ -1749,7 +1977,7 @@ export function FinancialResources({ headers, id }) {
                     padding: "2px 6px",
                     borderRadius: "4px",
                     fontWeight: "500",
-                    fontFamily: partnerColor(),
+                    fontFamily: textGeneralFont(),
                   }}
                 >
                   {fixedCosts.length}
@@ -1764,7 +1992,7 @@ export function FinancialResources({ headers, id }) {
                     fontSize: "12px",
                     fontWeight: "600",
                     color: "#6b7280",
-                    fontFamily: partnerColor(),
+                    fontFamily: textGeneralFont(),
                   }}
                 >
                   R${" "}
@@ -1816,7 +2044,7 @@ export function FinancialResources({ headers, id }) {
                     color: "#6b7280",
                     fontSize: "12px",
                     fontWeight: "400",
-                    fontFamily: partnerColor(),
+                    fontFamily: textGeneralFont(),
                     padding: "4px 8px",
                     borderRadius: "4px",
                     cursor: "pointer",
@@ -1869,7 +2097,7 @@ export function FinancialResources({ headers, id }) {
                           fontWeight: "400",
                           color: "#4b5563",
                           lineHeight: "1.4",
-                          fontFamily: partnerColor(),
+                          fontFamily: textGeneralFont(),
                         }}
                       >
                         {cost.description}
@@ -1879,7 +2107,7 @@ export function FinancialResources({ headers, id }) {
                           fontSize: "13px",
                           fontWeight: "500",
                           color: "#ef4444",
-                          fontFamily: partnerColor(),
+                          fontFamily: textGeneralFont(),
                         }}
                       >
                         R$ {formatNumber(cost.amount)}
@@ -1899,7 +2127,7 @@ export function FinancialResources({ headers, id }) {
                     style={{
                       fontSize: "12px",
                       lineHeight: "1.5",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Nenhum custo fixo
@@ -1916,7 +2144,7 @@ export function FinancialResources({ headers, id }) {
                 padding: "16px",
                 color: "#9ca3af",
                 fontSize: "11px",
-                fontFamily: partnerColor(),
+                fontFamily: textGeneralFont(),
               }}
             >
               Clique para ver
@@ -1946,8 +2174,7 @@ export function FinancialResources({ headers, id }) {
                   borderBottom: "1px solid #e5e7eb",
                 }}
               >
-                <Typography
-                  variant="h6"
+                <h2
                   style={{
                     fontFamily: textTitleFont(),
                     color: "#1f2937",
@@ -1958,7 +2185,7 @@ export function FinancialResources({ headers, id }) {
                   }}
                 >
                   Novo Custo Mensal
-                </Typography>
+                </h2>
                 <Button
                   onClick={handleNewCostModal}
                   style={{
@@ -1974,7 +2201,7 @@ export function FinancialResources({ headers, id }) {
 
             <DialogContent style={{ padding: "24px 24px 16px" }}>
               <div style={{ marginBottom: "20px" }}>
-                <Typography
+                <h2
                   variant="body2"
                   style={{
                     color: "#6b7280",
@@ -1987,7 +2214,7 @@ export function FinancialResources({ headers, id }) {
                     month: "long",
                     year: "numeric",
                   })}
-                </Typography>
+                </h2>
               </div>
 
               <Grid container spacing={3}>
@@ -2114,7 +2341,7 @@ export function FinancialResources({ headers, id }) {
               >
                 <div
                   style={{
-                    fontFamily: partnerColor(),
+                    fontFamily: textGeneralFont(),
                     color: "#1f2937",
                     fontSize: "16px",
                     fontWeight: "500",
@@ -2145,7 +2372,7 @@ export function FinancialResources({ headers, id }) {
                         color: "#6b7280",
                         fontSize: "12px",
                         marginBottom: "4px",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       Descrição
@@ -2155,7 +2382,7 @@ export function FinancialResources({ headers, id }) {
                         fontSize: "16px",
                         color: "#374151",
                         fontWeight: "500",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       {selectedCost.description}
@@ -2168,7 +2395,7 @@ export function FinancialResources({ headers, id }) {
                         color: "#6b7280",
                         fontSize: "12px",
                         marginBottom: "4px",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       Valor
@@ -2178,7 +2405,7 @@ export function FinancialResources({ headers, id }) {
                         fontSize: "20px",
                         color: "#ef4444",
                         fontWeight: "600",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       R$ {formatNumber(selectedCost.amount)}
@@ -2191,7 +2418,7 @@ export function FinancialResources({ headers, id }) {
                         color: "#6b7280",
                         fontSize: "12px",
                         marginBottom: "4px",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       Mês
@@ -2200,7 +2427,7 @@ export function FinancialResources({ headers, id }) {
                       style={{
                         fontSize: "14px",
                         color: "#374151",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       {selectedCost.month || currentMonthYear}
@@ -2221,13 +2448,16 @@ export function FinancialResources({ headers, id }) {
                       size="small"
                       style={{ marginBottom: "16px" }}
                       InputLabelProps={{
-                        style: { color: "#6b7280", fontFamily: partnerColor() },
+                        style: {
+                          color: "#6b7280",
+                          fontFamily: textGeneralFont(),
+                        },
                       }}
                       InputProps={{
                         style: {
                           fontSize: "14px",
                           color: "#374151",
-                          fontFamily: partnerColor(),
+                          fontFamily: textGeneralFont(),
                         },
                       }}
                     />
@@ -2243,13 +2473,16 @@ export function FinancialResources({ headers, id }) {
                       variant="outlined"
                       size="small"
                       InputLabelProps={{
-                        style: { color: "#6b7280", fontFamily: partnerColor() },
+                        style: {
+                          color: "#6b7280",
+                          fontFamily: textGeneralFont(),
+                        },
                       }}
                       InputProps={{
                         style: {
                           fontSize: "14px",
                           color: "#374151",
-                          fontFamily: partnerColor(),
+                          fontFamily: textGeneralFont(),
                         },
                         inputProps: {
                           min: 0,
@@ -2263,7 +2496,7 @@ export function FinancialResources({ headers, id }) {
                     style={{
                       fontSize: "12px",
                       color: "#6b7280",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Mês: {selectedCost.month || currentMonthYear}
@@ -2279,7 +2512,7 @@ export function FinancialResources({ headers, id }) {
                       color: "#ef4444",
                       fontWeight: "500",
                       marginBottom: "16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     ⚠️ Tem certeza que deseja excluir?
@@ -2289,7 +2522,7 @@ export function FinancialResources({ headers, id }) {
                       fontSize: "14px",
                       color: "#6b7280",
                       marginBottom: "8px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Esta ação não pode ser desfeita.
@@ -2299,7 +2532,7 @@ export function FinancialResources({ headers, id }) {
                       fontSize: "16px",
                       color: "#374151",
                       fontWeight: "500",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     <strong>{selectedCost.description}</strong> - R${" "}
@@ -2331,7 +2564,7 @@ export function FinancialResources({ headers, id }) {
                         fontWeight: "500",
                         textTransform: "none",
                         padding: "6px 12px",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                         borderColor: "#3b82f6",
                         color: "#3b82f6",
                       }}
@@ -2347,7 +2580,7 @@ export function FinancialResources({ headers, id }) {
                         fontWeight: "500",
                         textTransform: "none",
                         padding: "6px 12px",
-                        fontFamily: partnerColor(),
+                        fontFamily: textGeneralFont(),
                       }}
                     >
                       🗑️ Excluir
@@ -2361,7 +2594,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 12px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Fechar
@@ -2386,7 +2619,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Cancelar
@@ -2408,7 +2641,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       backgroundColor:
                         !editCostDescription.trim() || !editCostAmount
                           ? "#9ca3af"
@@ -2430,7 +2663,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Não
@@ -2450,7 +2683,7 @@ export function FinancialResources({ headers, id }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: partnerColor(),
+                      fontFamily: textGeneralFont(),
                       backgroundColor: "#ef4444",
                     }}
                   >
@@ -2480,9 +2713,9 @@ export function FinancialResources({ headers, id }) {
                   paddingBottom: "1rem",
                 }}
               >
-                <Typography variant="h5" fontWeight="600" color="#333">
+                <h2 variant="h5" fontWeight="600" color="#333">
                   {newName} {newLastName}
-                </Typography>
+                </h2>
                 <Button
                   onClick={handleSeeModal}
                   style={{ minWidth: "auto", padding: "8px" }}
@@ -2502,14 +2735,9 @@ export function FinancialResources({ headers, id }) {
                   marginBottom: "2rem",
                 }}
               >
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  fontWeight="600"
-                  color="#333"
-                >
+                <h2 gutterBottom fontWeight="600" color="#333">
                   📝 Informações Básicas
-                </Typography>
+                </h2>
                 <Grid container spacing={2}>
                   {newName && (
                     <Grid item xs={12} md={6}>
@@ -2609,14 +2837,9 @@ export function FinancialResources({ headers, id }) {
                   border: "1px solid #bbdefb",
                 }}
               >
-                <Typography
-                  variant="h6"
-                  gutterBottom
-                  fontWeight="600"
-                  color="#333"
-                >
+                <h2 gutterBottom fontWeight="600" color="#333">
                   ⚙️ Configurações
-                </Typography>
+                </h2>
 
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={4}>
@@ -2737,10 +2960,10 @@ export function FinancialResources({ headers, id }) {
                 </>
               ) : (
                 <div style={{ width: "100%", textAlign: "center" }}>
-                  <Typography color="error" variant="h6" gutterBottom>
+                  <h2 color="error" gutterBottom>
                     ⚠️ Confirmar Exclusão
-                  </Typography>
-                  <Typography color="textSecondary" gutterBottom>
+                  </h2>
+                  <h2 color="textSecondary" gutterBottom>
                     Tem certeza que deseja excluir{" "}
                     <strong>
                       {newName} {newLastName}
@@ -2748,7 +2971,7 @@ export function FinancialResources({ headers, id }) {
                     ?
                     <br />
                     <small>Esta ação não pode ser desfeita.</small>
-                  </Typography>
+                  </h2>
                   <div
                     style={{
                       display: "flex",
@@ -2774,6 +2997,562 @@ export function FinancialResources({ headers, id }) {
                   </div>
                 </div>
               )}
+            </DialogActions>
+          </Dialog>
+
+          {/* Financial Report Edit Modal */}
+          <Dialog
+            open={financialReportModalOpen}
+            onClose={() => handleFinancialReportModal()}
+            fullWidth
+            maxWidth="sm"
+            PaperProps={{
+              style: {
+                borderRadius: "12px",
+                padding: "8px",
+              },
+            }}
+          >
+            <DialogTitle>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                <h2
+                  style={{
+                    fontFamily: textTitleFont(),
+                    color: "#1f2937",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    margin: "0",
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Editar Relatório Financeiro
+                </h2>
+                <Button
+                  onClick={() => handleFinancialReportModal()}
+                  style={{
+                    minWidth: "auto",
+                    padding: "8px",
+                    color: "#6b7280",
+                  }}
+                >
+                  <CloseIcon />
+                </Button>
+              </div>
+            </DialogTitle>
+
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              {selectedFinancialReport && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    width: "100%",
+                    gap: "16px",
+                    justifyContent: "space-between",
+                    margin: "auto",
+                    alignItems: "center",
+                  }}
+                >
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      label="Descrição"
+                      value={editReportDescription}
+                      onChange={(e) => setEditReportDescription(e.target.value)}
+                      variant="outlined"
+                      InputLabelProps={{
+                        style: {
+                          color: "#6b7280",
+                          fontFamily: textGeneralFont(),
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontSize: "15px",
+                          color: "#374151",
+                          fontFamily: textGeneralFont(),
+                        },
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Valor (R$)"
+                      type="number"
+                      value={editReportAmount}
+                      onChange={(e) => setEditReportAmount(e.target.value)}
+                      variant="outlined"
+                      InputLabelProps={{
+                        style: {
+                          color: "#6b7280",
+                          fontFamily: textGeneralFont(),
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontSize: "15px",
+                          color: "#374151",
+                          fontFamily: textGeneralFont(),
+                        },
+                        inputProps: {
+                          min: 0,
+                          step: 0.01,
+                        },
+                      }}
+                    />
+                  </Grid>
+
+                  {editReportTypeOfItem !== "debt" && (
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Desconto (R$)"
+                        type="number"
+                        value={editReportDiscount}
+                        onChange={(e) => setEditReportDiscount(e.target.value)}
+                        variant="outlined"
+                        InputLabelProps={{
+                          style: {
+                            color: "#6b7280",
+                            fontFamily: textGeneralFont(),
+                          },
+                        }}
+                        InputProps={{
+                          style: {
+                            fontSize: "15px",
+                            color: "#374151",
+                            fontFamily: textGeneralFont(),
+                          },
+                          inputProps: {
+                            min: 0,
+                            step: 0.01,
+                          },
+                        }}
+                      />
+                    </Grid>
+                  )}
+
+                  {editReportTypeOfItem !== "debt" && (
+                    <Grid item xs={12} md={6}>
+                      <FormControl fullWidth variant="outlined">
+                        <InputLabel
+                          style={{
+                            color: "#6b7280",
+                            fontFamily: textGeneralFont(),
+                          }}
+                        >
+                          Tipo de Item
+                        </InputLabel>
+                        <Select
+                          value={editReportTypeOfItem}
+                          onChange={(e) =>
+                            setEditReportTypeOfItem(e.target.value)
+                          }
+                          label="Tipo de Item"
+                          style={{
+                            fontSize: "15px",
+                            color: "#374151",
+                            fontFamily: textGeneralFont(),
+                          }}
+                        >
+                          <MenuItem value="fee">Mensalidade</MenuItem>
+                          <MenuItem value="others">Outro</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  )}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+
+                      width: "70%",
+                      gap: "16px",
+                      justifyContent: "space-between",
+                      margin: "auto",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Grid item xs={12} md={6}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={editReportAccountFor}
+                            onChange={(e) =>
+                              setEditReportAccountFor(e.target.checked)
+                            }
+                            color="primary"
+                          />
+                        }
+                        label="Contabilizar"
+                        style={{
+                          color: "#374151",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={editReportPaidFor}
+                            onChange={(e) =>
+                              setEditReportPaidFor(e.target.checked)
+                            }
+                            color="primary"
+                          />
+                        }
+                        label="Quitado"
+                        style={{
+                          color: "#374151",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      />
+                    </Grid>
+                  </div>
+                </div>
+              )}
+            </DialogContent>
+
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                onClick={() => handleFinancialReportModal()}
+                style={{
+                  color: "#6b7280",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  textTransform: "none",
+                  padding: "8px 16px",
+                  fontFamily: textGeneralFont(),
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSaveFinancialReport}
+                variant="contained"
+                disabled={!editReportDescription.trim() || !editReportAmount}
+                style={{
+                  backgroundColor:
+                    !editReportDescription.trim() || !editReportAmount
+                      ? "#9ca3af"
+                      : "#3b82f6",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  textTransform: "none",
+                  padding: "8px 20px",
+                  borderRadius: "6px",
+                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                  cursor:
+                    !editReportDescription.trim() || !editReportAmount
+                      ? "not-allowed"
+                      : "pointer",
+                  fontFamily: textGeneralFont(),
+                }}
+              >
+                Salvar
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* MODAL NOVO ITEM FINANCEIRO */}
+          <Dialog
+            open={newItemModalOpen}
+            onClose={handleNewItemModal}
+            fullWidth
+            maxWidth="sm"
+            PaperProps={{
+              style: {
+                borderRadius: "12px",
+                padding: "8px",
+              },
+            }}
+          >
+            <DialogTitle>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingBottom: "16px",
+                  borderBottom: "1px solid #e5e7eb",
+                }}
+              >
+                <h2
+                  style={{
+                    fontFamily: textTitleFont(),
+                    color: "#1f2937",
+                    fontSize: "18px",
+                    fontWeight: "500",
+                    margin: "0",
+                    letterSpacing: "-0.025em",
+                  }}
+                >
+                  Novo Item Financeiro
+                </h2>
+                <Button
+                  onClick={handleNewItemModal}
+                  style={{
+                    minWidth: "auto",
+                    padding: "8px",
+                    color: "#6b7280",
+                  }}
+                >
+                  <CloseIcon />
+                </Button>
+              </div>
+            </DialogTitle>
+
+            <DialogContent style={{ padding: "24px 24px 16px" }}>
+              <div style={{ marginBottom: "20px" }}>
+                <h2
+                  style={{
+                    color: "#6b7280",
+                    fontSize: "14px",
+                    marginBottom: "12px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  Mês: {selectedMonth}
+                </h2>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  width: "100%",
+                  gap: "16px",
+                  justifyContent: "space-between",
+                  margin: "auto",
+                  alignItems: "center",
+                }}
+              >
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Descrição"
+                    value={newItemDescription}
+                    onChange={(e) => setNewItemDescription(e.target.value)}
+                    variant="outlined"
+                    placeholder="Ex: Venda de curso, Aluguel..."
+                    InputLabelProps={{
+                      style: {
+                        color: "#6b7280",
+                        fontFamily: textGeneralFont(),
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontSize: "15px",
+                        color: "#374151",
+                        fontFamily: textGeneralFont(),
+                      },
+                    }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Valor (R$)"
+                    type="number"
+                    value={newItemAmount}
+                    onChange={(e) => setNewItemAmount(e.target.value)}
+                    variant="outlined"
+                    InputLabelProps={{
+                      style: {
+                        color: "#6b7280",
+                        fontFamily: textGeneralFont(),
+                      },
+                    }}
+                    InputProps={{
+                      style: {
+                        fontSize: "15px",
+                        color: "#374151",
+                        fontFamily: textGeneralFont(),
+                      },
+                      inputProps: {
+                        min: 0,
+                        step: 0.01,
+                      },
+                    }}
+                  />
+                </Grid>
+
+                {newItemTypeOfItem !== "debt" && (
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Desconto (R$)"
+                      type="number"
+                      value={newItemDiscount}
+                      onChange={(e) => setNewItemDiscount(e.target.value)}
+                      variant="outlined"
+                      InputLabelProps={{
+                        style: {
+                          color: "#6b7280",
+                          fontFamily: textGeneralFont(),
+                        },
+                      }}
+                      InputProps={{
+                        style: {
+                          fontSize: "15px",
+                          color: "#374151",
+                          fontFamily: textGeneralFont(),
+                        },
+                        inputProps: {
+                          min: 0,
+                          step: 0.01,
+                        },
+                      }}
+                    />
+                  </Grid>
+                )}
+
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel
+                      style={{
+                        color: "#6b7280",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      Tipo de Item
+                    </InputLabel>
+                    <Select
+                      value={newItemTypeOfItem}
+                      onChange={(e) => setNewItemTypeOfItem(e.target.value)}
+                      label="Tipo de Item"
+                      style={{
+                        fontSize: "15px",
+                        color: "#374151",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      <MenuItem value="others">Entrada</MenuItem>
+                      <MenuItem value="debt">Saída</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    width: "70%",
+                    gap: "16px",
+                    justifyContent: "space-between",
+                    margin: "auto",
+                    alignItems: "center",
+                  }}
+                >
+                  <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={newItemAccountFor}
+                          onChange={(e) =>
+                            setNewItemAccountFor(e.target.checked)
+                          }
+                          color="primary"
+                        />
+                      }
+                      label="Contabilizar"
+                      style={{
+                        color: "#374151",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <FormControlLabel
+                      control={
+                        <Switch
+                          checked={newItemPaidFor}
+                          onChange={(e) => setNewItemPaidFor(e.target.checked)}
+                          color="primary"
+                        />
+                      }
+                      label="Quitado"
+                      style={{
+                        color: "#374151",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    />
+                  </Grid>
+                </div>
+              </div>
+            </DialogContent>
+
+            <DialogActions
+              style={{
+                padding: "16px 24px 24px",
+                gap: "12px",
+                justifyContent: "flex-end",
+              }}
+            >
+              <Button
+                onClick={handleNewItemModal}
+                style={{
+                  color: "#6b7280",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  textTransform: "none",
+                  padding: "8px 16px",
+                  fontFamily: textGeneralFont(),
+                }}
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={newStandaloneItem}
+                variant="contained"
+                disabled={!newItemDescription.trim() || !newItemAmount}
+                style={{
+                  backgroundColor:
+                    !newItemDescription.trim() || !newItemAmount
+                      ? "#9ca3af"
+                      : newItemTypeOfItem === "debt"
+                      ? "#dc2626"
+                      : "#16a34a",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  textTransform: "none",
+                  padding: "8px 20px",
+                  borderRadius: "6px",
+                  boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
+                  cursor:
+                    !newItemDescription.trim() || !newItemAmount
+                      ? "not-allowed"
+                      : "pointer",
+                  fontFamily: textGeneralFont(),
+                }}
+              >
+                {newItemTypeOfItem === "debt"
+                  ? "💸 Criar Saída"
+                  : "💰 Criar Entrada"}
+              </Button>
             </DialogActions>
           </Dialog>
         </section>
