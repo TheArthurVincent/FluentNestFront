@@ -106,6 +106,7 @@ export function FinancialResources({ headers, id }) {
   const [editReportDescription, setEditReportDescription] = useState("");
   const [editReportAmount, setEditReportAmount] = useState("");
   const [editReportDiscount, setEditReportDiscount] = useState("");
+  const [editReportPaidSoFar, setEditReportPaidSoFar] = useState("");
   const [editReportAccountFor, setEditReportAccountFor] = useState(true);
   const [editReportPaidFor, setEditReportPaidFor] = useState(false);
   const [editReportTypeOfItem, setEditReportTypeOfItem] = useState("");
@@ -235,13 +236,14 @@ export function FinancialResources({ headers, id }) {
   // Financial Report Modal Handlers
   const handleFinancialReportModal = (report = null) => {
     setShowGenerateButton(false);
-
+    setEditReportPaidSoFar(0);
     setFinancialReportModalOpen(!financialReportModalOpen);
     if (report) {
       setSelectedFinancialReport(report);
       setEditReportDescription(report.description);
       setEditReportAmount(report.amount.toString());
       setEditReportDiscount(report.discount.toString());
+      setEditReportPaidSoFar(report.paidSoFar ? report.paidSoFar : 0);
       setEditReportAccountFor(report.accountFor);
       setEditReportPaidFor(report.paidFor);
       setEditReportTypeOfItem(report.typeOfItem);
@@ -250,6 +252,7 @@ export function FinancialResources({ headers, id }) {
       setSelectedFinancialReport(null);
       setEditReportDescription("");
       setEditReportAmount("");
+      setEditReportPaidSoFar(0);
       setEditReportDiscount("");
       setEditReportAccountFor(true);
       setEditReportPaidFor(false);
@@ -549,6 +552,7 @@ export function FinancialResources({ headers, id }) {
         accountFor: editReportAccountFor,
         paidFor: editReportPaidFor,
         typeOfItem: editReportTypeOfItem,
+        paidSoFar: editReportPaidSoFar,
         month: editReportMonth,
       };
 
@@ -890,13 +894,22 @@ export function FinancialResources({ headers, id }) {
     const entradasRecebidas = financialReports
       .filter(
         (report) =>
-          report.accountFor && report.typeOfItem !== "debt" && report.paidFor
+          report.accountFor &&
+          report.typeOfItem !== "debt" &&
+          (report.paidFor || (report.paidSoFar && report.paidSoFar > 0))
       )
-      .reduce(
-        (total, report) =>
-          total + (Math.abs(report.amount || 0) - (report.discount || 0)),
-        0
-      );
+      .reduce((total, report) => {
+        // Sempre usar paidSoFar quando disponível, pois pode ser maior que o valor original
+        if (report.paidSoFar && report.paidSoFar > 0) {
+          return total + Math.abs(report.paidSoFar);
+        } else if (report.paidFor) {
+          // Fallback para casos onde paidFor é true mas paidSoFar não está definido
+          return (
+            total + (Math.abs(report.amount || 0) - (report.discount || 0))
+          );
+        }
+        return total;
+      }, 0);
 
     const saidas = financialReports
       .filter((report) => report.accountFor && report.typeOfItem === "debt")
@@ -905,9 +918,20 @@ export function FinancialResources({ headers, id }) {
     const saidasPagas = financialReports
       .filter(
         (report) =>
-          report.accountFor && report.typeOfItem === "debt" && report.paidFor
+          report.accountFor &&
+          report.typeOfItem === "debt" &&
+          (report.paidFor || (report.paidSoFar && report.paidSoFar > 0))
       )
-      .reduce((total, report) => total + Math.abs(report.amount || 0), 0);
+      .reduce((total, report) => {
+        // Sempre usar paidSoFar quando disponível, pois pode ser maior que o valor original
+        if (report.paidSoFar && report.paidSoFar > 0) {
+          return total + Math.abs(report.paidSoFar);
+        } else if (report.paidFor) {
+          // Fallback para casos onde paidFor é true mas paidSoFar não está definido
+          return total + Math.abs(report.amount || 0);
+        }
+        return total;
+      }, 0);
 
     const saldo = entradas - saidas;
 
@@ -1027,7 +1051,7 @@ export function FinancialResources({ headers, id }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
+          gridTemplateColumns: isMobile ? "1fr":"1fr 1fr",
           justifyContent: "top",
           gap: "1rem",
           margin: "16px auto",
@@ -1286,15 +1310,49 @@ export function FinancialResources({ headers, id }) {
                                 style={{
                                   textAlign: "center",
                                   borderRadius: "12px",
-                                  color: report.paidFor ? "#2e7d32" : "#c62828",
+                                  color: report.paidFor
+                                    ? "#2e7d32"
+                                    : report.paidSoFar && report.paidSoFar > 0
+                                    ? "#f59e0b"
+                                    : "#c62828",
                                   fontFamily: textGeneralFont(),
                                 }}
                               >
-                                {report.paidFor ? (
+                                {report.paidFor &&
+                                report.paidSoFar == report.amount ? (
                                   <i
                                     className="fa fa-check-circle-o"
                                     style={{ color: "#2e7d32" }}
                                   />
+                                ) : report.paidSoFar &&
+                                  report.paidSoFar > 0 &&
+                                  report.paidSoFar < report.amount ? (
+                                  <i
+                                    className="fa fa-adjust"
+                                    style={{ color: "#f59e0b" }}
+                                  />
+                                ) : report.paidSoFar &&
+                                  report.paidSoFar > report.amount ? (
+                                  <div
+                                    style={{
+                                      display: "grid",
+                                    }}
+                                  >
+                                    {" "}
+                                    <i
+                                      className="fa fa-money"
+                                      style={{ color: "#24e21aff" }}
+                                    />
+                                    <span
+                                      style={{
+                                        fontWeight: 800,
+                                        fontSize: "10px",
+                                        color: "#24e21aff",
+                                      }}
+                                    >
+                                      Superado!
+                                    </span>
+                                  </div>
                                 ) : (
                                   <i
                                     className="fa fa-circle-o"
@@ -1431,7 +1489,11 @@ export function FinancialResources({ headers, id }) {
                                 style={{
                                   textAlign: "center",
                                   borderRadius: "12px",
-                                  color: report.paidFor ? "#2e7d32" : "#c62828",
+                                  color: report.paidFor
+                                    ? "#2e7d32"
+                                    : report.paidSoFar && report.paidSoFar > 0
+                                    ? "#f59e0b"
+                                    : "#c62828",
                                   fontFamily: textGeneralFont(),
                                 }}
                               >
@@ -1439,6 +1501,11 @@ export function FinancialResources({ headers, id }) {
                                   <i
                                     className="fa fa-check-circle-o"
                                     style={{ color: "#2e7d32" }}
+                                  />
+                                ) : report.paidSoFar && report.paidSoFar > 0 ? (
+                                  <i
+                                    className="fa fa-adjust"
+                                    style={{ color: "#f59e0b" }}
                                   />
                                 ) : (
                                   <i
@@ -3049,7 +3116,7 @@ export function FinancialResources({ headers, id }) {
                     padding: "8px",
                   }}
                 >
-                  <CloseIcon />
+                  x
                 </ArvinButton>
               </div>
             </DialogTitle>
@@ -3087,7 +3154,12 @@ export function FinancialResources({ headers, id }) {
                         value={
                           editReportAmount ? Math.abs(editReportAmount) : ""
                         }
-                        onChange={(e) => setEditReportAmount(e.target.value)}
+                        onChange={(e) => {
+                          setEditReportAmount(e.target.value);
+                          if (editReportPaidFor) {
+                            setEditReportPaidSoFar(e.target.value);
+                          }
+                        }}
                         placeholder="0,00"
                         min="0"
                         step="0.01"
@@ -3111,7 +3183,37 @@ export function FinancialResources({ headers, id }) {
                       </div>
                     )}
                   </div>
-
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Pago até aqui</label>
+                    <input
+                      type="number"
+                      className="linguee-input linguee-input-number"
+                      value={editReportPaidSoFar}
+                      onChange={(e) => {
+                        setEditReportPaidSoFar(e.target.value);
+                        if (e.target.value >= editReportAmount) {
+                          setEditReportPaidFor(true);
+                          console.log(e.target.value);
+                        } else if (e.target.value < editReportAmount) {
+                          setEditReportPaidFor(false);
+                        }
+                      }}
+                      placeholder="0,00"
+                      min="0"
+                      step="0.01"
+                    />
+                    {editReportPaidSoFar > editReportAmount && (
+                      <span
+                        style={{
+                          color: "green",
+                          marginLeft: "8px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        Superado!
+                      </span>
+                    )}
+                  </div>
                   {editReportTypeOfItem !== "debt" && (
                     <div className="linguee-form-group">
                       <label className="linguee-label">Tipo de Item</label>
@@ -3159,9 +3261,16 @@ export function FinancialResources({ headers, id }) {
                           <input
                             type="checkbox"
                             checked={editReportPaidFor}
-                            onChange={(e) =>
-                              setEditReportPaidFor(e.target.checked)
-                            }
+                            onChange={(e) => {
+                              setEditReportPaidFor(e.target.checked);
+                              if (e.target.checked) {
+                                console.log(editCostAmount);
+                                console.log(e.target.checked);
+                                setEditReportPaidSoFar(
+                                  Math.abs(editReportAmount)
+                                );
+                              }
+                            }}
                           />
                           <div className="linguee-toggle-slider"></div>
                         </div>

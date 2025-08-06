@@ -8,6 +8,7 @@ import {
   formatDateBr,
   formatNumber,
   onLoggOut,
+  transformMonth,
 } from "../../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -201,6 +202,28 @@ export function FindStudent({ uploadStatus, headers, id }) {
         { headers }
       );
       notifyAlert("Usuário editado com sucesso!", "green");
+
+      // Atualizar selectedStudent com os novos dados
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          username: newUsername,
+          email: newEmail,
+          dateOfBirth: newDateOfBirth,
+          fullname: `${newName} ${newLastName}`,
+          phoneNumber: newPhone,
+          weeklyClasses,
+          permissions: permissions,
+          googleDriveLink: googleDriveLink,
+          address: newAddress,
+          fee,
+          picture: picture,
+          doc: newCpf,
+        });
+      }
+      setSelectedStudent(response.data.updatedUser);
+      console.log("response.data.updatedUser", response.data.updatedUser);
+
       handleSeeModal();
       fetchStudents();
     } catch (error) {
@@ -219,6 +242,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
         editedStudent,
         { headers }
       );
+
+      // Atualizar selectedStudent com as novas permissões
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          permissions: permissions,
+        });
+      }
+
       handleSeeModal();
       fetchStudents();
       notifyAlert("Permissões editadas com sucesso!", "green");
@@ -238,7 +270,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setLoading(false);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
-      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -326,6 +357,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
           headers,
         }
       );
+
+      // Atualizar selectedStudent com o novo status
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          feeUpToDate: !selectedStudent.feeUpToDate,
+        });
+      }
+
       fetchStudents();
     } catch (error) {
       console.log("error", error);
@@ -341,6 +381,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
           headers,
         }
       );
+
+      // Atualizar selectedStudent com o novo status
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          onHold: !selectedStudent.onHold,
+        });
+      }
+
       fetchStudents();
     } catch (error) {
       console.log("error", error);
@@ -366,6 +415,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const updateTutoree = async (id) => {
     try {
       await axios.put(`${backDomain}/api/v1/tutoree/${id}`, {}, { headers });
+
+      // Atualizar selectedStudent com o novo status
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          tutoree: !selectedStudent.tutoree,
+        });
+      }
+
       setTutoree(!tutoree);
     } catch (error) {
       notifyAlert("Erro ao atualizar tutoria");
@@ -533,7 +591,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     marginBottom: "4px",
                   }}
                 >
-                  {selectedStudent.fullname}
+                  {selectedStudent.name} {selectedStudent.lastname}
                 </Typography>
                 <Typography
                   style={{
@@ -566,9 +624,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
               variant="outlined"
               size="small"
               onClick={() => {
-                setID(selectedStudent._id);
+                console.log("selectedStudent", selectedStudent);
+                setID(selectedStudent.id);
                 setNewName(selectedStudent.name);
-                setNewLastName(selectedStudent.lastName);
+                setNewLastName(selectedStudent.lastname);
                 setNewCpf(selectedStudent.doc);
                 setNewEmail(selectedStudent.email);
                 setNewPhone(selectedStudent.phoneNumber);
@@ -584,6 +643,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 setFeeUpToDate(selectedStudent.feeUpToDate);
                 setOnHold(selectedStudent.onHold);
                 setTutoree(selectedStudent.tutoree);
+                setFee(selectedStudent.fee || 0);
                 setTotalScore(selectedStudent.totalScore || 0);
                 setMonthlyScore(selectedStudent.monthlyScore || 0);
                 setHomeworkAssignmentsDone(
@@ -837,6 +897,298 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 )}
               </div>
             </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Status Mensalidade
+                </Typography>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    backgroundColor: selectedStudent.feeUpToDate
+                      ? "#d4f6d4"
+                      : "#ffe6e6",
+                    color: selectedStudent.feeUpToDate ? "#2d7d32" : "#d32f2f",
+                  }}
+                >
+                  {selectedStudent.feeUpToDate ? (
+                    <>
+                      <i
+                        className="fa fa-check-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Em dia
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className="fa fa-exclamation-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Atrasada
+                    </>
+                  )}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Status Matrícula
+                </Typography>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    backgroundColor: selectedStudent.onHold
+                      ? "#fff3cd"
+                      : "#d4f6d4",
+                    color: selectedStudent.onHold ? "#856404" : "#2d7d32",
+                  }}
+                >
+                  {selectedStudent.onHold ? (
+                    <>
+                      <i
+                        className="fa fa-pause-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Trancada
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className="fa fa-play-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Ativa
+                    </>
+                  )}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Permissões
+                </Typography>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    backgroundColor:
+                      selectedStudent.permissions === "superadmin"
+                        ? "#e3f2fd"
+                        : selectedStudent.permissions === "teacher"
+                        ? "#f3e5f5"
+                        : "#e8f5e8",
+                    color:
+                      selectedStudent.permissions === "superadmin"
+                        ? "#1976d2"
+                        : selectedStudent.permissions === "teacher"
+                        ? "#7b1fa2"
+                        : "#388e3c",
+                  }}
+                >
+                  {selectedStudent.permissions === "superadmin" && (
+                    <i
+                      className="fa fa-shield"
+                      style={{ marginRight: "4px" }}
+                    />
+                  )}
+                  {selectedStudent.permissions === "teacher" && (
+                    <i
+                      className="fa fa-graduation-cap"
+                      style={{ marginRight: "4px" }}
+                    />
+                  )}
+                  {selectedStudent.permissions === "student" && (
+                    <i className="fa fa-user" style={{ marginRight: "4px" }} />
+                  )}
+                  {selectedStudent.permissions === "superadmin"
+                    ? "Admin"
+                    : selectedStudent.permissions === "teacher"
+                    ? "Professor"
+                    : "Aluno"}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Primeiro Mês
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.myFirstMonth
+                    ? transformMonth(selectedStudent.myFirstMonth)
+                    : "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            {selectedStudent.tutoree && (
+              <Grid item xs={12} sm={6} md={3}>
+                <div style={{ marginBottom: "16px" }}>
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Monitoria
+                  </Typography>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "4px 8px",
+                      borderRadius: "12px",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      backgroundColor: "#e1f5fe",
+                      color: "#0277bd",
+                    }}
+                  >
+                    <i className="fa fa-users" style={{ marginRight: "4px" }} />
+                    Aluno de Monitoria
+                  </div>
+                </div>
+              </Grid>
+            )}
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Homework Feitos
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.homeworkAssignmentsDone || "0"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Flashcards Reviews
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.flashcards25Reviews || "0"}
+                </Typography>
+              </div>
+            </Grid>
+
+            {selectedStudent.fee && (
+              <Grid item xs={12} sm={6} md={3}>
+                <div style={{ marginBottom: "16px" }}>
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Mensalidade
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontWeight: "600",
+                      color: "#2e7d32",
+                      fontSize: "14px",
+                    }}
+                  >
+                    R$ {formatNumber(selectedStudent.fee)}
+                  </Typography>
+                </div>
+              </Grid>
+            )}
 
             {selectedStudent.address && (
               <Grid item xs={12}>
@@ -1486,6 +1838,16 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   value={googleDriveLink}
                   onChange={(e) => setGoogleDriveLink(e.target.value)}
                   size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Mensalidade"
+                  value={fee}
+                  onChange={(e) => setFee(e.target.value)}
+                  size="small"
+                  type="number"
                 />
               </Grid>
             </Grid>
