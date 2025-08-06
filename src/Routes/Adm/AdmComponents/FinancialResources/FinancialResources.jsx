@@ -97,7 +97,7 @@ export function FinancialResources({ headers, id }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [isEditingCost, setIsEditingCost] = useState(false);
   const [editCostDescription, setEditCostDescription] = useState("");
-  const [editCostAmount, setEditCostAmount] = useState("");
+  const [editCostAmount, setEditCostAmount] = useState(0);
 
   // Financial Report Edit Modal States
   const [financialReportModalOpen, setFinancialReportModalOpen] =
@@ -202,7 +202,6 @@ export function FinancialResources({ headers, id }) {
 
   const handleCostDetailModal = (cost = null) => {
     setShowGenerateButton(false);
-
     setCostDetailModalOpen(!costDetailModalOpen);
     setSelectedCost(cost);
     if (!costDetailModalOpen) {
@@ -211,8 +210,15 @@ export function FinancialResources({ headers, id }) {
       setIsEditingCost(false);
       if (cost) {
         setEditCostDescription(cost.description);
-        setEditCostAmount(cost.amount.toString());
+        setEditCostAmount(cost.amount);
+      } else {
+        setEditCostDescription("");
+        setEditCostAmount(0);
       }
+    } else {
+      // When closing modal, reset states
+      setEditCostDescription("");
+      setEditCostAmount(0);
     }
   };
 
@@ -847,6 +853,32 @@ export function FinancialResources({ headers, id }) {
 
   // Dados do resumo financeiro
   const calculateFinancialData = () => {
+    // Verificação de segurança para evitar erros quando financialReports é undefined
+    if (!financialReports || !Array.isArray(financialReports)) {
+      return [
+        {
+          id: "entradas",
+          title: "Entradas Esperadas",
+          value: 0,
+          color: "#059669",
+        },
+        {
+          id: "entradas-recebidas",
+          title: "Entradas Recebidas",
+          value: 0,
+          color: "#04865dff",
+        },
+        { id: "saidas", title: "Saídas Esperadas", value: 0, color: "#dc2626" },
+        {
+          id: "saidas-pagas",
+          title: "Saídas Pagas",
+          value: 0,
+          color: "rgba(203, 38, 38, 1)",
+        },
+        { id: "saldo", title: "Saldo Previsto", value: 0, color: "#16a34a" },
+      ];
+    }
+
     const entradas = financialReports
       .filter((report) => report.accountFor && report.typeOfItem !== "debt")
       .reduce(
@@ -912,8 +944,6 @@ export function FinancialResources({ headers, id }) {
       },
     ];
   };
-
-  const financialSummaryData = calculateFinancialData();
 
   return (
     <div
@@ -1136,7 +1166,7 @@ export function FinancialResources({ headers, id }) {
                       marginBottom: "20px",
                     }}
                   >
-                    {financialSummaryData.map((item, index) => (
+                    {calculateFinancialData().map((item, index) => (
                       <div
                         key={item.id}
                         style={{
@@ -2087,7 +2117,7 @@ export function FinancialResources({ headers, id }) {
                     <div
                       key={cost.id || index}
                       onClick={(e) => {
-                        e.stopPropagation();
+                        // e.stopPropagation();
                         handleCostDetailModal(cost);
                       }}
                       style={{
@@ -2252,7 +2282,7 @@ export function FinancialResources({ headers, id }) {
                 <input
                   type="number"
                   className="linguee-input linguee-input-number"
-                  value={Math.abs(newCostAmount)}
+                  value={newCostAmount ? Math.abs(newCostAmount) : ""}
                   onChange={(e) => setNewCostAmount(e.target.value)}
                   placeholder="0,00"
                   min="0"
@@ -2445,30 +2475,21 @@ export function FinancialResources({ headers, id }) {
                       placeholder="Descrição do custo"
                     />
                   </div>
-
                   <div className="linguee-form-group">
                     <label className="linguee-label">Valor (R$)</label>
                     <input
                       type="number"
                       className="linguee-input linguee-input-number"
-                      value={Math.abs(editCostAmount)}
+                      value={
+                        editCostAmount && !isNaN(Number(editCostAmount))
+                          ? Math.abs(Number(editCostAmount))
+                          : ""
+                      }
                       onChange={(e) => setEditCostAmount(e.target.value)}
                       placeholder="0,00"
                       min="0"
                       step="0.01"
                     />
-                  </div>
-
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      color: "#6b7280",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    Mês:{" "}
-                    {transformMonth(selectedCost.month) ||
-                      transformMonth(currentMonthYear)}
                   </div>
                 </div>
               )}
@@ -2526,8 +2547,9 @@ export function FinancialResources({ headers, id }) {
                 <>
                   <div style={{ display: "flex", gap: "8px" }}>
                     <ArvinButton
-                      onClick={() => setIsEditingCost(true)}
-                      variant="outlined"
+                      onClick={() => {
+                        setIsEditingCost(true);
+                      }}
                       style={{
                         fontSize: "12px",
                         fontWeight: "500",
@@ -2569,10 +2591,9 @@ export function FinancialResources({ headers, id }) {
                   <ArvinButton
                     onClick={() => {
                       setIsEditingCost(false);
-                      // Reset values to original
                       if (selectedCost) {
                         setEditCostDescription(selectedCost.description);
-                        setEditCostAmount(selectedCost.amount.toString());
+                        setEditCostAmount(selectedCost.amount);
                       }
                     }}
                     style={{
@@ -3063,7 +3084,9 @@ export function FinancialResources({ headers, id }) {
                       <input
                         type="number"
                         className="linguee-input linguee-input-number"
-                        value={Math.abs(editReportAmount)}
+                        value={
+                          editReportAmount ? Math.abs(editReportAmount) : ""
+                        }
                         onChange={(e) => setEditReportAmount(e.target.value)}
                         placeholder="0,00"
                         min="0"
@@ -3262,7 +3285,7 @@ export function FinancialResources({ headers, id }) {
                   <input
                     type="number"
                     className="linguee-input linguee-input-number"
-                    value={Math.abs(newItemAmount)}
+                    value={newItemAmount ? Math.abs(newItemAmount) : ""}
                     onChange={(e) => setNewItemAmount(e.target.value)}
                     placeholder="0,00"
                     min="0"
