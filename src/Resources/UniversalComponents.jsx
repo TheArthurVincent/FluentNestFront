@@ -377,8 +377,8 @@ export const ContainerClass = styled.div`
   overflow: hidden;
   border-radius: 8px;
   background-color: #000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
   iframe {
     position: absolute;
     top: 0;
@@ -395,7 +395,7 @@ export const IFrameVideoClass = styled.iframe`
   height: 100%;
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 export const IFrameVideoClass2 = styled.iframe`
@@ -403,20 +403,21 @@ export const IFrameVideoClass2 = styled.iframe`
   height: 100%;
   border: none;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
 // Componente avançado para iframes responsivos com diferentes aspect ratios
 export const ResponsiveIframeContainer = styled.div`
   position: relative;
   width: 100%;
-  padding-bottom: ${props => props.aspectRatio || '75%'}; /* 4:3 para vídeos maiores */
+  padding-bottom: ${(props) =>
+    props.aspectRatio || "75%"}; /* 4:3 para vídeos maiores */
   height: 0;
   overflow: hidden;
-  border-radius: ${props => props.borderRadius || '8px'};
-  background-color: ${props => props.backgroundColor || '#000'};
-  box-shadow: ${props => props.boxShadow || '0 2px 8px rgba(0,0,0,0.1)'};
-  
+  border-radius: ${(props) => props.borderRadius || "8px"};
+  background-color: ${(props) => props.backgroundColor || "#000"};
+  box-shadow: ${(props) => props.boxShadow || "0 2px 8px rgba(0,0,0,0.1)"};
+
   iframe {
     position: absolute;
     top: 0;
@@ -424,23 +425,34 @@ export const ResponsiveIframeContainer = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: ${props => props.borderRadius || '8px'};
+    border-radius: ${(props) => props.borderRadius || "8px"};
   }
-  
+
   /* Aspect ratios comuns */
-  &.ratio-16-9 { padding-bottom: 56.25%; }
-  &.ratio-4-3 { padding-bottom: 75%; }
-  &.ratio-1-1 { padding-bottom: 100%; }
-  &.ratio-21-9 { padding-bottom: 42.86%; }
-  &.ratio-large { padding-bottom: 85%; } /* Novo tamanho maior */
-  
+  &.ratio-16-9 {
+    padding-bottom: 56.25%;
+  }
+  &.ratio-4-3 {
+    padding-bottom: 75%;
+  }
+  &.ratio-1-1 {
+    padding-bottom: 100%;
+  }
+  &.ratio-21-9 {
+    padding-bottom: 42.86%;
+  }
+  &.ratio-large {
+    padding-bottom: 85%;
+  } /* Novo tamanho maior */
+
   /* Responsividade aprimorada */
   @media (max-width: 768px) {
     border-radius: 6px;
     margin: 0.5rem 0;
-    padding-bottom: ${props => props.aspectRatio || '85%'}; /* Ainda maior em mobile */
+    padding-bottom: ${(props) =>
+      props.aspectRatio || "85%"}; /* Ainda maior em mobile */
   }
-  
+
   @media (max-width: 480px) {
     border-radius: 4px;
     margin: 0.25rem 0;
@@ -467,14 +479,14 @@ export const EnhancedIframeContainer = styled.div`
   height: 0;
   overflow: hidden;
   border-radius: 8px;
-  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), 
-              linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), 
-              linear-gradient(45deg, transparent 75%, #f0f0f0 75%), 
-              linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
+  background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
+    linear-gradient(-45deg, transparent 75%, #f0f0f0 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   animation: ${fadeIn} 0.3s ease-in-out;
-  
+
   iframe {
     position: absolute;
     top: 0;
@@ -484,15 +496,15 @@ export const EnhancedIframeContainer = styled.div`
     border: none;
     border-radius: 8px;
     transition: opacity 0.3s ease;
-    
+
     &:hover {
       transform: scale(1.02);
       transition: transform 0.2s ease;
     }
   }
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 50%;
     left: 50%;
@@ -505,71 +517,83 @@ export const EnhancedIframeContainer = styled.div`
     animation: spin 1s linear infinite;
     z-index: 1;
   }
-  
+
   @keyframes spin {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(360deg); }
+    0% {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    100% {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
   }
 `;
 
 // Função utilitária para gerar URLs de embed responsivos
 export const getResponsiveEmbedUrl = (url) => {
-  if (!url) return '';
-  
+  if (!url) return "";
+
   // YouTube
-  if (url.includes('youtube.com/watch?v=')) {
-    const videoId = url.split('v=')[1]?.split('&')[0];
+  if (url.includes("youtube.com/watch?v=")) {
+    const videoId = url.split("v=")[1]?.split("&")[0];
     return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1`;
   }
-  
-  if (url.includes('youtu.be/')) {
-    const videoId = url.split('youtu.be/')[1]?.split('?')[0];
+
+  if (url.includes("youtu.be/")) {
+    const videoId = url.split("youtu.be/")[1]?.split("?")[0];
     return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&autohide=1&showinfo=0&controls=1`;
   }
-  
+
   // Vimeo
-  if (url.includes('vimeo.com/')) {
-    const videoId = url.split('vimeo.com/')[1]?.split('?')[0];
+  if (url.includes("vimeo.com/")) {
+    const videoId = url.split("vimeo.com/")[1]?.split("?")[0];
     return `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0&autoplay=0`;
   }
-  
+
   // Google Drive
-  if (url.includes('drive.google.com')) {
+  if (url.includes("drive.google.com")) {
     const fileId = url.match(/[-\w]{25,}/);
-    return fileId ? `https://drive.google.com/file/d/${fileId[0]}/preview` : url;
+    return fileId
+      ? `https://drive.google.com/file/d/${fileId[0]}/preview`
+      : url;
   }
-  
+
   return url;
 };
 
 // Função para determinar aspect ratio baseado no tipo de conteúdo
 export const getAspectRatio = (url) => {
-  if (!url) return '75%'; // 4:3 padrão (maior que 16:9)
-  
-  if (url.includes('youtube.com') || url.includes('youtu.be')) {
-    return '75%'; // 4:3 para YouTube (maior)
+  if (!url) return "75%"; // 4:3 padrão (maior que 16:9)
+
+  if (url.includes("youtube.com") || url.includes("youtu.be")) {
+    return "75%"; // 4:3 para YouTube (maior)
   }
-  
-  if (url.includes('vimeo.com')) {
-    return '75%'; // 4:3 para Vimeo (maior)
+
+  if (url.includes("vimeo.com")) {
+    return "75%"; // 4:3 para Vimeo (maior)
   }
-  
-  if (url.includes('drive.google.com')) {
-    return '85%'; // Ainda maior para documentos Google Drive
+
+  if (url.includes("drive.google.com")) {
+    return "85%"; // Ainda maior para documentos Google Drive
   }
-  
-  return '75%'; // Default 4:3 (maior)
+
+  return "75%"; // Default 4:3 (maior)
 };
 
 // Componente React para iframe responsivo
-export const ResponsiveIframe = ({ src, title, className, aspectRatio, ...props }) => {
+export const ResponsiveIframe = ({
+  src,
+  title,
+  className,
+  aspectRatio,
+  ...props
+}) => {
   const embedUrl = getResponsiveEmbedUrl(src);
   const ratio = aspectRatio || getAspectRatio(src);
-  
+
   return (
     <ResponsiveIframeContainer
       aspectRatio={ratio}
-      className={className} 
+      className={className}
       {...props}
     >
       <iframe
@@ -601,6 +625,36 @@ export const pathGenerator = (text) => {
   const lowerCase = spacelessText.toLowerCase();
   return lowerCase;
 };
+export function transformMonth(dateString) {
+  const months = {
+    "01": "Jan",
+    "02": "Fev",
+    "03": "Mar",
+    "04": "Abr",
+    "05": "Mai",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Ago",
+    "09": "Set",
+    "10": "Out",
+    "11": "Nov",
+    "12": "Dez",
+  };
+
+  // Divide a string "MM-YYYY" em mês e ano
+  const [month, year] = dateString.split("-");
+
+  // Retorna no formato "Mês/YYYY"
+  return `${months[month]}/${year}`;
+}
+
+// formula de truncar string até um numero de letras
+export function truncateString(str, num) {
+  if (str.length <= num) {
+    return str;
+  }
+  return str.slice(0, num) + "...";
+}
 
 export const DivModal = styled.div`
   position: fixed;

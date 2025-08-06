@@ -8,6 +8,7 @@ import {
   formatDateBr,
   formatNumber,
   onLoggOut,
+  transformMonth,
 } from "../../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -201,6 +202,12 @@ export function FindStudent({ uploadStatus, headers, id }) {
         { headers }
       );
       notifyAlert("Usuário editado com sucesso!", "green");
+      setSelectedStudent(null);
+      console.log("response.data.updatedUser", response.data.updatedUser);
+      setTimeout(() => {
+        console.log(selectedStudent);
+      }, 2000);
+
       handleSeeModal();
       fetchStudents();
     } catch (error) {
@@ -219,6 +226,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
         editedStudent,
         { headers }
       );
+
+      // Atualizar selectedStudent com as novas permissões
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          permissions: permissions,
+        });
+      }
+
       handleSeeModal();
       fetchStudents();
       notifyAlert("Permissões editadas com sucesso!", "green");
@@ -238,7 +254,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setLoading(false);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
-      // onLoggOut();
     }
   };
   useEffect(() => {
@@ -326,6 +341,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
           headers,
         }
       );
+
+      // Atualizar selectedStudent com o novo status
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          feeUpToDate: !selectedStudent.feeUpToDate,
+        });
+      }
+
       fetchStudents();
     } catch (error) {
       console.log("error", error);
@@ -341,6 +365,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
           headers,
         }
       );
+
+      // Atualizar selectedStudent com o novo status
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          onHold: !selectedStudent.onHold,
+        });
+      }
+
       fetchStudents();
     } catch (error) {
       console.log("error", error);
@@ -366,6 +399,15 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const updateTutoree = async (id) => {
     try {
       await axios.put(`${backDomain}/api/v1/tutoree/${id}`, {}, { headers });
+
+      // Atualizar selectedStudent com o novo status
+      if (selectedStudent && selectedStudent._id === id) {
+        setSelectedStudent({
+          ...selectedStudent,
+          tutoree: !selectedStudent.tutoree,
+        });
+      }
+
       setTutoree(!tutoree);
     } catch (error) {
       notifyAlert("Erro ao atualizar tutoria");
@@ -533,7 +575,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     marginBottom: "4px",
                   }}
                 >
-                  {selectedStudent.fullname}
+                  {selectedStudent.name} {selectedStudent.lastname}
                 </Typography>
                 <Typography
                   style={{
@@ -566,9 +608,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
               variant="outlined"
               size="small"
               onClick={() => {
-                setID(selectedStudent._id);
+                console.log("selectedStudent", selectedStudent);
+                setID(selectedStudent.id);
                 setNewName(selectedStudent.name);
-                setNewLastName(selectedStudent.lastName);
+                setNewLastName(selectedStudent.lastname);
                 setNewCpf(selectedStudent.doc);
                 setNewEmail(selectedStudent.email);
                 setNewPhone(selectedStudent.phoneNumber);
@@ -584,6 +627,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 setFeeUpToDate(selectedStudent.feeUpToDate);
                 setOnHold(selectedStudent.onHold);
                 setTutoree(selectedStudent.tutoree);
+                setFee(selectedStudent.fee || 0);
                 setTotalScore(selectedStudent.totalScore || 0);
                 setMonthlyScore(selectedStudent.monthlyScore || 0);
                 setHomeworkAssignmentsDone(
@@ -838,6 +882,298 @@ export function FindStudent({ uploadStatus, headers, id }) {
               </div>
             </Grid>
 
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Status Mensalidade
+                </Typography>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    backgroundColor: selectedStudent.feeUpToDate
+                      ? "#d4f6d4"
+                      : "#ffe6e6",
+                    color: selectedStudent.feeUpToDate ? "#2d7d32" : "#d32f2f",
+                  }}
+                >
+                  {selectedStudent.feeUpToDate ? (
+                    <>
+                      <i
+                        className="fa fa-check-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Em dia
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className="fa fa-exclamation-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Atrasada
+                    </>
+                  )}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Status Matrícula
+                </Typography>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    backgroundColor: selectedStudent.onHold
+                      ? "#fff3cd"
+                      : "#d4f6d4",
+                    color: selectedStudent.onHold ? "#856404" : "#2d7d32",
+                  }}
+                >
+                  {selectedStudent.onHold ? (
+                    <>
+                      <i
+                        className="fa fa-pause-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Trancada
+                    </>
+                  ) : (
+                    <>
+                      <i
+                        className="fa fa-play-circle"
+                        style={{ marginRight: "4px" }}
+                      />
+                      Ativa
+                    </>
+                  )}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Permissões
+                </Typography>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    padding: "4px 8px",
+                    borderRadius: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    backgroundColor:
+                      selectedStudent.permissions === "superadmin"
+                        ? "#e3f2fd"
+                        : selectedStudent.permissions === "teacher"
+                        ? "#f3e5f5"
+                        : "#e8f5e8",
+                    color:
+                      selectedStudent.permissions === "superadmin"
+                        ? "#1976d2"
+                        : selectedStudent.permissions === "teacher"
+                        ? "#7b1fa2"
+                        : "#388e3c",
+                  }}
+                >
+                  {selectedStudent.permissions === "superadmin" && (
+                    <i
+                      className="fa fa-shield"
+                      style={{ marginRight: "4px" }}
+                    />
+                  )}
+                  {selectedStudent.permissions === "teacher" && (
+                    <i
+                      className="fa fa-graduation-cap"
+                      style={{ marginRight: "4px" }}
+                    />
+                  )}
+                  {selectedStudent.permissions === "student" && (
+                    <i className="fa fa-user" style={{ marginRight: "4px" }} />
+                  )}
+                  {selectedStudent.permissions === "superadmin"
+                    ? "Admin"
+                    : selectedStudent.permissions === "teacher"
+                    ? "Professor"
+                    : "Aluno"}
+                </div>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Primeiro Mês
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.myFirstMonth
+                    ? transformMonth(selectedStudent.myFirstMonth)
+                    : "N/A"}
+                </Typography>
+              </div>
+            </Grid>
+
+            {selectedStudent.tutoree && (
+              <Grid item xs={12} sm={6} md={3}>
+                <div style={{ marginBottom: "16px" }}>
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Monitoria
+                  </Typography>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "4px 8px",
+                      borderRadius: "12px",
+                      fontSize: "12px",
+                      fontWeight: "500",
+                      backgroundColor: "#e1f5fe",
+                      color: "#0277bd",
+                    }}
+                  >
+                    <i className="fa fa-users" style={{ marginRight: "4px" }} />
+                    Aluno de Monitoria
+                  </div>
+                </div>
+              </Grid>
+            )}
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Homework Feitos
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.homeworkAssignmentsDone || "0"}
+                </Typography>
+              </div>
+            </Grid>
+
+            <Grid item xs={12} sm={6} md={3}>
+              <div style={{ marginBottom: "16px" }}>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "11px",
+                    marginBottom: "4px",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Flashcards Reviews
+                </Typography>
+                <Typography
+                  style={{
+                    fontWeight: "500",
+                    color: "#2c3e50",
+                    fontSize: "14px",
+                  }}
+                >
+                  {selectedStudent.flashcards25Reviews || "0"}
+                </Typography>
+              </div>
+            </Grid>
+
+            {selectedStudent.fee && (
+              <Grid item xs={12} sm={6} md={3}>
+                <div style={{ marginBottom: "16px" }}>
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Mensalidade
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontWeight: "600",
+                      color: "#2e7d32",
+                      fontSize: "14px",
+                    }}
+                  >
+                    R$ {formatNumber(selectedStudent.fee)}
+                  </Typography>
+                </div>
+              </Grid>
+            )}
+
             {selectedStudent.address && (
               <Grid item xs={12}>
                 <div style={{ marginBottom: "16px" }}>
@@ -867,6 +1203,482 @@ export function FindStudent({ uploadStatus, headers, id }) {
           </Grid>
         </div>
       )}
+
+      {/* QUADRO DE RELATÓRIOS FINANCEIROS DETALHADOS */}
+      {selectedStudent &&
+        selectedStudent.financialReports &&
+        selectedStudent.financialReports.length > 0 && (
+          <div
+            style={{
+              backgroundColor: "#ffffff",
+              margin: "auto",
+              marginTop: "16px",
+              borderRadius: "12px",
+              boxShadow:
+                "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+              border: "1px solid #e8eaed",
+              maxWidth: "70rem",
+              padding: "20px",
+            }}
+          >
+            <Typography
+              style={{
+                color: "#2c3e50",
+                fontSize: "16px",
+                fontWeight: "600",
+                marginBottom: "16px",
+                borderBottom: "2px solid #e8eaed",
+                paddingBottom: "8px",
+              }}
+            >
+              Histórico Financeiro - {selectedStudent.name}{" "}
+              {selectedStudent.lastName}
+            </Typography>
+
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+            >
+              {selectedStudent.financialReports
+                .sort((a, b) => {
+                  // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
+                  if (!a.month || !b.month) return 0;
+                  const [monthA, yearA] = a.month.split("-").map(Number);
+                  const [monthB, yearB] = b.month.split("-").map(Number);
+
+                  if (yearA !== yearB) return yearB - yearA; // Ano mais recente primeiro
+                  return monthB - monthA; // Mês mais recente primeiro
+                })
+                .map((report, index) => (
+                  <div
+                    key={report._id || index}
+                    style={{
+                      padding: "12px 16px",
+                      backgroundColor: "#fafbfc",
+                      borderRadius: "8px",
+                      border: "1px solid #e8eaed",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "4px",
+                    }}
+                  >
+                    {/* PRIMEIRA LINHA */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "12px",
+                        }}
+                      >
+                        <Typography
+                          style={{
+                            fontWeight: "600",
+                            color: "#2c3e50",
+                            fontSize: "14px",
+                          }}
+                        >
+                          {report.month ? transformMonth(report.month) : "N/A"}
+                        </Typography>
+
+                        <Typography
+                          style={{
+                            fontWeight: "500",
+                            color: "#6c757d",
+                            fontSize: "12px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          {report.typeOfItem === "fee"
+                            ? "Mensalidade"
+                            : report.typeOfItem || "Item"}
+                        </Typography>
+
+                        <div
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            padding: "2px 6px",
+                            borderRadius: "8px",
+                            fontSize: "11px",
+                            fontWeight: "500",
+                            backgroundColor: report.paidFor
+                              ? "#d4f6d4"
+                              : report.paidSoFar > 0
+                              ? "#fff3cd"
+                              : "#ffe6e6",
+                            color: report.paidFor
+                              ? "#2d7d32"
+                              : report.paidSoFar > 0
+                              ? "#856404"
+                              : "#d32f2f",
+                          }}
+                        >
+                          {report.paidFor ? (
+                            <>
+                              <i
+                                className="fa fa-check-circle"
+                                style={{ marginRight: "3px", fontSize: "10px" }}
+                              />
+                              Pago
+                            </>
+                          ) : report.paidSoFar > 0 ? (
+                            <>
+                              <i
+                                className="fa fa-adjust"
+                                style={{ marginRight: "3px", fontSize: "10px" }}
+                              />
+                              Parcial
+                            </>
+                          ) : (
+                            <>
+                              <i
+                                className="fa fa-exclamation-circle"
+                                style={{ marginRight: "3px", fontSize: "10px" }}
+                              />
+                              Pendente
+                            </>
+                          )}
+                        </div>
+                      </div>
+
+                      <Typography
+                        style={{
+                          fontWeight: "600",
+                          color: "#2e7d32",
+                          fontSize: "14px",
+                        }}
+                      >
+                        R$ {formatNumber(report.amount || 0)}
+                      </Typography>
+                    </div>
+
+                    {/* SEGUNDA LINHA */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "16px",
+                        }}
+                      >
+                        {report.discount > 0 && (
+                          <Typography
+                            style={{
+                              fontSize: "12px",
+                              color: "#f59e0b",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Desconto: R$ {formatNumber(report.discount)}
+                          </Typography>
+                        )}
+
+                        {report.paidSoFar > 0 && (
+                          <Typography
+                            style={{
+                              fontSize: "12px",
+                              color: "#1976d2",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Pago: R$ {formatNumber(report.paidSoFar)}
+                          </Typography>
+                        )}
+
+                        {!report.paidFor && (
+                          <Typography
+                            style={{
+                              fontSize: "12px",
+                              color: "#d32f2f",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Pendente: R${" "}
+                            {formatNumber(
+                              (report.amount || 0) - (report.paidSoFar || 0)
+                            )}
+                          </Typography>
+                        )}
+                      </div>
+
+                      {report.dueDate && (
+                        <Typography
+                          style={{
+                            fontSize: "12px",
+                            color: "#6c757d",
+                            fontWeight: "400",
+                          }}
+                        >
+                          Vencimento:{" "}
+                          {new Date(report.dueDate).toLocaleDateString("pt-BR")}
+                        </Typography>
+                      )}
+                    </div>
+                  </div>
+                ))}
+            </div>
+
+            {/* RESUMO TOTAL */}
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "12px 16px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "8px",
+                border: "1px solid #dee2e6",
+              }}
+            >
+              <Typography
+                style={{
+                  color: "#6c757d",
+                  fontSize: "11px",
+                  marginBottom: "8px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  fontWeight: "600",
+                }}
+              >
+                Resumo Total
+              </Typography>
+
+              <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Total de Itens
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#2c3e50",
+                    }}
+                  >
+                    {selectedStudent.financialReports.length}
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Valor Total
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#2e7d32",
+                    }}
+                  >
+                    R${" "}
+                    {formatNumber(
+                      selectedStudent.financialReports.reduce(
+                        (total, report) => total + (report.amount || 0),
+                        0
+                      )
+                    )}
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Itens Pagos
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#1976d2",
+                    }}
+                  >
+                    {
+                      selectedStudent.financialReports.filter(
+                        (report) => report.paidFor
+                      ).length
+                    }
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Itens Parciais
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#856404",
+                    }}
+                  >
+                    {
+                      selectedStudent.financialReports.filter(
+                        (report) => !report.paidFor && report.paidSoFar > 0
+                      ).length
+                    }
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Itens Pendentes
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#d32f2f",
+                    }}
+                  >
+                    {
+                      selectedStudent.financialReports.filter(
+                        (report) =>
+                          !report.paidFor &&
+                          (!report.paidSoFar || report.paidSoFar === 0)
+                      ).length
+                    }
+                  </Typography>
+                </div>
+
+                <div>
+                  <Typography
+                    style={{
+                      fontSize: "12px",
+                      color: "#6c757d",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Total Pago
+                  </Typography>
+                  <Typography
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#28a745",
+                    }}
+                  >
+                    R${" "}
+                    {formatNumber(
+                      selectedStudent.financialReports.reduce(
+                        (total, report) => total + (report.paidSoFar || 0),
+                        0
+                      )
+                    )}
+                  </Typography>
+                </div>
+              </div>
+            </div>
+
+            {/* LISTINHA SIMPLES DE STATUS */}
+            <div
+              style={{
+                marginTop: "16px",
+                padding: "8px 12px",
+                backgroundColor: "#f8f9fa",
+                borderRadius: "6px",
+                border: "1px solid #dee2e6",
+              }}
+            >
+              <Typography
+                style={{
+                  color: "#6c757d",
+                  fontSize: "10px",
+                  marginBottom: "6px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  fontWeight: "600",
+                }}
+              >
+                Status dos Meses
+              </Typography>
+
+              <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
+                {selectedStudent.financialReports
+                  .sort((a, b) => {
+                    // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
+                    if (!a.month || !b.month) return 0;
+                    const [monthA, yearA] = a.month.split("-").map(Number);
+                    const [monthB, yearB] = b.month.split("-").map(Number);
+
+                    if (yearA !== yearB) return yearB - yearA;
+                    return monthB - monthA;
+                  })
+                  .map((report, index) => (
+                    <span key={report._id || index}>
+                      <span style={{ color: "#2c3e50", fontWeight: "500" }}>
+                        {transformMonth(report.month) || "N/A"}
+                      </span>
+                      <span style={{ color: "#6c757d", margin: "0 4px" }}>
+                        {" "}
+                        -{" "}
+                      </span>
+                      <span
+                        style={{
+                          color: report.paidFor
+                            ? "#2d7d32"
+                            : report.paidSoFar > 0
+                            ? "#856404"
+                            : "#d32f2f",
+                          fontWeight: "600",
+                        }}
+                      >
+                        {report.paidFor
+                          ? "pago"
+                          : report.paidSoFar > 0
+                          ? "parcial"
+                          : "pendente"}
+                      </span>
+                      {index < selectedStudent.financialReports.length - 1 && (
+                        <span style={{ color: "#dee2e6", margin: "0 8px" }}>
+                          •
+                        </span>
+                      )}
+                    </span>
+                  ))}
+              </div>
+            </div>
+          </div>
+        )}
 
       {!loading ? (
         <div
@@ -1486,6 +2298,16 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   value={googleDriveLink}
                   onChange={(e) => setGoogleDriveLink(e.target.value)}
                   size="small"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="Mensalidade"
+                  value={fee}
+                  onChange={(e) => setFee(e.target.value)}
+                  size="small"
+                  type="number"
                 />
               </Grid>
             </Grid>
