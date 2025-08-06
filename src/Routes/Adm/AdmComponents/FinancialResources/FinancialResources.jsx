@@ -7,6 +7,8 @@ import {
   formatDateBr,
   formatNumber,
   onLoggOut,
+  transformMonth,
+  truncateString,
 } from "../../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -45,7 +47,7 @@ import {
   textPrimaryColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
-import { HOne } from "../../../../Resources/Components/RouteBox";
+import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import {
   ArvinButton,
   MyButton,
@@ -990,7 +992,7 @@ export function FinancialResources({ headers, id }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: window.innerWidth <= 768 ? "1fr" : "1fr 0.6fr",
+          gridTemplateColumns: "1fr 1fr",
           justifyContent: "top",
           gap: "1rem",
           margin: "16px auto",
@@ -1005,14 +1007,35 @@ export function FinancialResources({ headers, id }) {
                 margin: "16px auto",
               }}
             >
-              {/* <button onClick={() => updateReports(selectedMonth)}>
-                Atualizar mês
-              </button> */}
+    {/* TÍTULO DO RELATÓRIO */}
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "24px",
+                  marginTop: "32px",
+                }}
+              >
+                <HTwo>
+                  {transformMonth(selectedMonth)}
+                </HTwo>
+                <button
+                  title={`Novo ítem para o mês de ${transformMonth(selectedMonth)}`}
+                  className="linguee-btn linguee-btn-primary"
+                  style={{
+                    marginLeft: "8px",
+                  }}
+                  onClick={handleNewItemModal}
+                >
+                  +
+                </button>
+              </div>
+
               {/* RESUMO FINANCEIRO */}
               <div
                 style={{
                   display: "grid",
-                  //quero que o ultimo item fique sozinho na linha de baixo
                   gridTemplateAreas: `
                     "item1 item2"
                     "item3 item4"
@@ -1074,35 +1097,7 @@ export function FinancialResources({ headers, id }) {
                 ))}
               </div>
 
-              {/* TÍTULO DO RELATÓRIO */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "24px",
-                  marginTop: "32px",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    color: "#374151",
-                    fontFamily: textGeneralFont(),
-                    textAlign: "left",
-                  }}
-                >
-                  Relatórios Financeiros • {selectedMonth}
-                </div>
-                <button
-                  className="linguee-btn linguee-btn-primary"
-                  onClick={handleNewItemModal}
-                >
-                  + Novo Item para: {selectedMonth}
-                </button>
-              </div>
-
+          
               {/* ENTRADAS */}
               {financialReports.filter(
                 (report) => report.accountFor && report.typeOfItem !== "debt"
@@ -1196,7 +1191,7 @@ export function FinancialResources({ headers, id }) {
                                 fontFamily: textGeneralFont(),
                               }}
                             >
-                              {report.description}
+                              {truncateString(report.description, window.innerWidth < 768 ? 25 : 50)}
                             </div>
                             <div
                               style={{
@@ -1335,7 +1330,7 @@ export function FinancialResources({ headers, id }) {
                                 fontFamily: textGeneralFont(),
                               }}
                             >
-                              {report.description}
+                              {truncateString(report.description, window.innerWidth < 768 ? 25 : 50)}
                             </div>
                             <div
                               style={{
@@ -1815,9 +1810,9 @@ export function FinancialResources({ headers, id }) {
                               seeEdition(student.id);
                             }}
                             style={{
-                              display: "grid",
-                              gridTemplateColumns: "0.6fr 5fr 2fr 1fr",
+                              display: "flex",
                               gap: "8px",
+                              justifyContent: "space-between",
                               padding: "8px",
                               borderBottom: "1px solid #eee",
                               alignItems: "center",
@@ -1837,7 +1832,15 @@ export function FinancialResources({ headers, id }) {
                               e.currentTarget.style.backgroundColor =
                                 student.onHold ? "#f8f8f8" : "#fff";
                             }}
-                          >
+                            >
+                              <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                                flex: 1,
+                              }}
+                              >
                             <img
                               style={{
                                 width: "24px",
@@ -1845,6 +1848,7 @@ export function FinancialResources({ headers, id }) {
                                 borderRadius: "50%",
                                 objectFit: "cover",
                                 opacity: student.onHold ? 0.5 : 1,
+                                display: window.innerWidth <= 768 ? "none" : "block",
                               }}
                               src={
                                 student.picture ||
@@ -1852,7 +1856,6 @@ export function FinancialResources({ headers, id }) {
                               }
                               alt=""
                             />
-                            <div>
                               <div
                                 style={{
                                   fontWeight: "500",
@@ -1861,18 +1864,9 @@ export function FinancialResources({ headers, id }) {
                                   fontFamily: textGeneralFont(),
                                 }}
                               >
-                                {student.name} {student.lastname}
+                                {student.name} {truncateString(student.lastname, 6)}
                               </div>
-                              <div
-                                style={{
-                                  fontSize: "10px",
-                                  color: "#666",
-                                  opacity: student.onHold ? 0.6 : 1,
-                                  fontFamily: textGeneralFont(),
-                                }}
-                              >
-                                {student.email}
-                              </div>
+                  
                             </div>
 
                             <div
@@ -1898,7 +1892,7 @@ export function FinancialResources({ headers, id }) {
                                 R$ {formatNumber(student.fee)}
                               </div>
                             </div>
-                            <div
+                            {/* <div
                               style={{
                                 fontSize: "9px",
                                 fontWeight: "500",
@@ -1913,7 +1907,7 @@ export function FinancialResources({ headers, id }) {
                               }}
                             >
                               {student.onHold ? "Trancado" : "Ativo"}
-                            </div>
+                            </div> */}
                           </div>
                         ))}
                       </div>
@@ -2049,13 +2043,14 @@ export function FinancialResources({ headers, id }) {
                 }}
               >
                 <button
+                title="Novo Custo Fixo"
                   className="linguee-btn linguee-btn-ghost"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleNewCostModal();
                   }}
                 >
-                  + Novo Custo Fixo
+                  +
                 </button>
               </div>
 
@@ -2444,7 +2439,7 @@ export function FinancialResources({ headers, id }) {
                       fontFamily: textGeneralFont(),
                     }}
                   >
-                    Mês: {selectedCost.month || currentMonthYear}
+                    Mês: {transformMonth(selectedCost.month) || transformMonth(currentMonthYear)}
                   </div>
                 </div>
               )}
@@ -2697,7 +2692,7 @@ export function FinancialResources({ headers, id }) {
                         fontFamily: textGeneralFont(),
                       }}
                     >
-                      IMPORTANTE: Mudanças não afetam dados já contabilizados
+                      IMPORTANTE: Mudanças nesta sessão não afetam dados já contabilizados este mês.
                     </div>
                     <div
                       style={{
@@ -2707,13 +2702,11 @@ export function FinancialResources({ headers, id }) {
                         fontFamily: textGeneralFont(),
                       }}
                     >
-                      • Alterar a mensalidade aqui <strong>NÃO</strong> modifica
-                      os valores já registrados no mês atual
-                      <br />• As mudanças <strong>só afetarão</strong> os
+                      • As mudanças <strong>só afetarão</strong> os
                       próximos relatórios financeiros
                       <br />• Para ajustar valores do mês atual, edite
                       diretamente os itens do relatório financeiro de{" "}
-                      {selectedMonth}
+                      { transformMonth(selectedMonth)}
                     </div>
                   </div>
                 </div>
@@ -3197,7 +3190,7 @@ export function FinancialResources({ headers, id }) {
                     letterSpacing: "-0.025em",
                   }}
                 >
-                  Novo Item Financeiro
+                  Novo Item Financeiro: {transformMonth(selectedMonth)}
                 </h2>
                 <ArvinButton
                   onClick={handleNewItemModal}
@@ -3212,10 +3205,6 @@ export function FinancialResources({ headers, id }) {
             </DialogTitle>
 
             <DialogContent style={{ padding: "24px 24px 16px" }}>
-              <div className="linguee-form-group">
-                <label className="linguee-label">Mês: {selectedMonth}</label>
-              </div>
-
               <div className="linguee-form-group">
                 <label className="linguee-label linguee-label-required">
                   Descrição
