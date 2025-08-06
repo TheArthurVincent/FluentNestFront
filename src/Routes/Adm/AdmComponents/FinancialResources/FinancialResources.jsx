@@ -176,14 +176,19 @@ export function FinancialResources({ headers, id }) {
   };
 
   const handleConfirmDelete = () => {
+    setShowGenerateButton(false);
+
     setSeeConfirmDelete(!seeConfirmDelete);
   };
 
   const handleDelete = () => {
     deleteStudent(ID);
+    setShowGenerateButton(false);
   };
 
   const handleNewCostModal = () => {
+    setShowGenerateButton(false);
+
     setIncludeThisMonth(false);
 
     setNewCostModalOpen(!newCostModalOpen);
@@ -195,6 +200,8 @@ export function FinancialResources({ headers, id }) {
   };
 
   const handleCostDetailModal = (cost = null) => {
+    setShowGenerateButton(false);
+
     setCostDetailModalOpen(!costDetailModalOpen);
     setSelectedCost(cost);
     if (!costDetailModalOpen) {
@@ -210,14 +217,18 @@ export function FinancialResources({ headers, id }) {
 
   const toggleFixedCosts = () => {
     setFixedCostsExpanded(!fixedCostsExpanded);
+    setShowGenerateButton(false);
   };
 
   const toggleRevenue = () => {
     setRevenueExpanded(!revenueExpanded);
+    setShowGenerateButton(false);
   };
 
   // Financial Report Modal Handlers
   const handleFinancialReportModal = (report = null) => {
+    setShowGenerateButton(false);
+
     setFinancialReportModalOpen(!financialReportModalOpen);
     if (report) {
       setSelectedFinancialReport(report);
@@ -427,6 +438,7 @@ export function FinancialResources({ headers, id }) {
   };
 
   const generateReports = async (month) => {
+    setShowGenerateButton(false);
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/finance-month/${id}`,
@@ -502,6 +514,7 @@ export function FinancialResources({ headers, id }) {
       notifyAlert("Item financeiro criado com sucesso!", "green");
       handleNewItemModal(); // Fechar o modal
       seeReports(currentMonthYear);
+      setShowGenerateButton(false);
 
       console.log("response", response.data);
     } catch (error) {
@@ -512,6 +525,7 @@ export function FinancialResources({ headers, id }) {
 
   const handleSaveFinancialReport = async () => {
     if (!selectedFinancialReport) return;
+    setShowGenerateButton(false);
 
     try {
       const updatedReport = {
@@ -546,6 +560,8 @@ export function FinancialResources({ headers, id }) {
   };
 
   const newFixedCost = async (amount, month, description, typeOfItem) => {
+    setShowGenerateButton(false);
+
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/fixed-cost/${id}`,
@@ -790,7 +806,7 @@ export function FinancialResources({ headers, id }) {
 
     return options;
   };
-
+  const [showGenerateButton, setShowGenerateButton] = useState(false);
   // Verificar se o mês selecionado é atual ou futuro
   const isCurrentOrFutureMonth = (selectedMonth) => {
     const [selectedMonthNum, selectedYear] = selectedMonth.split("-");
@@ -926,6 +942,8 @@ export function FinancialResources({ headers, id }) {
       <select
         value={selectedMonth}
         onChange={(e) => {
+    setShowGenerateButton(false);
+
           setSelectedMonth(e.target.value);
           seeReports(e.target.value);
         }}
@@ -1499,12 +1517,73 @@ export function FinancialResources({ headers, id }) {
                 Nenhum relatório disponível para este mês.
               </p>
               {isCurrentOrFutureMonth(selectedMonth) && (
-                <button
-                  className="linguee-btn linguee-btn-outline"
-                  onClick={() => generateReports(selectedMonth)}
-                >
-                  Gerar relatório para {selectedMonth}
-                </button>
+                <>
+                  {!showGenerateButton && (
+                    <button
+                      className="linguee-btn linguee-btn-outline"
+                      onClick={() => setShowGenerateButton(!showGenerateButton)}
+                    >
+                      Gerar relatório para {selectedMonth}
+                    </button>
+                  )}
+                  {showGenerateButton && (
+                    <>
+                      <div
+                        style={{
+                          backgroundColor: "#e8f4fd",
+                          border: "1px solid #bee5eb",
+                          borderRadius: "8px",
+                          padding: "16px",
+                          margin: "16px 0",
+                          display: "flex",
+                          alignItems: "flex-start",
+                          gap: "12px",
+                        }}
+                      >
+                        <div style={{ fontSize: "20px", color: "#0c5460" }}>
+                          💡
+                        </div>
+                        <div>
+                          <div
+                            style={{
+                              fontSize: "14px",
+                              fontWeight: "600",
+                              color: "#0c5460",
+                              marginBottom: "8px",
+                              fontFamily: textGeneralFont(),
+                            }}
+                          >
+                            DICA: Verifique antes de gerar o relatório
+                          </div>
+                          <div
+                            style={{
+                              fontSize: "13px",
+                              color: "#0c5460",
+                              lineHeight: "1.5",
+                              fontFamily: textGeneralFont(),
+                            }}
+                          >
+                            • Confirme se as{" "}
+                            <strong>mensalidades dos alunos</strong> estão
+                            atualizadas
+                            <br />• Verifique se há{" "}
+                            <strong>alunos trancados</strong> que devem ser
+                            removidos
+                            <br />• O relatório será gerado com base nas
+                            informações atuais dos alunos
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        className="linguee-btn linguee-btn-outline"
+                        onClick={() => generateReports(selectedMonth)}
+                      >
+                        Gerar relatório para {selectedMonth}
+                      </button>
+                    </>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -2595,6 +2674,51 @@ export function FinancialResources({ headers, id }) {
                 <h2 gutterBottom fontWeight="600" color="#333">
                   📝 Informações Básicas
                 </h2>
+
+                <div
+                  style={{
+                    backgroundColor: "#fff3cd",
+                    border: "1px solid #ffeaa7",
+                    borderRadius: "8px",
+                    padding: "16px",
+                    marginBottom: "20px",
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "12px",
+                  }}
+                >
+                  <div style={{ fontSize: "20px", color: "#d4a574" }}>⚠️</div>
+                  <div>
+                    <div
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#856404",
+                        marginBottom: "8px",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      IMPORTANTE: Mudanças não afetam dados já contabilizados
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        color: "#856404",
+                        lineHeight: "1.5",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      • Alterar a mensalidade aqui <strong>NÃO</strong> modifica
+                      os valores já registrados no mês atual
+                      <br />• As mudanças <strong>só afetarão</strong> os
+                      próximos relatórios financeiros
+                      <br />• Para ajustar valores do mês atual, edite
+                      diretamente os itens do relatório financeiro de{" "}
+                      {selectedMonth}
+                    </div>
+                  </div>
+                </div>
+
                 <Grid container spacing={2}>
                   {newName && (
                     <Grid item xs={12} md={6}>
