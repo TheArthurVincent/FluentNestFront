@@ -942,7 +942,7 @@ export function FinancialResources({ headers, id }) {
       <select
         value={selectedMonth}
         onChange={(e) => {
-    setShowGenerateButton(false);
+          setShowGenerateButton(false);
 
           setSelectedMonth(e.target.value);
           seeReports(e.target.value);
@@ -1535,8 +1535,7 @@ export function FinancialResources({ headers, id }) {
                           borderRadius: "8px",
                           padding: "16px",
                           margin: "16px 0",
-                          display: "flex",
-                          alignItems: "flex-start",
+                          display: "grid",
                           gap: "12px",
                         }}
                       >
