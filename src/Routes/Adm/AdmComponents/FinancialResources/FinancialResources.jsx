@@ -148,7 +148,7 @@ export function FinancialResources({ headers, id }) {
 
   const [selectedMonth, setSelectedMonth] = useState(currentMonthYear);
   const [financialReports, setFinancialReports] = useState([]);
-
+  const [loadingReports, setLoadingReports] = useState(false);
   // ===== CONSTANTS =====
   const isMobile = window.innerWidth <= 700;
   const cellTable = {
@@ -179,7 +179,6 @@ export function FinancialResources({ headers, id }) {
 
   const handleConfirmDelete = () => {
     setShowGenerateButton(false);
-
     setSeeConfirmDelete(!seeConfirmDelete);
   };
 
@@ -343,6 +342,7 @@ export function FinancialResources({ headers, id }) {
   };
 
   const seeReports = async (month) => {
+    setLoadingReports(true);
     try {
       const response = await axios.get(`${backDomain}/api/v1/finance/${id}`, {
         headers,
@@ -363,6 +363,7 @@ export function FinancialResources({ headers, id }) {
           setThereAreReports(true);
         }, 500);
       }
+      setLoadingReports(false);
     } catch (error) {
       console.log("error", error);
     }
@@ -440,6 +441,7 @@ export function FinancialResources({ headers, id }) {
   };
 
   const generateReports = async (month) => {
+    setLoadingReports(true);
     setShowGenerateButton(false);
     try {
       const response = await axios.post(
@@ -456,8 +458,11 @@ export function FinancialResources({ headers, id }) {
           ? response.data.financialReportsOfTheMonth
           : []
       );
+      setLoadingReports(false);
+
       console.log("response", response.data);
     } catch (error) {
+      setLoadingReports(false);
       console.log("error", error);
     }
   };
@@ -1001,504 +1006,522 @@ export function FinancialResources({ headers, id }) {
       >
         <section>
           {financialReports.length > 0 ? (
-            <div
-              style={{
-                maxWidth: "800px",
-                margin: "16px auto",
-              }}
-            >
-    {/* TÍTULO DO RELATÓRIO */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "24px",
-                  marginTop: "32px",
-                }}
-              >
-                <HTwo>
-                  {transformMonth(selectedMonth)}
-                </HTwo>
-                <button
-                  title={`Novo ítem para o mês de ${transformMonth(selectedMonth)}`}
-                  className="linguee-btn linguee-btn-primary"
+            <>
+              {loadingReports ? (
+                <CircularProgress style={{ color: primaryColor() }} />
+              ) : (
+                <div
                   style={{
-                    marginLeft: "8px",
+                    maxWidth: "800px",
+                    margin: "16px auto",
                   }}
-                  onClick={handleNewItemModal}
                 >
-                  +
-                </button>
-              </div>
+                  {/* TÍTULO DO RELATÓRIO */}
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: "24px",
+                      marginTop: "32px",
+                    }}
+                  >
+                    <HTwo>{transformMonth(selectedMonth)}</HTwo>
+                    <button
+                      title={`Novo ítem para o mês de ${transformMonth(
+                        selectedMonth
+                      )}`}
+                      className="linguee-btn linguee-btn-primary"
+                      style={{
+                        marginLeft: "8px",
+                      }}
+                      onClick={handleNewItemModal}
+                    >
+                      +
+                    </button>
+                  </div>
 
-              {/* RESUMO FINANCEIRO */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateAreas: `
+                  {/* RESUMO FINANCEIRO */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateAreas: `
                     "item1 item2"
                     "item3 item4"
                     "item5 item5"
                   `,
-                  gap: "12px",
-                  marginBottom: "20px",
-                }}
-              >
-                {financialSummaryData.map((item, index) => (
-                  <div
-                    key={item.id}
-                    style={{
-                      gridArea: `item${index + 1}`,
-                      backgroundColor: "#fff",
-                      border: "1px solid #e5e7eb",
-                      borderRadius: "6px",
-                      padding: "12px",
-                      textAlign: "center",
-                      transition: "all 0.2s ease",
+                      gap: "12px",
+                      marginBottom: "20px",
                     }}
                   >
-                    <div
-                      style={{
-                        fontSize: "11px",
-                        color: "#6b7280",
-                        marginBottom: "8px",
-                        fontFamily: textGeneralFont(),
-                        fontWeight: "400",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.5px",
-                      }}
-                    >
-                      {item.title}
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: "600",
-                        color: item.color,
-                        marginBottom: "4px",
-                        fontFamily: textTitleFont(),
-                      }}
-                    >
-                      R$ {formatNumber(item.value)}
-                    </div>
-                    {item.subtitle && (
+                    {financialSummaryData.map((item, index) => (
                       <div
+                        key={item.id}
                         style={{
-                          color: "#9ca3af",
-                          fontFamily: textGeneralFont(),
-                          fontWeight: "400",
-                          ...item.subtitleStyle,
+                          gridArea: `item${index + 1}`,
+                          backgroundColor: "#fff",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "6px",
+                          padding: "12px",
+                          textAlign: "center",
+                          transition: "all 0.2s ease",
                         }}
                       >
-                        {item.subtitle}
+                        <div
+                          style={{
+                            fontSize: "11px",
+                            color: "#6b7280",
+                            marginBottom: "8px",
+                            fontFamily: textGeneralFont(),
+                            fontWeight: "400",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.5px",
+                          }}
+                        >
+                          {item.title}
+                        </div>
+                        <div
+                          style={{
+                            fontWeight: "600",
+                            color: item.color,
+                            marginBottom: "4px",
+                            fontFamily: textTitleFont(),
+                          }}
+                        >
+                          R$ {formatNumber(item.value)}
+                        </div>
+                        {item.subtitle && (
+                          <div
+                            style={{
+                              color: "#9ca3af",
+                              fontFamily: textGeneralFont(),
+                              fontWeight: "400",
+                              ...item.subtitleStyle,
+                            }}
+                          >
+                            {item.subtitle}
+                          </div>
+                        )}
                       </div>
-                    )}
+                    ))}
                   </div>
-                ))}
-              </div>
 
-          
-              {/* ENTRADAS */}
-              {financialReports.filter(
-                (report) => report.accountFor && report.typeOfItem !== "debt"
-              ).length > 0 && (
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "6px",
-                    padding: "12px",
-                    marginBottom: "20px",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#374151",
-                      marginBottom: "16px",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    Entradas
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
-                  >
-                    {financialReports
-                      .filter(
-                        (report) =>
-                          report.accountFor && report.typeOfItem !== "debt"
-                      )
-                      .map((report, index) => (
-                        <div
-                          key={report.studentId || index}
-                          onClick={() => handleFinancialReportModal(report)}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-evenly",
-                            alignItems: "left",
-                            padding: "12px",
-                            gap: "12px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #eee",
-                            borderRadius: "4px",
-                            transition: "all 0.2s ease",
-                            cursor: "pointer",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#e7f4ebff";
-                            e.currentTarget.style.borderColor = "#daf9e4ff";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "#fff";
-                            e.currentTarget.style.borderColor = "#eee";
-                          }}
-                        >
-                          <div
-                            style={{
-                              textAlign: "center",
-                              borderRadius: "12px",
-                              color: report.paidFor ? "#2e7d32" : "#c62828",
-                              fontFamily: textGeneralFont(),
-                            }}
-                          >
-                            {report.paidFor ? (
-                              <i
-                                className="fa fa-check-circle-o"
-                                style={{ color: "#2e7d32" }}
-                              />
-                            ) : (
-                              <i
-                                className="fa fa-circle-o"
-                                style={{ color: "#c62828" }}
-                              />
-                            )}
-                          </div>
-
-                          <div style={{ flex: 1 }}>
+                  {/* ENTRADAS */}
+                  {financialReports.filter(
+                    (report) =>
+                      report.accountFor && report.typeOfItem !== "debt"
+                  ).length > 0 && (
+                    <div
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "6px",
+                        padding: "12px",
+                        marginBottom: "20px",
+                        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "600",
+                          color: "#374151",
+                          marginBottom: "16px",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        Entradas
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "8px",
+                        }}
+                      >
+                        {financialReports
+                          .filter(
+                            (report) =>
+                              report.accountFor && report.typeOfItem !== "debt"
+                          )
+                          .map((report, index) => (
                             <div
+                              key={report.studentId || index}
+                              onClick={() => handleFinancialReportModal(report)}
                               style={{
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                color: "#374151",
-                                marginBottom: "2px",
-                                fontFamily: textGeneralFont(),
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                                alignItems: "left",
+                                padding: "12px",
+                                gap: "12px",
+                                backgroundColor: "#fff",
+                                border: "1px solid #eee",
+                                borderRadius: "4px",
+                                transition: "all 0.2s ease",
+                                cursor: "pointer",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "#e7f4ebff";
+                                e.currentTarget.style.borderColor = "#daf9e4ff";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "#fff";
+                                e.currentTarget.style.borderColor = "#eee";
                               }}
                             >
-                              {truncateString(report.description, window.innerWidth < 768 ? 25 : 50)}
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "11px",
-                                color: "#6b7280",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              {report.discount > 0 &&
-                                `Original: R$ ${formatNumber(
-                                  report.amount
-                                )} • Desconto: R$ ${formatNumber(
-                                  report.discount
-                                )}`}
-                            </div>
-                          </div>
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  borderRadius: "12px",
+                                  color: report.paidFor ? "#2e7d32" : "#c62828",
+                                  fontFamily: textGeneralFont(),
+                                }}
+                              >
+                                {report.paidFor ? (
+                                  <i
+                                    className="fa fa-check-circle-o"
+                                    style={{ color: "#2e7d32" }}
+                                  />
+                                ) : (
+                                  <i
+                                    className="fa fa-circle-o"
+                                    style={{ color: "#c62828" }}
+                                  />
+                                )}
+                              </div>
 
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "12px",
-                            }}
-                          >
+                              <div style={{ flex: 1 }}>
+                                <div
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "500",
+                                    color: "#374151",
+                                    marginBottom: "2px",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {truncateString(
+                                    report.description,
+                                    window.innerWidth < 768 ? 25 : 50
+                                  )}
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: "11px",
+                                    color: "#6b7280",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {report.discount > 0 &&
+                                    `Original: R$ ${formatNumber(
+                                      report.amount
+                                    )} • Desconto: R$ ${formatNumber(
+                                      report.discount
+                                    )}`}
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    fontSize: "16px",
+                                    fontWeight: "600",
+                                    color: "#0f8311ff",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  R${" "}
+                                  {formatNumber(
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0)
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* SAÍDAS */}
+                  {financialReports.filter(
+                    (report) =>
+                      report.accountFor && report.typeOfItem === "debt"
+                  ).length > 0 && (
+                    <div
+                      style={{
+                        backgroundColor: "#fff",
+                        border: "1px solid #e5e7eb",
+                        borderRadius: "6px",
+                        padding: "12px",
+                        marginBottom: "20px",
+                        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "16px",
+                          fontWeight: "600",
+                          color: "#374151",
+                          marginBottom: "16px",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        Saídas
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "8px",
+                        }}
+                      >
+                        {financialReports
+                          .filter(
+                            (report) =>
+                              report.accountFor && report.typeOfItem === "debt"
+                          )
+                          .map((report, index) => (
                             <div
+                              key={report.studentId || index}
+                              onClick={() => handleFinancialReportModal(report)}
                               style={{
-                                fontSize: "16px",
-                                fontWeight: "600",
-                                color: "#0f8311ff",
-                                fontFamily: textGeneralFont(),
+                                display: "flex",
+                                justifyContent: "space-evenly",
+                                alignItems: "left",
+                                padding: "12px",
+                                gap: "12px",
+                                backgroundColor: "#fff",
+                                border: "1px solid #eee",
+                                borderRadius: "4px",
+                                transition: "all 0.2s ease",
+                                cursor: "pointer",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "#fef2f2ff";
+                                e.currentTarget.style.borderColor = "#fecacaff";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "#fff";
+                                e.currentTarget.style.borderColor = "#eee";
                               }}
                             >
-                              R${" "}
-                              {formatNumber(
-                                Math.abs(report.amount) - (report.discount || 0)
-                              )}
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  borderRadius: "12px",
+                                  color: report.paidFor ? "#2e7d32" : "#c62828",
+                                  fontFamily: textGeneralFont(),
+                                }}
+                              >
+                                {report.paidFor ? (
+                                  <i
+                                    className="fa fa-check-circle-o"
+                                    style={{ color: "#2e7d32" }}
+                                  />
+                                ) : (
+                                  <i
+                                    className="fa fa-circle-o"
+                                    style={{ color: "#c62828" }}
+                                  ></i>
+                                )}
+                              </div>
+
+                              <div style={{ flex: 1 }}>
+                                <div
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "500",
+                                    color: "#374151",
+                                    marginBottom: "2px",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {truncateString(
+                                    report.description,
+                                    window.innerWidth < 768 ? 25 : 50
+                                  )}
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: "11px",
+                                    color: "#6b7280",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {report.discount > 0 &&
+                                    `Original: R$ ${formatNumber(
+                                      report.amount
+                                    )} • Desconto: R$ ${formatNumber(
+                                      report.discount
+                                    )}`}
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    fontSize: "16px",
+                                    fontWeight: "600",
+                                    color: "#dc2626",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  R${" "}
+                                  {formatNumber(
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0)
+                                  )}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* ITENS NÃO CONTABILIZADOS */}
+                  {financialReports.filter((report) => !report.accountFor)
+                    .length > 0 && (
+                    <div
+                      style={{
+                        backgroundColor: "#f9fafb",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "8px",
+                        padding: "16px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "500",
+                          color: "#6b7280",
+                          marginBottom: "12px",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        📋 Itens não contabilizados
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "8px",
+                        }}
+                      >
+                        {financialReports
+                          .filter((report) => !report.accountFor)
+                          .map((report, index) => (
+                            <div
+                              key={report.studentId || index}
+                              onClick={() => handleFinancialReportModal(report)}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                padding: "12px",
+                                backgroundColor: "#fff",
+                                border: "1px solid #e5e7eb",
+                                borderRadius: "6px",
+                                opacity: 0.7,
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.opacity = "1";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.opacity = "0.7";
+                              }}
+                            >
+                              <div style={{ flex: 1 }}>
+                                <div
+                                  style={{
+                                    fontSize: "14px",
+                                    fontWeight: "400",
+                                    color: "#6b7280",
+                                    marginBottom: "2px",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {report.description}
+                                </div>
+                                <div
+                                  style={{
+                                    fontSize: "11px",
+                                    color: "#9ca3af",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  Tipo:{" "}
+                                  {report.typeOfItem === "fee"
+                                    ? "Mensalidade"
+                                    : report.typeOfItem}
+                                </div>
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    fontSize: "16px",
+                                    fontWeight: "500",
+                                    color: "#9ca3af",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  R${" "}
+                                  {formatNumber(
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0)
+                                  )}
+                                </div>
+
+                                <div
+                                  style={{
+                                    fontSize: "10px",
+                                    fontWeight: "500",
+                                    textAlign: "center",
+                                    padding: "3px 8px",
+                                    borderRadius: "12px",
+                                    backgroundColor: "#f3f4f6",
+                                    color: "#6b7280",
+                                    fontFamily: textGeneralFont(),
+                                    minWidth: "60px",
+                                  }}
+                                >
+                                  Ignorado
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
-
-              {/* SAÍDAS */}
-              {financialReports.filter(
-                (report) => report.accountFor && report.typeOfItem === "debt"
-              ).length > 0 && (
-                <div
-                  style={{
-                    backgroundColor: "#fff",
-                    border: "1px solid #e5e7eb",
-                    borderRadius: "6px",
-                    padding: "12px",
-                    marginBottom: "20px",
-                    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "16px",
-                      fontWeight: "600",
-                      color: "#374151",
-                      marginBottom: "16px",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    Saídas
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
-                  >
-                    {financialReports
-                      .filter(
-                        (report) =>
-                          report.accountFor && report.typeOfItem === "debt"
-                      )
-                      .map((report, index) => (
-                        <div
-                          key={report.studentId || index}
-                          onClick={() => handleFinancialReportModal(report)}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-evenly",
-                            alignItems: "left",
-                            padding: "12px",
-                            gap: "12px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #eee",
-                            borderRadius: "4px",
-                            transition: "all 0.2s ease",
-                            cursor: "pointer",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = "#fef2f2ff";
-                            e.currentTarget.style.borderColor = "#fecacaff";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = "#fff";
-                            e.currentTarget.style.borderColor = "#eee";
-                          }}
-                        >
-                          <div
-                            style={{
-                              textAlign: "center",
-                              borderRadius: "12px",
-                              color: report.paidFor ? "#2e7d32" : "#c62828",
-                              fontFamily: textGeneralFont(),
-                            }}
-                          >
-                            {report.paidFor ? (
-                              <i
-                                className="fa fa-check-circle-o"
-                                style={{ color: "#2e7d32" }}
-                              />
-                            ) : (
-                              <i
-                                className="fa fa-circle-o"
-                                style={{ color: "#c62828" }}
-                              ></i>
-                            )}
-                          </div>
-
-                          <div style={{ flex: 1 }}>
-                            <div
-                              style={{
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                color: "#374151",
-                                marginBottom: "2px",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              {truncateString(report.description, window.innerWidth < 768 ? 25 : 50)}
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "11px",
-                                color: "#6b7280",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              {report.discount > 0 &&
-                                `Original: R$ ${formatNumber(
-                                  report.amount
-                                )} • Desconto: R$ ${formatNumber(
-                                  report.discount
-                                )}`}
-                            </div>
-                          </div>
-
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "12px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontSize: "16px",
-                                fontWeight: "600",
-                                color: "#dc2626",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              R${" "}
-                              {formatNumber(
-                                Math.abs(report.amount) - (report.discount || 0)
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ITENS NÃO CONTABILIZADOS */}
-              {financialReports.filter((report) => !report.accountFor).length >
-                0 && (
-                <div
-                  style={{
-                    backgroundColor: "#f9fafb",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "8px",
-                    padding: "16px",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      color: "#6b7280",
-                      marginBottom: "12px",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    📋 Itens não contabilizados
-                  </div>
-
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "8px",
-                    }}
-                  >
-                    {financialReports
-                      .filter((report) => !report.accountFor)
-                      .map((report, index) => (
-                        <div
-                          key={report.studentId || index}
-                          onClick={() => handleFinancialReportModal(report)}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            padding: "12px",
-                            backgroundColor: "#fff",
-                            border: "1px solid #e5e7eb",
-                            borderRadius: "6px",
-                            opacity: 0.7,
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.opacity = "1";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.opacity = "0.7";
-                          }}
-                        >
-                          <div style={{ flex: 1 }}>
-                            <div
-                              style={{
-                                fontSize: "14px",
-                                fontWeight: "400",
-                                color: "#6b7280",
-                                marginBottom: "2px",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              {report.description}
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "11px",
-                                color: "#9ca3af",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              Tipo:{" "}
-                              {report.typeOfItem === "fee"
-                                ? "Mensalidade"
-                                : report.typeOfItem}
-                            </div>
-                          </div>
-
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "12px",
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontSize: "16px",
-                                fontWeight: "500",
-                                color: "#9ca3af",
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              R${" "}
-                              {formatNumber(
-                                Math.abs(report.amount) - (report.discount || 0)
-                              )}
-                            </div>
-
-                            <div
-                              style={{
-                                fontSize: "10px",
-                                fontWeight: "500",
-                                textAlign: "center",
-                                padding: "3px 8px",
-                                borderRadius: "12px",
-                                backgroundColor: "#f3f4f6",
-                                color: "#6b7280",
-                                fontFamily: textGeneralFont(),
-                                minWidth: "60px",
-                              }}
-                            >
-                              Ignorado
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            </>
           ) : (
             <div style={{ textAlign: "center", marginTop: "1rem" }}>
               <p
@@ -1832,30 +1855,31 @@ export function FinancialResources({ headers, id }) {
                               e.currentTarget.style.backgroundColor =
                                 student.onHold ? "#f8f8f8" : "#fff";
                             }}
-                            >
-                              <div
+                          >
+                            <div
                               style={{
                                 display: "flex",
                                 alignItems: "center",
                                 gap: "8px",
                                 flex: 1,
                               }}
-                              >
-                            <img
-                              style={{
-                                width: "24px",
-                                height: "24px",
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                                opacity: student.onHold ? 0.5 : 1,
-                                display: window.innerWidth <= 768 ? "none" : "block",
-                              }}
-                              src={
-                                student.picture ||
-                                "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-                              }
-                              alt=""
-                            />
+                            >
+                              <img
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
+                                  opacity: student.onHold ? 0.5 : 1,
+                                  display:
+                                    window.innerWidth <= 768 ? "none" : "block",
+                                }}
+                                src={
+                                  student.picture ||
+                                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                                }
+                                alt=""
+                              />
                               <div
                                 style={{
                                   fontWeight: "500",
@@ -1864,9 +1888,9 @@ export function FinancialResources({ headers, id }) {
                                   fontFamily: textGeneralFont(),
                                 }}
                               >
-                                {student.name} {truncateString(student.lastname, 6)}
+                                {student.name}{" "}
+                                {truncateString(student.lastname, 6)}
                               </div>
-                  
                             </div>
 
                             <div
@@ -2043,7 +2067,7 @@ export function FinancialResources({ headers, id }) {
                 }}
               >
                 <button
-                title="Novo Custo Fixo"
+                  title="Novo Custo Fixo"
                   className="linguee-btn linguee-btn-ghost"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -2439,7 +2463,9 @@ export function FinancialResources({ headers, id }) {
                       fontFamily: textGeneralFont(),
                     }}
                   >
-                    Mês: {transformMonth(selectedCost.month) || transformMonth(currentMonthYear)}
+                    Mês:{" "}
+                    {transformMonth(selectedCost.month) ||
+                      transformMonth(currentMonthYear)}
                   </div>
                 </div>
               )}
@@ -2692,7 +2718,8 @@ export function FinancialResources({ headers, id }) {
                         fontFamily: textGeneralFont(),
                       }}
                     >
-                      IMPORTANTE: Mudanças nesta sessão não afetam dados já contabilizados este mês.
+                      IMPORTANTE: Mudanças nesta sessão não afetam dados já
+                      contabilizados este mês.
                     </div>
                     <div
                       style={{
@@ -2702,11 +2729,11 @@ export function FinancialResources({ headers, id }) {
                         fontFamily: textGeneralFont(),
                       }}
                     >
-                      • As mudanças <strong>só afetarão</strong> os
-                      próximos relatórios financeiros
+                      • As mudanças <strong>só afetarão</strong> os próximos
+                      relatórios financeiros
                       <br />• Para ajustar valores do mês atual, edite
                       diretamente os itens do relatório financeiro de{" "}
-                      { transformMonth(selectedMonth)}
+                      {transformMonth(selectedMonth)}
                     </div>
                   </div>
                 </div>
