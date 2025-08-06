@@ -1005,10 +1005,91 @@ export function FinancialResources({ headers, id }) {
         }}
       >
         <section>
-          {financialReports.length > 0 ? (
+          {!loadingReports ? (
             <>
-              {loadingReports ? (
-                <CircularProgress style={{ color: primaryColor() }} />
+              {financialReports.length <= 0 ? (
+                <div style={{ textAlign: "center", marginTop: "1rem" }}>
+                  <p
+                    style={{
+                      fontSize: "16px",
+                      color: "#6b7280",
+                      fontFamily: textGeneralFont(),
+                      marginBottom: "20px",
+                    }}
+                  >
+                    Nenhum relatório disponível para este mês.
+                  </p>
+                  {isCurrentOrFutureMonth(selectedMonth) && (
+                    <>
+                      {!showGenerateButton && (
+                        <button
+                          className="linguee-btn linguee-btn-outline"
+                          onClick={() =>
+                            setShowGenerateButton(!showGenerateButton)
+                          }
+                        >
+                          Gerar relatório para {transformMonth(selectedMonth)}
+                        </button>
+                      )}
+                      {showGenerateButton && (
+                        <>
+                          <div
+                            style={{
+                              backgroundColor: "#e8f4fd",
+                              border: "1px solid #bee5eb",
+                              borderRadius: "8px",
+                              padding: "16px",
+                              margin: "16px 0",
+                              display: "grid",
+                              gap: "12px",
+                            }}
+                          >
+                            <div style={{ fontSize: "20px", color: "#0c5460" }}>
+                              💡
+                            </div>
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "14px",
+                                  fontWeight: "600",
+                                  color: "#0c5460",
+                                  marginBottom: "8px",
+                                  fontFamily: textGeneralFont(),
+                                }}
+                              >
+                                DICA: Verifique antes de gerar o relatório
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "13px",
+                                  color: "#0c5460",
+                                  lineHeight: "1.5",
+                                  fontFamily: textGeneralFont(),
+                                }}
+                              >
+                                • Confirme se as{" "}
+                                <strong>mensalidades dos alunos</strong> estão
+                                atualizadas
+                                <br />• Verifique se há{" "}
+                                <strong>alunos trancados</strong> que devem ser
+                                removidos
+                                <br />• O relatório será gerado com base nas
+                                informações atuais dos alunos
+                              </div>
+                            </div>
+                          </div>
+
+                          <button
+                            className="linguee-btn linguee-btn-outline"
+                            onClick={() => generateReports(selectedMonth)}
+                          >
+                            Gerar relatório para {selectedMonth}
+                          </button>
+                        </>
+                      )}
+                    </>
+                  )}
+                </div>
               ) : (
                 <div
                   style={{
@@ -1032,6 +1113,7 @@ export function FinancialResources({ headers, id }) {
                         selectedMonth
                       )}`}
                       className="linguee-btn linguee-btn-primary"
+                      disabled={financialReports.length > 0}
                       style={{
                         marginLeft: "8px",
                       }}
@@ -1523,86 +1605,7 @@ export function FinancialResources({ headers, id }) {
               )}
             </>
           ) : (
-            <div style={{ textAlign: "center", marginTop: "1rem" }}>
-              <p
-                style={{
-                  fontSize: "16px",
-                  color: "#6b7280",
-                  fontFamily: textGeneralFont(),
-                  marginBottom: "20px",
-                }}
-              >
-                Nenhum relatório disponível para este mês.
-              </p>
-              {isCurrentOrFutureMonth(selectedMonth) && (
-                <>
-                  {!showGenerateButton && (
-                    <button
-                      className="linguee-btn linguee-btn-outline"
-                      onClick={() => setShowGenerateButton(!showGenerateButton)}
-                    >
-                      Gerar relatório para {selectedMonth}
-                    </button>
-                  )}
-                  {showGenerateButton && (
-                    <>
-                      <div
-                        style={{
-                          backgroundColor: "#e8f4fd",
-                          border: "1px solid #bee5eb",
-                          borderRadius: "8px",
-                          padding: "16px",
-                          margin: "16px 0",
-                          display: "grid",
-                          gap: "12px",
-                        }}
-                      >
-                        <div style={{ fontSize: "20px", color: "#0c5460" }}>
-                          💡
-                        </div>
-                        <div>
-                          <div
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: "600",
-                              color: "#0c5460",
-                              marginBottom: "8px",
-                              fontFamily: textGeneralFont(),
-                            }}
-                          >
-                            DICA: Verifique antes de gerar o relatório
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "13px",
-                              color: "#0c5460",
-                              lineHeight: "1.5",
-                              fontFamily: textGeneralFont(),
-                            }}
-                          >
-                            • Confirme se as{" "}
-                            <strong>mensalidades dos alunos</strong> estão
-                            atualizadas
-                            <br />• Verifique se há{" "}
-                            <strong>alunos trancados</strong> que devem ser
-                            removidos
-                            <br />• O relatório será gerado com base nas
-                            informações atuais dos alunos
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        className="linguee-btn linguee-btn-outline"
-                        onClick={() => generateReports(selectedMonth)}
-                      >
-                        Gerar relatório para {selectedMonth}
-                      </button>
-                    </>
-                  )}
-                </>
-              )}
-            </div>
+            <CircularProgress style={{ color: primaryColor() }} />
           )}
         </section>
 
