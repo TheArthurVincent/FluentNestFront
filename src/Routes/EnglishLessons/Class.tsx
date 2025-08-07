@@ -367,7 +367,6 @@ export default function EnglishClassCourse2({
 
   const generatePPT = async () => {
     try {
-      console.log("🎯 Iniciando geração de PPT...");
       notifyAlert("Gerando PowerPoint...", partnerColor());
 
       const pptx = new PptxGenJS();
@@ -453,7 +452,6 @@ export default function EnglishClassCourse2({
         const sortedElements = theclass.elements.sort(
           (a: any, b: any) => (a.order || 0) - (b.order || 0)
         );
-        console.log(`🔄 Processando ${sortedElements.length} elementos...`);
 
         for (const element of sortedElements) {
           try {
@@ -1203,8 +1201,6 @@ export default function EnglishClassCourse2({
         }
       }
 
-      console.log("🎯 Gerando arquivo PPT...");
-
       const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
         /\s+/g,
         "_"
@@ -1213,7 +1209,6 @@ export default function EnglishClassCourse2({
 
       await pptx.writeFile({ fileName });
 
-      console.log("✅ PPT gerado com sucesso!");
       notifyAlert("PowerPoint gerado com sucesso!", "green");
     } catch (error) {
       console.error("❌ Erro ao gerar PPT:", error);
@@ -1223,7 +1218,6 @@ export default function EnglishClassCourse2({
 
   const generateWord = async () => {
     try {
-      console.log("🎯 Iniciando geração de Word...");
       notifyAlert("Gerando documento Word...", partnerColor());
 
       const children = [];
@@ -1732,8 +1726,6 @@ export default function EnglishClassCourse2({
         ],
       });
 
-      console.log("🎯 Gerando arquivo Word...");
-
       const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
         /\s+/g,
         "_"
@@ -1743,7 +1735,6 @@ export default function EnglishClassCourse2({
       // Gerar e fazer download do arquivo
       const blob = await Packer.toBlob(doc);
       saveAs(blob, fileName);
-      console.log("✅ Word gerado com sucesso!");
       notifyAlert("Documento Word gerado com sucesso!", "green");
     } catch (error) {
       console.error("❌ Erro ao gerar Word:", error);
@@ -1753,7 +1744,6 @@ export default function EnglishClassCourse2({
 
   const generatePDF = async () => {
     try {
-      console.log("🎯 Iniciando geração de PDF...");
       notifyAlert("Gerando documento PDF...", partnerColor());
 
       const pdf = new jsPDF();
@@ -1871,16 +1861,27 @@ export default function EnglishClassCourse2({
                       const safeEnglish = sanitizeText(sentence.english, 200);
                       pdf.setFontSize(11);
                       pdf.setTextColor(0, 0, 0);
-                      const englishLines = splitTextToSize(safeEnglish, maxWidth, 11);
+                      const englishLines = splitTextToSize(
+                        safeEnglish,
+                        maxWidth,
+                        11
+                      );
                       checkPageBreak(englishLines.length * 4);
                       pdf.text(englishLines, margin, yPosition);
                       yPosition += englishLines.length * 4 + 2;
 
                       if (sentence.portuguese) {
-                        const safePortuguese = sanitizeText(sentence.portuguese, 200);
+                        const safePortuguese = sanitizeText(
+                          sentence.portuguese,
+                          200
+                        );
                         pdf.setFontSize(9);
                         pdf.setTextColor(120, 120, 120);
-                        const portugueseLines = splitTextToSize(`   ${safePortuguese}`, maxWidth, 9);
+                        const portugueseLines = splitTextToSize(
+                          `   ${safePortuguese}`,
+                          maxWidth,
+                          9
+                        );
                         checkPageBreak(portugueseLines.length * 3);
                         pdf.text(portugueseLines, margin, yPosition);
                         yPosition += portugueseLines.length * 3 + 6;
@@ -1940,16 +1941,27 @@ export default function EnglishClassCourse2({
                       const safeEnglish = sanitizeText(sentence.english, 200);
                       pdf.setFontSize(10);
                       pdf.setTextColor(0, 0, 0);
-                      const englishLines = splitTextToSize(safeEnglish, maxWidth, 10);
+                      const englishLines = splitTextToSize(
+                        safeEnglish,
+                        maxWidth,
+                        10
+                      );
                       checkPageBreak(englishLines.length * 3);
                       pdf.text(englishLines, margin, yPosition);
                       yPosition += englishLines.length * 3 + 2;
 
                       if (sentence.portuguese) {
-                        const safePortuguese = sanitizeText(sentence.portuguese, 200);
+                        const safePortuguese = sanitizeText(
+                          sentence.portuguese,
+                          200
+                        );
                         pdf.setFontSize(9);
                         pdf.setTextColor(120, 120, 120);
-                        const portugueseLines = splitTextToSize(`   ${safePortuguese}`, maxWidth, 9);
+                        const portugueseLines = splitTextToSize(
+                          `   ${safePortuguese}`,
+                          maxWidth,
+                          9
+                        );
                         checkPageBreak(portugueseLines.length * 3);
                         pdf.text(portugueseLines, margin, yPosition);
                         yPosition += portugueseLines.length * 3 + 4;
@@ -2006,16 +2018,27 @@ export default function EnglishClassCourse2({
                       const safeEnglish = sanitizeText(imageItem.english, 150);
                       pdf.setFontSize(10);
                       pdf.setTextColor(0, 0, 0);
-                      const englishLines = splitTextToSize(`• ${safeEnglish}`, maxWidth, 10);
+                      const englishLines = splitTextToSize(
+                        `• ${safeEnglish}`,
+                        maxWidth,
+                        10
+                      );
                       checkPageBreak(englishLines.length * 3);
                       pdf.text(englishLines, margin, yPosition);
                       yPosition += englishLines.length * 3 + 2;
                     }
                     if (imageItem.portuguese) {
-                      const safePortuguese = sanitizeText(imageItem.portuguese, 150);
+                      const safePortuguese = sanitizeText(
+                        imageItem.portuguese,
+                        150
+                      );
                       pdf.setFontSize(9);
                       pdf.setTextColor(120, 120, 120);
-                      const portugueseLines = splitTextToSize(`   ${safePortuguese}`, maxWidth, 9);
+                      const portugueseLines = splitTextToSize(
+                        `   ${safePortuguese}`,
+                        maxWidth,
+                        9
+                      );
                       checkPageBreak(portugueseLines.length * 3);
                       pdf.text(portugueseLines, margin, yPosition);
                       yPosition += portugueseLines.length * 3 + 4;
@@ -2052,8 +2075,6 @@ export default function EnglishClassCourse2({
         }
       }
 
-      console.log("🎯 Gerando arquivo PDF...");
-
       const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
         /\s+/g,
         "_"
@@ -2063,7 +2084,6 @@ export default function EnglishClassCourse2({
       // Salvar o PDF
       pdf.save(fileName);
 
-      console.log("✅ PDF gerado com sucesso!");
       notifyAlert("PDF da aula gerado com sucesso!", "green");
     } catch (error) {
       console.error("❌ Erro ao gerar PDF:", error);

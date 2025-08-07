@@ -345,7 +345,6 @@ export function FinancialResources({ headers, id }) {
       const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
         headers,
       });
-      console.log(response.data.formattedStudentData);
       setNewName(response.data.formattedStudentData.name);
       setNewLastName(response.data.formattedStudentData.lastname);
       setOnHold(response.data.formattedStudentData.onHold);
@@ -383,8 +382,6 @@ export function FinancialResources({ headers, id }) {
         headers,
         params: { month },
       });
-      console.log("response", response.data.financialReportsOfTheMonth);
-      console.log("month", month);
       if (response.data.financialReportsOfTheMonth?.length === 0) {
         setFinancialReports(
           response.data.financialReportsOfTheMonth?.length > 0
@@ -415,7 +412,6 @@ export function FinancialResources({ headers, id }) {
         }
       );
       setFixedCosts(response.data.fixedCosts);
-      console.log("response", response.data);
     } catch (error) {
       console.log("error", error);
     }
@@ -437,7 +433,6 @@ export function FinancialResources({ headers, id }) {
       notifyAlert("Custo excluído com sucesso!", "green");
       handleCostDetailModal(); // Fechar o modal
       setShowDeleteConfirmation(false); // Reset confirmation
-      console.log("response", response.data);
     } catch (error) {
       notifyAlert("Erro ao excluir custo");
       console.log("error", error);
@@ -468,7 +463,6 @@ export function FinancialResources({ headers, id }) {
       notifyAlert("Custo editado com sucesso!", "green");
       handleCostDetailModal(); // Fechar o modal
       setIsEditingCost(false);
-      console.log("response", response.data);
     } catch (error) {
       notifyAlert("Erro ao editar custo");
       console.log("error", error);
@@ -495,7 +489,6 @@ export function FinancialResources({ headers, id }) {
       );
       setLoadingReports(false);
 
-      console.log("response", response.data);
     } catch (error) {
       setLoadingReports(false);
       console.log("error", error);
@@ -518,7 +511,6 @@ export function FinancialResources({ headers, id }) {
           ? response.data.financialReportsOfTheMonth
           : []
       );
-      console.log("response", response.data);
     } catch (error) {
       console.log("error", error);
     }
@@ -557,8 +549,6 @@ export function FinancialResources({ headers, id }) {
       handleNewItemModal(); // Fechar o modal
       seeReports(currentMonthYear);
       setShowGenerateButton(false);
-
-      console.log("response", response.data);
     } catch (error) {
       notifyAlert("Erro ao criar item financeiro");
       console.log("error", error);
@@ -595,7 +585,6 @@ export function FinancialResources({ headers, id }) {
       seeReports(currentMonthYear);
       handleFinancialReportModal(); // Close modal
       notifyAlert("Relatório financeiro atualizado com sucesso!", "green");
-      console.log("response", response.data);
     } catch (error) {
       console.log("error", error);
       notifyAlert("Erro ao atualizar relatório financeiro");
@@ -625,7 +614,6 @@ export function FinancialResources({ headers, id }) {
           ? response.data.reportsThisMonth
           : financialReports
       );
-      console.log(response.data);
       setIncludeThisMonth(false);
     } catch (error) {
       console.log("error", error);
@@ -686,7 +674,6 @@ export function FinancialResources({ headers, id }) {
         { headers }
       );
       setMyFirstMonth(response.data.myFirstMonth);
-      console.log("response", response.data.myFirstMonth);
       setLoadingFM(false);
     } catch (error) {
       console.log("error", error);
@@ -718,7 +705,6 @@ export function FinancialResources({ headers, id }) {
           headers,
         }
       );
-      console.log("response", response);
       setOnHold(response.data.newValue);
 
       fetchStudents();
@@ -3590,7 +3576,6 @@ export function FinancialResources({ headers, id }) {
                         (parseFloat(editReportDiscount) || 0);
                       if (e.target.value >= finalAmount) {
                         setEditReportPaidFor(true);
-                        console.log(e.target.value);
                       } else if (e.target.value < finalAmount) {
                         setEditReportPaidFor(false);
                       }
@@ -3656,8 +3641,6 @@ export function FinancialResources({ headers, id }) {
                             onChange={(e) => {
                               setEditReportPaidFor(e.target.checked);
                               if (e.target.checked) {
-                                console.log(editCostAmount);
-                                console.log(e.target.checked);
                                 const finalAmount =
                                   Math.abs(editReportAmount) -
                                   (parseFloat(editReportDiscount) || 0);

@@ -33,10 +33,8 @@ function highlightDifferences(
       } else {
         output.push("");
       }
-      console.log(userWord, originalWord, `<span style="color: red;">-</span>`);
     } else if (userWord === originalWord) {
       output.push(`<span style="color: green;">${userWord}</span>`);
-      console.log(`<span style="color: green;">${userWord}</span>`);
     } else {
       output.push(
         `<span style="color: red; font-weight: 400;">${
@@ -202,9 +200,6 @@ const ListeningExercise = ({
     }
   };
   const isCorrectAnswer = (transcription: string | null) => {
-    console.log("SPEECHisCorrectAnswer:", transcription);
-    console.log("CARDisCorrectAnswer:", cards[0]?.front?.text);
-
     const cardTextRaw = cardTextRef.current;
 
     if (!cardTextRaw) {
@@ -359,8 +354,6 @@ const ListeningExercise = ({
         const cleaned = speechToText.trim();
         setTranscript(cleaned);
 
-        console.log("SPEECH:", cleaned);
-        console.log("CARD:", cardTextRef.current);
         setSeeProgress(true);
         setTimeout(() => {
           isCorrectAnswer(cleaned); // 🔧 envia versão limpa
@@ -526,7 +519,6 @@ const ListeningExercise = ({
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
-    console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
 
   return isAPPLE ? (

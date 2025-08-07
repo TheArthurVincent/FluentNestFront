@@ -84,7 +84,6 @@ var AllCards = ({ headers }: HeadersProps) => {
       element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 
     if (isBottom) {
-      console.log("🔁 Fetching more cards...");
       fetchMoreCards();
     }
     setLoading(false);
@@ -220,7 +219,6 @@ var AllCards = ({ headers }: HeadersProps) => {
   useEffect(() => {
     var storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
-    console.log(storedVoice);
   }, [selectedVoice, changeNumber]);
   useEffect(() => {
     var element = scrollRef.current;

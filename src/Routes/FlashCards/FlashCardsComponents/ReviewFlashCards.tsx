@@ -215,7 +215,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       timerCard();
       setLoading(false);
     } catch (error) {
-      console.log(error);
       notifyAlert("Erro ao enviar cards");
       onLoggOut();
     }
@@ -243,7 +242,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       timerDisabled();
     } catch (error) {
       onLoggOut();
-      console.log(error, "ReviewFC");
     }
   };
 

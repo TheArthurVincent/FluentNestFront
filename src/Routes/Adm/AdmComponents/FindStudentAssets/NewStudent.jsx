@@ -85,7 +85,6 @@ export function AllStudents({ headers, id }) {
         { headers }
       );
       resetForm();
-      console.log("here", response.data);
       notifyAlert(
         `Usuário cadastrado com sucesso! ${response.data.message}`,
         "green"

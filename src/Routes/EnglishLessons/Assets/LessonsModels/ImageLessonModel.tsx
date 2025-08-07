@@ -73,7 +73,6 @@ export default function ImageLessonModel({
   };
   const [loa, SetLoa] = useState(false);
   const handleAddImages = async () => {
-    console.log(element.images);
     SetLoa(true);
     try {
       const response = await axios.put(

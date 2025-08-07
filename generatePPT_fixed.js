@@ -1,7 +1,6 @@
 // Função para gerar PPT - versão corrigida
 const generatePPT = async () => {
   try {
-    console.log("🎯 Iniciando geração de PPT...");
     notifyAlert("Gerando PowerPoint...", partnerColor());
 
     const pptx = new PptxGenJS();
@@ -72,15 +71,8 @@ const generatePPT = async () => {
       const sortedElements = theclass.elements.sort(
         (a, b) => (a.order || 0) - (b.order || 0)
       );
-      console.log(`🔄 Processando ${sortedElements.length} elementos...`);
 
       for (const element of sortedElements) {
-        console.log(
-          `📄 Processando elemento: ${element.type} - ${
-            element.subtitle || "Sem título"
-          }`
-        );
-
         // Slide de subtítulo para cada elemento
         if (element.subtitle || element.description) {
           const subtitleSlide = pptx.addSlide();
@@ -120,8 +112,6 @@ const generatePPT = async () => {
       }
     }
 
-    console.log("🎯 Gerando arquivo PPT...");
-
     // Gerar arquivo
     const safeFileName = sanitizeText(classTitle || "aula", 30).replace(
       /\s+/g,
@@ -131,7 +121,6 @@ const generatePPT = async () => {
 
     await pptx.writeFile({ fileName });
 
-    console.log("✅ PPT gerado com sucesso!");
     notifyAlert("PowerPoint gerado com sucesso!", "green");
   } catch (error) {
     console.error("❌ Erro ao gerar PPT:", error);
