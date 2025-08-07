@@ -537,14 +537,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
 
   return (
     <>
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        {UniversalTexts.myStudents}
-      </HOne>
       {/* SEÇÃO DE INFORMAÇÕES DETALHADAS DO ALUNO SELECIONADO */}
       {selectedStudent && (
         <div
@@ -2242,7 +2234,53 @@ export function FindStudent({ uploadStatus, headers, id }) {
           )}
         </div>
       )}
-
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          width: "50%",
+          margin: "auto",
+          marginTop: "18px",
+        }}
+      >
+        <HOne
+          style={{
+            fontFamily: textTitleFont(),
+            color: partnerColor(),
+          }}
+        >
+          {UniversalTexts.myStudents}
+        </HOne>
+        <input
+          style={{
+            width: "100%",
+            padding: "12px 16px",
+            margin: "12px",
+            border: "1px solid #e8eaed",
+            borderRadius: "8px",
+            fontSize: "14px",
+            outline: "none",
+            transition: "all 0.2s ease",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+          }}
+          type="text"
+          placeholder="Pesquisar aluno..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={(e) => {
+            e.target.style.borderColor = partnerColor();
+            e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+            ("");
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = "#e8eaed";
+            e.target.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+          }}
+        />
+      </div>
       {!loading ? (
         <div
           style={{
@@ -2264,35 +2302,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               justifyContent: "center",
               alignItems: "center",
             }}
-          >
-            <input
-              style={{
-                width: "100%",
-                padding: "12px 16px",
-                margin: "12px",
-                border: "1px solid #e8eaed",
-                borderRadius: "8px",
-                fontSize: "14px",
-                outline: "none",
-                transition: "all 0.2s ease",
-                backgroundColor: "#ffffff",
-                boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-              }}
-              type="text"
-              placeholder="Pesquisar aluno..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onFocus={(e) => {
-                e.target.style.borderColor = partnerColor();
-                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                ("");
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e8eaed";
-                e.target.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
-              }}
-            />
-          </div>
+          ></div>
           <TableContainer
             style={{
               maxHeight: "30rem",
