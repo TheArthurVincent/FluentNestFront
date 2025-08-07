@@ -1349,20 +1349,26 @@ export function FinancialResources({ headers, id }) {
                                   }}
                                 >
                                   {report.paidFor &&
-                                  report.paidSoFar == (Math.abs(report.amount) - (report.discount || 0)) ? (
+                                  report.paidSoFar ==
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0) ? (
                                     <i
                                       className="fa fa-check-circle-o"
                                       style={{ color: "#2e7d32" }}
                                     />
                                   ) : report.paidSoFar &&
                                     report.paidSoFar > 0 &&
-                                    report.paidSoFar < (Math.abs(report.amount) - (report.discount || 0)) ? (
+                                    report.paidSoFar <
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <i
                                       className="fa fa-adjust"
                                       style={{ color: "#f59e0b" }}
                                     />
                                   ) : report.paidSoFar &&
-                                    report.paidSoFar > (Math.abs(report.amount) - (report.discount || 0)) ? (
+                                    report.paidSoFar >
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <div
                                       style={{
                                         display: "grid",
@@ -1663,20 +1669,26 @@ export function FinancialResources({ headers, id }) {
                                   }}
                                 >
                                   {report.paidFor &&
-                                  report.paidSoFar == (Math.abs(report.amount) - (report.discount || 0)) ? (
+                                  report.paidSoFar ==
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0) ? (
                                     <i
                                       className="fa fa-check-circle-o"
                                       style={{ color: "#2e7d32" }}
                                     />
                                   ) : report.paidSoFar &&
                                     report.paidSoFar > 0 &&
-                                    report.paidSoFar < (Math.abs(report.amount) - (report.discount || 0)) ? (
+                                    report.paidSoFar <
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <i
                                       className="fa fa-adjust"
                                       style={{ color: "#f59e0b" }}
                                     />
                                   ) : report.paidSoFar &&
-                                    report.paidSoFar > (Math.abs(report.amount) - (report.discount || 0)) ? (
+                                    report.paidSoFar >
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <div
                                       style={{
                                         display: "grid",
@@ -3365,7 +3377,9 @@ export function FinancialResources({ headers, id }) {
                       onChange={(e) => {
                         setEditReportAmount(e.target.value);
                         if (editReportPaidFor) {
-                          const finalAmount = Math.abs(e.target.value) - (parseFloat(editReportDiscount) || 0);
+                          const finalAmount =
+                            Math.abs(e.target.value) -
+                            (parseFloat(editReportDiscount) || 0);
                           setEditReportPaidSoFar(finalAmount);
                         }
                       }}
@@ -3385,7 +3399,9 @@ export function FinancialResources({ headers, id }) {
                         onChange={(e) => {
                           setEditReportDiscount(e.target.value);
                           if (editReportPaidFor) {
-                            const finalAmount = Math.abs(editReportAmount) - (parseFloat(e.target.value) || 0);
+                            const finalAmount =
+                              Math.abs(editReportAmount) -
+                              (parseFloat(e.target.value) || 0);
                             setEditReportPaidSoFar(finalAmount);
                           }
                         }}
@@ -3404,7 +3420,9 @@ export function FinancialResources({ headers, id }) {
                     value={editReportPaidSoFar}
                     onChange={(e) => {
                       setEditReportPaidSoFar(e.target.value);
-                      const finalAmount = Math.abs(editReportAmount) - (parseFloat(editReportDiscount) || 0);
+                      const finalAmount =
+                        Math.abs(editReportAmount) -
+                        (parseFloat(editReportDiscount) || 0);
                       if (e.target.value >= finalAmount) {
                         setEditReportPaidFor(true);
                         console.log(e.target.value);
@@ -3475,7 +3493,9 @@ export function FinancialResources({ headers, id }) {
                               if (e.target.checked) {
                                 console.log(editCostAmount);
                                 console.log(e.target.checked);
-                                const finalAmount = Math.abs(editReportAmount) - (parseFloat(editReportDiscount) || 0);
+                                const finalAmount =
+                                  Math.abs(editReportAmount) -
+                                  (parseFloat(editReportDiscount) || 0);
                                 setEditReportPaidSoFar(finalAmount);
                               }
                             }}
