@@ -1303,6 +1303,7 @@ export function FinancialResources({ headers, id }) {
                                 report.accountFor &&
                                 report.typeOfItem !== "debt"
                             )
+                            .sort((a, b) => a.description.localeCompare(b.description))
                             .map((report, index) => (
                               <div
                                 key={report.studentId || index}
@@ -1453,6 +1454,7 @@ export function FinancialResources({ headers, id }) {
                                 !report.accountFor &&
                                 report.typeOfItem !== "debt"
                             )
+                            .sort((a, b) => a.description.localeCompare(b.description))
                             .map((report, index) => (
                               <div
                                 key={`unaccounted-${report.studentId || index}`}
@@ -1611,6 +1613,7 @@ export function FinancialResources({ headers, id }) {
                                 report.accountFor &&
                                 report.typeOfItem === "debt"
                             )
+                            .sort((a, b) => a.description.localeCompare(b.description))
                             .map((report, index) => (
                               <div
                                 key={report.studentId || index}
@@ -1760,6 +1763,7 @@ export function FinancialResources({ headers, id }) {
                                 !report.accountFor &&
                                 report.typeOfItem === "debt"
                             )
+                            .sort((a, b) => a.description.localeCompare(b.description))
                             .map((report, index) => (
                               <div
                                 key={`unaccounted-debt-${
@@ -2110,7 +2114,9 @@ export function FinancialResources({ headers, id }) {
                         backgroundColor: "#fff",
                       }}
                     >
-                      {getStudentsWithFees().map((student, index) => (
+                      {getStudentsWithFees()
+                        .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((student, index) => (
                         <div
                           key={student.id}
                           onClick={(e) => {
@@ -2373,7 +2379,9 @@ export function FinancialResources({ headers, id }) {
 
             {fixedCosts.length > 0 ? (
               <div>
-                {fixedCosts.map((cost, index) => (
+                {fixedCosts
+                  .sort((a, b) => a.description.localeCompare(b.description))
+                  .map((cost, index) => (
                   <div
                     key={cost.id || index}
                     onClick={(e) => {
