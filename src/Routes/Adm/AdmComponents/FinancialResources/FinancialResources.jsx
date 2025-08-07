@@ -1303,7 +1303,9 @@ export function FinancialResources({ headers, id }) {
                                 report.accountFor &&
                                 report.typeOfItem !== "debt"
                             )
-                            .sort((a, b) => a.description.localeCompare(b.description))
+                            .sort((a, b) =>
+                              a.description.localeCompare(b.description)
+                            )
                             .map((report, index) => (
                               <div
                                 key={report.studentId || index}
@@ -1454,7 +1456,9 @@ export function FinancialResources({ headers, id }) {
                                 !report.accountFor &&
                                 report.typeOfItem !== "debt"
                             )
-                            .sort((a, b) => a.description.localeCompare(b.description))
+                            .sort((a, b) =>
+                              a.description.localeCompare(b.description)
+                            )
                             .map((report, index) => (
                               <div
                                 key={`unaccounted-${report.studentId || index}`}
@@ -1613,7 +1617,9 @@ export function FinancialResources({ headers, id }) {
                                 report.accountFor &&
                                 report.typeOfItem === "debt"
                             )
-                            .sort((a, b) => a.description.localeCompare(b.description))
+                            .sort((a, b) =>
+                              a.description.localeCompare(b.description)
+                            )
                             .map((report, index) => (
                               <div
                                 key={report.studentId || index}
@@ -1763,7 +1769,9 @@ export function FinancialResources({ headers, id }) {
                                 !report.accountFor &&
                                 report.typeOfItem === "debt"
                             )
-                            .sort((a, b) => a.description.localeCompare(b.description))
+                            .sort((a, b) =>
+                              a.description.localeCompare(b.description)
+                            )
                             .map((report, index) => (
                               <div
                                 key={`unaccounted-debt-${
@@ -2117,93 +2125,96 @@ export function FinancialResources({ headers, id }) {
                       {getStudentsWithFees()
                         .sort((a, b) => a.name.localeCompare(b.name))
                         .map((student, index) => (
-                        <div
-                          key={student.id}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            seeEdition(student.id);
-                          }}
-                          style={{
-                            display: "flex",
-                            gap: "8px",
-                            justifyContent: "space-between",
-                            padding: "8px",
-                            borderBottom: "1px solid #eee",
-                            alignItems: "center",
-                            cursor: "pointer",
-                            backgroundColor: student.onHold
-                              ? "#f8f8f8"
-                              : "#fff",
-                            transition: "background-color 0.2s",
-                          }}
-                          onMouseEnter={(e) => {
-                            if (!student.onHold) {
-                              e.currentTarget.style.backgroundColor = "#f5f5f5";
-                            }
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              student.onHold ? "#f8f8f8" : "#fff";
-                          }}
-                        >
                           <div
+                            key={student.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              seeEdition(student.id);
+                            }}
                             style={{
                               display: "flex",
-                              alignItems: "center",
                               gap: "8px",
-                              flex: 1,
+                              justifyContent: "space-between",
+                              padding: "8px",
+                              borderBottom: "1px solid #eee",
+                              alignItems: "center",
+                              cursor: "pointer",
+                              backgroundColor: student.onHold
+                                ? "#f8f8f8"
+                                : "#fff",
+                              transition: "background-color 0.2s",
                             }}
-                          >
-                            <img
-                              style={{
-                                width: "24px",
-                                height: "24px",
-                                borderRadius: "50%",
-                                objectFit: "cover",
-                                opacity: student.onHold ? 0.5 : 1,
-                                display: isMobile ? "none" : "block",
-                              }}
-                              src={
-                                student.picture ||
-                                "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                            onMouseEnter={(e) => {
+                              if (!student.onHold) {
+                                e.currentTarget.style.backgroundColor =
+                                  "#f5f5f5";
                               }
-                              alt=""
-                            />
-                            <div
-                              style={{
-                                fontWeight: "500",
-                                fontSize: "12px",
-                                opacity: student.onHold ? 0.6 : 1,
-                                fontFamily: textGeneralFont(),
-                              }}
-                            >
-                              {student.name}{" "}
-                              {truncateString(student.lastname, 6)}
-                            </div>
-                          </div>
-
-                          <div
-                            style={{
-                              position: "relative",
-                              display: "inline-block",
                             }}
-                            title={student.onHold ? "Matrícula trancada" : ""}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.backgroundColor =
+                                student.onHold ? "#f8f8f8" : "#fff";
+                            }}
                           >
                             <div
                               style={{
-                                fontSize: "13px",
-                                fontWeight: "500",
-                                color: student.onHold ? "#999" : partnerColor(),
-                                textDecoration: student.onHold
-                                  ? "line-through"
-                                  : "none",
-                                fontFamily: textGeneralFont(),
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                                flex: 1,
                               }}
                             >
-                              R$ {formatNumber(student.fee)}
+                              <img
+                                style={{
+                                  width: "24px",
+                                  height: "24px",
+                                  borderRadius: "50%",
+                                  objectFit: "cover",
+                                  opacity: student.onHold ? 0.5 : 1,
+                                  display: isMobile ? "none" : "block",
+                                }}
+                                src={
+                                  student.picture ||
+                                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                                }
+                                alt=""
+                              />
+                              <div
+                                style={{
+                                  fontWeight: "500",
+                                  fontSize: "12px",
+                                  opacity: student.onHold ? 0.6 : 1,
+                                  fontFamily: textGeneralFont(),
+                                }}
+                              >
+                                {student.name}{" "}
+                                {truncateString(student.lastname, 6)}
+                              </div>
                             </div>
-                          </div>
-                          {/* <div
+
+                            <div
+                              style={{
+                                position: "relative",
+                                display: "inline-block",
+                              }}
+                              title={student.onHold ? "Matrícula trancada" : ""}
+                            >
+                              <div
+                                style={{
+                                  fontSize: "13px",
+                                  fontWeight: "500",
+                                  color: student.onHold
+                                    ? "#999"
+                                    : partnerColor(),
+                                  textDecoration: student.onHold
+                                    ? "line-through"
+                                    : "none",
+                                  fontFamily: textGeneralFont(),
+                                }}
+                              >
+                                R$ {formatNumber(student.fee)}
+                              </div>
+                            </div>
+                            {/* <div
                               style={{
                                 fontSize: "9px",
                                 fontWeight: "500",
@@ -2219,8 +2230,8 @@ export function FinancialResources({ headers, id }) {
                             >
                               {student.onHold ? "Trancado" : "Ativo"}
                             </div> */}
-                        </div>
-                      ))}
+                          </div>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -2382,54 +2393,54 @@ export function FinancialResources({ headers, id }) {
                 {fixedCosts
                   .sort((a, b) => a.description.localeCompare(b.description))
                   .map((cost, index) => (
-                  <div
-                    key={cost.id || index}
-                    onClick={(e) => {
-                      // e.stopPropagation();
-                      handleCostDetailModal(cost);
-                    }}
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      padding: "8px 0",
-                      borderBottom:
-                        index < fixedCosts.length - 1
-                          ? "1px solid #f3f4f6"
-                          : "none",
-                      transition: "all 0.15s ease",
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#f9fafb";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "transparent";
-                    }}
-                  >
                     <div
+                      key={cost.id || index}
+                      onClick={(e) => {
+                        // e.stopPropagation();
+                        handleCostDetailModal(cost);
+                      }}
                       style={{
-                        fontSize: "13px",
-                        fontWeight: "400",
-                        color: "#4b5563",
-                        lineHeight: "1.4",
-                        fontFamily: textGeneralFont(),
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        padding: "8px 0",
+                        borderBottom:
+                          index < fixedCosts.length - 1
+                            ? "1px solid #f3f4f6"
+                            : "none",
+                        transition: "all 0.15s ease",
+                        cursor: "pointer",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f9fafb";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
                       }}
                     >
-                      {cost.description}
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: "400",
+                          color: "#4b5563",
+                          lineHeight: "1.4",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        {cost.description}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: "500",
+                          color: "#ef4444",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        R$ {formatNumber(cost.amount)}
+                      </div>
                     </div>
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        fontWeight: "500",
-                        color: "#ef4444",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      R$ {formatNumber(cost.amount)}
-                    </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             ) : (
               <div
