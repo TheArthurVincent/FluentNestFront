@@ -106,6 +106,10 @@ export function FinancialResources({ headers, id }) {
   const [editReportDescription, setEditReportDescription] = useState("");
   const [editReportAmount, setEditReportAmount] = useState("");
   const [editReportDiscount, setEditReportDiscount] = useState("");
+  const [editReportDiscountType, setEditReportDiscountType] =
+    useState("absolute"); // "absolute" ou "percentage"
+  const [editReportDiscountPercentage, setEditReportDiscountPercentage] =
+    useState("");
   const [editReportPaidSoFar, setEditReportPaidSoFar] = useState("");
   const [editReportAccountFor, setEditReportAccountFor] = useState(true);
   const [editReportPaidFor, setEditReportPaidFor] = useState(false);
@@ -117,6 +121,9 @@ export function FinancialResources({ headers, id }) {
   const [newItemDescription, setNewItemDescription] = useState("");
   const [newItemAmount, setNewItemAmount] = useState("");
   const [newItemDiscount, setNewItemDiscount] = useState("");
+  const [newItemDiscountType, setNewItemDiscountType] = useState("absolute"); // "absolute" ou "percentage"
+  const [newItemDiscountPercentage, setNewItemDiscountPercentage] =
+    useState("");
   const [newItemTypeOfItem, setNewItemTypeOfItem] = useState("others");
   const [newItemAccountFor, setNewItemAccountFor] = useState(true);
   const [newItemPaidFor, setNewItemPaidFor] = useState(false);
@@ -256,6 +263,8 @@ export function FinancialResources({ headers, id }) {
       setEditReportDescription(report.description);
       setEditReportAmount(report.amount.toString());
       setEditReportDiscount(report.discount.toString());
+      setEditReportDiscountType("absolute"); // Sempre começar com valor absoluto
+      setEditReportDiscountPercentage(""); // Reset porcentagem
       setEditReportPaidSoFar(report.paidSoFar ? report.paidSoFar : 0);
       setEditReportAccountFor(report.accountFor);
       setEditReportPaidFor(report.paidFor);
@@ -267,6 +276,8 @@ export function FinancialResources({ headers, id }) {
       setEditReportAmount("");
       setEditReportPaidSoFar(0);
       setEditReportDiscount("");
+      setEditReportDiscountType("absolute"); // Reset tipo de desconto
+      setEditReportDiscountPercentage(""); // Reset porcentagem
       setEditReportAccountFor(true);
       setEditReportPaidFor(false);
       setEditReportTypeOfItem("");
@@ -282,6 +293,8 @@ export function FinancialResources({ headers, id }) {
       setNewItemDescription("");
       setNewItemAmount("");
       setNewItemDiscount("");
+      setNewItemDiscountType("absolute"); // Reset tipo de desconto
+      setNewItemDiscountPercentage(""); // Reset porcentagem
       setNewItemTypeOfItem("others");
       setNewItemAccountFor(true);
       setNewItemPaidFor(false);
@@ -1349,20 +1362,26 @@ export function FinancialResources({ headers, id }) {
                                   }}
                                 >
                                   {report.paidFor &&
-                                  report.paidSoFar == report.amount ? (
+                                  report.paidSoFar ==
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0) ? (
                                     <i
                                       className="fa fa-check-circle-o"
                                       style={{ color: "#2e7d32" }}
                                     />
                                   ) : report.paidSoFar &&
                                     report.paidSoFar > 0 &&
-                                    report.paidSoFar < report.amount ? (
+                                    report.paidSoFar <
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <i
                                       className="fa fa-adjust"
                                       style={{ color: "#f59e0b" }}
                                     />
                                   ) : report.paidSoFar &&
-                                    report.paidSoFar > report.amount ? (
+                                    report.paidSoFar >
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <div
                                       style={{
                                         display: "grid",
@@ -1663,20 +1682,26 @@ export function FinancialResources({ headers, id }) {
                                   }}
                                 >
                                   {report.paidFor &&
-                                  report.paidSoFar == report.amount ? (
+                                  report.paidSoFar ==
+                                    Math.abs(report.amount) -
+                                      (report.discount || 0) ? (
                                     <i
                                       className="fa fa-check-circle-o"
                                       style={{ color: "#2e7d32" }}
                                     />
                                   ) : report.paidSoFar &&
                                     report.paidSoFar > 0 &&
-                                    report.paidSoFar < report.amount ? (
+                                    report.paidSoFar <
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <i
                                       className="fa fa-adjust"
                                       style={{ color: "#f59e0b" }}
                                     />
                                   ) : report.paidSoFar &&
-                                    report.paidSoFar > report.amount ? (
+                                    report.paidSoFar >
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0) ? (
                                     <div
                                       style={{
                                         display: "grid",
@@ -3365,7 +3390,10 @@ export function FinancialResources({ headers, id }) {
                       onChange={(e) => {
                         setEditReportAmount(e.target.value);
                         if (editReportPaidFor) {
-                          setEditReportPaidSoFar(e.target.value);
+                          const finalAmount =
+                            Math.abs(e.target.value) -
+                            (parseFloat(editReportDiscount) || 0);
+                          setEditReportPaidSoFar(finalAmount);
                         }
                       }}
                       placeholder="0,00"
@@ -3376,19 +3404,180 @@ export function FinancialResources({ headers, id }) {
 
                   {editReportTypeOfItem !== "debt" && (
                     <div className="linguee-form-group">
-                      <label className="linguee-label">Desconto (R$)</label>
+                      <label className="linguee-label">Desconto</label>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "10px",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <label
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            value="absolute"
+                            checked={editReportDiscountType === "absolute"}
+                            onChange={() => {
+                              setEditReportDiscountType("absolute");
+                              // Manter o valor atual do desconto
+                            }}
+                          />
+                          <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                            R$
+                          </span>
+                        </label>
+                        <label
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <input
+                            type="radio"
+                            value="percentage"
+                            checked={editReportDiscountType === "percentage"}
+                            onChange={() => {
+                              setEditReportDiscountType("percentage");
+                              // Calcular a porcentagem equivalente ao valor absoluto atual
+                              const currentDiscount =
+                                parseFloat(editReportDiscount) || 0;
+                              const amount = parseFloat(editReportAmount) || 0;
+                              if (amount > 0) {
+                                const percentage =
+                                  (currentDiscount / amount) * 100;
+                                setEditReportDiscountPercentage(
+                                  percentage.toFixed(2)
+                                );
+                              }
+                            }}
+                          />
+                          <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                            %
+                          </span>
+                        </label>
+                      </div>
                       <input
                         type="number"
                         className="linguee-input linguee-input-number"
-                        value={editReportDiscount}
-                        onChange={(e) => setEditReportDiscount(e.target.value)}
-                        placeholder="0,00"
+                        value={
+                          editReportDiscountType === "absolute"
+                            ? editReportDiscount
+                            : editReportDiscountPercentage
+                        }
+                        onChange={(e) => {
+                          if (editReportDiscountType === "absolute") {
+                            setEditReportDiscount(e.target.value);
+                          } else {
+                            setEditReportDiscountPercentage(e.target.value);
+                            // Calcular desconto absoluto baseado na porcentagem
+                            const percentage = parseFloat(e.target.value) || 0;
+                            const amount = parseFloat(editReportAmount) || 0;
+                            const absoluteDiscount =
+                              (amount * percentage) / 100;
+                            setEditReportDiscount(absoluteDiscount.toString());
+                          }
+
+                          // Atualizar paidSoFar se paidFor estiver marcado
+                          if (editReportPaidFor) {
+                            const finalAmount =
+                              Math.abs(editReportAmount) -
+                              (parseFloat(editReportDiscount) || 0);
+                            setEditReportPaidSoFar(finalAmount);
+                          }
+                        }}
+                        placeholder={
+                          editReportDiscountType === "absolute"
+                            ? "0,00"
+                            : "0,00"
+                        }
                         min="0"
-                        step="0.01"
+                        step={
+                          editReportDiscountType === "absolute"
+                            ? "0.01"
+                            : "0.01"
+                        }
+                        max={
+                          editReportDiscountType === "percentage"
+                            ? "100"
+                            : undefined
+                        }
                       />
                     </div>
                   )}
                 </div>
+
+                {/* DIV DO CÁLCULO DO VALOR FINAL */}
+                {editReportAmount && (
+                  <div
+                    style={{
+                      backgroundColor: "#f8f9fa",
+                      border: "1px solid #e9ecef",
+                      borderRadius: "8px",
+                      padding: "16px",
+                      margin: "16px 0",
+                      fontFamily: "monospace",
+                      fontSize: "16px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        marginBottom: "8px",
+                        color: "#495057",
+                      }}
+                    >
+                      💰 Cálculo do Valor Final:
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "4px",
+                      }}
+                    >
+                      <div style={{ color: "#28a745" }}>
+                        Valor Total: R${" "}
+                        {Math.abs(parseFloat(editReportAmount) || 0)
+                          .toFixed(2)
+                          .replace(".", ",")}
+                      </div>
+                      <div style={{ color: "#dc3545" }}>
+                        Desconto: R${" "}
+                        {(parseFloat(editReportDiscount) || 0)
+                          .toFixed(2)
+                          .replace(".", ",")}
+                        {editReportDiscountType === "percentage" &&
+                          editReportDiscountPercentage &&
+                          ` (${editReportDiscountPercentage}%)`}
+                      </div>
+                      <hr style={{ margin: "8px 0", borderColor: "#dee2e6" }} />
+                      <div
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "18px",
+                          color: "#007bff",
+                        }}
+                      >
+                        Valor Líquido: R${" "}
+                        {(
+                          Math.abs(parseFloat(editReportAmount) || 0) -
+                          (parseFloat(editReportDiscount) || 0)
+                        )
+                          .toFixed(2)
+                          .replace(".", ",")}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 <div className="linguee-form-group">
                   <label className="linguee-label">Pago até aqui</label>
                   <input
@@ -3397,10 +3586,13 @@ export function FinancialResources({ headers, id }) {
                     value={editReportPaidSoFar}
                     onChange={(e) => {
                       setEditReportPaidSoFar(e.target.value);
-                      if (e.target.value >= editReportAmount) {
+                      const finalAmount =
+                        Math.abs(editReportAmount) -
+                        (parseFloat(editReportDiscount) || 0);
+                      if (e.target.value >= finalAmount) {
                         setEditReportPaidFor(true);
                         console.log(e.target.value);
-                      } else if (e.target.value < editReportAmount) {
+                      } else if (e.target.value < finalAmount) {
                         setEditReportPaidFor(false);
                       }
                     }}
@@ -3467,9 +3659,10 @@ export function FinancialResources({ headers, id }) {
                               if (e.target.checked) {
                                 console.log(editCostAmount);
                                 console.log(e.target.checked);
-                                setEditReportPaidSoFar(
-                                  Math.abs(editReportAmount)
-                                );
+                                const finalAmount =
+                                  Math.abs(editReportAmount) -
+                                  (parseFloat(editReportDiscount) || 0);
+                                setEditReportPaidSoFar(finalAmount);
                               }
                             }}
                           />
@@ -3606,19 +3799,172 @@ export function FinancialResources({ headers, id }) {
 
               {newItemTypeOfItem !== "debt" && (
                 <div className="linguee-form-group">
-                  <label className="linguee-label">Desconto (R$)</label>
+                  <label className="linguee-label">Desconto</label>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      marginBottom: "8px",
+                    }}
+                  >
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value="absolute"
+                        checked={newItemDiscountType === "absolute"}
+                        onChange={() => {
+                          setNewItemDiscountType("absolute");
+                          // Manter o valor atual do desconto
+                        }}
+                      />
+                      <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                        R$
+                      </span>
+                    </label>
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        value="percentage"
+                        checked={newItemDiscountType === "percentage"}
+                        onChange={() => {
+                          setNewItemDiscountType("percentage");
+                          // Calcular a porcentagem equivalente ao valor absoluto atual
+                          const currentDiscount =
+                            parseFloat(newItemDiscount) || 0;
+                          const amount = parseFloat(newItemAmount) || 0;
+                          if (amount > 0) {
+                            const percentage = (currentDiscount / amount) * 100;
+                            setNewItemDiscountPercentage(percentage.toFixed(2));
+                          }
+                        }}
+                      />
+                      <span style={{ marginLeft: "5px", fontSize: "14px" }}>
+                        %
+                      </span>
+                    </label>
+                  </div>
                   <input
                     type="number"
                     className="linguee-input linguee-input-number"
-                    value={newItemTypeOfItem == "debt" ? 0 : newItemDiscount}
-                    onChange={(e) => setNewItemDiscount(e.target.value)}
-                    placeholder="0,00"
+                    value={
+                      newItemDiscountType === "absolute"
+                        ? newItemDiscount
+                        : newItemDiscountPercentage
+                    }
+                    onChange={(e) => {
+                      if (newItemDiscountType === "absolute") {
+                        setNewItemDiscount(e.target.value);
+                      } else {
+                        setNewItemDiscountPercentage(e.target.value);
+                        // Calcular desconto absoluto baseado na porcentagem
+                        const percentage = parseFloat(e.target.value) || 0;
+                        const amount = parseFloat(newItemAmount) || 0;
+                        const absoluteDiscount = (amount * percentage) / 100;
+                        setNewItemDiscount(absoluteDiscount.toString());
+                      }
+                    }}
+                    placeholder={
+                      newItemDiscountType === "absolute" ? "0,00" : "0,00"
+                    }
                     min="0"
-                    step="0.01"
+                    step={newItemDiscountType === "absolute" ? "0.01" : "0.01"}
+                    max={
+                      newItemDiscountType === "percentage" ? "100" : undefined
+                    }
                   />
                 </div>
               )}
             </div>
+
+            {/* DIV DO CÁLCULO DO VALOR FINAL - NOVO ITEM */}
+            {newItemAmount && (
+              <div
+                style={{
+                  backgroundColor: "#f8f9fa",
+                  border: "1px solid #e9ecef",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  margin: "16px 0",
+                  fontFamily: "monospace",
+                  fontSize: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    fontWeight: "bold",
+                    marginBottom: "8px",
+                    color: "#495057",
+                  }}
+                >
+                  💰 Cálculo do Valor Final:
+                </div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "4px",
+                  }}
+                >
+                  <div
+                    style={{
+                      color:
+                        newItemTypeOfItem === "debt" ? "#dc3545" : "#28a745",
+                    }}
+                  >
+                    Valor Total: R${" "}
+                    {Math.abs(parseFloat(newItemAmount) || 0)
+                      .toFixed(2)
+                      .replace(".", ",")}
+                  </div>
+                  {newItemTypeOfItem !== "debt" && (
+                    <div style={{ color: "#dc3545" }}>
+                      Desconto: R${" "}
+                      {(parseFloat(newItemDiscount) || 0)
+                        .toFixed(2)
+                        .replace(".", ",")}
+                      {newItemDiscountType === "percentage" &&
+                        newItemDiscountPercentage &&
+                        ` (${newItemDiscountPercentage}%)`}
+                    </div>
+                  )}
+                  <hr style={{ margin: "8px 0", borderColor: "#dee2e6" }} />
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                      color:
+                        newItemTypeOfItem === "debt" ? "#dc3545" : "#007bff",
+                    }}
+                  >
+                    Valor{" "}
+                    {newItemTypeOfItem === "debt" ? "de Saída" : "Líquido"}: R${" "}
+                    {newItemTypeOfItem === "debt"
+                      ? Math.abs(parseFloat(newItemAmount) || 0)
+                          .toFixed(2)
+                          .replace(".", ",")
+                      : (
+                          Math.abs(parseFloat(newItemAmount) || 0) -
+                          (parseFloat(newItemDiscount) || 0)
+                        )
+                          .toFixed(2)
+                          .replace(".", ",")}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="linguee-form-group">
               <label className="linguee-label">Tipo de Item</label>
