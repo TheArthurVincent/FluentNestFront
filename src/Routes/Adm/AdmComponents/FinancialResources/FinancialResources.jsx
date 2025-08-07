@@ -150,8 +150,21 @@ export function FinancialResources({ headers, id }) {
   const [selectedMonth, setSelectedMonth] = useState(currentMonthYear);
   const [financialReports, setFinancialReports] = useState([]);
   const [loadingReports, setLoadingReports] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 700);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 700);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    // Cleanup do event listener
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   // ===== CONSTANTS =====
-  const isMobile = window.innerWidth <= 700;
   const cellTable = {
     whiteSpace: "nowrap",
   };
@@ -1047,11 +1060,9 @@ export function FinancialResources({ headers, id }) {
           </option>
         ))}
       </select>
-
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr":"1fr 1fr",
           justifyContent: "top",
           gap: "1rem",
           margin: "16px auto",
@@ -1241,463 +1252,629 @@ export function FinancialResources({ headers, id }) {
                       </div>
                     ))}
                   </div>
-
-                  {/* ENTRADAS */}
-                  {financialReports.filter(
-                    (report) =>
-                      report.accountFor && report.typeOfItem !== "debt"
-                  ).length > 0 && (
-                    <div
-                      style={{
-                        backgroundColor: "#fff",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "6px",
-                        padding: "12px",
-                        marginBottom: "20px",
-                        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+                      gap: "16px",
+                    }}
+                  >
+                    {/* ENTRADAS */}
+                    {(financialReports.filter(
+                      (report) =>
+                        report.accountFor && report.typeOfItem !== "debt"
+                    ).length > 0 ||
+                      financialReports.filter(
+                        (report) =>
+                          !report.accountFor && report.typeOfItem !== "debt"
+                      ).length > 0) && (
                       <div
                         style={{
-                          fontSize: "16px",
-                          fontWeight: "600",
-                          color: "#374151",
-                          marginBottom: "16px",
-                          fontFamily: textGeneralFont(),
+                          backgroundColor: "#fff",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "6px",
+                          padding: "12px",
+                          marginBottom: "20px",
+                          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
                         }}
                       >
-                        Entradas
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "8px",
-                        }}
-                      >
-                        {financialReports
-                          .filter(
-                            (report) =>
-                              report.accountFor && report.typeOfItem !== "debt"
-                          )
-                          .map((report, index) => (
-                            <div
-                              key={report.studentId || index}
-                              onClick={() => handleFinancialReportModal(report)}
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-evenly",
-                                alignItems: "left",
-                                padding: "12px",
-                                gap: "12px",
-                                backgroundColor: "#fff",
-                                border: "1px solid #eee",
-                                borderRadius: "4px",
-                                transition: "all 0.2s ease",
-                                cursor: "pointer",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                  "#e7f4ebff";
-                                e.currentTarget.style.borderColor = "#daf9e4ff";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "#fff";
-                                e.currentTarget.style.borderColor = "#eee";
-                              }}
-                            >
+                        <div
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            color: "#374151",
+                            marginBottom: "16px",
+                            fontFamily: textGeneralFont(),
+                          }}
+                        >
+                          Entradas
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "8px",
+                          }}
+                        >
+                          {/* Entradas contabilizadas */}
+                          {financialReports
+                            .filter(
+                              (report) =>
+                                report.accountFor &&
+                                report.typeOfItem !== "debt"
+                            )
+                            .map((report, index) => (
                               <div
+                                key={report.studentId || index}
+                                onClick={() =>
+                                  handleFinancialReportModal(report)
+                                }
                                 style={{
-                                  textAlign: "center",
-                                  borderRadius: "12px",
-                                  color: report.paidFor
-                                    ? "#2e7d32"
-                                    : report.paidSoFar && report.paidSoFar > 0
-                                    ? "#f59e0b"
-                                    : "#c62828",
-                                  fontFamily: textGeneralFont(),
+                                  display: "flex",
+                                  justifyContent: "space-evenly",
+                                  alignItems: "left",
+                                  padding: "12px",
+                                  gap: "12px",
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #eee",
+                                  borderRadius: "4px",
+                                  transition: "all 0.2s ease",
+                                  cursor: "pointer",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor =
+                                    "#e7f4ebff";
+                                  e.currentTarget.style.borderColor =
+                                    "#daf9e4ff";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor =
+                                    "#fff";
+                                  e.currentTarget.style.borderColor = "#eee";
                                 }}
                               >
-                                {report.paidFor &&
-                                report.paidSoFar == report.amount ? (
-                                  <i
-                                    className="fa fa-check-circle-o"
-                                    style={{ color: "#2e7d32" }}
-                                  />
-                                ) : report.paidSoFar &&
-                                  report.paidSoFar > 0 &&
-                                  report.paidSoFar < report.amount ? (
-                                  <i
-                                    className="fa fa-adjust"
-                                    style={{ color: "#f59e0b" }}
-                                  />
-                                ) : report.paidSoFar &&
-                                  report.paidSoFar > report.amount ? (
-                                  <div
-                                    style={{
-                                      display: "grid",
-                                    }}
-                                  >
-                                    {" "}
+                                <div
+                                  style={{
+                                    textAlign: "center",
+                                    borderRadius: "12px",
+                                    color: report.paidFor
+                                      ? "#2e7d32"
+                                      : report.paidSoFar && report.paidSoFar > 0
+                                      ? "#f59e0b"
+                                      : "#c62828",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {report.paidFor &&
+                                  report.paidSoFar == report.amount ? (
                                     <i
-                                      className="fa fa-money"
-                                      style={{ color: "#24e21aff" }}
+                                      className="fa fa-check-circle-o"
+                                      style={{ color: "#2e7d32" }}
                                     />
-                                    <span
+                                  ) : report.paidSoFar &&
+                                    report.paidSoFar > 0 &&
+                                    report.paidSoFar < report.amount ? (
+                                    <i
+                                      className="fa fa-adjust"
+                                      style={{ color: "#f59e0b" }}
+                                    />
+                                  ) : report.paidSoFar &&
+                                    report.paidSoFar > report.amount ? (
+                                    <div
                                       style={{
-                                        fontWeight: 800,
-                                        fontSize: "10px",
-                                        color: "#24e21aff",
+                                        display: "grid",
                                       }}
                                     >
-                                      Superado!
-                                    </span>
+                                      {" "}
+                                      <i
+                                        className="fa fa-money"
+                                        style={{ color: "#24e21aff" }}
+                                      />
+                                      <span
+                                        style={{
+                                          fontWeight: 800,
+                                          fontSize: "10px",
+                                          color: "#24e21aff",
+                                        }}
+                                      >
+                                        Superado!
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <i
+                                      className="fa fa-circle-o"
+                                      style={{ color: "#c62828" }}
+                                    />
+                                  )}
+                                </div>
+
+                                <div style={{ flex: 1 }}>
+                                  <div
+                                    style={{
+                                      fontSize: "14px",
+                                      fontWeight: "500",
+                                      color: "#374151",
+                                      marginBottom: "2px",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    {truncateString(
+                                      report.description,
+                                      isMobile ? 25 : 50
+                                    )}
                                   </div>
-                                ) : (
-                                  <i
-                                    className="fa fa-circle-o"
-                                    style={{ color: "#c62828" }}
-                                  />
-                                )}
-                              </div>
+                                  <div
+                                    style={{
+                                      fontSize: "11px",
+                                      color: "#6b7280",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    {report.discount > 0 &&
+                                      `Original: R$ ${formatNumber(
+                                        report.amount
+                                      )} • Desconto: R$ ${formatNumber(
+                                        report.discount
+                                      )}`}
+                                  </div>
+                                </div>
 
-                              <div style={{ flex: 1 }}>
                                 <div
                                   style={{
-                                    fontSize: "14px",
-                                    fontWeight: "500",
-                                    color: "#374151",
-                                    marginBottom: "2px",
-                                    fontFamily: textGeneralFont(),
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "12px",
                                   }}
                                 >
-                                  {truncateString(
-                                    report.description,
-                                    window.innerWidth < 768 ? 25 : 50
-                                  )}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    color: "#6b7280",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  {report.discount > 0 &&
-                                    `Original: R$ ${formatNumber(
-                                      report.amount
-                                    )} • Desconto: R$ ${formatNumber(
-                                      report.discount
-                                    )}`}
+                                  <div
+                                    style={{
+                                      fontSize: "13px",
+
+                                      fontWeight: "600",
+                                      color: "#0f8311ff",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    R$ {formatNumber(report.paidSoFar || 0)} /
+                                    R${" "}
+                                    {formatNumber(
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0)
+                                    )}
+                                  </div>
                                 </div>
                               </div>
+                            ))}
 
+                          {/* Entradas não contabilizadas */}
+                          {financialReports
+                            .filter(
+                              (report) =>
+                                !report.accountFor &&
+                                report.typeOfItem !== "debt"
+                            )
+                            .map((report, index) => (
                               <div
+                                key={`unaccounted-${report.studentId || index}`}
+                                onClick={() =>
+                                  handleFinancialReportModal(report)
+                                }
                                 style={{
                                   display: "flex",
-                                  alignItems: "center",
+                                  justifyContent: "space-evenly",
+                                  alignItems: "left",
+                                  padding: "12px",
                                   gap: "12px",
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #e5e7eb",
+                                  borderRadius: "4px",
+                                  opacity: 0.7,
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.opacity = "1";
+                                  e.currentTarget.style.backgroundColor =
+                                    "#f0f9f0";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.opacity = "0.7";
+                                  e.currentTarget.style.backgroundColor =
+                                    "#fff";
                                 }}
                               >
                                 <div
                                   style={{
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    color: "#0f8311ff",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  R${" "}
-                                  {formatNumber(
-                                    Math.abs(report.amount) -
-                                      (report.discount || 0)
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* SAÍDAS */}
-                  {financialReports.filter(
-                    (report) =>
-                      report.accountFor && report.typeOfItem === "debt"
-                  ).length > 0 && (
-                    <div
-                      style={{
-                        backgroundColor: "#fff",
-                        border: "1px solid #e5e7eb",
-                        borderRadius: "6px",
-                        padding: "12px",
-                        marginBottom: "20px",
-                        boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "16px",
-                          fontWeight: "600",
-                          color: "#374151",
-                          marginBottom: "16px",
-                          fontFamily: textGeneralFont(),
-                        }}
-                      >
-                        Saídas
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "8px",
-                        }}
-                      >
-                        {financialReports
-                          .filter(
-                            (report) =>
-                              report.accountFor && report.typeOfItem === "debt"
-                          )
-                          .map((report, index) => (
-                            <div
-                              key={report.studentId || index}
-                              onClick={() => handleFinancialReportModal(report)}
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-evenly",
-                                alignItems: "left",
-                                padding: "12px",
-                                gap: "12px",
-                                backgroundColor: "#fff",
-                                border: "1px solid #eee",
-                                borderRadius: "4px",
-                                transition: "all 0.2s ease",
-                                cursor: "pointer",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.backgroundColor =
-                                  "#fef2f2ff";
-                                e.currentTarget.style.borderColor = "#fecacaff";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.backgroundColor = "#fff";
-                                e.currentTarget.style.borderColor = "#eee";
-                              }}
-                            >
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  borderRadius: "12px",
-                                  color: report.paidFor
-                                    ? "#2e7d32"
-                                    : report.paidSoFar && report.paidSoFar > 0
-                                    ? "#f59e0b"
-                                    : "#c62828",
-                                  fontFamily: textGeneralFont(),
-                                }}
-                              >
-                                {report.paidFor ? (
-                                  <i
-                                    className="fa fa-check-circle-o"
-                                    style={{ color: "#2e7d32" }}
-                                  />
-                                ) : report.paidSoFar && report.paidSoFar > 0 ? (
-                                  <i
-                                    className="fa fa-adjust"
-                                    style={{ color: "#f59e0b" }}
-                                  />
-                                ) : (
-                                  <i
-                                    className="fa fa-circle-o"
-                                    style={{ color: "#c62828" }}
-                                  ></i>
-                                )}
-                              </div>
-
-                              <div style={{ flex: 1 }}>
-                                <div
-                                  style={{
-                                    fontSize: "14px",
-                                    fontWeight: "500",
-                                    color: "#374151",
-                                    marginBottom: "2px",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  {truncateString(
-                                    report.description,
-                                    window.innerWidth < 768 ? 25 : 50
-                                  )}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    color: "#6b7280",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  {report.discount > 0 &&
-                                    `Original: R$ ${formatNumber(
-                                      report.amount
-                                    )} • Desconto: R$ ${formatNumber(
-                                      report.discount
-                                    )}`}
-                                </div>
-                              </div>
-
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "12px",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    fontSize: "16px",
-                                    fontWeight: "600",
-                                    color: "#dc2626",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  R${" "}
-                                  {formatNumber(
-                                    Math.abs(report.amount) -
-                                      (report.discount || 0)
-                                  )}
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* ITENS NÃO CONTABILIZADOS */}
-                  {financialReports.filter((report) => !report.accountFor)
-                    .length > 0 && (
-                    <div
-                      style={{
-                        backgroundColor: "#f9fafb",
-                        border: "1px solid #d1d5db",
-                        borderRadius: "8px",
-                        padding: "16px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "14px",
-                          fontWeight: "500",
-                          color: "#6b7280",
-                          marginBottom: "12px",
-                          fontFamily: textGeneralFont(),
-                        }}
-                      >
-                        📋 Itens não contabilizados
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "8px",
-                        }}
-                      >
-                        {financialReports
-                          .filter((report) => !report.accountFor)
-                          .map((report, index) => (
-                            <div
-                              key={report.studentId || index}
-                              onClick={() => handleFinancialReportModal(report)}
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                padding: "12px",
-                                backgroundColor: "#fff",
-                                border: "1px solid #e5e7eb",
-                                borderRadius: "6px",
-                                opacity: 0.7,
-                                cursor: "pointer",
-                                transition: "all 0.2s ease",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.opacity = "1";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.opacity = "0.7";
-                              }}
-                            >
-                              <div style={{ flex: 1 }}>
-                                <div
-                                  style={{
-                                    fontSize: "14px",
-                                    fontWeight: "400",
-                                    color: "#6b7280",
-                                    marginBottom: "2px",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  {report.description}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    color: "#9ca3af",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  Tipo:{" "}
-                                  {report.typeOfItem === "fee"
-                                    ? "Mensalidade"
-                                    : report.typeOfItem}
-                                </div>
-                              </div>
-
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "12px",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    fontSize: "16px",
-                                    fontWeight: "500",
-                                    color: "#9ca3af",
-                                    fontFamily: textGeneralFont(),
-                                  }}
-                                >
-                                  R${" "}
-                                  {formatNumber(
-                                    Math.abs(report.amount) -
-                                      (report.discount || 0)
-                                  )}
-                                </div>
-
-                                <div
-                                  style={{
-                                    fontSize: "10px",
-                                    fontWeight: "500",
                                     textAlign: "center",
-                                    padding: "3px 8px",
                                     borderRadius: "12px",
-                                    backgroundColor: "#f3f4f6",
-                                    color: "#6b7280",
+                                    color: "#9ca3af",
                                     fontFamily: textGeneralFont(),
-                                    minWidth: "60px",
                                   }}
                                 >
-                                  Ignorado
+                                  <i
+                                    className="fa fa-eye-slash"
+                                    style={{ color: "#9ca3af" }}
+                                  />
+                                </div>
+
+                                <div style={{ flex: 1 }}>
+                                  <div
+                                    style={{
+                                      fontSize: "14px",
+                                      fontWeight: "400",
+                                      color: "#6b7280",
+                                      marginBottom: "2px",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    {truncateString(
+                                      report.description,
+                                      isMobile ? 25 : 50
+                                    )}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: "11px",
+                                      color: "#9ca3af",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    Não contabilizado
+                                  </div>
+                                </div>
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "12px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontSize: "13px",
+                                      fontWeight: "500",
+                                      color: "#9ca3af",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    R${" "}
+                                    {formatNumber(
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0)
+                                    )}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: "10px",
+                                      fontWeight: "500",
+                                      textAlign: "center",
+                                      padding: "3px 8px",
+                                      borderRadius: "12px",
+                                      backgroundColor: "#f3f4f6",
+                                      color: "#6b7280",
+                                      fontFamily: textGeneralFont(),
+                                      minWidth: "60px",
+                                    }}
+                                  >
+                                    Ignorado
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
+
+                    {/* SAÍDAS */}
+                    {(financialReports.filter(
+                      (report) =>
+                        report.accountFor && report.typeOfItem === "debt"
+                    ).length > 0 ||
+                      financialReports.filter(
+                        (report) =>
+                          !report.accountFor && report.typeOfItem === "debt"
+                      ).length > 0) && (
+                      <div
+                        style={{
+                          backgroundColor: "#fff",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "6px",
+                          padding: "12px",
+                          marginBottom: "20px",
+                          boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <div
+                          style={{
+                            fontSize: "16px",
+                            fontWeight: "600",
+                            color: "#374151",
+                            marginBottom: "16px",
+                            fontFamily: textGeneralFont(),
+                          }}
+                        >
+                          Saídas
+                        </div>
+
+                        <div
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "8px",
+                          }}
+                        >
+                          {/* Saídas contabilizadas */}
+                          {financialReports
+                            .filter(
+                              (report) =>
+                                report.accountFor &&
+                                report.typeOfItem === "debt"
+                            )
+                            .map((report, index) => (
+                              <div
+                                key={report.studentId || index}
+                                onClick={() =>
+                                  handleFinancialReportModal(report)
+                                }
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-evenly",
+                                  alignItems: "left",
+                                  padding: "12px",
+                                  gap: "12px",
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #eee",
+                                  borderRadius: "4px",
+                                  transition: "all 0.2s ease",
+                                  cursor: "pointer",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.backgroundColor =
+                                    "#fef2f2ff";
+                                  e.currentTarget.style.borderColor =
+                                    "#fecacaff";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.backgroundColor =
+                                    "#fff";
+                                  e.currentTarget.style.borderColor = "#eee";
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    textAlign: "center",
+                                    borderRadius: "12px",
+                                    color: report.paidFor
+                                      ? "#2e7d32"
+                                      : report.paidSoFar && report.paidSoFar > 0
+                                      ? "#f59e0b"
+                                      : "#c62828",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  {report.paidFor &&
+                                  report.paidSoFar == report.amount ? (
+                                    <i
+                                      className="fa fa-check-circle-o"
+                                      style={{ color: "#2e7d32" }}
+                                    />
+                                  ) : report.paidSoFar &&
+                                    report.paidSoFar > 0 &&
+                                    report.paidSoFar < report.amount ? (
+                                    <i
+                                      className="fa fa-adjust"
+                                      style={{ color: "#f59e0b" }}
+                                    />
+                                  ) : report.paidSoFar &&
+                                    report.paidSoFar > report.amount ? (
+                                    <div
+                                      style={{
+                                        display: "grid",
+                                      }}
+                                    >
+                                      {" "}
+                                      <i
+                                        className="fa fa-money"
+                                        style={{ color: "#dc2626" }}
+                                      />
+                                      <span
+                                        style={{
+                                          fontWeight: 800,
+                                          fontSize: "10px",
+                                          color: "#dc2626",
+                                        }}
+                                      >
+                                        Superado
+                                      </span>
+                                    </div>
+                                  ) : (
+                                    <i
+                                      className="fa fa-circle-o"
+                                      style={{ color: "#c62828" }}
+                                    />
+                                  )}
+                                </div>
+
+                                <div style={{ flex: 1 }}>
+                                  <div
+                                    style={{
+                                      fontSize: "14px",
+                                      fontWeight: "500",
+                                      color: "#374151",
+                                      marginBottom: "2px",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    {truncateString(
+                                      report.description,
+                                      isMobile ? 25 : 50
+                                    )}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: "11px",
+                                      color: "#6b7280",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    {report.discount > 0 &&
+                                      `Original: R$ ${formatNumber(
+                                        report.amount
+                                      )} • Desconto: R$ ${formatNumber(
+                                        report.discount
+                                      )}`}
+                                  </div>
+                                </div>
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "12px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontSize: "13px",
+                                      fontWeight: "600",
+                                      color: "#dc2626",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    R$ {formatNumber(report.paidSoFar || 0)} /
+                                    R${" "}
+                                    {formatNumber(
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0)
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+
+                          {/* Saídas não contabilizadas */}
+                          {financialReports
+                            .filter(
+                              (report) =>
+                                !report.accountFor &&
+                                report.typeOfItem === "debt"
+                            )
+                            .map((report, index) => (
+                              <div
+                                key={`unaccounted-debt-${
+                                  report.studentId || index
+                                }`}
+                                onClick={() =>
+                                  handleFinancialReportModal(report)
+                                }
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-evenly",
+                                  alignItems: "left",
+                                  padding: "12px",
+                                  gap: "12px",
+                                  backgroundColor: "#fff",
+                                  border: "1px solid #e5e7eb",
+                                  borderRadius: "4px",
+                                  opacity: 0.7,
+                                  cursor: "pointer",
+                                  transition: "all 0.2s ease",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.currentTarget.style.opacity = "1";
+                                  e.currentTarget.style.backgroundColor =
+                                    "#fef8f8";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.currentTarget.style.opacity = "0.7";
+                                  e.currentTarget.style.backgroundColor =
+                                    "#fff";
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    textAlign: "center",
+                                    borderRadius: "12px",
+                                    color: "#9ca3af",
+                                    fontFamily: textGeneralFont(),
+                                  }}
+                                >
+                                  <i
+                                    className="fa fa-eye-slash"
+                                    style={{ color: "#9ca3af" }}
+                                  />
+                                </div>
+
+                                <div style={{ flex: 1 }}>
+                                  <div
+                                    style={{
+                                      fontSize: "14px",
+                                      fontWeight: "400",
+                                      color: "#6b7280",
+                                      marginBottom: "2px",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    {truncateString(
+                                      report.description,
+                                      isMobile ? 25 : 50
+                                    )}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: "11px",
+                                      color: "#9ca3af",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    Não contabilizado
+                                  </div>
+                                </div>
+
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "12px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      fontSize: "13px",
+                                      fontWeight: "500",
+                                      color: "#9ca3af",
+                                      fontFamily: textGeneralFont(),
+                                    }}
+                                  >
+                                    R${" "}
+                                    {formatNumber(
+                                      Math.abs(report.amount) -
+                                        (report.discount || 0)
+                                    )}
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontSize: "10px",
+                                      fontWeight: "500",
+                                      textAlign: "center",
+                                      padding: "3px 8px",
+                                      borderRadius: "12px",
+                                      backgroundColor: "#f3f4f6",
+                                      color: "#6b7280",
+                                      fontFamily: textGeneralFont(),
+                                      minWidth: "60px",
+                                    }}
+                                  >
+                                    Ignorado
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </>
@@ -1705,318 +1882,322 @@ export function FinancialResources({ headers, id }) {
             <CircularProgress style={{ color: primaryColor() }} />
           )}
         </section>
-
-        <section
-          style={{
-            maxWidth: "400px",
-            margin: "16px auto",
-          }}
-        >
-          {!loading && (
-            <section
+      </div>
+      <section
+        style={{
+          maxWidth: "400px",
+          margin: "16px auto",
+        }}
+      >
+        {!loading && (
+          <section
+            style={{
+              maxWidth: "400px",
+              margin: "16px auto",
+            }}
+          >
+            <div
+              onClick={toggleRevenue}
               style={{
-                maxWidth: "400px",
-                margin: "16px auto",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "16px",
+                paddingBottom: "12px",
+                borderBottom: "1px solid #f3f4f6",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                padding: "8px 0",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f9fafb";
+                e.currentTarget.style.marginLeft = "1px";
+                e.currentTarget.style.marginRight = "1px";
+                e.currentTarget.style.paddingLeft = "1px";
+                e.currentTarget.style.paddingRight = "1px";
+                e.currentTarget.style.paddingTop = "1px";
+                e.currentTarget.style.borderRadius = "1px";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.marginLeft = "0";
+                e.currentTarget.style.marginRight = "0";
+                e.currentTarget.style.paddingLeft = "0";
+                e.currentTarget.style.paddingRight = "0";
+                e.currentTarget.style.paddingTop = "0";
+                e.currentTarget.style.borderRadius = "0";
               }}
             >
               <div
-                onClick={toggleRevenue}
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: "16px",
-                  paddingBottom: "12px",
-                  borderBottom: "1px solid #f3f4f6",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                  padding: "8px 0",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f9fafb";
-                  e.currentTarget.style.marginLeft = "1px";
-                  e.currentTarget.style.marginRight = "1px";
-                  e.currentTarget.style.paddingLeft = "1px";
-                  e.currentTarget.style.paddingRight = "1px";
-                  e.currentTarget.style.paddingTop = "1px";
-                  e.currentTarget.style.borderRadius = "1px";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "transparent";
-                  e.currentTarget.style.marginLeft = "0";
-                  e.currentTarget.style.marginRight = "0";
-                  e.currentTarget.style.paddingLeft = "0";
-                  e.currentTarget.style.paddingRight = "0";
-                  e.currentTarget.style.paddingTop = "0";
-                  e.currentTarget.style.borderRadius = "0";
+                  gap: "8px",
                 }}
               >
                 <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                  style={{
+                    fontFamily: textGeneralFont(),
+                    color: "#374151",
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    margin: "0",
+                  }}
                 >
-                  <div
-                    style={{
-                      fontFamily: textGeneralFont(),
-                      color: "#374151",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      margin: "0",
-                    }}
-                  >
-                    Entradas Fixas
-                  </div>
-                  {getActiveStudentsWithFees().length > 0 && (
-                    <div
-                      style={{
-                        fontSize: "10px",
-                        color: "#9ca3af",
-                        backgroundColor: "#f9fafb",
-                        padding: "2px 6px",
-                        borderRadius: "4px",
-                        fontWeight: "500",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      {getActiveStudentsWithFees().length}
-                    </div>
-                  )}
+                  Entradas Fixas
                 </div>
-
-                <div
-                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
-                >
-                  {getActiveStudentsWithFees().length > 0 && (
-                    <div
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "600",
-                        color: "#6b7280",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      R$ {formatNumber(calculateMonthlyRevenue())}
-                    </div>
-                  )}
-
+                {getActiveStudentsWithFees().length > 0 && (
                   <div
                     style={{
-                      fontSize: "14px",
+                      fontSize: "10px",
                       color: "#9ca3af",
-                      transform: revenueExpanded
-                        ? "rotate(180deg)"
-                        : "rotate(0deg)",
-                      transition: "transform 0.2s ease",
+                      backgroundColor: "#f9fafb",
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                      fontWeight: "500",
+                      fontFamily: textGeneralFont(),
                     }}
                   >
-                    ▼
+                    {getActiveStudentsWithFees().length}
                   </div>
-                </div>
+                )}
               </div>
 
-              {revenueExpanded && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                {getActiveStudentsWithFees().length > 0 && (
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      color: "#6b7280",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    R$ {formatNumber(calculateMonthlyRevenue())}
+                  </div>
+                )}
+
                 <div
                   style={{
-                    animation: "fadeIn 0.2s ease-in-out",
+                    fontSize: "14px",
+                    color: "#9ca3af",
+                    transform: revenueExpanded
+                      ? "rotate(180deg)"
+                      : "rotate(0deg)",
+                    transition: "transform 0.2s ease",
+                  }}
+                >
+                  ▼
+                </div>
+              </div>
+            </div>
+
+            {revenueExpanded && (
+              <div
+                style={{
+                  animation: "fadeIn 0.2s ease-in-out",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                    padding: "12px 16px",
+                    margin: "auto",
+                    backgroundColor: "#f9f9f9",
+                    border: "1px solid #ddd",
+                    borderRadius: "4px",
                   }}
                 >
                   <div
                     style={{
-                      display: "flex",
-                      flexDirection: "column",
+                      display: "grid",
+                      gridTemplateColumns:
+                        "repeat(auto-fit, minmax(120px, 1fr))",
                       gap: "8px",
-                      padding: "12px 16px",
-                      margin: "auto",
-                      backgroundColor: "#f9f9f9",
-                      border: "1px solid #ddd",
-                      borderRadius: "4px",
                     }}
                   >
                     <div
                       style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                          "repeat(auto-fit, minmax(120px, 1fr))",
-                        gap: "8px",
+                        padding: "8px",
+                        backgroundColor: "#fff",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        textAlign: "center",
                       }}
                     >
                       <div
                         style={{
-                          padding: "8px",
-                          backgroundColor: "#fff",
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "500",
-                            color: partnerColor(),
-                            fontFamily: textGeneralFont(),
-                          }}
-                        >
-                          R$ {formatNumber(calculateMonthlyRevenue())}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "10px",
-                            color: "#666",
-                            fontFamily: textGeneralFont(),
-                          }}
-                        >
-                          Receita Total
-                        </div>
-                      </div>
-
-                      <div
-                        style={{
-                          padding: "8px",
-                          backgroundColor: "#fff",
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          textAlign: "center",
-                        }}
-                      >
-                        <div
-                          style={{
-                            fontSize: "18px",
-                            fontWeight: "500",
-                            color: "#333",
-                            fontFamily: textGeneralFont(),
-                          }}
-                        >
-                          {getActiveStudentsWithFees().length}
-                        </div>
-                        <div
-                          style={{
-                            fontSize: "10px",
-                            color: "#666",
-                            fontFamily: textGeneralFont(),
-                          }}
-                        >
-                          Alunos Ativos
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Lista técnica de estudantes */}
-                    <div style={{ marginTop: "12px" }}>
-                      <div
-                        style={{
-                          fontSize: "12px",
+                          fontSize: "18px",
                           fontWeight: "500",
-                          color: "#4b5563",
-                          marginBottom: "6px",
-                          padding: "6px 0",
-                          borderBottom: "1px solid #ddd",
+                          color: partnerColor(),
                           fontFamily: textGeneralFont(),
                         }}
                       >
-                        Mensalidades ({getStudentsWithFees().length} total •{" "}
-                        {getActiveStudentsWithFees().length} ativos)
+                        R$ {formatNumber(calculateMonthlyRevenue())}
                       </div>
-
                       <div
                         style={{
-                          maxHeight: "300px",
-                          overflowY: "auto",
-                          border: "1px solid #ccc",
-                          backgroundColor: "#fff",
+                          fontSize: "10px",
+                          color: "#666",
+                          fontFamily: textGeneralFont(),
                         }}
                       >
-                        {getStudentsWithFees().map((student, index) => (
+                        Receita Total
+                      </div>
+                    </div>
+
+                    <div
+                      style={{
+                        padding: "8px",
+                        backgroundColor: "#fff",
+                        border: "1px solid #ccc",
+                        borderRadius: "4px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "18px",
+                          fontWeight: "500",
+                          color: "#333",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        {getActiveStudentsWithFees().length}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "10px",
+                          color: "#666",
+                          fontFamily: textGeneralFont(),
+                        }}
+                      >
+                        Alunos Ativos
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Lista técnica de estudantes */}
+                  <div style={{ marginTop: "12px" }}>
+                    <div
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "500",
+                        color: "#4b5563",
+                        marginBottom: "6px",
+                        padding: "6px 0",
+                        borderBottom: "1px solid #ddd",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      Mensalidades ({getStudentsWithFees().length} total •{" "}
+                      {getActiveStudentsWithFees().length} ativos)
+                    </div>
+
+                    <div
+                      style={{
+                        maxHeight: "300px",
+                        overflowY: "auto",
+                        border: "1px solid #ccc",
+                        backgroundColor: "#fff",
+                      }}
+                    >
+                      {getStudentsWithFees().map((student, index) => (
+                        <div
+                          key={student.id}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            seeEdition(student.id);
+                          }}
+                          style={{
+                            display: "flex",
+                            gap: "8px",
+                            justifyContent: "space-between",
+                            padding: "8px",
+                            borderBottom: "1px solid #eee",
+                            alignItems: "center",
+                            cursor: "pointer",
+                            backgroundColor: student.onHold
+                              ? "#f8f8f8"
+                              : "#fff",
+                            transition: "background-color 0.2s",
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!student.onHold) {
+                              e.currentTarget.style.backgroundColor = "#f5f5f5";
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                              student.onHold ? "#f8f8f8" : "#fff";
+                          }}
+                        >
                           <div
-                            key={student.id}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              seeEdition(student.id);
-                            }}
                             style={{
                               display: "flex",
-                              gap: "8px",
-                              justifyContent: "space-between",
-                              padding: "8px",
-                              borderBottom: "1px solid #eee",
                               alignItems: "center",
-                              cursor: "pointer",
-                              backgroundColor: student.onHold
-                                ? "#f8f8f8"
-                                : "#fff",
-                              transition: "background-color 0.2s",
+                              gap: "8px",
+                              flex: 1,
                             }}
-                            onMouseEnter={(e) => {
-                              if (!student.onHold) {
-                                e.currentTarget.style.backgroundColor =
-                                  "#f5f5f5";
+                          >
+                            <img
+                              style={{
+                                width: "24px",
+                                height: "24px",
+                                borderRadius: "50%",
+                                objectFit: "cover",
+                                opacity: student.onHold ? 0.5 : 1,
+                                display: isMobile ? "none" : "block",
+                              }}
+                              src={
+                                student.picture ||
+                                "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
                               }
+                              alt=""
+                            />
+                            <div
+                              style={{
+                                fontWeight: "500",
+                                fontSize: "12px",
+                                opacity: student.onHold ? 0.6 : 1,
+                                fontFamily: textGeneralFont(),
+                              }}
+                            >
+                              {student.name}{" "}
+                              {truncateString(student.lastname, 6)}
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              position: "relative",
+                              display: "inline-block",
                             }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor =
-                                student.onHold ? "#f8f8f8" : "#fff";
-                            }}
+                            title={student.onHold ? "Matrícula trancada" : ""}
                           >
                             <div
                               style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                                flex: 1,
+                                fontSize: "13px",
+                                fontWeight: "500",
+                                color: student.onHold ? "#999" : partnerColor(),
+                                textDecoration: student.onHold
+                                  ? "line-through"
+                                  : "none",
+                                fontFamily: textGeneralFont(),
                               }}
                             >
-                              <img
-                                style={{
-                                  width: "24px",
-                                  height: "24px",
-                                  borderRadius: "50%",
-                                  objectFit: "cover",
-                                  opacity: student.onHold ? 0.5 : 1,
-                                  display:
-                                    window.innerWidth <= 768 ? "none" : "block",
-                                }}
-                                src={
-                                  student.picture ||
-                                  "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-                                }
-                                alt=""
-                              />
-                              <div
-                                style={{
-                                  fontWeight: "500",
-                                  fontSize: "12px",
-                                  opacity: student.onHold ? 0.6 : 1,
-                                  fontFamily: textGeneralFont(),
-                                }}
-                              >
-                                {student.name}{" "}
-                                {truncateString(student.lastname, 6)}
-                              </div>
+                              R$ {formatNumber(student.fee)}
                             </div>
-
-                            <div
-                              style={{
-                                position: "relative",
-                                display: "inline-block",
-                              }}
-                              title={student.onHold ? "Matrícula trancada" : ""}
-                            >
-                              <div
-                                style={{
-                                  fontSize: "13px",
-                                  fontWeight: "500",
-                                  color: student.onHold
-                                    ? "#999"
-                                    : partnerColor(),
-                                  textDecoration: student.onHold
-                                    ? "line-through"
-                                    : "none",
-                                  fontFamily: textGeneralFont(),
-                                }}
-                              >
-                                R$ {formatNumber(student.fee)}
-                              </div>
-                            </div>
-                            {/* <div
+                          </div>
+                          {/* <div
                               style={{
                                 fontSize: "9px",
                                 fontWeight: "500",
@@ -2032,557 +2213,454 @@ export function FinancialResources({ headers, id }) {
                             >
                               {student.onHold ? "Trancado" : "Ativo"}
                             </div> */}
-                          </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              )}
+              </div>
+            )}
 
-              {!revenueExpanded && getActiveStudentsWithFees().length === 0 && (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "16px",
-                    color: "#9ca3af",
-                    fontSize: "11px",
-                    fontFamily: textGeneralFont(),
-                  }}
-                >
-                  Clique para ver
-                </div>
-              )}
-            </section>
-          )}
+            {!revenueExpanded && getActiveStudentsWithFees().length === 0 && (
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: "16px",
+                  color: "#9ca3af",
+                  fontSize: "11px",
+                  fontFamily: textGeneralFont(),
+                }}
+              >
+                Clique para ver
+              </div>
+            )}
+          </section>
+        )}
 
+        <div
+          onClick={toggleFixedCosts}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "16px",
+            paddingBottom: "12px",
+            borderBottom: "1px solid #f3f4f6",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+            padding: "8px 0",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#f9fafb";
+            e.currentTarget.style.marginLeft = "1px";
+            e.currentTarget.style.marginRight = "1px";
+            e.currentTarget.style.paddingLeft = "1px";
+            e.currentTarget.style.paddingRight = "1px";
+            e.currentTarget.style.paddingTop = "1px";
+            e.currentTarget.style.borderRadius = "1px";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "transparent";
+            e.currentTarget.style.marginLeft = "0";
+            e.currentTarget.style.marginRight = "0";
+            e.currentTarget.style.paddingLeft = "0";
+            e.currentTarget.style.paddingRight = "0";
+            e.currentTarget.style.paddingTop = "0";
+            e.currentTarget.style.borderRadius = "0";
+          }}
+        >
           <div
-            onClick={toggleFixedCosts}
             style={{
               display: "flex",
-              justifyContent: "space-between",
               alignItems: "center",
-              marginBottom: "16px",
-              paddingBottom: "12px",
-              borderBottom: "1px solid #f3f4f6",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-              padding: "8px 0",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f9fafb";
-              e.currentTarget.style.marginLeft = "1px";
-              e.currentTarget.style.marginRight = "1px";
-              e.currentTarget.style.paddingLeft = "1px";
-              e.currentTarget.style.paddingRight = "1px";
-              e.currentTarget.style.paddingTop = "1px";
-              e.currentTarget.style.borderRadius = "1px";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.marginLeft = "0";
-              e.currentTarget.style.marginRight = "0";
-              e.currentTarget.style.paddingLeft = "0";
-              e.currentTarget.style.paddingRight = "0";
-              e.currentTarget.style.paddingTop = "0";
-              e.currentTarget.style.borderRadius = "0";
+              gap: "8px",
             }}
           >
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              <div
-                style={{
-                  fontFamily: textGeneralFont(),
-                  color: "#374151",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  margin: "0",
-                }}
-              >
-                Custos Fixos
-              </div>
-
-              {fixedCosts.length > 0 && (
-                <div
-                  style={{
-                    fontSize: "10px",
-                    color: "#9ca3af",
-                    backgroundColor: "#f9fafb",
-                    padding: "2px 6px",
-                    borderRadius: "4px",
-                    fontWeight: "500",
-                    fontFamily: textGeneralFont(),
-                  }}
-                >
-                  {fixedCosts.length}
-                </div>
-              )}
+            <div
+              style={{
+                fontFamily: textGeneralFont(),
+                color: "#374151",
+                fontSize: "14px",
+                fontWeight: "600",
+                margin: "0",
+              }}
+            >
+              Custos Fixos
             </div>
 
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-              {fixedCosts.length > 0 && (
-                <div
-                  style={{
-                    fontSize: "12px",
-                    fontWeight: "600",
-                    color: "#6b7280",
-                    fontFamily: textGeneralFont(),
-                  }}
-                >
-                  R${" "}
-                  {formatNumber(
-                    fixedCosts.reduce(
-                      (total, cost) => total + (parseFloat(cost.amount) || 0),
-                      0
-                    )
-                  )}
-                </div>
-              )}
-
+            {fixedCosts.length > 0 && (
               <div
                 style={{
-                  fontSize: "14px",
+                  fontSize: "10px",
                   color: "#9ca3af",
-                  transform: fixedCostsExpanded
-                    ? "rotate(180deg)"
-                    : "rotate(0deg)",
-                  transition: "transform 0.2s ease",
+                  backgroundColor: "#f9fafb",
+                  padding: "2px 6px",
+                  borderRadius: "4px",
+                  fontWeight: "500",
+                  fontFamily: textGeneralFont(),
                 }}
               >
-                ▼
+                {fixedCosts.length}
               </div>
-            </div>
+            )}
           </div>
 
-          {fixedCostsExpanded && (
-            <div
-              style={{
-                animation: "fadeIn 0.2s ease-in-out",
-              }}
-            >
-              <div
-                style={{
-                  marginBottom: "12px",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <button
-                  title="Novo Custo Fixo"
-                  className="linguee-btn linguee-btn-ghost"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNewCostModal();
-                  }}
-                >
-                  +
-                </button>
-              </div>
-
-              {fixedCosts.length > 0 ? (
-                <div>
-                  {fixedCosts.map((cost, index) => (
-                    <div
-                      key={cost.id || index}
-                      onClick={(e) => {
-                        // e.stopPropagation();
-                        handleCostDetailModal(cost);
-                      }}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "8px 0",
-                        borderBottom:
-                          index < fixedCosts.length - 1
-                            ? "1px solid #f3f4f6"
-                            : "none",
-                        transition: "all 0.15s ease",
-                        cursor: "pointer",
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = "#f9fafb";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = "transparent";
-                      }}
-                    >
-                      <div
-                        style={{
-                          fontSize: "13px",
-                          fontWeight: "400",
-                          color: "#4b5563",
-                          lineHeight: "1.4",
-                          fontFamily: textGeneralFont(),
-                        }}
-                      >
-                        {cost.description}
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "13px",
-                          fontWeight: "500",
-                          color: "#ef4444",
-                          fontFamily: textGeneralFont(),
-                        }}
-                      >
-                        R$ {formatNumber(cost.amount)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "24px 16px",
-                    color: "#6b7280",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "12px",
-                      lineHeight: "1.5",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    Nenhum custo fixo
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {!fixedCostsExpanded && fixedCosts.length === 0 && (
-            <div
-              style={{
-                textAlign: "center",
-                padding: "16px",
-                color: "#9ca3af",
-                fontSize: "11px",
-                fontFamily: textGeneralFont(),
-              }}
-            >
-              Clique para ver
-            </div>
-          )}
-
-          {/* Modal para Novo Custo Fixo */}
-          <Dialog
-            open={newCostModalOpen}
-            onClose={handleNewCostModal}
-            fullWidth
-            maxWidth="sm"
-            PaperProps={{
-              style: {
-                borderRadius: "12px",
-                padding: "8px",
-              },
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
             }}
           >
-            <DialogTitle>
+            {fixedCosts.length > 0 && (
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: "16px",
-                  borderBottom: "1px solid #e5e7eb",
+                  fontSize: "12px",
+                  fontWeight: "600",
+                  color: "#6b7280",
+                  fontFamily: textGeneralFont(),
                 }}
               >
-                <h2
-                  style={{
-                    fontFamily: textTitleFont(),
-                    color: "#1f2937",
-                    fontSize: "18px",
-                    fontWeight: "500",
-                    margin: "0",
-                    letterSpacing: "-0.025em",
-                  }}
-                >
-                  Novo Custo Mensal
-                </h2>
-                <ArvinButton
-                  onClick={handleNewCostModal}
-                  style={{
-                    minWidth: "auto",
-                    padding: "8px",
-                  }}
-                >
-                  X
-                </ArvinButton>
-              </div>
-            </DialogTitle>
-
-            <DialogContent style={{ padding: "24px 24px 16px" }}>
-              <div className="linguee-form-group">
-                <label className="linguee-label">
-                  Mês:{" "}
-                  {new Date().toLocaleDateString("pt-BR", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </label>
-              </div>
-
-              <div className="linguee-form-group">
-                <label className="linguee-label linguee-label-required">
-                  Descrição
-                </label>
-                <input
-                  type="text"
-                  className="linguee-input linguee-input-text"
-                  value={newCostDescription}
-                  onChange={(e) => setNewCostDescription(e.target.value)}
-                  placeholder="Ex: Aluguel, Energia, Internet..."
-                />
-                {checkDuplicateCost() && (
-                  <div className="linguee-error-text">
-                    Já existe um custo com esta descrição
-                  </div>
+                R${" "}
+                {formatNumber(
+                  fixedCosts.reduce(
+                    (total, cost) => total + (parseFloat(cost.amount) || 0),
+                    0
+                  )
                 )}
               </div>
-
-              <div className="linguee-form-group">
-                <label className="linguee-label linguee-label-required">
-                  Valor (R$)
-                </label>
-                <input
-                  type="number"
-                  className="linguee-input linguee-input-number"
-                  value={newCostAmount ? Math.abs(newCostAmount) : ""}
-                  onChange={(e) => setNewCostAmount(e.target.value)}
-                  placeholder="0,00"
-                  min="0"
-                  step="0.01"
-                />
-              </div>
-            </DialogContent>
-            {financialReports.length > 0 && (
-              <DialogContent>
-                {/* um check que dê um toggle num estado Incluir esse mês entre true ou false */}
-                <div
-                  onClick={() => setIncludeThisMonth(!includeThisMonth)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                  className="linguee-form-group"
-                >
-                  <input
-                    type="checkbox"
-                    className="linguee-input linguee-input-checkbox"
-                    checked={includeThisMonth}
-                    onChange={() => setIncludeThisMonth(!includeThisMonth)}
-                  />
-                  <label>
-                    Incluir este mês?{" "}
-                    {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
-                  </label>
-                </div>
-              </DialogContent>
             )}
-            <DialogActions
+
+            <div
               style={{
-                padding: "16px 24px 24px",
-                gap: "12px",
+                fontSize: "14px",
+                color: "#9ca3af",
+                transform: fixedCostsExpanded
+                  ? "rotate(180deg)"
+                  : "rotate(0deg)",
+                transition: "transform 0.2s ease",
+              }}
+            >
+              ▼
+            </div>
+          </div>
+        </div>
+
+        {fixedCostsExpanded && (
+          <div
+            style={{
+              animation: "fadeIn 0.2s ease-in-out",
+            }}
+          >
+            <div
+              style={{
+                marginBottom: "12px",
+                display: "flex",
                 justifyContent: "flex-end",
               }}
             >
-              <button className="linguee-btn" onClick={handleNewCostModal}>
-                Cancelar
-              </button>
               <button
-                className={`linguee-btn ${
-                  !isSaveButtonDisabled() ? "linguee-btn-primary" : ""
-                }`}
-                onClick={() => handleSaveCost("debt")}
-                disabled={isSaveButtonDisabled()}
-                style={{
-                  backgroundColor: isSaveButtonDisabled()
-                    ? "#9ca3af"
-                    : undefined,
-                  cursor: isSaveButtonDisabled() ? "not-allowed" : "pointer",
+                title="Novo Custo Fixo"
+                className="linguee-btn linguee-btn-ghost"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNewCostModal();
                 }}
               >
-                {checkDuplicateCost() ? "Nome já existe" : "Adicionar Custo"}
+                +
               </button>
-            </DialogActions>
-          </Dialog>
+            </div>
 
-          {/* Modal para Detalhes do Custo */}
-          <Dialog
-            open={costDetailModalOpen}
-            onClose={() => handleCostDetailModal()}
-            fullWidth
-            maxWidth="sm"
-            PaperProps={{
-              style: {
-                borderRadius: "12px",
-                padding: "8px",
-              },
-            }}
-          >
-            <DialogTitle>
+            {fixedCosts.length > 0 ? (
+              <div>
+                {fixedCosts.map((cost, index) => (
+                  <div
+                    key={cost.id || index}
+                    onClick={(e) => {
+                      // e.stopPropagation();
+                      handleCostDetailModal(cost);
+                    }}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "8px 0",
+                      borderBottom:
+                        index < fixedCosts.length - 1
+                          ? "1px solid #f3f4f6"
+                          : "none",
+                      transition: "all 0.15s ease",
+                      cursor: "pointer",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = "#f9fafb";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = "transparent";
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: "400",
+                        color: "#4b5563",
+                        lineHeight: "1.4",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      {cost.description}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "13px",
+                        fontWeight: "500",
+                        color: "#ef4444",
+                        fontFamily: textGeneralFont(),
+                      }}
+                    >
+                      R$ {formatNumber(cost.amount)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: "16px",
-                  borderBottom: "1px solid #e5e7eb",
+                  textAlign: "center",
+                  padding: "24px 16px",
+                  color: "#6b7280",
                 }}
               >
                 <div
                   style={{
+                    fontSize: "12px",
+                    lineHeight: "1.5",
                     fontFamily: textGeneralFont(),
-                    color: "#1f2937",
-                    fontSize: "16px",
-                    fontWeight: "500",
-                    margin: "0",
                   }}
                 >
-                  Detalhes do Custo
+                  Nenhum custo fixo
                 </div>
-                <ArvinButton
-                  onClick={() => handleCostDetailModal()}
-                  style={{
-                    minWidth: "auto",
-                    padding: "8px",
-                    color: "#6b7280",
-                  }}
-                >
-                  X
-                </ArvinButton>
               </div>
-            </DialogTitle>
+            )}
+          </div>
+        )}
 
-            <DialogContent style={{ padding: "24px 24px 16px" }}>
-              {selectedCost && !showDeleteConfirmation && !isEditingCost && (
-                <div>
-                  <div style={{ marginBottom: "20px" }}>
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "12px",
-                        marginBottom: "4px",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      Descrição
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "16px",
-                        color: "#374151",
-                        fontWeight: "500",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      {selectedCost.description}
-                    </div>
-                  </div>
+        {!fixedCostsExpanded && fixedCosts.length === 0 && (
+          <div
+            style={{
+              textAlign: "center",
+              padding: "16px",
+              color: "#9ca3af",
+              fontSize: "11px",
+              fontFamily: textGeneralFont(),
+            }}
+          >
+            Clique para ver
+          </div>
+        )}
 
-                  <div style={{ marginBottom: "20px" }}>
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "12px",
-                        marginBottom: "4px",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      Valor
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "20px",
-                        color: "#ef4444",
-                        fontWeight: "600",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      R$ {formatNumber(selectedCost.amount)}
-                    </div>
-                  </div>
+        {/* Modal para Novo Custo Fixo */}
+        <Dialog
+          open={newCostModalOpen}
+          onClose={handleNewCostModal}
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+            style: {
+              borderRadius: "12px",
+              padding: "8px",
+            },
+          }}
+        >
+          <DialogTitle>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <h2
+                style={{
+                  fontFamily: textTitleFont(),
+                  color: "#1f2937",
+                  fontSize: "18px",
+                  fontWeight: "500",
+                  margin: "0",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Novo Custo Mensal
+              </h2>
+              <ArvinButton
+                onClick={handleNewCostModal}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px",
+                }}
+              >
+                X
+              </ArvinButton>
+            </div>
+          </DialogTitle>
 
-                  <div style={{ marginBottom: "20px" }}>
-                    <div
-                      style={{
-                        color: "#6b7280",
-                        fontSize: "12px",
-                        marginBottom: "4px",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      Mês
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        color: "#374151",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      {selectedCost.month || currentMonthYear}
-                    </div>
-                  </div>
+          <DialogContent style={{ padding: "24px 24px 16px" }}>
+            <div className="linguee-form-group">
+              <label className="linguee-label">
+                Mês:{" "}
+                {new Date().toLocaleDateString("pt-BR", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </label>
+            </div>
+
+            <div className="linguee-form-group">
+              <label className="linguee-label linguee-label-required">
+                Descrição
+              </label>
+              <input
+                type="text"
+                className="linguee-input linguee-input-text"
+                value={newCostDescription}
+                onChange={(e) => setNewCostDescription(e.target.value)}
+                placeholder="Ex: Aluguel, Energia, Internet..."
+              />
+              {checkDuplicateCost() && (
+                <div className="linguee-error-text">
+                  Já existe um custo com esta descrição
                 </div>
               )}
+            </div>
 
-              {selectedCost && isEditingCost && !showDeleteConfirmation && (
-                <div>
-                  <div className="linguee-form-group">
-                    <label className="linguee-label">Descrição</label>
-                    <input
-                      type="text"
-                      className="linguee-input linguee-input-text"
-                      value={editCostDescription}
-                      onChange={(e) => setEditCostDescription(e.target.value)}
-                      placeholder="Descrição do custo"
-                    />
-                  </div>
-                  <div className="linguee-form-group">
-                    <label className="linguee-label">Valor (R$)</label>
-                    <input
-                      type="number"
-                      className="linguee-input linguee-input-number"
-                      value={
-                        editCostAmount && !isNaN(Number(editCostAmount))
-                          ? Math.abs(Number(editCostAmount))
-                          : ""
-                      }
-                      onChange={(e) => setEditCostAmount(e.target.value)}
-                      placeholder="0,00"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                </div>
-              )}
+            <div className="linguee-form-group">
+              <label className="linguee-label linguee-label-required">
+                Valor (R$)
+              </label>
+              <input
+                type="number"
+                className="linguee-input linguee-input-number"
+                value={newCostAmount ? Math.abs(newCostAmount) : ""}
+                onChange={(e) => setNewCostAmount(e.target.value)}
+                placeholder="0,00"
+                min="0"
+                step="0.01"
+              />
+            </div>
+          </DialogContent>
+          {financialReports.length > 0 && (
+            <DialogContent>
+              {/* um check que dê um toggle num estado Incluir esse mês entre true ou false */}
+              <div
+                onClick={() => setIncludeThisMonth(!includeThisMonth)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+                className="linguee-form-group"
+              >
+                <input
+                  type="checkbox"
+                  className="linguee-input linguee-input-checkbox"
+                  checked={includeThisMonth}
+                  onChange={() => setIncludeThisMonth(!includeThisMonth)}
+                />
+                <label>
+                  Incluir este mês?{" "}
+                  {includeThisMonth && isArthurVincent ? "Sim" : "Não"}
+                </label>
+              </div>
+            </DialogContent>
+          )}
+          <DialogActions
+            style={{
+              padding: "16px 24px 24px",
+              gap: "12px",
+              justifyContent: "flex-end",
+            }}
+          >
+            <button className="linguee-btn" onClick={handleNewCostModal}>
+              Cancelar
+            </button>
+            <button
+              className={`linguee-btn ${
+                !isSaveButtonDisabled() ? "linguee-btn-primary" : ""
+              }`}
+              onClick={() => handleSaveCost("debt")}
+              disabled={isSaveButtonDisabled()}
+              style={{
+                backgroundColor: isSaveButtonDisabled() ? "#9ca3af" : undefined,
+                cursor: isSaveButtonDisabled() ? "not-allowed" : "pointer",
+              }}
+            >
+              {checkDuplicateCost() ? "Nome já existe" : "Adicionar Custo"}
+            </button>
+          </DialogActions>
+        </Dialog>
 
-              {showDeleteConfirmation && selectedCost && (
-                <div style={{ textAlign: "center", padding: "20px 0" }}>
+        {/* Modal para Detalhes do Custo */}
+        <Dialog
+          open={costDetailModalOpen}
+          onClose={() => handleCostDetailModal()}
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+            style: {
+              borderRadius: "12px",
+              padding: "8px",
+            },
+          }}
+        >
+          <DialogTitle>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: textGeneralFont(),
+                  color: "#1f2937",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  margin: "0",
+                }}
+              >
+                Detalhes do Custo
+              </div>
+              <ArvinButton
+                onClick={() => handleCostDetailModal()}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px",
+                  color: "#6b7280",
+                }}
+              >
+                X
+              </ArvinButton>
+            </div>
+          </DialogTitle>
+
+          <DialogContent style={{ padding: "24px 24px 16px" }}>
+            {selectedCost && !showDeleteConfirmation && !isEditingCost && (
+              <div>
+                <div style={{ marginBottom: "20px" }}>
                   <div
                     style={{
-                      fontSize: "18px",
-                      color: "#ef4444",
-                      fontWeight: "500",
-                      marginBottom: "16px",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    ⚠️ Tem certeza que deseja excluir?
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "14px",
                       color: "#6b7280",
-                      marginBottom: "8px",
+                      fontSize: "12px",
+                      marginBottom: "4px",
                       fontFamily: textGeneralFont(),
                     }}
                   >
-                    Esta ação não pode ser desfeita.
+                    Descrição
                   </div>
                   <div
                     style={{
@@ -2592,55 +2670,144 @@ export function FinancialResources({ headers, id }) {
                       fontFamily: textGeneralFont(),
                     }}
                   >
-                    <strong>{selectedCost.description}</strong> - R${" "}
-                    {formatNumber(selectedCost.amount)}
+                    {selectedCost.description}
                   </div>
                 </div>
-              )}
-            </DialogContent>
 
-            <DialogActions
-              style={{
-                padding: "16px 24px 24px",
-                gap: "12px",
-                justifyContent: showDeleteConfirmation
-                  ? "center"
-                  : isEditingCost
-                  ? "flex-end"
-                  : "space-between",
-              }}
-            >
-              {!showDeleteConfirmation && !isEditingCost && (
-                <>
-                  <div style={{ display: "flex", gap: "8px" }}>
-                    <ArvinButton
-                      onClick={() => {
-                        setIsEditingCost(true);
-                      }}
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        textTransform: "none",
-                        padding: "6px 12px",
-                      }}
-                    >
-                      ✏️ Editar
-                    </ArvinButton>
-                    <ArvinButton
-                      onClick={() => setShowDeleteConfirmation(true)}
-                      color="grey"
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        textTransform: "none",
-                        padding: "6px 12px",
-                      }}
-                    >
-                      🗑️ Excluir
-                    </ArvinButton>
+                <div style={{ marginBottom: "20px" }}>
+                  <div
+                    style={{
+                      color: "#6b7280",
+                      fontSize: "12px",
+                      marginBottom: "4px",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    Valor
                   </div>
+                  <div
+                    style={{
+                      fontSize: "20px",
+                      color: "#ef4444",
+                      fontWeight: "600",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    R$ {formatNumber(selectedCost.amount)}
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "20px" }}>
+                  <div
+                    style={{
+                      color: "#6b7280",
+                      fontSize: "12px",
+                      marginBottom: "4px",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    Mês
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      color: "#374151",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    {selectedCost.month || currentMonthYear}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedCost && isEditingCost && !showDeleteConfirmation && (
+              <div>
+                <div className="linguee-form-group">
+                  <label className="linguee-label">Descrição</label>
+                  <input
+                    type="text"
+                    className="linguee-input linguee-input-text"
+                    value={editCostDescription}
+                    onChange={(e) => setEditCostDescription(e.target.value)}
+                    placeholder="Descrição do custo"
+                  />
+                </div>
+                <div className="linguee-form-group">
+                  <label className="linguee-label">Valor (R$)</label>
+                  <input
+                    type="number"
+                    className="linguee-input linguee-input-number"
+                    value={
+                      editCostAmount && !isNaN(Number(editCostAmount))
+                        ? Math.abs(Number(editCostAmount))
+                        : ""
+                    }
+                    onChange={(e) => setEditCostAmount(e.target.value)}
+                    placeholder="0,00"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+              </div>
+            )}
+
+            {showDeleteConfirmation && selectedCost && (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div
+                  style={{
+                    fontSize: "18px",
+                    color: "#ef4444",
+                    fontWeight: "500",
+                    marginBottom: "16px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  ⚠️ Tem certeza que deseja excluir?
+                </div>
+                <div
+                  style={{
+                    fontSize: "14px",
+                    color: "#6b7280",
+                    marginBottom: "8px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  Esta ação não pode ser desfeita.
+                </div>
+                <div
+                  style={{
+                    fontSize: "16px",
+                    color: "#374151",
+                    fontWeight: "500",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  <strong>{selectedCost.description}</strong> - R${" "}
+                  {formatNumber(selectedCost.amount)}
+                </div>
+              </div>
+            )}
+          </DialogContent>
+
+          <DialogActions
+            style={{
+              padding: "16px 24px 24px",
+              gap: "12px",
+              justifyContent: showDeleteConfirmation
+                ? "center"
+                : isEditingCost
+                ? "flex-end"
+                : "space-between",
+            }}
+          >
+            {!showDeleteConfirmation && !isEditingCost && (
+              <>
+                <div style={{ display: "flex", gap: "8px" }}>
                   <ArvinButton
-                    onClick={() => handleCostDetailModal()}
+                    onClick={() => {
+                      setIsEditingCost(true);
+                    }}
                     style={{
                       fontSize: "12px",
                       fontWeight: "500",
@@ -2648,613 +2815,628 @@ export function FinancialResources({ headers, id }) {
                       padding: "6px 12px",
                     }}
                   >
-                    Fechar
+                    ✏️ Editar
                   </ArvinButton>
-                </>
-              )}
-
-              {isEditingCost && !showDeleteConfirmation && (
-                <div style={{ display: "flex", gap: "12px" }}>
                   <ArvinButton
-                    onClick={() => {
-                      setIsEditingCost(false);
-                      if (selectedCost) {
-                        setEditCostDescription(selectedCost.description);
-                        setEditCostAmount(selectedCost.amount);
-                      }
-                    }}
+                    onClick={() => setShowDeleteConfirmation(true)}
+                    color="grey"
                     style={{
                       fontSize: "12px",
                       fontWeight: "500",
                       textTransform: "none",
-                      padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
+                      padding: "6px 12px",
                     }}
                   >
-                    Cancelar
-                  </ArvinButton>
-                  <ArvinButton
-                    onClick={() =>
-                      selectedCost &&
-                      handleEditCost(
-                        selectedCost.description,
-                        selectedCost.amount,
-                        editCostDescription,
-                        editCostAmount
-                      )
-                    }
-                    variant="contained"
-                    disabled={!editCostDescription.trim() || !editCostAmount}
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      textTransform: "none",
-                      padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
-                      backgroundColor:
-                        !editCostDescription.trim() || !editCostAmount
-                          ? "#9ca3af"
-                          : primaryColor(),
-                    }}
-                  >
-                    Salvar
+                    🗑️ Excluir
                   </ArvinButton>
                 </div>
-              )}
-
-              {showDeleteConfirmation && (
-                <div style={{ display: "flex", gap: "12px" }}>
-                  <ArvinButton
-                    onClick={() => setShowDeleteConfirmation(false)}
-                    style={{
-                      color: "#6b7280",
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      textTransform: "none",
-                      padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    Não
-                  </ArvinButton>
-                  <ArvinButton
-                    onClick={() =>
-                      selectedCost &&
-                      handleDeleteCost(
-                        selectedCost.description,
-                        selectedCost.amount
-                      )
-                    }
-                    color="red"
-                    style={{
-                      fontSize: "12px",
-                      fontWeight: "500",
-                      textTransform: "none",
-                      padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    Sim, excluir
-                  </ArvinButton>
-                </div>
-              )}
-            </DialogActions>
-          </Dialog>
-
-          <Dialog
-            open={isVisible}
-            onClose={handleSeeModal}
-            fullWidth
-            maxWidth="md"
-            PaperProps={{
-              style: { borderRadius: "12px" },
-            }}
-          >
-            <DialogTitle>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottom: "1px solid #eee",
-                  paddingBottom: "1rem",
-                }}
-              >
-                <h2 variant="h5" fontWeight="600" color="#333">
-                  {newName} {newLastName}
-                </h2>
                 <ArvinButton
-                  onClick={handleSeeModal}
-                  style={{ minWidth: "auto", padding: "8px" }}
-                >
-                  X
-                </ArvinButton>
-              </div>
-            </DialogTitle>
-
-            <DialogContent style={{ padding: "2rem" }}>
-              {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
-              <div
-                style={{
-                  backgroundColor: "#f8f9fa",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  marginBottom: "2rem",
-                }}
-              >
-                <h2 gutterBottom fontWeight="600" color="#333">
-                  📝 Informações Básicas
-                </h2>
-
-                <div
+                  onClick={() => handleCostDetailModal()}
                   style={{
-                    backgroundColor: "#fff3cd",
-                    border: "1px solid #ffeaa7",
-                    borderRadius: "8px",
-                    padding: "16px",
-                    marginBottom: "20px",
-                    display: "flex",
-                    alignItems: "flex-start",
-                    gap: "12px",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 12px",
                   }}
                 >
-                  <div style={{ fontSize: "20px", color: "#d4a574" }}>⚠️</div>
-                  <div>
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#856404",
-                        marginBottom: "8px",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      IMPORTANTE: Mudanças nesta sessão não afetam dados já
-                      contabilizados este mês.
-                    </div>
-                    <div
-                      style={{
-                        fontSize: "13px",
-                        color: "#856404",
-                        lineHeight: "1.5",
-                        fontFamily: textGeneralFont(),
-                      }}
-                    >
-                      • As mudanças <strong>só afetarão</strong> os próximos
-                      relatórios financeiros
-                      <br />• Para ajustar valores do mês atual, edite
-                      diretamente os itens do relatório financeiro de{" "}
-                      {transformMonth(selectedMonth)}
-                    </div>
+                  Fechar
+                </ArvinButton>
+              </>
+            )}
+
+            {isEditingCost && !showDeleteConfirmation && (
+              <div style={{ display: "flex", gap: "12px" }}>
+                <ArvinButton
+                  onClick={() => {
+                    setIsEditingCost(false);
+                    if (selectedCost) {
+                      setEditCostDescription(selectedCost.description);
+                      setEditCostAmount(selectedCost.amount);
+                    }
+                  }}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  Cancelar
+                </ArvinButton>
+                <ArvinButton
+                  onClick={() =>
+                    selectedCost &&
+                    handleEditCost(
+                      selectedCost.description,
+                      selectedCost.amount,
+                      editCostDescription,
+                      editCostAmount
+                    )
+                  }
+                  variant="contained"
+                  disabled={!editCostDescription.trim() || !editCostAmount}
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontFamily: textGeneralFont(),
+                    backgroundColor:
+                      !editCostDescription.trim() || !editCostAmount
+                        ? "#9ca3af"
+                        : primaryColor(),
+                  }}
+                >
+                  Salvar
+                </ArvinButton>
+              </div>
+            )}
+
+            {showDeleteConfirmation && (
+              <div style={{ display: "flex", gap: "12px" }}>
+                <ArvinButton
+                  onClick={() => setShowDeleteConfirmation(false)}
+                  style={{
+                    color: "#6b7280",
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  Não
+                </ArvinButton>
+                <ArvinButton
+                  onClick={() =>
+                    selectedCost &&
+                    handleDeleteCost(
+                      selectedCost.description,
+                      selectedCost.amount
+                    )
+                  }
+                  color="red"
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: "500",
+                    textTransform: "none",
+                    padding: "6px 16px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  Sim, excluir
+                </ArvinButton>
+              </div>
+            )}
+          </DialogActions>
+        </Dialog>
+
+        <Dialog
+          open={isVisible}
+          onClose={handleSeeModal}
+          fullWidth
+          maxWidth="md"
+          PaperProps={{
+            style: { borderRadius: "12px" },
+          }}
+        >
+          <DialogTitle>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderBottom: "1px solid #eee",
+                paddingBottom: "1rem",
+              }}
+            >
+              <h2 variant="h5" fontWeight="600" color="#333">
+                {newName} {newLastName}
+              </h2>
+              <ArvinButton
+                onClick={handleSeeModal}
+                style={{ minWidth: "auto", padding: "8px" }}
+              >
+                X
+              </ArvinButton>
+            </div>
+          </DialogTitle>
+
+          <DialogContent style={{ padding: "2rem" }}>
+            {/* SEÇÃO 1: INFORMAÇÕES BÁSICAS */}
+            <div
+              style={{
+                backgroundColor: "#f8f9fa",
+                padding: "1.5rem",
+                borderRadius: "8px",
+                marginBottom: "2rem",
+              }}
+            >
+              <h2 gutterBottom fontWeight="600" color="#333">
+                📝 Informações Básicas
+              </h2>
+
+              <div
+                style={{
+                  backgroundColor: "#fff3cd",
+                  border: "1px solid #ffeaa7",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  marginBottom: "20px",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  gap: "12px",
+                }}
+              >
+                <div style={{ fontSize: "20px", color: "#d4a574" }}>⚠️</div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#856404",
+                      marginBottom: "8px",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    IMPORTANTE: Mudanças nesta sessão não afetam dados já
+                    contabilizados este mês.
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#856404",
+                      lineHeight: "1.5",
+                      fontFamily: textGeneralFont(),
+                    }}
+                  >
+                    • As mudanças <strong>só afetarão</strong> os próximos
+                    relatórios financeiros
+                    <br />• Para ajustar valores do mês atual, edite diretamente
+                    os itens do relatório financeiro de{" "}
+                    {transformMonth(selectedMonth)}
                   </div>
                 </div>
+              </div>
 
-                <Grid container spacing={2}>
-                  {newName && (
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Nome"
-                        value={newName}
-                        onChange={(e) => setNewName(e.target.value)}
-                        size="small"
-                      />
-                    </Grid>
-                  )}
-                  {newLastName && (
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Sobrenome"
-                        value={newLastName}
-                        onChange={(e) => setNewLastName(e.target.value)}
-                        size="small"
-                      />
-                    </Grid>
-                  )}
-                  {newPhone && (
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Telefone"
-                        value={newPhone}
-                        onChange={(e) => setNewPhone(e.target.value)}
-                        size="small"
-                      />
-                    </Grid>
-                  )}
-                  {newAddress && (
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        label="Endereço"
-                        value={newAddress}
-                        onChange={(e) => setNewAddress(e.target.value)}
-                        size="small"
-                      />
-                    </Grid>
-                  )}
-                  {weeklyClasses && (
-                    <Grid item xs={12} md={6}>
-                      <TextField
-                        fullWidth
-                        type="number"
-                        label="Aulas por semana"
-                        value={weeklyClasses}
-                        onChange={(e) => setWeeklyClasses(e.target.value)}
-                        size="small"
-                      />
-                    </Grid>
-                  )}{" "}
+              <Grid container spacing={2}>
+                {newName && (
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      type="string"
-                      label="Mensalidade"
-                      value={fee}
-                      onChange={(e) => setFee(e.target.value)}
+                      label="Nome"
+                      value={newName}
+                      onChange={(e) => setNewName(e.target.value)}
                       size="small"
                     />
                   </Grid>
+                )}
+                {newLastName && (
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Sobrenome"
+                      value={newLastName}
+                      onChange={(e) => setNewLastName(e.target.value)}
+                      size="small"
+                    />
+                  </Grid>
+                )}
+                {newPhone && (
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Telefone"
+                      value={newPhone}
+                      onChange={(e) => setNewPhone(e.target.value)}
+                      size="small"
+                    />
+                  </Grid>
+                )}
+                {newAddress && (
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="Endereço"
+                      value={newAddress}
+                      onChange={(e) => setNewAddress(e.target.value)}
+                      size="small"
+                    />
+                  </Grid>
+                )}
+                {weeklyClasses && (
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      type="number"
+                      label="Aulas por semana"
+                      value={weeklyClasses}
+                      onChange={(e) => setWeeklyClasses(e.target.value)}
+                      size="small"
+                    />
+                  </Grid>
+                )}{" "}
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    type="string"
+                    label="Mensalidade"
+                    value={fee}
+                    onChange={(e) => setFee(e.target.value)}
+                    size="small"
+                  />
                 </Grid>
+              </Grid>
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: "1rem",
-                  }}
-                >
-                  <ArvinButton
-                    onClick={() => editStudent(ID)}
-                    style={{
-                      backgroundColor: partnerColor(),
-                      fontWeight: "600",
-                    }}
-                  >
-                    💾 Salvar Informações
-                  </ArvinButton>
-                </div>
-              </div>
-              {/* SEÇÃO 3: CONFIGURAÇÕES */}
-              <div
-                style={{
-                  backgroundColor: "#e3f2fd",
-                  padding: "1.5rem",
-                  borderRadius: "8px",
-                  marginBottom: "2rem",
-                  border: "1px solid #bbdefb",
-                }}
-              >
-                <h2 gutterBottom fontWeight="600" color="#333">
-                  ⚙️ Configurações
-                </h2>
-
-                <Grid container spacing={2}>
-                  <Grid item xs={12} md={4}>
-                    Mensalidade em dia?
-                    <br />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={feeUpToDate}
-                          onChange={() => {
-                            updateFeeStatus(ID);
-                            setFeeUpToDate(!feeUpToDate);
-                          }}
-                          color="primary"
-                        />
-                      }
-                      label={feeUpToDate ? "💰 Sim" : "⚠️ Não"}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    Matrícula ativa?
-                    <br />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={!onHold}
-                          onChange={() => {
-                            updateOnHold(ID);
-                            setOnHold(!onHold);
-                          }}
-                          color="primary"
-                        />
-                      }
-                      label={onHold ? "Não" : "Sim"}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} md={4}>
-                    Aluno particular?
-                    <br />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={tutoree}
-                          onChange={() => {
-                            updateTutoree(ID);
-                            setTutoree(!tutoree);
-                          }}
-                          color="primary"
-                        />
-                      }
-                      label={tutoree ? "📚 Sim" : "📖 Não"}
-                    />
-                  </Grid>
-                  <div>
-                    <span
-                      style={{
-                        color: !feeUpToDate ? "red" : "green",
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        marginLeft: "1rem",
-                      }}
-                    >
-                      {feeUpToDate
-                        ? "Mensalidade em Dia"
-                        : "Mensalidade Atrasada"}
-                    </span>
-                    <span
-                      style={{
-                        color: onHold ? "red" : "green",
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        marginLeft: "1rem",
-                      }}
-                    >
-                      {onHold ? "Matrícula Trancada" : "Matrícula Ativa"}
-                    </span>
-                    <span
-                      style={{
-                        color: !tutoree ? "red" : "green",
-                        fontWeight: "bold",
-                        fontSize: "1rem",
-                        marginLeft: "1rem",
-                      }}
-                    >
-                      {tutoree ? "Aluno particular" : "Não é aluno particular"}
-                    </span>
-                  </div>
-                </Grid>
-              </div>
-            </DialogContent>
-
-            <DialogActions
-              style={{
-                padding: "1.5rem",
-                borderTop: "1px solid #eee",
-                justifyContent: "space-between",
-              }}
-            >
-              {!seeConfirmDelete ? (
-                <>
-                  <ArvinButton
-                    color="red"
-                    onClick={() => setSeeConfirmDelete(true)}
-                  >
-                    🗑️ Excluir Aluno
-                  </ArvinButton>
-                  <div style={{ display: "flex", gap: "1rem" }}>
-                    <ArvinButton onClick={handleSeeModal}>Cancelar</ArvinButton>
-                  </div>
-                </>
-              ) : (
-                <div style={{ width: "100%", textAlign: "center" }}>
-                  <h2 color="error" gutterBottom>
-                    ⚠️ Confirmar Exclusão
-                  </h2>
-                  <h2 color="textSecondary" gutterBottom>
-                    Tem certeza que deseja excluir{" "}
-                    <strong>
-                      {newName} {newLastName}
-                    </strong>
-                    ?
-                    <br />
-                    <small>Esta ação não pode ser desfeita.</small>
-                  </h2>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: "1rem",
-                      marginTop: "1rem",
-                    }}
-                  >
-                    <ArvinButton onClick={() => setSeeConfirmDelete(false)}>
-                      Cancelar
-                    </ArvinButton>
-                    <ArvinButton color="red" onClick={handleDelete}>
-                      Confirmar Exclusão
-                    </ArvinButton>
-                  </div>
-                </div>
-              )}
-            </DialogActions>
-          </Dialog>
-
-          {/* Financial Report Edit Modal */}
-          <Dialog
-            open={financialReportModalOpen}
-            onClose={() => handleFinancialReportModal()}
-            fullWidth
-            maxWidth="sm"
-            PaperProps={{
-              style: {
-                borderRadius: "12px",
-                padding: "8px",
-              },
-            }}
-          >
-            <DialogTitle>
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: "16px",
-                  borderBottom: "1px solid #e5e7eb",
+                  justifyContent: "flex-end",
+                  marginTop: "1rem",
                 }}
               >
-                <h2
-                  style={{
-                    fontFamily: textTitleFont(),
-                    color: "#1f2937",
-                    fontSize: "18px",
-                    fontWeight: "500",
-                    margin: "0",
-                    letterSpacing: "-0.025em",
-                  }}
-                >
-                  Editar Relatório Financeiro
-                </h2>
                 <ArvinButton
-                  onClick={() => handleFinancialReportModal()}
+                  onClick={() => editStudent(ID)}
                   style={{
-                    minWidth: "auto",
-                    padding: "8px",
+                    backgroundColor: partnerColor(),
+                    fontWeight: "600",
                   }}
                 >
-                  x
+                  💾 Salvar Informações
                 </ArvinButton>
               </div>
-            </DialogTitle>
+            </div>
+            {/* SEÇÃO 3: CONFIGURAÇÕES */}
+            <div
+              style={{
+                backgroundColor: "#e3f2fd",
+                padding: "1.5rem",
+                borderRadius: "8px",
+                marginBottom: "2rem",
+                border: "1px solid #bbdefb",
+              }}
+            >
+              <h2 gutterBottom fontWeight="600" color="#333">
+                ⚙️ Configurações
+              </h2>
 
-            <DialogContent style={{ padding: "24px 24px 16px" }}>
-              {selectedFinancialReport && (
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={4}>
+                  Mensalidade em dia?
+                  <br />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={feeUpToDate}
+                        onChange={() => {
+                          updateFeeStatus(ID);
+                          setFeeUpToDate(!feeUpToDate);
+                        }}
+                        color="primary"
+                      />
+                    }
+                    label={feeUpToDate ? "💰 Sim" : "⚠️ Não"}
+                  />
+                </Grid>
+                <Grid item xs={12} md={4}>
+                  Matrícula ativa?
+                  <br />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={!onHold}
+                        onChange={() => {
+                          updateOnHold(ID);
+                          setOnHold(!onHold);
+                        }}
+                        color="primary"
+                      />
+                    }
+                    label={onHold ? "Não" : "Sim"}
+                  />
+                </Grid>
+
+                <Grid item xs={12} md={4}>
+                  Aluno particular?
+                  <br />
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={tutoree}
+                        onChange={() => {
+                          updateTutoree(ID);
+                          setTutoree(!tutoree);
+                        }}
+                        color="primary"
+                      />
+                    }
+                    label={tutoree ? "📚 Sim" : "📖 Não"}
+                  />
+                </Grid>
                 <div>
-                  <div className="linguee-form-group">
-                    <label className="linguee-label linguee-label-required">
-                      Descrição
-                    </label>
-                    <input
-                      type="text"
-                      className="linguee-input linguee-input-text"
-                      value={editReportDescription}
-                      onChange={(e) => setEditReportDescription(e.target.value)}
-                      placeholder="Descrição do item financeiro"
-                    />
-                  </div>
-
-                  <div
+                  <span
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "16px",
+                      color: !feeUpToDate ? "red" : "green",
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      marginLeft: "1rem",
                     }}
                   >
-                    <div className="linguee-form-group">
-                      <label className="linguee-label linguee-label-required">
-                        Valor (R$)
-                      </label>
-                      <input
-                        type="number"
-                        className="linguee-input linguee-input-number"
-                        value={
-                          editReportAmount ? Math.abs(editReportAmount) : ""
-                        }
-                        onChange={(e) => {
-                          setEditReportAmount(e.target.value);
-                          if (editReportPaidFor) {
-                            setEditReportPaidSoFar(e.target.value);
-                          }
-                        }}
-                        placeholder="0,00"
-                        min="0"
-                        step="0.01"
-                      />
-                    </div>
+                    {feeUpToDate
+                      ? "Mensalidade em Dia"
+                      : "Mensalidade Atrasada"}
+                  </span>
+                  <span
+                    style={{
+                      color: onHold ? "red" : "green",
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      marginLeft: "1rem",
+                    }}
+                  >
+                    {onHold ? "Matrícula Trancada" : "Matrícula Ativa"}
+                  </span>
+                  <span
+                    style={{
+                      color: !tutoree ? "red" : "green",
+                      fontWeight: "bold",
+                      fontSize: "1rem",
+                      marginLeft: "1rem",
+                    }}
+                  >
+                    {tutoree ? "Aluno particular" : "Não é aluno particular"}
+                  </span>
+                </div>
+              </Grid>
+            </div>
+          </DialogContent>
 
-                    {editReportTypeOfItem !== "debt" && (
-                      <div className="linguee-form-group">
-                        <label className="linguee-label">Desconto (R$)</label>
-                        <input
-                          type="number"
-                          className="linguee-input linguee-input-number"
-                          value={editReportDiscount}
-                          onChange={(e) =>
-                            setEditReportDiscount(e.target.value)
-                          }
-                          placeholder="0,00"
-                          min="0"
-                          step="0.01"
-                        />
-                      </div>
-                    )}
-                  </div>
+          <DialogActions
+            style={{
+              padding: "1.5rem",
+              borderTop: "1px solid #eee",
+              justifyContent: "space-between",
+            }}
+          >
+            {!seeConfirmDelete ? (
+              <>
+                <ArvinButton
+                  color="red"
+                  onClick={() => setSeeConfirmDelete(true)}
+                >
+                  🗑️ Excluir Aluno
+                </ArvinButton>
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <ArvinButton onClick={handleSeeModal}>Cancelar</ArvinButton>
+                </div>
+              </>
+            ) : (
+              <div style={{ width: "100%", textAlign: "center" }}>
+                <h2 color="error" gutterBottom>
+                  ⚠️ Confirmar Exclusão
+                </h2>
+                <h2 color="textSecondary" gutterBottom>
+                  Tem certeza que deseja excluir{" "}
+                  <strong>
+                    {newName} {newLastName}
+                  </strong>
+                  ?
+                  <br />
+                  <small>Esta ação não pode ser desfeita.</small>
+                </h2>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "1rem",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <ArvinButton onClick={() => setSeeConfirmDelete(false)}>
+                    Cancelar
+                  </ArvinButton>
+                  <ArvinButton color="red" onClick={handleDelete}>
+                    Confirmar Exclusão
+                  </ArvinButton>
+                </div>
+              </div>
+            )}
+          </DialogActions>
+        </Dialog>
+
+        {/* Financial Report Edit Modal */}
+        <Dialog
+          open={financialReportModalOpen}
+          onClose={() => handleFinancialReportModal()}
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+            style: {
+              borderRadius: "12px",
+              padding: "8px",
+            },
+          }}
+        >
+          <DialogTitle>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <h2
+                style={{
+                  fontFamily: textTitleFont(),
+                  color: "#1f2937",
+                  fontSize: "18px",
+                  fontWeight: "500",
+                  margin: "0",
+                  letterSpacing: "-0.025em",
+                }}
+              >
+                Editar Relatório Financeiro
+              </h2>
+              <ArvinButton
+                onClick={() => handleFinancialReportModal()}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px",
+                }}
+              >
+                x
+              </ArvinButton>
+            </div>
+          </DialogTitle>
+
+          <DialogContent style={{ padding: "24px 24px 16px" }}>
+            {selectedFinancialReport && (
+              <div>
+                <div className="linguee-form-group">
+                  <label className="linguee-label linguee-label-required">
+                    Descrição
+                  </label>
+                  <input
+                    type="text"
+                    className="linguee-input linguee-input-text"
+                    value={editReportDescription}
+                    onChange={(e) => setEditReportDescription(e.target.value)}
+                    placeholder="Descrição do item financeiro"
+                  />
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "16px",
+                  }}
+                >
                   <div className="linguee-form-group">
-                    <label className="linguee-label">Pago até aqui</label>
+                    <label className="linguee-label linguee-label-required">
+                      Valor (R$)
+                    </label>
                     <input
                       type="number"
                       className="linguee-input linguee-input-number"
-                      value={editReportPaidSoFar}
+                      value={editReportAmount ? Math.abs(editReportAmount) : ""}
                       onChange={(e) => {
-                        setEditReportPaidSoFar(e.target.value);
-                        if (e.target.value >= editReportAmount) {
-                          setEditReportPaidFor(true);
-                          console.log(e.target.value);
-                        } else if (e.target.value < editReportAmount) {
-                          setEditReportPaidFor(false);
+                        setEditReportAmount(e.target.value);
+                        if (editReportPaidFor) {
+                          setEditReportPaidSoFar(e.target.value);
                         }
                       }}
                       placeholder="0,00"
                       min="0"
                       step="0.01"
                     />
-                    {editReportPaidSoFar > editReportAmount && (
-                      <span
-                        style={{
-                          color: "green",
-                          marginLeft: "8px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Superado!
-                      </span>
-                    )}
                   </div>
+
                   {editReportTypeOfItem !== "debt" && (
                     <div className="linguee-form-group">
-                      <label className="linguee-label">Tipo de Item</label>
-                      <select
-                        className="linguee-select"
-                        value={editReportTypeOfItem}
-                        onChange={(e) =>
-                          setEditReportTypeOfItem(e.target.value)
-                        }
-                      >
-                        <option value="fee">Mensalidade</option>
-                        <option value="others">Outro</option>
-                      </select>
+                      <label className="linguee-label">Desconto (R$)</label>
+                      <input
+                        type="number"
+                        className="linguee-input linguee-input-number"
+                        value={editReportDiscount}
+                        onChange={(e) => setEditReportDiscount(e.target.value)}
+                        placeholder="0,00"
+                        min="0"
+                        step="0.01"
+                      />
                     </div>
                   )}
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
-                      gap: "16px",
+                </div>
+                <div className="linguee-form-group">
+                  <label className="linguee-label">Pago até aqui</label>
+                  <input
+                    type="number"
+                    className="linguee-input linguee-input-number"
+                    value={editReportPaidSoFar}
+                    onChange={(e) => {
+                      setEditReportPaidSoFar(e.target.value);
+                      if (e.target.value >= editReportAmount) {
+                        setEditReportPaidFor(true);
+                        console.log(e.target.value);
+                      } else if (e.target.value < editReportAmount) {
+                        setEditReportPaidFor(false);
+                      }
                     }}
-                  >
-                    <div className="linguee-form-group">
-                      <label className="linguee-checkbox-item">
-                        <div className="linguee-toggle">
-                          <input
-                            type="checkbox"
-                            checked={editReportAccountFor}
-                            onChange={(e) =>
-                              setEditReportAccountFor(e.target.checked)
-                            }
-                          />
-                          <div className="linguee-toggle-slider"></div>
-                        </div>
-                        <span className="linguee-checkbox-label">
-                          Contabilizar
-                        </span>
-                      </label>
-                    </div>
+                    placeholder="0,00"
+                    min="0"
+                    step="0.01"
+                  />
+                </div>
+                {editReportTypeOfItem !== "debt" && (
+                  <div className="linguee-form-group">
+                    <label className="linguee-label">Tipo de Item</label>
+                    <select
+                      className="linguee-select"
+                      value={editReportTypeOfItem}
+                      onChange={(e) => setEditReportTypeOfItem(e.target.value)}
+                    >
+                      <option value="fee">Mensalidade</option>
+                      <option value="others">Outro</option>
+                    </select>
+                  </div>
+                )}
 
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: editReportAccountFor
+                      ? "1fr 1fr"
+                      : "1fr",
+                    gap: "16px",
+                  }}
+                >
+                  <div className="linguee-form-group">
+                    <label className="linguee-checkbox-item">
+                      <div className="linguee-toggle">
+                        <input
+                          type="checkbox"
+                          checked={editReportAccountFor}
+                          onChange={(e) => {
+                            setEditReportAccountFor(e.target.checked);
+                            // Se desmarcar "Contabilizar", desmarcar "Quitado"
+                            if (!e.target.checked) {
+                              setEditReportPaidFor(false);
+                            }
+                          }}
+                        />
+                        <div className="linguee-toggle-slider"></div>
+                      </div>
+                      <span className="linguee-checkbox-label">
+                        Contabilizar
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
+                  {editReportAccountFor && (
                     <div className="linguee-form-group">
                       <label className="linguee-checkbox-item">
                         <div className="linguee-toggle">
@@ -3277,180 +3459,189 @@ export function FinancialResources({ headers, id }) {
                         <span className="linguee-checkbox-label">Quitado</span>
                       </label>
                     </div>
-                  </div>
+                  )}
                 </div>
-              )}
-            </DialogContent>
+              </div>
+            )}
+          </DialogContent>
 
-            <DialogActions
-              style={{
-                padding: "16px 24px 24px",
-                gap: "12px",
-                justifyContent: "flex-end",
-              }}
-            >
-              <button
-                className="linguee-btn"
-                onClick={() => handleFinancialReportModal()}
-              >
-                Cancelar
-              </button>
-              <button
-                className={`linguee-btn ${
-                  !editReportDescription.trim() || !editReportAmount
-                    ? ""
-                    : "linguee-btn-primary"
-                }`}
-                onClick={handleSaveFinancialReport}
-                disabled={!editReportDescription.trim() || !editReportAmount}
-                style={{
-                  backgroundColor:
-                    !editReportDescription.trim() || !editReportAmount
-                      ? "#9ca3af"
-                      : undefined,
-                  cursor:
-                    !editReportDescription.trim() || !editReportAmount
-                      ? "not-allowed"
-                      : "pointer",
-                }}
-              >
-                Salvar
-              </button>
-            </DialogActions>
-          </Dialog>
-
-          {/* MODAL NOVO ITEM FINANCEIRO */}
-          <Dialog
-            open={newItemModalOpen}
-            onClose={handleNewItemModal}
-            fullWidth
-            maxWidth="sm"
-            PaperProps={{
-              style: {
-                borderRadius: "12px",
-                padding: "8px",
-              },
+          <DialogActions
+            style={{
+              padding: "16px 24px 24px",
+              gap: "12px",
+              justifyContent: "flex-end",
             }}
           >
-            <DialogTitle>
-              <div
+            <button
+              className="linguee-btn"
+              onClick={() => handleFinancialReportModal()}
+            >
+              Cancelar
+            </button>
+            <button
+              className={`linguee-btn ${
+                !editReportDescription.trim() || !editReportAmount
+                  ? ""
+                  : "linguee-btn-primary"
+              }`}
+              onClick={handleSaveFinancialReport}
+              disabled={!editReportDescription.trim() || !editReportAmount}
+              style={{
+                backgroundColor:
+                  !editReportDescription.trim() || !editReportAmount
+                    ? "#9ca3af"
+                    : undefined,
+                cursor:
+                  !editReportDescription.trim() || !editReportAmount
+                    ? "not-allowed"
+                    : "pointer",
+              }}
+            >
+              Salvar
+            </button>
+          </DialogActions>
+        </Dialog>
+
+        {/* MODAL NOVO ITEM FINANCEIRO */}
+        <Dialog
+          open={newItemModalOpen}
+          onClose={handleNewItemModal}
+          fullWidth
+          maxWidth="sm"
+          PaperProps={{
+            style: {
+              borderRadius: "12px",
+              padding: "8px",
+            },
+          }}
+        >
+          <DialogTitle>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                paddingBottom: "16px",
+                borderBottom: "1px solid #e5e7eb",
+              }}
+            >
+              <h2
                 style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingBottom: "16px",
-                  borderBottom: "1px solid #e5e7eb",
+                  fontFamily: textTitleFont(),
+                  color: "#1f2937",
+                  fontSize: "18px",
+                  fontWeight: "500",
+                  margin: "0",
+                  letterSpacing: "-0.025em",
                 }}
               >
-                <h2
-                  style={{
-                    fontFamily: textTitleFont(),
-                    color: "#1f2937",
-                    fontSize: "18px",
-                    fontWeight: "500",
-                    margin: "0",
-                    letterSpacing: "-0.025em",
-                  }}
-                >
-                  Novo Item Financeiro: {transformMonth(selectedMonth)}
-                </h2>
-                <ArvinButton
-                  onClick={handleNewItemModal}
-                  style={{
-                    minWidth: "auto",
-                    padding: "8px",
-                  }}
-                >
-                  x{" "}
-                </ArvinButton>
-              </div>
-            </DialogTitle>
+                Novo Item Financeiro: {transformMonth(selectedMonth)}
+              </h2>
+              <ArvinButton
+                onClick={handleNewItemModal}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px",
+                }}
+              >
+                x{" "}
+              </ArvinButton>
+            </div>
+          </DialogTitle>
 
-            <DialogContent style={{ padding: "24px 24px 16px" }}>
+          <DialogContent style={{ padding: "24px 24px 16px" }}>
+            <div className="linguee-form-group">
+              <label className="linguee-label linguee-label-required">
+                Descrição
+              </label>
+              <input
+                type="text"
+                className="linguee-input linguee-input-text"
+                value={newItemDescription}
+                onChange={(e) => setNewItemDescription(e.target.value)}
+                placeholder="Ex: Venda de curso, Aluguel..."
+              />
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "16px",
+              }}
+            >
               <div className="linguee-form-group">
                 <label className="linguee-label linguee-label-required">
-                  Descrição
+                  Valor (R$)
                 </label>
                 <input
-                  type="text"
-                  className="linguee-input linguee-input-text"
-                  value={newItemDescription}
-                  onChange={(e) => setNewItemDescription(e.target.value)}
-                  placeholder="Ex: Venda de curso, Aluguel..."
+                  type="number"
+                  className="linguee-input linguee-input-number"
+                  value={newItemAmount ? Math.abs(newItemAmount) : ""}
+                  onChange={(e) => setNewItemAmount(e.target.value)}
+                  placeholder="0,00"
+                  min="0"
+                  step="0.01"
                 />
               </div>
 
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "16px",
-                }}
-              >
+              {newItemTypeOfItem !== "debt" && (
                 <div className="linguee-form-group">
-                  <label className="linguee-label linguee-label-required">
-                    Valor (R$)
-                  </label>
+                  <label className="linguee-label">Desconto (R$)</label>
                   <input
                     type="number"
                     className="linguee-input linguee-input-number"
-                    value={newItemAmount ? Math.abs(newItemAmount) : ""}
-                    onChange={(e) => setNewItemAmount(e.target.value)}
+                    value={newItemTypeOfItem == "debt" ? 0 : newItemDiscount}
+                    onChange={(e) => setNewItemDiscount(e.target.value)}
                     placeholder="0,00"
                     min="0"
                     step="0.01"
                   />
                 </div>
+              )}
+            </div>
 
-                {newItemTypeOfItem !== "debt" && (
-                  <div className="linguee-form-group">
-                    <label className="linguee-label">Desconto (R$)</label>
-                    <input
-                      type="number"
-                      className="linguee-input linguee-input-number"
-                      value={newItemTypeOfItem == "debt" ? 0 : newItemDiscount}
-                      onChange={(e) => setNewItemDiscount(e.target.value)}
-                      placeholder="0,00"
-                      min="0"
-                      step="0.01"
-                    />
-                  </div>
-                )}
-              </div>
-
-              <div className="linguee-form-group">
-                <label className="linguee-label">Tipo de Item</label>
-                <select
-                  className="linguee-select"
-                  value={newItemTypeOfItem}
-                  onChange={(e) => setNewItemTypeOfItem(e.target.value)}
-                >
-                  <option value="others">Entrada</option>
-                  <option value="debt">Saída</option>
-                </select>
-              </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "16px",
-                }}
+            <div className="linguee-form-group">
+              <label className="linguee-label">Tipo de Item</label>
+              <select
+                className="linguee-select"
+                value={newItemTypeOfItem}
+                onChange={(e) => setNewItemTypeOfItem(e.target.value)}
               >
-                <div className="linguee-form-group">
-                  <label className="linguee-checkbox-item">
-                    <div className="linguee-toggle">
-                      <input
-                        type="checkbox"
-                        checked={newItemAccountFor}
-                        onChange={(e) => setNewItemAccountFor(e.target.checked)}
-                      />
-                      <div className="linguee-toggle-slider"></div>
-                    </div>
-                    <span className="linguee-checkbox-label">Contabilizar</span>
-                  </label>
-                </div>
+                <option value="others">Entrada</option>
+                <option value="debt">Saída</option>
+              </select>
+            </div>
 
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: newItemAccountFor ? "1fr 1fr" : "1fr",
+                gap: "16px",
+              }}
+            >
+              <div className="linguee-form-group">
+                <label className="linguee-checkbox-item">
+                  <div className="linguee-toggle">
+                    <input
+                      type="checkbox"
+                      checked={newItemAccountFor}
+                      onChange={(e) => {
+                        setNewItemAccountFor(e.target.checked);
+                        // Se desmarcar "Contabilizar", desmarcar "Quitado"
+                        if (!e.target.checked) {
+                          setNewItemPaidFor(false);
+                        }
+                      }}
+                    />
+                    <div className="linguee-toggle-slider"></div>
+                  </div>
+                  <span className="linguee-checkbox-label">Contabilizar</span>
+                </label>
+              </div>
+
+              {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
+              {newItemAccountFor && (
                 <div className="linguee-form-group">
                   <label className="linguee-checkbox-item">
                     <div className="linguee-toggle">
@@ -3464,47 +3655,47 @@ export function FinancialResources({ headers, id }) {
                     <span className="linguee-checkbox-label">Quitado</span>
                   </label>
                 </div>
-              </div>
-            </DialogContent>
+              )}
+            </div>
+          </DialogContent>
 
-            <DialogActions
+          <DialogActions
+            style={{
+              padding: "16px 24px 24px",
+              gap: "12px",
+              justifyContent: "flex-end",
+            }}
+          >
+            <button
+              className="linguee-btn linguee-btn-ghost"
+              onClick={handleNewItemModal}
+            >
+              Cancelar
+            </button>
+            <button
+              className="linguee-btn linguee-btn-primary"
+              onClick={newStandaloneItem}
+              disabled={!newItemDescription.trim() || !newItemAmount}
               style={{
-                padding: "16px 24px 24px",
-                gap: "12px",
-                justifyContent: "flex-end",
+                backgroundColor:
+                  !newItemDescription.trim() || !newItemAmount
+                    ? "#9ca3af"
+                    : newItemTypeOfItem === "debt"
+                    ? "#dc2626"
+                    : "#16a34a",
+                cursor:
+                  !newItemDescription.trim() || !newItemAmount
+                    ? "not-allowed"
+                    : "pointer",
               }}
             >
-              <button
-                className="linguee-btn linguee-btn-ghost"
-                onClick={handleNewItemModal}
-              >
-                Cancelar
-              </button>
-              <button
-                className="linguee-btn linguee-btn-primary"
-                onClick={newStandaloneItem}
-                disabled={!newItemDescription.trim() || !newItemAmount}
-                style={{
-                  backgroundColor:
-                    !newItemDescription.trim() || !newItemAmount
-                      ? "#9ca3af"
-                      : newItemTypeOfItem === "debt"
-                      ? "#dc2626"
-                      : "#16a34a",
-                  cursor:
-                    !newItemDescription.trim() || !newItemAmount
-                      ? "not-allowed"
-                      : "pointer",
-                }}
-              >
-                {newItemTypeOfItem === "debt"
-                  ? "💸 Criar Saída"
-                  : "💰 Criar Entrada"}
-              </button>
-            </DialogActions>
-          </Dialog>
-        </section>
-      </div>
+              {newItemTypeOfItem === "debt"
+                ? "💸 Criar Saída"
+                : "💰 Criar Entrada"}
+            </button>
+          </DialogActions>
+        </Dialog>
+      </section>
     </div>
   );
 }
