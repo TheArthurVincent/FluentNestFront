@@ -73,6 +73,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [fee, setFee] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [seeConfirmDelete, setSeeConfirmDelete] = useState(false);
+  const [seePermissionsOrNot, setSeePermissionsOrNot] = useState(false);
   const [ID, setID] = useState("");
   const [value, setValue] = useState("1");
   const [homeworkAssignmentsDone, setHomeworkAssignmentsDone] = useState(0);
@@ -203,10 +204,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
       notifyAlert("Usuário editado com sucesso!", "green");
       setSelectedStudent(null);
-      console.log("response.data.updatedUser", response.data.updatedUser);
-      setTimeout(() => {
-        console.log(selectedStudent);
-      }, 2000);
 
       handleSeeModal();
       fetchStudents();
@@ -250,15 +247,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
         headers,
       });
       setStudents(response.data.listOfStudents);
-      console.log(response.data.listOfStudents);
       setLoading(false);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     }
   };
-  useEffect(() => {
-    fetchStudents();
-  }, [uploadStatus]);
 
   const deleteStudent = async (id) => {
     try {
@@ -282,6 +275,33 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [seeFinanceHistory, setSeeFinanceHistory] = useState(false);
+  const [seeClassesHistory, setSeeClassesHistory] = useState(false);
+  const [eventsList, setEventsList] = useState([]);
+  const [loadingEventsList, setLoadingEventsList] = useState(false);
+  const [loadingPermissions, setLoadingPermissions] = useState(false);
+
+  const handleSeeClassesHistory = async (id) => {
+    setLoadingEventsList(true);
+    setEventsList([]);
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/event-one-student/${id}`,
+        {
+          headers,
+        }
+      );
+
+      setEventsList(response.data.events);
+      setTimeout(() => {
+        setLoadingEventsList(false);
+      }, 100);
+    } catch (error) {
+      notifyAlert("Erro ao buscar histórico de aulas");
+      setSeeClassesHistory(!seeClassesHistory);
+      setLoadingEventsList(false);
+    }
+  };
 
   const handleResetMonth = async () => {
     const headersBack = {
@@ -332,7 +352,26 @@ export function FindStudent({ uploadStatus, headers, id }) {
     letterSpacing: "0.5px",
   };
 
+  const updateTutoree = async (id) => {
+    setLoadingPermissions(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/tutoree/${id}`,
+        {},
+        { headers }
+      );
+
+      setTutoree(response.data.tutoree);
+
+      fetchStudents();
+      setLoadingPermissions(false);
+    } catch (error) {
+      notifyAlert("Erro ao atualizar tutoria");
+    }
+  };
   const updateFeeStatus = async (id) => {
+    setLoadingPermissions(true);
+
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/feeuptodate/${id}`,
@@ -342,21 +381,18 @@ export function FindStudent({ uploadStatus, headers, id }) {
         }
       );
 
-      // Atualizar selectedStudent com o novo status
-      if (selectedStudent && selectedStudent._id === id) {
-        setSelectedStudent({
-          ...selectedStudent,
-          feeUpToDate: !selectedStudent.feeUpToDate,
-        });
-      }
+      setFeeUpToDate(response.data.feeUpToDate);
 
       fetchStudents();
+      setLoadingPermissions(false);
     } catch (error) {
-      console.log("error", error);
+      setLoadingPermissions(false);
+      console.error("error", error);
     }
   };
   const [onHold, setOnHold] = useState(false);
   const updateOnHold = async (id) => {
+    setLoadingPermissions(true);
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/onhold/${id}`,
@@ -366,16 +402,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
         }
       );
 
-      // Atualizar selectedStudent com o novo status
-      if (selectedStudent && selectedStudent._id === id) {
-        setSelectedStudent({
-          ...selectedStudent,
-          onHold: !selectedStudent.onHold,
-        });
-      }
-
+      setOnHold(response.data.onHold);
       fetchStudents();
+      setLoadingPermissions(false);
     } catch (error) {
+      setLoadingPermissions(false);
       console.log("error", error);
     }
   };
@@ -393,24 +424,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       setReplenishTarget(!replenishTarget);
     } catch (error) {
       notifyAlert("Erro ao atualizar reposição");
-    }
-  };
-
-  const updateTutoree = async (id) => {
-    try {
-      await axios.put(`${backDomain}/api/v1/tutoree/${id}`, {}, { headers });
-
-      // Atualizar selectedStudent com o novo status
-      if (selectedStudent && selectedStudent._id === id) {
-        setSelectedStudent({
-          ...selectedStudent,
-          tutoree: !selectedStudent.tutoree,
-        });
-      }
-
-      setTutoree(!tutoree);
-    } catch (error) {
-      notifyAlert("Erro ao atualizar tutoria");
     }
   };
 
@@ -518,6 +531,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
     }
   };
 
+  useEffect(() => {
+    fetchStudents();
+  }, [uploadStatus]);
+
   return (
     <>
       <HOne
@@ -587,29 +604,13 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 </Typography>
               </div>
             </div>
-
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => setSelectedStudent(null)}
-              style={{
-                minWidth: "auto",
-                padding: "8px",
-                borderRadius: "8px",
-                color: "#6c757d",
-                borderColor: "#e8eaed",
-                marginRight: "8px",
-              }}
-            >
-              ✕
-            </Button>
-
             <Button
               variant="outlined"
               size="small"
               onClick={() => {
-                console.log("selectedStudent", selectedStudent);
                 setID(selectedStudent.id);
+                setTutoree(selectedStudent.tutoree);
+                setFeeUpToDate(selectedStudent.feeUpToDate);
                 setNewName(selectedStudent.name);
                 setNewLastName(selectedStudent.lastname);
                 setNewCpf(selectedStudent.doc);
@@ -649,6 +650,21 @@ export function FindStudent({ uploadStatus, headers, id }) {
               }}
             >
               ✏️ Editar
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => setSelectedStudent(null)}
+              style={{
+                minWidth: "auto",
+                padding: "8px",
+                borderRadius: "8px",
+                color: "#6c757d",
+                borderColor: "#e8eaed",
+                marginRight: "8px",
+              }}
+            >
+              ✕
             </Button>
           </div>
 
@@ -1225,466 +1241,1014 @@ export function FindStudent({ uploadStatus, headers, id }) {
               style={{
                 color: "#2c3e50",
                 fontSize: "16px",
+                cursor: "pointer",
                 fontWeight: "600",
                 marginBottom: "16px",
                 borderBottom: "2px solid #e8eaed",
                 paddingBottom: "8px",
               }}
+              onClick={() => setSeeFinanceHistory(!seeFinanceHistory)}
+              onMouseOver={(e) => {
+                e.target.style.color = partnerColor();
+              }}
+              onMouseOut={(e) => {
+                e.target.style.color = "#2c3e50";
+              }}
             >
               Histórico Financeiro - {selectedStudent.name}{" "}
-              {selectedStudent.lastName}
+              {selectedStudent.lastname}
             </Typography>
 
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "12px" }}
-            >
-              {selectedStudent.financialReports
-                .sort((a, b) => {
-                  // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
-                  if (!a.month || !b.month) return 0;
-                  const [monthA, yearA] = a.month.split("-").map(Number);
-                  const [monthB, yearB] = b.month.split("-").map(Number);
+            {seeFinanceHistory && (
+              <div
+                style={{
+                  marginBottom: "16px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "12px",
+                  }}
+                >
+                  {selectedStudent.financialReports
+                    .sort((a, b) => {
+                      // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
+                      if (!a.month || !b.month) return 0;
+                      const [monthA, yearA] = a.month.split("-").map(Number);
+                      const [monthB, yearB] = b.month.split("-").map(Number);
 
-                  if (yearA !== yearB) return yearB - yearA; // Ano mais recente primeiro
-                  return monthB - monthA; // Mês mais recente primeiro
-                })
-                .map((report, index) => (
-                  <div
-                    key={report._id || index}
-                    style={{
-                      padding: "12px 16px",
-                      backgroundColor: "#fafbfc",
-                      borderRadius: "8px",
-                      border: "1px solid #e8eaed",
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px",
-                    }}
-                  >
-                    {/* PRIMEIRA LINHA */}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
+                      if (yearA !== yearB) return yearB - yearA; // Ano mais recente primeiro
+                      return monthB - monthA; // Mês mais recente primeiro
+                    })
+                    .map((report, index) => (
                       <div
+                        key={index + report.month}
                         style={{
+                          padding: "12px 16px",
+                          backgroundColor: "#fafbfc",
+                          borderRadius: "8px",
+                          border: "1px solid #e8eaed",
                           display: "flex",
-                          alignItems: "center",
-                          gap: "12px",
+                          flexDirection: "column",
+                          gap: "4px",
                         }}
                       >
-                        <Typography
-                          style={{
-                            fontWeight: "600",
-                            color: "#2c3e50",
-                            fontSize: "14px",
-                          }}
-                        >
-                          {report.month ? transformMonth(report.month) : "N/A"}
-                        </Typography>
-
-                        <Typography
-                          style={{
-                            fontWeight: "500",
-                            color: "#6c757d",
-                            fontSize: "12px",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.5px",
-                          }}
-                        >
-                          {report.typeOfItem === "fee"
-                            ? "Mensalidade"
-                            : report.typeOfItem || "Item"}
-                        </Typography>
-
+                        {/* PRIMEIRA LINHA */}
                         <div
                           style={{
-                            display: "inline-flex",
+                            display: "flex",
+                            justifyContent: "space-between",
                             alignItems: "center",
-                            padding: "2px 6px",
-                            borderRadius: "8px",
-                            fontSize: "11px",
-                            fontWeight: "500",
-                            backgroundColor: report.paidFor
-                              ? "#d4f6d4"
-                              : report.paidSoFar > 0
-                              ? "#fff3cd"
-                              : "#ffe6e6",
-                            color: report.paidFor
-                              ? "#2d7d32"
-                              : report.paidSoFar > 0
-                              ? "#856404"
-                              : "#d32f2f",
                           }}
                         >
-                          {report.paidFor ? (
-                            <>
-                              <i
-                                className="fa fa-check-circle"
-                                style={{ marginRight: "3px", fontSize: "10px" }}
-                              />
-                              Pago
-                            </>
-                          ) : report.paidSoFar > 0 ? (
-                            <>
-                              <i
-                                className="fa fa-adjust"
-                                style={{ marginRight: "3px", fontSize: "10px" }}
-                              />
-                              Parcial
-                            </>
-                          ) : (
-                            <>
-                              <i
-                                className="fa fa-exclamation-circle"
-                                style={{ marginRight: "3px", fontSize: "10px" }}
-                              />
-                              Pendente
-                            </>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "12px",
+                            }}
+                          >
+                            <Typography
+                              style={{
+                                fontWeight: "600",
+                                color: "#2c3e50",
+                                fontSize: "14px",
+                              }}
+                            >
+                              {report.month
+                                ? transformMonth(report.month)
+                                : "N/A"}
+                            </Typography>
+
+                            <Typography
+                              style={{
+                                fontWeight: "500",
+                                color: "#6c757d",
+                                fontSize: "12px",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.5px",
+                              }}
+                            >
+                              {report.typeOfItem === "fee"
+                                ? "Mensalidade"
+                                : report.typeOfItem || "Item"}
+                            </Typography>
+
+                            <div
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                padding: "2px 6px",
+                                borderRadius: "8px",
+                                fontSize: "11px",
+                                fontWeight: "500",
+                                backgroundColor: report.paidFor
+                                  ? "#d4f6d4"
+                                  : report.paidSoFar > 0
+                                  ? "#fff3cd"
+                                  : "#ffe6e6",
+                                color: report.paidFor
+                                  ? "#2d7d32"
+                                  : report.paidSoFar > 0
+                                  ? "#856404"
+                                  : "#d32f2f",
+                              }}
+                            >
+                              {report.paidFor ? (
+                                <>
+                                  <i
+                                    className="fa fa-check-circle"
+                                    style={{
+                                      marginRight: "3px",
+                                      fontSize: "10px",
+                                    }}
+                                  />
+                                  Pago
+                                </>
+                              ) : report.paidSoFar > 0 ? (
+                                <>
+                                  <i
+                                    className="fa fa-adjust"
+                                    style={{
+                                      marginRight: "3px",
+                                      fontSize: "10px",
+                                    }}
+                                  />
+                                  Parcial
+                                </>
+                              ) : (
+                                <>
+                                  <i
+                                    className="fa fa-exclamation-circle"
+                                    style={{
+                                      marginRight: "3px",
+                                      fontSize: "10px",
+                                    }}
+                                  />
+                                  Pendente
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          <Typography
+                            style={{
+                              fontWeight: "600",
+                              color: "#2e7d32",
+                              fontSize: "14px",
+                            }}
+                          >
+                            R$ {formatNumber(report.amount || 0)}
+                          </Typography>
+                        </div>
+
+                        {/* SEGUNDA LINHA */}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "16px",
+                            }}
+                          >
+                            {report.discount > 0 && (
+                              <Typography
+                                style={{
+                                  fontSize: "12px",
+                                  color: "#f59e0b",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Desconto: R$ {formatNumber(report.discount)}
+                              </Typography>
+                            )}
+
+                            {report.paidSoFar > 0 && (
+                              <Typography
+                                style={{
+                                  fontSize: "12px",
+                                  color: "#1976d2",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Pago: R$ {formatNumber(report.paidSoFar)}
+                              </Typography>
+                            )}
+
+                            {!report.paidFor && (
+                              <Typography
+                                style={{
+                                  fontSize: "12px",
+                                  color: "#d32f2f",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Pendente: R${" "}
+                                {formatNumber(
+                                  (report.amount || 0) - (report.paidSoFar || 0)
+                                )}
+                              </Typography>
+                            )}
+                          </div>
+
+                          {report.dueDate && (
+                            <Typography
+                              style={{
+                                fontSize: "12px",
+                                color: "#6c757d",
+                                fontWeight: "400",
+                              }}
+                            >
+                              Vencimento:{" "}
+                              {new Date(report.dueDate).toLocaleDateString(
+                                "pt-BR"
+                              )}
+                            </Typography>
                           )}
                         </div>
                       </div>
+                    ))}
+                </div>
+                {/* RESUMO TOTAL */}
+                <div
+                  style={{
+                    marginTop: "16px",
+                    padding: "12px 16px",
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: "8px",
+                    border: "1px solid #dee2e6",
+                  }}
+                >
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "8px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                      fontWeight: "600",
+                    }}
+                  >
+                    Resumo Total
+                  </Typography>
 
+                  <div
+                    style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}
+                  >
+                    <div>
                       <Typography
                         style={{
-                          fontWeight: "600",
-                          color: "#2e7d32",
-                          fontSize: "14px",
+                          fontSize: "12px",
+                          color: "#6c757d",
+                          marginBottom: "2px",
                         }}
                       >
-                        R$ {formatNumber(report.amount || 0)}
+                        Total de Itens
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "#2c3e50",
+                        }}
+                      >
+                        {selectedStudent.financialReports.length}
                       </Typography>
                     </div>
 
-                    {/* SEGUNDA LINHA */}
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <div
+                    <div>
+                      <Typography
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "16px",
+                          fontSize: "12px",
+                          color: "#6c757d",
+                          marginBottom: "2px",
                         }}
                       >
-                        {report.discount > 0 && (
-                          <Typography
-                            style={{
-                              fontSize: "12px",
-                              color: "#f59e0b",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Desconto: R$ {formatNumber(report.discount)}
-                          </Typography>
+                        Valor Total
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "#2e7d32",
+                        }}
+                      >
+                        R${" "}
+                        {formatNumber(
+                          selectedStudent.financialReports.reduce(
+                            (total, report) => total + (report.amount || 0),
+                            0
+                          )
                         )}
+                      </Typography>
+                    </div>
 
-                        {report.paidSoFar > 0 && (
-                          <Typography
-                            style={{
-                              fontSize: "12px",
-                              color: "#1976d2",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Pago: R$ {formatNumber(report.paidSoFar)}
-                          </Typography>
+                    <div>
+                      <Typography
+                        style={{
+                          fontSize: "12px",
+                          color: "#6c757d",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Itens Pagos
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "#1976d2",
+                        }}
+                      >
+                        {
+                          selectedStudent.financialReports.filter(
+                            (report) => report.paidFor
+                          ).length
+                        }
+                      </Typography>
+                    </div>
+
+                    <div>
+                      <Typography
+                        style={{
+                          fontSize: "12px",
+                          color: "#6c757d",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Itens Parciais
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "#856404",
+                        }}
+                      >
+                        {
+                          selectedStudent.financialReports.filter(
+                            (report) => !report.paidFor && report.paidSoFar > 0
+                          ).length
+                        }
+                      </Typography>
+                    </div>
+
+                    <div>
+                      <Typography
+                        style={{
+                          fontSize: "12px",
+                          color: "#6c757d",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Itens Pendentes
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "#d32f2f",
+                        }}
+                      >
+                        {
+                          selectedStudent.financialReports.filter(
+                            (report) =>
+                              !report.paidFor &&
+                              (!report.paidSoFar || report.paidSoFar === 0)
+                          ).length
+                        }
+                      </Typography>
+                    </div>
+
+                    <div>
+                      <Typography
+                        style={{
+                          fontSize: "12px",
+                          color: "#6c757d",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Total Pago
+                      </Typography>
+                      <Typography
+                        style={{
+                          fontSize: "14px",
+                          fontWeight: "600",
+                          color: "#28a745",
+                        }}
+                      >
+                        R${" "}
+                        {formatNumber(
+                          selectedStudent.financialReports.reduce(
+                            (total, report) => total + (report.paidSoFar || 0),
+                            0
+                          )
                         )}
-
-                        {!report.paidFor && (
-                          <Typography
-                            style={{
-                              fontSize: "12px",
-                              color: "#d32f2f",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Pendente: R${" "}
-                            {formatNumber(
-                              (report.amount || 0) - (report.paidSoFar || 0)
-                            )}
-                          </Typography>
-                        )}
-                      </div>
-
-                      {report.dueDate && (
-                        <Typography
-                          style={{
-                            fontSize: "12px",
-                            color: "#6c757d",
-                            fontWeight: "400",
-                          }}
-                        >
-                          Vencimento:{" "}
-                          {new Date(report.dueDate).toLocaleDateString("pt-BR")}
-                        </Typography>
-                      )}
+                      </Typography>
                     </div>
                   </div>
-                ))}
-            </div>
-
-            {/* RESUMO TOTAL */}
-            <div
-              style={{
-                marginTop: "16px",
-                padding: "12px 16px",
-                backgroundColor: "#f8f9fa",
-                borderRadius: "8px",
-                border: "1px solid #dee2e6",
-              }}
-            >
-              <Typography
-                style={{
-                  color: "#6c757d",
-                  fontSize: "11px",
-                  marginBottom: "8px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
-                  fontWeight: "600",
-                }}
-              >
-                Resumo Total
-              </Typography>
-
-              <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-                <div>
-                  <Typography
-                    style={{
-                      fontSize: "12px",
-                      color: "#6c757d",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Total de Itens
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#2c3e50",
-                    }}
-                  >
-                    {selectedStudent.financialReports.length}
-                  </Typography>
                 </div>
-
-                <div>
+                {/* LISTINHA SIMPLES DE STATUS */}
+                <div
+                  style={{
+                    marginTop: "16px",
+                    padding: "8px 12px",
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: "6px",
+                    border: "1px solid #dee2e6",
+                  }}
+                >
                   <Typography
                     style={{
-                      fontSize: "12px",
                       color: "#6c757d",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Valor Total
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontSize: "14px",
+                      fontSize: "10px",
+                      marginBottom: "6px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
                       fontWeight: "600",
-                      color: "#2e7d32",
                     }}
                   >
-                    R${" "}
-                    {formatNumber(
-                      selectedStudent.financialReports.reduce(
-                        (total, report) => total + (report.amount || 0),
-                        0
-                      )
-                    )}
+                    Status dos Meses
                   </Typography>
-                </div>
 
-                <div>
-                  <Typography
-                    style={{
-                      fontSize: "12px",
-                      color: "#6c757d",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Itens Pagos
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#1976d2",
-                    }}
-                  >
-                    {
-                      selectedStudent.financialReports.filter(
-                        (report) => report.paidFor
-                      ).length
-                    }
-                  </Typography>
-                </div>
+                  <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
+                    {selectedStudent.financialReports
+                      .sort((a, b) => {
+                        // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
+                        if (!a.month || !b.month) return 0;
+                        const [monthA, yearA] = a.month.split("-").map(Number);
+                        const [monthB, yearB] = b.month.split("-").map(Number);
 
-                <div>
-                  <Typography
-                    style={{
-                      fontSize: "12px",
-                      color: "#6c757d",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Itens Parciais
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#856404",
-                    }}
-                  >
-                    {
-                      selectedStudent.financialReports.filter(
-                        (report) => !report.paidFor && report.paidSoFar > 0
-                      ).length
-                    }
-                  </Typography>
-                </div>
-
-                <div>
-                  <Typography
-                    style={{
-                      fontSize: "12px",
-                      color: "#6c757d",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Itens Pendentes
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#d32f2f",
-                    }}
-                  >
-                    {
-                      selectedStudent.financialReports.filter(
-                        (report) =>
-                          !report.paidFor &&
-                          (!report.paidSoFar || report.paidSoFar === 0)
-                      ).length
-                    }
-                  </Typography>
-                </div>
-
-                <div>
-                  <Typography
-                    style={{
-                      fontSize: "12px",
-                      color: "#6c757d",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Total Pago
-                  </Typography>
-                  <Typography
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: "#28a745",
-                    }}
-                  >
-                    R${" "}
-                    {formatNumber(
-                      selectedStudent.financialReports.reduce(
-                        (total, report) => total + (report.paidSoFar || 0),
-                        0
-                      )
-                    )}
-                  </Typography>
-                </div>
-              </div>
-            </div>
-
-            {/* LISTINHA SIMPLES DE STATUS */}
-            <div
-              style={{
-                marginTop: "16px",
-                padding: "8px 12px",
-                backgroundColor: "#f8f9fa",
-                borderRadius: "6px",
-                border: "1px solid #dee2e6",
-              }}
-            >
-              <Typography
-                style={{
-                  color: "#6c757d",
-                  fontSize: "10px",
-                  marginBottom: "6px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.5px",
-                  fontWeight: "600",
-                }}
-              >
-                Status dos Meses
-              </Typography>
-
-              <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
-                {selectedStudent.financialReports
-                  .sort((a, b) => {
-                    // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
-                    if (!a.month || !b.month) return 0;
-                    const [monthA, yearA] = a.month.split("-").map(Number);
-                    const [monthB, yearB] = b.month.split("-").map(Number);
-
-                    if (yearA !== yearB) return yearB - yearA;
-                    return monthB - monthA;
-                  })
-                  .map((report, index) => (
-                    <span key={report._id || index}>
-                      <span style={{ color: "#2c3e50", fontWeight: "500" }}>
-                        {transformMonth(report.month) || "N/A"}
-                      </span>
-                      <span style={{ color: "#6c757d", margin: "0 4px" }}>
-                        {" "}
-                        -{" "}
-                      </span>
-                      <span
-                        style={{
-                          color: report.paidFor
-                            ? "#2d7d32"
-                            : report.paidSoFar > 0
-                            ? "#856404"
-                            : "#d32f2f",
-                          fontWeight: "600",
-                        }}
-                      >
-                        {report.paidFor
-                          ? "pago"
-                          : report.paidSoFar > 0
-                          ? "parcial"
-                          : "pendente"}
-                      </span>
-                      {index < selectedStudent.financialReports.length - 1 && (
-                        <span style={{ color: "#dee2e6", margin: "0 8px" }}>
-                          •
+                        if (yearA !== yearB) return yearB - yearA;
+                        return monthB - monthA;
+                      })
+                      .map((report, index) => (
+                        <span key={index + report.month}>
+                          <span style={{ color: "#2c3e50", fontWeight: "500" }}>
+                            {transformMonth(report.month) || "N/A"}
+                          </span>
+                          <span style={{ color: "#6c757d", margin: "0 4px" }}>
+                            {" "}
+                            -{" "}
+                          </span>
+                          <span
+                            style={{
+                              color: report.paidFor
+                                ? "#2d7d32"
+                                : report.paidSoFar > 0
+                                ? "#856404"
+                                : "#d32f2f",
+                              fontWeight: "600",
+                            }}
+                          >
+                            {report.paidFor
+                              ? "pago"
+                              : report.paidSoFar > 0
+                              ? "parcial"
+                              : "pendente"}
+                          </span>
+                          {index <
+                            selectedStudent.financialReports.length - 1 && (
+                            <span style={{ color: "#dee2e6", margin: "0 8px" }}>
+                              •
+                            </span>
+                          )}
                         </span>
-                      )}
-                    </span>
-                  ))}
+                      ))}
+                  </div>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         )}
+      {selectedStudent && (
+        <div
+          style={{
+            backgroundColor: "#ffffff",
+            margin: "auto",
+            marginTop: "16px",
+            borderRadius: "12px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            border: "1px solid #e8eaed",
+            maxWidth: "70rem",
+            padding: "20px",
+          }}
+        >
+          <Typography
+            style={{
+              color: "#2c3e50",
+              fontSize: "16px",
+              cursor: "pointer",
+              fontWeight: "600",
+              marginBottom: "16px",
+              borderBottom: "2px solid #e8eaed",
+              paddingBottom: "8px",
+            }}
+            onClick={() => {
+              setSeeClassesHistory(!seeClassesHistory);
+              handleSeeClassesHistory(selectedStudent.id);
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = partnerColor();
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = "#2c3e50";
+            }}
+          >
+            Histórico de Aulas - {selectedStudent.name}{" "}
+            {selectedStudent.lastname}
+          </Typography>
+
+          {seeClassesHistory && (
+            <div
+              style={{
+                marginBottom: "16px",
+              }}
+            >
+              {eventsList.length > 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}
+                >
+                  {!loadingEventsList ? (
+                    <>
+                      {" "}
+                      {eventsList
+                        .sort((a, b) => {
+                          // Ordenar por data (mais recente primeiro)
+                          const dateA = new Date(a.date);
+                          const dateB = new Date(b.date);
+                          return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+                        })
+                        .map((event, index) => (
+                          <div
+                            key={event.tutoringID || index}
+                            style={{
+                              backgroundColor: "#ffffff",
+                              border: "1px solid #e9ecef",
+                              borderRadius: "12px",
+                              padding: "20px",
+                              transition: "all 0.3s ease",
+                              borderLeft: `4px solid ${
+                                event.status === "realizada"
+                                  ? "#28a745"
+                                  : event.status === "desmarcado"
+                                  ? "#dc3545"
+                                  : event.status === "reagendado"
+                                  ? "#ffc107"
+                                  : "#6c757d"
+                              }`,
+                            }}
+                          >
+                            {/* Cabeçalho do evento */}
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: "16px",
+                                flexWrap: "wrap",
+                                gap: "8px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "12px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor:
+                                      event.status === "realizada"
+                                        ? "#d4edda"
+                                        : event.status === "desmarcado"
+                                        ? "#f8d7da"
+                                        : event.status === "reagendado"
+                                        ? "#fff3cd"
+                                        : "#e9ecef",
+                                    color:
+                                      event.status === "realizada"
+                                        ? "#155724"
+                                        : event.status === "desmarcado"
+                                        ? "#721c24"
+                                        : event.status === "reagendado"
+                                        ? "#856404"
+                                        : "#495057",
+                                    padding: "4px 12px",
+                                    borderRadius: "20px",
+                                    fontSize: "12px",
+                                    fontWeight: "bold",
+                                    textTransform: "uppercase",
+                                  }}
+                                >
+                                  {event.status || "N/A"}
+                                </div>
+                                <div
+                                  style={{
+                                    backgroundColor: "#e9ecef",
+                                    color: "#495057",
+                                    padding: "4px 8px",
+                                    borderRadius: "6px",
+                                    fontSize: "12px",
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {event.category || "Categoria N/A"}
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "14px",
+                                  color: "#6c757d",
+                                  fontFamily: "monospace",
+                                }}
+                              >
+                                🕒 {event.duration || 0} min
+                              </div>
+                            </div>
+
+                            {/* Informações principais */}
+                            <div
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns:
+                                  "repeat(auto-fit, minmax(200px, 1fr))",
+                                gap: "16px",
+                                marginBottom: "16px",
+                              }}
+                            >
+                              <div>
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "#6c757d",
+                                    marginBottom: "4px",
+                                  }}
+                                >
+                                  👤 ALUNO
+                                </div>
+                                <div
+                                  style={{
+                                    fontWeight: "bold",
+                                    color: "#333",
+                                  }}
+                                >
+                                  {event.student || "N/A"}
+                                </div>
+                              </div>
+
+                              <div>
+                                <div
+                                  style={{
+                                    fontSize: "12px",
+                                    color: "#6c757d",
+                                    marginBottom: "4px",
+                                  }}
+                                >
+                                  📅 DATA & HORÁRIO
+                                </div>
+                                <div
+                                  style={{
+                                    fontWeight: "bold",
+                                    color: "#333",
+                                  }}
+                                >
+                                  {event.date
+                                    ? new Date(event.date).toLocaleDateString(
+                                        "pt-BR"
+                                      )
+                                    : "N/A"}{" "}
+                                  às {event.time || "N/A"}
+                                </div>
+                              </div>
+
+                              {event.link && (
+                                <div>
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "#6c757d",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    🔗 LINK
+                                  </div>
+                                  <div
+                                    style={{
+                                      fontWeight: "bold",
+                                      color: "#007bff",
+                                    }}
+                                  >
+                                    <a
+                                      href={event.link}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{
+                                        textDecoration: "none",
+                                        color: "#007bff",
+                                      }}
+                                    >
+                                      {event.link.length > 30
+                                        ? event.link.substring(0, 30) + "..."
+                                        : event.link}
+                                    </a>
+                                  </div>
+                                </div>
+                              )}
+
+                              {event.description && (
+                                <div style={{ gridColumn: "1 / -1" }}>
+                                  <div
+                                    style={{
+                                      fontSize: "12px",
+                                      color: "#6c757d",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    📝 DESCRIÇÃO
+                                  </div>
+                                  <div
+                                    style={{
+                                      color: "#333",
+                                      lineHeight: "1.4",
+                                    }}
+                                  >
+                                    {event.description}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* CheckList */}
+                            {/* Indicadores de ações */}
+                            <div
+                              style={{
+                                display: "flex",
+                                flexWrap: "wrap",
+                                gap: "12px",
+                                paddingTop: "16px",
+                                borderTop: "1px solid #e9ecef",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "4px",
+                                  fontSize: "12px",
+                                  color: "#6c757d",
+                                }}
+                              >
+                                {event.homeworkAdded ? "📚✅" : "📚❌"} Homework
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "4px",
+                                  fontSize: "12px",
+                                  color: event.flashcardsAdded
+                                    ? "#28a745"
+                                    : "#6c757d",
+                                }}
+                              >
+                                {event.flashcardsAdded ? "🎯✅" : "🎯❌"}{" "}
+                                Flashcards
+                              </div>
+
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "4px",
+                                  fontSize: "12px",
+                                  color: "#6c757d",
+                                }}
+                              >
+                                {event.edited ? "✏️" : "📄"}{" "}
+                                {event.edited ? "Editado" : "Original"}
+                              </div>
+
+                              <div
+                                style={{
+                                  fontSize: "11px",
+                                  color: "#6c757d",
+                                  marginLeft: "auto",
+                                }}
+                              >
+                                Criado:{" "}
+                                {event.createdAt
+                                  ? new Date(
+                                      event.createdAt
+                                    ).toLocaleDateString("pt-BR")
+                                  : "N/A"}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                    </>
+                  ) : (
+                    <CircularProgress style={{ color: partnerColor() }} />
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "40px 20px",
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: "12px",
+                    border: "2px dashed #dee2e6",
+                  }}
+                >
+                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>
+                    📅
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      color: "#6c757d",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Não há histórico de aulas passadas para este aluno.
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      {selectedStudent && (
+        <div
+          style={{
+            backgroundColor: "#ffffff",
+            margin: "auto",
+            marginTop: "16px",
+            borderRadius: "12px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            border: "1px solid #e8eaed",
+            maxWidth: "70rem",
+            padding: "20px",
+          }}
+        >
+          <Typography
+            style={{
+              color: "#2c3e50",
+              fontSize: "16px",
+              cursor: "pointer",
+              fontWeight: "600",
+              marginBottom: "16px",
+              borderBottom: "2px solid #e8eaed",
+              paddingBottom: "8px",
+            }}
+            onClick={() => {
+              setSeePermissionsOrNot(!seePermissionsOrNot);
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = partnerColor();
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = "#2c3e50";
+            }}
+          >
+            Permissões - {selectedStudent.name} {selectedStudent.lastname}
+          </Typography>
+          {seePermissionsOrNot && (
+            <>
+              {loadingPermissions ? (
+                <CircularProgress />
+              ) : (
+                <div
+                  style={{
+                    backgroundColor: "#ffffff",
+                    padding: "24px",
+                    borderRadius: "12px",
+                    marginBottom: "24px",
+                    border: "1px solid #e8eaed",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                  }}
+                >
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} md={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={feeUpToDate}
+                            onChange={() => {
+                              updateFeeStatus(selectedStudent.theId);
+                            }}
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: partnerColor(),
+                              },
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: partnerColor(),
+                                },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography
+                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                          >
+                            Mensalidade em dia
+                            {feeUpToDate ? ": Sim" : ": Não"}
+                          </Typography>
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={!onHold}
+                            onChange={() => {
+                              setLoadingPermissions(true);
+                              updateOnHold(selectedStudent.theId);
+                              fetchStudents();
+                              setOnHold(!onHold);
+                              setLoadingPermissions(false);
+                            }}
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: partnerColor(),
+                              },
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: partnerColor(),
+                                },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography
+                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                          >
+                            Matrícula Ativa
+                            {onHold ? ": Não" : ": Sim"}
+                          </Typography>
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={tutoree}
+                            onChange={() => {
+                              updateTutoree(selectedStudent.theId);
+                            }}
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: partnerColor(),
+                              },
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: partnerColor(),
+                                },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography
+                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                          >
+                            Aluno particular
+                            {tutoree ? ": Sim" : ": Não"}
+                          </Typography>
+                        }
+                      />
+                    </Grid>
+                  </Grid>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {!loading ? (
         <div
           style={{
             backgroundColor: "#ffffff",
             margin: "auto",
+            marginTop: "1rem",
             borderRadius: "12px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
@@ -1763,9 +2327,17 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   )
                   .map((student, index) => (
                     <TableRow
-                      key={index}
+                      key={student._id || index}
                       onClick={() => {
                         setSelectedStudent(student);
+                        setFeeUpToDate(student.feeUpToDate);
+                        setTutoree(student.tutoree);
+                        setOnHold(student.onHold);
+                        setSeeClassesHistory(false);
+                        setSeePermissionsOrNot(false);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        document.documentElement.scrollTop = 0;
+                        document.body.scrollTop = 0;
                       }}
                       style={{
                         cursor: "pointer",
@@ -2574,7 +3146,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               >
                 {listOfButtons.map((item, index) => (
                   <ArvinButton
-                    key={index}
+                    key={index + item.color}
                     disabled={disabled}
                     style={{
                       fontSize: "14px",
@@ -2695,117 +3267,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
               </div>
             </div>
           )}
-          {/* SEÇÃO 4: CONFIGURAÇÕES */}
-          <div
-            style={{
-              backgroundColor: "#ffffff",
-              padding: "24px",
-              borderRadius: "12px",
-              marginBottom: "24px",
-              border: "1px solid #e8eaed",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-            }}
-          >
-            <Typography
-              variant="h6"
-              style={{
-                marginBottom: "20px",
-                fontWeight: "600",
-                color: "#2c3e50",
-                fontSize: "16px",
-              }}
-            >
-              Configurações
-            </Typography>
 
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={4}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={feeUpToDate}
-                      onChange={() => {
-                        updateFeeStatus(ID);
-                        setFeeUpToDate(!feeUpToDate);
-                      }}
-                      sx={{
-                        "& .MuiSwitch-switchBase.Mui-checked": {
-                          color: partnerColor(),
-                        },
-                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                          {
-                            backgroundColor: partnerColor(),
-                          },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography style={{ fontSize: "14px", color: "#2c3e50" }}>
-                      {feeUpToDate
-                        ? "Mensalidade em dia"
-                        : "Mensalidade atrasada"}
-                    </Typography>
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={!onHold}
-                      onChange={() => {
-                        updateOnHold(ID);
-                        setOnHold(!onHold);
-                      }}
-                      sx={{
-                        "& .MuiSwitch-switchBase.Mui-checked": {
-                          color: partnerColor(),
-                        },
-                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                          {
-                            backgroundColor: partnerColor(),
-                          },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography style={{ fontSize: "14px", color: "#2c3e50" }}>
-                      {onHold ? "Matrícula Trancada" : "Matrícula Ativa"}
-                    </Typography>
-                  }
-                />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={tutoree}
-                      onChange={() => {
-                        updateTutoree(ID);
-                        setTutoree(!tutoree);
-                      }}
-                      sx={{
-                        "& .MuiSwitch-switchBase.Mui-checked": {
-                          color: partnerColor(),
-                        },
-                        "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
-                          {
-                            backgroundColor: partnerColor(),
-                          },
-                      }}
-                    />
-                  }
-                  label={
-                    <Typography style={{ fontSize: "14px", color: "#2c3e50" }}>
-                      {tutoree ? "Aluno de monitoria" : "Sem monitoria"}
-                    </Typography>
-                  }
-                />
-              </Grid>
-            </Grid>
-          </div>
-
-          {/* SEÇÃO 5: ALTERAR SENHA */}
+          {/* SEÇÃO 4: ALTERAR SENHA */}
           <div
             style={{
               backgroundColor: "#ffffff",

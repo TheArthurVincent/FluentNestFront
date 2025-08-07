@@ -350,13 +350,6 @@ export function NewTutoring({ headers, id }) {
                           ? base64String.split(",")[1]
                           : base64String;
 
-                        console.log("Arquivo processado com sucesso:", {
-                          fileName: file.name,
-                          fileSize: file.size,
-                          fileType: file.type,
-                          base64Length: base64Data.length,
-                        });
-
                         const newTutorings = [...tutorings];
                         newTutorings[index] = {
                           ...newTutorings[index],

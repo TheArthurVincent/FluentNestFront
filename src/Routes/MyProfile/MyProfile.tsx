@@ -227,7 +227,6 @@ export function MyProfile({ headers }: HeadersProps) {
       setTimeout(() => {
         window.location.assign("https://wa.me/5511915857807");
       }, 2000);
-      console.log("user.paymentId", user.paymentId, "cancel payment refund");
     }
   };
 

@@ -70,8 +70,6 @@ export const readText = async (
   if (restart && window?.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
-  console.log(text);
-
   let voiceLang = localStorage.getItem("voiceLang");
   let voiceGender = localStorage.getItem("voiceGender");
 

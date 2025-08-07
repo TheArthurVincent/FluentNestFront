@@ -308,8 +308,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } catch (error) {
         console.log(error, "Erro ao encontrar alunos");
       }
-    } else {
-      console.log("Not Fetching students list");
     }
   };
 
@@ -520,7 +518,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setDescription(newDescription);
       setDate(newDate);
       setLoadingModalInfo(false);
-      console.log("Evento carregado:", response.data.event);
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
       console.log(error);
@@ -685,8 +682,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
   const updateUnscheduled = async (id) => {
-    console.log(status, "STATUS");
-
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -928,31 +923,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     };
     setNewClass(updatedClass);
 
-    // Debug: mostrar estado atual e campos faltando
-    console.log(`🔄 Campo ${field} atualizado para:`, value);
-    console.log("📋 Estado completo:", updatedClass);
-
     const missingFields = [];
     if (!updatedClass.category) missingFields.push("category");
     if (!updatedClass.date) missingFields.push("date");
     if (!updatedClass.time) missingFields.push("time");
     if (!updatedClass.link) missingFields.push("link");
     if (!updatedClass.description) missingFields.push("description");
-
-    if (missingFields.length > 0) {
-      console.log("❌ Campos faltando:", missingFields);
-      console.log("🔒 Botão permanece desabilitado");
-    } else {
-      console.log("✅ Todos os campos preenchidos! Botão habilitado");
-    }
   };
 
   const handleNewClassCategoryChange = (e) => {
     const category = e.target.value;
     let description = "";
     let isTutoringClass = false;
-
-    console.log("🏷️ Categoria selecionada:", category);
 
     switch (category) {
       case "Rep":
@@ -981,29 +963,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
     setNewClass(updatedClass);
 
-    console.log("📝 Descrição definida:", description);
-    console.log("📋 Estado após categoria:", updatedClass);
-
     const missingFields = [];
     if (!updatedClass.category) missingFields.push("category");
     if (!updatedClass.date) missingFields.push("date");
     if (!updatedClass.time) missingFields.push("time");
     if (!updatedClass.link) missingFields.push("link");
     if (!updatedClass.description) missingFields.push("description");
-
-    if (missingFields.length > 0) {
-      console.log("❌ Campos faltando após categoria:", missingFields);
-    } else {
-      console.log("✅ Todos os campos preenchidos após categoria!");
-    }
   };
 
   const handleCreateNewClass = async () => {
-    console.log("🚀 handleCreateNewClass chamada");
-    console.log("📋 Estado atual do newClass:", newClass);
-    console.log("👤 myId:", myId);
-    console.log("🔗 backDomain:", backDomain);
-
     setLoadingNewClass(true);
     try {
       const payload = {
@@ -1018,15 +986,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         status: "marcado",
       };
 
-      console.log("📦 Payload que será enviado:", payload);
-
       const response = await axios.post(
         `${backDomain}/api/v1/event/${myId}`,
         payload,
         { headers }
       );
-
-      console.log("✅ Resposta do servidor:", response);
 
       if (response.status === 200 || response.status === 201) {
         notifyAlert("Aula criada com sucesso!", partnerColor());
@@ -3080,120 +3044,129 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   </form>
                                 </>
                               )}
+                              {!loadingInfo && (
+                                <>
+                                  {/* Action Buttons */}
+                                  {!deleteVisible ? (
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        gap: "1rem",
+                                        justifyContent: "center",
+                                        paddingTop: "1rem",
+                                      }}
+                                    >
+                                      {[
+                                        {
+                                          text: "Delete",
+                                          color: "red",
+                                          onClick: seeDelete,
+                                          visible: !postNew,
+                                        },
+                                        {
+                                          text: "Cancel",
+                                          color: "blue",
+                                          onClick: () => setShowEditForm(false),
+                                          visible: true,
+                                        },
+                                        {
+                                          text: "Save",
+                                          color: "green",
+                                          onClick: postNew
+                                            ? postNewEvent
+                                            : editInside,
+                                          visible: true,
+                                        },
+                                      ].map(
+                                        (item, index) =>
+                                          item.visible && (
+                                            <ArvinButton
+                                              key={index}
+                                              color={item.color}
+                                              onClick={item.onClick}
+                                              style={{
+                                                padding: "5px 1.5rem",
 
-                              {/* Action Buttons */}
-                              {!deleteVisible ? (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: "1rem",
-                                    justifyContent: "center",
-                                    paddingTop: "1rem",
-                                  }}
-                                >
-                                  {[
-                                    {
-                                      text: "Delete",
-                                      color: "red",
-                                      onClick: seeDelete,
-                                      visible: !postNew,
-                                    },
-                                    {
-                                      text: "Cancel",
-                                      color: "blue",
-                                      onClick: () => setShowEditForm(false),
-                                      visible: true,
-                                    },
-                                    {
-                                      text: "Save",
-                                      color: "green",
-                                      onClick: postNew
-                                        ? postNewEvent
-                                        : editInside,
-                                      visible: true,
-                                    },
-                                  ].map(
-                                    (item, index) =>
-                                      item.visible && (
-                                        <ArvinButton
-                                          key={index}
-                                          color={item.color}
-                                          onClick={item.onClick}
+                                                fontWeight: "500",
+                                                width: "80px",
+                                              }}
+                                            >
+                                              {item.text}
+                                            </ArvinButton>
+                                          )
+                                      )}
+                                    </div>
+                                  ) : (
+                                    <div
+                                      style={{
+                                        backgroundColor: "#f8d7da",
+                                        padding: "1.5rem",
+                                        borderRadius: "8px",
+                                        border: "1px solid #f5c6cb",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      <p
+                                        style={{
+                                          margin: "0 0 1rem 0",
+
+                                          fontWeight: "500",
+                                          color: "#721c24",
+                                        }}
+                                      >
+                                        ⚠️{" "}
+                                        {
+                                          UniversalTexts.calendarModal
+                                            .deleteConfirmation
+                                        }
+                                      </p>
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          gap: "1rem",
+                                          justifyContent: "center",
+                                        }}
+                                      >
+                                        <button
+                                          onClick={seeDelete}
                                           style={{
                                             padding: "5px 1.5rem",
+                                            backgroundColor: partnerColor(),
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "8px",
+                                            cursor: "pointer",
 
                                             fontWeight: "500",
-                                            width: "80px",
                                           }}
                                         >
-                                          {item.text}
-                                        </ArvinButton>
-                                      )
+                                          {
+                                            UniversalTexts.calendarModal
+                                              .noCancel
+                                          }
+                                        </button>
+                                        <button
+                                          onClick={deleteOneMaterialInside}
+                                          style={{
+                                            padding: "5px 1.5rem",
+                                            backgroundColor: "#dc3545",
+                                            color: "white",
+                                            border: "none",
+                                            borderRadius: "8px",
+                                            cursor: "pointer",
+
+                                            fontWeight: "500",
+                                          }}
+                                        >
+                                          {
+                                            UniversalTexts.calendarModal
+                                              .yesDelete
+                                          }
+                                        </button>
+                                      </div>
+                                    </div>
                                   )}
-                                </div>
-                              ) : (
-                                <div
-                                  style={{
-                                    backgroundColor: "#f8d7da",
-                                    padding: "1.5rem",
-                                    borderRadius: "8px",
-                                    border: "1px solid #f5c6cb",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  <p
-                                    style={{
-                                      margin: "0 0 1rem 0",
-
-                                      fontWeight: "500",
-                                      color: "#721c24",
-                                    }}
-                                  >
-                                    ⚠️{" "}
-                                    {
-                                      UniversalTexts.calendarModal
-                                        .deleteConfirmation
-                                    }
-                                  </p>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      gap: "1rem",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <button
-                                      onClick={seeDelete}
-                                      style={{
-                                        padding: "5px 1.5rem",
-                                        backgroundColor: partnerColor(),
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-
-                                        fontWeight: "500",
-                                      }}
-                                    >
-                                      {UniversalTexts.calendarModal.noCancel}
-                                    </button>
-                                    <button
-                                      onClick={deleteOneMaterialInside}
-                                      style={{
-                                        padding: "5px 1.5rem",
-                                        backgroundColor: "#dc3545",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-
-                                        fontWeight: "500",
-                                      }}
-                                    >
-                                      {UniversalTexts.calendarModal.yesDelete}
-                                    </button>
-                                  </div>
-                                </div>
+                                </>
                               )}
                             </>
                           )}
