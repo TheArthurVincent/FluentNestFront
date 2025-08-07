@@ -1191,7 +1191,6 @@ export function FinancialResources({ headers, id }) {
                         selectedMonth
                       )}`}
                       className="linguee-btn linguee-btn-primary"
-                      disabled={financialReports.length > 0}
                       style={{
                         marginLeft: "8px",
                       }}
