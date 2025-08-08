@@ -137,7 +137,7 @@ export default function ExplanationLesson({
                           borderLeft: `5px solid ${partnerColor()}`,
                           transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
                           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.04)",
-                          padding: "10px",
+                          padding: "5px 10px",
                         }}
                       >
                         {/* Conteúdo da explicação */}
@@ -146,7 +146,6 @@ export default function ExplanationLesson({
                             display: "flex",
                             alignItems: "flex-start",
                             gap: "20px",
-                            marginBottom: "8px",
                           }}
                         >
                           {/* Texto da explicação */}
@@ -164,7 +163,15 @@ export default function ExplanationLesson({
                         </div>
 
                         {/* Textarea para notas/respostas */}
-                        <textarea
+                  
+                      </div>
+                    )
+                  )}
+                </div>
+              </div>
+            )
+          )}
+                <textarea
                           placeholder="Write your notes or thoughts here..."
                           style={{
                             width: "95%",
@@ -190,13 +197,6 @@ export default function ExplanationLesson({
                             e.currentTarget.style.boxShadow = "none";
                           }}
                         />
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-            )
-          )}
       </div>
     </div>
   );
