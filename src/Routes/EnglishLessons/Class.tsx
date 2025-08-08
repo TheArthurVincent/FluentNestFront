@@ -63,6 +63,8 @@ import Voice from "../../Resources/Voice";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
 import { t } from "framer-motion/dist/types.d-D0HXPxHm";
+import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
+import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -1139,6 +1141,301 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "explanation":
+                try {
+                  if (
+                    element.explanation &&
+                    Array.isArray(element.explanation)
+                  ) {
+                    element.explanation.forEach(
+                      (explanationItem: any, explIndex: number) => {
+                        const explanationSlide = pptx.addSlide();
+
+                        // Título da explicação
+                        if (explanationItem.title) {
+                          const safeTitle = sanitizeText(
+                            explanationItem.title,
+                            100
+                          );
+                          explanationSlide.addText(safeTitle, {
+                            x: 0.5,
+                            y: 0.5,
+                            w: 9,
+                            h: 0.8,
+                            fontSize: 28,
+                            bold: true,
+                            align: "center",
+                            color: partnerColor().replace("#", ""),
+                            fontFace: textTitleFont(),
+                          });
+                        }
+
+                        let yPos = 1.5;
+
+                        // Imagem se existir
+                        if (explanationItem.image) {
+                          try {
+                            addImageSafely(
+                              explanationSlide,
+                              explanationItem.image,
+                              {
+                                x: 7,
+                                y: yPos,
+                                w: 2,
+                                h: 2,
+                              }
+                            );
+                          } catch (imageError) {
+                            console.log(
+                              "⚠️ Erro ao adicionar imagem da explicação:",
+                              imageError
+                            );
+                          }
+                        }
+
+                        // Lista de explicações
+                        if (
+                          explanationItem.list &&
+                          Array.isArray(explanationItem.list)
+                        ) {
+                          explanationItem.list.forEach(
+                            (listItem: string, listIndex: number) => {
+                              const safeListItem = sanitizeText(listItem, 400);
+                              explanationSlide.addText(`• ${safeListItem}`, {
+                                x: 0.5,
+                                y: yPos,
+                                w: explanationItem.image ? 6 : 9,
+                                h: 0.8,
+                                fontSize: 16,
+                                color: darkGreyColor().replace("#", ""),
+                                fontFace: textGeneralFont(),
+                                valign: "top",
+                              });
+                              yPos += 0.8;
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                } catch (explanationError) {
+                  console.log(
+                    "⚠️ Erro ao processar elemento explanation:",
+                    explanationError
+                  );
+                }
+                break;
+
+              case "vocabulary":
+                try {
+                  const vocabularySlide = pptx.addSlide();
+
+                  // Título da sessão de vocabulário
+                  if (element.subtitle) {
+                    const safeSubtitle = sanitizeText(element.subtitle, 100);
+                    vocabularySlide.addText(safeSubtitle, {
+                      x: 0.5,
+                      y: 0.5,
+                      w: 9,
+                      h: 0.8,
+                      fontSize: 28,
+                      bold: true,
+                      align: "center",
+                      color: partnerColor().replace("#", ""),
+                      fontFace: textTitleFont(),
+                    });
+                  }
+
+                  // Processar vocabulário (sentences com english e portuguese)
+                  if (element.sentences && Array.isArray(element.sentences)) {
+                    let yPos = 1.5;
+                    const itemsPerSlide = 5; // Máximo de itens por slide
+                    let currentSlide = vocabularySlide;
+                    let itemCount = 0;
+
+                    element.sentences.forEach(
+                      (vocab: any, vocabIndex: number) => {
+                        // Criar novo slide se necessário
+                        if (
+                          itemCount >= itemsPerSlide &&
+                          vocabIndex < element.sentences.length
+                        ) {
+                          currentSlide = pptx.addSlide();
+                          if (element.subtitle) {
+                            const safeSubtitle = sanitizeText(
+                              element.subtitle + " (cont.)",
+                              100
+                            );
+                            currentSlide.addText(safeSubtitle, {
+                              x: 0.5,
+                              y: 0.3,
+                              w: 9,
+                              h: 0.6,
+                              fontSize: 24,
+                              bold: true,
+                              align: "center",
+                              color: partnerColor().replace("#", ""),
+                              fontFace: textTitleFont(),
+                            });
+                          }
+                          yPos = 1.2;
+                          itemCount = 0;
+                        }
+
+                        if (vocab.english && vocab.portuguese) {
+                          const safeEnglish = sanitizeText(vocab.english, 50);
+                          const safePortuguese = sanitizeText(
+                            vocab.portuguese,
+                            50
+                          );
+
+                          // Texto em inglês (lado esquerdo)
+                          currentSlide.addText(safeEnglish, {
+                            x: 1,
+                            y: yPos,
+                            w: 3.5,
+                            h: 0.6,
+                            fontSize: 16,
+                            bold: true,
+                            align: "left",
+                            color: darkGreyColor().replace("#", ""),
+                            fontFace: textTitleFont(),
+                          });
+
+                          // Hífen separador
+                          currentSlide.addText("-", {
+                            x: 4.5,
+                            y: yPos,
+                            w: 1,
+                            h: 0.6,
+                            fontSize: 18,
+                            bold: true,
+                            align: "center",
+                            color: partnerColor().replace("#", ""),
+                          });
+
+                          // Texto em português (lado direito)
+                          currentSlide.addText(safePortuguese, {
+                            x: 5.5,
+                            y: yPos,
+                            w: 3.5,
+                            h: 0.6,
+                            fontSize: 16,
+                            align: "left",
+                            color: darkGreyColor().replace("#", ""),
+                            fontFace: textGeneralFont(),
+                            italic: true,
+                          });
+
+                          yPos += 0.7;
+                          itemCount++;
+                        }
+                      }
+                    );
+                  }
+                } catch (vocabularyError) {
+                  console.log(
+                    "⚠️ Erro ao processar elemento vocabulary:",
+                    vocabularyError
+                  );
+                }
+                break;
+
+              case "dialogue":
+                try {
+                  if (element.dialogue && Array.isArray(element.dialogue)) {
+                    // Agrupar falas em pares (2 por slide)
+                    for (let i = 0; i < element.dialogue.length; i += 2) {
+                      const dialogueSlide = pptx.addSlide();
+
+                      // Título do diálogo (apenas no primeiro slide)
+                      if (i === 0 && element.subtitle) {
+                        const safeSubtitle = sanitizeText(element.subtitle, 100);
+                        dialogueSlide.addText(safeSubtitle, {
+                          x: 0.5,
+                          y: 0.3,
+                          w: 9,
+                          h: 0.8,
+                          fontSize: 28,
+                          bold: true,
+                          align: "center",
+                          color: partnerColor().replace("#", ""),
+                          fontFace: textTitleFont(),
+                        });
+                      }
+
+                      let yPos = i === 0 && element.subtitle ? 1.2 : 0.8;
+
+                      // Primeira fala (A)
+                      if (element.dialogue[i]) {
+                        const safeDialogueA = sanitizeText(element.dialogue[i], 150);
+                        
+                        // Label da pessoa A
+                        dialogueSlide.addText("A:", {
+                          x: 0.8,
+                          y: yPos,
+                          w: 1,
+                          h: 0.6,
+                          fontSize: 20,
+                          bold: true,
+                          align: "left",
+                          color: partnerColor().replace("#", ""),
+                          fontFace: textTitleFont(),
+                        });
+
+                        // Fala da pessoa A
+                        dialogueSlide.addText(safeDialogueA, {
+                          x: 1.8,
+                          y: yPos,
+                          w: 7.2,
+                          h: 1.2,
+                          fontSize: 16,
+                          align: "left",
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                          valign: "top",
+                        });
+
+                        yPos += 1.5;
+                      }
+
+                      // Segunda fala (B)
+                      if (element.dialogue[i + 1]) {
+                        const safeDialogueB = sanitizeText(element.dialogue[i + 1], 150);
+                        
+                        // Label da pessoa B
+                        dialogueSlide.addText("B:", {
+                          x: 0.8,
+                          y: yPos,
+                          w: 1,
+                          h: 0.6,
+                          fontSize: 20,
+                          bold: true,
+                          align: "left",
+                          color: partnerColor().replace("#", ""),
+                          fontFace: textTitleFont(),
+                        });
+
+                        // Fala da pessoa B
+                        dialogueSlide.addText(safeDialogueB, {
+                          x: 1.8,
+                          y: yPos,
+                          w: 7.2,
+                          h: 1.2,
+                          fontSize: 16,
+                          align: "left",
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                          valign: "top",
+                        });
+                      }
+                    }
+                  }
+                } catch (dialogueError) {
+                  console.log("⚠️ Erro ao processar elemento dialogue:", dialogueError);
+                }
+                break;
+
               default:
                 try {
                   if (
@@ -1146,7 +1443,6 @@ export default function EnglishClassCourse2({
                       "multipletexts",
                       "selectexercise",
                       "personalqanda",
-                      "dialogue",
                       "singleimages",
                       "listenandtranslate",
                       "listinenglish",
@@ -1646,13 +1942,180 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "explanation":
+                if (element.explanation && Array.isArray(element.explanation)) {
+                  element.explanation.forEach(
+                    (explanationItem: any, explIndex: number) => {
+                      // Título da explicação
+                      if (explanationItem.title) {
+                        children.push(
+                          new Paragraph({
+                            children: [
+                              new TextRun({
+                                text: explanationItem.title,
+                                bold: true,
+                                size: 32,
+                                color: partnerColor().replace("#", ""),
+                                font: textTitleFont(),
+                              }),
+                            ],
+                            heading: HeadingLevel.HEADING_2,
+                            spacing: { before: 400, after: 300 },
+                          })
+                        );
+                      }
+
+                      // Lista de explicações
+                      if (
+                        explanationItem.list &&
+                        Array.isArray(explanationItem.list)
+                      ) {
+                        explanationItem.list.forEach(
+                          (listItem: string, listIndex: number) => {
+                            const safeListItem = sanitizeText(listItem, 500);
+                            children.push(
+                              new Paragraph({
+                                children: [
+                                  new TextRun({
+                                    text: `• ${safeListItem}`,
+                                    size: 22,
+                                    font: textGeneralFont(),
+                                  }),
+                                ],
+                                spacing: { after: 200 },
+                              })
+                            );
+                          }
+                        );
+                      }
+
+                      // Espaço entre explicações
+                      if (explIndex < element.explanation.length - 1) {
+                        children.push(
+                          new Paragraph({
+                            children: [new TextRun({ text: "" })],
+                            spacing: { after: 400 },
+                          })
+                        );
+                      }
+                    }
+                  );
+                }
+                break;
+
+              case "vocabulary":
+                if (element.sentences && Array.isArray(element.sentences)) {
+                  children.push(
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: "Vocabulario:",
+                          bold: true,
+                          size: 24,
+                          color: partnerColor().replace("#", ""),
+                          font: textTitleFont(),
+                        }),
+                      ],
+                      spacing: { before: 400, after: 300 },
+                    })
+                  );
+
+                  element.sentences.forEach(
+                    (vocab: any, vocabIndex: number) => {
+                      if (vocab.english && vocab.portuguese) {
+                        const safeEnglish = sanitizeText(vocab.english, 100);
+                        const safePortuguese = sanitizeText(
+                          vocab.portuguese,
+                          100
+                        );
+
+                        // Palavra em inglês - tradução em português
+                        children.push(
+                          new Paragraph({
+                            children: [
+                              new TextRun({
+                                text: safeEnglish,
+                                bold: true,
+                                size: 20,
+                                color: darkGreyColor().replace("#", ""),
+                                font: textTitleFont(),
+                              }),
+                              new TextRun({
+                                text: " - ",
+                                bold: true,
+                                size: 18,
+                                color: partnerColor().replace("#", ""),
+                              }),
+                              new TextRun({
+                                text: safePortuguese,
+                                size: 20,
+                                color: darkGreyColor().replace("#", ""),
+                                font: textGeneralFont(),
+                                italics: true,
+                              }),
+                            ],
+                            spacing: { after: 150 },
+                          })
+                        );
+                      }
+                    }
+                  );
+                }
+                break;
+
+              case "dialogue":
+                if (element.dialogue && Array.isArray(element.dialogue)) {
+                  children.push(
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: "Dialogo:",
+                          bold: true,
+                          size: 24,
+                          color: partnerColor().replace("#", ""),
+                          font: textTitleFont(),
+                        }),
+                      ],
+                      spacing: { before: 400, after: 300 },
+                    })
+                  );
+
+                  element.dialogue.forEach(
+                    (dialogueText: string, dialogueIndex: number) => {
+                      const speaker = dialogueIndex % 2 === 0 ? "A" : "B";
+                      const safeDialogue = sanitizeText(dialogueText, 200);
+
+                      children.push(
+                        new Paragraph({
+                          children: [
+                            new TextRun({
+                              text: `${speaker} - `,
+                              bold: true,
+                              size: 18,
+                              color: partnerColor().replace("#", ""),
+                              font: textTitleFont(),
+                            }),
+                            new TextRun({
+                              text: safeDialogue,
+                              size: 18,
+                              color: darkGreyColor().replace("#", ""),
+                              font: textGeneralFont(),
+                            }),
+                          ],
+                          spacing: { after: 150 },
+                        })
+                      );
+                    }
+                  );
+                }
+                break;
+
               default:
                 if (
                   [
                     "multipletexts",
                     "selectexercise",
                     "personalqanda",
-                    "dialogue",
                     "listenandtranslate",
                     "listinenglish",
                   ].includes(element.type)
@@ -2047,11 +2510,144 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "explanation":
+                if (element.explanation && Array.isArray(element.explanation)) {
+                  element.explanation.forEach(
+                    (explanationItem: any, explIndex: number) => {
+                      // Título da explicação
+                      if (explanationItem.title) {
+                        pdf.setFontSize(16);
+                        pdf.setTextColor(r, g, b);
+                        checkPageBreak(8);
+                        const titleLines = splitTextToSize(
+                          explanationItem.title,
+                          maxWidth,
+                          16
+                        );
+                        pdf.text(titleLines, margin, yPosition);
+                        yPosition += titleLines.length * 6 + 10;
+                      }
+
+                      // Lista de explicações
+                      if (
+                        explanationItem.list &&
+                        Array.isArray(explanationItem.list)
+                      ) {
+                        explanationItem.list.forEach(
+                          (listItem: string, listIndex: number) => {
+                            const safeListItem = sanitizeText(listItem, 400);
+                            pdf.setFontSize(11);
+                            pdf.setTextColor(0, 0, 0);
+                            const listLines = splitTextToSize(
+                              `• ${safeListItem}`,
+                              maxWidth,
+                              11
+                            );
+                            checkPageBreak(listLines.length * 4);
+                            pdf.text(listLines, margin, yPosition);
+                            yPosition += listLines.length * 4 + 4;
+                          }
+                        );
+                      }
+
+                      // Espaço entre explicações
+                      if (explIndex < element.explanation.length - 1) {
+                        yPosition += 8;
+                      }
+                    }
+                  );
+                }
+                break;
+
+              case "vocabulary":
+                if (element.sentences && Array.isArray(element.sentences)) {
+                  pdf.setFontSize(14);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(7);
+                  pdf.text("Vocabulario:", margin, yPosition);
+                  yPosition += 15;
+
+                  element.sentences.forEach(
+                    (vocab: any, vocabIndex: number) => {
+                      if (vocab.english && vocab.portuguese) {
+                        const safeEnglish = sanitizeText(vocab.english, 60);
+                        const safePortuguese = sanitizeText(
+                          vocab.portuguese,
+                          60
+                        );
+
+                        // Palavra em inglês (em negrito)
+                        pdf.setFontSize(12);
+                        pdf.setTextColor(40, 40, 40);
+                        pdf.setFont("helvetica", "bold");
+                        const englishLines = splitTextToSize(
+                          safeEnglish,
+                          maxWidth * 0.4,
+                          12
+                        );
+                        checkPageBreak(englishLines.length * 4);
+                        pdf.text(englishLines, margin, yPosition);
+
+                        // Hífen separador
+                        pdf.setFont("helvetica", "normal");
+                        pdf.setTextColor(r, g, b);
+                        pdf.text("-", margin + 80, yPosition);
+
+                        // Palavra em português (em itálico)
+                        pdf.setFont("helvetica", "italic");
+                        pdf.setTextColor(80, 80, 80);
+                        const portugueseLines = splitTextToSize(
+                          safePortuguese,
+                          maxWidth * 0.4,
+                          12
+                        );
+                        pdf.text(portugueseLines, margin + 100, yPosition);
+
+                        // Resetar fonte para normal
+                        pdf.setFont("helvetica", "normal");
+                        
+                        yPosition += Math.max(englishLines.length, portugueseLines.length) * 4 + 5;
+                      }
+                    }
+                  );
+
+                  // Espaço extra após vocabulário
+                  yPosition += 8;
+                }
+                break;
+
+              case "dialogue":
+                if (element.dialogue && Array.isArray(element.dialogue)) {
+                  pdf.setFontSize(14);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(7);
+                  pdf.text("Dialogo:", margin, yPosition);
+                  yPosition += 15;
+
+                  element.dialogue.forEach(
+                    (dialogueText: string, dialogueIndex: number) => {
+                      const speaker = dialogueIndex % 2 === 0 ? "A" : "B";
+                      const safeDialogue = sanitizeText(dialogueText, 200);
+                      
+                      pdf.setFontSize(11);
+                      pdf.setTextColor(40, 40, 40);
+                      const dialogueLine = `${speaker} - ${safeDialogue}`;
+                      const dialogueLines = splitTextToSize(dialogueLine, maxWidth, 11);
+                      checkPageBreak(dialogueLines.length * 4);
+                      pdf.text(dialogueLines, margin, yPosition);
+                      yPosition += dialogueLines.length * 4 + 4;
+                    }
+                  );
+
+                  // Espaço extra após diálogo
+                  yPosition += 8;
+                }
+                break;
+
               // Pular elementos interativos completamente
               case "multipletexts":
               case "selectexercise":
               case "personalqanda":
-              case "dialogue":
               case "listenandtranslate":
               case "singleimages":
                 // Não incluir elementos que requerem interação
@@ -2381,214 +2977,219 @@ export default function EnglishClassCourse2({
           >
             See Board
           </ArvinButton>
-
           <div
             style={{
-              display: "flex",
-              gap: "0.8rem",
-              justifyContent: "center",
-              margin: "1rem auto",
-              flexWrap: "wrap",
+              maxWidth: "1000px",
+              margin: "0 auto",
             }}
           >
-            <button
-              title="Gerar PowerPoint"
-              style={{
-                padding: "8px 16px",
-                fontSize: "14px",
-                fontWeight: "600",
-                borderRadius: "8px",
-                minWidth: "50px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                border: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onClick={generatePPT}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(-1px)";
-                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(0)";
-                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-              }}
-            >
-              <img
-                src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                alt="PowerPoint"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </button>
-
-            <button
-              title="Gerar Word"
-              style={{
-                padding: "8px 16px",
-                fontSize: "14px",
-                fontWeight: "600",
-                borderRadius: "8px",
-                minWidth: "50px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                border: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onClick={generateWord}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(-1px)";
-                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(0)";
-                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-              }}
-            >
-              <img
-                src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                alt="Word"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </button>
-
-            <button
-              title="Gerar PDF"
-              style={{
-                padding: "8px 16px",
-                fontSize: "14px",
-                fontWeight: "600",
-                borderRadius: "8px",
-                minWidth: "50px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                border: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onClick={generatePDF}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(-1px)";
-                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(0)";
-                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-              }}
-            >
-              <img
-                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                alt="PDF"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </button>
-          </div>
-          <label>
-            <input
-              style={{
-                cursor: "pointer",
-              }}
-              type="checkbox"
-              checked={isCompleted}
-              onChange={handleToggle}
-              disabled={loading}
-            />
-            {loading
-              ? "  Atualizando..."
-              : isCompleted
-              ? "  Completed"
-              : "  Not Completed"}
-          </label>
-          {
             <div
-              className="box-shadow-white"
               style={{
-                height: "3rem",
-                padding: "0 10px ",
-                backgroundColor: alwaysWhite(),
-                position: "fixed",
-                cursor: "pointer",
                 display: "flex",
-                alignItems: "center",
-                minWidth: "100px",
-                bottom: 5,
-                left: 0,
-                borderRadius: "6px",
+                gap: "0.8rem",
+                justifyContent: "center",
+                margin: "1rem auto",
+                flexWrap: "wrap",
               }}
             >
-              <span
+              <button
+                title="Gerar PowerPoint"
                 style={{
-                  display:
-                    thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
-                      ? "block"
-                      : "none",
-                  marginRight: "10px",
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  minWidth: "50px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  border: "none",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generatePPT}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(-1px)";
+                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(0)";
+                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
                 }}
               >
-                <select
-                  onChange={(e) => handleStudentChange(e)}
-                  value={studentID}
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                  alt="PowerPoint"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </button>
+
+              <button
+                title="Gerar Word"
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  minWidth: "50px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  border: "none",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generateWord}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(-1px)";
+                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(0)";
+                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                  alt="Word"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </button>
+
+              <button
+                title="Gerar PDF"
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  minWidth: "50px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  border: "none",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generatePDF}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(-1px)";
+                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(0)";
+                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                  alt="PDF"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </button>
+            </div>
+            <label>
+              <input
+                style={{
+                  cursor: "pointer",
+                }}
+                type="checkbox"
+                checked={isCompleted}
+                onChange={handleToggle}
+                disabled={loading}
+              />
+              {loading
+                ? "  Atualizando..."
+                : isCompleted
+                ? "  Completed"
+                : "  Not Completed"}
+            </label>
+            {
+              <div
+                className="box-shadow-white"
+                style={{
+                  height: "3rem",
+                  padding: "0 10px ",
+                  backgroundColor: alwaysWhite(),
+                  position: "fixed",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  minWidth: "100px",
+                  bottom: 5,
+                  left: 0,
+                  borderRadius: "6px",
+                }}
+              >
+                <span
                   style={{
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    backgroundColor: "#f9f9f9",
-                    fontSize: "0.9rem",
-                    maxWidth: "8rem",
-                    margin: "auto",
-                    color: "#333",
-                    outline: "none",
-                    transition: "border-color 0.3s",
+                    display:
+                      thePermissions === "superadmin" ||
+                      thePermissions === "teacher"
+                        ? "block"
+                        : "none",
+                    marginRight: "10px",
                   }}
                 >
-                  {studentsList.map((student: any, index: number) => (
-                    <option key={index} value={student.id}>
-                      {student.name + " " + student.lastname}
-                    </option>
-                  ))}
-                </select>
-              </span>
-              <Voice
-                maxW="8rem"
-                changeB={changeNumber}
-                setChangeB={setChangeNumber}
-              />
-            </div>
-          }
-          {theclass.image && (
-            <ImgLesson src={theclass.image} alt={theclass.subtitle} />
-          )}
-          {theclass.video && isArthurVincent && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "1rem",
-              }}
-            >
-              <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
-            </div>
-          )}
-          {/* {theclass.description && (
+                  <select
+                    onChange={(e) => handleStudentChange(e)}
+                    value={studentID}
+                    style={{
+                      borderRadius: "6px",
+                      border: "1px solid #ccc",
+                      backgroundColor: "#f9f9f9",
+                      fontSize: "0.9rem",
+                      maxWidth: "8rem",
+                      margin: "auto",
+                      color: "#333",
+                      outline: "none",
+                      transition: "border-color 0.3s",
+                    }}
+                  >
+                    {studentsList.map((student: any, index: number) => (
+                      <option key={index} value={student.id}>
+                        {student.name + " " + student.lastname}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+                <Voice
+                  maxW="8rem"
+                  changeB={changeNumber}
+                  setChangeB={setChangeNumber}
+                />
+              </div>
+            }
+            {theclass.image && (
+              <ImgLesson src={theclass.image} alt={theclass.subtitle} />
+            )}
+            {theclass.video && isArthurVincent && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "1rem",
+                }}
+              >
+                <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
+              </div>
+            )}
+            {/* {theclass.description && (
             <p
               style={{
                 margin: "1rem 0",
@@ -2602,143 +3203,152 @@ export default function EnglishClassCourse2({
               {theclass.description}
             </p>
           )} */}
-          {theclass.elements &&
-            theclass.elements
-              .sort((a: any, b: any) => a.order - b.order)
-              .map((element: any, index: number) => (
-                <div key={index} style={{ margin: "10px 0" }}>
-                  {element.subtitle && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <HTwo>{element.subtitle}</HTwo>
-                    </div>
-                  )}
-                  {element.image && element.subtitle && (
-                    <ImgLesson src={element.image} alt={element.subtitle} />
-                  )}
-                  {element.video && element.subtitle && isArthurVincent && (
-                    <VideoLessonModel element={element} />
-                  )}
+            {theclass.elements &&
+              theclass.elements
+                .sort((a: any, b: any) => a.order - b.order)
+                .map((element: any, index: number) => (
+                  <div key={index} style={{ margin: "10px 0" }}>
+                    {element.subtitle && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <HTwo>{element.subtitle}</HTwo>
+                      </div>
+                    )}
+                    {element.image && element.subtitle && (
+                      <ImgLesson src={element.image} alt={element.subtitle} />
+                    )}
+                    {element.video && element.subtitle && isArthurVincent && (
+                      <VideoLessonModel element={element} />
+                    )}
 
-                  {element.comments && (
-                    <p
-                      style={{
-                        padding: "0.5rem",
-                        textAlign: "center",
-                        backgroundColor: "#f6f6f6",
-                        borderRadius: "6px",
-                        margin: "0.5rem 0",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {element.comments}
-                    </p>
-                  )}
-                  {element.type === "sentences" ? (
-                    <SentenceLessonModel
-                      mainTag={theclass.mainTag}
-                      element={element}
-                      studentId={studentID}
-                      headers={headers}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "nfsentences" ? (
-                    <NoFlashcardsSentenceLessonModel
-                      element={element}
-                      headers={headers}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "text" ? (
-                    <TextLessonModel
-                      headers={headers}
-                      text={element.text ? element.text : ""}
-                    />
-                  ) : element.type === "html" ? (
-                    <div
-                      style={{
-                        padding: "1rem",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div dangerouslySetInnerHTML={{ __html: element.text }} />
-                    </div>
-                  ) : element.type === "multipletexts" ? (
-                    <MultipleTextsLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : element.type === "selectexercise" ? (
-                    <SelectExercise
-                      headers={headers}
-                      element={element}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "images" ? (
-                    <ImageLessonModel
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      id={myId}
-                      headers={headers}
-                      element={element}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "exercise" ? (
-                    <ExerciseLessonModel
-                      headers={headers}
-                      item={element.items}
-                    />
-                  ) : element.type === "qanda" ? (
-                    <QandALessonModel
-                      headers={headers}
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      item={element}
-                    />
-                  ) : element.type === "audiosoundtrack" ? (
-                    <AudioSoundTrack
-                      headers={headers}
-                      text={element.text}
-                      src={element.src}
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      element={element}
-                      link={element.link}
-                      subtitle={element.subtitle}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "personalqanda" ? (
-                    <QandALessonPersonalModel
-                      headers={headers}
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      item={element}
-                    />
-                  ) : element.type === "dialogue" ? (
-                    <DialogueLessonModel headers={headers} element={element} />
-                  ) : element.type === "singleimages" ? (
-                    <SingleImageLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : element.type === "listenandtranslate" ? (
-                    <ListenAndTranslateLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : element.type === "listinenglish" ? (
-                    <TextsWithTranslateLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              ))}
+                    {element.comments && (
+                      <p
+                        style={{
+                          padding: "0.5rem",
+                          textAlign: "center",
+                          backgroundColor: "#f6f6f6",
+                          borderRadius: "6px",
+                          margin: "0.5rem 0",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {element.comments}
+                      </p>
+                    )}
+                    {element.type === "sentences" ? (
+                      <SentenceLessonModel
+                        mainTag={theclass.mainTag}
+                        element={element}
+                        studentId={studentID}
+                        headers={headers}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "vocabulary" ? (
+                      <VocabularyLesson
+                        mainTag={theclass.mainTag}
+                        element={element}
+                        studentId={studentID}
+                        headers={headers}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "nfsentences" ? (
+                      <NoFlashcardsSentenceLessonModel
+                        element={element}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "text" ? (
+                      <TextLessonModel
+                        headers={headers}
+                        text={element.text ? element.text : ""}
+                      />
+                    ) : element.type === "html" ? (
+                      <div
+                        style={{
+                          padding: "1rem",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          dangerouslySetInnerHTML={{ __html: element.text }}
+                        />
+                      </div>
+                    ) : element.type === "multipletexts" ? (
+                      <MultipleTextsLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "selectexercise" ? (
+                      <SelectExercise
+                        headers={headers}
+                        element={element}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "images" ? (
+                      <ImageLessonModel
+                        studentId={studentID}
+                        mainTag={theclass.mainTag}
+                        id={myId}
+                        headers={headers}
+                        element={element}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "exercise" ? (
+                      <ExerciseLessonModel
+                        headers={headers}
+                        item={element.items}
+                      />
+                    ) : element.type === "explanation" ? (
+                      <ExplanationLesson headers={headers} element={element} />
+                    ) : element.type === "audiosoundtrack" ? (
+                      <AudioSoundTrack
+                        headers={headers}
+                        text={element.text}
+                        src={element.src}
+                        studentId={studentID}
+                        mainTag={theclass.mainTag}
+                        element={element}
+                        link={element.link}
+                        subtitle={element.subtitle}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "personalqanda" ? (
+                      <QandALessonPersonalModel
+                        headers={headers}
+                        studentId={studentID}
+                        mainTag={theclass.mainTag}
+                        item={element}
+                      />
+                    ) : element.type === "dialogue" ? (
+                      <DialogueLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "singleimages" ? (
+                      <SingleImageLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "listenandtranslate" ? (
+                      <ListenAndTranslateLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "listinenglish" ? (
+                      <TextsWithTranslateLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                ))}
+          </div>
+
           <div
             style={{
               display: "flex",
@@ -3007,8 +3617,8 @@ export default function EnglishClassCourse2({
                       />
                     ) : element.type === "images" ? (
                       <ImageLessonModelSlide
-                        headers={headers}
                         element={element}
+                        selectedVoice={selectedVoice}
                       />
                     ) : (
                       <></>

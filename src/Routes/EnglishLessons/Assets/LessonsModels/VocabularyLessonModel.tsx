@@ -1,20 +1,76 @@
 import React, { useEffect, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { readText } from "../Functions/FunctionLessons";
+import { notifyAlert, readText } from "../Functions/FunctionLessons";
+import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
+import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
+import {
+  backDomain,
+  onLoggOut,
+} from "../../../../Resources/UniversalComponents";
+import axios from "axios";
+import { Tooltip } from "@mui/material";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 interface VocabularyLessonProps {
+  headers: MyHeadersType | null;
   element: any;
+  studentId: string;
+  mainTag: string;
   selectedVoice: any;
 }
 
 export default function VocabularyLesson({
+  headers,
   element,
+  mainTag,
+  studentId,
   selectedVoice,
 }: VocabularyLessonProps) {
+  const actualHeaders = headers || {};
+  const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
+  
   useEffect(() => {
     console.log(element);
   }, []);
+  
+  const addNewCards = async (frontText: string, backText: string, index: number) => {
+    const newCards = [
+      {
+        front: {
+          text: frontText,
+          language: "en",
+        },
+        back: {
+          text: backText,
+          language: "pt",
+        },
+        tags: [mainTag ? mainTag : ""],
+      },
+    ];
+
+    try {
+      const response = await axios.post(
+        `${backDomain}/api/v1/flashcard/${studentId}`,
+        { newCards },
+        { headers: actualHeaders }
+      );
+      const showThis =
+        `${
+          response.data.addedNewFlashcards
+            ? response.data.addedNewFlashcards
+            : ""
+        }` +
+        `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
+
+      notifyAlert(showThis, "green");
+      
+      // Adicionar o índice do botão clicado ao conjunto
+      setClickedButtons(prev => new Set(prev).add(index));
+    } catch (error) {
+      alert("Erro ao enviar cards");
+      onLoggOut();
+    }
+  };
 
   return (
     <div
@@ -51,6 +107,48 @@ export default function VocabularyLesson({
                 e.currentTarget.style.boxShadow = "none";
               }}
             >
+              {/* Botão + para adicionar aos flashcards */}
+              {!clickedButtons.has(i) && (
+                <Tooltip title="Add to flashcards" placement="top" arrow>
+                  <button
+                    style={{
+                      position: "absolute",
+                      top: "8px",
+                      left: "8px",
+                      backgroundColor: partnerColor(),
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "24px",
+                      height: "24px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontWeight: "bold",
+                      cursor: "pointer",
+                      transition: "all 0.2s ease",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      addNewCards(sentence.english, sentence.portuguese, i);
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = "scale(1.1)";
+                      e.currentTarget.style.boxShadow =
+                        "0 4px 8px rgba(0, 0, 0, 0.28)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = "scale(1)";
+                      e.currentTarget.style.boxShadow =
+                        "0 2px 4px rgba(0,0,0,0.1)";
+                    }}
+                  >
+                    +
+                  </button>
+                </Tooltip>
+              )}
+
               {/* Botão de áudio */}
               <button
                 style={{
