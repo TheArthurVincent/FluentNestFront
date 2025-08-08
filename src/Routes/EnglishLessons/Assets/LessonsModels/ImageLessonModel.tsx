@@ -14,6 +14,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { CircularProgress } from "@mui/material";
+import { partnerColor } from "../../../../Styles/Styles";
 interface ImageLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
@@ -111,7 +112,7 @@ export default function ImageLessonModel({
               <LiGridImageLessons key={i}>
                 <div>
                   <ArvinButton
-                    color="white"
+                    color={partnerColor()}
                     onClick={() =>
                       addNewCardsInverted(
                         image.english,

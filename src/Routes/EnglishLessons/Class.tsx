@@ -63,6 +63,7 @@ import Voice from "../../Resources/Voice";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
 import { t } from "framer-motion/dist/types.d-D0HXPxHm";
+import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -2638,8 +2639,20 @@ export default function EnglishClassCourse2({
                       {element.comments}
                     </p>
                   )}
-                  {element.type === "sentences" ? (
+                  {
+                  
+                  element.type === "sentences" ? (
                     <SentenceLessonModel
+                      mainTag={theclass.mainTag}
+                      element={element}
+                      studentId={studentID}
+                      headers={headers}
+                      selectedVoice={selectedVoice}
+                    />
+                  ) :
+                  
+                  element.type === "vocabulary" ? (
+                    <VocabularyLesson
                       mainTag={theclass.mainTag}
                       element={element}
                       studentId={studentID}
