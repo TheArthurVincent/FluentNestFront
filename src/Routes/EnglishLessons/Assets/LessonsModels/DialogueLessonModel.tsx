@@ -6,30 +6,29 @@ import { Tooltip } from "@mui/material";
 import { textTitleFont, partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
+
 interface DialogueLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
   selectedVoice?: any;
 }
 
-const readText = async (
+const readDialogueText = async (
   text: string,
-  restart: boolean,
-  lang?: string,
-  chosenVoice?: string,
-  rate?: number
+  isPersonA: boolean
 ) => {
-  if (restart && window?.speechSynthesis) {
+  if (window?.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
-  let voiceLang = localStorage.getItem("voiceLang");
-  let voiceGender = localStorage.getItem("voiceGender");
 
   try {
+    // Pessoa A = voz masculina, Pessoa B = voz feminina
+    const gender = isPersonA ? "MALE" : "FEMALE";
+    
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
       text,
-      languageCode: voiceLang || lang,
-      gender: voiceGender,
+      languageCode: "en-US",
+      gender: gender,
       pitch: 0.6,
       speakingRate: 0.9,
     });
@@ -40,15 +39,6 @@ const readText = async (
   } catch (error) {
     notifyAlert("Erro ao gerar áudio");
     console.error("Erro TTS:", error);
-  }
-};
-export const listVoices = () => {
-  if ("speechSynthesis" in window) {
-    const voices = window.speechSynthesis.getVoices();
-    return voices;
-  } else {
-    console.error("speechSynthesis não está disponível no navegador.");
-    return [];
   }
 };
 
@@ -169,7 +159,7 @@ export default function DialogueLessonModel({
                           cursor: "pointer",
                         }}
                         onClick={() =>
-                          readText(text, true, "en", selectedVoice)
+                          readDialogueText(text, isLeft)
                         }
                       >
                         <div

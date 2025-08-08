@@ -1302,8 +1302,8 @@ export default function EnglishClassCourse2({
                             fontFace: textTitleFont(),
                           });
 
-                          // Seta →
-                          currentSlide.addText("→", {
+                          // Hífen separador
+                          currentSlide.addText("-", {
                             x: 4.5,
                             y: yPos,
                             w: 1,
@@ -1341,6 +1341,101 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "dialogue":
+                try {
+                  if (element.dialogue && Array.isArray(element.dialogue)) {
+                    // Agrupar falas em pares (2 por slide)
+                    for (let i = 0; i < element.dialogue.length; i += 2) {
+                      const dialogueSlide = pptx.addSlide();
+
+                      // Título do diálogo (apenas no primeiro slide)
+                      if (i === 0 && element.subtitle) {
+                        const safeSubtitle = sanitizeText(element.subtitle, 100);
+                        dialogueSlide.addText(safeSubtitle, {
+                          x: 0.5,
+                          y: 0.3,
+                          w: 9,
+                          h: 0.8,
+                          fontSize: 28,
+                          bold: true,
+                          align: "center",
+                          color: partnerColor().replace("#", ""),
+                          fontFace: textTitleFont(),
+                        });
+                      }
+
+                      let yPos = i === 0 && element.subtitle ? 1.2 : 0.8;
+
+                      // Primeira fala (A)
+                      if (element.dialogue[i]) {
+                        const safeDialogueA = sanitizeText(element.dialogue[i], 150);
+                        
+                        // Label da pessoa A
+                        dialogueSlide.addText("A:", {
+                          x: 0.8,
+                          y: yPos,
+                          w: 1,
+                          h: 0.6,
+                          fontSize: 20,
+                          bold: true,
+                          align: "left",
+                          color: partnerColor().replace("#", ""),
+                          fontFace: textTitleFont(),
+                        });
+
+                        // Fala da pessoa A
+                        dialogueSlide.addText(safeDialogueA, {
+                          x: 1.8,
+                          y: yPos,
+                          w: 7.2,
+                          h: 1.2,
+                          fontSize: 16,
+                          align: "left",
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                          valign: "top",
+                        });
+
+                        yPos += 1.5;
+                      }
+
+                      // Segunda fala (B)
+                      if (element.dialogue[i + 1]) {
+                        const safeDialogueB = sanitizeText(element.dialogue[i + 1], 150);
+                        
+                        // Label da pessoa B
+                        dialogueSlide.addText("B:", {
+                          x: 0.8,
+                          y: yPos,
+                          w: 1,
+                          h: 0.6,
+                          fontSize: 20,
+                          bold: true,
+                          align: "left",
+                          color: partnerColor().replace("#", ""),
+                          fontFace: textTitleFont(),
+                        });
+
+                        // Fala da pessoa B
+                        dialogueSlide.addText(safeDialogueB, {
+                          x: 1.8,
+                          y: yPos,
+                          w: 7.2,
+                          h: 1.2,
+                          fontSize: 16,
+                          align: "left",
+                          color: darkGreyColor().replace("#", ""),
+                          fontFace: textGeneralFont(),
+                          valign: "top",
+                        });
+                      }
+                    }
+                  }
+                } catch (dialogueError) {
+                  console.log("⚠️ Erro ao processar elemento dialogue:", dialogueError);
+                }
+                break;
+
               default:
                 try {
                   if (
@@ -1348,7 +1443,6 @@ export default function EnglishClassCourse2({
                       "multipletexts",
                       "selectexercise",
                       "personalqanda",
-                      "dialogue",
                       "singleimages",
                       "listenandtranslate",
                       "listinenglish",
@@ -1915,7 +2009,7 @@ export default function EnglishClassCourse2({
                     new Paragraph({
                       children: [
                         new TextRun({
-                          text: "📚 Vocabulário:",
+                          text: "Vocabulario:",
                           bold: true,
                           size: 24,
                           color: partnerColor().replace("#", ""),
@@ -1935,7 +2029,7 @@ export default function EnglishClassCourse2({
                           100
                         );
 
-                        // Palavra em inglês → tradução em português
+                        // Palavra em inglês - tradução em português
                         children.push(
                           new Paragraph({
                             children: [
@@ -1947,7 +2041,7 @@ export default function EnglishClassCourse2({
                                 font: textTitleFont(),
                               }),
                               new TextRun({
-                                text: " → ",
+                                text: " - ",
                                 bold: true,
                                 size: 18,
                                 color: partnerColor().replace("#", ""),
@@ -1969,13 +2063,59 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "dialogue":
+                if (element.dialogue && Array.isArray(element.dialogue)) {
+                  children.push(
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: "Dialogo:",
+                          bold: true,
+                          size: 24,
+                          color: partnerColor().replace("#", ""),
+                          font: textTitleFont(),
+                        }),
+                      ],
+                      spacing: { before: 400, after: 300 },
+                    })
+                  );
+
+                  element.dialogue.forEach(
+                    (dialogueText: string, dialogueIndex: number) => {
+                      const speaker = dialogueIndex % 2 === 0 ? "A" : "B";
+                      const safeDialogue = sanitizeText(dialogueText, 200);
+
+                      children.push(
+                        new Paragraph({
+                          children: [
+                            new TextRun({
+                              text: `${speaker} - `,
+                              bold: true,
+                              size: 18,
+                              color: partnerColor().replace("#", ""),
+                              font: textTitleFont(),
+                            }),
+                            new TextRun({
+                              text: safeDialogue,
+                              size: 18,
+                              color: darkGreyColor().replace("#", ""),
+                              font: textGeneralFont(),
+                            }),
+                          ],
+                          spacing: { after: 150 },
+                        })
+                      );
+                    }
+                  );
+                }
+                break;
+
               default:
                 if (
                   [
                     "multipletexts",
                     "selectexercise",
                     "personalqanda",
-                    "dialogue",
                     "listenandtranslate",
                     "listinenglish",
                   ].includes(element.type)
@@ -2424,36 +2564,83 @@ export default function EnglishClassCourse2({
                   pdf.setFontSize(14);
                   pdf.setTextColor(r, g, b);
                   checkPageBreak(7);
-                  pdf.text("📚 Vocabulário:", margin, yPosition);
-                  yPosition += 12;
+                  pdf.text("Vocabulario:", margin, yPosition);
+                  yPosition += 15;
 
                   element.sentences.forEach(
                     (vocab: any, vocabIndex: number) => {
                       if (vocab.english && vocab.portuguese) {
-                        const safeEnglish = sanitizeText(vocab.english, 80);
+                        const safeEnglish = sanitizeText(vocab.english, 60);
                         const safePortuguese = sanitizeText(
                           vocab.portuguese,
-                          80
+                          60
                         );
 
-                        // Palavra em inglês (negrito simulado com repetição)
+                        // Palavra em inglês (em negrito)
                         pdf.setFontSize(12);
-                        pdf.setTextColor(50, 50, 50);
-                        const vocabularyLine = `${safeEnglish} → ${safePortuguese}`;
-                        const vocabularyLines = splitTextToSize(
-                          vocabularyLine,
-                          maxWidth,
+                        pdf.setTextColor(40, 40, 40);
+                        pdf.setFont("helvetica", "bold");
+                        const englishLines = splitTextToSize(
+                          safeEnglish,
+                          maxWidth * 0.4,
                           12
                         );
-                        checkPageBreak(vocabularyLines.length * 4);
-                        pdf.text(vocabularyLines, margin, yPosition);
-                        yPosition += vocabularyLines.length * 4 + 3;
+                        checkPageBreak(englishLines.length * 4);
+                        pdf.text(englishLines, margin, yPosition);
+
+                        // Hífen separador
+                        pdf.setFont("helvetica", "normal");
+                        pdf.setTextColor(r, g, b);
+                        pdf.text("-", margin + 80, yPosition);
+
+                        // Palavra em português (em itálico)
+                        pdf.setFont("helvetica", "italic");
+                        pdf.setTextColor(80, 80, 80);
+                        const portugueseLines = splitTextToSize(
+                          safePortuguese,
+                          maxWidth * 0.4,
+                          12
+                        );
+                        pdf.text(portugueseLines, margin + 100, yPosition);
+
+                        // Resetar fonte para normal
+                        pdf.setFont("helvetica", "normal");
+                        
+                        yPosition += Math.max(englishLines.length, portugueseLines.length) * 4 + 5;
                       }
                     }
                   );
 
                   // Espaço extra após vocabulário
-                  yPosition += 5;
+                  yPosition += 8;
+                }
+                break;
+
+              case "dialogue":
+                if (element.dialogue && Array.isArray(element.dialogue)) {
+                  pdf.setFontSize(14);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(7);
+                  pdf.text("Dialogo:", margin, yPosition);
+                  yPosition += 15;
+
+                  element.dialogue.forEach(
+                    (dialogueText: string, dialogueIndex: number) => {
+                      const speaker = dialogueIndex % 2 === 0 ? "A" : "B";
+                      const safeDialogue = sanitizeText(dialogueText, 200);
+                      
+                      pdf.setFontSize(11);
+                      pdf.setTextColor(40, 40, 40);
+                      const dialogueLine = `${speaker} - ${safeDialogue}`;
+                      const dialogueLines = splitTextToSize(dialogueLine, maxWidth, 11);
+                      checkPageBreak(dialogueLines.length * 4);
+                      pdf.text(dialogueLines, margin, yPosition);
+                      yPosition += dialogueLines.length * 4 + 4;
+                    }
+                  );
+
+                  // Espaço extra após diálogo
+                  yPosition += 8;
                 }
                 break;
 
@@ -2461,7 +2648,6 @@ export default function EnglishClassCourse2({
               case "multipletexts":
               case "selectexercise":
               case "personalqanda":
-              case "dialogue":
               case "listenandtranslate":
               case "singleimages":
                 // Não incluir elementos que requerem interação
