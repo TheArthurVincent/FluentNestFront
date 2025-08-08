@@ -118,7 +118,6 @@ export default function ImageLessonModel({
                 border: "1px solid #f0f0f0",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
               }}
-            
             >
               {/* Botões de interação no topo */}
               <div
@@ -149,7 +148,6 @@ export default function ImageLessonModel({
                       cursor: "pointer",
                       fontSize: "14px",
                       transition: "all 0.2s ease",
-                      boxShadow: "0 2px 8px rgba(0, 123, 255, 0.3)",
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = "scale(1.1)";
@@ -176,9 +174,6 @@ export default function ImageLessonModel({
                         setClickedButtons((prev) => new Set(prev).add(i));
                       }}
                       style={{
-                        backgroundColor: `rgba(${partnerColor()
-                          .replace("rgb(", "")
-                          .replace(")", "")}, 0.9)`,
                         color: "white",
                         border: "none",
                         borderRadius: "50%",
@@ -191,19 +186,14 @@ export default function ImageLessonModel({
                         fontSize: "18px",
                         fontWeight: "bold",
                         transition: "all 0.2s ease",
+                        backgroundColor: partnerColor(),
                         boxShadow: `0 2px 8px ${partnerColor()}40`,
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.backgroundColor = partnerColor();
                         e.currentTarget.style.transform = "scale(1.1)";
-                        e.currentTarget.style.boxShadow = `0 4px 12px ${partnerColor()}60`;
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.backgroundColor = `rgba(${partnerColor()
-                          .replace("rgb(", "")
-                          .replace(")", "")}, 0.9)`;
                         e.currentTarget.style.transform = "scale(1)";
-                        e.currentTarget.style.boxShadow = `0 2px 8px ${partnerColor()}40`;
                       }}
                     >
                       +
@@ -256,24 +246,17 @@ export default function ImageLessonModel({
                 />
               </div>
 
-              {/* Texto da imagem */}
               <div
                 style={{
-                  textAlign: "center",
-                  marginBottom: "16px",
+                  fontWeight: "600",
+                  color: "#1a1a1a",
+                  fontFamily: textTitleFont(),
+                  fontSize: "16px",
                 }}
               >
-                <div
-                  style={{
-                    fontWeight: "600",
-                    color: "#1a1a1a",
-                    fontFamily: textTitleFont(),
-                    fontSize: "16px",
-                  }}
-                >
-                  {image.text}
-                </div>
-                {/* {image.portuguese && (
+                {image.text}
+              </div>
+              {/* {image.portuguese && (
                   <div
                     style={{
                       color: "#666",
@@ -284,9 +267,6 @@ export default function ImageLessonModel({
                     {image.portuguese}
                   </div>
                 )} */}
-              </div>
-
-              {/* TextArea para notas */}
               <div
                 style={{
                   marginTop: "16px",
