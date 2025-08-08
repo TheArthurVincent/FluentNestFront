@@ -1141,6 +1141,206 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "explanation":
+                try {
+                  if (
+                    element.explanation &&
+                    Array.isArray(element.explanation)
+                  ) {
+                    element.explanation.forEach(
+                      (explanationItem: any, explIndex: number) => {
+                        const explanationSlide = pptx.addSlide();
+
+                        // Título da explicação
+                        if (explanationItem.title) {
+                          const safeTitle = sanitizeText(
+                            explanationItem.title,
+                            100
+                          );
+                          explanationSlide.addText(safeTitle, {
+                            x: 0.5,
+                            y: 0.5,
+                            w: 9,
+                            h: 0.8,
+                            fontSize: 28,
+                            bold: true,
+                            align: "center",
+                            color: partnerColor().replace("#", ""),
+                            fontFace: textTitleFont(),
+                          });
+                        }
+
+                        let yPos = 1.5;
+
+                        // Imagem se existir
+                        if (explanationItem.image) {
+                          try {
+                            addImageSafely(
+                              explanationSlide,
+                              explanationItem.image,
+                              {
+                                x: 7,
+                                y: yPos,
+                                w: 2,
+                                h: 2,
+                              }
+                            );
+                          } catch (imageError) {
+                            console.log(
+                              "⚠️ Erro ao adicionar imagem da explicação:",
+                              imageError
+                            );
+                          }
+                        }
+
+                        // Lista de explicações
+                        if (
+                          explanationItem.list &&
+                          Array.isArray(explanationItem.list)
+                        ) {
+                          explanationItem.list.forEach(
+                            (listItem: string, listIndex: number) => {
+                              const safeListItem = sanitizeText(listItem, 400);
+                              explanationSlide.addText(`• ${safeListItem}`, {
+                                x: 0.5,
+                                y: yPos,
+                                w: explanationItem.image ? 6 : 9,
+                                h: 0.8,
+                                fontSize: 16,
+                                color: darkGreyColor().replace("#", ""),
+                                fontFace: textGeneralFont(),
+                                valign: "top",
+                              });
+                              yPos += 0.8;
+                            }
+                          );
+                        }
+                      }
+                    );
+                  }
+                } catch (explanationError) {
+                  console.log(
+                    "⚠️ Erro ao processar elemento explanation:",
+                    explanationError
+                  );
+                }
+                break;
+
+              case "vocabulary":
+                try {
+                  const vocabularySlide = pptx.addSlide();
+
+                  // Título da sessão de vocabulário
+                  if (element.subtitle) {
+                    const safeSubtitle = sanitizeText(element.subtitle, 100);
+                    vocabularySlide.addText(safeSubtitle, {
+                      x: 0.5,
+                      y: 0.5,
+                      w: 9,
+                      h: 0.8,
+                      fontSize: 28,
+                      bold: true,
+                      align: "center",
+                      color: partnerColor().replace("#", ""),
+                      fontFace: textTitleFont(),
+                    });
+                  }
+
+                  // Processar vocabulário (sentences com english e portuguese)
+                  if (element.sentences && Array.isArray(element.sentences)) {
+                    let yPos = 1.5;
+                    const itemsPerSlide = 5; // Máximo de itens por slide
+                    let currentSlide = vocabularySlide;
+                    let itemCount = 0;
+
+                    element.sentences.forEach(
+                      (vocab: any, vocabIndex: number) => {
+                        // Criar novo slide se necessário
+                        if (
+                          itemCount >= itemsPerSlide &&
+                          vocabIndex < element.sentences.length
+                        ) {
+                          currentSlide = pptx.addSlide();
+                          if (element.subtitle) {
+                            const safeSubtitle = sanitizeText(
+                              element.subtitle + " (cont.)",
+                              100
+                            );
+                            currentSlide.addText(safeSubtitle, {
+                              x: 0.5,
+                              y: 0.3,
+                              w: 9,
+                              h: 0.6,
+                              fontSize: 24,
+                              bold: true,
+                              align: "center",
+                              color: partnerColor().replace("#", ""),
+                              fontFace: textTitleFont(),
+                            });
+                          }
+                          yPos = 1.2;
+                          itemCount = 0;
+                        }
+
+                        if (vocab.english && vocab.portuguese) {
+                          const safeEnglish = sanitizeText(vocab.english, 50);
+                          const safePortuguese = sanitizeText(
+                            vocab.portuguese,
+                            50
+                          );
+
+                          // Texto em inglês (lado esquerdo)
+                          currentSlide.addText(safeEnglish, {
+                            x: 1,
+                            y: yPos,
+                            w: 3.5,
+                            h: 0.6,
+                            fontSize: 16,
+                            bold: true,
+                            align: "left",
+                            color: darkGreyColor().replace("#", ""),
+                            fontFace: textTitleFont(),
+                          });
+
+                          // Seta →
+                          currentSlide.addText("→", {
+                            x: 4.5,
+                            y: yPos,
+                            w: 1,
+                            h: 0.6,
+                            fontSize: 18,
+                            bold: true,
+                            align: "center",
+                            color: partnerColor().replace("#", ""),
+                          });
+
+                          // Texto em português (lado direito)
+                          currentSlide.addText(safePortuguese, {
+                            x: 5.5,
+                            y: yPos,
+                            w: 3.5,
+                            h: 0.6,
+                            fontSize: 16,
+                            align: "left",
+                            color: darkGreyColor().replace("#", ""),
+                            fontFace: textGeneralFont(),
+                            italic: true,
+                          });
+
+                          yPos += 0.7;
+                          itemCount++;
+                        }
+                      }
+                    );
+                  }
+                } catch (vocabularyError) {
+                  console.log(
+                    "⚠️ Erro ao processar elemento vocabulary:",
+                    vocabularyError
+                  );
+                }
+                break;
+
               default:
                 try {
                   if (
@@ -1648,6 +1848,127 @@ export default function EnglishClassCourse2({
                 }
                 break;
 
+              case "explanation":
+                if (element.explanation && Array.isArray(element.explanation)) {
+                  element.explanation.forEach(
+                    (explanationItem: any, explIndex: number) => {
+                      // Título da explicação
+                      if (explanationItem.title) {
+                        children.push(
+                          new Paragraph({
+                            children: [
+                              new TextRun({
+                                text: explanationItem.title,
+                                bold: true,
+                                size: 32,
+                                color: partnerColor().replace("#", ""),
+                                font: textTitleFont(),
+                              }),
+                            ],
+                            heading: HeadingLevel.HEADING_2,
+                            spacing: { before: 400, after: 300 },
+                          })
+                        );
+                      }
+
+                      // Lista de explicações
+                      if (
+                        explanationItem.list &&
+                        Array.isArray(explanationItem.list)
+                      ) {
+                        explanationItem.list.forEach(
+                          (listItem: string, listIndex: number) => {
+                            const safeListItem = sanitizeText(listItem, 500);
+                            children.push(
+                              new Paragraph({
+                                children: [
+                                  new TextRun({
+                                    text: `• ${safeListItem}`,
+                                    size: 22,
+                                    font: textGeneralFont(),
+                                  }),
+                                ],
+                                spacing: { after: 200 },
+                              })
+                            );
+                          }
+                        );
+                      }
+
+                      // Espaço entre explicações
+                      if (explIndex < element.explanation.length - 1) {
+                        children.push(
+                          new Paragraph({
+                            children: [new TextRun({ text: "" })],
+                            spacing: { after: 400 },
+                          })
+                        );
+                      }
+                    }
+                  );
+                }
+                break;
+
+              case "vocabulary":
+                if (element.sentences && Array.isArray(element.sentences)) {
+                  children.push(
+                    new Paragraph({
+                      children: [
+                        new TextRun({
+                          text: "📚 Vocabulário:",
+                          bold: true,
+                          size: 24,
+                          color: partnerColor().replace("#", ""),
+                          font: textTitleFont(),
+                        }),
+                      ],
+                      spacing: { before: 400, after: 300 },
+                    })
+                  );
+
+                  element.sentences.forEach(
+                    (vocab: any, vocabIndex: number) => {
+                      if (vocab.english && vocab.portuguese) {
+                        const safeEnglish = sanitizeText(vocab.english, 100);
+                        const safePortuguese = sanitizeText(
+                          vocab.portuguese,
+                          100
+                        );
+
+                        // Palavra em inglês → tradução em português
+                        children.push(
+                          new Paragraph({
+                            children: [
+                              new TextRun({
+                                text: safeEnglish,
+                                bold: true,
+                                size: 20,
+                                color: darkGreyColor().replace("#", ""),
+                                font: textTitleFont(),
+                              }),
+                              new TextRun({
+                                text: " → ",
+                                bold: true,
+                                size: 18,
+                                color: partnerColor().replace("#", ""),
+                              }),
+                              new TextRun({
+                                text: safePortuguese,
+                                size: 20,
+                                color: darkGreyColor().replace("#", ""),
+                                font: textGeneralFont(),
+                                italics: true,
+                              }),
+                            ],
+                            spacing: { after: 150 },
+                          })
+                        );
+                      }
+                    }
+                  );
+                }
+                break;
+
               default:
                 if (
                   [
@@ -2046,6 +2367,93 @@ export default function EnglishClassCourse2({
                       yPosition += portugueseLines.length * 3 + 4;
                     }
                   });
+                }
+                break;
+
+              case "explanation":
+                if (element.explanation && Array.isArray(element.explanation)) {
+                  element.explanation.forEach(
+                    (explanationItem: any, explIndex: number) => {
+                      // Título da explicação
+                      if (explanationItem.title) {
+                        pdf.setFontSize(16);
+                        pdf.setTextColor(r, g, b);
+                        checkPageBreak(8);
+                        const titleLines = splitTextToSize(
+                          explanationItem.title,
+                          maxWidth,
+                          16
+                        );
+                        pdf.text(titleLines, margin, yPosition);
+                        yPosition += titleLines.length * 6 + 10;
+                      }
+
+                      // Lista de explicações
+                      if (
+                        explanationItem.list &&
+                        Array.isArray(explanationItem.list)
+                      ) {
+                        explanationItem.list.forEach(
+                          (listItem: string, listIndex: number) => {
+                            const safeListItem = sanitizeText(listItem, 400);
+                            pdf.setFontSize(11);
+                            pdf.setTextColor(0, 0, 0);
+                            const listLines = splitTextToSize(
+                              `• ${safeListItem}`,
+                              maxWidth,
+                              11
+                            );
+                            checkPageBreak(listLines.length * 4);
+                            pdf.text(listLines, margin, yPosition);
+                            yPosition += listLines.length * 4 + 4;
+                          }
+                        );
+                      }
+
+                      // Espaço entre explicações
+                      if (explIndex < element.explanation.length - 1) {
+                        yPosition += 8;
+                      }
+                    }
+                  );
+                }
+                break;
+
+              case "vocabulary":
+                if (element.sentences && Array.isArray(element.sentences)) {
+                  pdf.setFontSize(14);
+                  pdf.setTextColor(r, g, b);
+                  checkPageBreak(7);
+                  pdf.text("📚 Vocabulário:", margin, yPosition);
+                  yPosition += 12;
+
+                  element.sentences.forEach(
+                    (vocab: any, vocabIndex: number) => {
+                      if (vocab.english && vocab.portuguese) {
+                        const safeEnglish = sanitizeText(vocab.english, 80);
+                        const safePortuguese = sanitizeText(
+                          vocab.portuguese,
+                          80
+                        );
+
+                        // Palavra em inglês (negrito simulado com repetição)
+                        pdf.setFontSize(12);
+                        pdf.setTextColor(50, 50, 50);
+                        const vocabularyLine = `${safeEnglish} → ${safePortuguese}`;
+                        const vocabularyLines = splitTextToSize(
+                          vocabularyLine,
+                          maxWidth,
+                          12
+                        );
+                        checkPageBreak(vocabularyLines.length * 4);
+                        pdf.text(vocabularyLines, margin, yPosition);
+                        yPosition += vocabularyLines.length * 4 + 3;
+                      }
+                    }
+                  );
+
+                  // Espaço extra após vocabulário
+                  yPosition += 5;
                 }
                 break;
 
