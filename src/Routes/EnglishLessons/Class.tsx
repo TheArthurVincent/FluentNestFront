@@ -64,6 +64,7 @@ import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
 import { t } from "framer-motion/dist/types.d-D0HXPxHm";
 import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
+import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -2382,214 +2383,219 @@ export default function EnglishClassCourse2({
           >
             See Board
           </ArvinButton>
-
           <div
             style={{
-              display: "flex",
-              gap: "0.8rem",
-              justifyContent: "center",
-              margin: "1rem auto",
-              flexWrap: "wrap",
+              maxWidth: "1000px",
+              margin: "0 auto",
             }}
           >
-            <button
-              title="Gerar PowerPoint"
-              style={{
-                padding: "8px 16px",
-                fontSize: "14px",
-                fontWeight: "600",
-                borderRadius: "8px",
-                minWidth: "50px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                border: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onClick={generatePPT}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(-1px)";
-                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(0)";
-                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-              }}
-            >
-              <img
-                src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                alt="PowerPoint"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </button>
-
-            <button
-              title="Gerar Word"
-              style={{
-                padding: "8px 16px",
-                fontSize: "14px",
-                fontWeight: "600",
-                borderRadius: "8px",
-                minWidth: "50px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                border: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onClick={generateWord}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(-1px)";
-                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(0)";
-                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-              }}
-            >
-              <img
-                src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                alt="Word"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </button>
-
-            <button
-              title="Gerar PDF"
-              style={{
-                padding: "8px 16px",
-                fontSize: "14px",
-                fontWeight: "600",
-                borderRadius: "8px",
-                minWidth: "50px",
-                height: "36px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "6px",
-                border: "none",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onClick={generatePDF}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(-1px)";
-                target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                target.style.transform = "translateY(0)";
-                target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-              }}
-            >
-              <img
-                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                alt="PDF"
-                style={{ width: "20px", height: "20px" }}
-              />
-            </button>
-          </div>
-          <label>
-            <input
-              style={{
-                cursor: "pointer",
-              }}
-              type="checkbox"
-              checked={isCompleted}
-              onChange={handleToggle}
-              disabled={loading}
-            />
-            {loading
-              ? "  Atualizando..."
-              : isCompleted
-              ? "  Completed"
-              : "  Not Completed"}
-          </label>
-          {
             <div
-              className="box-shadow-white"
               style={{
-                height: "3rem",
-                padding: "0 10px ",
-                backgroundColor: alwaysWhite(),
-                position: "fixed",
-                cursor: "pointer",
                 display: "flex",
-                alignItems: "center",
-                minWidth: "100px",
-                bottom: 5,
-                left: 0,
-                borderRadius: "6px",
+                gap: "0.8rem",
+                justifyContent: "center",
+                margin: "1rem auto",
+                flexWrap: "wrap",
               }}
             >
-              <span
+              <button
+                title="Gerar PowerPoint"
                 style={{
-                  display:
-                    thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
-                      ? "block"
-                      : "none",
-                  marginRight: "10px",
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  minWidth: "50px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  border: "none",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generatePPT}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(-1px)";
+                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(0)";
+                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
                 }}
               >
-                <select
-                  onChange={(e) => handleStudentChange(e)}
-                  value={studentID}
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                  alt="PowerPoint"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </button>
+
+              <button
+                title="Gerar Word"
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  minWidth: "50px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  border: "none",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generateWord}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(-1px)";
+                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(0)";
+                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                  alt="Word"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </button>
+
+              <button
+                title="Gerar PDF"
+                style={{
+                  padding: "8px 16px",
+                  fontSize: "14px",
+                  fontWeight: "600",
+                  borderRadius: "8px",
+                  minWidth: "50px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "6px",
+                  border: "none",
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generatePDF}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(-1px)";
+                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.transform = "translateY(0)";
+                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                  alt="PDF"
+                  style={{ width: "20px", height: "20px" }}
+                />
+              </button>
+            </div>
+            <label>
+              <input
+                style={{
+                  cursor: "pointer",
+                }}
+                type="checkbox"
+                checked={isCompleted}
+                onChange={handleToggle}
+                disabled={loading}
+              />
+              {loading
+                ? "  Atualizando..."
+                : isCompleted
+                ? "  Completed"
+                : "  Not Completed"}
+            </label>
+            {
+              <div
+                className="box-shadow-white"
+                style={{
+                  height: "3rem",
+                  padding: "0 10px ",
+                  backgroundColor: alwaysWhite(),
+                  position: "fixed",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  minWidth: "100px",
+                  bottom: 5,
+                  left: 0,
+                  borderRadius: "6px",
+                }}
+              >
+                <span
                   style={{
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    backgroundColor: "#f9f9f9",
-                    fontSize: "0.9rem",
-                    maxWidth: "8rem",
-                    margin: "auto",
-                    color: "#333",
-                    outline: "none",
-                    transition: "border-color 0.3s",
+                    display:
+                      thePermissions === "superadmin" ||
+                      thePermissions === "teacher"
+                        ? "block"
+                        : "none",
+                    marginRight: "10px",
                   }}
                 >
-                  {studentsList.map((student: any, index: number) => (
-                    <option key={index} value={student.id}>
-                      {student.name + " " + student.lastname}
-                    </option>
-                  ))}
-                </select>
-              </span>
-              <Voice
-                maxW="8rem"
-                changeB={changeNumber}
-                setChangeB={setChangeNumber}
-              />
-            </div>
-          }
-          {theclass.image && (
-            <ImgLesson src={theclass.image} alt={theclass.subtitle} />
-          )}
-          {theclass.video && isArthurVincent && (
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "1rem",
-              }}
-            >
-              <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
-            </div>
-          )}
-          {/* {theclass.description && (
+                  <select
+                    onChange={(e) => handleStudentChange(e)}
+                    value={studentID}
+                    style={{
+                      borderRadius: "6px",
+                      border: "1px solid #ccc",
+                      backgroundColor: "#f9f9f9",
+                      fontSize: "0.9rem",
+                      maxWidth: "8rem",
+                      margin: "auto",
+                      color: "#333",
+                      outline: "none",
+                      transition: "border-color 0.3s",
+                    }}
+                  >
+                    {studentsList.map((student: any, index: number) => (
+                      <option key={index} value={student.id}>
+                        {student.name + " " + student.lastname}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+                <Voice
+                  maxW="8rem"
+                  changeB={changeNumber}
+                  setChangeB={setChangeNumber}
+                />
+              </div>
+            }
+            {theclass.image && (
+              <ImgLesson src={theclass.image} alt={theclass.subtitle} />
+            )}
+            {theclass.video && isArthurVincent && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  marginTop: "1rem",
+                }}
+              >
+                <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
+              </div>
+            )}
+            {/* {theclass.description && (
             <p
               style={{
                 margin: "1rem 0",
@@ -2603,154 +2609,152 @@ export default function EnglishClassCourse2({
               {theclass.description}
             </p>
           )} */}
-          {theclass.elements &&
-            theclass.elements
-              .sort((a: any, b: any) => a.order - b.order)
-              .map((element: any, index: number) => (
-                <div key={index} style={{ margin: "10px 0" }}>
-                  {element.subtitle && (
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <HTwo>{element.subtitle}</HTwo>
-                    </div>
-                  )}
-                  {element.image && element.subtitle && (
-                    <ImgLesson src={element.image} alt={element.subtitle} />
-                  )}
-                  {element.video && element.subtitle && isArthurVincent && (
-                    <VideoLessonModel element={element} />
-                  )}
+            {theclass.elements &&
+              theclass.elements
+                .sort((a: any, b: any) => a.order - b.order)
+                .map((element: any, index: number) => (
+                  <div key={index} style={{ margin: "10px 0" }}>
+                    {element.subtitle && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <HTwo>{element.subtitle}</HTwo>
+                      </div>
+                    )}
+                    {element.image && element.subtitle && (
+                      <ImgLesson src={element.image} alt={element.subtitle} />
+                    )}
+                    {element.video && element.subtitle && isArthurVincent && (
+                      <VideoLessonModel element={element} />
+                    )}
 
-                  {element.comments && (
-                    <p
-                      style={{
-                        padding: "0.5rem",
-                        textAlign: "center",
-                        backgroundColor: "#f6f6f6",
-                        borderRadius: "6px",
-                        margin: "0.5rem 0",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {element.comments}
-                    </p>
-                  )}
-                  {
-                  
-                  element.type === "sentences" ? (
-                    <SentenceLessonModel
-                      mainTag={theclass.mainTag}
-                      element={element}
-                      studentId={studentID}
-                      headers={headers}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) :
-                  
-                  element.type === "vocabulary" ? (
-                    <VocabularyLesson
-                      mainTag={theclass.mainTag}
-                      element={element}
-                      studentId={studentID}
-                      headers={headers}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "nfsentences" ? (
-                    <NoFlashcardsSentenceLessonModel
-                      element={element}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "text" ? (
-                    <TextLessonModel
-                      headers={headers}
-                      text={element.text ? element.text : ""}
-                    />
-                  ) : element.type === "html" ? (
-                    <div
-                      style={{
-                        padding: "1rem",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <div dangerouslySetInnerHTML={{ __html: element.text }} />
-                    </div>
-                  ) : element.type === "multipletexts" ? (
-                    <MultipleTextsLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : element.type === "selectexercise" ? (
-                    <SelectExercise
-                      headers={headers}
-                      element={element}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "images" ? (
-                    <ImageLessonModel
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      id={myId}
-                      headers={headers}
-                      element={element}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "exercise" ? (
-                    <ExerciseLessonModel
-                      headers={headers}
-                      item={element.items}
-                    />
-                  ) : element.type === "qanda" ? (
-                    <QandALessonModel
-                      headers={headers}
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      item={element}
-                    />
-                  ) : element.type === "audiosoundtrack" ? (
-                    <AudioSoundTrack
-                      headers={headers}
-                      text={element.text}
-                      src={element.src}
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      element={element}
-                      link={element.link}
-                      subtitle={element.subtitle}
-                      selectedVoice={selectedVoice}
-                    />
-                  ) : element.type === "personalqanda" ? (
-                    <QandALessonPersonalModel
-                      headers={headers}
-                      studentId={studentID}
-                      mainTag={theclass.mainTag}
-                      item={element}
-                    />
-                  ) : element.type === "dialogue" ? (
-                    <DialogueLessonModel headers={headers} element={element} />
-                  ) : element.type === "singleimages" ? (
-                    <SingleImageLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : element.type === "listenandtranslate" ? (
-                    <ListenAndTranslateLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : element.type === "listinenglish" ? (
-                    <TextsWithTranslateLessonModel
-                      headers={headers}
-                      element={element}
-                    />
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              ))}
+                    {element.comments && (
+                      <p
+                        style={{
+                          padding: "0.5rem",
+                          textAlign: "center",
+                          backgroundColor: "#f6f6f6",
+                          borderRadius: "6px",
+                          margin: "0.5rem 0",
+                          fontStyle: "italic",
+                        }}
+                      >
+                        {element.comments}
+                      </p>
+                    )}
+                    {element.type === "sentences" ? (
+                      <SentenceLessonModel
+                        mainTag={theclass.mainTag}
+                        element={element}
+                        studentId={studentID}
+                        headers={headers}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "vocabulary" ? (
+                      <VocabularyLesson
+                        mainTag={theclass.mainTag}
+                        element={element}
+                        studentId={studentID}
+                        headers={headers}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "nfsentences" ? (
+                      <NoFlashcardsSentenceLessonModel
+                        element={element}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "text" ? (
+                      <TextLessonModel
+                        headers={headers}
+                        text={element.text ? element.text : ""}
+                      />
+                    ) : element.type === "html" ? (
+                      <div
+                        style={{
+                          padding: "1rem",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <div
+                          dangerouslySetInnerHTML={{ __html: element.text }}
+                        />
+                      </div>
+                    ) : element.type === "multipletexts" ? (
+                      <MultipleTextsLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "selectexercise" ? (
+                      <SelectExercise
+                        headers={headers}
+                        element={element}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "images" ? (
+                      <ImageLessonModel
+                        studentId={studentID}
+                        mainTag={theclass.mainTag}
+                        id={myId}
+                        headers={headers}
+                        element={element}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "exercise" ? (
+                      <ExerciseLessonModel
+                        headers={headers}
+                        item={element.items}
+                      />
+                    ) : element.type === "explanation" ? (
+                      <ExplanationLesson headers={headers} element={element} />
+                    ) : element.type === "audiosoundtrack" ? (
+                      <AudioSoundTrack
+                        headers={headers}
+                        text={element.text}
+                        src={element.src}
+                        studentId={studentID}
+                        mainTag={theclass.mainTag}
+                        element={element}
+                        link={element.link}
+                        subtitle={element.subtitle}
+                        selectedVoice={selectedVoice}
+                      />
+                    ) : element.type === "personalqanda" ? (
+                      <QandALessonPersonalModel
+                        headers={headers}
+                        studentId={studentID}
+                        mainTag={theclass.mainTag}
+                        item={element}
+                      />
+                    ) : element.type === "dialogue" ? (
+                      <DialogueLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "singleimages" ? (
+                      <SingleImageLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "listenandtranslate" ? (
+                      <ListenAndTranslateLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : element.type === "listinenglish" ? (
+                      <TextsWithTranslateLessonModel
+                        headers={headers}
+                        element={element}
+                      />
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                ))}
+          </div>
+
           <div
             style={{
               display: "flex",
