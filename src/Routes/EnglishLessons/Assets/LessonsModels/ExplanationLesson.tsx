@@ -74,9 +74,8 @@ export default function ExplanationLesson({
                   style={{
                     position: "relative",
                     zIndex: 1,
-                    fontSize: "28px",
                     fontWeight: "800",
-                    marginBottom: "32px",
+                    marginBottom: "12px",
                     fontFamily: textTitleFont(),
                     letterSpacing: "-0.03em",
                     lineHeight: "1.2",
@@ -87,9 +86,9 @@ export default function ExplanationLesson({
                   {/* Linha decorativa moderna */}
                   <div
                     style={{
-                      marginTop: "12px",
+                      marginTop: "5px",
                       width: "80px",
-                      height: "4px",
+                      height: "1px",
                       background: `linear-gradient(90deg, ${partnerColor()} 0%, ${partnerColor()}60 100%)`,
                       borderRadius: "8px",
                     }}
@@ -102,7 +101,6 @@ export default function ExplanationLesson({
                     style={{
                       position: "relative",
                       zIndex: 1,
-                      marginBottom: "32px",
                       textAlign: "center",
                     }}
                   >
@@ -133,31 +131,65 @@ export default function ExplanationLesson({
                       <div
                         key={listIndex}
                         style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: "20px",
-                          padding: "10px 12px",
                           backgroundColor: "#ffffff",
                           borderRadius: "8px",
                           border: "1px solid #f1f5f9",
                           borderLeft: `5px solid ${partnerColor()}`,
-                          transition:
-                            "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                          transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
                           boxShadow: "0 2px 10px rgba(0, 0, 0, 0.04)",
+                          padding: "10px",
                         }}
                       >
-                        {/* Texto da explicação */}
+                        {/* Conteúdo da explicação */}
                         <div
                           style={{
-                            fontSize: "17px",
-                            fontWeight: "400",
-                            lineHeight: "1.7",
-                            fontFamily: textGeneralFont(),
-                            flex: 1,
+                            display: "flex",
+                            alignItems: "flex-start",
+                            gap: "20px",
+                            marginBottom: "8px",
                           }}
                         >
-                          {listItem}
+                          {/* Texto da explicação */}
+                          <div
+                            style={{
+                              // fontSize: "17px",
+                              fontWeight: "400",
+                              lineHeight: "1.7",
+                              fontFamily: textGeneralFont(),
+                              flex: 1,
+                            }}
+                          >
+                            {listItem}
+                          </div>
                         </div>
+
+                        {/* Textarea para notas/respostas */}
+                        <textarea
+                          placeholder="Write your notes or thoughts here..."
+                          style={{
+                            width: "95%",
+                            minHeight: "80px",
+                            padding: "12px 16px",
+                            border: "2px solid #e9ecef",
+                            borderRadius: "8px",
+                            fontSize: "14px",
+                            fontFamily: textGeneralFont(),
+                            lineHeight: "1.5",
+                            color: "#1a202c",
+                            backgroundColor: "#ffffff",
+                            transition: "all 0.2s ease",
+                            resize: "vertical",
+                            outline: "none",
+                          }}
+                          onFocus={(e) => {
+                            e.currentTarget.style.borderColor = partnerColor();
+                            e.currentTarget.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                          }}
+                          onBlur={(e) => {
+                            e.currentTarget.style.borderColor = "#e9ecef";
+                            e.currentTarget.style.boxShadow = "none";
+                          }}
+                        />
                       </div>
                     )
                   )}
