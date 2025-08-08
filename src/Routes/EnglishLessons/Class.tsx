@@ -2662,7 +2662,6 @@ export default function EnglishClassCourse2({
                   ) : element.type === "nfsentences" ? (
                     <NoFlashcardsSentenceLessonModel
                       element={element}
-                      headers={headers}
                       selectedVoice={selectedVoice}
                     />
                   ) : element.type === "text" ? (
