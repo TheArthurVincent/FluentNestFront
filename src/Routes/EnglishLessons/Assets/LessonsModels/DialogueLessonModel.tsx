@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../Functions/FunctionLessons";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
-import { Tooltip } from "@mui/material";
 import { textTitleFont, partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
@@ -13,10 +11,7 @@ interface DialogueLessonModelProps {
   selectedVoice?: any;
 }
 
-const readDialogueText = async (
-  text: string,
-  isPersonA: boolean
-) => {
+const readDialogueText = async (text: string, isPersonA: boolean, country: string = "US") => {
   if (window?.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
@@ -25,12 +20,15 @@ const readDialogueText = async (
     // Pessoa A = voz masculina, Pessoa B = voz feminina
     const gender = isPersonA ? "MALE" : "FEMALE";
     
+    // Mapear país para languageCode
+    const languageCode = `en-${country}`;
+
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
       text,
-      languageCode: "en-US",
+      languageCode: languageCode,
       gender: gender,
-      pitch: 0.6,
-      speakingRate: 0.9,
+      pitch: 0.7,
+      speakingRate: 1.1,
     });
 
     const audioBase64 = response.data.audio;
@@ -47,6 +45,16 @@ export default function DialogueLessonModel({
   headers,
   selectedVoice,
 }: DialogueLessonModelProps) {
+  const [selectedCountry, setSelectedCountry] = useState<string>("US");
+  
+  const countryOptions = [
+    { value: "US", label: "🇺🇸 Estados Unidos" },
+    { value: "GB", label: "🇬🇧 Reino Unido" },
+    { value: "CA", label: "🇨🇦 Canadá" },
+    { value: "AU", label: "🇦🇺 Austrália" },
+    { value: "IN", label: "🇮🇳 Índia" },
+  ];
+
   function isEven(val: number) {
     return val % 2 === 0;
   }
@@ -61,6 +69,37 @@ export default function DialogueLessonModel({
         border: "1px solid #e2e8f0",
       }}
     >
+      {/* Seletor de País */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "16px",
+        }}
+      >
+        <select
+          value={selectedCountry}
+          onChange={(e) => setSelectedCountry(e.target.value)}
+          style={{
+            padding: "8px 12px",
+            borderRadius: "8px",
+            border: `1px solid ${partnerColor()}`,
+            backgroundColor: "#ffffff",
+            color: partnerColor(),
+            fontFamily: textTitleFont(),
+            fontSize: "14px",
+            cursor: "pointer",
+            outline: "none",
+          }}
+        >
+          {countryOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+      </div>
+      
       {element.subtitle && (
         <div
           style={{
@@ -151,54 +190,47 @@ export default function DialogueLessonModel({
                     )}
 
                     {/* Balão de conversa */}
-                    <Tooltip title="Clique para ouvir">
+                    <div
+                      style={{
+                        maxWidth: "70%",
+                        position: "relative",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => readDialogueText(text, isLeft, selectedCountry)}
+                    >
                       <div
                         style={{
-                          maxWidth: "70%",
-                          position: "relative",
-                          cursor: "pointer",
+                          backgroundColor: isLeft ? "#ffffff" : partnerColor(),
+                          color: isLeft ? "#1f2937" : "white",
+                          padding: "16px 20px",
+                          borderRadius: isLeft
+                            ? "20px 20px 20px 0px"
+                            : "20px 20px 0px 20px",
+                          boxShadow: isLeft
+                            ? "0 0px 12px rgba(0,0,0,0.1)"
+                            : `0 0px 12px ${partnerColor()}40`,
+                          border: isLeft ? "1px solid #e5e7eb" : "none",
+                          fontFamily: textTitleFont(),
+                          fontSize: "15px",
+                          lineHeight: "1.5",
+                          transition: "all 0.2s ease",
                         }}
-                        onClick={() =>
-                          readDialogueText(text, isLeft)
-                        }
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = "translateY(-2px)";
+                          e.currentTarget.style.boxShadow = isLeft
+                            ? "0 6px 20px rgba(0,0,0,0.15)"
+                            : `0 6px 20px ${partnerColor()}60`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = isLeft
+                            ? "0 4px 12px rgba(0,0,0,0.1)"
+                            : `0 4px 12px ${partnerColor()}40`;
+                        }}
                       >
-                        <div
-                          style={{
-                            backgroundColor: isLeft
-                              ? "#ffffff"
-                              : partnerColor(),
-                            color: isLeft ? "#1f2937" : "white",
-                            padding: "16px 20px",
-                            borderRadius: isLeft
-                              ? "20px 20px 20px 0px"
-                              : "20px 20px 0px 20px",
-                            boxShadow: isLeft
-                              ? "0 0px 12px rgba(0,0,0,0.1)"
-                              : `0 0px 12px ${partnerColor()}40`,
-                            border: isLeft ? "1px solid #e5e7eb" : "none",
-                            fontFamily: textTitleFont(),
-                            fontSize: "15px",
-                            lineHeight: "1.5",
-                            transition: "all 0.2s ease",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.currentTarget.style.transform =
-                              "translateY(-2px)";
-                            e.currentTarget.style.boxShadow = isLeft
-                              ? "0 6px 20px rgba(0,0,0,0.15)"
-                              : `0 6px 20px ${partnerColor()}60`;
-                          }}
-                          onMouseLeave={(e) => {
-                            e.currentTarget.style.transform = "translateY(0)";
-                            e.currentTarget.style.boxShadow = isLeft
-                              ? "0 4px 12px rgba(0,0,0,0.1)"
-                              : `0 4px 12px ${partnerColor()}40`;
-                          }}
-                        >
-                          {text}
-                        </div>
+                        {text}
                       </div>
-                    </Tooltip>
+                    </div>
 
                     {/* Avatar para pessoa B (direita) */}
                     {!isLeft && (
