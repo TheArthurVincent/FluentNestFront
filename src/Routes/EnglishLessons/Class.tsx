@@ -3023,8 +3023,8 @@ export default function EnglishClassCourse2({
                       />
                     ) : element.type === "images" ? (
                       <ImageLessonModelSlide
-                        headers={headers}
                         element={element}
+                        selectedVoice={selectedVoice}
                       />
                     ) : (
                       <></>
