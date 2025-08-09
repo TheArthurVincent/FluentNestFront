@@ -1350,7 +1350,10 @@ export default function EnglishClassCourse2({
 
                       // Título do diálogo (apenas no primeiro slide)
                       if (i === 0 && element.subtitle) {
-                        const safeSubtitle = sanitizeText(element.subtitle, 100);
+                        const safeSubtitle = sanitizeText(
+                          element.subtitle,
+                          100
+                        );
                         dialogueSlide.addText(safeSubtitle, {
                           x: 0.5,
                           y: 0.3,
@@ -1368,8 +1371,11 @@ export default function EnglishClassCourse2({
 
                       // Primeira fala (A)
                       if (element.dialogue[i]) {
-                        const safeDialogueA = sanitizeText(element.dialogue[i], 150);
-                        
+                        const safeDialogueA = sanitizeText(
+                          element.dialogue[i],
+                          150
+                        );
+
                         // Label da pessoa A
                         dialogueSlide.addText("A:", {
                           x: 0.8,
@@ -1401,8 +1407,11 @@ export default function EnglishClassCourse2({
 
                       // Segunda fala (B)
                       if (element.dialogue[i + 1]) {
-                        const safeDialogueB = sanitizeText(element.dialogue[i + 1], 150);
-                        
+                        const safeDialogueB = sanitizeText(
+                          element.dialogue[i + 1],
+                          150
+                        );
+
                         // Label da pessoa B
                         dialogueSlide.addText("B:", {
                           x: 0.8,
@@ -1432,7 +1441,10 @@ export default function EnglishClassCourse2({
                     }
                   }
                 } catch (dialogueError) {
-                  console.log("⚠️ Erro ao processar elemento dialogue:", dialogueError);
+                  console.log(
+                    "⚠️ Erro ao processar elemento dialogue:",
+                    dialogueError
+                  );
                 }
                 break;
 
@@ -2605,8 +2617,14 @@ export default function EnglishClassCourse2({
 
                         // Resetar fonte para normal
                         pdf.setFont("helvetica", "normal");
-                        
-                        yPosition += Math.max(englishLines.length, portugueseLines.length) * 4 + 5;
+
+                        yPosition +=
+                          Math.max(
+                            englishLines.length,
+                            portugueseLines.length
+                          ) *
+                            4 +
+                          5;
                       }
                     }
                   );
@@ -2628,11 +2646,15 @@ export default function EnglishClassCourse2({
                     (dialogueText: string, dialogueIndex: number) => {
                       const speaker = dialogueIndex % 2 === 0 ? "A" : "B";
                       const safeDialogue = sanitizeText(dialogueText, 200);
-                      
+
                       pdf.setFontSize(11);
                       pdf.setTextColor(40, 40, 40);
                       const dialogueLine = `${speaker} - ${safeDialogue}`;
-                      const dialogueLines = splitTextToSize(dialogueLine, maxWidth, 11);
+                      const dialogueLines = splitTextToSize(
+                        dialogueLine,
+                        maxWidth,
+                        11
+                      );
                       checkPageBreak(dialogueLines.length * 4);
                       pdf.text(dialogueLines, margin, yPosition);
                       yPosition += dialogueLines.length * 4 + 4;
@@ -3264,6 +3286,7 @@ export default function EnglishClassCourse2({
                       <TextLessonModel
                         headers={headers}
                         text={element.text ? element.text : ""}
+                        image={element.image ? element.image : ""}
                       />
                     ) : element.type === "html" ? (
                       <div
