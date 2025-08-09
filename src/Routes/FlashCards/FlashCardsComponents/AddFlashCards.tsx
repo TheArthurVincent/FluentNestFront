@@ -128,7 +128,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
       notifyAlert(showThis, "green");
       setCards([]);
     } catch (error) {
-      notifyAlert("Erro ao enviar cards");
+      notifyAlert(UniversalTexts?.errorSendingCards || "Erro ao enviar cards");
       onLoggOut();
     }
   };
@@ -192,12 +192,12 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                     color={partnerColor()}
                     onClick={() => setShowConfirmation(true)}
                   >
-                    {UniversalTexts?.add || "Add all cards"}
+                    {UniversalTexts?.addAllCards || "Add all cards"}
                   </ArvinButton>
                 )}
 
-                <ArvinButton color="navy" onClick={addNewCard}>
-                  Adicionar mais um card
+                <ArvinButton color={partnerColor()} onClick={addNewCard}>
+                  {UniversalTexts?.addMoreCards || "Adicionar mais um card"}
                 </ArvinButton>
               </span>
             </div>
@@ -211,11 +211,11 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
         fullWidth
       >
         <DialogTitle>
-          {UniversalTexts?.enterFlashcards ? `Confirmar ${UniversalTexts.enterFlashcards.toLowerCase()}` : "Confirmar adição de flashcards"}
+          {UniversalTexts?.confirmAddFlashcards || "Confirmar adição de flashcards"}
         </DialogTitle>
         <DialogContent dividers>
           {cards.length === 0 ? (
-            <p>Nenhum card criado.</p>
+            <p>{UniversalTexts?.noCardsCreated || "Nenhum card criado."}</p>
           ) : (
             <ul
               style={{
@@ -239,17 +239,17 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                   }}
                 >
                   <p style={{ margin: "0.3rem 0" }}>
-                    <strong>📝 Front:</strong> {card.frontCard}
+                    <strong>📝 {UniversalTexts?.front || "Front"}:</strong> {card.frontCard}
                   </p>
                   <p style={{ margin: "0.3rem 0" }}>
-                    <strong>💬 Back:</strong> {card.backCard}
+                    <strong>💬 {UniversalTexts?.backCard || "Back"}:</strong> {card.backCard}
                   </p>
                   <p style={{ margin: "0.3rem 0" }}>
-                    <strong>🧠 Comentário:</strong>{" "}
-                    {card.backComments ? card.backComments : <i>Nenhum</i>}
+                    <strong>🧠 {UniversalTexts?.comment || "Comentário"}:</strong>{" "}
+                    {card.backComments ? card.backComments : <i>{UniversalTexts?.none || "Nenhum"}</i>}
                   </p>
                   <p style={{ margin: "0.3rem 0" }}>
-                    <strong>🌐 Idiomas:</strong> {card.languageFront} →{" "}
+                    <strong>🌐 {UniversalTexts?.languages || "Idiomas"}:</strong> {card.languageFront} →{" "}
                     {card.languageBack}
                   </p>
                 </li>
@@ -268,7 +268,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
               setShowConfirmation(false);
             }}
           >
-            {UniversalTexts?.add ? `Confirmar e ${UniversalTexts.add.toLowerCase()}` : "Confirmar e adicionar"}
+            {UniversalTexts?.confirmAndAdd || "Confirmar e adicionar"}
           </ArvinButton>
         </DialogActions>
       </Dialog>

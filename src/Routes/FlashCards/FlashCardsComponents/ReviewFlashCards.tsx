@@ -398,7 +398,7 @@ const ReviewFlashCards = ({
             fontSize: "1.5rem",
           }}
         >
-          Review Flashcards
+          {UniversalTexts?.reviewFlashcards || "Review Flashcards"}
         </HOne>
 
         <a
@@ -410,7 +410,7 @@ const ReviewFlashCards = ({
           }}
           href="/sentence-mining"
         >
-          Adicione palavras em seus flashcards
+          {UniversalTexts?.addWordsToFlashcards || "Adicione palavras em seus flashcards"}
         </a>
       </div>
 
@@ -426,401 +426,394 @@ const ReviewFlashCards = ({
           <CircularProgress size={24} style={{ color: partnerColor() }} />
         </div>
       ) : (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "0 1rem",
+            width: "90%",
+            maxWidth: "500px",
+            margin: "0 auto",
+          }}
+        >
           <div
             style={{
+              flex: 1,
               display: "flex",
-              justifyContent: "center",
-              padding: "0 1rem",
-              width: "90%",
-              maxWidth: "500px",
-              margin: "0 auto",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            <div
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-              }}
-            >
-              {isArthurVincent && (
-                <WordOfTheDay
-                  change={change}
-                  onChange={onChange}
-                  headers={headers}
-                />
-              )}
+            {isArthurVincent && (
+              <WordOfTheDay
+                change={change}
+                onChange={onChange}
+                headers={headers}
+              />
+            )}
 
-              {/* Flashcard area */}
-              {see && (
-                <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
-                  {loading ? (
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        padding: "2rem",
-                      }}
-                    >
-                      <CircularProgress
-                        size={20}
-                        style={{ color: partnerColor() }}
-                      />
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        width: "100%",
-                        textAlign: "center",
-                        color: "black",
-                      }}
-                    >
-                      {!cardsLength ? (
-                        <>
-                          <ArvinButton
-                            disabled={isDisabled}
-                            cursor={isDisabled ? "not-allowed" : "pointer"}
-                            color={isDisabled ? "grey" : partnerColor()}
-                            style={{
-                              color: textPrimaryColorContrast(),
-                            }}
-                            onClick={() => {
-                              setBackCardVisible(!backCardVisible);
-                              setAnswer(!answer);
-                            }}
-                          >
-                            {isDisabled ? (
-                              <span>{count}</span>
-                            ) : (
-                              <span>{answer ? "Back" : "Answer"}</span>
-                            )}
-                          </ArvinButton>
-
-                          {answer && (
-                            <div style={{ marginTop: "1rem" }}>
-                              <div
-                                style={{
-                                  justifyContent: "center",
-                                  display: "flex",
-                                  gap: "10px",
-                                  marginBottom: "1rem",
-                                }}
-                              >
-                                <ArvinButton
-                                  onClick={() =>
-                                    reviewCard(cards[0]._id, "hard")
-                                  }
-                                  color="red"
-                                >
-                                  I missed (Errei)
-                                </ArvinButton>
-
-                                <ArvinButton
-                                  onClick={() =>
-                                    reviewCard(cards[0]._id, "easy")
-                                  }
-                                  style={{
-                                    color: textPrimaryColorContrast(),
-                                  }}
-                                  color={partnerColor()}
-                                >
-                                  I got it! (Acertei)
-                                </ArvinButton>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Flashcard */}
-                          <div
-                            style={{ margin: "auto" }}
-                            className={`flashcard ${answer ? "flip" : ""}`}
-                          >
-                            <div
-                              style={{
-                                backgroundColor: textColor,
-                                display: !backCardVisible ? "none" : "block",
-                              }}
-                              className="flashcard-front"
-                            >
-                              <div>
-                                <span style={{ fontSize: "12px" }}>
-                                  {Math.round(cards[0]?.numberOfReviews) ||
-                                    "no"}{" "}
-                                  {Math.round(cards[0]?.numberOfReviews) === 1
-                                    ? "review"
-                                    : "reviews"}
-                                </span>
-                                <br />
-                                <br />
-                                <div
-                                  style={{
-                                    fontSize: "20px",
-                                    marginBottom: "15px",
-                                    fontStyle: "italic",
-                                  }}
-                                >
-                                  {cards[0]?.front?.text}
-                                </div>
-
-                                {cards[0]?.front?.language &&
-                                  cards[0].front.language !== "pt" && (
-                                    <button
-                                      className="audio-button bgwhite"
-                                      onClick={() =>
-                                        readText(
-                                          cards[0].front.text,
-                                          true,
-                                          cards[0].front.language,
-                                          selectedVoice
-                                        )
-                                      }
-                                    >
-                                      <i
-                                        className="fa fa-volume-up"
-                                        aria-hidden="true"
-                                      />
-                                    </button>
-                                  )}
-
-                                {cards[0]?.img &&
-                                  cards[0]?.front?.language === "pt" && (
-                                    <img
-                                      style={{
-                                        width: "100%",
-                                        maxWidth: "8rem",
-                                        aspectRatio: "1 / 1",
-                                        objectFit: "cover",
-                                        display: "block",
-                                        margin: "1rem auto",
-                                        objectPosition: "center",
-                                        borderRadius: "6px",
-                                        boxShadow: "1px 1px 12px 3px #bbb",
-                                      }}
-                                      src={cards[0]?.img}
-                                      alt={cards[0]?.front?.text}
-                                    />
-                                  )}
-                              </div>
-                            </div>
-
-                            <div
-                              style={{
-                                display: backCardVisible ? "none" : "block",
-                              }}
-                              className="flashcard-back"
-                            >
-                              <div>
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    marginBottom: "15px",
-                                  }}
-                                >
-                                  {cards[0]?.front?.text}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "20px",
-                                    marginBottom: "15px",
-                                    fontStyle: "italic",
-                                  }}
-                                >
-                                  {cards[0]?.back?.text}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "12px",
-                                    fontStyle: "italic",
-                                    marginBottom: "15px",
-                                  }}
-                                  dangerouslySetInnerHTML={{
-                                    __html: cards[0]?.backComments,
-                                  }}
-                                />
-
-                                {cards[0]?.back?.language &&
-                                  cards[0].back.language !== "pt" && (
-                                    <button
-                                      className="audio-button bgwhite"
-                                      onClick={() =>
-                                        readText(
-                                          cards[0].back.text,
-                                          true,
-                                          cards[0].back.language,
-                                          selectedVoice
-                                        )
-                                      }
-                                    >
-                                      <i
-                                        className="fa fa-volume-up"
-                                        aria-hidden="true"
-                                      />
-                                    </button>
-                                  )}
-
-                                {cards[0]?.img &&
-                                  cards[0]?.back?.language === "pt" && (
-                                    <img
-                                      style={{
-                                        width: "100%",
-                                        maxWidth: "8rem",
-                                        aspectRatio: "1 / 1",
-                                        objectFit: "cover",
-                                        display: "block",
-                                        margin: "1rem auto",
-                                        objectPosition: "center",
-                                        borderRadius: "6px",
-                                        boxShadow: "1px 1px 12px 3px #bbb",
-                                      }}
-                                      src={cards[0]?.img}
-                                      alt={cards[0]?.front?.text}
-                                    />
-                                  )}
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div
+            {/* Flashcard area */}
+            {see && (
+              <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
+                {loading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "2rem",
+                    }}
+                  >
+                    <CircularProgress
+                      size={20}
+                      style={{ color: partnerColor() }}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                      color: "black",
+                    }}
+                  >
+                    {!cardsLength ? (
+                      <>
+                        <ArvinButton
+                          disabled={isDisabled}
+                          cursor={isDisabled ? "not-allowed" : "pointer"}
+                          color={isDisabled ? "grey" : partnerColor()}
                           style={{
-                            padding: "1.5rem",
-                            textAlign: "center",
-                            color: "#666",
-                            fontSize: "14px",
-                            backgroundColor: "#f8f9fa",
-                            borderRadius: "8px",
-                            margin: "1rem 0",
+                            color: textPrimaryColorContrast(),
+                          }}
+                          onClick={() => {
+                            setBackCardVisible(!backCardVisible);
+                            setAnswer(!answer);
                           }}
                         >
-                          <div
-                            style={{ fontSize: "24px", marginBottom: "0.5rem" }}
-                          >
-                            🎉
+                          {isDisabled ? (
+                            <span>{count}</span>
+                          ) : (
+                            <span>{answer ? (UniversalTexts?.back || "Back") : (UniversalTexts?.answer || "Answer")}</span>
+                          )}
+                        </ArvinButton>
+
+                        {answer && (
+                          <div style={{ marginTop: "1rem" }}>
+                            <div
+                              style={{
+                                justifyContent: "center",
+                                display: "flex",
+                                gap: "10px",
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              <ArvinButton
+                                onClick={() => reviewCard(cards[0]._id, "hard")}
+                                color="red"
+                              >
+                                {UniversalTexts?.iMissed || "I missed (Errei)"}
+                              </ArvinButton>
+
+                              <ArvinButton
+                                onClick={() => reviewCard(cards[0]._id, "easy")}
+                                style={{
+                                  color: textPrimaryColorContrast(),
+                                }}
+                                color={partnerColor()}
+                              >
+                                {UniversalTexts?.iGotIt || "I got it! (Acertei)"}
+                              </ArvinButton>
+                            </div>
                           </div>
+                        )}
+
+                        {/* Flashcard */}
+                        <div
+                          style={{ margin: "auto" }}
+                          className={`flashcard ${answer ? "flip" : ""}`}
+                        >
                           <div
                             style={{
-                              fontWeight: "500",
-                              marginBottom: "0.25rem",
+                              backgroundColor: textColor,
+                              display: !backCardVisible ? "none" : "block",
                             }}
+                            className="flashcard-front"
                           >
-                            No flashcards to review!
+                            <div>
+                              <span style={{ fontSize: "12px" }}>
+                                {Math.round(cards[0]?.numberOfReviews) || "no"}{" "}
+                                {Math.round(cards[0]?.numberOfReviews) === 1
+                                  ? (UniversalTexts?.review || "review")
+                                  : (UniversalTexts?.reviews || "reviews")}
+                              </span>
+                              <br />
+                              <br />
+                              <div
+                                style={{
+                                  fontSize: "20px",
+                                  marginBottom: "15px",
+                                  fontStyle: "italic",
+                                }}
+                              >
+                                {cards[0]?.front?.text}
+                              </div>
+
+                              {cards[0]?.front?.language &&
+                                cards[0].front.language !== "pt" && (
+                                  <button
+                                    className="audio-button bgwhite"
+                                    onClick={() =>
+                                      readText(
+                                        cards[0].front.text,
+                                        true,
+                                        cards[0].front.language,
+                                        selectedVoice
+                                      )
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-volume-up"
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                )}
+
+                              {cards[0]?.img &&
+                                cards[0]?.front?.language === "pt" && (
+                                  <img
+                                    style={{
+                                      width: "100%",
+                                      maxWidth: "8rem",
+                                      aspectRatio: "1 / 1",
+                                      objectFit: "cover",
+                                      display: "block",
+                                      margin: "1rem auto",
+                                      objectPosition: "center",
+                                      borderRadius: "6px",
+                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                    }}
+                                    src={cards[0]?.img}
+                                    alt={cards[0]?.front?.text}
+                                  />
+                                )}
+                            </div>
                           </div>
-                          <div style={{ fontSize: "12px", color: "#888" }}>
-                            Nenhum flashcard para revisar
+
+                          <div
+                            style={{
+                              display: backCardVisible ? "none" : "block",
+                            }}
+                            className="flashcard-back"
+                          >
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "11px",
+                                  marginBottom: "15px",
+                                }}
+                              >
+                                {cards[0]?.front?.text}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "20px",
+                                  marginBottom: "15px",
+                                  fontStyle: "italic",
+                                }}
+                              >
+                                {cards[0]?.back?.text}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "12px",
+                                  fontStyle: "italic",
+                                  marginBottom: "15px",
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: cards[0]?.backComments,
+                                }}
+                              />
+
+                              {cards[0]?.back?.language &&
+                                cards[0].back.language !== "pt" && (
+                                  <button
+                                    className="audio-button bgwhite"
+                                    onClick={() =>
+                                      readText(
+                                        cards[0].back.text,
+                                        true,
+                                        cards[0].back.language,
+                                        selectedVoice
+                                      )
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-volume-up"
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                )}
+
+                              {cards[0]?.img &&
+                                cards[0]?.back?.language === "pt" && (
+                                  <img
+                                    style={{
+                                      width: "100%",
+                                      maxWidth: "8rem",
+                                      aspectRatio: "1 / 1",
+                                      objectFit: "cover",
+                                      display: "block",
+                                      margin: "1rem auto",
+                                      objectPosition: "center",
+                                      borderRadius: "6px",
+                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                    }}
+                                    src={cards[0]?.img}
+                                    alt={cards[0]?.front?.text}
+                                  />
+                                )}
+                            </div>
                           </div>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Start/Refresh button */}
-              <div
-                style={{
-                  display: !isDisabled ? "none" : "flex",
-                  justifyContent: "center",
-                  margin: "1rem 0",
-                }}
-              >
-                <ArvinButton
-                  style={{
-                    fontSize: "14px",
-                    padding: "0.75rem 1.5rem",
-                    borderRadius: "6px",
-                  }}
-                  onClick={seeCardsToReview}
-                >
-                  {!see ? (
-                    "Start"
-                  ) : (
-                    <i className="fa fa-refresh" aria-hidden="true" />
-                  )}
-                </ArvinButton>
+                      </>
+                    ) : (
+                      <div
+                        style={{
+                          padding: "1.5rem",
+                          textAlign: "center",
+                          color: "#666",
+                          fontSize: "14px",
+                          backgroundColor: "#f8f9fa",
+                          borderRadius: "8px",
+                          margin: "1rem 0",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "24px", marginBottom: "0.5rem" }}
+                        >
+                          🎉
+                        </div>
+                        <div
+                          style={{
+                            fontWeight: "500",
+                            marginBottom: "0.25rem",
+                          }}
+                        >
+                          {UniversalTexts?.noFlashcardsToReview || "No flashcards to review!"}
+                        </div>
+                        <div style={{ fontSize: "12px", color: "#888" }}>
+                          {UniversalTexts?.noFlashcardsFound || "Nenhum flashcard para revisar"}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+            )}
 
-              {/* Controls */}
-              <div
+            {/* Start/Refresh button */}
+            <div
+              style={{
+                display: !isDisabled ? "none" : "flex",
+                justifyContent: "center",
+                margin: "1rem 0",
+              }}
+            >
+              <ArvinButton
                 style={{
-                  display: "flex",
-                  gap: "0.75rem",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  margin: "1rem 0",
-                  width: "100%",
-                  maxWidth: "320px",
+                  fontSize: "14px",
+                  padding: "0.75rem 1.5rem",
+                  borderRadius: "6px",
                 }}
+                onClick={seeCardsToReview}
               >
-                <Voice
-                  maxW="auto"
-                  changeB={changeNumber}
-                  setChangeB={setChangeNumber}
-                />
-                <select
-                  id="category-select"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  style={{
-                    borderRadius: "4px",
-                    border: "1px solid #e2e8f0",
-                    backgroundColor: "#f8fafc",
-                    fontSize: "11px",
-                    fontWeight: "400",
-                    color: "#64748b",
-                    padding: "4px 6px",
-                    height: "28px",
-                    minWidth: "120px",
-                    maxWidth: "150px",
-                    outline: "none",
-                    cursor: "pointer",
-                  }}
-                  onFocus={(e) =>
-                    (e.currentTarget.style.borderColor = partnerColor())
-                  }
-                  onBlur={(e) =>
-                    (e.currentTarget.style.borderColor = "#e2e8f0")
-                  }
-                >
-                  <option value="nofilter">All cards</option>
-                  <option value="vocabulary">Vocabulary</option>
-                  <option value="be">To be</option>
-                  <option value="possessive">Possessivos</option>
-                  <option value="modal">Modal verbs</option>
-                  <option value="question">Question words</option>
-                  <option value="do">Do & Does</option>
-                  <option value="dont">Don't & Doesn't</option>
-                  <option value="did">Did & Didn't</option>
-                  <option value="irregularpast">Irregular Past</option>
-                  <option value="presentperfect">Present Perfect</option>
-                  <option value="pastperfect">Past Perfect</option>
-                  <option value="travel">Viagem</option>
-                  <option value="bodyparts">Partes do corpo</option>
-                  <option value="businessenglish">Inglês para negócios</option>
-                  <option value="family">Família</option>
-                  <option value="animals">Animais</option>
-                  <option value="fruits">Frutas</option>
-                  <option value="food">Comida</option>
-                  <option value="colors">Cores</option>
-                  <option value="house">Casa</option>
-                  <option value="supermarket">Supermercado</option>
-                  <option value="weather">Clima</option>
-                  <option value="clothes">Roupas</option>
-                  <option value="time">Horários</option>
-                  <option value="daysanddates">Dias e Datas</option>
-                  <option value="car">Carro</option>
-                  <option value="road">Estrada</option>
-                  <option value="personality">Personalidade</option>
-                  <option value="nature">Natureza</option>
-                  <option value="numbers">Números</option>
-                  <option value="transportation">Transporte</option>
-                  <option value="office">Escritório</option>
-                  <option value="professions">Profissões</option>
-                </select>
-              </div>
+                {!see ? (
+                  UniversalTexts?.start || "Start"
+                ) : (
+                  <i className="fa fa-refresh" aria-hidden="true" />
+                )}
+              </ArvinButton>
+            </div>
+
+            {/* Controls */}
+            <div
+              style={{
+                display: "flex",
+                gap: "0.75rem",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "1rem 0",
+                width: "100%",
+                maxWidth: "320px",
+              }}
+            >
+              <Voice
+                maxW="auto"
+                changeB={changeNumber}
+                setChangeB={setChangeNumber}
+              />
+              <select
+                id="category-select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "4px 6px",
+                  height: "28px",
+                  minWidth: "120px",
+                  maxWidth: "150px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = partnerColor())
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+              >
+                <option value="nofilter">{UniversalTexts?.allCards || "All cards"}</option>
+                <option value="vocabulary">{UniversalTexts?.vocabularyCategory || "Vocabulary"}</option>
+                <option value="be">{UniversalTexts?.toBe || "To be"}</option>
+                <option value="possessive">{UniversalTexts?.possessives || "Possessivos"}</option>
+                <option value="modal">{UniversalTexts?.modalVerbs || "Modal verbs"}</option>
+                <option value="question">{UniversalTexts?.questionWords || "Question words"}</option>
+                <option value="do">{UniversalTexts?.doAndDoes || "Do & Does"}</option>
+                <option value="dont">{UniversalTexts?.dontAndDoesnt || "Don't & Doesn't"}</option>
+                <option value="did">{UniversalTexts?.didAndDidnt || "Did & Didn't"}</option>
+                <option value="irregularpast">{UniversalTexts?.irregularPast || "Irregular Past"}</option>
+                <option value="presentperfect">{UniversalTexts?.presentPerfect || "Present Perfect"}</option>
+                <option value="pastperfect">{UniversalTexts?.pastPerfect || "Past Perfect"}</option>
+                <option value="travel">{UniversalTexts?.travel || "Viagem"}</option>
+                <option value="bodyparts">{UniversalTexts?.bodyParts || "Partes do corpo"}</option>
+                <option value="businessenglish">{UniversalTexts?.businessEnglish || "Inglês para negócios"}</option>
+                <option value="family">{UniversalTexts?.family || "Família"}</option>
+                <option value="animals">{UniversalTexts?.animals || "Animais"}</option>
+                <option value="fruits">{UniversalTexts?.fruits || "Frutas"}</option>
+                <option value="food">{UniversalTexts?.food || "Comida"}</option>
+                <option value="colors">{UniversalTexts?.colors || "Cores"}</option>
+                <option value="house">{UniversalTexts?.house || "Casa"}</option>
+                <option value="supermarket">{UniversalTexts?.supermarket || "Supermercado"}</option>
+                <option value="weather">{UniversalTexts?.weather || "Clima"}</option>
+                <option value="clothes">{UniversalTexts?.clothes || "Roupas"}</option>
+                <option value="time">{UniversalTexts?.timeCategory || "Horários"}</option>
+                <option value="daysanddates">{UniversalTexts?.daysAndDates || "Dias e Datas"}</option>
+                <option value="car">{UniversalTexts?.car || "Carro"}</option>
+                <option value="road">{UniversalTexts?.road || "Estrada"}</option>
+                <option value="personality">{UniversalTexts?.personality || "Personalidade"}</option>
+                <option value="nature">{UniversalTexts?.nature || "Natureza"}</option>
+                <option value="numbers">{UniversalTexts?.numbers || "Números"}</option>
+                <option value="transportation">{UniversalTexts?.transportation || "Transporte"}</option>
+                <option value="office">{UniversalTexts?.office || "Escritório"}</option>
+                <option value="professions">{UniversalTexts?.professions || "Profissões"}</option>
+              </select>
             </div>
           </div>
+        </div>
       )}
 
       <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
@@ -838,7 +831,7 @@ const ReviewFlashCards = ({
             padding: "0.5rem",
           }}
         >
-          Previous Words of the Day
+          {UniversalTexts?.previousWordsOfTheDay || "Previous Words of the Day"}
         </a>
       )}
     </section>

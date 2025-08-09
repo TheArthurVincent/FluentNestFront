@@ -33,7 +33,10 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
 
   // Get current student ID (either selected student or logged in user)
   const getCurrentStudentId = () => {
-    if ((myPermissions === "superadmin" || myPermissions === "teacher") && selectedStudentId) {
+    if (
+      (myPermissions === "superadmin" || myPermissions === "teacher") &&
+      selectedStudentId
+    ) {
       return selectedStudentId;
     }
     return myId;
@@ -48,35 +51,39 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
   const fetchData = async () => {
     const user = localStorage.getItem("loggedIn");
     console.log("User from localStorage:", user);
-    
+
     if (user) {
       const { permissions, id } = JSON.parse(user);
       console.log("User permissions:", permissions, "User ID:", id);
-      
+
       setPermissions(permissions);
       setMyId(id);
       setSelectedStudentId(id); // Initially select the logged in user
-      
+
       // Fetch students if user is admin/teacher
       if (permissions === "superadmin" || permissions === "teacher") {
         console.log("User is admin/teacher, fetching students...");
-        
+
         setLoadingStudents(true);
         try {
-          const response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
-            headers: actualHeaders,
-          });
-          
+          const response = await axios.get(
+            `${backDomain}/api/v1/students/${id}`,
+            {
+              headers: actualHeaders,
+            }
+          );
+
           console.log("All users response:", response.data);
-          
+
           // Check if data comes in listOfStudents property
           const allUsers = response.data.listOfStudents || response.data;
           console.log("All users array:", allUsers);
-          
-          const studentUsers = allUsers.filter((user: any) => 
-            user.permissions === "student" || user.permissions === "admin"
+
+          const studentUsers = allUsers.filter(
+            (user: any) =>
+              user.permissions === "student" || user.permissions === "admin"
           );
-          
+
           console.log("Filtered students:", studentUsers);
           setStudents(studentUsers);
         } catch (error) {
@@ -92,7 +99,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       onLoggOut();
     }
   };
-  
+
   useEffect(() => {
     fetchData();
   }, [actualHeaders]);
@@ -121,10 +128,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       value: "2",
       adm: false,
       component: (
-        <AllCards 
-          headers={headers} 
-          selectedStudentId={getCurrentStudentId()}
-        />
+        <AllCards headers={headers} selectedStudentId={getCurrentStudentId()} />
       ),
     },
     {
@@ -132,8 +136,8 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       value: "3",
       adm: false,
       component: (
-        <FlashcardsHistory 
-          headers={headers} 
+        <FlashcardsHistory
+          headers={headers}
           selectedStudentId={getCurrentStudentId()}
         />
       ),
@@ -143,9 +147,9 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       value: "4",
       adm: true,
       component: (
-        <AddFlashCards 
-          display="block" 
-          headers={headers} 
+        <AddFlashCards
+          display="block"
+          headers={headers}
           selectedStudentId={getCurrentStudentId()}
         />
       ),
@@ -164,29 +168,32 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
     >
       <Helmets text="Flashcards" />
       {(myPermissions === "superadmin" || myPermissions === "teacher") && (
-        <div style={{
-          padding: "1rem",
-          backgroundColor: alwaysWhite(),
-          borderBottom: "1px solid #e2e8f0",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "0.5rem"
-        }}>
-          <span style={{
-            fontSize: "14px",
-            fontWeight: "500",
-            color: "#64748b"
+        <div
+          style={{
+            padding: "1rem",
+            backgroundColor: alwaysWhite(),
+            borderBottom: "1px solid #e2e8f0",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "0.5rem",
           }}
-          onClick={fetchData}
+        >
+          <span
+            style={{
+              fontSize: "14px",
+              fontWeight: "500",
+              color: "#64748b",
+            }}
+            onClick={fetchData}
           >
-            {UniversalTexts.selectStudent || "Selecionar Aluno"}:
+            {/* {UniversalTexts.selectStudent}: */}
           </span>
           {loadingStudents ? (
             <CircularProgress size={20} style={{ color: partnerColor() }} />
           ) : (
-            <select 
-              onChange={handleStudentChange} 
+            <select
+              onChange={handleStudentChange}
               value={selectedStudentId}
               style={{
                 borderRadius: "4px",
@@ -210,9 +217,12 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
                 e.target.style.backgroundColor = "#f8fafc";
               }}
             >
-              <option value="">Selecione um aluno...</option>
+              <option value="">{UniversalTexts?.selectAStudent || "Selecione um aluno..."}</option>
               {students.map((student) => (
-                <option key={student.id || student.theId} value={student.id || student.theId}>
+                <option
+                  key={student.id || student.theId}
+                  value={student.id || student.theId}
+                >
                   {student.name} {student.lastname}
                 </option>
               ))}
@@ -220,7 +230,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
           )}
         </div>
       )}
-      
+
       <TabContext value={value}>
         <div
           style={{
