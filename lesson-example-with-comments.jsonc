@@ -1,0 +1,161 @@
+{
+  "title": "Future with Going To - Plans and Intentions",
+  "description": "Learn how to express future plans and intentions using 'going to', including structure, usage, vocabulary, and practice exercises.",
+  "image": "https://cdn.pixabay.com/photo/2016/01/19/17/47/signpost-1148983_1280.jpg",
+  "mainTag": "grammar-beginner",
+  "elements": [
+    {
+      "type": "explanation",
+      "subtitle": "Understanding 'Going To' for Future Plans",
+      "order": 0,
+      "explanation": [
+        {
+          "title": "📌 What is 'Going To'?",
+          "image": "https://cdn.pixabay.com/photo/2015/07/31/20/39/road-sign-869234_1280.jpg",
+          "list": [
+            "'Going to' is used to talk about plans or intentions for the future.",
+            "It shows that a decision has already been made before the moment of speaking.",
+            "It can also describe something we expect to happen based on evidence."
+          ]
+        },
+        {
+          "title": "🧱 Structure",
+          "image": "https://cdn.pixabay.com/photo/2014/04/02/14/10/diagram-306789_1280.png",
+          "list": [
+            "Affirmative: Subject + am/is/are + going to + base verb",
+            "Negative: Subject + am/is/are + not + going to + base verb",
+            "Question: Am/Is/Are + subject + going to + base verb?"
+          ]
+        },
+        {
+          "title": "🧠 When to Use",
+          "image": "https://cdn.pixabay.com/photo/2017/05/10/17/28/calendar-2309223_1280.png",
+          "list": [
+            "To talk about future plans: 'I am going to visit my grandparents next week.'",
+            "To make predictions based on evidence: 'Look at those clouds! It’s going to rain.'"
+          ]
+        },
+        {
+          "title": "⚠️ Common Mistakes",
+          "image": "https://cdn.pixabay.com/photo/2013/07/12/19/20/warning-154550_1280.png",
+          "list": [
+            "Don't forget to use the correct form of 'to be' before 'going to'.",
+            "Remember that 'going to' is not the same as 'will' in all situations."
+          ]
+        }
+      ]
+    },
+    {
+      "type": "vocabulary",
+      "subtitle": "Future Plans Vocabulary",
+      "order": 1,
+      "sentences": [
+        { "english": "Plan", "portuguese": "Plano" },
+        { "english": "Trip", "portuguese": "Viagem" },
+        { "english": "Meet", "portuguese": "Encontrar" },
+        { "english": "Visit", "portuguese": "Visitar" },
+        { "english": "Move", "portuguese": "Mudar-se" },
+        { "english": "Start", "portuguese": "Começar" },
+        { "english": "Finish", "portuguese": "Terminar" },
+        { "english": "Work", "portuguese": "Trabalhar" },
+        { "english": "Study", "portuguese": "Estudar" },
+        { "english": "Celebrate", "portuguese": "Celebrar" }
+      ]
+    },
+    {
+      "type": "sentences",
+      "subtitle": "Plans in Context",
+      "order": 2,
+      "sentences": [
+        {
+          "english": "I am going to visit my grandparents this weekend.",
+          "portuguese": "Eu vou visitar meus avós neste fim de semana."
+        },
+        {
+          "english": "They are going to start a new project at work.",
+          "portuguese": "Eles vão começar um novo projeto no trabalho."
+        },
+        {
+          "english": "She is going to move to a bigger apartment.",
+          "portuguese": "Ela vai se mudar para um apartamento maior."
+        },
+        {
+          "english": "We are going to celebrate our anniversary next month.",
+          "portuguese": "Nós vamos celebrar nosso aniversário no próximo mês."
+        },
+        {
+          "english": "He is going to study for the final exam.",
+          "portuguese": "Ele vai estudar para o exame final."
+        },
+        {
+          "english": "I am going to finish my homework before dinner.",
+          "portuguese": "Eu vou terminar minha lição de casa antes do jantar."
+        }
+      ]
+    },
+    {
+      "type": "exercise",
+      "subtitle": "Comprehension Questions",
+      "order": 3,
+      "items": [
+        "What does 'going to' express?",
+        "How do you form the affirmative structure?",
+        "How do you form the negative structure?",
+        "How do you form questions with 'going to'?",
+        "Give one example of a plan using 'going to'.",
+        "Give one example of a prediction using 'going to'.",
+        "When do we use 'going to' instead of 'will'?",
+        "What is the correct form of 'to be' for 'I'?",
+        "What is the correct form of 'to be' for 'they'?",
+        "Mention one common mistake with 'going to'."
+      ]
+    },
+    {
+      "type": "exercise",
+      "subtitle": "Translate into English",
+      "order": 4,
+      "items": [
+        "Eu vou visitar meus avós no domingo.",
+        "Eles vão começar um novo projeto.",
+        "Ela vai se mudar para outra cidade.",
+        "Nós vamos celebrar nosso aniversário.",
+        "Ele vai estudar para a prova.",
+        "Eu vou terminar meu trabalho cedo.",
+        "Eles vão viajar para a Espanha.",
+        "Ela vai encontrar os amigos no shopping.",
+        "Nós vamos trabalhar juntos no projeto.",
+        "Ele vai começar um novo curso."
+      ]
+    },
+    {
+      "type": "exercise",
+      "subtitle": "Fill in the Gaps",
+      "order": 5,
+      "items": [
+        "I ___ going to visit my parents tomorrow.",
+        "They are going to ___ a new house.",
+        "She is going to ___ her homework tonight.",
+        "We are going to ___ our teacher after class.",
+        "He is going to ___ for the math test.",
+        "I am going to ___ a new book this week.",
+        "They are going to ___ their holiday in Italy.",
+        "She is going to ___ her job next month.",
+        "We are going to ___ the meeting early.",
+        "He is going to ___ the party with his friends."
+      ]
+    },
+    {
+      "type": "dialogue",
+      "subtitle": "Discussing Future Plans",
+      "order": 6,
+      "dialogue": [
+        "Hi Anna, what are you going to do this weekend?",
+        "Hi Mark, I’m going to visit my parents in the countryside.",
+        "That sounds nice! I’m going to start a new book I bought.",
+        "Really? What book are you going to read?",
+        "It’s a novel by my favorite author. Are you going to travel soon?",
+        "Yes, I’m going to take a trip next month to Italy."
+      ]
+    }
+  ]
+}
