@@ -25,7 +25,6 @@ import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { Link } from "react-router-dom";
 import {
-  alwaysWhite,
   darkGreyColor,
   partnerColor,
   textTitleFont,
@@ -53,18 +52,16 @@ import TextsWithTranslateSlideLessonModel from "./Assets/SlideModels/TextWithNoA
 import ExerciseLessonModelLesson from "./Assets/LessonsModels/ExerciseLessonModelExercise";
 import ImageLessonModelSlide from "./Assets/SlideModels/ImageLessonModelSlide";
 import { CircularProgress, TextareaAutosize } from "@mui/material";
-import QandALessonModel from "./Assets/LessonsModels/QandALessonModel";
 import QandALessonPersonalModel from "./Assets/LessonsModels/QandALessonPersonalModel";
 import NoFlashcardsSentenceLessonModel from "./Assets/LessonsModels/NoFlashcardsSentenceLessonModel";
 import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
-import TextAreaLesson from "./Assets/Functions/TextAreaLessons";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import Voice from "../../Resources/Voice";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
-import { t } from "framer-motion/dist/types.d-D0HXPxHm";
 import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
 import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
+import AudioFile from "./Assets/LessonsModels/AudioSoundTrackGD";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -2879,7 +2876,8 @@ export default function EnglishClassCourse2({
     <div
       style={{
         backgroundColor: "white",
-        maxWidth: "92vw",
+        width: "750px",
+        maxWidth: "93vw",
       }}
     >
       <Helmets text={classTitle} />
@@ -3386,6 +3384,11 @@ export default function EnglishClassCourse2({
                         />
                       ) : element.type === "nfsentences" ? (
                         <NoFlashcardsSentenceLessonModel
+                          element={element}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "audio" ? (
+                        <AudioFile
                           element={element}
                           selectedVoice={selectedVoice}
                         />

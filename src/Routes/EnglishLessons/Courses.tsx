@@ -65,7 +65,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
   const { UniversalTexts } = useUserContext();
 
   return (
-    <div>
+    <>
       <Routes>
         {listOfCoursesFromDatabase.map((route: any, idx: number) => (
           <Route
@@ -191,6 +191,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
         )
       ) : null}
       <Outlet />
-    </div>
+    </>
   );
 }
