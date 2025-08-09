@@ -370,7 +370,14 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
   }, [cards, answer, backCardVisible, loading, see]);
 
   return (
-    <section id="review">
+    <section 
+      id="review" 
+      style={{ 
+        padding: "1rem 0.5rem", 
+        maxWidth: "100%", 
+        margin: "0 auto" 
+      }}
+    >
       {/* <button onClick={adjustStreak}>Adjust Streak</button> */}
       {/*
             <div>
@@ -593,28 +600,30 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          padding: "0 1rem",
         }}
       >
-        <div
+        {/* <div
           style={{
-            marginTop: "10px",
-            marginRight: "auto",
-            fontSize: "10px",
+            alignSelf: "flex-start",
+            fontSize: "11px",
             color: "#999",
-            textDecoration: "none",
+            marginBottom: "0.5rem",
           }}
         >
           {lastReviewDay ? (
             <>Last Review: {formatDateBr(lastReviewDay)}</>
           ) : (
-            " No reviews yet "
+            "No reviews yet"
           )}
-        </div>
+        </div> */}
 
         <HOne
           style={{
             fontFamily: textTitleFont(),
             color: partnerColor(),
+            margin: "0 0 0.5rem 0",
+            fontSize: "1.5rem",
           }}
         >
           Review Flashcards
@@ -622,13 +631,14 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
 
         <a
           style={{
-            fontSize: "13px",
-            color: "#999",
+            fontSize: "12px",
+            color: "#666",
             textDecoration: "none",
+            marginBottom: "1rem",
           }}
           href="/sentence-mining"
         >
-          Adicione palavras em seus flashcards!
+          Adicione palavras em seus flashcards
         </a>
       </div>
 
@@ -638,10 +648,10 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "200px",
+            minHeight: "150px",
           }}
         >
-          <CircularProgress style={{ color: partnerColor() }} />
+          <CircularProgress size={24} style={{ color: partnerColor() }} />
         </div>
       ) : (
         <>
@@ -649,8 +659,10 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
             style={{
               display: "flex",
               justifyContent: "center",
-              // alignItems: "flex-end",
-              marginTop: "20px",
+              padding: "0 1rem",
+              width: "100%",
+              maxWidth: "500px",
+              margin: "0 auto",
             }}
           >
             {/* Mascot */}
@@ -682,11 +694,10 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
             <div
               style={{
                 flex: 1,
-                // position: "relative",
-                // left: -50,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                width: "100%",
               }}
             >
               {isArthurVincent && (
@@ -699,16 +710,17 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
 
               {/* Flashcard area */}
               {see && (
-                <div ref={cardRef}>
+                <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
                   {loading ? (
-                    <CircularProgress style={{ color: partnerColor() }} />
+                    <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+                      <CircularProgress size={20} style={{ color: partnerColor() }} />
+                    </div>
                   ) : (
                     <div
                       style={{
-                        margin: "auto",
+                        width: "100%",
                         textAlign: "center",
                         color: "black",
-                        marginBottom: "1rem",
                       }}
                     >
                       {!cardsLength ? (
@@ -919,19 +931,22 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
                       ) : (
                         <div
                           style={{
-                            padding: "2rem",
+                            padding: "1.5rem",
                             textAlign: "center",
                             color: "#666",
-                            fontSize: "16px",
+                            fontSize: "14px",
+                            backgroundColor: "#f8f9fa",
+                            borderRadius: "8px",
+                            margin: "1rem 0",
                           }}
                         >
-                          <p>
-                            🎉 No flashcards to review!
-                            <br />
-                            <small style={{ fontSize: "14px" }}>
-                              Nenhum flashcard para revisar
-                            </small>
-                          </p>
+                          <div style={{ fontSize: "24px", marginBottom: "0.5rem" }}>🎉</div>
+                          <div style={{ fontWeight: "500", marginBottom: "0.25rem" }}>
+                            No flashcards to review!
+                          </div>
+                          <div style={{ fontSize: "12px", color: "#888" }}>
+                            Nenhum flashcard para revisar
+                          </div>
                         </div>
                       )}
                     </div>
@@ -944,13 +959,14 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
                 style={{
                   display: !isDisabled ? "none" : "flex",
                   justifyContent: "center",
-                  marginTop: "20px",
+                  margin: "1rem 0",
                 }}
               >
                 <ArvinButton
                   style={{
-                    margin: "auto",
-                    display: "block",
+                    fontSize: "14px",
+                    padding: "0.75rem 1.5rem",
+                    borderRadius: "6px",
                   }}
                   onClick={seeCardsToReview}
                 >
@@ -965,18 +981,17 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
               {/* Controls */}
               <div
                 style={{
-                  marginTop: cardHeight ? cardHeight / 3 : "1rem",
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "10px",
-                  maxWidth: "fit-content",
-                  margin: "auto",
-                  justifyContent: "space-evenly",
+                  display: "flex",
+                  gap: "0.75rem",
+                  justifyContent: "center",
                   alignItems: "center",
+                  margin: "1rem 0",
+                  width: "100%",
+                  maxWidth: "320px",
                 }}
               >
                 <Voice
-                  maxW="6rem"
+                  maxW="auto"
                   changeB={changeNumber}
                   setChangeB={setChangeNumber}
                 />
@@ -985,16 +1000,21 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                   style={{
-                    maxWidth: "6rem",
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    margin: "auto",
-                    backgroundColor: "#f9f9f9",
-                    fontSize: "0.9rem",
-                    color: "#333",
+                    borderRadius: "4px",
+                    border: "1px solid #e2e8f0",
+                    backgroundColor: "#f8fafc",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    color: "#64748b",
+                    padding: "4px 6px",
+                    height: "28px",
+                    minWidth: "120px",
+                    maxWidth: "150px",
                     outline: "none",
-                    transition: "border-color 0.3s",
+                    cursor: "pointer",
                   }}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
                 >
                   <option value="nofilter">All cards</option>
                   <option value="vocabulary">Vocabulary</option>
@@ -1037,8 +1057,8 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
         </>
       )}
 
-      {/* Progress Counter with improved layout */}
-      <div style={{ marginTop: "2rem", marginBottom: "1rem" }}>
+      {/* Progress Counter */}
+      <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
         <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       </div>
 
@@ -1057,12 +1077,12 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
         <a
           href="/words-of-the-day"
           style={{
-            marginTop: "10px",
-            fontSize: "10px",
+            fontSize: "11px",
             color: "#999",
             textDecoration: "none",
             display: "block",
             textAlign: "center",
+            padding: "0.5rem",
           }}
         >
           Previous Words of the Day

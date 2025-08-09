@@ -39,7 +39,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
   
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [myId, setMyId] = useState<string>("");
-  const [addCardVisible, setAddCardVisible] = useState<boolean>(false);
+  const [addCardVisible, setAddCardVisible] = useState<boolean>(true);
   const [cards, setCards] = useState<FlashCard[]>([]);
   const [myPermissions, setPermissions] = useState<string>("");
 
@@ -197,7 +197,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                 )}
 
                 <ArvinButton color="navy" onClick={addNewCard}>
-                  +
+                  Adicionar mais um card
                 </ArvinButton>
               </span>
             </div>
