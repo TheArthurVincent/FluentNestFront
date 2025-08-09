@@ -17,7 +17,6 @@ function ResetPasswordFinalChange() {
     const str = window.location.pathname;
     const match = str.split("/");
     const id = match ? match[2] : null;
-    console.log(id);
 
     try {
       var response = await axios.put(

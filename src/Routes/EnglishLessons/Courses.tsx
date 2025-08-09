@@ -85,7 +85,15 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       <Helmets text="Courses" />
       {displayRouteDiv ? (
         !loading ? (
-          <RouteDivCourses>
+          <div
+            style={{
+              backgroundColor: "white",
+              padding: "10px 20px",
+              borderRadius: "10px",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.59)",
+              maxWidth: "800px",
+            }}
+          >
             <HOne
               style={{
                 fontFamily: textTitleFont(),
@@ -177,7 +185,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                   ))}
               </ul>
             </div>
-          </RouteDivCourses>
+          </div>
         ) : (
           <CircularProgress style={{ color: partnerColor() }} />
         )

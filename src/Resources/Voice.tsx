@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import { textGeneralFont } from "../Styles/Styles";
+import { partnerColor, textGeneralFont } from "../Styles/Styles";
 
 interface VoiceTypes {
   changeB: boolean;
@@ -113,18 +113,21 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
             setChangeB(!changeB);
           }}
           style={{
-            borderRadius: "6px",
-            maxWidth: maxW || "15rem",
-            border: "1px solid #ccc",
-            backgroundColor: "#f9f9f9",
-            fontSize: "0.9rem",
-            margin: "auto",
-            color: "#333",
+            borderRadius: "4px",
+            border: "1px solid #e2e8f0",
+            backgroundColor: "#f8fafc",
+            fontSize: "11px",
+            fontWeight: "400",
+            color: "#64748b",
+            padding: "4px 6px",
+            height: "28px",
+            minWidth: "120px",
+            maxWidth: maxW || "150px",
             outline: "none",
-            transition: "border-color 0.3s",
+            cursor: "pointer",
           }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = "#1a73e8")}
-          onBlur={(e) => (e.currentTarget.style.borderColor = "#ccc")}
+          onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
+          onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
         >
           {voiceOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
@@ -132,7 +135,12 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW }) => {
             </option>
           ))}
         </select>
-        {selectedOption !== "male-us" ? "🧏‍♀️🗣️" : "🧏‍♂️🗣️"}
+        {(() => {
+          const currentVoice = voiceOptions.find(
+            (v) => v.value === selectedOption
+          );
+          return currentVoice?.gender === "MALE" ? "🧏‍♂️" : "🧏‍♀️";
+        })()}
       </div>
     </div>
   );
