@@ -159,12 +159,10 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
   return (
     <RouteDiv
       style={{
-        maxWidth: "600px",
+        maxWidth: "90vw",
       }}
     >
       <Helmets text="Flashcards" />
-      
-      {/* Student Selector - Only show for teachers/admin */}
       {(myPermissions === "superadmin" || myPermissions === "teacher") && (
         <div style={{
           padding: "1rem",

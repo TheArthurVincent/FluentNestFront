@@ -41,7 +41,12 @@ interface FlashCardsPropsRv {
   selectedStudentId: string;
 }
 
-const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: FlashCardsPropsRv) => {
+const ReviewFlashCards = ({
+  headers,
+  onChange,
+  change,
+  selectedStudentId,
+}: FlashCardsPropsRv) => {
   const { UniversalTexts } = useUserContext();
   const [myId, setId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
@@ -76,7 +81,7 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
 
   const seeCardsToReview = async () => {
     if (!selectedStudentId) return;
-    
+
     updateInfo(myId, actualHeaders);
     timerCard();
     setLoading(true);
@@ -130,7 +135,7 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
 
   const reviewCard = async (id: string, difficulty: string) => {
     if (!selectedStudentId) return;
-    
+
     setLoading(true);
     try {
       const response = await axios.put(
@@ -252,7 +257,6 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
       const response = await axios.post(`${backDomain}/api/v1/adjuststreak`);
 
       setStreaksAll(response.data.studentsWithQualifiedDays);
-
     } catch (error) {
       console.log(error);
     }
@@ -370,230 +374,13 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
   }, [cards, answer, backCardVisible, loading, see]);
 
   return (
-    <section 
-      id="review" 
-      style={{ 
-        padding: "1rem 0.5rem", 
-        maxWidth: "100%", 
-        margin: "0 auto" 
+    <section
+      id="review"
+      style={{
+        width: "80%",
+        margin: "0 auto",
       }}
     >
-      {/* <button onClick={adjustStreak}>Adjust Streak</button> */}
-      {/*
-            <div>
-        {streaksAll.length > 0 && (
-          <div
-            style={{
-              maxHeight: "300px",
-              overflowY: "auto",
-              margin: "1rem 0",
-              padding: "1rem",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              backgroundColor: "#f9f9f9",
-            }}
-          >
-            <h3
-              style={{
-                margin: "0 0 1rem 0",
-                fontSize: "16px",
-                color: partnerColor(),
-              }}
-            >
-              Students Streak Report ({streaksAll.length} students)
-            </h3>
-            <div style={{ display: "grid", gap: "0.5rem" }}>
-              {streaksAll.map((student, index) => (
-                <div
-                  key={student.studentId}
-                  style={{
-                    padding: "1rem",
-                    backgroundColor: "white",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                    border: "1px solid #eee",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-                      gap: "0.5rem",
-                      marginBottom: "0.5rem",
-                      alignItems: "center",
-                      borderBottom: "1px solid #f0f0f0",
-                      paddingBottom: "0.5rem",
-                    }}
-                  >
-                    <div style={{ fontWeight: "bold", fontSize: "14px" }}>
-                      {student.name} {student.lastname}
-                    </div>
-                    <div style={{ color: partnerColor() }}>
-                      Current: {student.currentStreak}
-                    </div>
-                    <div style={{ color: "#666" }}>
-                      Longest: {student.longestStreak}
-                    </div>
-                    <div style={{ color: "#888" }}>
-                      Qualified: {student.currentQualifiedStreak}
-                    </div>
-                    <div style={{ color: "#999", fontSize: "10px" }}>
-                      {student.reviewsToday} reviews today
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr 1fr",
-                      gap: "0.5rem",
-                      marginBottom: "0.5rem",
-                      fontSize: "10px",
-                      color: "#666",
-                    }}
-                  >
-                    <div>Total Qualified: {student.totalQualifiedReviews}</div>
-                    <div>Total Entries: {student.totalHistoryEntries}</div>
-                    <div>
-                      Today Counted: {student.todayAccountedFor ? "✅" : "❌"}
-                    </div>
-                  </div>
-
-                  {student.qualifiedStreaks &&
-                    student.qualifiedStreaks.length > 0 && (
-                      <div style={{ marginBottom: "0.5rem" }}>
-                        <div
-                          style={{
-                            fontSize: "11px",
-                            fontWeight: "bold",
-                            marginBottom: "0.3rem",
-                            color: partnerColor(),
-                          }}
-                        >
-                          Qualified Streaks ({student.qualifiedStreaks.length}):
-                        </div>
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns:
-                              "repeat(auto-fit, minmax(120px, 1fr))",
-                            gap: "0.3rem",
-                          }}
-                        >
-                          {student.qualifiedStreaks.slice(0, 20).map(
-                            (streak: any, streakIndex: number) =>
-                              streak.days > 1 && (
-                                <div
-                                  key={streakIndex}
-                                  style={{
-                                    backgroundColor: "#f8f9fa",
-                                    padding: "0.3rem",
-                                    borderRadius: "4px",
-                                    fontSize: "9px",
-                                  }}
-                                >
-                                  <div style={{ fontWeight: "bold" }}>
-                                    #{streak.streakNumber}
-                                  </div>
-                                  <div>{streak.days} days</div>
-                                  <div>{streak.totalReviews} reviews</div>
-                                  <div
-                                    style={{ fontSize: "8px", color: "#888" }}
-                                  >
-                                    {new Date(
-                                      streak.startDate
-                                    ).toLocaleDateString()}{" "}
-                                    -{" "}
-                                    {new Date(
-                                      streak.endDate
-                                    ).toLocaleDateString()}
-                                  </div>
-                                </div>
-                              )
-                          )}
-                          {student.qualifiedStreaks.length > 20 && (
-                            <div
-                              style={{
-                                fontSize: "9px",
-                                color: "#666",
-                                alignSelf: "center",
-                              }}
-                            >
-                              +{student.qualifiedStreaks.length - 20} more...
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {student.reviewsByDate &&
-                    student.reviewsByDate.length > 0 && (
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "11px",
-                            fontWeight: "bold",
-                            marginBottom: "0.3rem",
-                            color: partnerColor(),
-                          }}
-                        >
-                          Recent Reviews:
-                        </div>
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns:
-                              "repeat(auto-fit, minmax(100px, 1fr))",
-                            gap: "0.3rem",
-                          }}
-                        >
-                          {student.reviewsByDate
-                            .slice(0, 300)
-                            .map((reviewDay: any, dayIndex: number) => (
-                              <div
-                                key={dayIndex}
-                                style={{
-                                  backgroundColor: "#f0f8ff",
-                                  padding: "0.3rem",
-                                  borderRadius: "4px",
-                                  fontSize: "9px",
-                                  textAlign: "center",
-                                }}
-                              >
-                                <div style={{ fontWeight: "bold" }}>
-                                  <span>#{dayIndex + 1} --- </span>
-                                  {new Date(
-                                    reviewDay.date
-                                  ).toLocaleDateString()}
-                                </div>
-                                <div style={{ color: partnerColor() }}>
-                                  {reviewDay.totalReviews} reviews
-                                </div>
-                              </div>
-                            ))}
-                          {student.reviewsByDate.length > 300 && (
-                            <div
-                              style={{
-                                fontSize: "9px",
-                                color: "#666",
-                                alignSelf: "center",
-                              }}
-                            >
-                              +{student.reviewsByDate.length - 300} more days...
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-      
-      */}
-
       <div
         style={{
           display: "flex",
@@ -603,21 +390,6 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
           padding: "0 1rem",
         }}
       >
-        {/* <div
-          style={{
-            alignSelf: "flex-start",
-            fontSize: "11px",
-            color: "#999",
-            marginBottom: "0.5rem",
-          }}
-        >
-          {lastReviewDay ? (
-            <>Last Review: {formatDateBr(lastReviewDay)}</>
-          ) : (
-            "No reviews yet"
-          )}
-        </div> */}
-
         <HOne
           style={{
             fontFamily: textTitleFont(),
@@ -654,43 +426,16 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
           <CircularProgress size={24} style={{ color: partnerColor() }} />
         </div>
       ) : (
-        <>
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               padding: "0 1rem",
-              width: "100%",
+              width: "90%",
               maxWidth: "500px",
               margin: "0 auto",
             }}
           >
-            {/* Mascot */}
-            {/* <div
-              style={{
-                position: "relative",
-                left: -15,
-                cursor: isArthurStudentBoolean ? "pointer" : "default",
-                display: "flex",
-                alignItems: "flex-end",
-                visibility: isArthurStudentBoolean ? "visible" : "hidden",
-                minWidth: "100px",
-                justifyContent: "center",
-              }}
-              onClick={() => {
-                readText(
-                  `Hi ${theName}, I'm Arvin! ${MESSAGE}`,
-                  false,
-                  "en",
-                  selectedVoice,
-                  1.2
-                );
-              }}
-            >
-              {!loading && mascot}
-            </div> */}
-
-            {/* Main content area */}
             <div
               style={{
                 flex: 1,
@@ -712,8 +457,17 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
               {see && (
                 <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
                   {loading ? (
-                    <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
-                      <CircularProgress size={20} style={{ color: partnerColor() }} />
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        padding: "2rem",
+                      }}
+                    >
+                      <CircularProgress
+                        size={20}
+                        style={{ color: partnerColor() }}
+                      />
                     </div>
                   ) : (
                     <div
@@ -940,8 +694,17 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
                             margin: "1rem 0",
                           }}
                         >
-                          <div style={{ fontSize: "24px", marginBottom: "0.5rem" }}>🎉</div>
-                          <div style={{ fontWeight: "500", marginBottom: "0.25rem" }}>
+                          <div
+                            style={{ fontSize: "24px", marginBottom: "0.5rem" }}
+                          >
+                            🎉
+                          </div>
+                          <div
+                            style={{
+                              fontWeight: "500",
+                              marginBottom: "0.25rem",
+                            }}
+                          >
                             No flashcards to review!
                           </div>
                           <div style={{ fontSize: "12px", color: "#888" }}>
@@ -1013,8 +776,12 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
                     outline: "none",
                     cursor: "pointer",
                   }}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+                  onFocus={(e) =>
+                    (e.currentTarget.style.borderColor = partnerColor())
+                  }
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor = "#e2e8f0")
+                  }
                 >
                   <option value="nofilter">All cards</option>
                   <option value="vocabulary">Vocabulary</option>
@@ -1054,25 +821,11 @@ const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: Flas
               </div>
             </div>
           </div>
-        </>
       )}
 
-      {/* Progress Counter */}
       <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
         <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       </div>
-
-      {/* Streak component with modal */}
-      {/* <div style={{ marginBottom: "2rem" }}>
-        <Streak
-          longest={longest}
-          yourLongest={yourLongest}
-          studentLongest={studentLongest}
-          message={MESSAGE}
-          streak={streak}
-        />
-      </div> */}
-
       {isArthurVincent && (
         <a
           href="/words-of-the-day"
