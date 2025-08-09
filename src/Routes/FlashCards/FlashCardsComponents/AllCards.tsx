@@ -5,7 +5,7 @@ import {
   onLoggOut,
   Xp,
 } from "../../../Resources/UniversalComponents";
-import { HeadersProps } from "../../../Resources/types.universalInterfaces";
+import { HeadersProps, MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { CircularProgress } from "@mui/material";
 import { languages } from "./AddFlashONEFlashCard";
@@ -13,13 +13,12 @@ import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons"
 import { partnerColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
 
-var AllCards = ({ headers }: HeadersProps) => {
+var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null; selectedStudentId: string }) => {
   var actualHeaders = headers || {};
 
   var [addCardVisible, setAddCardVisible] = useState<boolean>(false);
   var [cards, setCards] = useState<any[]>([]);
   var [loading, setLoading] = useState<boolean>(true);
-  var [loadingStudents, setLoadingStudents] = useState<boolean>(true);
   var [showModal, setShowModal] = useState<boolean>(false);
   var [newFront, setNewFront] = useState<string>("");
   var [newBack, setNewBack] = useState<string>("");
@@ -27,21 +26,15 @@ var AllCards = ({ headers }: HeadersProps) => {
   var [newLGBack, setNewLGBack] = useState<string>("");
   var [cardIdToEdit, setCardIdToEdit] = useState<string>("");
   var [newBackComments, setNewBackComments] = useState<string>("");
-  var [studentsList, setStudentsList] = useState<any>([]);
-  var [perm, setPermissions] = useState<string>("");
-  var [studentID, setStudentID] = useState<string>("");
-  var [myId, setMyId] = useState<string>("");
   var [page, setPage] = useState(0);
   var [hasMore, setHasMore] = useState(true);
 
   var fetchMoreCards = async (
-    isReset: boolean = false,
-    customId?: string
+    isReset: boolean = false
   ): Promise<void> => {
     var currentPage = isReset ? 0 : page;
-    var id = customId ?? studentID;
 
-    if (!id) return; // segurança extra
+    if (!selectedStudentId) return; // segurança extra
     if (!hasMore && !isReset) return;
 
     if (isReset) {
@@ -53,7 +46,7 @@ var AllCards = ({ headers }: HeadersProps) => {
     setLoading(true);
     try {
       var response = await axios.get(
-        `${backDomain}/api/v1/cards/${id}?skip=${currentPage * 10}&limit=10`,
+        `${backDomain}/api/v1/cards/${selectedStudentId}?skip=${currentPage * 10}&limit=10`,
         { headers: actualHeaders }
       );
       setLoading(false);
@@ -90,42 +83,13 @@ var AllCards = ({ headers }: HeadersProps) => {
   };
 
   useEffect(() => {
-    var user = localStorage.getItem("loggedIn");
-    var { id, permissions } = JSON.parse(user || "");
-    setPermissions(permissions);
-    if (permissions == "superadmin" || permissions == "teacher") {
-      fetchStudents(id);
-    }
-
-    if (user) {
-      setStudentID(id);
-      setMyId(id);
+    if (selectedStudentId) {
       setCards([]);
       setPage(0);
       setHasMore(true);
-      fetchMoreCards();
+      fetchMoreCards(true);
     }
-  }, []);
-
-  var handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    var newID = event.target.value;
-    setStudentID(newID);
-    fetchMoreCards(true, newID);
-  };
-
-  var fetchStudents = async (id: string) => {
-    setLoadingStudents(true);
-    setAddCardVisible(!addCardVisible);
-    try {
-      var response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
-        headers: actualHeaders,
-      });
-      setStudentsList(response.data.listOfStudents);
-      setLoadingStudents(false);
-    } catch (error) {
-      // onLoggOut();
-    }
-  };
+  }, [selectedStudentId]);
 
   /////////////////
   /////////////////
@@ -142,7 +106,7 @@ var AllCards = ({ headers }: HeadersProps) => {
     setShowModal(true);
     try {
       var response = await axios.get(
-        `${backDomain}/api/v1/flashcardfindone/${studentID}`,
+        `${backDomain}/api/v1/flashcardfindone/${selectedStudentId}`,
         {
           params: { cardId },
           headers: actualHeaders,
@@ -170,7 +134,7 @@ var AllCards = ({ headers }: HeadersProps) => {
     setShowModal(true);
     try {
       var response = await axios.put(
-        `${backDomain}/api/v1/flashcard/${studentID}`,
+        `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         {
           newFront,
           newBack,
@@ -194,7 +158,7 @@ var AllCards = ({ headers }: HeadersProps) => {
   var handleDeleteCard = async (cardId: string) => {
     try {
       var response = await axios.delete(
-        `${backDomain}/api/v1/flashcard/${studentID}`,
+        `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         {
           params: { cardId },
           headers: actualHeaders,
@@ -220,48 +184,52 @@ var AllCards = ({ headers }: HeadersProps) => {
     var storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
   }, [selectedVoice, changeNumber]);
+  
   useEffect(() => {
     var element = scrollRef.current;
     if (element && element.scrollHeight <= element.clientHeight) {
       fetchMoreCards();
     }
   }, [cards]);
-  useEffect(() => {
-    if (studentID) {
-      fetchMoreCards(true);
-    }
-  }, [studentID]);
 
   return (
     <>
-      <div style={{ margin: "auto", maxWidth: "40rem" }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          maxWidth: "600px",
+          margin: "0 auto",
+          padding: "1rem 0.5rem",
+        }}
+      >
         <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
-        {/* Header Section */}
+
+        {/* Header Controls */}
         <div
           style={{
             display: "flex",
-            gap: "1rem",
-            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "1rem",
+            gap: "0.5rem",
           }}
         >
-          <ArvinButton onClick={() => fetchMoreCards(true)}>
+          <ArvinButton
+            onClick={() => fetchMoreCards(true)}
+            style={{
+              borderRadius: "4px",
+              fontSize: "11px",
+              padding: "4px 8px",
+              height: "28px",
+            }}
+          >
             <i className="fa fa-refresh" aria-hidden="true" />
           </ArvinButton>
+{/* 
           {(perm === "superadmin" || perm === "teacher") && (
-            <div style={{ display: "inline" }}>
-              {loadingStudents ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <select onChange={handleStudentChange} value={studentID}>
-                  {studentsList.map((student: any, index: number) => (
-                    <option key={index} value={student.id}>
-                      {student.name + " " + student.lastname}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
-          )}
+            <></>
+          )} */}
         </div>
 
         {/* Cards Section */}
@@ -269,246 +237,339 @@ var AllCards = ({ headers }: HeadersProps) => {
           <CircularProgress style={{ color: partnerColor() }} />
         ) : (
           <div
-            ref={scrollRef}
-            onScroll={handleScroll}
+            className="flashcard-history-list"
             style={{
-              padding: "5px",
-              overflowY: "auto", // ou apenas "overflow: 'auto'"
-              backgroundColor: "#eee",
-              maxHeight: "50vh",
+              width: "100%",
+              maxWidth: "500px",
             }}
           >
-            {cards.map((card: any, index: number) => (
-              <div
-                key={index}
-                style={{
-                  padding: "1rem",
-                  margin: "5px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                  justifyContent: "space-between",
-                  backgroundColor: "#fff",
-                }}
-              >
-                <div>
-                  <ArvinButton
-                    onClick={() => handleSeeModal(card._id)}
-                    color="yellow"
-                  >
-                    <i className="fa fa-edit" aria-hidden="true" />
-                  </ArvinButton>
-                  <ArvinButton
-                    onClick={() => handleDeleteCard(card._id)}
-                    color="red"
-                  >
-                    <i className="fa fa-trash" aria-hidden="true" />
-                  </ArvinButton>
-
-                  {card.front.language && card.front.language !== "pt" && (
-                    <button
-                      className="audio-button"
-                      onClick={() =>
-                        readText(
-                          card.front.text,
-                          true,
-                          card.front.language,
-                          selectedVoice
-                        )
-                      }
-                    >
-                      <i className="fa fa-volume-up" aria-hidden="true" />
-                    </button>
-                  )}
+            <div
+              ref={scrollRef}
+              onScroll={handleScroll}
+              style={{
+                maxHeight: "60vh",
+                overflowY: "auto",
+                padding: "0.5rem",
+              }}
+            >
+              {cards.map((card: any, index: number) => (
+                <div
+                  key={index}
+                  style={{
+                    marginBottom: "0.75rem",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
+                    border: "1px solid #f1f5f9",
+                    backgroundColor: "#ffffff",
+                  }}
+                >
                   <div
-                    style={{ fontWeight: 600 }}
-                    dangerouslySetInnerHTML={{ __html: card.front.text }}
-                  />
-                  <div dangerouslySetInnerHTML={{ __html: card.back.text }} />
-                  {card.back.language && card.back.language !== "pt" && (
-                    <button
-                      className="audio-button"
-                      onClick={() =>
-                        readText(
-                          card.back.text,
-                          true,
-                          card.back.language,
-                          selectedVoice
-                        )
-                      }
+                    style={{
+                      padding: "0.75rem 1rem",
+                      backgroundColor: "#f8fafc",
+                      borderBottom: "1px solid #e2e8f0",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#374151",
+                      }}
                     >
-                      <i className="fa fa-volume-up" aria-hidden="true" />
-                    </button>
-                  )}
-                </div>
-                <div>
-                  <div></div>
-                  <div>
+                      📚 Flashcard #{index + 1}
+                    </span>
+                    <ArvinButton
+                      onClick={() => handleSeeModal(card._id)}
+                      color="yellow"
+                      style={{
+                        fontSize: "11px",
+                        padding: "2px 6px",
+                        height: "24px",
+                      }}
+                    >
+                      <i className="fa fa-edit" aria-hidden="true" />
+                    </ArvinButton>
+                  </div>
+
+                  {/* Card Content */}
+                  <div style={{ padding: "0.75rem" }}>
                     <div
-                      style={{ fontStyle: "italic" }}
-                      dangerouslySetInnerHTML={{ __html: card.backComments }}
-                    />
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        marginBottom: "0.5rem",
+                        gap: "0.5rem",
+                      }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontWeight: 600,
+                            marginBottom: "0.5rem",
+                            fontSize: "14px",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: card.front.text }}
+                        />
+                        <div
+                          style={{
+                            fontSize: "13px",
+                            color: "#64748b",
+                          }}
+                          dangerouslySetInnerHTML={{ __html: card.back.text }}
+                        />
+                        {card.backComments && (
+                          <div
+                            style={{
+                              fontStyle: "italic",
+                              fontSize: "12px",
+                              color: "#94a3b8",
+                              marginTop: "0.25rem",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html: card.backComments,
+                            }}
+                          />
+                        )}
+                      </div>
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.25rem",
+                          flexDirection: "column",
+                        }}
+                      >
+                        {card.front.language &&
+                          card.front.language !== "pt" && (
+                            <button
+                              className="audio-button"
+                              onClick={() =>
+                                readText(
+                                  card.front.text,
+                                  true,
+                                  card.front.language,
+                                  selectedVoice
+                                )
+                              }
+                              style={{
+                                background: "none",
+                                border: "1px solid #e2e8f0",
+                                borderRadius: "4px",
+                                padding: "4px 6px",
+                                cursor: "pointer",
+                                fontSize: "12px",
+                                color: "#64748b",
+                              }}
+                            >
+                              <i
+                                className="fa fa-volume-up"
+                                aria-hidden="true"
+                              />
+                            </button>
+                          )}
+                        {card.back.language && card.back.language !== "pt" && (
+                          <button
+                            className="audio-button"
+                            onClick={() =>
+                              readText(
+                                card.back.text,
+                                true,
+                                card.back.language,
+                                selectedVoice
+                              )
+                            }
+                            style={{
+                              background: "none",
+                              border: "1px solid #e2e8f0",
+                              borderRadius: "4px",
+                              padding: "4px 6px",
+                              cursor: "pointer",
+                              fontSize: "12px",
+                              color: "#64748b",
+                            }}
+                          >
+                            <i className="fa fa-volume-up" aria-hidden="true" />
+                          </button>
+                        )}
+                        <ArvinButton
+                          onClick={() => handleDeleteCard(card._id)}
+                          color="red"
+                          style={{
+                            fontSize: "11px",
+                            padding: "2px 6px",
+                            height: "24px",
+                          }}
+                        >
+                          <i className="fa fa-trash" aria-hidden="true" />
+                        </ArvinButton>
+                      </div>
+                    </div>
+
+                    {/* Image Section */}
+                    {card.img && (
+                      <div style={{ margin: "0.5rem 0" }}>
+                        <img
+                          style={{
+                            width: "100%",
+                            maxWidth: "8rem",
+                            aspectRatio: "1 / 1",
+                            objectFit: "cover",
+                            objectPosition: "center",
+                            borderRadius: "6px",
+                            boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
+                          }}
+                          src={card.img}
+                          alt={card.front?.text}
+                        />
+                      </div>
+                    )}
+
+                    {/* Stats Section */}
+                    <div
+                      style={{
+                        borderTop: "1px solid #f1f5f9",
+                        paddingTop: "0.5rem",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "#64748b",
+                          display: "grid",
+                          gridTemplateColumns: "1fr 1fr",
+                          gap: "0.5rem",
+                        }}
+                      >
+                        <div>
+                          <strong>Reviews:</strong>{" "}
+                          {Math.round(card.numberOfReviews)}
+                        </div>
+                        <div>
+                          <strong>Rate:</strong> {card.reviewRate}
+                        </div>
+                        <div style={{ gridColumn: "1 / -1" }}>
+                          <strong>Created:</strong> {card.updatedAt}
+                        </div>
+                        {card.tags && card.tags.length > 0 && (
+                          <div style={{ gridColumn: "1 / -1" }}>
+                            <strong>Tags:</strong>{" "}
+                            <span style={{ fontStyle: "italic" }}>
+                              {card.tags.map(
+                                (thetag: string, index: number) => (
+                                  <span key={index}>
+                                    {thetag}
+                                    {index < card.tags.length - 1 ? ", " : ""}
+                                  </span>
+                                )
+                              )}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
-                {card.img && (
-                  <img
-                    style={{
-                      width: "100%",
-                      maxWidth: "8rem",
-                      aspectRatio: "1 / 1",
-                      objectFit: "cover",
-                      display: "block",
-                      objectPosition: "center",
-                      borderRadius: "6px",
-                      boxShadow: "1px 1px 12px 3px #bbb",
-                    }}
-                    src={card.img}
-                    alt={card.front?.text}
-                  />
-                )}
-                <div style={{ padding: "0.5rem" }}>
-                  <ul
-                    style={{
-                      fontSize: "10px",
-                      display: "grid",
-                      gridTemplateColumns: "repeat(3, 1fr)",
-                      gap: "0.5rem",
-                      padding: "0",
-                      margin: "0",
-                    }}
-                  >
-                    <li
-                      style={{
-                        listStyle: "none",
-                      }}
-                    >
-                      <strong>Reviewed:</strong>{" "}
-                      {Math.round(card.numberOfReviews)} times
-                    </li>
-                    <li
-                      style={{
-                        listStyle: "none",
-                      }}
-                    >
-                      <strong>Review Rate Total:</strong> {card.reviewRate}
-                    </li>
-                    <li
-                      style={{
-                        listStyle: "none",
-                      }}
-                    >
-                      <strong>Created:</strong> {card.updatedAt}
-                    </li>
-                    <li
-                      style={{
-                        listStyle: "none",
-                      }}
-                    >
-                      <strong>Tags:</strong>
-                      <span
-                        style={{ fontStyle: "italic", marginLeft: "0.3rem" }}
-                      >
-                        {card.tags.map((thetag: string, index: number) => (
-                          <span key={index}>{thetag}; </span>
-                        ))}
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         )}
-      </div>
 
-      {/* Modal Overlay */}
-      <div
-        style={{
-          backgroundColor: "rgba(0,0,0,0.8)",
-          top: 0,
-          left: 0,
-          display: showModal ? "block" : "none",
-          width: "100%",
-          height: "100%",
-          position: "fixed",
-        }}
-        onClick={handleHideModal}
-      />
+        {/* Modal Overlay */}
+        <div
+          style={{
+            backgroundColor: "rgba(0,0,0,0.8)",
+            top: 0,
+            left: 0,
+            display: showModal ? "block" : "none",
+            width: "100%",
+            height: "100%",
+            position: "fixed",
+          }}
+          onClick={handleHideModal}
+        />
 
-      {/* Modal Content */}
-      <div
-        style={{
-          display: showModal ? "block" : "none",
-          backgroundColor: "white",
-          padding: "1rem",
-          position: "fixed",
-          top: "40%",
-          left: "40%",
-        }}
-        id="modal"
-        className="box-shadow-white"
-      >
-        <Xp onClick={handleHideModal}>X</Xp>
-        <article id="front">
-          <input
-            style={{ maxWidth: "120px" }}
-            value={newFront}
-            onChange={(e) => setNewFront(e.target.value)}
-            type="text"
-          />
-          <select
-            style={{ maxWidth: "120px" }}
-            value={newLGFront}
-            onChange={(e) => setNewLGFront(e.target.value)}
-          >
-            {languages.map((language, langIndex) => (
-              <option key={langIndex} value={language}>
-                {language}
-              </option>
-            ))}
-          </select>
-        </article>
-
-        <article id="back">
-          <input
-            style={{ maxWidth: "120px" }}
-            value={newBack}
-            onChange={(e) => setNewBack(e.target.value)}
-            type="text"
-          />
-          <select
-            style={{ maxWidth: "120px" }}
-            value={newLGBack}
-            onChange={(e) => setNewLGBack(e.target.value)}
-          >
-            {languages.map((language, langIndex) => (
-              <option key={langIndex} value={language}>
-                {language}
-              </option>
-            ))}
-          </select>
-          <br />
-          <input
-            style={{ maxWidth: "120px" }}
-            value={newBackComments}
-            onChange={(e) => setNewBackComments(e.target.value)}
-            type="text"
-          />
-          <div>
-            <ArvinButton
-              onClick={() => handleDeleteCard(cardIdToEdit)}
-              color="red"
+        {/* Modal Content */}
+        <div
+          style={{
+            display: showModal ? "block" : "none",
+            backgroundColor: "white",
+            padding: "1rem",
+            position: "fixed",
+            top: "40%",
+            left: "40%",
+          }}
+          id="modal"
+          className="box-shadow-white"
+        >
+          <Xp onClick={handleHideModal}>X</Xp>
+          <article id="front">
+            <input
+              style={{ maxWidth: "120px" }}
+              value={newFront}
+              onChange={(e) => setNewFront(e.target.value)}
+              type="text"
+            />
+            <select
+              style={{ maxWidth: "120px" }}
+              value={newLGFront}
+              onChange={(e) => setNewLGFront(e.target.value)}
             >
-              <i className="fa fa-trash" aria-hidden="true" />
-            </ArvinButton>
-            <ArvinButton
-              onClick={() => handleEditCard(cardIdToEdit)}
-              color="green"
+              {languages.map((language, langIndex) => (
+                <option key={langIndex} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
+          </article>
+
+          <article id="back">
+            <input
+              style={{ maxWidth: "120px" }}
+              value={newBack}
+              onChange={(e) => setNewBack(e.target.value)}
+              type="text"
+            />
+            <select
+              style={{ maxWidth: "120px" }}
+              value={newLGBack}
+              onChange={(e) => setNewLGBack(e.target.value)}
             >
-              <i className="fa fa-folder" aria-hidden="true" />
-            </ArvinButton>
-          </div>
-        </article>
+              {languages.map((language, langIndex) => (
+                <option key={langIndex} value={language}>
+                  {language}
+                </option>
+              ))}
+            </select>
+            <br />
+            <input
+              style={{ maxWidth: "120px" }}
+              value={newBackComments}
+              onChange={(e) => setNewBackComments(e.target.value)}
+              type="text"
+            />
+            <div>
+              <ArvinButton
+                onClick={() => handleDeleteCard(cardIdToEdit)}
+                color="red"
+              >
+                <i className="fa fa-trash" aria-hidden="true" />
+              </ArvinButton>
+              <ArvinButton
+                onClick={() => handleEditCard(cardIdToEdit)}
+                color="green"
+              >
+                <i className="fa fa-folder" aria-hidden="true" />
+              </ArvinButton>
+            </div>
+          </article>
+        </div>
       </div>
     </>
   );

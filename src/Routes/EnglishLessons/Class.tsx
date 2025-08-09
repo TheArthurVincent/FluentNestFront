@@ -3534,135 +3534,141 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-          <div>
-            <HTwo>{UniversalTexts.leaveAComment}</HTwo>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              {" "}
-              <img
-                //@ts-ignore
-                style={styles.userImage}
-                src={thePicture}
-                alt="User"
-              />
-              <textarea
-                onChange={(e) => {
-                  setComment(e.target.value);
-                }}
-                //@ts-ignore
 
-                type="text"
-                className="comments2"
-                placeholder="Type your comment here..."
-                value={comment}
-              />
-            </div>
+          {isArthurVincent && (
             <div>
-              <ArvinButton
+              <HTwo>{UniversalTexts.leaveAComment}</HTwo>
+              <div
                 style={{
                   display: "flex",
-                  marginLeft: "auto",
+                  alignItems: "center",
                 }}
-                onClick={sendComment}
               >
-                {UniversalTexts.leaveAComment}
-              </ArvinButton>
+                {" "}
+                <img
+                  //@ts-ignore
+                  style={styles.userImage}
+                  src={thePicture}
+                  alt="User"
+                />
+                <textarea
+                  onChange={(e) => {
+                    setComment(e.target.value);
+                  }}
+                  //@ts-ignore
 
-              <>
-                {comments.length > 0 && (
-                  <div style={styles.container}>
-                    <HTwo>{UniversalTexts.comments}</HTwo>
+                  type="text"
+                  className="comments2"
+                  placeholder="Type your comment here..."
+                  value={comment}
+                />
+              </div>
+              <div>
+                <ArvinButton
+                  style={{
+                    display: "flex",
+                    marginLeft: "auto",
+                  }}
+                  onClick={sendComment}
+                >
+                  {UniversalTexts.leaveAComment}
+                </ArvinButton>
 
-                    {/* @ts-ignore */}
+                <>
+                  {comments.length > 0 && (
+                    <div style={styles.container}>
+                      <HTwo>{UniversalTexts.comments}</HTwo>
 
-                    <div style={styles.commentList}>
-                      {comments.map((comment: any, index: number) => (
-                        //@ts-ignore
+                      {/* @ts-ignore */}
 
-                        <div key={index} style={styles.commentBox}>
-                          <img
-                            //@ts-ignore
+                      <div style={styles.commentList}>
+                        {comments.map((comment: any, index: number) => (
+                          //@ts-ignore
 
-                            style={styles.userImage}
-                            src={comment.photo}
-                            alt="User"
-                          />
-                          {/* @ts-ignore */}
+                          <div key={index} style={styles.commentBox}>
+                            <img
+                              //@ts-ignore
 
-                          <div style={styles.commentContent}>
+                              style={styles.userImage}
+                              src={comment.photo}
+                              alt="User"
+                            />
                             {/* @ts-ignore */}
 
-                            <p style={styles.commentText}>{comment.comment}</p>
-                            {comment.answer && (
-                              <p style={styles.answerText}>
-                                <strong>Resposta:</strong> {comment.answer}
-                              </p>
-                            )}
-                            <span style={styles.commentDate}>
-                              {formatDateBr(new Date(comment.date))}
-                            </span>
-                          </div>
-                          {thePermissions == "superadmin" ||
-                            (thePermissions == "teacher" && (
-                              <span>
-                                <ArvinButton
-                                  onClick={() => deleteComment(comment.id)}
-                                  color="red"
-                                >
-                                  <i
-                                    className="fa fa-trash"
-                                    aria-hidden="true"
-                                  />
-                                </ArvinButton>
-                              </span>
-                            ))}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {myComments.length > 0 && (
-                  <div style={styles.container}>
-                    <HTwo>{UniversalTexts.myPendingComments}</HTwo>
-                    {/* @ts-ignore */}
+                            <div style={styles.commentContent}>
+                              {/* @ts-ignore */}
 
-                    <ul style={styles.commentList}>
-                      {myComments.map((comment: any, index: number) => (
-                        <li
-                          key={index}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          {comment.comment}{" "}
-                          {thePermissions == "superadmin" ||
-                            (thePermissions == "teacher" && (
-                              <span>
-                                <ArvinButton
-                                  onClick={() => deleteComment(comment.id)}
-                                  color="red"
-                                >
-                                  <i
-                                    className="fa fa-trash"
-                                    aria-hidden="true"
-                                  />
-                                </ArvinButton>
+                              <p style={styles.commentText}>
+                                {comment.comment}
+                              </p>
+                              {comment.answer && (
+                                <p style={styles.answerText}>
+                                  <strong>Resposta:</strong> {comment.answer}
+                                </p>
+                              )}
+                              <span style={styles.commentDate}>
+                                {formatDateBr(new Date(comment.date))}
                               </span>
-                            ))}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </>
+                            </div>
+                            {thePermissions == "superadmin" ||
+                              (thePermissions == "teacher" && (
+                                <span>
+                                  <ArvinButton
+                                    onClick={() => deleteComment(comment.id)}
+                                    color="red"
+                                  >
+                                    <i
+                                      className="fa fa-trash"
+                                      aria-hidden="true"
+                                    />
+                                  </ArvinButton>
+                                </span>
+                              ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {myComments.length > 0 && (
+                    <div style={styles.container}>
+                      <HTwo>{UniversalTexts.myPendingComments}</HTwo>
+                      {/* @ts-ignore */}
+
+                      <ul style={styles.commentList}>
+                        {myComments.map((comment: any, index: number) => (
+                          <li
+                            key={index}
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            {comment.comment}{" "}
+                            {thePermissions == "superadmin" ||
+                              (thePermissions == "teacher" && (
+                                <span>
+                                  <ArvinButton
+                                    onClick={() => deleteComment(comment.id)}
+                                    color="red"
+                                  >
+                                    <i
+                                      className="fa fa-trash"
+                                      aria-hidden="true"
+                                    />
+                                  </ArvinButton>
+                                </span>
+                              ))}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              </div>
             </div>
-          </div>
+          )}
+
           <label>
             <input
               style={{

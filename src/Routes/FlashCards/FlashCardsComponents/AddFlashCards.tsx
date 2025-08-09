@@ -5,10 +5,6 @@ import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import AddOneFlashCard from "./AddFlashONEFlashCard";
 import {
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   CircularProgress,
   DialogActions,
   Dialog,
@@ -17,6 +13,7 @@ import {
 } from "@mui/material";
 import { partnerColor } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 interface Student {
   id: string;
@@ -35,10 +32,11 @@ interface FlashCard {
 interface AddFlashCardsProps {
   headers: MyHeadersType | null;
   display: string | null;
+  selectedStudentId: string;
 }
-const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
-  const [studentsList, setStudentsList] = useState<Student[]>([]);
-  const [studentID, setStudentID] = useState<string>("");
+const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsProps) => {
+  const { UniversalTexts } = useUserContext();
+  
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [myId, setMyId] = useState<string>("");
   const [addCardVisible, setAddCardVisible] = useState<boolean>(false);
@@ -49,44 +47,13 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
       const { permissions, id } = JSON.parse(user);
-      setStudentID(id);
       setMyId(id);
       setPermissions(permissions);
     }
   }, []);
 
   const actualHeaders = headers || {};
-
   const [loading, setLoading] = useState<Boolean>(false);
-
-  const fetchStudents = async () => {
-    setLoading(true);
-    setAddCardVisible(!addCardVisible);
-    if (myPermissions === "superadmin") {
-      try {
-        const response = await axios.get(
-          `${backDomain}/api/v1/students/${myId}`,
-          {
-            headers: actualHeaders,
-          }
-        );
-
-        if (response.data.listOfStudents.length > 0) {
-          setStudentsList(response.data.listOfStudents);
-          setLoading(false);
-        } else {
-          setStudentsList([]);
-          setLoading(false);
-        }
-      } catch (error) {
-        notifyAlert("Erro ao encontrar alunos");
-      }
-    }
-  };
-
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setStudentID(event.target.value);
-  };
 
   const addNewCard = () => {
     setCards([
@@ -145,7 +112,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
     }));
     try {
       const response = await axios.post(
-        `${backDomain}/api/v1/flashcard/${studentID}`,
+        `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         { newCards },
         { headers: actualHeaders }
       );
@@ -186,9 +153,9 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
             <ArvinButton
               style={{ display: !addCardVisible ? "block" : "none" }}
               color={partnerColor()}
-              onClick={fetchStudents}
+              onClick={() => setAddCardVisible(true)}
             >
-              Adicionar cartas
+              {UniversalTexts?.enterFlashcards || "Adicionar cartas"}
             </ArvinButton>
             <div
               style={{
@@ -196,33 +163,6 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                 display: addCardVisible ? "block" : "none",
               }}
             >
-              <div style={{ display: "flex" }}>
-                {loading ? (
-                  <CircularProgress style={{ color: partnerColor() }} />
-                ) : (
-                  <FormControl style={{ width: "250px" }}>
-                    <InputLabel id="student-select-label">
-                      Choose student
-                    </InputLabel>
-                    <Select
-                      labelId="student-select-label"
-                      value={studentID}
-                      // @ts-ignore
-                      onChange={handleStudentChange}
-                      label="Choose student"
-                    >
-                      <MenuItem value="student" disabled hidden>
-                        Choose student
-                      </MenuItem>
-                      {studentsList.map((student, index) => (
-                        <MenuItem key={index} value={student.id}>
-                          {student.name + " " + student.lastname}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-              </div>
               <div>
                 {cards.map((card, index) => (
                   <AddOneFlashCard
@@ -247,12 +187,14 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
                   marginTop: "1rem",
                 }}
               >
-                <ArvinButton
-                  color="green"
-                  onClick={() => setShowConfirmation(true)}
-                >
-                  Add all cards
-                </ArvinButton>
+                {cards.length > 0 && (
+                  <ArvinButton
+                    color={partnerColor()}
+                    onClick={() => setShowConfirmation(true)}
+                  >
+                    {UniversalTexts?.add || "Add all cards"}
+                  </ArvinButton>
+                )}
 
                 <ArvinButton color="navy" onClick={addNewCard}>
                   +
@@ -268,7 +210,9 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>Confirmar adição de flashcards</DialogTitle>
+        <DialogTitle>
+          {UniversalTexts?.enterFlashcards ? `Confirmar ${UniversalTexts.enterFlashcards.toLowerCase()}` : "Confirmar adição de flashcards"}
+        </DialogTitle>
         <DialogContent dividers>
           {cards.length === 0 ? (
             <p>Nenhum card criado.</p>
@@ -315,7 +259,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
         </DialogContent>
         <DialogActions>
           <ArvinButton color="gray" onClick={() => setShowConfirmation(false)}>
-            Cancelar
+            {UniversalTexts?.cancel || "Cancelar"}
           </ArvinButton>
           <ArvinButton
             color="green"
@@ -324,7 +268,7 @@ const AddFlashCards = ({ headers, display }: AddFlashCardsProps) => {
               setShowConfirmation(false);
             }}
           >
-            Confirmar e adicionar
+            {UniversalTexts?.add ? `Confirmar e ${UniversalTexts.add.toLowerCase()}` : "Confirmar e adicionar"}
           </ArvinButton>
         </DialogActions>
       </Dialog>

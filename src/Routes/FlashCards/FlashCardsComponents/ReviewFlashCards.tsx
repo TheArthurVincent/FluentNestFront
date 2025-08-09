@@ -14,6 +14,7 @@ import {
   mascotWeak,
   formatDateBr,
 } from "../../../Resources/UniversalComponents";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 import {
   notifyAlert,
@@ -37,9 +38,11 @@ interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
   onChange: any;
   change: boolean;
+  selectedStudentId: string;
 }
 
-const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
+const ReviewFlashCards = ({ headers, onChange, change, selectedStudentId }: FlashCardsPropsRv) => {
+  const { UniversalTexts } = useUserContext();
   const [myId, setId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -71,6 +74,87 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   const actualHeaders = headers || {};
 
+  const seeCardsToReview = async () => {
+    if (!selectedStudentId) return;
+    
+    updateInfo(myId, actualHeaders);
+    timerCard();
+    setLoading(true);
+    setAnswer(false);
+    setBackCardVisible(false);
+    setSee(true);
+
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/flashcards/${selectedStudentId}`,
+        {
+          headers: actualHeaders,
+          params: { category },
+        }
+      );
+
+      const thereAreCards = response.data.dueFlashcards.length === 0;
+
+      if (
+        response.data.dueFlashcards.length > 0 &&
+        response.data.dueFlashcards[0].front.language &&
+        response.data.dueFlashcards[0].front &&
+        response.data.dueFlashcards[0].front.language !== "pt"
+      ) {
+        readText(
+          response.data.dueFlashcards[0].front?.text,
+          false,
+          response.data.dueFlashcards[0].front.language,
+          selectedVoice
+        );
+      }
+
+      setCards(response.data.dueFlashcards);
+      setCardsLength(thereAreCards);
+      setFlashcardsToday(response.data.flashcardsToday);
+
+      localStorage.setItem(
+        "flashcardsToday",
+        JSON.stringify(response.data.flashcardsToday)
+      );
+
+      setBackCardVisible(true);
+      timerDisabled();
+      timerCard();
+      setLoading(false);
+    } catch (error) {
+      notifyAlert("Erro ao enviar cards");
+      onLoggOut();
+    }
+  };
+
+  const reviewCard = async (id: string, difficulty: string) => {
+    if (!selectedStudentId) return;
+    
+    setLoading(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/reviewflashcard/${selectedStudentId}`,
+        {
+          flashcardId: id,
+          difficulty,
+          timerCardCount,
+          dayToday: new Date().toISOString(),
+        },
+        { headers: actualHeaders }
+      );
+      setLastReviewDay(response.data.flashcardsStreakLastDay);
+      setStreak(response.data.streak);
+      setCards(response.data.dueFlashcards);
+      setAnswer(false);
+      onChange(!change);
+      seeCardsToReview();
+      timerDisabled();
+    } catch (error) {
+      onLoggOut();
+    }
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
@@ -86,13 +170,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   useEffect(() => {
     setTimeout(() => {
-      // const flashcardsTodayLocalStorage = localStorage.getItem("flashcardsToday");
-      // if (flashcardsTodayLocalStorage) {
-      //   const flashcardsTodayNumber: number = parseFloat(
-      //     flashcardsTodayLocalStorage
-      //   );
-      //   setFlashcardsToday(flashcardsTodayNumber);
-      // }
       setSeeConf(seeConf);
     }, 1000);
   }, [change]);
@@ -168,83 +245,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     return () => timers.forEach(clearTimeout);
   };
 
-  const seeCardsToReview = async () => {
-    updateInfo(myId, actualHeaders);
-    timerCard();
-    setLoading(true);
-    setAnswer(false);
-    setBackCardVisible(false);
-    setSee(true);
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/flashcards/${myId}`,
-        {
-          headers: actualHeaders,
-          params: { category },
-        }
-      );
-
-      const thereAreCards = response.data.dueFlashcards.length === 0;
-
-      if (
-        response.data.dueFlashcards.length > 0 &&
-        response.data.dueFlashcards[0].front.language &&
-        response.data.dueFlashcards[0].front &&
-        response.data.dueFlashcards[0].front.language !== "pt"
-      ) {
-        readText(
-          response.data.dueFlashcards[0].front?.text,
-          false,
-          response.data.dueFlashcards[0].front.language,
-          selectedVoice
-        );
-      }
-
-      setCards(response.data.dueFlashcards);
-      setCardsLength(thereAreCards);
-      setFlashcardsToday(response.data.flashcardsToday);
-
-      localStorage.setItem(
-        "flashcardsToday",
-        JSON.stringify(response.data.flashcardsToday)
-      );
-
-      setBackCardVisible(true);
-      timerDisabled();
-      timerCard();
-      setLoading(false);
-    } catch (error) {
-      notifyAlert("Erro ao enviar cards");
-      onLoggOut();
-    }
-  };
-
-  const reviewCard = async (id: string, difficulty: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/reviewflashcard/${myId}`,
-        {
-          flashcardId: id,
-          difficulty,
-          timerCardCount,
-          dayToday: new Date().toISOString(),
-        },
-        { headers: actualHeaders }
-      );
-      setLastReviewDay(response.data.flashcardsStreakLastDay);
-      setStreak(response.data.streak);
-      setCards(response.data.dueFlashcards);
-      setAnswer(false);
-      onChange(!change);
-      seeCardsToReview();
-      timerDisabled();
-    } catch (error) {
-      onLoggOut();
-    }
-  };
-
   const [streaksAll, setStreaksAll] = useState<any[]>([]);
 
   const adjustStreak = async () => {
@@ -290,10 +290,19 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   };
 
   useEffect(() => {
-    if (myId !== "" && myId !== null) {
-      getHistory(myId);
+    if (selectedStudentId) {
+      getHistory(selectedStudentId);
     }
-  }, [myId]);
+  }, [selectedStudentId]);
+
+  // Reset review state when selectedStudentId changes
+  useEffect(() => {
+    setSee(false);
+    setCards([]);
+    setAnswer(false);
+    setBackCardVisible(false);
+    setIsDisabled(true); // Reset to show the start button
+  }, [selectedStudentId]);
 
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");

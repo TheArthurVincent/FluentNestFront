@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { Tab } from "@mui/material";
+import { Tab, CircularProgress } from "@mui/material";
 import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
 import ReviewFlashCards from "./FlashCardsComponents/ReviewFlashCards";
 import AllCards from "./FlashCardsComponents/AllCards";
-import { onLoggOut } from "../../Resources/UniversalComponents";
+import { onLoggOut, backDomain } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import axios from "axios";
 
 interface FlashCardsProps {
   headers: MyHeadersType | null;
@@ -18,20 +19,83 @@ interface FlashCardsProps {
   change: boolean;
 }
 const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
-  useState<number>(0);
+  const [myId, setMyId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [value, setValue] = useState<string>("1");
   const { UniversalTexts } = useUserContext();
 
-  useEffect(() => {
+  // Student management states
+  const [students, setStudents] = useState<any[]>([]);
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
+
+  const actualHeaders = headers || {};
+
+  // Get current student ID (either selected student or logged in user)
+  const getCurrentStudentId = () => {
+    if ((myPermissions === "superadmin" || myPermissions === "teacher") && selectedStudentId) {
+      return selectedStudentId;
+    }
+    return myId;
+  };
+
+  // Handle student selection
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const studentId = event.target.value;
+    setSelectedStudentId(studentId);
+  };
+
+  const fetchData = async () => {
     const user = localStorage.getItem("loggedIn");
+    console.log("User from localStorage:", user);
+    
     if (user) {
-      const { permissions } = JSON.parse(user);
+      const { permissions, id } = JSON.parse(user);
+      console.log("User permissions:", permissions, "User ID:", id);
+      
       setPermissions(permissions);
+      setMyId(id);
+      setSelectedStudentId(id); // Initially select the logged in user
+      
+      // Fetch students if user is admin/teacher
+      if (permissions === "superadmin" || permissions === "teacher") {
+        console.log("User is admin/teacher, fetching students...");
+        
+        setLoadingStudents(true);
+        try {
+          const response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
+            headers: actualHeaders,
+          });
+          
+          console.log("All users response:", response.data);
+          
+          // Check if data comes in listOfStudents property
+          const allUsers = response.data.listOfStudents || response.data;
+          console.log("All users array:", allUsers);
+          
+          const studentUsers = allUsers.filter((user: any) => 
+            user.permissions === "student" || user.permissions === "admin"
+          );
+          
+          console.log("Filtered students:", studentUsers);
+          setStudents(studentUsers);
+        } catch (error) {
+          console.error("Error fetching students:", error);
+        } finally {
+          setLoadingStudents(false);
+        }
+      } else {
+        console.log("User is not admin/teacher, skipping student fetch");
+      }
     } else {
+      console.log("No user found in localStorage, logging out");
       onLoggOut();
     }
-  }, []);
+  };
+  
+  useEffect(() => {
+    fetchData();
+  }, [actualHeaders]);
 
   const handleChange = (event: any, newValue: string) => {
     event.preventDefault();
@@ -48,6 +112,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
           onChange={onChange}
           change={change}
           headers={headers}
+          selectedStudentId={getCurrentStudentId()}
         />
       ),
     },
@@ -55,19 +120,35 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       title: UniversalTexts.myCards,
       value: "2",
       adm: false,
-      component: <AllCards headers={headers} />,
+      component: (
+        <AllCards 
+          headers={headers} 
+          selectedStudentId={getCurrentStudentId()}
+        />
+      ),
     },
     {
       title: UniversalTexts.history,
       value: "3",
       adm: false,
-      component: <FlashcardsHistory headers={headers} />,
+      component: (
+        <FlashcardsHistory 
+          headers={headers} 
+          selectedStudentId={getCurrentStudentId()}
+        />
+      ),
     },
     {
       title: UniversalTexts.add,
       value: "4",
       adm: true,
-      component: <AddFlashCards display="block" headers={headers} />,
+      component: (
+        <AddFlashCards 
+          display="block" 
+          headers={headers} 
+          selectedStudentId={getCurrentStudentId()}
+        />
+      ),
     },
   ];
 
@@ -82,6 +163,66 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       }}
     >
       <Helmets text="Flashcards" />
+      
+      {/* Student Selector - Only show for teachers/admin */}
+      {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+        <div style={{
+          padding: "1rem",
+          backgroundColor: alwaysWhite(),
+          borderBottom: "1px solid #e2e8f0",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "0.5rem"
+        }}>
+          <span style={{
+            fontSize: "14px",
+            fontWeight: "500",
+            color: "#64748b"
+          }}
+          onClick={fetchData}
+          >
+            {UniversalTexts.selectStudent || "Selecionar Aluno"}:
+          </span>
+          {loadingStudents ? (
+            <CircularProgress size={20} style={{ color: partnerColor() }} />
+          ) : (
+            <select 
+              onChange={handleStudentChange} 
+              value={selectedStudentId}
+              style={{
+                borderRadius: "4px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#f8fafc",
+                fontSize: "13px",
+                fontWeight: "400",
+                color: "#64748b",
+                padding: "6px 8px",
+                minWidth: "200px",
+                maxWidth: "300px",
+                outline: "none",
+                cursor: "pointer",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = partnerColor();
+                e.target.style.backgroundColor = "#ffffff";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#e2e8f0";
+                e.target.style.backgroundColor = "#f8fafc";
+              }}
+            >
+              <option value="">Selecione um aluno...</option>
+              {students.map((student) => (
+                <option key={student.id || student.theId} value={student.id || student.theId}>
+                  {student.name} {student.lastname}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      )}
+      
       <TabContext value={value}>
         <div
           style={{
