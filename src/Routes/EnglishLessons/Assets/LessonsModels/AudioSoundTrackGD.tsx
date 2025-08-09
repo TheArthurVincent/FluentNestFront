@@ -2,6 +2,8 @@ import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { Tooltip } from "@mui/material";
 import { readText } from "../Functions/FunctionLessons";
+import TextAreaLesson from "../Functions/TextAreaLessons";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 interface AudioElement {
   subtitle: string;
@@ -61,6 +63,8 @@ export default function AudioFile({ element, selectedVoice }: AudioFileProps) {
           <div style={{ color: "#444" }}>{element.text}</div>
         </div>
       )}
+      {/* Text area section */}
+      <TextAreaLesson />
     </div>
   );
 }

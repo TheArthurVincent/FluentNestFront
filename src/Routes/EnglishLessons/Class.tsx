@@ -1518,7 +1518,7 @@ export default function EnglishClassCourse2({
 
       await pptx.writeFile({ fileName });
 
-      notifyAlert("PowerPoint gerado com sucesso!", "green");
+      notifyAlert("PowerPoint gerado com sucesso!", partnerColor());
     } catch (error) {
       console.error("❌ Erro ao gerar PPT:", error);
       notifyAlert("Erro ao gerar PowerPoint. Tente novamente.", "red");
@@ -2211,7 +2211,7 @@ export default function EnglishClassCourse2({
       // Gerar e fazer download do arquivo
       const blob = await Packer.toBlob(doc);
       saveAs(blob, fileName);
-      notifyAlert("Documento Word gerado com sucesso!", "green");
+      notifyAlert("Documento Word gerado com sucesso!", partnerColor());
     } catch (error) {
       console.error("❌ Erro ao gerar Word:", error);
       notifyAlert("Erro ao gerar documento Word. Tente novamente.", "red");
@@ -2703,7 +2703,7 @@ export default function EnglishClassCourse2({
       // Salvar o PDF
       pdf.save(fileName);
 
-      notifyAlert("PDF da aula gerado com sucesso!", "green");
+      notifyAlert("PDF da aula gerado com sucesso!", partnerColor());
     } catch (error) {
       console.error("❌ Erro ao gerar PDF:", error);
       notifyAlert("Erro ao gerar documento PDF. Tente novamente.", "red");
@@ -2856,7 +2856,7 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      notifyAlert("Comentário excluído!", "green");
+      notifyAlert("Comentário excluído!", partnerColor());
       setComment("");
       getComments();
     } catch (error) {
@@ -2876,7 +2876,7 @@ export default function EnglishClassCourse2({
     <div
       style={{
         backgroundColor: "white",
-        width: "750px",
+        width: "1000px",
         maxWidth: "93vw",
       }}
     >

@@ -23,35 +23,58 @@ export default function TextAreaLesson() {
   const handleBlur = () => setIsFocused(false);
 
   return (
-    <textarea
-      className="comments"
-      value={value}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      placeholder="Write your thoughts, questions, or notes about this text..."
+    <div
       style={{
-        width: "100%",
-        minHeight: "120px",
+        background: "rgba(255, 255, 255, 0.8)",
+        borderRadius: "12px",
         padding: "16px",
-        fontFamily: textGeneralFont(),
-        fontSize: "14px",
-        lineHeight: "1.6",
-        border: isFocused 
-          ? `2px solid ${partnerColor()}` 
-          : "2px solid #e1e8ed",
-        borderRadius: "10px",
-        background: "#ffffff",
-        color: "#2c3e50",
-        resize: "vertical",
-        outline: "none",
-        transition: "all 0.3s ease",
-        boxShadow: isFocused 
-          ? `0 4px 12px ${partnerColor()}20` 
-          : "0 2px 8px rgba(0, 0, 0, 0.05)",
-        display: "block",
-        boxSizing: "border-box",
+        border: `1px solid ${partnerColor()}30`,
       }}
-    />
+    >
+      <div
+        style={{
+          fontFamily: textGeneralFont(),
+          fontSize: "14px",
+          fontWeight: "600",
+          color: partnerColor(),
+          marginBottom: "12px",
+          textTransform: "uppercase",
+          letterSpacing: "1px",
+        }}
+      >
+        📝 Your Notes
+      </div>
+
+      <textarea
+        className="comments"
+        value={value}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        placeholder="Write your thoughts, questions, or notes about this text..."
+        style={{
+          width: "100%",
+          minHeight: "120px",
+          padding: "16px",
+          fontFamily: textGeneralFont(),
+          fontSize: "14px",
+          lineHeight: "1.6",
+          border: isFocused
+            ? `2px solid ${partnerColor()}`
+            : "2px solid #e1e8ed",
+          borderRadius: "10px",
+          background: "#ffffff",
+          color: "#2c3e50",
+          resize: "vertical",
+          outline: "none",
+          transition: "all 0.3s ease",
+          boxShadow: isFocused
+            ? `0 4px 12px ${partnerColor()}20`
+            : "0 2px 8px rgba(0, 0, 0, 0.05)",
+          display: "block",
+          boxSizing: "border-box",
+        }}
+      />
+    </div>
   );
 }

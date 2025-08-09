@@ -19,28 +19,11 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
       style={{
         background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
         borderRadius: "16px",
-        padding: "24px",
-        margin: "20px 0",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
         border: `2px solid ${partnerColor()}20`,
         position: "relative",
         overflow: "hidden",
       }}
     >
-      {/* Decorative element */}
-      <div
-        style={{
-          position: "absolute",
-          top: "-20px",
-          right: "-20px",
-          width: "80px",
-          height: "80px",
-          background: `linear-gradient(45deg, ${partnerColor()}20, ${partnerColor()}10)`,
-          borderRadius: "50%",
-          zIndex: 0,
-        }}
-      />
-
       {/* Content container */}
       <div style={{ position: "relative", zIndex: 1 }}>
         {/* Image section */}
@@ -91,37 +74,7 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
         >
           {text}
         </div>
-
-        {/* Text area section */}
-        <div
-          style={{
-            marginTop: "16px",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: textTitleFont(),
-              fontSize: "14px",
-              fontWeight: "600",
-              color: partnerColor(),
-              marginBottom: "12px",
-              textTransform: "uppercase",
-              letterSpacing: "1px",
-            }}
-          >
-            📝 Your Notes
-          </div>
-          <div
-            style={{
-              background: "rgba(255, 255, 255, 0.8)",
-              borderRadius: "12px",
-              padding: "4px",
-              border: `1px solid ${partnerColor()}30`,
-            }}
-          >
-            <TextAreaLesson />
-          </div>
-        </div>
+        <TextAreaLesson />
       </div>
     </div>
   );
