@@ -488,7 +488,6 @@ export function FinancialResources({ headers, id }) {
           : []
       );
       setLoadingReports(false);
-
     } catch (error) {
       setLoadingReports(false);
       console.log("error", error);
@@ -584,7 +583,10 @@ export function FinancialResources({ headers, id }) {
 
       seeReports(currentMonthYear);
       handleFinancialReportModal(); // Close modal
-      notifyAlert("Relatório financeiro atualizado com sucesso!", "green");
+      notifyAlert(
+        "Relatório financeiro atualizado com sucesso!",
+        partnerColor()
+      );
     } catch (error) {
       console.log("error", error);
       notifyAlert("Erro ao atualizar relatório financeiro");
