@@ -712,12 +712,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       alert("E-mail lembrete enviado");
     } catch (error) {
       console.log(error, "Erro ao enviar e-mail");
-      console.log(error);
     }
   };
 
   const updateRealizedClass = async (id) => {
-    console.log(status, "STATUS");
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -999,7 +997,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log("❌ Erro ao criar nova aula:", error);
-      console.log("❌ Detalhes do erro:", error.response?.data);
       notifyAlert("Erro ao criar aula. Tente novamente.", partnerColor());
     } finally {
       setLoadingNewClass(false);
@@ -1969,7 +1966,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 onClick={() => {
                                   setShowEditForm(true);
                                   setPOSTNEWINFOCLASS(true);
-                                  console.log("Abrindo Edição");
                                 }}
                                 style={{
                                   padding: "0.5rem 1rem",
@@ -2155,7 +2151,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   onClick={() => {
                                     setShowEditForm(false);
                                     setPOSTNEWINFOCLASS(false);
-                                    console.log("Fechando Edição");
                                   }}
                                   style={{
                                     padding: "0.5rem 1rem",
@@ -5194,14 +5189,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       <button
                         type="button"
                         onClick={() => {
-                          console.log("🔘 Botão clicado!");
-                          console.log("📋 Estado do formulário:", {
-                            category: newClass.category,
-                            date: newClass.date,
-                            time: newClass.time,
-                            link: newClass.link,
-                            description: newClass.description,
-                          });
                           handleCreateNewClass();
                         }}
                         disabled={

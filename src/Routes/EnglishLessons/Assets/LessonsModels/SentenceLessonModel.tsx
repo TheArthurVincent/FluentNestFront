@@ -27,10 +27,6 @@ export default function SentenceLessonModel({
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
-    console.log(element);
-  }, []);
-
   const addNewCards = async (
     frontText: string,
     backText: string,

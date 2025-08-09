@@ -12,9 +12,6 @@ export default function VocabularyLesson({
   element,
   selectedVoice,
 }: VocabularyLessonProps) {
-  useEffect(() => {
-    console.log(element);
-  }, []);
 
   return (
     <div

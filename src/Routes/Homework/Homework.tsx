@@ -127,7 +127,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       );
       const tt = response.data.tutoringHomeworkList;
       setTutoringList(tt);
-      console.log(tt);
       setLoading(false);
     } catch (error) {
       console.log(error, "erro ao listar homework");

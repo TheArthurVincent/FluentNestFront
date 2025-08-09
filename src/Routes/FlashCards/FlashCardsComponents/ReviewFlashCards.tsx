@@ -253,7 +253,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
       setStreaksAll(response.data.studentsWithQualifiedDays);
 
-      console.log("Streak adjusted:", response.data);
     } catch (error) {
       console.log(error);
     }
@@ -283,8 +282,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setStreak(st);
       setDaysSinceLReview(lr);
       setLastReviewDay(mvlr);
-      console.log("ReviewFlashCards response:", response.data);
-
       setLoading(false);
     } catch (error) {
       console.log(error);
