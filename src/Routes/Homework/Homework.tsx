@@ -12,7 +12,7 @@ import axios from "axios";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
+import { partnerColor, textTitleFont, alwaysWhite } from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress } from "@mui/material";
 
@@ -52,7 +52,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
 
   const submitHomework = async (homeworkId: string) => {
     if (!selectedFile) {
-      notifyAlert("Por favor, selecione um arquivo");
+      notifyAlert(UniversalTexts?.pleaseSelectFile || "Por favor, selecione um arquivo");
       return;
     }
 
@@ -72,13 +72,13 @@ export default function Homework({ headers, setChange, change }: HWProps) {
         }
       );
 
-      notifyAlert("Homework enviado com sucesso!", "green");
+      notifyAlert(UniversalTexts?.homeworkSubmittedSuccess || "Homework enviado com sucesso!", "green");
       setSelectedFile(null);
       setTimeout(() => {
         fetchHW(studentID);
       }, 500);
     } catch (error) {
-      notifyAlert("Erro ao enviar homework");
+      notifyAlert(UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework");
       console.error(error);
     } finally {
       setUploading(false);
@@ -105,7 +105,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
         setStudentsList(response.data.listOfStudents);
         setLoading(false);
       } catch (error) {
-        notifyAlert("Erro ao encontrar alunos");
+        notifyAlert(UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos");
         console.log(error, "Erro ao encontrar alunos");
         setLoading(false);
       }
@@ -164,7 +164,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       fetchHW(studentID);
       setDisabled(false);
     } catch (error) {
-      notifyAlert("Erro ao encontrar alunos");
+      notifyAlert(UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos");
       setDisabled(false);
     }
   };
@@ -183,7 +183,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       setChange(!change);
       fetchHW(studentID);
     } catch (error) {
-      notifyAlert("Erro ao encontrar alunos");
+      notifyAlert(UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos");
     }
   };
 
@@ -194,7 +194,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       });
       fetchHW(studentID);
     } catch (error) {
-      notifyAlert("Erro ao encontrar alunos");
+      notifyAlert(UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos");
     }
   };
   const { UniversalTexts } = useUserContext();
@@ -214,53 +214,99 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       ) : (
         <span>
           <Helmets text="Homework" />
-          <HOne
-            style={{
-              fontFamily: textTitleFont(),
-              color: partnerColor(),
-            }}
-          >
-            {UniversalTexts.homework}
-          </HOne>
+
           {isAllowed && (
             <div
               style={{
-                display: "inline",
+                padding: "1rem",
+                backgroundColor: alwaysWhite(),
+                borderBottom: "1px solid #e2e8f0",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "0.5rem",
                 marginBottom: "1rem",
               }}
             >
-              <select onChange={handleStudentChange} value={studentID}>
+              <select
+                onChange={handleStudentChange}
+                value={studentID}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "13px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "6px 8px",
+                  minWidth: "200px",
+                  maxWidth: "300px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = partnerColor();
+                  e.target.style.backgroundColor = "#ffffff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e2e8f0";
+                  e.target.style.backgroundColor = "#f8fafc";
+                }}
+              >
                 {studentsList.map((student: any, index: number) => (
                   <option key={index} value={student.id}>
-                    {student.name + " " + student.lastname}{" "}
+                    {student.name + " " + student.lastname}
                   </option>
                 ))}
               </select>
             </div>
           )}
-          <div>
+
+          <HOne
+            style={{
+              fontFamily: textTitleFont(),
+              color: partnerColor(),
+              textAlign: "center",
+              margin: "0 0 1.5rem 0",
+              fontSize: "1.5rem",
+            }}
+          >
+            {UniversalTexts.homework}
+          </HOne>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              maxWidth: "600px",
+              margin: "0 auto",
+              padding: "1rem 0.5rem",
+            }}
+          >
             <ul
               style={{
+                width: "100%",
+                maxWidth: "500px",
                 overflowY: "auto",
                 maxHeight: "70vh",
+                padding: 0,
+                margin: 0,
+                listStyle: "none",
               }}
             >
               {tutoringList.map((homework: any, index: number) => (
                 <li
                   key={index}
-                  className="box-shadow-white"
                   style={{
-                    margin: "8px 0",
-                    textDecoration: "none",
-                    display: "grid",
-                    gap: "16px",
                     listStyle: "none",
-                    padding: "1.5rem",
-                    borderRadius: "12px",
-                    border: `2px solid ${
-                      homework?.status === "done" ? "#4caf50" : "#ff9800"
-                    }20`,
-                    backgroundColor: "#fafafa",
+
+                    margin: "0.75rem 0",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                    boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
+                    border: "1px solid #f1f5f9",
+                    backgroundColor: "#ffffff",
                     transition: "all 0.3s ease",
                   }}
                 >
@@ -270,25 +316,32 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      borderBottom: "1px solid #e0e0e0",
-                      paddingBottom: "12px",
+                      color: "#374151",
+                      padding: "0.75rem 1rem",
+                      margin: 0,
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      transition: "all 0.3s ease",
+                      borderBottom:
+                        homework?.status === "done"
+                          ? "none"
+                          : "1px solid #e2e8f0",
                     }}
                   >
-                    <HTwo style={{ margin: 0, color: "#333" }}>
-                      {UniversalTexts.dueDate} {formatDateBr(homework.dueDate)}
+                    <HTwo
+                      style={{ margin: 0, color: "inherit", fontSize: "14px" }}
+                    >
+                      📚 {UniversalTexts.dueDate}{" "}
+                      {formatDateBr(homework.dueDate)}
                     </HTwo>
                     <div
                       style={{
                         display: "flex",
                         alignItems: "center",
                         gap: "8px",
-                        backgroundColor:
-                          homework?.status === "done" ? "#4caf50" : "#ff9800",
-                        color: "white",
-                        padding: "6px 12px",
-                        borderRadius: "20px",
-                        fontSize: "14px",
-                        fontWeight: "bold",
+                        fontSize: "12px",
+                        fontWeight: "500",
+                        color: "green",
                       }}
                     >
                       <i
@@ -298,8 +351,9 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                             : "clock-o"
                         }`}
                         aria-hidden="true"
+                        style={{ fontSize: "14px" }}
                       />
-                      {homework?.status}
+                      {homework?.status === "done" ? (UniversalTexts?.completed || "Concluído") : (UniversalTexts?.pending || "Pendente")}
                     </div>
                   </div>
 
@@ -311,9 +365,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     <div
                       style={{
                         display: "flex",
-                        gap: "8px",
+                        gap: "0.5rem",
                         flexWrap: "wrap",
-                        padding: "8px 0",
+                        padding: "0.5rem 1rem 1rem",
+                        backgroundColor: "#fafbfc",
                       }}
                     >
                       {homework.status &&
@@ -326,18 +381,25 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                 updateRealizedClass(homework._id, pointsMadeHW)
                               }
                               style={{
-                                backgroundColor: "#4caf50",
+                                backgroundColor: partnerColor(),
                                 color: "white",
                                 border: "none",
-                                padding: "8px 16px",
-                                borderRadius: "6px",
+                                padding: "6px 12px",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: "500",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "6px",
+                                gap: "4px",
+                                cursor: disabled ? "not-allowed" : "pointer",
+                                opacity: disabled ? 0.6 : 1,
                               }}
                             >
-                              <i className="fa fa-check" />
-                              Up to date
+                              <i
+                                className="fa fa-check"
+                                style={{ fontSize: "10px" }}
+                              />
+                              {UniversalTexts?.upToDate || "Up to date"}
                             </ArvinButton>
                             <ArvinButton
                               disabled={disabled}
@@ -345,34 +407,48 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                 updateRealizedClass(homework._id, pointsLateHW)
                               }
                               style={{
-                                backgroundColor: "#ff9800",
+                                backgroundColor: "#f59e0b",
                                 color: "white",
                                 border: "none",
-                                padding: "8px 16px",
-                                borderRadius: "6px",
+                                padding: "6px 12px",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: "500",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "6px",
+                                gap: "4px",
+                                cursor: disabled ? "not-allowed" : "pointer",
+                                opacity: disabled ? 0.6 : 1,
                               }}
                             >
-                              <i className="fa fa-clock-o" />
+                              <i
+                                className="fa fa-clock-o"
+                                style={{ fontSize: "10px" }}
+                              />
                               Late
                             </ArvinButton>
                             <ArvinButton
                               disabled={disabled}
                               onClick={() => justStatus(homework._id)}
                               style={{
-                                backgroundColor: "#2196f3",
+                                backgroundColor: "#64748b",
                                 color: "white",
                                 border: "none",
-                                padding: "8px 16px",
-                                borderRadius: "6px",
+                                padding: "6px 12px",
+                                borderRadius: "4px",
+                                fontSize: "11px",
+                                fontWeight: "500",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "6px",
+                                gap: "4px",
+                                cursor: disabled ? "not-allowed" : "pointer",
+                                opacity: disabled ? 0.6 : 1,
                               }}
                             >
-                              <i className="fa fa-edit" />
+                              <i
+                                className="fa fa-edit"
+                                style={{ fontSize: "10px" }}
+                              />
                               Just status
                             </ArvinButton>
                           </>
@@ -382,17 +458,24 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           color="red"
                           onDoubleClick={() => deleteHomework(homework._id)}
                           style={{
-                            backgroundColor: "#f44336",
+                            backgroundColor: "#ef4444",
                             color: "white",
                             border: "none",
-                            padding: "8px 16px",
-                            borderRadius: "6px",
+                            padding: "6px 12px",
+                            borderRadius: "4px",
+                            fontSize: "11px",
+                            fontWeight: "500",
                             display: "flex",
                             alignItems: "center",
-                            gap: "6px",
+                            gap: "4px",
+                            cursor: "pointer",
                           }}
                         >
-                          <i className="fa fa-trash" aria-hidden="true" />
+                          <i
+                            className="fa fa-trash"
+                            aria-hidden="true"
+                            style={{ fontSize: "10px" }}
+                          />
                           Double Click
                         </ArvinButton>
                       )}
@@ -402,12 +485,13 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   {/* Description Section */}
                   <div
                     style={{
-                      backgroundColor: "white",
-                      border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
-                      padding: "1.2rem",
+                      backgroundColor: "#fafbfc",
+                      border: "none",
+                      borderRadius: "0",
+                      padding: "1rem",
                       lineHeight: "1.6",
-                      color: "#444",
+                      color: "#374151",
+                      fontSize: "14px",
                     }}
                   >
                     <div
@@ -422,9 +506,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     <div
                       style={{
                         display: "flex",
-                        gap: "12px",
+                        gap: "0.5rem",
                         flexDirection: "column",
-                        padding: "8px 0",
+                        padding: "0.5rem 1rem 1rem",
+                        backgroundColor: "#fafbfc",
                       }}
                     >
                       {homework.googleDriveLink && (
@@ -433,18 +518,22 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           style={{
                             color: partnerColor(),
                             textDecoration: "none",
-                            fontWeight: "600",
+                            fontWeight: "500",
+                            fontSize: "12px",
                             display: "flex",
                             alignItems: "center",
-                            gap: "8px",
-                            padding: "8px",
+                            gap: "6px",
+                            padding: "8px 12px",
                             backgroundColor: "white",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: `1px solid ${partnerColor()}30`,
                             transition: "all 0.2s ease",
                           }}
                         >
-                          <i className="fa fa-external-link" />
+                          <i
+                            className="fa fa-external-link"
+                            style={{ fontSize: "11px" }}
+                          />
                           Access the class here
                         </Link>
                       )}
@@ -452,20 +541,24 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         <Link
                           to={homework.attachments}
                           style={{
-                            color: "#4caf50",
+                            color: partnerColor(),
                             textDecoration: "none",
-                            fontWeight: "600",
+                            fontWeight: "500",
+                            fontSize: "12px",
                             display: "flex",
                             alignItems: "center",
-                            gap: "8px",
-                            padding: "8px",
+                            gap: "6px",
+                            padding: "8px 12px",
                             backgroundColor: "white",
-                            borderRadius: "6px",
-                            border: "1px solid #4caf5030",
+                            borderRadius: "4px",
+                            border: `1px solid ${partnerColor()}30`,
                             transition: "all 0.2s ease",
                           }}
                         >
-                          <i className="fa fa-download" />
+                          <i
+                            className="fa fa-download"
+                            style={{ fontSize: "11px" }}
+                          />
                           Homework Enviado
                         </Link>
                       )}
@@ -476,18 +569,19 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   {homework?.status === "pending" && (
                     <div
                       style={{
-                        backgroundColor: "white",
-                        border: "2px dashed #ddd",
-                        borderRadius: "8px",
-                        padding: "1.2rem",
+                        backgroundColor: "#fafbfc",
+                        border: "1px dashed #e2e8f0",
+                        borderRadius: "0",
+                        padding: "1rem",
                         textAlign: "center",
                       }}
                     >
                       <div
                         style={{
-                          marginBottom: "12px",
-                          fontWeight: "600",
-                          color: "#666",
+                          marginBottom: "0.75rem",
+                          fontWeight: "500",
+                          color: "#64748b",
+                          fontSize: "13px",
                         }}
                       >
                         Enviar Homework
@@ -496,7 +590,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         style={{
                           display: "flex",
                           flexDirection: "column",
-                          gap: "12px",
+                          gap: "0.75rem",
                         }}
                       >
                         <input
@@ -504,11 +598,13 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           onChange={handleFileChange}
                           accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
                           style={{
-                            padding: "12px",
-                            border: "1px solid #ddd",
-                            borderRadius: "6px",
-                            backgroundColor: "#f9f9f9",
+                            padding: "8px 10px",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: "4px",
+                            backgroundColor: "#f8fafc",
                             cursor: "pointer",
+                            fontSize: "12px",
+                            color: "#64748b",
                           }}
                         />
                         {selectedFile && (
