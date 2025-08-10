@@ -90,7 +90,7 @@ export function NewTutoring({ headers, id }) {
         { tutorings, description: newHWDescription, dueDate, newFlashcards },
         config
       );
-      notifyAlert("Aulas criadas com sucesso!", "green");
+      notifyAlert("Aulas criadas com sucesso!", partnerColor());
       setTutorings([]);
       setNewHWDescription("");
       setNewFlashcardsList("");
@@ -119,7 +119,7 @@ export function NewTutoring({ headers, id }) {
           headers,
         }
       );
-      notifyAlert("HW criado com sucesso!");
+      notifyAlert("HW criado com sucesso!", partnerColor());
       setTutorings([]);
       setNewHWDescription("");
       setLoadingHW(false);
@@ -320,7 +320,10 @@ export function NewTutoring({ headers, id }) {
                     }
                     const maxSizeInBytes = 10 * 1024 * 1024; // 10MB
                     if (file.size > maxSizeInBytes) {
-                      notifyAlert("Arquivo muito grande! O limite é de 10MB.");
+                      notifyAlert(
+                        "Arquivo muito grande! O limite é de 10MB.",
+                        "red"
+                      );
                       e.target.value = "";
                       return;
                     }
@@ -373,7 +376,10 @@ export function NewTutoring({ headers, id }) {
                     };
 
                     reader.onabort = () => {
-                      notifyAlert("Leitura do arquivo foi cancelada!");
+                      notifyAlert(
+                        "Leitura do arquivo foi cancelada!",
+                        partnerColor()
+                      );
                       e.target.value = "";
                     };
 

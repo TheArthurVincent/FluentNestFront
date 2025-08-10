@@ -25,7 +25,6 @@ import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { Link } from "react-router-dom";
 import {
-  alwaysWhite,
   darkGreyColor,
   partnerColor,
   textTitleFont,
@@ -53,18 +52,16 @@ import TextsWithTranslateSlideLessonModel from "./Assets/SlideModels/TextWithNoA
 import ExerciseLessonModelLesson from "./Assets/LessonsModels/ExerciseLessonModelExercise";
 import ImageLessonModelSlide from "./Assets/SlideModels/ImageLessonModelSlide";
 import { CircularProgress, TextareaAutosize } from "@mui/material";
-import QandALessonModel from "./Assets/LessonsModels/QandALessonModel";
 import QandALessonPersonalModel from "./Assets/LessonsModels/QandALessonPersonalModel";
 import NoFlashcardsSentenceLessonModel from "./Assets/LessonsModels/NoFlashcardsSentenceLessonModel";
 import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
-import TextAreaLesson from "./Assets/Functions/TextAreaLessons";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import Voice from "../../Resources/Voice";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
-import { t } from "framer-motion/dist/types.d-D0HXPxHm";
 import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
 import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
+import AudioFile from "./Assets/LessonsModels/AudioSoundTrackGD";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -149,6 +146,10 @@ export default function EnglishClassCourse2({
   courseTitle,
 }: EnglishClassCourse2ModelProps) {
   const { UniversalTexts } = useUserContext();
+
+  useEffect(() => {
+    console.log(studentsWhoCompletedIt, "studentsWhoCompletedIt");
+  }, []);
 
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
@@ -1350,7 +1351,10 @@ export default function EnglishClassCourse2({
 
                       // Título do diálogo (apenas no primeiro slide)
                       if (i === 0 && element.subtitle) {
-                        const safeSubtitle = sanitizeText(element.subtitle, 100);
+                        const safeSubtitle = sanitizeText(
+                          element.subtitle,
+                          100
+                        );
                         dialogueSlide.addText(safeSubtitle, {
                           x: 0.5,
                           y: 0.3,
@@ -1368,8 +1372,11 @@ export default function EnglishClassCourse2({
 
                       // Primeira fala (A)
                       if (element.dialogue[i]) {
-                        const safeDialogueA = sanitizeText(element.dialogue[i], 150);
-                        
+                        const safeDialogueA = sanitizeText(
+                          element.dialogue[i],
+                          150
+                        );
+
                         // Label da pessoa A
                         dialogueSlide.addText("A:", {
                           x: 0.8,
@@ -1401,8 +1408,11 @@ export default function EnglishClassCourse2({
 
                       // Segunda fala (B)
                       if (element.dialogue[i + 1]) {
-                        const safeDialogueB = sanitizeText(element.dialogue[i + 1], 150);
-                        
+                        const safeDialogueB = sanitizeText(
+                          element.dialogue[i + 1],
+                          150
+                        );
+
                         // Label da pessoa B
                         dialogueSlide.addText("B:", {
                           x: 0.8,
@@ -1432,7 +1442,10 @@ export default function EnglishClassCourse2({
                     }
                   }
                 } catch (dialogueError) {
-                  console.log("⚠️ Erro ao processar elemento dialogue:", dialogueError);
+                  console.log(
+                    "⚠️ Erro ao processar elemento dialogue:",
+                    dialogueError
+                  );
                 }
                 break;
 
@@ -1505,7 +1518,7 @@ export default function EnglishClassCourse2({
 
       await pptx.writeFile({ fileName });
 
-      notifyAlert("PowerPoint gerado com sucesso!", "green");
+      notifyAlert("PowerPoint gerado com sucesso!", partnerColor());
     } catch (error) {
       console.error("❌ Erro ao gerar PPT:", error);
       notifyAlert("Erro ao gerar PowerPoint. Tente novamente.", "red");
@@ -2198,7 +2211,7 @@ export default function EnglishClassCourse2({
       // Gerar e fazer download do arquivo
       const blob = await Packer.toBlob(doc);
       saveAs(blob, fileName);
-      notifyAlert("Documento Word gerado com sucesso!", "green");
+      notifyAlert("Documento Word gerado com sucesso!", partnerColor());
     } catch (error) {
       console.error("❌ Erro ao gerar Word:", error);
       notifyAlert("Erro ao gerar documento Word. Tente novamente.", "red");
@@ -2605,8 +2618,14 @@ export default function EnglishClassCourse2({
 
                         // Resetar fonte para normal
                         pdf.setFont("helvetica", "normal");
-                        
-                        yPosition += Math.max(englishLines.length, portugueseLines.length) * 4 + 5;
+
+                        yPosition +=
+                          Math.max(
+                            englishLines.length,
+                            portugueseLines.length
+                          ) *
+                            4 +
+                          5;
                       }
                     }
                   );
@@ -2628,11 +2647,15 @@ export default function EnglishClassCourse2({
                     (dialogueText: string, dialogueIndex: number) => {
                       const speaker = dialogueIndex % 2 === 0 ? "A" : "B";
                       const safeDialogue = sanitizeText(dialogueText, 200);
-                      
+
                       pdf.setFontSize(11);
                       pdf.setTextColor(40, 40, 40);
                       const dialogueLine = `${speaker} - ${safeDialogue}`;
-                      const dialogueLines = splitTextToSize(dialogueLine, maxWidth, 11);
+                      const dialogueLines = splitTextToSize(
+                        dialogueLine,
+                        maxWidth,
+                        11
+                      );
                       checkPageBreak(dialogueLines.length * 4);
                       pdf.text(dialogueLines, margin, yPosition);
                       yPosition += dialogueLines.length * 4 + 4;
@@ -2680,7 +2703,7 @@ export default function EnglishClassCourse2({
       // Salvar o PDF
       pdf.save(fileName);
 
-      notifyAlert("PDF da aula gerado com sucesso!", "green");
+      notifyAlert("PDF da aula gerado com sucesso!", partnerColor());
     } catch (error) {
       console.error("❌ Erro ao gerar PDF:", error);
       notifyAlert("Erro ao gerar documento PDF. Tente novamente.", "red");
@@ -2833,7 +2856,7 @@ export default function EnglishClassCourse2({
         { headers: actualHeaders }
       );
 
-      notifyAlert("Comentário excluído!", "green");
+      notifyAlert("Comentário excluído!", partnerColor());
       setComment("");
       getComments();
     } catch (error) {
@@ -2850,7 +2873,13 @@ export default function EnglishClassCourse2({
   }, [selectedVoice, changeNumber]);
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundColor: "white",
+        width: "1000px",
+        maxWidth: "93vw",
+      }}
+    >
       <Helmets text={classTitle} />
 
       {loading ? (
@@ -2935,7 +2964,7 @@ export default function EnglishClassCourse2({
               }}
             >
               {`${order + 1}- ${theclass.title}`}{" "}
-              {isCompleted && (
+              {/* {isCompleted && (
                 <i
                   style={{
                     color: "white",
@@ -2946,7 +2975,7 @@ export default function EnglishClassCourse2({
                   }}
                   className={`fa fa-check`}
                 />
-              )}
+              )} */}
             </HOne>
 
             {nextClass !== "123456" ? (
@@ -2969,171 +2998,99 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-          <ArvinButton
-            style={{ margin: "1rem auto", display: "block" }}
-            onClick={() => {
-              setSeeSlides(!seeSlides);
-            }}
-          >
-            See Board
-          </ArvinButton>
+
           <div
             style={{
-              maxWidth: "1000px",
+              maxWidth: "1200px",
               margin: "0 auto",
+              padding: "0 20px",
+              background: "#ffffff",
+              borderRadius: "8px",
+              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+              border: "1px solid #f1f5f9",
+              position: "relative",
+              overflow: "hidden",
             }}
           >
+            {/* Subtle decorative element */}
+            <div
+              style={{
+                position: "absolute",
+                top: "-10px",
+                right: "-10px",
+                width: "40px",
+                height: "40px",
+                background: `${partnerColor()}05`,
+                borderRadius: "50%",
+                zIndex: 0,
+                opacity: 0.3,
+              }}
+            />
+
+            {/* Combined controls container - discrete */}
             <div
               style={{
                 display: "flex",
-                gap: "0.8rem",
-                justifyContent: "center",
-                margin: "1rem auto",
+                alignItems: "center",
+                justifyContent: "space-between",
+                margin: "0.5rem 0",
+                padding: "4px 8px",
+                background: "transparent",
+                position: "relative",
+                zIndex: 1,
                 flexWrap: "wrap",
+                gap: "8px",
               }}
             >
               <button
-                title="Gerar PowerPoint"
+                title="Ver Quadro"
+                onClick={() => {
+                  setSeeSlides(!seeSlides);
+                }}
                 style={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  borderRadius: "8px",
-                  minWidth: "50px",
-                  height: "36px",
+                  padding: "6px 12px",
+                  fontSize: "11px",
+                  fontWeight: "500",
+                  borderRadius: "4px",
+                  height: "28px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   gap: "6px",
-                  border: "none",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  border: "1px solid #e2e8f0",
+                  background: seeSlides ? partnerColor() : "#f8fafc",
+                  color: seeSlides ? "white" : "#64748b",
+                  boxShadow: "none",
                   transition: "all 0.2s ease",
                   cursor: "pointer",
+                  fontFamily: textGeneralFont(),
                 }}
-                onClick={generatePPT}
                 onMouseEnter={(e) => {
                   const target = e.target as HTMLElement;
-                  target.style.transform = "translateY(-1px)";
-                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+                  if (!seeSlides) {
+                    target.style.background = "#f1f5f9";
+                  }
                 }}
                 onMouseLeave={(e) => {
                   const target = e.target as HTMLElement;
-                  target.style.transform = "translateY(0)";
-                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                  if (!seeSlides) {
+                    target.style.background = "#f8fafc";
+                  }
                 }}
               >
-                <img
-                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                  alt="PowerPoint"
-                  style={{ width: "20px", height: "20px" }}
+                <i
+                  className={seeSlides ? "fa fa-eye-slash" : "fa fa-eye"}
+                  aria-hidden="true"
+                  style={{ fontSize: "10px" }}
                 />
+                {seeSlides ? "Hide Board" : "See Board"}
               </button>
-
-              <button
-                title="Gerar Word"
-                style={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  borderRadius: "8px",
-                  minWidth: "50px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  border: "none",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  transition: "all 0.2s ease",
-                  cursor: "pointer",
-                }}
-                onClick={generateWord}
-                onMouseEnter={(e) => {
-                  const target = e.target as HTMLElement;
-                  target.style.transform = "translateY(-1px)";
-                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  const target = e.target as HTMLElement;
-                  target.style.transform = "translateY(0)";
-                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-                }}
-              >
-                <img
-                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                  alt="Word"
-                  style={{ width: "20px", height: "20px" }}
-                />
-              </button>
-
-              <button
-                title="Gerar PDF"
-                style={{
-                  padding: "8px 16px",
-                  fontSize: "14px",
-                  fontWeight: "600",
-                  borderRadius: "8px",
-                  minWidth: "50px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  border: "none",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  transition: "all 0.2s ease",
-                  cursor: "pointer",
-                }}
-                onClick={generatePDF}
-                onMouseEnter={(e) => {
-                  const target = e.target as HTMLElement;
-                  target.style.transform = "translateY(-1px)";
-                  target.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  const target = e.target as HTMLElement;
-                  target.style.transform = "translateY(0)";
-                  target.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
-                }}
-              >
-                <img
-                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                  alt="PDF"
-                  style={{ width: "20px", height: "20px" }}
-                />
-              </button>
-            </div>
-            <label>
-              <input
-                style={{
-                  cursor: "pointer",
-                }}
-                type="checkbox"
-                checked={isCompleted}
-                onChange={handleToggle}
-                disabled={loading}
-              />
-              {loading
-                ? "  Atualizando..."
-                : isCompleted
-                ? "  Completed"
-                : "  Not Completed"}
-            </label>
-            {
+              {/* Left side: Student select (if admin/teacher) */}
               <div
-                className="box-shadow-white"
                 style={{
-                  height: "3rem",
-                  padding: "0 10px ",
-                  backgroundColor: alwaysWhite(),
-                  position: "fixed",
-                  cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
-                  minWidth: "100px",
-                  bottom: 5,
-                  left: 0,
-                  borderRadius: "6px",
+                  gap: "8px",
                 }}
               >
                 <span
@@ -3143,23 +3100,31 @@ export default function EnglishClassCourse2({
                       thePermissions === "teacher"
                         ? "block"
                         : "none",
-                    marginRight: "10px",
                   }}
                 >
                   <select
                     onChange={(e) => handleStudentChange(e)}
                     value={studentID}
                     style={{
-                      borderRadius: "6px",
-                      border: "1px solid #ccc",
-                      backgroundColor: "#f9f9f9",
-                      fontSize: "0.9rem",
-                      maxWidth: "8rem",
-                      margin: "auto",
-                      color: "#333",
+                      borderRadius: "4px",
+                      border: "1px solid #e2e8f0",
+                      backgroundColor: "#f8fafc",
+                      fontSize: "11px",
+                      fontWeight: "400",
+                      color: "#64748b",
+                      padding: "4px 6px",
+                      height: "28px",
+                      minWidth: "120px",
+                      maxWidth: "150px",
                       outline: "none",
-                      transition: "border-color 0.3s",
+                      cursor: "pointer",
                     }}
+                    onFocus={(e) =>
+                      (e.currentTarget.style.borderColor = partnerColor())
+                    }
+                    onBlur={(e) =>
+                      (e.currentTarget.style.borderColor = "#e2e8f0")
+                    }
                   >
                     {studentsList.map((student: any, index: number) => (
                       <option key={index} value={student.id}>
@@ -3169,12 +3134,160 @@ export default function EnglishClassCourse2({
                   </select>
                 </span>
                 <Voice
-                  maxW="8rem"
+                  maxW="120px"
                   changeB={changeNumber}
                   setChangeB={setChangeNumber}
                 />
               </div>
-            }
+
+              {/* Right side: Export buttons and completed checkbox */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                }}
+              >
+                <button
+                  title="Gerar PowerPoint"
+                  style={{
+                    padding: "4px 6px",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    borderRadius: "4px",
+                    minWidth: "28px",
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid #e2e8f0",
+                    background: "#f8fafc",
+                    color: "#64748b",
+                    boxShadow: "none",
+                    transition: "all 0.2s ease",
+                    cursor: "pointer",
+                  }}
+                  onClick={generatePPT}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.background = "#f1f5f9";
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.background = "#f8fafc";
+                  }}
+                >
+                  <img
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                    alt="PowerPoint"
+                    style={{ width: "12px", height: "12px" }}
+                  />
+                </button>
+
+                <button
+                  title="Gerar Word"
+                  style={{
+                    padding: "4px 6px",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    borderRadius: "4px",
+                    minWidth: "28px",
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid #e2e8f0",
+                    background: "#f8fafc",
+                    color: "#64748b",
+                    boxShadow: "none",
+                    transition: "all 0.2s ease",
+                    cursor: "pointer",
+                  }}
+                  onClick={generateWord}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.background = "#f1f5f9";
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.background = "#f8fafc";
+                  }}
+                >
+                  <img
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                    alt="Word"
+                    style={{ width: "12px", height: "12px" }}
+                  />
+                </button>
+
+                <button
+                  title="Gerar PDF"
+                  style={{
+                    padding: "4px 6px",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    borderRadius: "4px",
+                    minWidth: "28px",
+                    height: "28px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid #e2e8f0",
+                    background: "#f8fafc",
+                    color: "#64748b",
+                    boxShadow: "none",
+                    transition: "all 0.2s ease",
+                    cursor: "pointer",
+                  }}
+                  onClick={generatePDF}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.background = "#f1f5f9";
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLElement;
+                    target.style.background = "#f8fafc";
+                  }}
+                >
+                  <img
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                    alt="PDF"
+                    style={{ width: "12px", height: "12px" }}
+                  />
+                </button>
+
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    cursor: "pointer",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    color: "#64748b",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  <input
+                    style={{
+                      cursor: "pointer",
+                      width: "12px",
+                      height: "12px",
+                      accentColor: partnerColor(),
+                    }}
+                    type="checkbox"
+                    checked={isCompleted}
+                    onChange={handleToggle}
+                    disabled={loading}
+                  />
+                  {loading
+                    ? "Loading..."
+                    : isCompleted
+                    ? "Completed"
+                    : "Complete"}
+                </label>
+              </div>
+            </div>
             {theclass.image && (
               <ImgLesson src={theclass.image} alt={theclass.subtitle} />
             )}
@@ -3203,150 +3316,174 @@ export default function EnglishClassCourse2({
               {theclass.description}
             </p>
           )} */}
-            {theclass.elements &&
-              theclass.elements
-                .sort((a: any, b: any) => a.order - b.order)
-                .map((element: any, index: number) => (
-                  <div key={index} style={{ margin: "10px 0" }}>
-                    {element.subtitle && (
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <HTwo>{element.subtitle}</HTwo>
-                      </div>
-                    )}
-                    {element.image && element.subtitle && (
-                      <ImgLesson src={element.image} alt={element.subtitle} />
-                    )}
-                    {element.video && element.subtitle && isArthurVincent && (
-                      <VideoLessonModel element={element} />
-                    )}
-
-                    {element.comments && (
-                      <p
-                        style={{
-                          padding: "0.5rem",
-                          textAlign: "center",
-                          backgroundColor: "#f6f6f6",
-                          borderRadius: "6px",
-                          margin: "0.5rem 0",
-                          fontStyle: "italic",
-                        }}
-                      >
-                        {element.comments}
-                      </p>
-                    )}
-                    {element.type === "sentences" ? (
-                      <SentenceLessonModel
-                        mainTag={theclass.mainTag}
-                        element={element}
-                        studentId={studentID}
-                        headers={headers}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : element.type === "vocabulary" ? (
-                      <VocabularyLesson
-                        mainTag={theclass.mainTag}
-                        element={element}
-                        studentId={studentID}
-                        headers={headers}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : element.type === "nfsentences" ? (
-                      <NoFlashcardsSentenceLessonModel
-                        element={element}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : element.type === "text" ? (
-                      <TextLessonModel
-                        headers={headers}
-                        text={element.text ? element.text : ""}
-                      />
-                    ) : element.type === "html" ? (
-                      <div
-                        style={{
-                          padding: "1rem",
-                          justifyContent: "center",
-                        }}
-                      >
+            {/* Main lesson content */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 1,
+                paddingBottom: "40px",
+              }}
+            >
+              {theclass.elements &&
+                theclass.elements
+                  .sort((a: any, b: any) => a.order - b.order)
+                  .map((element: any, index: number) => (
+                    <div
+                      key={index}
+                      style={{
+                        margin: "24px 0",
+                        position: "relative",
+                      }}
+                    >
+                      {element.subtitle && (
                         <div
-                          dangerouslySetInnerHTML={{ __html: element.text }}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <HTwo>{element.subtitle}</HTwo>
+                        </div>
+                      )}
+                      {element.image && element.subtitle && (
+                        <ImgLesson src={element.image} alt={element.subtitle} />
+                      )}
+                      {element.video && element.subtitle && isArthurVincent && (
+                        <VideoLessonModel element={element} />
+                      )}
+
+                      {element.comments && (
+                        <p
+                          style={{
+                            padding: "0.5rem",
+                            textAlign: "center",
+                            backgroundColor: "#f6f6f6",
+                            borderRadius: "6px",
+                            margin: "0.5rem 0",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          {element.comments}
+                        </p>
+                      )}
+                      {element.type === "sentences" ? (
+                        <SentenceLessonModel
+                          mainTag={theclass.mainTag}
+                          element={element}
+                          studentId={studentID}
+                          headers={headers}
+                          selectedVoice={selectedVoice}
                         />
-                      </div>
-                    ) : element.type === "multipletexts" ? (
-                      <MultipleTextsLessonModel
-                        headers={headers}
-                        element={element}
-                      />
-                    ) : element.type === "selectexercise" ? (
-                      <SelectExercise
-                        headers={headers}
-                        element={element}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : element.type === "images" ? (
-                      <ImageLessonModel
-                        studentId={studentID}
-                        mainTag={theclass.mainTag}
-                        id={myId}
-                        headers={headers}
-                        element={element}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : element.type === "exercise" ? (
-                      <ExerciseLessonModel
-                        headers={headers}
-                        item={element.items}
-                      />
-                    ) : element.type === "explanation" ? (
-                      <ExplanationLesson headers={headers} element={element} />
-                    ) : element.type === "audiosoundtrack" ? (
-                      <AudioSoundTrack
-                        headers={headers}
-                        text={element.text}
-                        src={element.src}
-                        studentId={studentID}
-                        mainTag={theclass.mainTag}
-                        element={element}
-                        link={element.link}
-                        subtitle={element.subtitle}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : element.type === "personalqanda" ? (
-                      <QandALessonPersonalModel
-                        headers={headers}
-                        studentId={studentID}
-                        mainTag={theclass.mainTag}
-                        item={element}
-                      />
-                    ) : element.type === "dialogue" ? (
-                      <DialogueLessonModel
-                        headers={headers}
-                        element={element}
-                      />
-                    ) : element.type === "singleimages" ? (
-                      <SingleImageLessonModel
-                        headers={headers}
-                        element={element}
-                      />
-                    ) : element.type === "listenandtranslate" ? (
-                      <ListenAndTranslateLessonModel
-                        headers={headers}
-                        element={element}
-                      />
-                    ) : element.type === "listinenglish" ? (
-                      <TextsWithTranslateLessonModel
-                        headers={headers}
-                        element={element}
-                      />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ))}
+                      ) : element.type === "vocabulary" ? (
+                        <VocabularyLesson
+                          mainTag={theclass.mainTag}
+                          element={element}
+                          studentId={studentID}
+                          headers={headers}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "nfsentences" ? (
+                        <NoFlashcardsSentenceLessonModel
+                          element={element}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "audio" ? (
+                        <AudioFile
+                          element={element}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "text" ? (
+                        <TextLessonModel
+                          headers={headers}
+                          text={element.text ? element.text : ""}
+                          image={element.image ? element.image : ""}
+                        />
+                      ) : element.type === "html" ? (
+                        <div
+                          style={{
+                            padding: "1rem",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <div
+                            dangerouslySetInnerHTML={{ __html: element.text }}
+                          />
+                        </div>
+                      ) : element.type === "multipletexts" ? (
+                        <MultipleTextsLessonModel
+                          headers={headers}
+                          element={element}
+                        />
+                      ) : element.type === "selectexercise" ? (
+                        <SelectExercise
+                          headers={headers}
+                          element={element}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "images" ? (
+                        <ImageLessonModel
+                          studentId={studentID}
+                          mainTag={theclass.mainTag}
+                          id={myId}
+                          headers={headers}
+                          element={element}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "exercise" ? (
+                        <ExerciseLessonModel
+                          headers={headers}
+                          item={element.items}
+                        />
+                      ) : element.type === "explanation" ? (
+                        <ExplanationLesson
+                          headers={headers}
+                          element={element}
+                        />
+                      ) : element.type === "audiosoundtrack" ? (
+                        <AudioSoundTrack
+                          headers={headers}
+                          text={element.text}
+                          src={element.src}
+                          studentId={studentID}
+                          mainTag={theclass.mainTag}
+                          element={element}
+                          link={element.link}
+                          subtitle={element.subtitle}
+                          selectedVoice={selectedVoice}
+                        />
+                      ) : element.type === "personalqanda" ? (
+                        <QandALessonPersonalModel
+                          headers={headers}
+                          studentId={studentID}
+                          mainTag={theclass.mainTag}
+                          item={element}
+                        />
+                      ) : element.type === "dialogue" ? (
+                        <DialogueLessonModel
+                          headers={headers}
+                          element={element}
+                        />
+                      ) : element.type === "singleimages" ? (
+                        <SingleImageLessonModel
+                          headers={headers}
+                          element={element}
+                        />
+                      ) : element.type === "listenandtranslate" ? (
+                        <ListenAndTranslateLessonModel
+                          headers={headers}
+                          element={element}
+                        />
+                      ) : element.type === "listinenglish" ? (
+                        <TextsWithTranslateLessonModel
+                          headers={headers}
+                          element={element}
+                        />
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  ))}
+            </div>
           </div>
 
           <div
@@ -3397,135 +3534,141 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-          <div>
-            <HTwo>{UniversalTexts.leaveAComment}</HTwo>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              {" "}
-              <img
-                //@ts-ignore
-                style={styles.userImage}
-                src={thePicture}
-                alt="User"
-              />
-              <textarea
-                onChange={(e) => {
-                  setComment(e.target.value);
-                }}
-                //@ts-ignore
 
-                type="text"
-                className="comments2"
-                placeholder="Type your comment here..."
-                value={comment}
-              />
-            </div>
+          {isArthurVincent && (
             <div>
-              <ArvinButton
+              <HTwo>{UniversalTexts.leaveAComment}</HTwo>
+              <div
                 style={{
                   display: "flex",
-                  marginLeft: "auto",
+                  alignItems: "center",
                 }}
-                onClick={sendComment}
               >
-                {UniversalTexts.leaveAComment}
-              </ArvinButton>
+                {" "}
+                <img
+                  //@ts-ignore
+                  style={styles.userImage}
+                  src={thePicture}
+                  alt="User"
+                />
+                <textarea
+                  onChange={(e) => {
+                    setComment(e.target.value);
+                  }}
+                  //@ts-ignore
 
-              <>
-                {comments.length > 0 && (
-                  <div style={styles.container}>
-                    <HTwo>{UniversalTexts.comments}</HTwo>
+                  type="text"
+                  className="comments2"
+                  placeholder="Type your comment here..."
+                  value={comment}
+                />
+              </div>
+              <div>
+                <ArvinButton
+                  style={{
+                    display: "flex",
+                    marginLeft: "auto",
+                  }}
+                  onClick={sendComment}
+                >
+                  {UniversalTexts.leaveAComment}
+                </ArvinButton>
 
-                    {/* @ts-ignore */}
+                <>
+                  {comments.length > 0 && (
+                    <div style={styles.container}>
+                      <HTwo>{UniversalTexts.comments}</HTwo>
 
-                    <div style={styles.commentList}>
-                      {comments.map((comment: any, index: number) => (
-                        //@ts-ignore
+                      {/* @ts-ignore */}
 
-                        <div key={index} style={styles.commentBox}>
-                          <img
-                            //@ts-ignore
+                      <div style={styles.commentList}>
+                        {comments.map((comment: any, index: number) => (
+                          //@ts-ignore
 
-                            style={styles.userImage}
-                            src={comment.photo}
-                            alt="User"
-                          />
-                          {/* @ts-ignore */}
+                          <div key={index} style={styles.commentBox}>
+                            <img
+                              //@ts-ignore
 
-                          <div style={styles.commentContent}>
+                              style={styles.userImage}
+                              src={comment.photo}
+                              alt="User"
+                            />
                             {/* @ts-ignore */}
 
-                            <p style={styles.commentText}>{comment.comment}</p>
-                            {comment.answer && (
-                              <p style={styles.answerText}>
-                                <strong>Resposta:</strong> {comment.answer}
-                              </p>
-                            )}
-                            <span style={styles.commentDate}>
-                              {formatDateBr(new Date(comment.date))}
-                            </span>
-                          </div>
-                          {thePermissions == "superadmin" ||
-                            (thePermissions == "teacher" && (
-                              <span>
-                                <ArvinButton
-                                  onClick={() => deleteComment(comment.id)}
-                                  color="red"
-                                >
-                                  <i
-                                    className="fa fa-trash"
-                                    aria-hidden="true"
-                                  />
-                                </ArvinButton>
-                              </span>
-                            ))}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                {myComments.length > 0 && (
-                  <div style={styles.container}>
-                    <HTwo>{UniversalTexts.myPendingComments}</HTwo>
-                    {/* @ts-ignore */}
+                            <div style={styles.commentContent}>
+                              {/* @ts-ignore */}
 
-                    <ul style={styles.commentList}>
-                      {myComments.map((comment: any, index: number) => (
-                        <li
-                          key={index}
-                          style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                          }}
-                        >
-                          {comment.comment}{" "}
-                          {thePermissions == "superadmin" ||
-                            (thePermissions == "teacher" && (
-                              <span>
-                                <ArvinButton
-                                  onClick={() => deleteComment(comment.id)}
-                                  color="red"
-                                >
-                                  <i
-                                    className="fa fa-trash"
-                                    aria-hidden="true"
-                                  />
-                                </ArvinButton>
+                              <p style={styles.commentText}>
+                                {comment.comment}
+                              </p>
+                              {comment.answer && (
+                                <p style={styles.answerText}>
+                                  <strong>Resposta:</strong> {comment.answer}
+                                </p>
+                              )}
+                              <span style={styles.commentDate}>
+                                {formatDateBr(new Date(comment.date))}
                               </span>
-                            ))}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </>
+                            </div>
+                            {thePermissions == "superadmin" ||
+                              (thePermissions == "teacher" && (
+                                <span>
+                                  <ArvinButton
+                                    onClick={() => deleteComment(comment.id)}
+                                    color="red"
+                                  >
+                                    <i
+                                      className="fa fa-trash"
+                                      aria-hidden="true"
+                                    />
+                                  </ArvinButton>
+                                </span>
+                              ))}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {myComments.length > 0 && (
+                    <div style={styles.container}>
+                      <HTwo>{UniversalTexts.myPendingComments}</HTwo>
+                      {/* @ts-ignore */}
+
+                      <ul style={styles.commentList}>
+                        {myComments.map((comment: any, index: number) => (
+                          <li
+                            key={index}
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            {comment.comment}{" "}
+                            {thePermissions == "superadmin" ||
+                              (thePermissions == "teacher" && (
+                                <span>
+                                  <ArvinButton
+                                    onClick={() => deleteComment(comment.id)}
+                                    color="red"
+                                  >
+                                    <i
+                                      className="fa fa-trash"
+                                      aria-hidden="true"
+                                    />
+                                  </ArvinButton>
+                                </span>
+                              ))}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </>
+              </div>
             </div>
-          </div>
+          )}
+
           <label>
             <input
               style={{

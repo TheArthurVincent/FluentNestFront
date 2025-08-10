@@ -27,10 +27,6 @@ export default function SentenceLessonModel({
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
 
-  useEffect(() => {
-    console.log(element);
-  }, []);
-
   const addNewCards = async (
     frontText: string,
     backText: string,
@@ -65,8 +61,6 @@ export default function SentenceLessonModel({
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
       notifyAlert(showThis, "green");
-
-      // Adicionar o índice do botão clicado ao conjunto
       setClickedButtons((prev) => new Set(prev).add(index));
     } catch (error) {
       alert("Erro ao enviar cards");
@@ -76,14 +70,15 @@ export default function SentenceLessonModel({
 
   return (
     <div
-      style={{
+    style={{
+        width: "80%",
         margin: "auto",
       }}
     >
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
           gap: "10px",
         }}
       >
@@ -92,9 +87,8 @@ export default function SentenceLessonModel({
             <div
               key={i}
               style={{
-                borderRadius: "16px",
-                width: "90%",
-                padding: "16px",
+                borderRadius: "5px",
+                padding: "5px",
                 transition: "all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)",
                 position: "relative",
                 overflow: "hidden",

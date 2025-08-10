@@ -14,6 +14,7 @@ import {
   mascotWeak,
   formatDateBr,
 } from "../../../Resources/UniversalComponents";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 import {
   notifyAlert,
@@ -37,9 +38,16 @@ interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
   onChange: any;
   change: boolean;
+  selectedStudentId: string;
 }
 
-const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
+const ReviewFlashCards = ({
+  headers,
+  onChange,
+  change,
+  selectedStudentId,
+}: FlashCardsPropsRv) => {
+  const { UniversalTexts } = useUserContext();
   const [myId, setId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
@@ -71,6 +79,87 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   const actualHeaders = headers || {};
 
+  const seeCardsToReview = async () => {
+    if (!selectedStudentId) return;
+
+    updateInfo(myId, actualHeaders);
+    timerCard();
+    setLoading(true);
+    setAnswer(false);
+    setBackCardVisible(false);
+    setSee(true);
+
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/flashcards/${selectedStudentId}`,
+        {
+          headers: actualHeaders,
+          params: { category },
+        }
+      );
+
+      const thereAreCards = response.data.dueFlashcards.length === 0;
+
+      if (
+        response.data.dueFlashcards.length > 0 &&
+        response.data.dueFlashcards[0].front.language &&
+        response.data.dueFlashcards[0].front &&
+        response.data.dueFlashcards[0].front.language !== "pt"
+      ) {
+        readText(
+          response.data.dueFlashcards[0].front?.text,
+          false,
+          response.data.dueFlashcards[0].front.language,
+          selectedVoice
+        );
+      }
+
+      setCards(response.data.dueFlashcards);
+      setCardsLength(thereAreCards);
+      setFlashcardsToday(response.data.flashcardsToday);
+
+      localStorage.setItem(
+        "flashcardsToday",
+        JSON.stringify(response.data.flashcardsToday)
+      );
+
+      setBackCardVisible(true);
+      timerDisabled();
+      timerCard();
+      setLoading(false);
+    } catch (error) {
+      notifyAlert("Erro ao enviar cards");
+      onLoggOut();
+    }
+  };
+
+  const reviewCard = async (id: string, difficulty: string) => {
+    if (!selectedStudentId) return;
+
+    setLoading(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/reviewflashcard/${selectedStudentId}`,
+        {
+          flashcardId: id,
+          difficulty,
+          timerCardCount,
+          dayToday: new Date().toISOString(),
+        },
+        { headers: actualHeaders }
+      );
+      setLastReviewDay(response.data.flashcardsStreakLastDay);
+      setStreak(response.data.streak);
+      setCards(response.data.dueFlashcards);
+      setAnswer(false);
+      onChange(!change);
+      seeCardsToReview();
+      timerDisabled();
+    } catch (error) {
+      onLoggOut();
+    }
+  };
+
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
@@ -86,13 +175,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
   useEffect(() => {
     setTimeout(() => {
-      // const flashcardsTodayLocalStorage = localStorage.getItem("flashcardsToday");
-      // if (flashcardsTodayLocalStorage) {
-      //   const flashcardsTodayNumber: number = parseFloat(
-      //     flashcardsTodayLocalStorage
-      //   );
-      //   setFlashcardsToday(flashcardsTodayNumber);
-      // }
       setSeeConf(seeConf);
     }, 1000);
   }, [change]);
@@ -168,83 +250,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     return () => timers.forEach(clearTimeout);
   };
 
-  const seeCardsToReview = async () => {
-    updateInfo(myId, actualHeaders);
-    timerCard();
-    setLoading(true);
-    setAnswer(false);
-    setBackCardVisible(false);
-    setSee(true);
-
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/flashcards/${myId}`,
-        {
-          headers: actualHeaders,
-          params: { category },
-        }
-      );
-
-      const thereAreCards = response.data.dueFlashcards.length === 0;
-
-      if (
-        response.data.dueFlashcards.length > 0 &&
-        response.data.dueFlashcards[0].front.language &&
-        response.data.dueFlashcards[0].front &&
-        response.data.dueFlashcards[0].front.language !== "pt"
-      ) {
-        readText(
-          response.data.dueFlashcards[0].front?.text,
-          false,
-          response.data.dueFlashcards[0].front.language,
-          selectedVoice
-        );
-      }
-
-      setCards(response.data.dueFlashcards);
-      setCardsLength(thereAreCards);
-      setFlashcardsToday(response.data.flashcardsToday);
-
-      localStorage.setItem(
-        "flashcardsToday",
-        JSON.stringify(response.data.flashcardsToday)
-      );
-
-      setBackCardVisible(true);
-      timerDisabled();
-      timerCard();
-      setLoading(false);
-    } catch (error) {
-      notifyAlert("Erro ao enviar cards");
-      onLoggOut();
-    }
-  };
-
-  const reviewCard = async (id: string, difficulty: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/reviewflashcard/${myId}`,
-        {
-          flashcardId: id,
-          difficulty,
-          timerCardCount,
-          dayToday: new Date().toISOString(),
-        },
-        { headers: actualHeaders }
-      );
-      setLastReviewDay(response.data.flashcardsStreakLastDay);
-      setStreak(response.data.streak);
-      setCards(response.data.dueFlashcards);
-      setAnswer(false);
-      onChange(!change);
-      seeCardsToReview();
-      timerDisabled();
-    } catch (error) {
-      onLoggOut();
-    }
-  };
-
   const [streaksAll, setStreaksAll] = useState<any[]>([]);
 
   const adjustStreak = async () => {
@@ -252,8 +257,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       const response = await axios.post(`${backDomain}/api/v1/adjuststreak`);
 
       setStreaksAll(response.data.studentsWithQualifiedDays);
-
-      console.log("Streak adjusted:", response.data);
     } catch (error) {
       console.log(error);
     }
@@ -283,8 +286,6 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       setStreak(st);
       setDaysSinceLReview(lr);
       setLastReviewDay(mvlr);
-      console.log("ReviewFlashCards response:", response.data);
-
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -293,10 +294,19 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   };
 
   useEffect(() => {
-    if (myId !== "" && myId !== null) {
-      getHistory(myId);
+    if (selectedStudentId) {
+      getHistory(selectedStudentId);
     }
-  }, [myId]);
+  }, [selectedStudentId]);
+
+  // Reset review state when selectedStudentId changes
+  useEffect(() => {
+    setSee(false);
+    setCards([]);
+    setAnswer(false);
+    setBackCardVisible(false);
+    setIsDisabled(true); // Reset to show the start button
+  }, [selectedStudentId]);
 
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
@@ -364,265 +374,43 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   }, [cards, answer, backCardVisible, loading, see]);
 
   return (
-    <section id="review">
-      {/* <button onClick={adjustStreak}>Adjust Streak</button> */}
-      {/*
-            <div>
-        {streaksAll.length > 0 && (
-          <div
-            style={{
-              maxHeight: "300px",
-              overflowY: "auto",
-              margin: "1rem 0",
-              padding: "1rem",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              backgroundColor: "#f9f9f9",
-            }}
-          >
-            <h3
-              style={{
-                margin: "0 0 1rem 0",
-                fontSize: "16px",
-                color: partnerColor(),
-              }}
-            >
-              Students Streak Report ({streaksAll.length} students)
-            </h3>
-            <div style={{ display: "grid", gap: "0.5rem" }}>
-              {streaksAll.map((student, index) => (
-                <div
-                  key={student.studentId}
-                  style={{
-                    padding: "1rem",
-                    backgroundColor: "white",
-                    borderRadius: "8px",
-                    fontSize: "12px",
-                    border: "1px solid #eee",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "2fr 1fr 1fr 1fr 1fr",
-                      gap: "0.5rem",
-                      marginBottom: "0.5rem",
-                      alignItems: "center",
-                      borderBottom: "1px solid #f0f0f0",
-                      paddingBottom: "0.5rem",
-                    }}
-                  >
-                    <div style={{ fontWeight: "bold", fontSize: "14px" }}>
-                      {student.name} {student.lastname}
-                    </div>
-                    <div style={{ color: partnerColor() }}>
-                      Current: {student.currentStreak}
-                    </div>
-                    <div style={{ color: "#666" }}>
-                      Longest: {student.longestStreak}
-                    </div>
-                    <div style={{ color: "#888" }}>
-                      Qualified: {student.currentQualifiedStreak}
-                    </div>
-                    <div style={{ color: "#999", fontSize: "10px" }}>
-                      {student.reviewsToday} reviews today
-                    </div>
-                  </div>
-
-                  <div
-                    style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr 1fr",
-                      gap: "0.5rem",
-                      marginBottom: "0.5rem",
-                      fontSize: "10px",
-                      color: "#666",
-                    }}
-                  >
-                    <div>Total Qualified: {student.totalQualifiedReviews}</div>
-                    <div>Total Entries: {student.totalHistoryEntries}</div>
-                    <div>
-                      Today Counted: {student.todayAccountedFor ? "✅" : "❌"}
-                    </div>
-                  </div>
-
-                  {student.qualifiedStreaks &&
-                    student.qualifiedStreaks.length > 0 && (
-                      <div style={{ marginBottom: "0.5rem" }}>
-                        <div
-                          style={{
-                            fontSize: "11px",
-                            fontWeight: "bold",
-                            marginBottom: "0.3rem",
-                            color: partnerColor(),
-                          }}
-                        >
-                          Qualified Streaks ({student.qualifiedStreaks.length}):
-                        </div>
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns:
-                              "repeat(auto-fit, minmax(120px, 1fr))",
-                            gap: "0.3rem",
-                          }}
-                        >
-                          {student.qualifiedStreaks.slice(0, 20).map(
-                            (streak: any, streakIndex: number) =>
-                              streak.days > 1 && (
-                                <div
-                                  key={streakIndex}
-                                  style={{
-                                    backgroundColor: "#f8f9fa",
-                                    padding: "0.3rem",
-                                    borderRadius: "4px",
-                                    fontSize: "9px",
-                                  }}
-                                >
-                                  <div style={{ fontWeight: "bold" }}>
-                                    #{streak.streakNumber}
-                                  </div>
-                                  <div>{streak.days} days</div>
-                                  <div>{streak.totalReviews} reviews</div>
-                                  <div
-                                    style={{ fontSize: "8px", color: "#888" }}
-                                  >
-                                    {new Date(
-                                      streak.startDate
-                                    ).toLocaleDateString()}{" "}
-                                    -{" "}
-                                    {new Date(
-                                      streak.endDate
-                                    ).toLocaleDateString()}
-                                  </div>
-                                </div>
-                              )
-                          )}
-                          {student.qualifiedStreaks.length > 20 && (
-                            <div
-                              style={{
-                                fontSize: "9px",
-                                color: "#666",
-                                alignSelf: "center",
-                              }}
-                            >
-                              +{student.qualifiedStreaks.length - 20} more...
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-
-                  {student.reviewsByDate &&
-                    student.reviewsByDate.length > 0 && (
-                      <div>
-                        <div
-                          style={{
-                            fontSize: "11px",
-                            fontWeight: "bold",
-                            marginBottom: "0.3rem",
-                            color: partnerColor(),
-                          }}
-                        >
-                          Recent Reviews:
-                        </div>
-                        <div
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns:
-                              "repeat(auto-fit, minmax(100px, 1fr))",
-                            gap: "0.3rem",
-                          }}
-                        >
-                          {student.reviewsByDate
-                            .slice(0, 300)
-                            .map((reviewDay: any, dayIndex: number) => (
-                              <div
-                                key={dayIndex}
-                                style={{
-                                  backgroundColor: "#f0f8ff",
-                                  padding: "0.3rem",
-                                  borderRadius: "4px",
-                                  fontSize: "9px",
-                                  textAlign: "center",
-                                }}
-                              >
-                                <div style={{ fontWeight: "bold" }}>
-                                  <span>#{dayIndex + 1} --- </span>
-                                  {new Date(
-                                    reviewDay.date
-                                  ).toLocaleDateString()}
-                                </div>
-                                <div style={{ color: partnerColor() }}>
-                                  {reviewDay.totalReviews} reviews
-                                </div>
-                              </div>
-                            ))}
-                          {student.reviewsByDate.length > 300 && (
-                            <div
-                              style={{
-                                fontSize: "9px",
-                                color: "#666",
-                                alignSelf: "center",
-                              }}
-                            >
-                              +{student.reviewsByDate.length - 300} more days...
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-      
-      */}
-
+    <section
+      id="review"
+      style={{
+        width: "80%",
+        margin: "0 auto",
+      }}
+    >
       <div
         style={{
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          padding: "0 1rem",
         }}
       >
-        <div
-          style={{
-            marginTop: "10px",
-            marginRight: "auto",
-            fontSize: "10px",
-            color: "#999",
-            textDecoration: "none",
-          }}
-        >
-          {lastReviewDay ? (
-            <>Last Review: {formatDateBr(lastReviewDay)}</>
-          ) : (
-            " No reviews yet "
-          )}
-        </div>
-
         <HOne
           style={{
             fontFamily: textTitleFont(),
             color: partnerColor(),
+            margin: "0 0 0.5rem 0",
+            fontSize: "1.5rem",
           }}
         >
-          Review Flashcards
+          {UniversalTexts?.reviewFlashcards || "Review Flashcards"}
         </HOne>
 
         <a
           style={{
-            fontSize: "13px",
-            color: "#999",
+            fontSize: "12px",
+            color: "#666",
             textDecoration: "none",
+            marginBottom: "1rem",
           }}
           href="/sentence-mining"
         >
-          Adicione palavras em seus flashcards!
+          {UniversalTexts?.addWordsToFlashcards || "Adicione palavras em seus flashcards"}
         </a>
       </div>
 
@@ -632,434 +420,418 @@ const ReviewFlashCards = ({ headers, onChange, change }: FlashCardsPropsRv) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            minHeight: "200px",
+            minHeight: "150px",
           }}
         >
-          <CircularProgress style={{ color: partnerColor() }} />
+          <CircularProgress size={24} style={{ color: partnerColor() }} />
         </div>
       ) : (
-        <>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            padding: "0 1rem",
+            width: "90%",
+            maxWidth: "500px",
+            margin: "0 auto",
+          }}
+        >
           <div
             style={{
+              flex: 1,
               display: "flex",
-              justifyContent: "center",
-              // alignItems: "flex-end",
-              marginTop: "20px",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            {/* Mascot */}
-            {/* <div
-              style={{
-                position: "relative",
-                left: -15,
-                cursor: isArthurStudentBoolean ? "pointer" : "default",
-                display: "flex",
-                alignItems: "flex-end",
-                visibility: isArthurStudentBoolean ? "visible" : "hidden",
-                minWidth: "100px",
-                justifyContent: "center",
-              }}
-              onClick={() => {
-                readText(
-                  `Hi ${theName}, I'm Arvin! ${MESSAGE}`,
-                  false,
-                  "en",
-                  selectedVoice,
-                  1.2
-                );
-              }}
-            >
-              {!loading && mascot}
-            </div> */}
+            {isArthurVincent && (
+              <WordOfTheDay
+                change={change}
+                onChange={onChange}
+                headers={headers}
+              />
+            )}
 
-            {/* Main content area */}
-            <div
-              style={{
-                flex: 1,
-                // position: "relative",
-                // left: -50,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              {isArthurVincent && (
-                <WordOfTheDay
-                  change={change}
-                  onChange={onChange}
-                  headers={headers}
-                />
-              )}
-
-              {/* Flashcard area */}
-              {see && (
-                <div ref={cardRef}>
-                  {loading ? (
-                    <CircularProgress style={{ color: partnerColor() }} />
-                  ) : (
-                    <div
-                      style={{
-                        margin: "auto",
-                        textAlign: "center",
-                        color: "black",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      {!cardsLength ? (
-                        <>
-                          <ArvinButton
-                            disabled={isDisabled}
-                            cursor={isDisabled ? "not-allowed" : "pointer"}
-                            color={isDisabled ? "grey" : partnerColor()}
-                            style={{
-                              color: textPrimaryColorContrast(),
-                            }}
-                            onClick={() => {
-                              setBackCardVisible(!backCardVisible);
-                              setAnswer(!answer);
-                            }}
-                          >
-                            {isDisabled ? (
-                              <span>{count}</span>
-                            ) : (
-                              <span>{answer ? "Back" : "Answer"}</span>
-                            )}
-                          </ArvinButton>
-
-                          {answer && (
-                            <div style={{ marginTop: "1rem" }}>
-                              <div
-                                style={{
-                                  justifyContent: "center",
-                                  display: "flex",
-                                  gap: "10px",
-                                  marginBottom: "1rem",
-                                }}
-                              >
-                                <ArvinButton
-                                  onClick={() =>
-                                    reviewCard(cards[0]._id, "hard")
-                                  }
-                                  color="red"
-                                >
-                                  I missed (Errei)
-                                </ArvinButton>
-
-                                <ArvinButton
-                                  onClick={() =>
-                                    reviewCard(cards[0]._id, "easy")
-                                  }
-                                  style={{
-                                    color: textPrimaryColorContrast(),
-                                  }}
-                                  color={partnerColor()}
-                                >
-                                  I got it! (Acertei)
-                                </ArvinButton>
-                              </div>
-                            </div>
-                          )}
-
-                          {/* Flashcard */}
-                          <div
-                            style={{ margin: "auto" }}
-                            className={`flashcard ${answer ? "flip" : ""}`}
-                          >
-                            <div
-                              style={{
-                                backgroundColor: textColor,
-                                display: !backCardVisible ? "none" : "block",
-                              }}
-                              className="flashcard-front"
-                            >
-                              <div>
-                                <span style={{ fontSize: "12px" }}>
-                                  {Math.round(cards[0]?.numberOfReviews) ||
-                                    "no"}{" "}
-                                  {Math.round(cards[0]?.numberOfReviews) === 1
-                                    ? "review"
-                                    : "reviews"}
-                                </span>
-                                <br />
-                                <br />
-                                <div
-                                  style={{
-                                    fontSize: "20px",
-                                    marginBottom: "15px",
-                                    fontStyle: "italic",
-                                  }}
-                                >
-                                  {cards[0]?.front?.text}
-                                </div>
-
-                                {cards[0]?.front?.language &&
-                                  cards[0].front.language !== "pt" && (
-                                    <button
-                                      className="audio-button bgwhite"
-                                      onClick={() =>
-                                        readText(
-                                          cards[0].front.text,
-                                          true,
-                                          cards[0].front.language,
-                                          selectedVoice
-                                        )
-                                      }
-                                    >
-                                      <i
-                                        className="fa fa-volume-up"
-                                        aria-hidden="true"
-                                      />
-                                    </button>
-                                  )}
-
-                                {cards[0]?.img &&
-                                  cards[0]?.front?.language === "pt" && (
-                                    <img
-                                      style={{
-                                        width: "100%",
-                                        maxWidth: "8rem",
-                                        aspectRatio: "1 / 1",
-                                        objectFit: "cover",
-                                        display: "block",
-                                        margin: "1rem auto",
-                                        objectPosition: "center",
-                                        borderRadius: "6px",
-                                        boxShadow: "1px 1px 12px 3px #bbb",
-                                      }}
-                                      src={cards[0]?.img}
-                                      alt={cards[0]?.front?.text}
-                                    />
-                                  )}
-                              </div>
-                            </div>
-
-                            <div
-                              style={{
-                                display: backCardVisible ? "none" : "block",
-                              }}
-                              className="flashcard-back"
-                            >
-                              <div>
-                                <div
-                                  style={{
-                                    fontSize: "11px",
-                                    marginBottom: "15px",
-                                  }}
-                                >
-                                  {cards[0]?.front?.text}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "20px",
-                                    marginBottom: "15px",
-                                    fontStyle: "italic",
-                                  }}
-                                >
-                                  {cards[0]?.back?.text}
-                                </div>
-                                <div
-                                  style={{
-                                    fontSize: "12px",
-                                    fontStyle: "italic",
-                                    marginBottom: "15px",
-                                  }}
-                                  dangerouslySetInnerHTML={{
-                                    __html: cards[0]?.backComments,
-                                  }}
-                                />
-
-                                {cards[0]?.back?.language &&
-                                  cards[0].back.language !== "pt" && (
-                                    <button
-                                      className="audio-button bgwhite"
-                                      onClick={() =>
-                                        readText(
-                                          cards[0].back.text,
-                                          true,
-                                          cards[0].back.language,
-                                          selectedVoice
-                                        )
-                                      }
-                                    >
-                                      <i
-                                        className="fa fa-volume-up"
-                                        aria-hidden="true"
-                                      />
-                                    </button>
-                                  )}
-
-                                {cards[0]?.img &&
-                                  cards[0]?.back?.language === "pt" && (
-                                    <img
-                                      style={{
-                                        width: "100%",
-                                        maxWidth: "8rem",
-                                        aspectRatio: "1 / 1",
-                                        objectFit: "cover",
-                                        display: "block",
-                                        margin: "1rem auto",
-                                        objectPosition: "center",
-                                        borderRadius: "6px",
-                                        boxShadow: "1px 1px 12px 3px #bbb",
-                                      }}
-                                      src={cards[0]?.img}
-                                      alt={cards[0]?.front?.text}
-                                    />
-                                  )}
-                              </div>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <div
+            {/* Flashcard area */}
+            {see && (
+              <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
+                {loading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "2rem",
+                    }}
+                  >
+                    <CircularProgress
+                      size={20}
+                      style={{ color: partnerColor() }}
+                    />
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      width: "100%",
+                      textAlign: "center",
+                      color: "black",
+                    }}
+                  >
+                    {!cardsLength ? (
+                      <>
+                        <ArvinButton
+                          disabled={isDisabled}
+                          cursor={isDisabled ? "not-allowed" : "pointer"}
+                          color={isDisabled ? "grey" : partnerColor()}
                           style={{
-                            padding: "2rem",
-                            textAlign: "center",
-                            color: "#666",
-                            fontSize: "16px",
+                            color: textPrimaryColorContrast(),
+                          }}
+                          onClick={() => {
+                            setBackCardVisible(!backCardVisible);
+                            setAnswer(!answer);
                           }}
                         >
-                          <p>
-                            🎉 No flashcards to review!
-                            <br />
-                            <small style={{ fontSize: "14px" }}>
-                              Nenhum flashcard para revisar
-                            </small>
-                          </p>
+                          {isDisabled ? (
+                            <span>{count}</span>
+                          ) : (
+                            <span>{answer ? (UniversalTexts?.back || "Back") : (UniversalTexts?.answer || "Answer")}</span>
+                          )}
+                        </ArvinButton>
+
+                        {answer && (
+                          <div style={{ marginTop: "1rem" }}>
+                            <div
+                              style={{
+                                justifyContent: "center",
+                                display: "flex",
+                                gap: "10px",
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              <ArvinButton
+                                onClick={() => reviewCard(cards[0]._id, "hard")}
+                                color="red"
+                              >
+                                {UniversalTexts?.iMissed || "I missed (Errei)"}
+                              </ArvinButton>
+
+                              <ArvinButton
+                                onClick={() => reviewCard(cards[0]._id, "easy")}
+                                style={{
+                                  color: textPrimaryColorContrast(),
+                                }}
+                                color={partnerColor()}
+                              >
+                                {UniversalTexts?.iGotIt || "I got it! (Acertei)"}
+                              </ArvinButton>
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Flashcard */}
+                        <div
+                          style={{ margin: "auto" }}
+                          className={`flashcard ${answer ? "flip" : ""}`}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: textColor,
+                              display: !backCardVisible ? "none" : "block",
+                            }}
+                            className="flashcard-front"
+                          >
+                            <div>
+                              <span style={{ fontSize: "12px" }}>
+                                {Math.round(cards[0]?.numberOfReviews) || "no"}{" "}
+                                {Math.round(cards[0]?.numberOfReviews) === 1
+                                  ? (UniversalTexts?.review || "review")
+                                  : (UniversalTexts?.reviews || "reviews")}
+                              </span>
+                              <br />
+                              <br />
+                              <div
+                                style={{
+                                  fontSize: "20px",
+                                  marginBottom: "15px",
+                                  fontStyle: "italic",
+                                }}
+                              >
+                                {cards[0]?.front?.text}
+                              </div>
+
+                              {cards[0]?.front?.language &&
+                                cards[0].front.language !== "pt" && (
+                                  <button
+                                    className="audio-button bgwhite"
+                                    onClick={() =>
+                                      readText(
+                                        cards[0].front.text,
+                                        true,
+                                        cards[0].front.language,
+                                        selectedVoice
+                                      )
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-volume-up"
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                )}
+
+                              {cards[0]?.img &&
+                                cards[0]?.front?.language === "pt" && (
+                                  <img
+                                    style={{
+                                      width: "100%",
+                                      maxWidth: "8rem",
+                                      aspectRatio: "1 / 1",
+                                      objectFit: "cover",
+                                      display: "block",
+                                      margin: "1rem auto",
+                                      objectPosition: "center",
+                                      borderRadius: "6px",
+                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                    }}
+                                    src={cards[0]?.img}
+                                    alt={cards[0]?.front?.text}
+                                  />
+                                )}
+                            </div>
+                          </div>
+
+                          <div
+                            style={{
+                              display: backCardVisible ? "none" : "block",
+                            }}
+                            className="flashcard-back"
+                          >
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "11px",
+                                  marginBottom: "15px",
+                                }}
+                              >
+                                {cards[0]?.front?.text}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "20px",
+                                  marginBottom: "15px",
+                                  fontStyle: "italic",
+                                }}
+                              >
+                                {cards[0]?.back?.text}
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "12px",
+                                  fontStyle: "italic",
+                                  marginBottom: "15px",
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: cards[0]?.backComments,
+                                }}
+                              />
+
+                              {cards[0]?.back?.language &&
+                                cards[0].back.language !== "pt" && (
+                                  <button
+                                    className="audio-button bgwhite"
+                                    onClick={() =>
+                                      readText(
+                                        cards[0].back.text,
+                                        true,
+                                        cards[0].back.language,
+                                        selectedVoice
+                                      )
+                                    }
+                                  >
+                                    <i
+                                      className="fa fa-volume-up"
+                                      aria-hidden="true"
+                                    />
+                                  </button>
+                                )}
+
+                              {cards[0]?.img &&
+                                cards[0]?.back?.language === "pt" && (
+                                  <img
+                                    style={{
+                                      width: "100%",
+                                      maxWidth: "8rem",
+                                      aspectRatio: "1 / 1",
+                                      objectFit: "cover",
+                                      display: "block",
+                                      margin: "1rem auto",
+                                      objectPosition: "center",
+                                      borderRadius: "6px",
+                                      boxShadow: "1px 1px 12px 3px #bbb",
+                                    }}
+                                    src={cards[0]?.img}
+                                    alt={cards[0]?.front?.text}
+                                  />
+                                )}
+                            </div>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Start/Refresh button */}
-              <div
-                style={{
-                  display: !isDisabled ? "none" : "flex",
-                  justifyContent: "center",
-                  marginTop: "20px",
-                }}
-              >
-                <ArvinButton
-                  style={{
-                    margin: "auto",
-                    display: "block",
-                  }}
-                  onClick={seeCardsToReview}
-                >
-                  {!see ? (
-                    "Start"
-                  ) : (
-                    <i className="fa fa-refresh" aria-hidden="true" />
-                  )}
-                </ArvinButton>
+                      </>
+                    ) : (
+                      <div
+                        style={{
+                          padding: "1.5rem",
+                          textAlign: "center",
+                          color: "#666",
+                          fontSize: "14px",
+                          backgroundColor: "#f8f9fa",
+                          borderRadius: "8px",
+                          margin: "1rem 0",
+                        }}
+                      >
+                        <div
+                          style={{ fontSize: "24px", marginBottom: "0.5rem" }}
+                        >
+                          🎉
+                        </div>
+                        <div
+                          style={{
+                            fontWeight: "500",
+                            marginBottom: "0.25rem",
+                          }}
+                        >
+                          {UniversalTexts?.noFlashcardsToReview || "No flashcards to review!"}
+                        </div>
+                        <div style={{ fontSize: "12px", color: "#888" }}>
+                          {UniversalTexts?.noFlashcardsFound || "Nenhum flashcard para revisar"}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
+            )}
 
-              {/* Controls */}
-              <div
+            {/* Start/Refresh button */}
+            <div
+              style={{
+                display: !isDisabled ? "none" : "flex",
+                justifyContent: "center",
+                margin: "1rem 0",
+              }}
+            >
+              <ArvinButton
                 style={{
-                  marginTop: cardHeight ? cardHeight / 3 : "1rem",
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: "10px",
-                  maxWidth: "fit-content",
-                  margin: "auto",
-                  justifyContent: "space-evenly",
-                  alignItems: "center",
+                  fontSize: "14px",
+                  padding: "0.75rem 1.5rem",
+                  borderRadius: "6px",
                 }}
+                onClick={seeCardsToReview}
               >
-                <Voice
-                  maxW="6rem"
-                  changeB={changeNumber}
-                  setChangeB={setChangeNumber}
-                />
-                <select
-                  id="category-select"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                  style={{
-                    maxWidth: "6rem",
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    margin: "auto",
-                    backgroundColor: "#f9f9f9",
-                    fontSize: "0.9rem",
-                    color: "#333",
-                    outline: "none",
-                    transition: "border-color 0.3s",
-                  }}
-                >
-                  <option value="nofilter">All cards</option>
-                  <option value="vocabulary">Vocabulary</option>
-                  <option value="be">To be</option>
-                  <option value="possessive">Possessivos</option>
-                  <option value="modal">Modal verbs</option>
-                  <option value="question">Question words</option>
-                  <option value="do">Do & Does</option>
-                  <option value="dont">Don't & Doesn't</option>
-                  <option value="did">Did & Didn't</option>
-                  <option value="irregularpast">Irregular Past</option>
-                  <option value="presentperfect">Present Perfect</option>
-                  <option value="pastperfect">Past Perfect</option>
-                  <option value="travel">Viagem</option>
-                  <option value="bodyparts">Partes do corpo</option>
-                  <option value="businessenglish">Inglês para negócios</option>
-                  <option value="family">Família</option>
-                  <option value="animals">Animais</option>
-                  <option value="fruits">Frutas</option>
-                  <option value="food">Comida</option>
-                  <option value="colors">Cores</option>
-                  <option value="house">Casa</option>
-                  <option value="supermarket">Supermercado</option>
-                  <option value="weather">Clima</option>
-                  <option value="clothes">Roupas</option>
-                  <option value="time">Horários</option>
-                  <option value="daysanddates">Dias e Datas</option>
-                  <option value="car">Carro</option>
-                  <option value="road">Estrada</option>
-                  <option value="personality">Personalidade</option>
-                  <option value="nature">Natureza</option>
-                  <option value="numbers">Números</option>
-                  <option value="transportation">Transporte</option>
-                  <option value="office">Escritório</option>
-                  <option value="professions">Profissões</option>
-                </select>
-              </div>
+                {!see ? (
+                  UniversalTexts?.start || "Start"
+                ) : (
+                  <i className="fa fa-refresh" aria-hidden="true" />
+                )}
+              </ArvinButton>
+            </div>
+
+            {/* Controls */}
+            <div
+              style={{
+                display: "flex",
+                gap: "0.75rem",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "1rem 0",
+                width: "100%",
+                maxWidth: "320px",
+              }}
+            >
+              <Voice
+                maxW="auto"
+                changeB={changeNumber}
+                setChangeB={setChangeNumber}
+              />
+              <select
+                id="category-select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "4px 6px",
+                  height: "28px",
+                  minWidth: "120px",
+                  maxWidth: "150px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = partnerColor())
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+              >
+                <option value="nofilter">{UniversalTexts?.allCards || "All cards"}</option>
+                <option value="vocabulary">{UniversalTexts?.vocabularyCategory || "Vocabulary"}</option>
+                <option value="be">{UniversalTexts?.toBe || "To be"}</option>
+                <option value="possessive">{UniversalTexts?.possessives || "Possessivos"}</option>
+                <option value="modal">{UniversalTexts?.modalVerbs || "Modal verbs"}</option>
+                <option value="question">{UniversalTexts?.questionWords || "Question words"}</option>
+                <option value="do">{UniversalTexts?.doAndDoes || "Do & Does"}</option>
+                <option value="dont">{UniversalTexts?.dontAndDoesnt || "Don't & Doesn't"}</option>
+                <option value="did">{UniversalTexts?.didAndDidnt || "Did & Didn't"}</option>
+                <option value="irregularpast">{UniversalTexts?.irregularPast || "Irregular Past"}</option>
+                <option value="presentperfect">{UniversalTexts?.presentPerfect || "Present Perfect"}</option>
+                <option value="pastperfect">{UniversalTexts?.pastPerfect || "Past Perfect"}</option>
+                <option value="travel">{UniversalTexts?.travel || "Viagem"}</option>
+                <option value="bodyparts">{UniversalTexts?.bodyParts || "Partes do corpo"}</option>
+                <option value="businessenglish">{UniversalTexts?.businessEnglish || "Inglês para negócios"}</option>
+                <option value="family">{UniversalTexts?.family || "Família"}</option>
+                <option value="animals">{UniversalTexts?.animals || "Animais"}</option>
+                <option value="fruits">{UniversalTexts?.fruits || "Frutas"}</option>
+                <option value="food">{UniversalTexts?.food || "Comida"}</option>
+                <option value="colors">{UniversalTexts?.colors || "Cores"}</option>
+                <option value="house">{UniversalTexts?.house || "Casa"}</option>
+                <option value="supermarket">{UniversalTexts?.supermarket || "Supermercado"}</option>
+                <option value="weather">{UniversalTexts?.weather || "Clima"}</option>
+                <option value="clothes">{UniversalTexts?.clothes || "Roupas"}</option>
+                <option value="time">{UniversalTexts?.timeCategory || "Horários"}</option>
+                <option value="daysanddates">{UniversalTexts?.daysAndDates || "Dias e Datas"}</option>
+                <option value="car">{UniversalTexts?.car || "Carro"}</option>
+                <option value="road">{UniversalTexts?.road || "Estrada"}</option>
+                <option value="personality">{UniversalTexts?.personality || "Personalidade"}</option>
+                <option value="nature">{UniversalTexts?.nature || "Natureza"}</option>
+                <option value="numbers">{UniversalTexts?.numbers || "Números"}</option>
+                <option value="transportation">{UniversalTexts?.transportation || "Transporte"}</option>
+                <option value="office">{UniversalTexts?.office || "Escritório"}</option>
+                <option value="professions">{UniversalTexts?.professions || "Profissões"}</option>
+              </select>
             </div>
           </div>
-        </>
+        </div>
       )}
 
-      {/* Progress Counter with improved layout */}
-      <div style={{ marginTop: "2rem", marginBottom: "1rem" }}>
+      <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
         <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       </div>
-
-      {/* Streak component with modal */}
-      {/* <div style={{ marginBottom: "2rem" }}>
-        <Streak
-          longest={longest}
-          yourLongest={yourLongest}
-          studentLongest={studentLongest}
-          message={MESSAGE}
-          streak={streak}
-        />
-      </div> */}
-
       {isArthurVincent && (
         <a
           href="/words-of-the-day"
           style={{
-            marginTop: "10px",
-            fontSize: "10px",
+            fontSize: "11px",
             color: "#999",
             textDecoration: "none",
             display: "block",
             textAlign: "center",
+            padding: "0.5rem",
           }}
         >
-          Previous Words of the Day
+          {UniversalTexts?.previousWordsOfTheDay || "Previous Words of the Day"}
         </a>
       )}
     </section>

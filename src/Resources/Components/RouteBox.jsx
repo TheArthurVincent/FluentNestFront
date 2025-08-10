@@ -26,7 +26,7 @@ export const RouteDiv = styled.div.attrs({
 })`
   background-color: ${alwaysWhite()};
   border-radius: 6px;
-  padding: 0.5rem;
+  padding: 1rem;
   width: 95vw;
   height: 100%;
   overflow: auto;
@@ -115,10 +115,11 @@ export const BlogPostTitle = styled.div`
 `;
 
 export const HOne = styled.h1`
-  text-align: center;
-  font-family: ${textTitleFont()};
+  font-size: 24px;
+  font-weight: 600;
   color: ${partnerColor()};
-  font-size: 1.5rem;
+  margin: 0 0 4px 0;
+  font-family: ${textTitleFont()};
 `;
 
 export const HTwo = styled.h2`

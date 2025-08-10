@@ -95,7 +95,7 @@ export function Contract({ headers }: HeadersProps) {
         },
         { headers: actualHeaders }
       );
-      notifyAlert("Contrato atualizado com sucesso!", "green");
+      notifyAlert("Contrato atualizado com sucesso!", partnerColor());
       setEditing(false);
     } catch (err) {
       notifyAlert("Erro ao salvar contrato.", "red");
@@ -107,7 +107,7 @@ export function Contract({ headers }: HeadersProps) {
       await axios.put(`${backDomain}/api/v1/contract/sign/${newID}`, null, {
         headers: actualHeaders,
       });
-      notifyAlert("Contrato assinado com sucesso!", "green");
+      notifyAlert("Contrato assinado com sucesso!", partnerColor());
       setSigned(true);
     } catch (err) {
       notifyAlert("Erro ao assinar contrato.", "red");

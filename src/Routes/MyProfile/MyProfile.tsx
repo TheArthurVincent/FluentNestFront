@@ -16,6 +16,7 @@ import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons"
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
 import { isArthurVincent } from "../../App";
+import { HOne } from "../../Resources/Components/RouteBox";
 const styles = {
   container: {
     display: "flex",
@@ -231,7 +232,12 @@ export function MyProfile({ headers }: HeadersProps) {
   };
 
   return (
-    <>
+    <div
+      style={{
+        width: "1000px",
+        maxWidth: "93vw",
+      }}
+    >
       {headers ? (
         // @ts-ignore
         <div
@@ -268,17 +274,7 @@ export function MyProfile({ headers }: HeadersProps) {
                   }}
                 >
                   <div>
-                    <h1
-                      style={{
-                        fontSize: "24px",
-                        fontWeight: "600",
-                        color: "#2c3e50",
-                        margin: "0 0 4px 0",
-                        fontFamily: textTitleFont(),
-                      }}
-                    >
-                      {UniversalTexts.myProfile}
-                    </h1>
+                    <HOne>{UniversalTexts.myProfile}</HOne>
                     <p
                       style={{
                         color: "#6c757d",
@@ -490,7 +486,6 @@ export function MyProfile({ headers }: HeadersProps) {
                           style={{
                             fontSize: "16px",
                             fontWeight: "600",
-                            color: "#2c3e50",
                             margin: "0 0 16px 0",
                           }}
                         >
@@ -696,7 +691,7 @@ export function MyProfile({ headers }: HeadersProps) {
           Nenhum usuário logado
         </div>
       )}
-    </>
+    </div>
   );
 }
 

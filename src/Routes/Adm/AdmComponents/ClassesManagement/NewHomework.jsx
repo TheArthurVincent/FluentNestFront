@@ -72,7 +72,7 @@ export function NewHomeworkAssignment({ headers, id }) {
           headers,
         }
       );
-      notifyAlert("Aulas criadas com sucesso!");
+      notifyAlert("Aulas criadas com sucesso!", partnerColor());
       setTutorings([]);
       setNewHWDescription("");
       setButton("Criar");
@@ -94,7 +94,7 @@ export function NewHomeworkAssignment({ headers, id }) {
           headers,
         }
       );
-      notifyAlert("HW criado com sucesso!", "green");
+      notifyAlert("HW criado com sucesso!", partnerColor());
       setNewHWDescription("");
       setLoadingHW(false);
     } catch (error) {

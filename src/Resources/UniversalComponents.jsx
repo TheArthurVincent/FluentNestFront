@@ -636,9 +636,9 @@ export function transformMonth(dateString) {
     "07": "Jul",
     "08": "Ago",
     "09": "Set",
-    "10": "Out",
-    "11": "Nov",
-    "12": "Dez",
+    10: "Out",
+    11: "Nov",
+    12: "Dez",
   };
 
   // Divide a string "MM-YYYY" em mês e ano
@@ -1708,7 +1708,7 @@ export const onLoggOut = () => {
   if (auth) {
     localStorage.removeItem("authorization");
   }
-  notifyAlert(`Faça login novamente`);
+  notifyAlert(`Faça login novamente`, partnerColor());
   window.location.assign("/login");
 };
 
@@ -1721,7 +1721,7 @@ export const onLoggOutFee = () => {
   localStorage.removeItem("voiceLang");
   localStorage.removeItem("voiceOption");
 
-  notifyAlert("Sua mensalidade não está em dia. Faça login novamente");
+  notifyAlert("Sua mensalidade não está em dia. Faça login novamente", "red");
   setTimeout(() => {
     window.location.assign("/login");
   }, 1000);

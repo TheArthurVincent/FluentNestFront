@@ -33,6 +33,7 @@ export function Blog({
   const { UniversalTexts } = useUserContext();
   const [name, setName] = useState<string>("");
   const [classId, setClassId] = useState<string>("");
+  const [myId, setMyId] = useState<string>("");
   const [user, setUser] = useState<any>({});
   var [course, setCourse] = useState<String>("");
   var [lesson, setLesson] = useState<String>("");
@@ -75,6 +76,7 @@ export function Blog({
     let getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "");
     setClassId(getLoggedUser.lastClassId);
     setName(getLoggedUser.name);
+    setMyId(getLoggedUser.id);
     setTimeout(() => {
       fetchLastClassId(getLoggedUser.lastClassId);
     }, 2000);
@@ -158,6 +160,7 @@ export function Blog({
           <div className="grid-flex-2">
             <DivMarginBorder>
               <ReviewFlashCards
+                selectedStudentId={myId}
                 change={change}
                 onChange={setChange}
                 headers={headers}

@@ -143,13 +143,11 @@ export function BlogPosts({ headers }: BlogPostsProps) {
           headers: actualHeaders,
         }
       );
-      console.log(response.data, "aqui");
       if (response.data.listOfPosts) {
         setTimeout(() => {
           const filteredPosts = response.data.listOfPosts.filter(
             (post: any) => post !== null
           );
-          console.log(response);
           setPosts(filteredPosts);
           setLoading(false);
         }, 1000);
@@ -159,7 +157,6 @@ export function BlogPosts({ headers }: BlogPostsProps) {
       }
     } catch (error: any) {
       notifyAlert(error.response.data.error);
-      console.log("BlogPosts.tsx fetchData error:", error);
       setLoading(false);
     }
   }

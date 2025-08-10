@@ -51,7 +51,6 @@ export default function Modules({
 
       var mod = response.data.modules;
       setModules(mod);
-      // Inicialize todos os módulos como visíveis
       setVisibleModules(new Array(mod.length).fill(true));
       setLoading(false);
     } catch (error) {
@@ -62,7 +61,6 @@ export default function Modules({
   };
 
   useEffect(() => {
-    const user = localStorage.getItem("loggedIn");
     getModules();
   }, []);
 
@@ -105,7 +103,14 @@ export default function Modules({
   }, [searchQuery, modules]);
 
   return (
-    <RouteDivCourses>
+    <div
+      style={{
+        backgroundColor: "white",
+        padding: "10px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.59)",
+      }}
+    >
       <Routes>
         {modules.map((module: any, index: number) =>
           module.classes.map((classItem: any, index2: number) => {
@@ -296,6 +301,6 @@ export default function Modules({
         </div>
       ) : null}
       <Outlet />
-    </RouteDivCourses>
+    </div>
   );
 }

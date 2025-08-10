@@ -121,7 +121,7 @@ const generatePPT = async () => {
 
     await pptx.writeFile({ fileName });
 
-    notifyAlert("PowerPoint gerado com sucesso!", "green");
+    notifyAlert("PowerPoint gerado com sucesso!", partnerColor());
   } catch (error) {
     console.error("❌ Erro ao gerar PPT:", error);
     notifyAlert("Erro ao gerar PowerPoint. Tente novamente.", "red");

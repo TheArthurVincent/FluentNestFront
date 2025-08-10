@@ -173,7 +173,18 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "English Courses",
-      component: <EnglishCourses headers={headers} />,
+      component: 
+      <div
+        style={{
+    // maxWidth:"1000px"
+  }}
+      >
+
+      <EnglishCourses headers={headers} />
+      </div>
+      
+      ,
+
     },
     {
       levelcard: true,
