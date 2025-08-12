@@ -9,7 +9,6 @@ import {
   updateInfo,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { partnerColor, textTitleFont, alwaysWhite } from "../../Styles/Styles";
@@ -466,10 +465,21 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     key={index}
                     style={{
                       listStyle: "none",
-                      margin: "0.75rem 0",
-                      borderRadius: "8px",
-                      backgroundColor: "#ffffff",
-                      transition: "all 0.3s ease",
+                      margin: "1rem 0",
+                      backgroundColor: "#fdfdfd",
+                      border: "1px solid #f0f0f0",
+                      borderRadius: "4px",
+                      overflow: "hidden",
+                      transition: "box-shadow 0.2s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow =
+                        "0 2px 8px rgba(0, 0, 0, 0.08)";
+                      e.currentTarget.style.borderColor = "#e0e0e0";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = "none";
+                      e.currentTarget.style.borderColor = "#f0f0f0";
                     }}
                   >
                     {/* Header Section */}
@@ -478,16 +488,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        color: "#374151",
-                        padding: "0.75rem 1rem",
-                        margin: 0,
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        transition: "all 0.3s ease",
-                        borderBottom:
-                          homework?.status === "done"
-                            ? "none"
-                            : "1px solid #e2e8f0",
+                        padding: "12px 16px",
+                        backgroundColor: "#fafafa",
+                        borderBottom: "1px solid #f0f0f0",
+                        fontSize: "13px",
+                        color: "#555",
                       }}
                     >
                       <div
@@ -500,24 +505,22 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         <HTwo
                           style={{
                             margin: 0,
-                            color: "inherit",
-                            fontSize: "16px",
-                            fontWeight: "600",
+                            fontSize: "14px",
+                            fontWeight: "500",
+                            color: "#333",
                           }}
                         >
-                          📚 {UniversalTexts.dueDate}{" "}
                           {formatDateBr(homework.dueDate)}
                         </HTwo>
                         {homework.assignmentDate && (
                           <span
                             style={{
-                              fontSize: "12px",
-                              color: "#6b7280",
+                              fontSize: "11px",
+                              color: "#888",
                               fontWeight: "400",
                             }}
                           >
-                            Atribuído em:{" "}
-                            {formatDateBr(homework.assignmentDate)}
+                            Criado: {formatDateBr(homework.assignmentDate)}
                           </span>
                         )}
                       </div>
@@ -531,32 +534,27 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       >
                         <div
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            padding: "4px 8px",
-                            borderRadius: "12px",
+                            fontSize: "11px",
+                            fontWeight: "400",
+                            padding: "2px 6px",
+                            borderRadius: "3px",
                             backgroundColor:
                               homework?.status === "done"
-                                ? "#22c55e"
-                                : "#f59e0b",
-                            color: "white",
+                                ? "#e8f5e8"
+                                : "#fff3cd",
+                            color:
+                              homework?.status === "done"
+                                ? "#2d5a2d"
+                                : "#856404",
+                            border:
+                              homework?.status === "done"
+                                ? "1px solid #c3e6c3"
+                                : "1px solid #ffeaa7",
                           }}
                         >
-                          <i
-                            className={`fa fa-${
-                              homework?.status === "done"
-                                ? "check-circle"
-                                : "clock-o"
-                            }`}
-                            aria-hidden="true"
-                            style={{ fontSize: "12px" }}
-                          />
                           {homework?.status === "done"
-                            ? UniversalTexts?.completed || "Concluído"
-                            : UniversalTexts?.pending || "Pendente"}
+                            ? "Concluído"
+                            : "Pendente"}
                         </div>
                         {homework.submitted !== undefined && (
                           <span style={{ fontSize: "11px", color: "#6b7280" }}>
@@ -565,7 +563,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         )}
                       </div>
                     </div>
-                    {homework.status !== "done" && (
+                    {homework.status !== "done" && !homework.submitted && (
                       <div
                         style={{
                           padding: "12px",
@@ -575,7 +573,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           justifyContent: "center",
                         }}
                       >
-                        <ArvinButton
+                        <button
                           onClick={() =>
                             openSubmissionModal(
                               homework._id,
@@ -583,26 +581,37 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                             )
                           }
                           style={{
-                            backgroundColor: partnerColor(),
-                            color: "white",
-                            border: "none",
-                            padding: "10px 20px",
-                            borderRadius: "6px",
-                            fontSize: "14px",
-                            fontWeight: "500",
+                            backgroundColor: "transparent",
+                            color: "#666",
+                            border: "1px solid #ddd",
+                            padding: "6px 12px",
+                            borderRadius: "3px",
+                            fontSize: "12px",
+                            fontWeight: "normal",
                             display: "flex",
                             alignItems: "center",
-                            gap: "8px",
+                            gap: "4px",
                             cursor: "pointer",
                             transition: "all 0.2s ease",
                           }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = "#f5f5f5";
+                            e.currentTarget.style.borderColor = "#bbb";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.borderColor = "#ddd";
+                          }}
                         >
-                          <i className="fa fa-upload" />
+                          <i
+                            className="fa fa-upload"
+                            style={{ fontSize: "11px" }}
+                          />
 
                           {homework.submitted
                             ? UniversalTexts.edit
                             : UniversalTexts?.submitHomework}
-                        </ArvinButton>
+                        </button>
                       </div>
                     )}
 
@@ -646,7 +655,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                             isAllowed &&
                             homework?.status === "pending" && (
                               <>
-                                <ArvinButton
+                                <button
                                   disabled={disabled}
                                   onClick={() =>
                                     updateRealizedClass(
@@ -655,20 +664,32 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     )
                                   }
                                   style={{
-                                    backgroundColor: partnerColor(),
-                                    color: "white",
-                                    border: "none",
-                                    padding: "6px 12px",
-                                    borderRadius: "4px",
+                                    backgroundColor: "transparent",
+                                    color: disabled ? "#999" : "#666",
+                                    border: "1px solid #ddd",
+                                    padding: "4px 8px",
+                                    borderRadius: "3px",
                                     fontSize: "11px",
-                                    fontWeight: "500",
+                                    fontWeight: "normal",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "4px",
+                                    gap: "3px",
                                     cursor: disabled
                                       ? "not-allowed"
                                       : "pointer",
                                     opacity: disabled ? 0.6 : 1,
+                                  }}
+                                  onMouseOver={(e) => {
+                                    if (!disabled) {
+                                      e.currentTarget.style.backgroundColor = "#f5f5f5";
+                                      e.currentTarget.style.borderColor = "#bbb";
+                                    }
+                                  }}
+                                  onMouseOut={(e) => {
+                                    if (!disabled) {
+                                      e.currentTarget.style.backgroundColor = "transparent";
+                                      e.currentTarget.style.borderColor = "#ddd";
+                                    }
                                   }}
                                 >
                                   <i
@@ -676,8 +697,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     style={{ fontSize: "10px" }}
                                   />
                                   {UniversalTexts?.upToDate || "Up to date"}
-                                </ArvinButton>
-                                <ArvinButton
+                                </button>
+                                <button
                                   disabled={disabled}
                                   onClick={() =>
                                     updateRealizedClass(
@@ -686,20 +707,32 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     )
                                   }
                                   style={{
-                                    backgroundColor: "#f59e0b",
-                                    color: "white",
-                                    border: "none",
-                                    padding: "6px 12px",
-                                    borderRadius: "4px",
+                                    backgroundColor: "transparent",
+                                    color: disabled ? "#999" : "#666",
+                                    border: "1px solid #ddd",
+                                    padding: "4px 8px",
+                                    borderRadius: "3px",
                                     fontSize: "11px",
-                                    fontWeight: "500",
+                                    fontWeight: "normal",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "4px",
+                                    gap: "3px",
                                     cursor: disabled
                                       ? "not-allowed"
                                       : "pointer",
                                     opacity: disabled ? 0.6 : 1,
+                                  }}
+                                  onMouseOver={(e) => {
+                                    if (!disabled) {
+                                      e.currentTarget.style.backgroundColor = "#f5f5f5";
+                                      e.currentTarget.style.borderColor = "#bbb";
+                                    }
+                                  }}
+                                  onMouseOut={(e) => {
+                                    if (!disabled) {
+                                      e.currentTarget.style.backgroundColor = "transparent";
+                                      e.currentTarget.style.borderColor = "#ddd";
+                                    }
                                   }}
                                 >
                                   <i
@@ -707,25 +740,37 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     style={{ fontSize: "10px" }}
                                   />
                                   {UniversalTexts?.late || "Late"}
-                                </ArvinButton>
-                                <ArvinButton
+                                </button>
+                                <button
                                   disabled={disabled}
                                   onClick={() => justStatus(homework._id)}
                                   style={{
-                                    backgroundColor: "#64748b",
-                                    color: "white",
-                                    border: "none",
-                                    padding: "6px 12px",
-                                    borderRadius: "4px",
+                                    backgroundColor: "transparent",
+                                    color: disabled ? "#999" : "#666",
+                                    border: "1px solid #ddd",
+                                    padding: "4px 8px",
+                                    borderRadius: "3px",
                                     fontSize: "11px",
-                                    fontWeight: "500",
+                                    fontWeight: "normal",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "4px",
+                                    gap: "3px",
                                     cursor: disabled
                                       ? "not-allowed"
                                       : "pointer",
                                     opacity: disabled ? 0.6 : 1,
+                                  }}
+                                  onMouseOver={(e) => {
+                                    if (!disabled) {
+                                      e.currentTarget.style.backgroundColor = "#f5f5f5";
+                                      e.currentTarget.style.borderColor = "#bbb";
+                                    }
+                                  }}
+                                  onMouseOut={(e) => {
+                                    if (!disabled) {
+                                      e.currentTarget.style.backgroundColor = "transparent";
+                                      e.currentTarget.style.borderColor = "#ddd";
+                                    }
                                   }}
                                 >
                                   <i
@@ -733,25 +778,34 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     style={{ fontSize: "10px" }}
                                   />
                                   {UniversalTexts?.justStatus || "Just status"}
-                                </ArvinButton>
+                                </button>
                               </>
                             )}
                           {isAllowed && (
-                            <ArvinButton
-                              color="red"
+                            <button
                               onDoubleClick={() => deleteHomework(homework._id)}
                               style={{
-                                backgroundColor: "#ef4444",
-                                color: "white",
-                                border: "none",
-                                padding: "6px 12px",
-                                borderRadius: "4px",
+                                backgroundColor: "transparent",
+                                color: "#999",
+                                border: "1px solid #ddd",
+                                padding: "4px 8px",
+                                borderRadius: "3px",
                                 fontSize: "11px",
-                                fontWeight: "500",
+                                fontWeight: "normal",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "4px",
+                                gap: "3px",
                                 cursor: "pointer",
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = "#f5f5f5";
+                                e.currentTarget.style.borderColor = "#bbb";
+                                e.currentTarget.style.color = "#d32f2f";
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
+                                e.currentTarget.style.borderColor = "#ddd";
+                                e.currentTarget.style.color = "#999";
                               }}
                             >
                               <i
@@ -760,7 +814,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                 style={{ fontSize: "10px" }}
                               />
                               {UniversalTexts?.doubleClick || "Double Click"}
-                            </ArvinButton>
+                            </button>
                           )}
                         </div>
                       </div>
@@ -943,7 +997,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     </div>
 
                     {/* Links Section */}
-                    {(homework.googleDriveLink || homework.attachments) && (
+                    {homework.attachments && (
                       <div
                         style={{
                           margin: "1rem",
@@ -966,100 +1020,207 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           }}
                         >
                           <i className="fa fa-link" />
-                          🔗 Links e Recursos
+                          Arquivos Enviados por você
                         </h4>
-                        <div
+                        <Link
+                          to={homework.attachments}
+                          target="_blank"
                           style={{
+                            color: partnerColor(),
+                            textDecoration: "none",
+                            fontWeight: "500",
+                            fontSize: "12px",
                             display: "flex",
-                            gap: "0.5rem",
-                            flexDirection: "column",
+                            alignItems: "center",
+                            gap: "6px",
+                            padding: "8px 12px",
+                            backgroundColor: "white",
+                            borderRadius: "4px",
+                            border: `1px solid ${partnerColor()}30`,
+                            transition: "all 0.2s ease",
                           }}
                         >
-                          {homework.googleDriveLink && (
-                            <Link
-                              to={homework.googleDriveLink}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                fontWeight: "500",
-                                fontSize: "12px",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "6px",
-                                padding: "8px 12px",
-                                backgroundColor: "white",
-                                borderRadius: "4px",
-                                border: `1px solid ${partnerColor()}30`,
-                                transition: "all 0.2s ease",
-                              }}
-                            >
-                              <i
-                                className="fa fa-google-drive"
-                                style={{ fontSize: "11px" }}
-                              />
-                              {UniversalTexts?.accessClassHere ||
-                                "Access the class here"}
-                            </Link>
-                          )}
-                          {homework.attachments && (
-                            <Link
-                              to={homework.attachments}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                fontWeight: "500",
-                                fontSize: "12px",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "6px",
-                                padding: "8px 12px",
-                                backgroundColor: "white",
-                                borderRadius: "4px",
-                                border: `1px solid ${partnerColor()}30`,
-                                transition: "all 0.2s ease",
-                              }}
-                            >
-                              <i
-                                className="fa fa-download"
-                                style={{ fontSize: "11px" }}
-                              />
-                              {UniversalTexts?.homeworkSent ||
-                                "Homework Enviado"}
-                            </Link>
-                          )}
-                          {homework.answers && (
-                            <>
-                              <p
-                                style={{
-                                  fontSize: "13px",
-                                  color: "#374151",
-                                  fontWeight: "500",
-                                  margin: "0 0 8px",
-                                }}
-                              >
-                                {UniversalTexts?.homeworkAnswers ||
-                                  "Minha resposta"}
-                              </p>
+                          <i
+                            className="fa fa-download"
+                            style={{ fontSize: "11px" }}
+                          />
+                          {UniversalTexts?.submittedFile || "Homework Enviado"}
+                        </Link>
+                        <button
+                          onClick={() =>
+                            openSubmissionModal(
+                              homework._id,
+                              homework.answers || homework.description
+                            )
+                          }
+                          style={{
+                            backgroundColor: "transparent",
+                            color: "#666",
+                            border: "1px solid #ddd",
+                            padding: "6px 12px",
+                            borderRadius: "3px",
+                            fontSize: "12px",
+                            fontWeight: "normal",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = "#f5f5f5";
+                            e.currentTarget.style.borderColor = "#bbb";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.borderColor = "#ddd";
+                          }}
+                        >
+                          <i className="fa fa-upload" style={{ fontSize: "11px" }} />
 
-                              <div
-                                style={{
-                                  backgroundColor: "#eff0daff",
-                                  border: "1px solid #e0e0e0",
-                                  borderRadius: "8px",
-                                  padding: "1.2rem",
-                                  fontFamily: "cursive",
-                                  lineHeight: "1.6",
-                                  color: "#444",
-                                }}
-                                dangerouslySetInnerHTML={{
-                                  __html: homework.answers,
-                                }}
+                          {UniversalTexts.edit}
+                        </button>
+                      </div>
+                    )}
+
+                    {homework.answers && (
+                      <div
+                        style={{
+                          margin: "1rem",
+                          padding: "1rem",
+                          backgroundColor: "#ffffff",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "8px",
+                          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                        }}
+                      >
+                        <h4
+                          style={{
+                            margin: "0 0 12px 0",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#374151",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <i className="fa fa-link" />
+                          Resposta enviada{" "}
+                        </h4>
+
+                        <button
+                          onClick={() =>
+                            openSubmissionModal(
+                              homework._id,
+                              homework.answers || homework.description
+                            )
+                          }
+                          style={{
+                            backgroundColor: "transparent",
+                            color: "#666",
+                            border: "1px solid #ddd",
+                            padding: "6px 12px",
+                            borderRadius: "3px",
+                            fontSize: "12px",
+                            fontWeight: "normal",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "4px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = "#f5f5f5";
+                            e.currentTarget.style.borderColor = "#bbb";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor = "transparent";
+                            e.currentTarget.style.borderColor = "#ddd";
+                          }}
+                        >
+                          <i
+                            className="fa fa-upload"
+                            style={{ fontSize: "11px" }}
+                          />
+
+                          {UniversalTexts.edit}
+                        </button>
+
+                        <p
+                          style={{
+                            fontSize: "13px",
+                            color: "#374151",
+                            fontWeight: "500",
+                            margin: "0 0 8px",
+                          }}
+                        >
+                          {UniversalTexts?.homeworkAnswers || "Minha resposta"}
+                        </p>
+                        {homework.status !== "done" && !homework.submitted && (
+                          <div
+                            style={{
+                              padding: "12px",
+                              backgroundColor: "#f8fafc",
+                              borderBottom: "1px solid #e2e8f0",
+                              display: "flex",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button
+                              onClick={() =>
+                                openSubmissionModal(
+                                  homework._id,
+                                  homework.answers || homework.description
+                                )
+                              }
+                              style={{
+                                backgroundColor: "transparent",
+                                color: "#666",
+                                border: "1px solid #ddd",
+                                padding: "6px 12px",
+                                borderRadius: "3px",
+                                fontSize: "12px",
+                                fontWeight: "normal",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "4px",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                              }}
+                              onMouseOver={(e) => {
+                                e.currentTarget.style.backgroundColor = "#f5f5f5";
+                                e.currentTarget.style.borderColor = "#bbb";
+                              }}
+                              onMouseOut={(e) => {
+                                e.currentTarget.style.backgroundColor = "transparent";
+                                e.currentTarget.style.borderColor = "#ddd";
+                              }}
+                            >
+                              <i
+                                className="fa fa-upload"
+                                style={{ fontSize: "11px" }}
                               />
-                            </>
-                          )}
-                        </div>
+
+                              {UniversalTexts.edit}
+                            </button>
+                          </div>
+                        )}
+
+                        <div
+                          style={{
+                            backgroundColor: "#eff0daff",
+                            border: "1px solid #e0e0e0",
+                            borderRadius: "8px",
+                            padding: "1.2rem",
+                            fontFamily: "cursive",
+                            lineHeight: "1.6",
+                            color: "#444",
+                          }}
+                          dangerouslySetInnerHTML={{
+                            __html: homework.answers,
+                          }}
+                        />
                       </div>
                     )}
 
@@ -1280,12 +1441,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               <h2
                 style={{
                   margin: 0,
-                  fontSize: "20px",
-                  fontWeight: "600",
-                  color: "#374151",
+                  fontSize: "16px",
+                  fontWeight: "500",
+                  color: "#495057",
                 }}
               >
-                📤 {UniversalTexts?.submitHomework || "Enviar Homework"}
+                {UniversalTexts?.submitHomework || "Enviar Homework"}
               </h2>
               <button
                 onClick={closeSubmissionModal}
@@ -1339,56 +1500,50 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   onClick={() => setSubmissionMode("file")}
                   style={{
                     flex: 1,
-                    padding: "12px 16px",
-                    border: `2px solid ${
-                      submissionMode === "file" ? partnerColor() : "#e2e8f0"
+                    padding: "8px 12px",
+                    border: `1px solid ${
+                      submissionMode === "file" ? "#adb5bd" : "#dee2e6"
                     }`,
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     backgroundColor:
-                      submissionMode === "file"
-                        ? `${partnerColor()}10`
-                        : "#ffffff",
-                    color:
-                      submissionMode === "file" ? partnerColor() : "#64748b",
-                    fontSize: "14px",
-                    fontWeight: "500",
+                      submissionMode === "file" ? "#e9ecef" : "#f8f9fa",
+                    color: submissionMode === "file" ? "#495057" : "#6c757d",
+                    fontSize: "13px",
+                    fontWeight: "400",
                     cursor: "pointer",
                     transition: "all 0.2s",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "8px",
+                    gap: "6px",
                   }}
                 >
-                  <i className="fa fa-file" />
+                  <i className="fa fa-file" style={{ fontSize: "12px" }} />
                   Enviar Arquivo
                 </button>
                 <button
                   onClick={() => setSubmissionMode("editor")}
                   style={{
                     flex: 1,
-                    padding: "12px 16px",
-                    border: `2px solid ${
-                      submissionMode === "editor" ? partnerColor() : "#e2e8f0"
+                    padding: "8px 12px",
+                    border: `1px solid ${
+                      submissionMode === "editor" ? "#adb5bd" : "#dee2e6"
                     }`,
-                    borderRadius: "8px",
+                    borderRadius: "4px",
                     backgroundColor:
-                      submissionMode === "editor"
-                        ? `${partnerColor()}10`
-                        : "#ffffff",
-                    color:
-                      submissionMode === "editor" ? partnerColor() : "#64748b",
-                    fontSize: "14px",
-                    fontWeight: "500",
+                      submissionMode === "editor" ? "#e9ecef" : "#f8f9fa",
+                    color: submissionMode === "editor" ? "#495057" : "#6c757d",
+                    fontSize: "13px",
+                    fontWeight: "400",
                     cursor: "pointer",
                     transition: "all 0.2s",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "8px",
+                    gap: "6px",
                   }}
                 >
-                  <i className="fa fa-edit" />
+                  <i className="fa fa-edit" style={{ fontSize: "12px" }} />
                   Responder na Plataforma
                 </button>
               </div>
@@ -1512,23 +1667,31 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                 justifyContent: "flex-end",
               }}
             >
-              <ArvinButton
+              <button
                 onClick={closeSubmissionModal}
                 style={{
-                  backgroundColor: "#6b7280",
-                  color: "white",
-                  border: "none",
-                  padding: "12px 20px",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  fontWeight: "500",
+                  backgroundColor: "transparent",
+                  color: "#666",
+                  border: "1px solid #ddd",
+                  padding: "6px 12px",
+                  borderRadius: "3px",
+                  fontSize: "12px",
+                  fontWeight: "normal",
                   cursor: "pointer",
-                  transition: "background-color 0.2s",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.backgroundColor = "#f5f5f5";
+                  e.currentTarget.style.borderColor = "#bbb";
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.backgroundColor = "transparent";
+                  e.currentTarget.style.borderColor = "#ddd";
                 }}
               >
                 Cancelar
-              </ArvinButton>
-              <ArvinButton
+              </button>
+              <button
                 onClick={() => submitHomework()}
                 disabled={
                   uploading ||
@@ -1537,19 +1700,19 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     : !homeworkAnswer.trim())
                 }
                 style={{
-                  backgroundColor:
+                  backgroundColor: "transparent",
+                  color:
                     uploading ||
                     (submissionMode === "file"
                       ? !selectedFile
                       : !homeworkAnswer.trim())
-                      ? "#ccc"
-                      : partnerColor(),
-                  color: "white",
-                  border: "none",
-                  padding: "12px 20px",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  fontWeight: "500",
+                      ? "#999"
+                      : "#666",
+                  border: "1px solid #ddd",
+                  padding: "6px 12px",
+                  borderRadius: "3px",
+                  fontSize: "12px",
+                  fontWeight: "normal",
                   cursor:
                     uploading ||
                     (submissionMode === "file"
@@ -1559,13 +1722,27 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       : "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: "8px",
-                  transition: "background-color 0.2s",
+                  gap: "4px",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseOver={(e) => {
+                  if (!uploading && 
+                      !(submissionMode === "file" ? !selectedFile : !homeworkAnswer.trim())) {
+                    e.currentTarget.style.backgroundColor = "#f5f5f5";
+                    e.currentTarget.style.borderColor = "#bbb";
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!uploading && 
+                      !(submissionMode === "file" ? !selectedFile : !homeworkAnswer.trim())) {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.borderColor = "#ddd";
+                  }
                 }}
               >
                 {uploading ? (
                   <>
-                    <CircularProgress size={16} style={{ color: "white" }} />
+                    <CircularProgress size={12} style={{ color: "#999" }} />
                     {UniversalTexts?.sending || "Enviando..."}
                   </>
                 ) : (
@@ -1574,13 +1751,14 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       className={`fa fa-${
                         submissionMode === "file" ? "upload" : "paper-plane"
                       }`}
+                      style={{ fontSize: "11px" }}
                     />
                     {submissionMode === "file"
                       ? UniversalTexts?.send || "Enviar Arquivo"
                       : "Enviar Resposta"}
                   </>
                 )}
-              </ArvinButton>
+              </button>
             </div>
           </div>
         </div>

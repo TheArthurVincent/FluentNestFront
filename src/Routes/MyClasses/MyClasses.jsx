@@ -309,7 +309,6 @@ export function MyClasses({ headers }) {
       >
         <HOne
           style={{
-            fontFamily: "inherit",
             color: partnerColor(),
             textAlign: "center",
             margin: "0.5rem",

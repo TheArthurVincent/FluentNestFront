@@ -3510,7 +3510,6 @@ export function FinancialResources({ headers, id }) {
                       borderRadius: "8px",
                       padding: "16px",
                       margin: "16px 0",
-                      fontFamily: "monospace",
                       fontSize: "16px",
                     }}
                   >
@@ -3882,7 +3881,6 @@ export function FinancialResources({ headers, id }) {
                   borderRadius: "8px",
                   padding: "16px",
                   margin: "16px 0",
-                  fontFamily: "monospace",
                   fontSize: "16px",
                 }}
               >

@@ -704,7 +704,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     fontWeight: "500",
                     color: "#2c3e50",
                     fontSize: "14px",
-                    fontFamily: "monospace",
                   }}
                 >
                   {selectedStudent.doc || "N/A"}
@@ -1865,7 +1864,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                 style={{
                                   fontSize: "14px",
                                   color: "#6c757d",
-                                  fontFamily: "monospace",
                                 }}
                               >
                                 🕒 {event.duration || 0} min

@@ -135,7 +135,7 @@ export function NewTutoring({ headers, id }) {
     tutorings.every((t) => t.videoUrl && t.importantLink && t.date);
 
   return (
-    <div style={{ background: "#fff", fontFamily: "inherit" }}>
+    <div style={{ background: "#fff" }}>
       <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
         Postar aula particular dada
       </HOne>

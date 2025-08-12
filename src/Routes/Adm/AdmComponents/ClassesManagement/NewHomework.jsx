@@ -123,7 +123,7 @@ export function NewHomeworkAssignment({ headers, id }) {
   };
 
   return (
-    <div style={{ background: "#fff", fontFamily: "inherit" }}>
+    <div style={{ background: "#fff"}}>
       <HOne>Postar Homework</HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>

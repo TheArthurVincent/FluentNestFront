@@ -2282,7 +2282,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               borderRadius: "6px",
                                               border: "1px solid #d1d5db",
                                               fontSize: "0.875rem",
-                                              fontFamily: "inherit",
                                               lineHeight: "1.5",
                                               backgroundColor: "#ffffff",
                                               transition:
@@ -2340,7 +2339,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
-                                                fontFamily: "inherit",
                                                 lineHeight: "1.5",
                                                 transition:
                                                   "border-color 0.2s ease",
@@ -2389,7 +2387,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
-                                                fontFamily: "inherit",
                                                 lineHeight: "1.5",
                                                 transition:
                                                   "border-color 0.2s ease",
@@ -2521,7 +2518,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
-                                                  fontFamily: "inherit",
                                                   lineHeight: "1.5",
                                                   transition:
                                                     "border-color 0.2s ease",
@@ -2567,7 +2563,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
-                                                  fontFamily: "inherit",
                                                   cursor: "pointer",
                                                 }}
                                               />
@@ -2704,7 +2699,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     border: "1px solid #d1d5db",
                                                     fontSize: "0.875rem",
                                                     backgroundColor: "#ffffff",
-                                                    fontFamily: "inherit",
                                                     lineHeight: "1.5",
                                                     transition:
                                                       "border-color 0.2s ease",
@@ -3028,7 +3022,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               borderRadius: "8px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
-                                              fontFamily: "inherit",
                                               lineHeight: "1.5",
                                             }}
                                             required
