@@ -2696,7 +2696,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                       .enterFlashcards
                                                   }
                                                   rows={4}
-                                                  maxLength={1000}
+                                                  maxLength={2000}
                                                   style={{
                                                     width: "90%",
                                                     padding: "0.75rem",
@@ -2738,11 +2738,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   }}
                                                 >
                                                   {flashcards
-                                                    ? `${flashcards.length}/1000 caracteres`
-                                                    : "0/1000 caracteres"}
+                                                    ? `${flashcards.length}/2000 caracteres`
+                                                    : "0/2000 caracteres"}
 
                                                   <br />
-                                                  {flashcards.length > 900 &&
+                                                  {flashcards.length > 1900 &&
                                                     "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
                                                 </div>
                                               </div>
@@ -3627,7 +3627,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           >
                             <div
                               style={{
-                                display: "flex",
+                                display: "grid",
                                 alignItems: "center",
                                 gap: "0.5rem",
                                 marginBottom: "0.5rem",
@@ -3645,6 +3645,36 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               >
                                 📝 {UniversalTexts.calendarModal.homework}
                               </span>
+                              <Link
+                                to="/homework"
+                                target="_blank"
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: "8px",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  textDecoration: "none",
+                                  padding: "6px",
+                                  borderRadius: "8px",
+                                  fontSize: "10px",
+                                  transition: "all 0.2s ease",
+                                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.transform = "translateY(-2px)";
+                                  e.target.style.boxShadow =
+                                    "0 4px 8px rgba(0, 0, 0, 0.15)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.transform = "translateY(0px)";
+                                  e.target.style.boxShadow =
+                                    "0 2px 4px rgba(0, 0, 0, 0.1)";
+                                }}
+                              >
+                                <i className="fa fa-pencil-square-o" />
+                                Responder Homework Agora!
+                              </Link>
                             </div>
                             <div
                               style={{

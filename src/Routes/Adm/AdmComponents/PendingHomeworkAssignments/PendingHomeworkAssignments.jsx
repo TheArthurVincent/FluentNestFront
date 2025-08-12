@@ -325,24 +325,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   </ArvinButton>
                 </div>
 
-                {/* Description Section */}
-                <div
-                  style={{
-                    backgroundColor: "white",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: "8px",
-                    padding: "1.2rem",
-                    lineHeight: "1.6",
-                    color: "#444",
-                  }}
-                >
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: homework.description,
-                    }}
-                  />
-                </div>
-
                 {/* Links Section */}
                 {homework.googleDriveLink && (
                   <div
@@ -374,7 +356,26 @@ export function PendingHomeworkAssignments({ id, headers }) {
                     </Link>
                   </div>
                 )}
-
+                {homework.answers && (
+                  <div
+                    style={{
+                      backgroundColor: "#eff0daff",
+                      border: "1px solid #e0e0e0",
+                      borderRadius: "8px",
+                      padding: "1.2rem",
+                      fontFamily: "cursive",
+                      lineHeight: "1.6",
+                      color: "#444",
+                    }}
+                  >
+                    <HTwo>Resposta do aluno</HTwo>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: homework.answers,
+                      }}
+                    />
+                  </div>
+                )}
                 {homework.attachments && (
                   <div
                     style={{
@@ -404,6 +405,17 @@ export function PendingHomeworkAssignments({ id, headers }) {
                       Download Homework
                     </Link>
                   </div>
+                )}
+
+                {homework.description && (
+                  <>
+                    <HTwo>Enunciado</HTwo>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: homework.description,
+                      }}
+                    />
+                  </>
                 )}
               </li>
             ))

@@ -49,8 +49,8 @@ export function Adm({ headers }: HeadersProps) {
         "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
       component: (
         <>
-          {/* <NewHomeworkAssignment id={id} headers={headers} /> */}
           <PendingHomeworkAssignment id={id} headers={headers} />
+          <NewHomeworkAssignment id={id} headers={headers} />
         </>
       ),
     },
@@ -106,22 +106,6 @@ export function Adm({ headers }: HeadersProps) {
       component: <AllComments headers={headers} />,
       displayArthur: "block",
     },
-    isArthurVincent && {
-      title: "Manual do aluno",
-      value: "10",
-      tooltip:
-        "Acesse o manual do aluno com orientações e dicas de uso da plataforma.",
-      component: <Manual />,
-      displayArthur: "block",
-    },
-    // isArthurVincent && {
-    //   title: "Timeline",
-    //   value: "11",
-    //   tooltip:
-    //     "Acompanhe o histórico de atividades e eventos importantes do seu negócio em uma linha do tempo.",
-    //   component: <TimelineComponent headers={headers} />,
-    //   displayArthur: "block",
-    // },
   ].filter(Boolean); // Remove elementos false do array
 
   // Encontrar a primeira tab visível para inicializar o estado
