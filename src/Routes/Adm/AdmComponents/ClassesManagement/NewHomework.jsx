@@ -34,6 +34,7 @@ export function NewHomeworkAssignment({ headers, id }) {
   const [tutorings, setTutorings] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [loadingS, setLoadingS] = useState(true);
+  const [editorKey, setEditorKey] = useState(0); // Force re-render key
 
   const fetchStudents = async () => {
     setLoadingS(true);
@@ -75,6 +76,8 @@ export function NewHomeworkAssignment({ headers, id }) {
       notifyAlert("Aulas criadas com sucesso!", partnerColor());
       setTutorings([]);
       setNewHWDescription("");
+      handleHWDescriptionChange("");
+      setEditorKey(prev => prev + 1); // Force HTMLEditor re-render
       setButton("Criar");
     } catch (error) {
       setButton("Criar");
@@ -84,7 +87,6 @@ export function NewHomeworkAssignment({ headers, id }) {
   };
 
   const postHW = async () => {
-    setLoadingHW(true);
     setLoadingHW(true);
     try {
       const response = await axios.post(
@@ -96,7 +98,18 @@ export function NewHomeworkAssignment({ headers, id }) {
       );
       notifyAlert("HW criado com sucesso!", partnerColor());
       setNewHWDescription("");
+      handleHWDescriptionChange(""); // Clear the HTML editor
+      setAttachments("");
+      setNewFlashcardsList("");
+      setDueDate(new Date().toISOString().split("T")[0]);
+      setSelectedStudentID("");
+      setEditorKey(prev => prev + 1); // Force HTMLEditor re-render
       setLoadingHW(false);
+      console.log({
+        description: newHWDescription,
+        dueDate,
+        selectedStudentID,
+      });
     } catch (error) {
       setLoadingHW(false);
       notifyAlert("Erro ao salvar aulas");
@@ -110,10 +123,8 @@ export function NewHomeworkAssignment({ headers, id }) {
   };
 
   return (
-    <div style={{ background: "#fff", fontFamily: "inherit" }}>
-      <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
-        Postar Homework
-      </HOne>
+    <div style={{ background: "#fff"}}>
+      <HOne>Postar Homework</HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
           <CircularProgress style={{ color: partnerColor() }} />
@@ -167,7 +178,11 @@ export function NewHomeworkAssignment({ headers, id }) {
                 padding: 8,
               }}
             >
-              <HTMLEditor onChange={handleHWDescriptionChange} />
+              <HTMLEditor
+                key={editorKey} // Force re-render when key changes
+                initialContent={newHWDescription}
+                onChange={handleHWDescriptionChange}
+              />
             </div>
           </div>
           <ArvinButton

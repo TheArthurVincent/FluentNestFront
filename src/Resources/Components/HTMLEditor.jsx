@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
-function HTMLEditor({ onChange }) {
+function HTMLEditor({ onChange, initialContent }) {
   const editorRef = useRef(null);
   const [editor, setEditor] = useState(null);
 
@@ -74,6 +74,11 @@ function HTMLEditor({ onChange }) {
       },
     });
 
+    // Force left-to-right text direction
+    quill.root.setAttribute("dir", "ltr");
+    quill.root.style.textAlign = "left";
+    quill.root.style.direction = "ltr";
+
     setEditor(quill);
 
     return () => {
@@ -97,6 +102,12 @@ function HTMLEditor({ onChange }) {
     };
   }, [editor, onChange]);
 
+  useEffect(() => {
+    if (!editor || !initialContent) return;
+
+    // Set initial content if provided
+    editor.root.innerHTML = initialContent;
+  }, [editor, initialContent]);
 
   const memoizedEditor = useMemo(() => {
     return (
@@ -108,6 +119,8 @@ function HTMLEditor({ onChange }) {
             marginTop: "1rem",
             fontSize: "12px",
             width: "100%",
+            direction: "ltr",
+            textAlign: "left",
           }}
         />
       </>

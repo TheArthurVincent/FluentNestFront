@@ -343,6 +343,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       const res = response.data.eventsList;
+      console.log(response.data.eventsList);
       const eventsLoop = res.map((event) => {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
@@ -456,6 +457,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
+      console.log(response.data.event);
       const test =
         response.data.event.category == "Rep" ||
         response.data.event.category == "Tutoring" ||
@@ -1854,14 +1856,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 display: isVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width:
-                  thePermissions == "superadmin" || thePermissions == "teacher"
-                    ? "85vw"
-                    : "25rem",
-                height:
-                  thePermissions == "superadmin" || thePermissions == "teacher"
-                    ? "75vh"
-                    : "40rem",
+                width: "80vw",
+                height: "80vh",
                 overflowY: "auto",
                 top: "50%",
                 left: "50%",
@@ -2282,7 +2278,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               borderRadius: "6px",
                                               border: "1px solid #d1d5db",
                                               fontSize: "0.875rem",
-                                              fontFamily: "inherit",
                                               lineHeight: "1.5",
                                               backgroundColor: "#ffffff",
                                               transition:
@@ -2340,7 +2335,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
-                                                fontFamily: "inherit",
                                                 lineHeight: "1.5",
                                                 transition:
                                                   "border-color 0.2s ease",
@@ -2389,7 +2383,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
-                                                fontFamily: "inherit",
                                                 lineHeight: "1.5",
                                                 transition:
                                                   "border-color 0.2s ease",
@@ -2521,7 +2514,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
-                                                  fontFamily: "inherit",
                                                   lineHeight: "1.5",
                                                   transition:
                                                     "border-color 0.2s ease",
@@ -2567,7 +2559,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
-                                                  fontFamily: "inherit",
                                                   cursor: "pointer",
                                                 }}
                                               />
@@ -2696,7 +2687,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                       .enterFlashcards
                                                   }
                                                   rows={4}
-                                                  maxLength={1000}
+                                                  maxLength={2000}
                                                   style={{
                                                     width: "90%",
                                                     padding: "0.75rem",
@@ -2704,7 +2695,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     border: "1px solid #d1d5db",
                                                     fontSize: "0.875rem",
                                                     backgroundColor: "#ffffff",
-                                                    fontFamily: "inherit",
                                                     lineHeight: "1.5",
                                                     transition:
                                                       "border-color 0.2s ease",
@@ -2738,11 +2728,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   }}
                                                 >
                                                   {flashcards
-                                                    ? `${flashcards.length}/1000 caracteres`
-                                                    : "0/1000 caracteres"}
+                                                    ? `${flashcards.length}/2000 caracteres`
+                                                    : "0/2000 caracteres"}
 
                                                   <br />
-                                                  {flashcards.length > 900 &&
+                                                  {flashcards.length > 1900 &&
                                                     "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
                                                 </div>
                                               </div>
@@ -3028,7 +3018,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               borderRadius: "8px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
-                                              fontFamily: "inherit",
                                               lineHeight: "1.5",
                                             }}
                                             required
@@ -3614,7 +3603,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         </div>
 
                         {/* Homework (HTML Content) */}
-                        {homework && (
+                        {/* {homework && (
                           <div
                             style={{
                               backgroundColor: "white",
@@ -3627,7 +3616,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           >
                             <div
                               style={{
-                                display: "flex",
+                                display: "grid",
                                 alignItems: "center",
                                 gap: "0.5rem",
                                 marginBottom: "0.5rem",
@@ -3660,6 +3649,273 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               }}
                               dangerouslySetInnerHTML={{ __html: homework }}
                             />
+                          </div>
+                        )} */}
+
+                        {/* Homework Details (se existir) */}
+                        {eventFull.homeworkDetails && (
+                          <div
+                            style={{
+                              backgroundColor: "#f8fafc",
+                              padding: "1rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e2e8f0",
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                              marginTop: "1rem",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "0.5rem",
+                                marginBottom: "1rem",
+                                borderBottom: "1px solid #e2e8f0",
+                                paddingBottom: "0.5rem",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "grid",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                  marginBottom: "0.5rem",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "#6c757d",
+                                    fontSize: "0.8rem",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.25rem",
+                                  }}
+                                >
+                                  📝 {UniversalTexts.calendarModal.homework}
+                                </span>
+                              </div>
+                              <span
+                                style={{
+                                  fontSize: "0.75rem",
+                                  color: "#6b7280",
+                                  backgroundColor:
+                                    eventFull.homeworkDetails.status ===
+                                    "pending"
+                                      ? "#fef3c7"
+                                      : "#dcfce7",
+                                  padding: "2px 8px",
+                                  borderRadius: "12px",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                {eventFull.homeworkDetails.status === "pending"
+                                  ? "Pendente"
+                                  : "Concluído"}
+                              </span>
+                            </div>
+                            <Link
+                              to="/homework"
+                              target="_blank"
+                              style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+
+                                marginBottom: "1rem",
+                                gap: "0.5rem",
+                                backgroundColor: partnerColor(),
+                                color: "white",
+                                textDecoration: "none",
+                                padding: "0.5rem 1rem",
+                                borderRadius: "6px",
+                                fontSize: "10px",
+                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.transform = "translateY(-1px)";
+                                e.target.style.boxShadow =
+                                  "0 4px 8px rgba(0, 0, 0, 0.15)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.transform = "translateY(0px)";
+                                e.target.style.boxShadow =
+                                  "0 2px 4px rgba(0, 0, 0, 0.1)";
+                              }}
+                            >
+                              <i className="fa fa-external-link" />
+                              {UniversalTexts.seeOnHomeworkPage}
+                            </Link>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "0.75rem",
+                              }}
+                            >
+                              {/* Data de Entrega */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                }}
+                              >
+                                <i
+                                  className="fa fa-calendar"
+                                  style={{
+                                    color: "#6b7280",
+                                    fontSize: "0.8rem",
+                                  }}
+                                />
+                                <span
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6b7280",
+                                  }}
+                                >
+                                  <strong>Data de Entrega:</strong>{" "}
+                                  {new Date(
+                                    eventFull.homeworkDetails.dueDate
+                                  ).toLocaleDateString("pt-BR")}
+                                </span>
+                              </div>
+
+                              {/* Categoria */}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                }}
+                              >
+                                <i
+                                  className="fa fa-tag"
+                                  style={{
+                                    color: "#6b7280",
+                                    fontSize: "0.8rem",
+                                  }}
+                                />
+                                <span
+                                  style={{
+                                    fontSize: "0.8rem",
+                                    color: "#6b7280",
+                                  }}
+                                >
+                                  <strong>Categoria:</strong>{" "}
+                                  {eventFull.homeworkDetails.category}
+                                </span>
+                              </div>
+
+                              {/* Descrição */}
+                              {eventFull.homeworkDetails.description && (
+                                <div style={{ marginTop: "0.5rem" }}>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                      marginBottom: "0.5rem",
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-file-text-o"
+                                      style={{
+                                        color: "#6b7280",
+                                        fontSize: "0.8rem",
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        fontSize: "0.8rem",
+                                        color: "#6b7280",
+                                        fontWeight: "600",
+                                      }}
+                                    >
+                                      Descrição:
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      backgroundColor: "white",
+                                      padding: "0.75rem",
+                                      borderRadius: "6px",
+                                      border: "1px solid #e5e7eb",
+                                      fontSize: "0.85rem",
+                                      color: "#374151",
+                                      lineHeight: "1.5",
+                                      maxHeight: "150px",
+                                      overflowY: "auto",
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                      __html:
+                                        eventFull.homeworkDetails.description,
+                                    }}
+                                  />
+                                </div>
+                              )}
+
+                              {/* Anexos */}
+                              {eventFull.homeworkDetails.attachments && (
+                                <div style={{ marginTop: "0.5rem" }}>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                      marginBottom: "0.5rem",
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-paperclip"
+                                      style={{
+                                        color: "#6b7280",
+                                        fontSize: "0.8rem",
+                                      }}
+                                    />
+                                    <span
+                                      style={{
+                                        fontSize: "0.8rem",
+                                        color: "#6b7280",
+                                        fontWeight: "600",
+                                      }}
+                                    >
+                                      Material Anexo:
+                                    </span>
+                                  </div>
+                                  <a
+                                    href={eventFull.homeworkDetails.attachments}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                      color: "#0ea5e9",
+                                      textDecoration: "none",
+                                      fontSize: "0.8rem",
+                                      fontWeight: "500",
+                                      padding: "0.5rem 0.75rem",
+                                      backgroundColor: "white",
+                                      border: "1px solid #0ea5e920",
+                                      borderRadius: "6px",
+                                      transition: "all 0.2s ease",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.backgroundColor =
+                                        "#f0f9ff";
+                                      e.target.style.borderColor = "#0ea5e940";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.backgroundColor = "white";
+                                      e.target.style.borderColor = "#0ea5e920";
+                                    }}
+                                  >
+                                    <i className="fa fa-download" />
+                                    Baixar Material
+                                  </a>
+                                </div>
+                              )}
+                            </div>
                           </div>
                         )}
 

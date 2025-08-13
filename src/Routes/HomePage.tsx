@@ -34,11 +34,9 @@ import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 import Redirect from "../Redirect";
 import axios from "axios";
-import { CircularProgress } from "@mui/material";
 
 import {
   partnerColor,
-  theBackgroundColor,
   textPrimaryColorContrast,
   logoPartner,
   textTitleFont,
@@ -145,7 +143,7 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "Homework",
-      levelcard: true,
+      levelcard: false,
       component: (
         <Homework change={change} setChange={setChange} headers={headers} />
       ),
