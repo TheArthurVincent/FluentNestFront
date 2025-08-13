@@ -31,7 +31,6 @@ import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
-import { Streak } from "../../FlashCardsToday/Streak";
 import { isArthurVincent } from "../../../App";
 
 interface FlashCardsPropsRv {
@@ -410,7 +409,8 @@ const ReviewFlashCards = ({
           }}
           href="/sentence-mining"
         >
-          {UniversalTexts?.addWordsToFlashcards || "Adicione palavras em seus flashcards"}
+          {UniversalTexts?.addWordsToFlashcards ||
+            "Adicione palavras em seus flashcards"}
         </a>
       </div>
 
@@ -494,7 +494,11 @@ const ReviewFlashCards = ({
                           {isDisabled ? (
                             <span>{count}</span>
                           ) : (
-                            <span>{answer ? (UniversalTexts?.back || "Back") : (UniversalTexts?.answer || "Answer")}</span>
+                            <span>
+                              {answer
+                                ? UniversalTexts?.back || "Back"
+                                : UniversalTexts?.answer || "Answer"}
+                            </span>
                           )}
                         </ArvinButton>
 
@@ -522,7 +526,8 @@ const ReviewFlashCards = ({
                                 }}
                                 color={partnerColor()}
                               >
-                                {UniversalTexts?.iGotIt || "I got it! (Acertei)"}
+                                {UniversalTexts?.iGotIt ||
+                                  "I got it! (Acertei)"}
                               </ArvinButton>
                             </div>
                           </div>
@@ -544,8 +549,8 @@ const ReviewFlashCards = ({
                               <span style={{ fontSize: "12px" }}>
                                 {Math.round(cards[0]?.numberOfReviews) || "no"}{" "}
                                 {Math.round(cards[0]?.numberOfReviews) === 1
-                                  ? (UniversalTexts?.review || "review")
-                                  : (UniversalTexts?.reviews || "reviews")}
+                                  ? UniversalTexts?.review || "review"
+                                  : UniversalTexts?.reviews || "reviews"}
                               </span>
                               <br />
                               <br />
@@ -700,10 +705,12 @@ const ReviewFlashCards = ({
                             marginBottom: "0.25rem",
                           }}
                         >
-                          {UniversalTexts?.noFlashcardsToReview || "No flashcards to review!"}
+                          {UniversalTexts?.noFlashcardsToReview ||
+                            "No flashcards to review!"}
                         </div>
                         <div style={{ fontSize: "12px", color: "#888" }}>
-                          {UniversalTexts?.noFlashcardsFound || "Nenhum flashcard para revisar"}
+                          {UniversalTexts?.noFlashcardsFound ||
+                            "Nenhum flashcard para revisar"}
                         </div>
                       </div>
                     )}
@@ -776,40 +783,100 @@ const ReviewFlashCards = ({
                 }
                 onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
               >
-                <option value="nofilter">{UniversalTexts?.allCards || "All cards"}</option>
-                <option value="vocabulary">{UniversalTexts?.vocabularyCategory || "Vocabulary"}</option>
+                <option value="nofilter">
+                  {UniversalTexts?.allCards || "All cards"}
+                </option>
+                <option value="vocabulary">
+                  {UniversalTexts?.vocabularyCategory || "Vocabulary"}
+                </option>
                 <option value="be">{UniversalTexts?.toBe || "To be"}</option>
-                <option value="possessive">{UniversalTexts?.possessives || "Possessivos"}</option>
-                <option value="modal">{UniversalTexts?.modalVerbs || "Modal verbs"}</option>
-                <option value="question">{UniversalTexts?.questionWords || "Question words"}</option>
-                <option value="do">{UniversalTexts?.doAndDoes || "Do & Does"}</option>
-                <option value="dont">{UniversalTexts?.dontAndDoesnt || "Don't & Doesn't"}</option>
-                <option value="did">{UniversalTexts?.didAndDidnt || "Did & Didn't"}</option>
-                <option value="irregularpast">{UniversalTexts?.irregularPast || "Irregular Past"}</option>
-                <option value="presentperfect">{UniversalTexts?.presentPerfect || "Present Perfect"}</option>
-                <option value="pastperfect">{UniversalTexts?.pastPerfect || "Past Perfect"}</option>
-                <option value="travel">{UniversalTexts?.travel || "Viagem"}</option>
-                <option value="bodyparts">{UniversalTexts?.bodyParts || "Partes do corpo"}</option>
-                <option value="businessenglish">{UniversalTexts?.businessEnglish || "Inglês para negócios"}</option>
-                <option value="family">{UniversalTexts?.family || "Família"}</option>
-                <option value="animals">{UniversalTexts?.animals || "Animais"}</option>
-                <option value="fruits">{UniversalTexts?.fruits || "Frutas"}</option>
+                <option value="possessive">
+                  {UniversalTexts?.possessives || "Possessivos"}
+                </option>
+                <option value="modal">
+                  {UniversalTexts?.modalVerbs || "Modal verbs"}
+                </option>
+                <option value="question">
+                  {UniversalTexts?.questionWords || "Question words"}
+                </option>
+                <option value="do">
+                  {UniversalTexts?.doAndDoes || "Do & Does"}
+                </option>
+                <option value="dont">
+                  {UniversalTexts?.dontAndDoesnt || "Don't & Doesn't"}
+                </option>
+                <option value="did">
+                  {UniversalTexts?.didAndDidnt || "Did & Didn't"}
+                </option>
+                <option value="irregularpast">
+                  {UniversalTexts?.irregularPast || "Irregular Past"}
+                </option>
+                <option value="presentperfect">
+                  {UniversalTexts?.presentPerfect || "Present Perfect"}
+                </option>
+                <option value="pastperfect">
+                  {UniversalTexts?.pastPerfect || "Past Perfect"}
+                </option>
+                <option value="travel">
+                  {UniversalTexts?.travel || "Viagem"}
+                </option>
+                <option value="bodyparts">
+                  {UniversalTexts?.bodyParts || "Partes do corpo"}
+                </option>
+                <option value="businessenglish">
+                  {UniversalTexts?.businessEnglish || "Inglês para negócios"}
+                </option>
+                <option value="family">
+                  {UniversalTexts?.family || "Família"}
+                </option>
+                <option value="animals">
+                  {UniversalTexts?.animals || "Animais"}
+                </option>
+                <option value="fruits">
+                  {UniversalTexts?.fruits || "Frutas"}
+                </option>
                 <option value="food">{UniversalTexts?.food || "Comida"}</option>
-                <option value="colors">{UniversalTexts?.colors || "Cores"}</option>
+                <option value="colors">
+                  {UniversalTexts?.colors || "Cores"}
+                </option>
                 <option value="house">{UniversalTexts?.house || "Casa"}</option>
-                <option value="supermarket">{UniversalTexts?.supermarket || "Supermercado"}</option>
-                <option value="weather">{UniversalTexts?.weather || "Clima"}</option>
-                <option value="clothes">{UniversalTexts?.clothes || "Roupas"}</option>
-                <option value="time">{UniversalTexts?.timeCategory || "Horários"}</option>
-                <option value="daysanddates">{UniversalTexts?.daysAndDates || "Dias e Datas"}</option>
+                <option value="supermarket">
+                  {UniversalTexts?.supermarket || "Supermercado"}
+                </option>
+                <option value="weather">
+                  {UniversalTexts?.weather || "Clima"}
+                </option>
+                <option value="clothes">
+                  {UniversalTexts?.clothes || "Roupas"}
+                </option>
+                <option value="time">
+                  {UniversalTexts?.timeCategory || "Horários"}
+                </option>
+                <option value="daysanddates">
+                  {UniversalTexts?.daysAndDates || "Dias e Datas"}
+                </option>
                 <option value="car">{UniversalTexts?.car || "Carro"}</option>
-                <option value="road">{UniversalTexts?.road || "Estrada"}</option>
-                <option value="personality">{UniversalTexts?.personality || "Personalidade"}</option>
-                <option value="nature">{UniversalTexts?.nature || "Natureza"}</option>
-                <option value="numbers">{UniversalTexts?.numbers || "Números"}</option>
-                <option value="transportation">{UniversalTexts?.transportation || "Transporte"}</option>
-                <option value="office">{UniversalTexts?.office || "Escritório"}</option>
-                <option value="professions">{UniversalTexts?.professions || "Profissões"}</option>
+                <option value="road">
+                  {UniversalTexts?.road || "Estrada"}
+                </option>
+                <option value="personality">
+                  {UniversalTexts?.personality || "Personalidade"}
+                </option>
+                <option value="nature">
+                  {UniversalTexts?.nature || "Natureza"}
+                </option>
+                <option value="numbers">
+                  {UniversalTexts?.numbers || "Números"}
+                </option>
+                <option value="transportation">
+                  {UniversalTexts?.transportation || "Transporte"}
+                </option>
+                <option value="office">
+                  {UniversalTexts?.office || "Escritório"}
+                </option>
+                <option value="professions">
+                  {UniversalTexts?.professions || "Profissões"}
+                </option>
               </select>
             </div>
           </div>

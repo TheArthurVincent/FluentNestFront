@@ -52,6 +52,7 @@ const convertToBase64 = (file) => {
 };
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
+  const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
@@ -60,6 +61,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [alternateText, setAlternateText] = useState("... Updating Class");
+
+  const handleCalendarScroll = () => {
+    setShouldScrollToToday(false);
+    console.log("foi", shouldScrollToToday);
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -1320,7 +1326,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   // Adicione este useEffect para centralizar o dia de hoje
   useEffect(() => {
-    if (todayRef.current && calendarRef.current && !loading) {
+    if (
+      todayRef.current &&
+      shouldScrollToToday &&
+      calendarRef.current &&
+      !loading
+    ) {
       const container = calendarRef.current;
       const todayElement = todayRef.current;
 
@@ -1497,6 +1508,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
             ) : (
               <div
                 ref={calendarRef}
+                onScroll={handleCalendarScroll}
                 style={{
                   display: "flex",
                   gap: "5px",
@@ -2479,13 +2491,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     handleHomeworkChange
                                                   }
                                                   initialContent={"Type here"}
-                                                />
-                                              </div>
+                                                />{" "}
+                                              </div>{" "}
                                             </div>
-                                          )}
-                                          {/* Due Date */}
+                                          )}{" "}
+                                          {/* Due Date */}{" "}
                                           {!homeworkAdded && showHomework && (
                                             <div>
+                                              {" "}
                                               <label
                                                 style={{
                                                   display: "block",
@@ -2495,8 +2508,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   fontSize: "0.875rem",
                                                 }}
                                               >
-                                                📅 Data de Entrega
-                                              </label>
+                                                {" "}
+                                                📅 Data de Entrega{" "}
+                                              </label>{" "}
                                               <input
                                                 value={
                                                   dueDate
@@ -2531,12 +2545,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   e.target.style.boxShadow =
                                                     "none";
                                                 }}
-                                              />
+                                              />{" "}
                                             </div>
-                                          )}
-                                          {/* File Upload */}
+                                          )}{" "}
+                                          {/* File Upload */}{" "}
                                           {!homeworkAdded && showHomework && (
                                             <div>
+                                              {" "}
                                               <label
                                                 style={{
                                                   display: "block",
@@ -2546,8 +2561,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   fontSize: "0.875rem",
                                                 }}
                                               >
-                                                📎 Anexar Arquivo
-                                              </label>
+                                                {" "}
+                                                📎 Anexar Arquivo{" "}
+                                              </label>{" "}
                                               <input
                                                 type="file"
                                                 onChange={handleFileChange}
@@ -2561,7 +2577,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   backgroundColor: "#ffffff",
                                                   cursor: "pointer",
                                                 }}
-                                              />
+                                              />{" "}
                                               {uploading && (
                                                 <div
                                                   style={{
@@ -2571,9 +2587,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     fontStyle: "italic",
                                                   }}
                                                 >
-                                                  Processando arquivo...
+                                                  {" "}
+                                                  Processando arquivo...{" "}
                                                 </div>
-                                              )}
+                                              )}{" "}
                                               {selectedFile && !uploading && (
                                                 <div
                                                   style={{
@@ -2583,7 +2600,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     fontStyle: "italic",
                                                   }}
                                                 >
-                                                  ✅ {selectedFile.name}
+                                                  {" "}
+                                                  ✅ {selectedFile.name}{" "}
                                                   <button
                                                     type="button"
                                                     onClick={clearFile}
@@ -2596,13 +2614,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                       fontSize: "0.8rem",
                                                     }}
                                                   >
-                                                    ❌ Remover
-                                                  </button>
+                                                    {" "}
+                                                    ❌ Remover{" "}
+                                                  </button>{" "}
                                                 </div>
-                                              )}
+                                              )}{" "}
                                             </div>
-                                          )}
-                                          {/* Flashcards */}
+                                          )}{" "}
+                                          {/* Flashcards */}{" "}
                                           {!flashcardsAdded && (
                                             <button
                                               type="button"
@@ -2643,19 +2662,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   "#6c757d";
                                               }}
                                             >
+                                              {" "}
                                               <span
                                                 style={{ fontSize: "12px" }}
                                               >
-                                                {showFlashcards ? "🃏" : "➕"}
-                                              </span>
+                                                {" "}
+                                                {showFlashcards
+                                                  ? "🃏"
+                                                  : "➕"}{" "}
+                                              </span>{" "}
                                               {showFlashcards
                                                 ? "Hide Flashcards"
-                                                : "Add Flashcards"}
+                                                : "Add Flashcards"}{" "}
                                             </button>
                                           )}{" "}
                                           {!flashcardsAdded &&
                                             showFlashcards && (
                                               <div>
+                                                {" "}
                                                 <label
                                                   style={{
                                                     display: "block",
@@ -2665,6 +2689,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     fontSize: "0.875rem",
                                                   }}
                                                 >
+                                                  {" "}
                                                   🃏{" "}
                                                   {
                                                     UniversalTexts.calendarModal
@@ -5672,7 +5697,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                   onClick={async () => {
                     if (!disabledAvoid) return; // Não executar se estiver desabilitado
-
+                    setShouldScrollToToday(true);
                     setDisabledAvoid(false);
                     setLoading(true);
 
