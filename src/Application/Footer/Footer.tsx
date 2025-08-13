@@ -42,20 +42,6 @@ export default function AppFooter({ see }: AppFooterIn) {
       {/* Center Links */}
       <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
         <a
-          href="/faq"
-          style={{
-            color: "#6b7280",
-            textDecoration: "none",
-            fontSize: "11px",
-            fontWeight: "500",
-            transition: "color 0.2s ease",
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.color = "#374151"}
-          onMouseLeave={(e) => e.currentTarget.style.color = "#6b7280"}
-        >
-          {UniversalTexts?.faq || "FAQ"}
-        </a>
-        <a
           href="/meu-perfil"
           style={{
             color: "#6b7280",

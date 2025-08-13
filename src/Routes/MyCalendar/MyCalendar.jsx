@@ -3743,7 +3743,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               }}
                             >
                               <i className="fa fa-external-link" />
-                              Ver na Página de Homework
+                              {UniversalTexts.seeOnHomeworkPage}
                             </Link>
                             <div
                               style={{

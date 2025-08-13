@@ -140,12 +140,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
     setSelectedHomeworkId(homeworkId);
     setSelectedHomeworkContent(homeworkDescription || "");
     setHomeworkAnswer(homeworkDescription || "");
-    
+
     // Set the submission mode based on the preferred mode
     if (preferredMode) {
       setSubmissionMode(preferredMode);
     }
-    
+
     setIsModalOpen(true);
   };
 
@@ -382,21 +382,23 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       {/* Due Date Filter */}
       <div
         style={{
-          padding: "1rem",
+          padding: window.innerWidth <= 768 ? "0.75rem" : "1rem",
           backgroundColor: alwaysWhite(),
           borderBottom: "1px solid #e2e8f0",
           display: "flex",
+          flexDirection: window.innerWidth <= 768 ? "column" : "row",
           justifyContent: "center",
           alignItems: "center",
-          gap: "0.5rem",
+          gap: window.innerWidth <= 768 ? "0.75rem" : "0.5rem",
           marginBottom: "1rem",
         }}
       >
         <label
           style={{
-            fontSize: "13px",
+            fontSize: window.innerWidth <= 768 ? "14px" : "13px",
             color: "#64748b",
             fontWeight: "500",
+            textAlign: window.innerWidth <= 768 ? "center" : "left",
           }}
         >
           {UniversalTexts?.filterByDueDate || "Filtrar por Data de Entrega:"}
@@ -408,12 +410,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             borderRadius: "4px",
             border: "1px solid #e2e8f0",
             backgroundColor: "#f8fafc",
-            fontSize: "13px",
+            fontSize: window.innerWidth <= 768 ? "14px" : "13px",
             fontWeight: "400",
             color: "#64748b",
-            padding: "6px 8px",
-            minWidth: "200px",
-            maxWidth: "300px",
+            padding: window.innerWidth <= 768 ? "10px 12px" : "6px 8px",
+            minWidth: window.innerWidth <= 768 ? "280px" : "200px",
+            maxWidth: window.innerWidth <= 768 ? "100%" : "300px",
             outline: "none",
             cursor: "pointer",
           }}
@@ -454,7 +456,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               flexDirection: "column",
               alignItems: "center",
               margin: "0 auto",
-              padding: "1rem 0.5rem",
+              padding: window.innerWidth <= 768 ? "0.5rem" : "1rem 0.5rem",
+              maxWidth: window.innerWidth <= 768 ? "100%" : "800px",
             }}
           >
             <ul
@@ -471,7 +474,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     key={index}
                     style={{
                       listStyle: "none",
-                      margin: "1rem 0",
+                      margin:
+                        window.innerWidth <= 768 ? "0.75rem 0.5rem" : "1rem 0",
                       backgroundColor: "#fdfdfd",
                       border: "1px solid #f0f0f0",
                       borderRadius: "4px",
@@ -492,13 +496,18 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     <div
                       style={{
                         display: "flex",
+                        flexDirection:
+                          window.innerWidth <= 768 ? "column" : "row",
                         justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "12px 16px",
+                        alignItems:
+                          window.innerWidth <= 768 ? "flex-start" : "center",
+                        padding:
+                          window.innerWidth <= 768 ? "12px" : "12px 16px",
                         backgroundColor: "#fafafa",
                         borderBottom: "1px solid #f0f0f0",
-                        fontSize: "13px",
+                        fontSize: window.innerWidth <= 768 ? "14px" : "13px",
                         color: "#555",
+                        gap: window.innerWidth <= 768 ? "8px" : "0",
                       }}
                     >
                       <div
@@ -511,38 +520,33 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         <HTwo
                           style={{
                             margin: 0,
-                            fontSize: "14px",
+                            fontSize:
+                              window.innerWidth <= 768 ? "16px" : "14px",
                             fontWeight: "500",
                             color: "#333",
                           }}
                         >
+                          {UniversalTexts.dueDate}{" "}
                           {formatDateBr(homework.dueDate)}
                         </HTwo>
-                        {homework.assignmentDate && (
-                          <span
-                            style={{
-                              fontSize: "11px",
-                              color: "#888",
-                              fontWeight: "400",
-                            }}
-                          >
-                            Criado: {formatDateBr(homework.assignmentDate)}
-                          </span>
-                        )}
                       </div>
                       <div
                         style={{
                           display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-end",
+                          flexDirection:
+                            window.innerWidth <= 768 ? "row" : "column",
+                          alignItems:
+                            window.innerWidth <= 768 ? "center" : "flex-end",
                           gap: "4px",
                         }}
                       >
                         <div
                           style={{
-                            fontSize: "11px",
+                            fontSize:
+                              window.innerWidth <= 768 ? "12px" : "11px",
                             fontWeight: "400",
-                            padding: "2px 6px",
+                            padding:
+                              window.innerWidth <= 768 ? "4px 8px" : "2px 6px",
                             borderRadius: "3px",
                             backgroundColor:
                               homework?.status === "done"
@@ -562,17 +566,43 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                             ? "Concluído"
                             : "Pendente"}
                         </div>
-                        {homework.submitted !== undefined && (
-                          <span style={{ fontSize: "11px", color: "#6b7280" }}>
-                            {homework.submitted ? "Enviado" : "Não enviado"}
-                          </span>
+
+                        {/* Homework Submission Info - Simple style */}
+                        {homework.submittedAt && (
+                          <div
+                            style={{
+                              fontSize:
+                                window.innerWidth <= 768 ? "12px" : "11px",
+                              fontWeight: "400",
+                              padding:
+                                window.innerWidth <= 768
+                                  ? "6px 10px"
+                                  : "4px 8px",
+                              marginTop: "8px",
+                              borderRadius: "4px",
+                              backgroundColor: "#f0f9ff",
+                              color: "#1e40af",
+                              border: "1px solid #93c5fd",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            <i
+                              className="fa fa-clock-o"
+                              style={{ fontSize: "10px" }}
+                            />
+                            {UniversalTexts?.submittedAt || "Enviado em:"}{" "}
+                            {formatDateBr(homework.submittedAt)}
+                          </div>
                         )}
                       </div>
                     </div>
                     {homework.status !== "done" && !homework.submitted && (
                       <div
                         style={{
-                          padding: "12px",
+                          padding:
+                            window.innerWidth <= 768 ? "16px 12px" : "12px",
                           backgroundColor: "#f8fafc",
                           borderBottom: "1px solid #e2e8f0",
                           display: "flex",
@@ -590,15 +620,21 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                             backgroundColor: "transparent",
                             color: "#666",
                             border: "1px solid #ddd",
-                            padding: "6px 12px",
+                            padding:
+                              window.innerWidth <= 768
+                                ? "10px 16px"
+                                : "6px 12px",
                             borderRadius: "3px",
-                            fontSize: "12px",
+                            fontSize:
+                              window.innerWidth <= 768 ? "14px" : "12px",
                             fontWeight: "normal",
                             display: "flex",
                             alignItems: "center",
-                            gap: "4px",
+                            gap: window.innerWidth <= 768 ? "6px" : "4px",
                             cursor: "pointer",
                             transition: "all 0.2s ease",
+                            minHeight:
+                              window.innerWidth <= 768 ? "44px" : "auto",
                           }}
                           onMouseOver={(e) => {
                             e.currentTarget.style.backgroundColor = "#f5f5f5";
@@ -612,7 +648,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         >
                           <i
                             className="fa fa-upload"
-                            style={{ fontSize: "11px" }}
+                            style={{
+                              fontSize:
+                                window.innerWidth <= 768 ? "13px" : "11px",
+                            }}
                           />
 
                           {homework.submitted
@@ -629,8 +668,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       isAllowed) && (
                       <div
                         style={{
-                          margin: "1rem",
-                          padding: "1rem",
+                          margin:
+                            window.innerWidth <= 768
+                              ? "0.75rem 0.5rem"
+                              : "1rem",
+                          padding:
+                            window.innerWidth <= 768 ? "0.75rem" : "1rem",
                           backgroundColor: "#ffffff",
                           border: "1px solid #e2e8f0",
                           borderRadius: "8px",
@@ -640,7 +683,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         <h4
                           style={{
                             margin: "0 0 12px 0",
-                            fontSize: "14px",
+                            fontSize:
+                              window.innerWidth <= 768 ? "16px" : "14px",
                             fontWeight: "600",
                             color: "#374151",
                             display: "flex",
@@ -656,8 +700,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         <div
                           style={{
                             display: "flex",
-                            gap: "0.5rem",
+                            gap:
+                              window.innerWidth <= 768 ? "0.75rem" : "0.5rem",
                             flexWrap: "wrap",
+                            flexDirection:
+                              window.innerWidth <= 768 ? "column" : "row",
                           }}
                         >
                           {homework.status &&
@@ -676,17 +723,31 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     backgroundColor: "transparent",
                                     color: disabled ? "#999" : "#666",
                                     border: "1px solid #ddd",
-                                    padding: "4px 8px",
+                                    padding:
+                                      window.innerWidth <= 768
+                                        ? "10px 14px"
+                                        : "4px 8px",
                                     borderRadius: "3px",
-                                    fontSize: "11px",
+                                    fontSize:
+                                      window.innerWidth <= 768
+                                        ? "14px"
+                                        : "11px",
                                     fontWeight: "normal",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "3px",
+                                    gap:
+                                      window.innerWidth <= 768 ? "6px" : "3px",
                                     cursor: disabled
                                       ? "not-allowed"
                                       : "pointer",
                                     opacity: disabled ? 0.6 : 1,
+                                    minHeight:
+                                      window.innerWidth <= 768
+                                        ? "44px"
+                                        : "auto",
+                                    justifyContent: "center",
+                                    flex:
+                                      window.innerWidth <= 768 ? "1" : "none",
                                   }}
                                   onMouseOver={(e) => {
                                     if (!disabled) {
@@ -707,7 +768,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                 >
                                   <i
                                     className="fa fa-check"
-                                    style={{ fontSize: "10px" }}
+                                    style={{
+                                      fontSize:
+                                        window.innerWidth <= 768
+                                          ? "13px"
+                                          : "10px",
+                                    }}
                                   />
                                   {UniversalTexts?.upToDate || "Up to date"}
                                 </button>
@@ -723,17 +789,31 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     backgroundColor: "transparent",
                                     color: disabled ? "#999" : "#666",
                                     border: "1px solid #ddd",
-                                    padding: "4px 8px",
+                                    padding:
+                                      window.innerWidth <= 768
+                                        ? "10px 14px"
+                                        : "4px 8px",
                                     borderRadius: "3px",
-                                    fontSize: "11px",
+                                    fontSize:
+                                      window.innerWidth <= 768
+                                        ? "14px"
+                                        : "11px",
                                     fontWeight: "normal",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "3px",
+                                    gap:
+                                      window.innerWidth <= 768 ? "6px" : "3px",
                                     cursor: disabled
                                       ? "not-allowed"
                                       : "pointer",
                                     opacity: disabled ? 0.6 : 1,
+                                    minHeight:
+                                      window.innerWidth <= 768
+                                        ? "44px"
+                                        : "auto",
+                                    justifyContent: "center",
+                                    flex:
+                                      window.innerWidth <= 768 ? "1" : "none",
                                   }}
                                   onMouseOver={(e) => {
                                     if (!disabled) {
@@ -754,7 +834,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                 >
                                   <i
                                     className="fa fa-clock-o"
-                                    style={{ fontSize: "10px" }}
+                                    style={{
+                                      fontSize:
+                                        window.innerWidth <= 768
+                                          ? "13px"
+                                          : "10px",
+                                    }}
                                   />
                                   {UniversalTexts?.late || "Late"}
                                 </button>
@@ -765,17 +850,31 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     backgroundColor: "transparent",
                                     color: disabled ? "#999" : "#666",
                                     border: "1px solid #ddd",
-                                    padding: "4px 8px",
+                                    padding:
+                                      window.innerWidth <= 768
+                                        ? "10px 14px"
+                                        : "4px 8px",
                                     borderRadius: "3px",
-                                    fontSize: "11px",
+                                    fontSize:
+                                      window.innerWidth <= 768
+                                        ? "14px"
+                                        : "11px",
                                     fontWeight: "normal",
                                     display: "flex",
                                     alignItems: "center",
-                                    gap: "3px",
+                                    gap:
+                                      window.innerWidth <= 768 ? "6px" : "3px",
                                     cursor: disabled
                                       ? "not-allowed"
                                       : "pointer",
                                     opacity: disabled ? 0.6 : 1,
+                                    minHeight:
+                                      window.innerWidth <= 768
+                                        ? "44px"
+                                        : "auto",
+                                    justifyContent: "center",
+                                    flex:
+                                      window.innerWidth <= 768 ? "1" : "none",
                                   }}
                                   onMouseOver={(e) => {
                                     if (!disabled) {
@@ -796,7 +895,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                 >
                                   <i
                                     className="fa fa-edit"
-                                    style={{ fontSize: "10px" }}
+                                    style={{
+                                      fontSize:
+                                        window.innerWidth <= 768
+                                          ? "13px"
+                                          : "10px",
+                                    }}
                                   />
                                   {UniversalTexts?.justStatus || "Just status"}
                                 </button>
@@ -842,6 +946,289 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         </div>
                       </div>
                     )}
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection:
+                          window.innerWidth <= 768 ? "column" : "row",
+                        gap: window.innerWidth <= 768 ? "0.5rem" : "0",
+                      }}
+                    >
+                      {homework.attachments && (
+                        <div
+                          style={{
+                            margin:
+                              window.innerWidth <= 768
+                                ? "0.75rem 0.5rem"
+                                : "1rem",
+                            padding:
+                              window.innerWidth <= 768 ? "1rem" : "1.5rem",
+                            backgroundColor: "#f8fafc",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: "8px",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+                            flex: window.innerWidth <= 768 ? "1" : "none",
+                          }}
+                        >
+                          <h4
+                            style={{
+                              margin: "0 0 1rem 0",
+                              fontSize:
+                                window.innerWidth <= 768 ? "16px" : "14px",
+                              fontWeight: "600",
+                              color: "#374151",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                              borderBottom: "1px solid #e2e8f0",
+                              paddingBottom: "0.5rem",
+                            }}
+                          >
+                            <i className="fa fa-file-o" />
+                            {UniversalTexts.filesSubmittedByYou}
+                          </h4>
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection:
+                                window.innerWidth <= 768 ? "column" : "row",
+                              gap: "0.75rem",
+                            }}
+                          >
+                            <Link
+                              to={homework.attachments}
+                              target="_blank"
+                              style={{
+                                backgroundColor: "white",
+                                color: "#6b7280",
+                                border: "1px solid #d1d5db",
+                                padding:
+                                  window.innerWidth <= 768
+                                    ? "12px 16px"
+                                    : "8px 12px",
+                                borderRadius: "6px",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "14px" : "12px",
+                                fontWeight: "500",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                                width: "fit-content",
+                                minHeight:
+                                  window.innerWidth <= 768 ? "44px" : "auto",
+                                justifyContent: "center",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "#f0f9ff";
+                                e.currentTarget.style.borderColor = "#0ea5e940";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "white";
+                                e.currentTarget.style.borderColor = "#0ea5e920";
+                              }}
+                            >
+                              <i
+                                className="fa fa-download"
+                                style={{
+                                  fontSize:
+                                    window.innerWidth <= 768 ? "14px" : "12px",
+                                }}
+                              />
+                              {UniversalTexts?.submittedFile ||
+                                "Homework Enviado"}
+                            </Link>
+
+                            <button
+                              onClick={() =>
+                                openSubmissionModal(
+                                  homework._id,
+                                  homework.answers || homework.description,
+                                  "file"
+                                )
+                              }
+                              style={{
+                                backgroundColor: "white",
+                                color: "#6b7280",
+                                border: "1px solid #d1d5db",
+                                padding:
+                                  window.innerWidth <= 768
+                                    ? "12px 16px"
+                                    : "8px 12px",
+                                borderRadius: "6px",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "14px" : "12px",
+                                fontWeight: "500",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                                width: "fit-content",
+                                minHeight:
+                                  window.innerWidth <= 768 ? "44px" : "auto",
+                                justifyContent: "center",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "#f9fafb";
+                                e.currentTarget.style.borderColor = "#9ca3af";
+                                e.currentTarget.style.color = "#374151";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "white";
+                                e.currentTarget.style.borderColor = "#d1d5db";
+                                e.currentTarget.style.color = "#6b7280";
+                              }}
+                            >
+                              <i
+                                className="fa fa-edit"
+                                style={{
+                                  fontSize:
+                                    window.innerWidth <= 768 ? "13px" : "11px",
+                                }}
+                              />
+                              {UniversalTexts.edit}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {homework.answers && (
+                        <div
+                          style={{
+                            margin:
+                              window.innerWidth <= 768
+                                ? "0.75rem 0.5rem"
+                                : "1rem",
+                            padding:
+                              window.innerWidth <= 768 ? "1rem" : "1.5rem",
+                            backgroundColor: "#f8fafc",
+                            border: "1px solid #e2e8f0",
+                            borderRadius: "8px",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+                            flex: window.innerWidth <= 768 ? "1" : "none",
+                          }}
+                        >
+                          <h4
+                            style={{
+                              margin: "0 0 1rem 0",
+                              fontSize:
+                                window.innerWidth <= 768 ? "16px" : "14px",
+                              fontWeight: "600",
+                              color: "#374151",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "8px",
+                              borderBottom: "1px solid #e2e8f0",
+                              paddingBottom: "0.5rem",
+                            }}
+                          >
+                            <i className="fa fa-comment-o" />
+                            {UniversalTexts.submittedResponse}
+                          </h4>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "0.75rem",
+                            }}
+                          >
+                            <button
+                              onClick={() =>
+                                openSubmissionModal(
+                                  homework._id,
+                                  homework.answers || homework.description,
+                                  "editor"
+                                )
+                              }
+                              style={{
+                                backgroundColor: "white",
+                                color: "#6b7280",
+                                border: "1px solid #d1d5db",
+                                padding:
+                                  window.innerWidth <= 768
+                                    ? "12px 16px"
+                                    : "8px 12px",
+                                borderRadius: "6px",
+                                fontSize:
+                                  window.innerWidth <= 768 ? "14px" : "12px",
+                                fontWeight: "500",
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                cursor: "pointer",
+                                transition: "all 0.2s ease",
+                                width: "fit-content",
+                                minHeight:
+                                  window.innerWidth <= 768 ? "44px" : "auto",
+                                justifyContent: "center",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.backgroundColor =
+                                  "#f9fafb";
+                                e.currentTarget.style.borderColor = "#9ca3af";
+                                e.currentTarget.style.color = "#374151";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.backgroundColor = "white";
+                                e.currentTarget.style.borderColor = "#d1d5db";
+                                e.currentTarget.style.color = "#6b7280";
+                              }}
+                            >
+                              <i
+                                className="fa fa-edit"
+                                style={{ fontSize: "11px" }}
+                              />
+                              {UniversalTexts.edit}
+                            </button>
+
+                            <div
+                              style={{
+                                backgroundColor: "white",
+                                border: "1px solid #e2e8f0",
+                                borderRadius: "6px",
+                                padding: "12px",
+                              }}
+                            >
+                              <p
+                                style={{
+                                  fontSize: "12px",
+                                  color: "#6b7280",
+                                  fontWeight: "500",
+                                  margin: "0 0 8px 0",
+                                  textTransform: "uppercase",
+                                  letterSpacing: "0.5px",
+                                }}
+                              >
+                                {UniversalTexts?.homeworkAnswers ||
+                                  "Minha resposta"}
+                              </p>
+                              <div
+                                style={{
+                                  fontSize: "13px",
+                                  color: "#374151",
+                                  lineHeight: "1.6",
+                                  maxHeight: "200px",
+                                  overflowY: "auto",
+                                  padding: "12px",
+                                  backgroundColor: "#eef7e7",
+                                  border: "1px solid #f1f5f9",
+                                  borderRadius: "4px",
+                                  fontFamily: "cursive",
+                                }}
+                                dangerouslySetInnerHTML={{
+                                  __html: homework.answers,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
                     {/* Class Details Section */}
                     {homework.eventDetails && (
@@ -895,34 +1282,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                               </span>
                             </div>
                           )}
-
-                          {homework.eventDetails.status && (
-                            <div>
-                              <strong
-                                style={{ color: "#0c4a6e", fontSize: "13px" }}
-                              >
-                                {UniversalTexts.status}
-                              </strong>
-                              <span
-                                style={{
-                                  marginLeft: "8px",
-                                  fontSize: "12px",
-                                  padding: "2px 6px",
-                                  borderRadius: "8px",
-                                  backgroundColor:
-                                    homework.eventDetails.status === "realizada"
-                                      ? "#22c55e"
-                                      : "#f59e0b",
-                                  color: "white",
-                                }}
-                              >
-                                {homework.eventDetails.status === "realizada"
-                                  ? UniversalTexts.statusCompleted
-                                  : homework.eventDetails.status}
-                              </span>
-                            </div>
-                          )}
-
                           {homework.eventDetails.description && (
                             <div>
                               <strong
@@ -943,8 +1302,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                               </p>
                             </div>
                           )}
-
-                          {/* Class Links */}
                           <div
                             style={{
                               display: "flex",
@@ -1019,276 +1376,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         />
                       </div>
                     </div>
-
-                    {/* Links Section */}
-                    {homework.attachments && (
-                      <div
-                        style={{
-                          margin: "1rem",
-                          padding: "1.5rem",
-                          backgroundColor: "#f8fafc",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "8px",
-                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-                        }}
-                      >
-                        <h4
-                          style={{
-                            margin: "0 0 1rem 0",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#374151",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            borderBottom: "1px solid #e2e8f0",
-                            paddingBottom: "0.5rem",
-                          }}
-                        >
-                          <i className="fa fa-file-o" />
-                          {UniversalTexts.filesSubmittedByYou}
-                        </h4>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "0.75rem",
-                          }}
-                        >
-                          <Link
-                            to={homework.attachments}
-                            target="_blank"
-                            style={{
-                              backgroundColor: "white",
-                              color: "#6b7280",
-                              border: "1px solid #d1d5db",
-                              padding: "8px 12px",
-                              borderRadius: "6px",
-                              fontSize: "12px",
-                              fontWeight: "500",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                              cursor: "pointer",
-                              transition: "all 0.2s ease",
-                              width: "fit-content",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = "#f0f9ff";
-                              e.currentTarget.style.borderColor = "#0ea5e940";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = "white";
-                              e.currentTarget.style.borderColor = "#0ea5e920";
-                            }}
-                          >
-                            <i
-                              className="fa fa-download"
-                              style={{ fontSize: "12px" }}
-                            />
-                            {UniversalTexts?.submittedFile ||
-                              "Homework Enviado"}
-                          </Link>
-
-                          <button
-                            onClick={() =>
-                              openSubmissionModal(
-                                homework._id,
-                                homework.answers || homework.description,
-                                "file"
-                              )
-                            }
-                            style={{
-                              backgroundColor: "white",
-                              color: "#6b7280",
-                              border: "1px solid #d1d5db",
-                              padding: "8px 12px",
-                              borderRadius: "6px",
-                              fontSize: "12px",
-                              fontWeight: "500",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                              cursor: "pointer",
-                              transition: "all 0.2s ease",
-                              width: "fit-content",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = "#f9fafb";
-                              e.currentTarget.style.borderColor = "#9ca3af";
-                              e.currentTarget.style.color = "#374151";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = "white";
-                              e.currentTarget.style.borderColor = "#d1d5db";
-                              e.currentTarget.style.color = "#6b7280";
-                            }}
-                          >
-                            <i
-                              className="fa fa-edit"
-                              style={{ fontSize: "11px" }}
-                            />
-                            {UniversalTexts.edit}
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {homework.answers && (
-                      <div
-                        style={{
-                          margin: "1rem",
-                          padding: "1.5rem",
-                          backgroundColor: "#f8fafc",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "8px",
-                          boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-                        }}
-                      >
-                        <h4
-                          style={{
-                            margin: "0 0 1rem 0",
-                            fontSize: "14px",
-                            fontWeight: "600",
-                            color: "#374151",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                            borderBottom: "1px solid #e2e8f0",
-                            paddingBottom: "0.5rem",
-                          }}
-                        >
-                          <i className="fa fa-comment-o" />
-                          {UniversalTexts.submittedResponse}
-                        </h4>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "0.75rem",
-                          }}
-                        >
-                          <button
-                            onClick={() =>
-                              openSubmissionModal(
-                                homework._id,
-                                homework.answers || homework.description,
-                                "editor"
-                              )
-                            }
-                            style={{
-                              backgroundColor: "white",
-                              color: "#6b7280",
-                              border: "1px solid #d1d5db",
-                              padding: "8px 12px",
-                              borderRadius: "6px",
-                              fontSize: "12px",
-                              fontWeight: "500",
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "6px",
-                              cursor: "pointer",
-                              transition: "all 0.2s ease",
-                              width: "fit-content",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.backgroundColor = "#f9fafb";
-                              e.currentTarget.style.borderColor = "#9ca3af";
-                              e.currentTarget.style.color = "#374151";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.backgroundColor = "white";
-                              e.currentTarget.style.borderColor = "#d1d5db";
-                              e.currentTarget.style.color = "#6b7280";
-                            }}
-                          >
-                            <i
-                              className="fa fa-edit"
-                              style={{ fontSize: "11px" }}
-                            />
-                            {UniversalTexts.edit}
-                          </button>
-
-                          <div
-                            style={{
-                              backgroundColor: "white",
-                              border: "1px solid #e2e8f0",
-                              borderRadius: "6px",
-                              padding: "12px",
-                            }}
-                          >
-                            <p
-                              style={{
-                                fontSize: "12px",
-                                color: "#6b7280",
-                                fontWeight: "500",
-                                margin: "0 0 8px 0",
-                                textTransform: "uppercase",
-                                letterSpacing: "0.5px",
-                              }}
-                            >
-                              {UniversalTexts?.homeworkAnswers ||
-                                "Minha resposta"}
-                            </p>
-                            <div
-                              style={{
-                                fontSize: "13px",
-                                color: "#374151",
-                                lineHeight: "1.6",
-                                maxHeight: "200px",
-                                overflowY: "auto",
-                                padding: "12px",
-                                backgroundColor: "#eef7e7",
-                                border: "1px solid #f1f5f9",
-                                borderRadius: "4px",
-                                fontFamily: "cursive",
-                              }}
-                              dangerouslySetInnerHTML={{
-                                __html: homework.answers,
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Homework Submission Info */}
-                    {homework.submittedAt && (
-                      <div
-                        style={{
-                          margin: "1rem",
-                          padding: "1rem",
-                          backgroundColor: "#d1fae5",
-                          border: "1px solid #22c55e",
-                          borderRadius: "8px",
-                          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
-                        }}
-                      >
-                        <i
-                          className="fa fa-check-circle"
-                          style={{ color: "#16a34a", marginRight: "8px" }}
-                        />
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "13px",
-                              color: "#16a34a",
-                              fontWeight: "500",
-                            }}
-                          >
-                            {UniversalTexts?.submittedAt || "Enviado em:"}{" "}
-                            {formatDateBr(homework.submittedAt)}
-                          </span>
-                        </div>
-                      </div>
-                    )}
 
                     {/* Video Section - moved to bottom */}
                     {homework.eventDetails?.video && (
@@ -1376,21 +1463,24 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             backgroundColor: "rgba(0, 0, 0, 0.5)",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
+            alignItems: window.innerWidth <= 768 ? "flex-start" : "center",
             zIndex: 1000,
+            padding: window.innerWidth <= 768 ? "20px 8px" : "0",
           }}
           onClick={closeSubmissionModal}
         >
           <div
             style={{
               backgroundColor: "white",
-              borderRadius: "12px",
-              padding: "24px",
-              maxWidth: "500px",
-              width: "90%",
-              maxHeight: "90vh",
+              borderRadius: window.innerWidth <= 768 ? "8px" : "12px",
+              padding: window.innerWidth <= 768 ? "16px" : "24px",
+              maxWidth: window.innerWidth <= 768 ? "100%" : "500px",
+              width: window.innerWidth <= 768 ? "100%" : "90%",
+              maxHeight:
+                window.innerWidth <= 768 ? "calc(100vh - 40px)" : "90vh",
               overflowY: "auto",
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+              marginTop: window.innerWidth <= 768 ? "20px" : "0",
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -1398,17 +1488,19 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             <div
               style={{
                 display: "flex",
+                flexDirection: window.innerWidth <= 768 ? "column" : "row",
                 justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "20px",
+                alignItems: window.innerWidth <= 768 ? "flex-start" : "center",
+                marginBottom: window.innerWidth <= 768 ? "16px" : "20px",
                 borderBottom: "1px solid #e2e8f0",
                 paddingBottom: "16px",
+                gap: window.innerWidth <= 768 ? "12px" : "0",
               }}
             >
               <h2
                 style={{
                   margin: 0,
-                  fontSize: "16px",
+                  fontSize: window.innerWidth <= 768 ? "18px" : "16px",
                   fontWeight: "500",
                   color: "#495057",
                 }}
@@ -1420,17 +1512,18 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                 style={{
                   background: "none",
                   border: "none",
-                  fontSize: "24px",
+                  fontSize: window.innerWidth <= 768 ? "28px" : "24px",
                   cursor: "pointer",
                   color: "#6b7280",
                   padding: "0",
-                  width: "30px",
-                  height: "30px",
+                  width: window.innerWidth <= 768 ? "36px" : "30px",
+                  height: window.innerWidth <= 768 ? "36px" : "30px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   borderRadius: "50%",
                   transition: "background-color 0.2s",
+                  alignSelf: window.innerWidth <= 768 ? "flex-end" : "auto",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = "#f3f4f6";
@@ -1444,12 +1537,16 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             </div>
 
             {/* Submission Mode Selection */}
-            <div style={{ marginBottom: "20px" }}>
+            <div
+              style={{
+                marginBottom: window.innerWidth <= 768 ? "16px" : "20px",
+              }}
+            >
               <label
                 style={{
                   display: "block",
                   marginBottom: "12px",
-                  fontSize: "16px",
+                  fontSize: window.innerWidth <= 768 ? "18px" : "16px",
                   fontWeight: "600",
                   color: "#374151",
                 }}
@@ -1461,6 +1558,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               <div
                 style={{
                   display: "flex",
+                  flexDirection: window.innerWidth <= 768 ? "column" : "row",
                   gap: "12px",
                   marginBottom: "16px",
                 }}
@@ -1469,11 +1567,13 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   onClick={() => setSubmissionMode("file")}
                   style={{
                     flex: 1,
-                    padding: "8px 12px",
+                    padding:
+                      window.innerWidth <= 768 ? "12px 16px" : "8px 12px",
                     border: `1px solid ${
                       submissionMode === "file" ? "#adb5bd" : "#dee2e6"
                     }`,
                     borderRadius: "4px",
+                    minHeight: window.innerWidth <= 768 ? "48px" : "auto",
                     backgroundColor:
                       submissionMode === "file" ? "#e9ecef" : "#f8f9fa",
                     color: submissionMode === "file" ? "#495057" : "#6c757d",
@@ -1494,15 +1594,17 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   onClick={() => setSubmissionMode("editor")}
                   style={{
                     flex: 1,
-                    padding: "8px 12px",
+                    padding:
+                      window.innerWidth <= 768 ? "12px 16px" : "8px 12px",
                     border: `1px solid ${
                       submissionMode === "editor" ? "#adb5bd" : "#dee2e6"
                     }`,
                     borderRadius: "4px",
+                    minHeight: window.innerWidth <= 768 ? "48px" : "auto",
                     backgroundColor:
                       submissionMode === "editor" ? "#e9ecef" : "#f8f9fa",
                     color: submissionMode === "editor" ? "#495057" : "#6c757d",
-                    fontSize: "13px",
+                    fontSize: window.innerWidth <= 768 ? "14px" : "13px",
                     fontWeight: "400",
                     cursor: "pointer",
                     transition: "all 0.2s",
@@ -1512,7 +1614,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     gap: "6px",
                   }}
                 >
-                  <i className="fa fa-edit" style={{ fontSize: "12px" }} />
+                  <i
+                    className="fa fa-edit"
+                    style={{
+                      fontSize: window.innerWidth <= 768 ? "14px" : "12px",
+                    }}
+                  />
                   {UniversalTexts?.writeResponse || "Responder na Plataforma"}
                 </button>
               </div>
@@ -1520,12 +1627,16 @@ export default function Homework({ headers, setChange, change }: HWProps) {
 
             {/* Modal Content based on submission mode */}
             {submissionMode === "file" ? (
-              <div style={{ marginBottom: "20px" }}>
+              <div
+                style={{
+                  marginBottom: window.innerWidth <= 768 ? "16px" : "20px",
+                }}
+              >
                 <label
                   style={{
                     display: "block",
                     marginBottom: "8px",
-                    fontSize: "14px",
+                    fontSize: window.innerWidth <= 768 ? "16px" : "14px",
                     fontWeight: "500",
                     color: "#374151",
                   }}
@@ -1538,14 +1649,15 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
                   style={{
                     width: "100%",
-                    padding: "12px",
+                    padding: window.innerWidth <= 768 ? "16px" : "12px",
                     border: "2px dashed #e2e8f0",
                     borderRadius: "8px",
                     backgroundColor: "#f8fafc",
                     cursor: "pointer",
-                    fontSize: "14px",
+                    fontSize: window.innerWidth <= 768 ? "16px" : "14px",
                     color: "#64748b",
                     transition: "border-color 0.2s",
+                    minHeight: window.innerWidth <= 768 ? "60px" : "auto",
                   }}
                   onFocus={(e) => {
                     e.target.style.borderColor = partnerColor();
@@ -1634,8 +1746,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             <div
               style={{
                 display: "flex",
+                flexDirection:
+                  window.innerWidth <= 768 ? "column-reverse" : "row",
                 gap: "12px",
-                justifyContent: "flex-end",
+                justifyContent:
+                  window.innerWidth <= 768 ? "stretch" : "flex-end",
               }}
             >
               <button
@@ -1644,12 +1759,13 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   backgroundColor: "transparent",
                   color: "#666",
                   border: "1px solid #ddd",
-                  padding: "6px 12px",
+                  padding: window.innerWidth <= 768 ? "12px 16px" : "6px 12px",
                   borderRadius: "3px",
-                  fontSize: "12px",
+                  fontSize: window.innerWidth <= 768 ? "16px" : "12px",
                   fontWeight: "normal",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
+                  minHeight: window.innerWidth <= 768 ? "48px" : "auto",
                 }}
                 onMouseOver={(e) => {
                   e.currentTarget.style.backgroundColor = "#f5f5f5";
@@ -1680,9 +1796,9 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       ? "#999"
                       : "#666",
                   border: "1px solid #ddd",
-                  padding: "6px 12px",
+                  padding: window.innerWidth <= 768 ? "12px 16px" : "6px 12px",
                   borderRadius: "3px",
-                  fontSize: "12px",
+                  fontSize: window.innerWidth <= 768 ? "16px" : "12px",
                   fontWeight: "normal",
                   cursor:
                     uploading ||
@@ -1693,8 +1809,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       : "pointer",
                   display: "flex",
                   alignItems: "center",
-                  gap: "4px",
+                  gap: window.innerWidth <= 768 ? "6px" : "4px",
                   transition: "all 0.2s ease",
+                  minHeight: window.innerWidth <= 768 ? "48px" : "auto",
+                  justifyContent: "center",
                 }}
                 onMouseOver={(e) => {
                   if (
