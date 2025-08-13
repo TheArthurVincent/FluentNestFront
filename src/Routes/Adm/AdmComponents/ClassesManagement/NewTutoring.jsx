@@ -543,7 +543,10 @@ export function NewTutoring({ headers, id }) {
                     }}
                   />
                   <div style={{ marginBottom: "1rem" }}>
-                    <HTMLEditor onChange={handleHWDescriptionChange} />
+                    <HTMLEditor
+                      onChange={handleHWDescriptionChange}
+                      initialContent={"Type here"}
+                    />
                   </div>
                 </div>
               )}
