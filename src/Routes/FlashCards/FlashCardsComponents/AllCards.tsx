@@ -5,18 +5,25 @@ import {
   onLoggOut,
   Xp,
 } from "../../../Resources/UniversalComponents";
-import { HeadersProps, MyHeadersType } from "../../../Resources/types.universalInterfaces";
+import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { CircularProgress } from "@mui/material";
 import { languages } from "./AddFlashONEFlashCard";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
-var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null; selectedStudentId: string }) => {
+var AllCards = ({
+  headers,
+  selectedStudentId,
+}: {
+  headers: MyHeadersType | null;
+  selectedStudentId: string;
+}) => {
   var actualHeaders = headers || {};
+  const { UniversalTexts } = useUserContext();
 
-  var [addCardVisible, setAddCardVisible] = useState<boolean>(false);
   var [cards, setCards] = useState<any[]>([]);
   var [loading, setLoading] = useState<boolean>(true);
   var [showModal, setShowModal] = useState<boolean>(false);
@@ -25,29 +32,33 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
   var [newLGFront, setNewLGFront] = useState<string>("");
   var [newLGBack, setNewLGBack] = useState<string>("");
   var [cardIdToEdit, setCardIdToEdit] = useState<string>("");
+  var [search, setSearch] = useState<string>("");
   var [newBackComments, setNewBackComments] = useState<string>("");
   var [page, setPage] = useState(0);
   var [hasMore, setHasMore] = useState(true);
 
-  var fetchMoreCards = async (
-    isReset: boolean = false
-  ): Promise<void> => {
+  var fetchMoreCards = async (isReset: boolean = false): Promise<void> => {
     var currentPage = isReset ? 0 : page;
-
     if (!selectedStudentId) return; // segurança extra
+    // Se estiver buscando, só carrega a primeira página e desativa o infinito
+    if (search && !isReset) return;
     if (!hasMore && !isReset) return;
 
     if (isReset) {
       setCards([]);
-      setHasMore(true);
       setPage(0);
+      setHasMore(!search); // Se tem busca, não tem mais cards para carregar
     }
 
     setLoading(true);
     try {
       var response = await axios.get(
-        `${backDomain}/api/v1/cards/${selectedStudentId}?skip=${currentPage * 10}&limit=10`,
-        { headers: actualHeaders }
+        `${backDomain}/api/v1/cards/${selectedStudentId}?skip=${
+          currentPage * 10
+        }&limit=10&search=${search}`,
+        {
+          headers: actualHeaders,
+        }
       );
       setLoading(false);
 
@@ -57,6 +68,7 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
       } else {
         setCards((prev) => (isReset ? newCards : [...prev, ...newCards]));
         setPage((prev) => (isReset ? 1 : prev + 1));
+        if (search) setHasMore(false); // Se está buscando, não tem mais para carregar
       }
       setLoading(false);
     } catch (error) {
@@ -67,6 +79,17 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
     }
   };
 
+  var searchCards = (query: string) => {
+    setSearch(query);
+    // Não chama fetchMoreCards aqui, o useEffect de search faz isso
+  };
+
+  useEffect(() => {
+    if (selectedStudentId) {
+      fetchMoreCards(true);
+    }
+  }, [search, selectedStudentId]);
+
   var scrollRef = useRef<HTMLDivElement>(null);
 
   var handleScroll = () => {
@@ -76,31 +99,12 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
     var isBottom =
       element.scrollTop + element.clientHeight + 1 >= element.scrollHeight;
 
-    if (isBottom) {
+    // Só carrega mais se não estiver buscando
+    if (isBottom && !search) {
       fetchMoreCards();
     }
     setLoading(false);
   };
-
-  useEffect(() => {
-    if (selectedStudentId) {
-      setCards([]);
-      setPage(0);
-      setHasMore(true);
-      fetchMoreCards(true);
-    }
-  }, [selectedStudentId]);
-
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
-  /////////////////
 
   var handleSeeModal = async (cardId: string) => {
     setShowModal(true);
@@ -184,7 +188,7 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
     var storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
   }, [selectedVoice, changeNumber]);
-  
+
   useEffect(() => {
     var element = scrollRef.current;
     if (element && element.scrollHeight <= element.clientHeight) {
@@ -204,17 +208,15 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
           padding: "1rem 0.5rem",
         }}
       >
-        <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
-
-        {/* Header Controls */}
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            marginBottom: "1rem",
             gap: "0.5rem",
+            alignItems: "center",
           }}
         >
+          {/* Header Controls */}
+
           <ArvinButton
             onClick={() => fetchMoreCards(true)}
             style={{
@@ -226,12 +228,26 @@ var AllCards = ({ headers, selectedStudentId }: { headers: MyHeadersType | null;
           >
             <i className="fa fa-refresh" aria-hidden="true" />
           </ArvinButton>
-{/* 
-          {(perm === "superadmin" || perm === "teacher") && (
-            <></>
-          )} */}
-        </div>
+          <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
 
+          <input
+            style={{
+              borderRadius: "4px",
+              border: "1px solid #e2e8f0",
+              backgroundColor: "#f8fafc",
+              fontSize: "11px",
+              fontWeight: "400",
+              color: "#64748b",
+              padding: "4px 6px",
+              height: "28px",
+              minWidth: "120px",
+              outline: "none",
+            }}
+            type="text"
+            placeholder={UniversalTexts.search}
+            onChange={(e) => searchCards(e.target.value)}
+          />
+        </div>
         {/* Cards Section */}
         {loading ? (
           <CircularProgress style={{ color: partnerColor() }} />

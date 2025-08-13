@@ -1,20 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
-import {
-  HeadersProps,
-  MyHeadersType,
-} from "../../../Resources/types.universalInterfaces";
+import { backDomain } from "../../../Resources/UniversalComponents";
+import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { CircularProgress } from "@mui/material";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import { partnerColor, textTitleFont } from "../../../Styles/Styles";
-import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-
-interface Student {
-  id: string;
-  name: string;
-  lastname: string;
-}
 
 interface FlashcardItem {
   _id: string;
