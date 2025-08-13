@@ -1061,7 +1061,11 @@ export function FinancialResources({ headers, id }) {
       });
       yPosition += 8;
       pdf.setFontSize(13);
-      pdf.text("Total Entradas: R$ " + totalEntradas.toFixed(2), margin, yPosition);
+      pdf.text(
+        "Total Entradas: R$ " + totalEntradas.toFixed(2),
+        margin,
+        yPosition
+      );
       addFooter(pdf, pageNum, pageNum, studentName);
     } else if (pdfType === "saidas") {
       pageNum = 1;
@@ -1100,7 +1104,11 @@ export function FinancialResources({ headers, id }) {
       });
       yPosition += 8;
       pdf.setFontSize(13);
-      pdf.text("Total Entradas: R$ " + totalEntradas.toFixed(2), margin, yPosition);
+      pdf.text(
+        "Total Entradas: R$ " + totalEntradas.toFixed(2),
+        margin,
+        yPosition
+      );
       addFooter(pdf, pageNum, pageNum + 2, studentName);
       // Nova página para saídas
       pdf.addPage();
@@ -1141,11 +1149,19 @@ export function FinancialResources({ headers, id }) {
       pdf.text("Balanço Final", margin, yPosition);
       yPosition += 12;
       pdf.setFontSize(14);
-      pdf.text("Total Entradas: R$ " + totalEntradas.toFixed(2), margin, yPosition);
+      pdf.text(
+        "Total Entradas: R$ " + totalEntradas.toFixed(2),
+        margin,
+        yPosition
+      );
       yPosition += 10;
       pdf.text("Total Saídas: R$ " + totalSaidas.toFixed(2), margin, yPosition);
       yPosition += 10;
-      pdf.text("Balanço: R$ " + (totalEntradas + totalSaidas).toFixed(2), margin, yPosition);
+      pdf.text(
+        "Balanço: R$ " + (totalEntradas + totalSaidas).toFixed(2),
+        margin,
+        yPosition
+      );
       addFooter(pdf, pageNum, pageNum, studentName);
     }
     pdf.save(`Relatorio_Financeiro_${selectedMonth}.pdf`);
@@ -1273,8 +1289,7 @@ export function FinancialResources({ headers, id }) {
                       <>
                         {!showGenerateButton && (
                           <button
-                                                                 className="linguee-btn linguee-btn-outline"
-
+                            className="linguee-btn linguee-btn-outline"
                             onClick={() =>
                               setShowGenerateButton(!showGenerateButton)
                             }
@@ -1351,74 +1366,82 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     {/* TÍTULO DO RELATÓRIO */}
+                    <button
+                      className="linguee-btn linguee-btn-outline"
+                      onClick={() => setShowPDFModal(true)}
+                    >
+                      Gerar Relatório PDF
+                    </button>
+                    {showPDFModal && (
+                      <div
+                        style={{
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100vw",
+                          height: "100vh",
+                          background: "rgba(0,0,0,0.3)",
+                          zIndex: 9999,
+                        }}
+                      >
+                        <div
+                          style={{
+                            background: "#fff",
+                            padding: "24px",
+                            borderRadius: "8px",
+                            maxWidth: "350px",
+                            margin: "80px auto",
+                            boxShadow: "0 2px 8px #0002",
+                          }}
+                        >
+                          <h3 style={{ marginBottom: "16px" }}>
+                            Opções do Relatório
+                          </h3>
+                          <label
+                            style={{ display: "block", marginBottom: "8px" }}
+                          >
+                            Tipo:
+                            <select
+                              value={pdfType}
+                              onChange={(e) => setPDFType(e.target.value)}
+                              style={{ marginLeft: "8px" }}
+                            >
+                              <option value="both">Entradas e Saídas</option>
+                              <option value="entradas">Só Entradas</option>
+                              <option value="saidas">Só Saídas</option>
+                            </select>
+                          </label>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "12px",
+                              marginTop: "18px",
+                            }}
+                          >
                             <button
-                                                                      className="linguee-btn linguee-btn-outline"
-
-          onClick={() => setShowPDFModal(true)}
-        >
-          Gerar Relatório PDF
-        </button>
-        {showPDFModal && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100vw",
-              height: "100vh",
-              background: "rgba(0,0,0,0.3)",
-              zIndex: 9999,
-            }}
-          >
-            <div
-              style={{
-                background: "#fff",
-                padding: "24px",
-                borderRadius: "8px",
-                maxWidth: "350px",
-                margin: "80px auto",
-                boxShadow: "0 2px 8px #0002",
-              }}
-            >
-              <h3 style={{ marginBottom: "16px" }}>Opções do Relatório</h3>
-              <label style={{ display: "block", marginBottom: "8px" }}>
-                Tipo:
-                <select
-                  value={pdfType}
-                  onChange={(e) => setPDFType(e.target.value)}
-                  style={{ marginLeft: "8px" }}
-                >
-                  <option value="both">Entradas e Saídas</option>
-                  <option value="entradas">Só Entradas</option>
-                  <option value="saidas">Só Saídas</option>
-                </select>
-              </label>
-              <div style={{ display: "flex", gap: "12px", marginTop: "18px" }}>
-                <button
-                  onClick={generatePDFReport}
-                                          className="linguee-btn linguee-btn-outline"
-
-                >
-                  Gerar PDF
-                </button>
-                <button
-                  onClick={() => setShowPDFModal(false)}
-                  style={{
-                    background: "#eee",
-                    color: "#333",
-                    border: "none",
-                    borderRadius: "4px",
-                    padding: "8px 16px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+                              onClick={generatePDFReport}
+                              className="linguee-btn linguee-btn-outline"
+                            >
+                              Gerar PDF
+                            </button>
+                            <button
+                              onClick={() => setShowPDFModal(false)}
+                              style={{
+                                background: "#eee",
+                                color: "#333",
+                                border: "none",
+                                borderRadius: "4px",
+                                padding: "8px 16px",
+                                fontWeight: "bold",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div
                       style={{
                         display: "flex",
@@ -1586,7 +1609,8 @@ export function FinancialResources({ headers, id }) {
                                       "#daf9e4ff";
                                   }}
                                   onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = "#fff";
+                                    e.currentTarget.style.backgroundColor =
+                                      "#fff";
                                     e.currentTarget.style.borderColor = "#eee";
                                   }}
                                 >
@@ -1908,7 +1932,8 @@ export function FinancialResources({ headers, id }) {
                                       "#fecacaff";
                                   }}
                                   onMouseLeave={(e) => {
-                                    e.currentTarget.style.backgroundColor = "#fff";
+                                    e.currentTarget.style.backgroundColor =
+                                      "#fff";
                                     e.currentTarget.style.borderColor = "#eee";
                                   }}
                                 >
@@ -2438,7 +2463,7 @@ export function FinancialResources({ headers, id }) {
                                     height: "24px",
                                     borderRadius: "50%",
                                     objectFit: "cover",
-                                    opacity: student.onHold ?  0.5 : 1,
+                                    opacity: student.onHold ? 0.5 : 1,
                                     display: isMobile ? "none" : "block",
                                   }}
                                   src={
@@ -3961,8 +3986,6 @@ export function FinancialResources({ headers, id }) {
             </DialogActions>
           </Dialog>
         </section>
-
-
       </div>
     </>
   );
