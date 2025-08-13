@@ -1,30 +1,20 @@
 import React, { useState } from "react";
-import {
-  Button,
-  TextField,
-  Select,
-  MenuItem,
-  Typography,
-  Paper,
-  CircularProgress,
-} from "@mui/material";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
+import { CircularProgress } from "@mui/material";
 
 export function NewPost({ headers }) {
   const [newTitle, setNewTitle] = useState("");
   const [newVideoUrl, setNewVideoUrl] = useState("");
-  const [newImg, setNewImg] = useState("");
   const [newText, setNewText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("Nenhum");
 
-  const handleChooseOption = (event) => {
-    setSelectedOption(event.target.value);
+  const handleTextChange = (htmlContent) => {
+    setNewText(htmlContent);
   };
 
   const handleSubmit = async (event) => {
@@ -33,7 +23,6 @@ export function NewPost({ headers }) {
     let newPost = {
       title: newTitle,
       videoUrl: newVideoUrl,
-      img: newImg,
       text: newText,
     };
     try {
@@ -52,87 +41,190 @@ export function NewPost({ headers }) {
   };
 
   return loading ? (
-    <CircularProgress style={{ color: partnerColor() }} />
+    <div style={{ display: "flex", justifyContent: "center", padding: "2rem" }}>
+      <CircularProgress style={{ color: partnerColor() }} />
+    </div>
   ) : (
-    <div style={{ maxWidth: 600, margin: "auto", padding: 3 }}>
+    <div
+      style={{
+        maxWidth: "800px",
+        margin: "0 auto",
+        padding: "1rem",
+        fontFamily: textTitleFont(),
+      }}
+    >
       <HOne
         style={{
           fontFamily: textTitleFont(),
           color: partnerColor(),
+          textAlign: "center",
+          marginBottom: "2rem",
         }}
       >
         Nova Postagem
       </HOne>
-      <Paper sx={{ padding: 3 }} elevation={3}>
+
+      <div
+        style={{
+          backgroundColor: "#ffffff",
+          border: "1px solid #e2e8f0",
+          borderRadius: "8px",
+          padding: "2rem",
+          boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+        }}
+      >
         <form
           style={{
-            display: "grid",
-            gap: "1rem",
-            fontFamily: textTitleFont(),
+            display: "flex",
+            flexDirection: "column",
+            gap: "1.5rem",
           }}
           onSubmit={handleSubmit}
         >
-          <TextField
-            label="Novo Título"
-            fullWidth
-            variant="outlined"
-            value={newTitle}
-            onChange={(e) => setNewTitle(e.target.value)}
-            required
-          />
-          <Typography variant="body1">
-            Quer adicionar uma imagem/vídeo?
-          </Typography>
-          <Select
-            fullWidth
-            value={selectedOption}
-            onChange={handleChooseOption}
-          >
-            <MenuItem value="Vídeo">Vídeo</MenuItem>
-            <MenuItem value="Imagem">Imagem</MenuItem>
-            <MenuItem value="Nenhum">Nenhum</MenuItem>
-          </Select>
-          {selectedOption === "Imagem" && (
-            <TextField
-              label="Nova Imagem (OPCIONAL)"
-              fullWidth
-              variant="outlined"
-              value={newImg}
-              onChange={(e) => setNewImg(e.target.value)}
+          {/* Título */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#374151",
+              }}
+            >
+              📝 Título da Postagem *
+            </label>
+            <input
+              type="text"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              required
+              placeholder="Digite o título da postagem"
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                fontSize: "16px",
+                outline: "none",
+                transition: "border-color 0.2s",
+                backgroundColor: "#f8fafc",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = partnerColor();
+                e.target.style.backgroundColor = "#ffffff";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#e2e8f0";
+                e.target.style.backgroundColor = "#f8fafc";
+              }}
             />
-          )}
-          {selectedOption === "Vídeo" && (
-            <TextField
-              label="Novo Vídeo do YouTube/Vimeo (OPCIONAL)"
-              fullWidth
-              variant="outlined"
+          </div>
+
+          {/* Vídeo (opcional) */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#374151",
+              }}
+            >
+              📹 URL do Vídeo (YouTube/Vimeo){" "}
+              <span style={{ color: "#888", fontWeight: 400 }}>(opcional)</span>
+            </label>
+            <input
+              type="url"
               value={newVideoUrl}
               onChange={(e) => setNewVideoUrl(e.target.value)}
+              placeholder="Cole aqui a URL do vídeo"
+              style={{
+                width: "100%",
+                padding: "12px",
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                fontSize: "16px",
+                outline: "none",
+                backgroundColor: "#f8fafc",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = partnerColor();
+                e.target.style.backgroundColor = "#ffffff";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#e2e8f0";
+                e.target.style.backgroundColor = "#f8fafc";
+              }}
             />
-          )}
-          <TextField
-            label="Texto"
-            fullWidth
-            multiline
-            rows={5}
-            variant="outlined"
-            value={newText}
-            onChange={(e) => setNewText(e.target.value)}
-            required
-          />
-          <span
+          </div>
+
+          {/* Editor de Texto */}
+          <div>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "0.5rem",
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#374151",
+              }}
+            >
+              ✍️ Conteúdo da Postagem *
+            </label>
+            <div
+              style={{
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                backgroundColor: "#ffffff",
+                minHeight: "300px",
+                overflow: "hidden",
+              }}
+            >
+              <HTMLEditor onChange={handleTextChange} initialContent={"."} />
+            </div>
+          </div>
+
+          {/* Botão Submit */}
+          <div
             style={{
               display: "flex",
-              justifyContent: "end",
-              alignItems: "center",
+              justifyContent: "flex-end",
+              marginTop: "1rem",
             }}
           >
-            <ArvinButton color={partnerColor()} type="submit">
-              Criar
-            </ArvinButton>
-          </span>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: partnerColor(),
+                color: "#ffffff",
+                border: "none",
+                padding: "12px 24px",
+                borderRadius: "6px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+              onMouseOver={(e) => {
+                e.target.style.transform = "translateY(-1px)";
+                e.target.style.boxShadow = "0 4px 12px rgba(0, 0, 0, 0.15)";
+              }}
+              onMouseOut={(e) => {
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "none";
+              }}
+            >
+              <i className="fa fa-plus" />
+              Criar Postagem
+            </button>
+          </div>
         </form>
-      </Paper>
+      </div>
     </div>
   );
 }

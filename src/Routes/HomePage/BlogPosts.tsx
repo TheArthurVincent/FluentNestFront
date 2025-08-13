@@ -25,6 +25,7 @@ import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
 
 interface BlogPostsProps {
   headers: MyHeadersType | null;
@@ -231,7 +232,33 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                       marginTop: "1rem",
                     }}
                   >
-                    <IFrameAsaas src={getVideoEmbedUrl(post.videoUrl)} />
+                    <div
+                      style={{
+                        position: "relative",
+                        width: "100%",
+                        paddingBottom: "56.25%", // 16:9 aspect ratio
+                        height: 0,
+                        overflow: "hidden",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        backgroundColor: "#000",
+                      }}
+                    >
+                      <iframe
+                        src={getEmbedUrl(post.videoUrl)}
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          border: "none",
+                          borderRadius: "8px",
+                        }}
+                        allowFullScreen
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      />
+                    </div>
                   </div>
                 ) : post.img ? (
                   <ImgBlog src={post.img} alt="logo" />

@@ -634,7 +634,18 @@ export const TopBar: FC = () => {
             zIndex: 100000,
           }}
         />
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+       
+      </div>
+      <Modal sx={modalStyle} open={modalOpen} onClose={handleClose}>
+        <div>
+          <Link target="_blank" to={selectedNotification.link}>
+            <HTwo>{selectedNotification.message}</HTwo>
+          </Link>
+          <HThree>{formatDateBr(selectedNotification.date)}</HThree>
+          <ArvinButton onClick={handleClose}>x</ArvinButton>
+        </div>
+      </Modal>
+       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <form>
             <select
               id="language"
@@ -651,16 +662,6 @@ export const TopBar: FC = () => {
             {UniversalTexts.leaveButton}
           </ArvinButton>
         </div>
-      </div>
-      <Modal sx={modalStyle} open={modalOpen} onClose={handleClose}>
-        <div>
-          <Link target="_blank" to={selectedNotification.link}>
-            <HTwo>{selectedNotification.message}</HTwo>
-          </Link>
-          <HThree>{formatDateBr(selectedNotification.date)}</HThree>
-          <ArvinButton onClick={handleClose}>x</ArvinButton>
-        </div>
-      </Modal>
     </TopBarContainer>
   );
 };
