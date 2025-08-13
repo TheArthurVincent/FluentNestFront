@@ -77,7 +77,7 @@ export function NewHomeworkAssignment({ headers, id }) {
       setTutorings([]);
       setNewHWDescription("");
       handleHWDescriptionChange("");
-      setEditorKey(prev => prev + 1); // Force HTMLEditor re-render
+      setEditorKey((prev) => prev + 1); // Force HTMLEditor re-render
       setButton("Criar");
     } catch (error) {
       setButton("Criar");
@@ -103,7 +103,7 @@ export function NewHomeworkAssignment({ headers, id }) {
       setNewFlashcardsList("");
       setDueDate(new Date().toISOString().split("T")[0]);
       setSelectedStudentID("");
-      setEditorKey(prev => prev + 1); // Force HTMLEditor re-render
+      setEditorKey((prev) => prev + 1); // Force HTMLEditor re-render
       setLoadingHW(false);
       console.log({
         description: newHWDescription,
@@ -123,7 +123,7 @@ export function NewHomeworkAssignment({ headers, id }) {
   };
 
   return (
-    <div style={{ background: "#fff"}}>
+    <div style={{ background: "#fff" }}>
       <HOne>Postar Homework</HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
@@ -180,7 +180,7 @@ export function NewHomeworkAssignment({ headers, id }) {
             >
               <HTMLEditor
                 key={editorKey} // Force re-render when key changes
-                initialContent={newHWDescription}
+                initialContent={"Type here"}
                 onChange={handleHWDescriptionChange}
               />
             </div>

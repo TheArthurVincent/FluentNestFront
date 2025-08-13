@@ -226,7 +226,10 @@ export function ManageGroupClasses({ headers }) {
             value={newGoogleDriveLink}
             onChange={(e) => setNewGoogleDriveLink(e.target.value)}
           />
-          <HTMLEditor onChange={handleDescriptionChange} />
+          <HTMLEditor
+            onChange={handleDescriptionChange}
+            initialContent={"Type here"}
+          />
           <Button onClick={() => postNewClass()}>Salvar</Button>
         </div>
       </div>

@@ -13,76 +13,28 @@ function HTMLEditor({ onChange, initialContent }) {
       theme: "snow",
       modules: {
         toolbar: false,
-        keyboard: {
-          bindings: {
-            bold: {
-              key: "B",
-              shortKey: true,
-              handler: function (range, context) {
-                this.quill.format("bold", !context.format.bold);
-              },
-            },
-            italic: {
-              key: "I",
-              shortKey: true,
-              handler: function (range, context) {
-                this.quill.format("italic", !context.format.italic);
-              },
-            },
-            underline: {
-              key: "U",
-              shortKey: true,
-              handler: function (range, context) {
-                this.quill.format("underline", !context.format.underline);
-              },
-            },
-            header1: {
-              key: "1",
-              shortKey: true,
-              shiftKey: true,
-              handler: function (range, context) {
-                this.quill.format(
-                  "header",
-                  context.format.header === 1 ? false : 1
-                );
-              },
-            },
-            orderedList: {
-              key: "7",
-              shortKey: true,
-              shiftKey: true,
-              handler: function (range, context) {
-                this.quill.format(
-                  "list",
-                  context.format.list === "ordered" ? false : "ordered"
-                );
-              },
-            },
-            bulletList: {
-              key: "8",
-              shortKey: true,
-              shiftKey: true,
-              handler: function (range, context) {
-                this.quill.format(
-                  "list",
-                  context.format.list === "bullet" ? false : "bullet"
-                );
-              },
-            },
-          },
-        },
       },
     });
 
-    // Force left-to-right text direction
+    // Simple LTR setup
     quill.root.setAttribute("dir", "ltr");
-    quill.root.style.textAlign = "left";
     quill.root.style.direction = "ltr";
+    quill.root.style.textAlign = "left";
+
+    // Force LTR on the actual editor element
+    const editorElement = quill.root.querySelector(".ql-editor");
+    if (editorElement) {
+      editorElement.setAttribute("dir", "ltr");
+      editorElement.style.direction = "ltr";
+      editorElement.style.textAlign = "left";
+    }
 
     setEditor(quill);
 
     return () => {
-      quill.off("text-change");
+      if (quill) {
+        quill.off("text-change");
+      }
     };
   }, []);
 
@@ -90,8 +42,15 @@ function HTMLEditor({ onChange, initialContent }) {
     if (!editor) return;
 
     const handleChange = () => {
-      const htmlContent =
-        editorRef.current.querySelector(".ql-editor").innerHTML;
+      const htmlContent = editor.root.innerHTML;
+
+      // Quick LTR check after each change
+      if (editor.root.style.direction !== "ltr") {
+        editor.root.setAttribute("dir", "ltr");
+        editor.root.style.direction = "ltr";
+        editor.root.style.textAlign = "left";
+      }
+
       onChange(htmlContent);
     };
 
@@ -105,25 +64,33 @@ function HTMLEditor({ onChange, initialContent }) {
   useEffect(() => {
     if (!editor || !initialContent) return;
 
-    // Set initial content if provided
+    // Set content and immediately force LTR
     editor.root.innerHTML = initialContent;
+    editor.root.setAttribute("dir", "ltr");
+    editor.root.style.direction = "ltr";
+    editor.root.style.textAlign = "left";
+
+    const editorElement = editor.root.querySelector(".ql-editor");
+    if (editorElement) {
+      editorElement.setAttribute("dir", "ltr");
+      editorElement.style.direction = "ltr";
+      editorElement.style.textAlign = "left";
+    }
   }, [editor, initialContent]);
 
   const memoizedEditor = useMemo(() => {
     return (
-      <>
-        <div
-          ref={editorRef}
-          style={{
-            height: "98.5%",
-            marginTop: "1rem",
-            fontSize: "12px",
-            width: "100%",
-            direction: "ltr",
-            textAlign: "left",
-          }}
-        />
-      </>
+      <div
+        ref={editorRef}
+        style={{
+          height: "98.5%",
+          marginTop: "1rem",
+          fontSize: "12px",
+          width: "100%",
+          direction: "ltr",
+          textAlign: "left",
+        }}
+      />
     );
   }, []);
 

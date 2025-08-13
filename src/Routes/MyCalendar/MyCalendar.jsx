@@ -2478,7 +2478,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   onChange={
                                                     handleHomeworkChange
                                                   }
-                                                  initialContent={homework}
+                                                  initialContent={"Type here"}
                                                 />
                                               </div>
                                             </div>

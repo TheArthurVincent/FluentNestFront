@@ -335,16 +335,27 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       {isAllowed && (
         <div
           style={{
-            padding: "1rem",
+            padding: window.innerWidth <= 768 ? "0.75rem" : "1rem",
             backgroundColor: alwaysWhite(),
             borderBottom: "1px solid #e2e8f0",
             display: "flex",
+            flexDirection: window.innerWidth <= 768 ? "column" : "row",
             justifyContent: "center",
             alignItems: "center",
-            gap: "0.5rem",
+            gap: window.innerWidth <= 768 ? "0.75rem" : "0.5rem",
             marginBottom: "1rem",
           }}
         >
+          <label
+            style={{
+              fontSize: window.innerWidth <= 768 ? "14px" : "13px",
+              color: "#64748b",
+              fontWeight: "500",
+              textAlign: window.innerWidth <= 768 ? "center" : "left",
+            }}
+          >
+            {UniversalTexts?.selectStudent || "Selecionar Aluno:"}
+          </label>
           <select
             onChange={handleStudentChange}
             value={studentID}
@@ -352,12 +363,12 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               borderRadius: "4px",
               border: "1px solid #e2e8f0",
               backgroundColor: "#f8fafc",
-              fontSize: "13px",
+              fontSize: window.innerWidth <= 768 ? "14px" : "13px",
               fontWeight: "400",
               color: "#64748b",
-              padding: "6px 8px",
-              minWidth: "200px",
-              maxWidth: "300px",
+              padding: window.innerWidth <= 768 ? "10px 12px" : "6px 8px",
+              minWidth: window.innerWidth <= 768 ? "280px" : "200px",
+              maxWidth: window.innerWidth <= 768 ? "100%" : "300px",
               outline: "none",
               cursor: "pointer",
             }}
