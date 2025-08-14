@@ -717,11 +717,10 @@ const ReviewFlashCards = ({
                 margin: "1rem 0",
               }}
             >
-              <ArvinButton
+              <button
                 style={{
-                  fontSize: "14px",
-                  padding: "0.75rem 1.5rem",
-                  borderRadius: "6px",
+                  backgroundColor: partnerColor(),
+                  color: textPrimaryColorContrast(),
                 }}
                 onClick={seeCardsToReview}
               >
@@ -730,7 +729,7 @@ const ReviewFlashCards = ({
                 ) : (
                   <i className="fa fa-refresh" aria-hidden="true" />
                 )}
-              </ArvinButton>
+              </button>
             </div>
 
             {/* Controls */}

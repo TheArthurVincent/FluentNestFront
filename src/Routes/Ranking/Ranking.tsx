@@ -10,7 +10,6 @@ import RankingTimeline from "./RankingComponents/RankingTimeline";
 import StudentsRankingTotal from "./RankingComponents/StudentsRankingTotal";
 import Helmets from "../../Resources/Helmets";
 import StudentsRanking from "./RankingComponents/StudentsRanking";
-import StudentsHistoryOfWinners from "./RankingComponents/StudentsHistoryOfWinners";
 import Countdown from "./RankingComponents/Countdown";
 import { monthInQuestion } from "./RankingComponents/RankingComponents";
 import { onLoggOut } from "../../Resources/UniversalComponents";
@@ -60,16 +59,16 @@ export default function Ranking({ headers }: HeadersProps) {
       value: "4",
       component: <RankingExplanation />,
     },
-    {
-      title: "History",
-      value: "5",
-      component: (
-        <StudentsHistoryOfWinners
-          monthNow={monthInQuestion}
-          headers={headers}
-        />
-      ),
-    },
+    // {
+    //   title: "History",
+    //   value: "5",
+    //   component: (
+    //     <StudentsHistoryOfWinners
+    //       monthNow={monthInQuestion}
+    //       headers={headers}
+    //     />
+    //   ),
+    // },
   ];
   const handleChange = (event: any, newValue: string) => {
     event.preventDefault();
