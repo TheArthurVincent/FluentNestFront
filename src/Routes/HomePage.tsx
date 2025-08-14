@@ -133,7 +133,7 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "Words of The Day",
-      component: <WordOfTheDayList headers={headers} />,
+      component: <WordOfTheDayList />,
     },
     {
       title: "Homework",

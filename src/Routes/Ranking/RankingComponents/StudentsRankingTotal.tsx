@@ -37,7 +37,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
     });
   };
   const actualHeaders = headers || {};
-  const [ID, setID] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [FIRST, setFIRST] = useState(true);
@@ -45,9 +44,11 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const fetchStudents = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
+    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
+
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/scorestotalranking?page=${page}&limit=10`,
+        `${backDomain}/api/v1/scorestotalranking/${id}?page=${page}&limit=10`,
         {
           headers: actualHeaders,
         }
@@ -106,15 +107,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
     fetchStudents();
   }, []);
 
-  const verifySee = (adm: string, score: number) => {
-    if (adm == "superadmin") {
-      return "block";
-    } else if (score >= 10000) {
-      return "block";
-    } else {
-      return "none";
-    }
-  };
   return (
     <div style={{ display: "grid" }}>
       {loading && FIRST ? (

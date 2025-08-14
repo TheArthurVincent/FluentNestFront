@@ -252,10 +252,11 @@ export default function StudentsRanking({
   const fetchStudentsScore = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
+    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/scoresranking/?page=${page}`,
+        `${backDomain}/api/v1/scoresranking/${id}?page=${page}`,
         {
           headers: actualHeaders,
         }
