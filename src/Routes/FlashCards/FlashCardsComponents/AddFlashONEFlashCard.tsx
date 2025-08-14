@@ -15,6 +15,7 @@ interface AddOneFlashCardProps {
   handleBackCardChange: (index: number, value: string) => void;
   handleLanguageFrontChange: (index: number, value: string) => void;
   handleLanguageBackChange: (index: number, value: string) => void;
+  handleRemoveCard: (index: number) => void;
 }
 
 const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
@@ -29,6 +30,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
   handleBackCardChange,
   handleLanguageFrontChange,
   handleLanguageBackChange,
+  handleRemoveCard,
 }) => {
   const inputStyle = {
     borderRadius: "4px",
@@ -67,6 +69,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
         margin: "1rem 0",
         backgroundColor: "#ffffff",
         boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
+        position: "relative",
       }}
     >
       <h3
@@ -80,6 +83,27 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
       >
         Card #{index + 1}
       </h3>
+
+      {/* Botão de excluir card */}
+      <button
+        type="button"
+        onClick={() => handleRemoveCard(index)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          background: "#ef4444",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px",
+          padding: "4px 8px",
+          cursor: "pointer",
+          fontSize: "12px",
+        }}
+        title="Excluir este card"
+      >
+        Excluir
+      </button>
 
       {/* Front Card */}
       <div style={{ marginBottom: "1rem" }}>
@@ -107,7 +131,9 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
               placeholder="Enter front text"
               onChange={(e) => handleFrontCardChange(index, e.target.value)}
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor = partnerColor())
+              }
               onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
             />
           </div>
@@ -115,7 +141,9 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
             value={languageFront}
             onChange={(e) => handleLanguageFrontChange(index, e.target.value)}
             style={selectStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
+            onFocus={(e) =>
+              (e.currentTarget.style.borderColor = partnerColor())
+            }
             onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
           >
             {languages.map((language, langIndex) => (
@@ -153,7 +181,9 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
               placeholder="Enter back text"
               onChange={(e) => handleBackCardChange(index, e.target.value)}
               style={inputStyle}
-              onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor = partnerColor())
+              }
               onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
             />
           </div>
@@ -161,7 +191,9 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
             value={languageBack}
             onChange={(e) => handleLanguageBackChange(index, e.target.value)}
             style={selectStyle}
-            onFocus={(e) => (e.currentTarget.style.borderColor = partnerColor())}
+            onFocus={(e) =>
+              (e.currentTarget.style.borderColor = partnerColor())
+            }
             onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
           >
             {languages.map((language, langIndex) => (

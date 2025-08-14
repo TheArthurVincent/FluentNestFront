@@ -34,26 +34,35 @@ interface AddFlashCardsProps {
   display: string | null;
   selectedStudentId: string;
 }
-const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsProps) => {
+const AddFlashCards = ({
+  headers,
+  display,
+  selectedStudentId,
+}: AddFlashCardsProps) => {
   const { UniversalTexts } = useUserContext();
-  
+
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [myId, setMyId] = useState<string>("");
   const [addCardVisible, setAddCardVisible] = useState<boolean>(true);
-  const [cards, setCards] = useState<FlashCard[]>([]);
+  const [cards, setCards] = useState<FlashCard[]>([
+    {
+      frontCard: "",
+      backCard: "",
+      languageFront: "en",
+      languageBack: "pt",
+      backComments: "",
+    },
+  ]);
   const [myPermissions, setPermissions] = useState<string>("");
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
       const { permissions, id } = JSON.parse(user);
-      setMyId(id);
       setPermissions(permissions);
     }
   }, []);
 
   const actualHeaders = headers || {};
-  const [loading, setLoading] = useState<Boolean>(false);
 
   const addNewCard = () => {
     setCards([
@@ -98,8 +107,17 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
     setCards(newCards);
   };
 
+  // Remove um card pelo índice
+  const handleRemoveCard = (index: number) => {
+    setCards(cards.filter((_, i) => i !== index));
+  };
+
   const addNewCards = async () => {
-    const newCards = cards.map((card) => ({
+    // Filtra cards que tenham frente e verso preenchidos
+    const filteredCards = cards.filter(
+      (card) => card.frontCard.trim() !== "" && card.backCard.trim() !== ""
+    );
+    const newCards = filteredCards.map((card) => ({
       backComments: card.backComments,
       front: {
         text: card.frontCard,
@@ -118,7 +136,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
       );
 
       const showThis =
-        `${
+        `$${
           response.data.addedNewFlashcards
             ? response.data.addedNewFlashcards
             : ""
@@ -178,6 +196,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                     handleLanguageFrontChange={handleLanguageFrontChange}
                     handleLanguageBackChange={handleLanguageBackChange}
                     handleCommentsBack={handleCommentsBack}
+                    handleRemoveCard={handleRemoveCard}
                   />
                 ))}
               </div>
@@ -195,9 +214,8 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                     {UniversalTexts?.addAllCards || "Add all cards"}
                   </ArvinButton>
                 )}
-
                 <ArvinButton color={partnerColor()} onClick={addNewCard}>
-                  {UniversalTexts?.addMoreCards || "Adicionar mais um card"}
+                  +
                 </ArvinButton>
               </span>
             </div>
@@ -211,51 +229,71 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
         fullWidth
       >
         <DialogTitle>
-          {UniversalTexts?.confirmAddFlashcards || "Confirmar adição de flashcards"}
+          {UniversalTexts?.confirmAddFlashcards ||
+            "Confirmar adição de flashcards"}
         </DialogTitle>
         <DialogContent dividers>
-          {cards.length === 0 ? (
-            <p>{UniversalTexts?.noCardsCreated || "Nenhum card criado."}</p>
-          ) : (
-            <ul
-              style={{
-                maxHeight: "15rem",
-                overflow: "auto",
-                paddingLeft: 0,
-                display: "grid",
-                gap: "1rem",
-              }}
-            >
-              {cards.map((card, index) => (
-                <li
-                  key={index}
-                  style={{
-                    listStyle: "none",
-                    padding: "1rem",
-                    border: "1px solid #ccc",
-                    borderRadius: "8px",
-                    backgroundColor: "#f9f9f9",
-                    boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
-                  }}
-                >
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>📝 {UniversalTexts?.front || "Front"}:</strong> {card.frontCard}
-                  </p>
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>💬 {UniversalTexts?.backCard || "Back"}:</strong> {card.backCard}
-                  </p>
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>🧠 {UniversalTexts?.comment || "Comentário"}:</strong>{" "}
-                    {card.backComments ? card.backComments : <i>{UniversalTexts?.none || "Nenhum"}</i>}
-                  </p>
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>🌐 {UniversalTexts?.languages || "Idiomas"}:</strong> {card.languageFront} →{" "}
-                    {card.languageBack}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
+          {(() => {
+            const filteredCards = cards.filter(
+              (card) =>
+                card.frontCard.trim() !== "" && card.backCard.trim() !== ""
+            );
+            if (filteredCards.length === 0) {
+              return (
+                <p>{UniversalTexts?.noCardsCreated || "Nenhum card criado."}</p>
+              );
+            }
+            return (
+              <ul
+                style={{
+                  maxHeight: "15rem",
+                  overflow: "auto",
+                  paddingLeft: 0,
+                  display: "grid",
+                  gap: "1rem",
+                }}
+              >
+                {filteredCards.map((card, index) => (
+                  <li
+                    key={index}
+                    style={{
+                      listStyle: "none",
+                      padding: "1rem",
+                      border: "1px solid #ccc",
+                      borderRadius: "8px",
+                      backgroundColor: "#f9f9f9",
+                      boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
+                    }}
+                  >
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>📝 {UniversalTexts?.front || "Front"}:</strong>{" "}
+                      {card.frontCard}
+                    </p>
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>💬 {UniversalTexts?.backCard || "Back"}:</strong>{" "}
+                      {card.backCard}
+                    </p>
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>
+                        🧠 {UniversalTexts?.comment || "Comentário"}:
+                      </strong>{" "}
+                      {card.backComments ? (
+                        card.backComments
+                      ) : (
+                        <i>{UniversalTexts?.none || "Nenhum"}</i>
+                      )}
+                    </p>
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>
+                        🌐 {UniversalTexts?.languages || "Idiomas"}:
+                      </strong>{" "}
+                      {card.languageFront} → {card.languageBack}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            );
+          })()}
         </DialogContent>
         <DialogActions>
           <ArvinButton color="gray" onClick={() => setShowConfirmation(false)}>
