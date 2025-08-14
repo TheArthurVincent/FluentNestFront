@@ -15,7 +15,11 @@ import {
 } from "../../Resources/UniversalComponents";
 
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
-import { logoPartner, partnerColor } from "../../Styles/Styles";
+import {
+  logoPartner,
+  partnerColor,
+  textPrimaryColorContrast,
+} from "../../Styles/Styles";
 import { LinkItem } from "./TopBarTypes";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 import axios from "axios";
@@ -665,7 +669,13 @@ export const TopBar: FC = () => {
             <option value="pt">PT-BR</option>
           </select>
         </form>
-        <button onClick={onLoggOut}>
+        <button
+          onClick={onLoggOut}
+          style={{
+            backgroundColor: partnerColor(),
+            color: textPrimaryColorContrast(),
+          }}
+        >
           {" "}
           {UniversalTexts.leaveButton}
         </button>
