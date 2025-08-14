@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   lightGreyColor,
   partnerColor,
-  textTitleFont,
   textPrimaryColorContrast,
 } from "../../../Styles/Styles";
 import axios from "axios";
@@ -10,6 +9,7 @@ import { backDomain, formatDate } from "../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 interface RankingTimeLineProps {
   headers: MyHeadersType | null;
@@ -29,6 +29,7 @@ export default function RankingTimeline({
   const [actualName, setActualName] = useState<string>(name);
   const [newID, setNewID] = useState<string>(id);
   const [loading, setLoading] = useState<boolean>(true);
+  const { UniversalTexts } = useUserContext();
 
   const actualHeaders = headers || {};
 
@@ -121,26 +122,29 @@ export default function RankingTimeline({
           flexWrap: "wrap",
         }}
       >
-        <HOne>Histórico de Pontuação - {actualName}</HOne>
+        <HOne>
+          {UniversalTexts.rankingHistory} - {actualName}
+        </HOne>
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          {permissions === "superadmin" && (
-            <select
-              onChange={handleStudentChange}
-              value={newID}
-              style={{
-                padding: "0.5rem",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                fontWeight: 500,
-              }}
-            >
-              {studentsList.map((student: any, index: number) => (
-                <option key={index} value={student.id}>
-                  {student.name + " " + student.lastname}
-                </option>
-              ))}
-            </select>
-          )}
+          {permissions === "superadmin" ||
+            (permissions === "teacher" && (
+              <select
+                onChange={handleStudentChange}
+                value={newID}
+                style={{
+                  padding: "0.5rem",
+                  borderRadius: "6px",
+                  border: "1px solid #ccc",
+                  fontWeight: 500,
+                }}
+              >
+                {studentsList.map((student: any, index: number) => (
+                  <option key={index} value={student.id}>
+                    {student.name + " " + student.lastname}
+                  </option>
+                ))}
+              </select>
+            ))}
         </div>
       </div>
 

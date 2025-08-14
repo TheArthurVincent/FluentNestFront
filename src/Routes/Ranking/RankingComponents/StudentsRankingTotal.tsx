@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatedLi2, HTwo } from "../../../Resources/Components/RouteBox";
+import { AnimatedLi2 } from "../../../Resources/Components/RouteBox";
 import {
   ImgResponsive3,
   backDomain,
@@ -17,7 +17,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const [students, setStudents] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const theItems = levels();
-  const [isAdm, setIsAdm] = useState<string>("student");
 
   const [showInfo, setShowInfo] = useState<{
     [key: number]: { [key: string]: boolean };
@@ -26,13 +25,10 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const toggleInfo = (type: "points" | "hw" | "fc", index: number) => {
     setShowInfo((prevState) => {
       const newState = { ...prevState };
-
       if (!newState[index]) {
         newState[index] = { points: false, hw: false, fc: false };
       }
-
       newState[index][type] = !newState[index][type];
-
       return newState;
     });
   };

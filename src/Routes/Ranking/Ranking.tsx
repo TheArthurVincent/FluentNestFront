@@ -125,7 +125,7 @@ export default function Ranking({ headers }: HeadersProps) {
             })}
           </TabList>
         </div>
-        <Countdown targetDate={targetDate} text="Score resets on" />
+        <Countdown targetDate={targetDate} text={""} />
         {componentsToRender.map((component, index) => {
           return (
             <TabPanel
