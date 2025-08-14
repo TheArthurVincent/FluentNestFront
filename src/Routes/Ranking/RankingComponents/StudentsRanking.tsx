@@ -21,6 +21,7 @@ import { listOfButtons } from "./ListOfCriteria";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HThree } from "../../MyClasses/MyClasses.Styled";
 import styled, { keyframes } from "styled-components";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 interface StudentsRankingProps {
   headers: MyHeadersType | null;
@@ -253,6 +254,7 @@ export default function StudentsRanking({
     if (!hasMore || loading) return;
     setLoading(true);
     const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
+    const { UniversalTexts } = useUserContext();
 
     try {
       const response = await axios.get(
