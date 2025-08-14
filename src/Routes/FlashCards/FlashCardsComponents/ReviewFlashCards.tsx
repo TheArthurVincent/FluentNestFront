@@ -465,10 +465,12 @@ const ReviewFlashCards = ({
                       <>
                         <button
                           disabled={isDisabled}
-                          color={isDisabled ? "grey" : partnerColor()}
                           style={{
                             cursor: isDisabled ? "not-allowed" : "pointer",
-                            color: textPrimaryColorContrast(),
+                            color: isDisabled ? "grey" : textPrimaryColorContrast(),
+                            backgroundColor: isDisabled
+                              ? "#ccc"
+                              : partnerColor(),
                           }}
                           onClick={() => {
                             setBackCardVisible(!backCardVisible);
