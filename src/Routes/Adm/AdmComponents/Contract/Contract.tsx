@@ -205,11 +205,7 @@ export function Contract({ headers }: HeadersProps) {
             style={{ padding: "1rem", fontSize: "11px" }}
             id="contract-content"
           >
-            <HOne
-              style={{ fontFamily: textTitleFont(), color: partnerColor() }}
-            >
-              Contrato de Aulas Particulares
-            </HOne>
+            <HOne>Contrato de Aulas Particulares</HOne>
 
             <div
               style={{

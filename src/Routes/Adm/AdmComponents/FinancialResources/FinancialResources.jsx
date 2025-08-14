@@ -48,10 +48,6 @@ import {
   textTitleFont,
 } from "../../../../Styles/Styles";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
-import {
-  ArvinButton,
-  MyButton,
-} from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
@@ -2794,7 +2790,7 @@ export function FinancialResources({ headers, id }) {
                 >
                   Novo Custo Mensal
                 </h2>
-                <ArvinButton
+                <button
                   onClick={handleNewCostModal}
                   style={{
                     minWidth: "auto",
@@ -2802,7 +2798,7 @@ export function FinancialResources({ headers, id }) {
                   }}
                 >
                   X
-                </ArvinButton>
+                </button>
               </div>
             </DialogTitle>
 
@@ -2937,7 +2933,7 @@ export function FinancialResources({ headers, id }) {
                 >
                   Detalhes do Custo
                 </div>
-                <ArvinButton
+                <button
                   onClick={() => handleCostDetailModal()}
                   style={{
                     minWidth: "auto",
@@ -2946,7 +2942,7 @@ export function FinancialResources({ headers, id }) {
                   }}
                 >
                   X
-                </ArvinButton>
+                </button>
               </div>
             </DialogTitle>
 
@@ -3102,7 +3098,7 @@ export function FinancialResources({ headers, id }) {
               {!showDeleteConfirmation && !isEditingCost && (
                 <>
                   <div style={{ display: "flex", gap: "8px" }}>
-                    <ArvinButton
+                    <button
                       onClick={() => {
                         setIsEditingCost(true);
                       }}
@@ -3114,8 +3110,8 @@ export function FinancialResources({ headers, id }) {
                       }}
                     >
                       ✏️ Editar
-                    </ArvinButton>
-                    <ArvinButton
+                    </button>
+                    <button
                       onClick={() => setShowDeleteConfirmation(true)}
                       color="grey"
                       style={{
@@ -3126,9 +3122,9 @@ export function FinancialResources({ headers, id }) {
                       }}
                     >
                       🗑️ Excluir
-                    </ArvinButton>
+                    </button>
                   </div>
-                  <ArvinButton
+                  <button
                     onClick={() => handleCostDetailModal()}
                     style={{
                       fontSize: "12px",
@@ -3138,13 +3134,13 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Fechar
-                  </ArvinButton>
+                  </button>
                 </>
               )}
 
               {isEditingCost && !showDeleteConfirmation && (
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <ArvinButton
+                  <button
                     onClick={() => {
                       setIsEditingCost(false);
                       if (selectedCost) {
@@ -3161,8 +3157,8 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Cancelar
-                  </ArvinButton>
-                  <ArvinButton
+                  </button>
+                  <button
                     onClick={() =>
                       selectedCost &&
                       handleEditCost(
@@ -3187,13 +3183,13 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Salvar
-                  </ArvinButton>
+                  </button>
                 </div>
               )}
 
               {showDeleteConfirmation && (
                 <div style={{ display: "flex", gap: "12px" }}>
-                  <ArvinButton
+                  <button
                     onClick={() => setShowDeleteConfirmation(false)}
                     style={{
                       color: "#6b7280",
@@ -3205,8 +3201,8 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Não
-                  </ArvinButton>
-                  <ArvinButton
+                  </button>
+                  <button
                     onClick={() =>
                       selectedCost &&
                       handleDeleteCost(
@@ -3224,7 +3220,7 @@ export function FinancialResources({ headers, id }) {
                     }}
                   >
                     Sim, excluir
-                  </ArvinButton>
+                  </button>
                 </div>
               )}
             </DialogActions>
@@ -3264,7 +3260,7 @@ export function FinancialResources({ headers, id }) {
                 >
                   Editar Relatório Financeiro
                 </h2>
-                <ArvinButton
+                <button
                   onClick={() => handleFinancialReportModal()}
                   style={{
                     minWidth: "auto",
@@ -3272,7 +3268,7 @@ export function FinancialResources({ headers, id }) {
                   }}
                 >
                   x
-                </ArvinButton>
+                </button>
               </div>
             </DialogTitle>
 
@@ -3675,7 +3671,7 @@ export function FinancialResources({ headers, id }) {
                 >
                   Novo Item Financeiro: {transformMonth(selectedMonth)}
                 </h2>
-                <ArvinButton
+                <button
                   onClick={handleNewItemModal}
                   style={{
                     minWidth: "auto",
@@ -3683,7 +3679,7 @@ export function FinancialResources({ headers, id }) {
                   }}
                 >
                   x{" "}
-                </ArvinButton>
+                </button>
               </div>
             </DialogTitle>
 

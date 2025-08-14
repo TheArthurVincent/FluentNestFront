@@ -160,14 +160,7 @@ export default function GroupClasses({ headers }) {
       <>
         {!loading ? (
           <>
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              {UniversalTexts.previousGroupClasses}
-            </HOne>
+            <HOne>{UniversalTexts.previousGroupClasses}</HOne>
             <span
               style={{
                 display: "flex",

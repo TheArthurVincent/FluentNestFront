@@ -15,9 +15,12 @@ import {
 } from "../../Resources/UniversalComponents";
 
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
-import { logoPartner, partnerColor } from "../../Styles/Styles";
+import {
+  logoPartner,
+  partnerColor,
+  textPrimaryColorContrast,
+} from "../../Styles/Styles";
 import { LinkItem } from "./TopBarTypes";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 import axios from "axios";
 import { Modal } from "@mui/material";
@@ -28,7 +31,10 @@ import { isArvin } from "../../App";
 export const TopBar: FC = () => {
   const [visible, setVisible] = useState<string>("none");
   const context = useUserContext();
-  const { handleLanguageChange, UniversalTexts } = context || { handleLanguageChange: () => {}, UniversalTexts: {} };
+  const { handleLanguageChange, UniversalTexts } = context || {
+    handleLanguageChange: () => {},
+    UniversalTexts: {},
+  };
   const [permissions, setPermissions] = useState<string>("");
   const [theNotifications, setNotifications] = useState<number>(0);
   const [id, setid] = useState<string>("");
@@ -634,34 +640,46 @@ export const TopBar: FC = () => {
             zIndex: 100000,
           }}
         />
-       
       </div>
       <Modal sx={modalStyle} open={modalOpen} onClose={handleClose}>
-        <div>
+        <div
+          style={{
+            backgroundColor: "white",
+            display: "flex",
+            flexDirection: "column",
+            padding: "10px",
+          }}
+        >
+          <button onClick={handleClose}>x</button>
           <Link target="_blank" to={selectedNotification.link}>
             <HTwo>{selectedNotification.message}</HTwo>
           </Link>
           <HThree>{formatDateBr(selectedNotification.date)}</HThree>
-          <ArvinButton onClick={handleClose}>x</ArvinButton>
         </div>
       </Modal>
-       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <form>
-            <select
-              id="language"
-              name="language"
-              onChange={(e) => handleLanguageChange(e.target.value)}
-              defaultValue="en"
-            >
-              <option value="en">EN-US</option>
-              <option value="pt">PT-BR</option>
-            </select>
-          </form>
-          <ArvinButton onClick={onLoggOut}>
-            {" "}
-            {UniversalTexts.leaveButton}
-          </ArvinButton>
-        </div>
+      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <form>
+          <select
+            id="language"
+            name="language"
+            onChange={(e) => handleLanguageChange(e.target.value)}
+            defaultValue="en"
+          >
+            <option value="en">EN-US</option>
+            <option value="pt">PT-BR</option>
+          </select>
+        </form>
+        <button
+          onClick={onLoggOut}
+          style={{
+            backgroundColor: partnerColor(),
+            color: textPrimaryColorContrast(),
+          }}
+        >
+          {" "}
+          {UniversalTexts.leaveButton}
+        </button>
+      </div>
     </TopBarContainer>
   );
 };

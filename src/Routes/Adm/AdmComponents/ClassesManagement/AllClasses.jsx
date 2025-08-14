@@ -66,14 +66,7 @@ export function AllClasses({ headers }) {
 
   return (
     <>
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Aulas gravadas
-      </HOne>
+      <HOne>Aulas gravadas</HOne>
       <Modal
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}

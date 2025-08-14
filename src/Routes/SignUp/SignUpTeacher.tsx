@@ -226,14 +226,7 @@ export default function SignUpTeacher() {
 
   return (
     <div style={styles.container}>
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Cadastro
-      </HOne>
+      <HOne>Cadastro</HOne>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.grid}>
           {/* 📌 COLUNA 1 - DADOS PESSOAIS */}

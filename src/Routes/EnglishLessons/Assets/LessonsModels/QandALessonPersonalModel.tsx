@@ -7,7 +7,6 @@ import {
 import axios from "axios";
 import { readText } from "../Functions/FunctionLessons";
 import { Tooltip, IconButton } from "@mui/material";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 
 interface QandALessonPersonalModelProps {
@@ -24,7 +23,6 @@ export default function QandALessonPersonalModel({
   studentId,
 }: QandALessonPersonalModelProps) {
   const actualHeaders = headers || {};
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const addNewCards = async (
     question: string,
@@ -83,7 +81,7 @@ export default function QandALessonPersonalModel({
               <p style={{ fontWeight: "bold" }}>{theitem.question}</p>
             </div>
             <Tooltip title="Add to flashcards">
-              <ArvinButton
+              <button
                 color="white"
                 onClick={() =>
                   addNewCards(
@@ -94,7 +92,7 @@ export default function QandALessonPersonalModel({
                 }
               >
                 <i className="fa fa-files-o" aria-hidden="true" />
-              </ArvinButton>
+              </button>
             </Tooltip>
             <IconButton
               onClick={() => readText(theitem.question, true)}

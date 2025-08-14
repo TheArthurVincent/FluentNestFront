@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HOne, RouteDivCourses } from "../../Resources/Components/RouteBox";
+import { HOne } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Link, Outlet, Route, Routes, useLocation } from "react-router-dom";
@@ -10,10 +10,9 @@ import {
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import Modules from "./Modules";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
@@ -100,15 +99,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
               maxWidth: "800px",
             }}
           >
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              {UniversalTexts.theCourses}
-            </HOne>
-            <ArvinButton onClick={getCourses}>
+            <HOne>{UniversalTexts.theCourses}</HOne>
+            <button onClick={getCourses}>
               <span
                 style={{
                   marginBottom: "12px",
@@ -116,7 +108,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
               >
                 <i className="fa fa-refresh" aria-hidden={true} />
               </span>
-            </ArvinButton>
+            </button>
             <div>
               <ul
                 style={{

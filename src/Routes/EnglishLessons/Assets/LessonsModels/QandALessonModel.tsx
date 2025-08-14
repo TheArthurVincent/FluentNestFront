@@ -7,7 +7,6 @@ import {
 import axios from "axios";
 import { readText } from "../Functions/FunctionLessons";
 import { Tooltip, IconButton, Collapse } from "@mui/material";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 
 interface QandALessonModelProps {
@@ -79,7 +78,7 @@ export default function QandALessonModel({
               <p style={{ fontWeight: "bold" }}>{theitem.question}</p>
             </div>
             <Tooltip title="Add to flashcards">
-              <ArvinButton
+              <button
                 color="white"
                 onClick={() =>
                   addNewCards(
@@ -90,7 +89,7 @@ export default function QandALessonModel({
                 }
               >
                 <i className="fa fa-files-o" aria-hidden="true" />
-              </ArvinButton>
+              </button>
             </Tooltip>
             <IconButton
               onClick={() => readText(theitem.question, true)}
@@ -112,7 +111,7 @@ export default function QandALessonModel({
             </div>
           </Collapse>
           <div>
-            <ArvinButton
+            <button
               color="white"
               onClick={() => {
                 if (expandedIndex !== index) {
@@ -122,7 +121,7 @@ export default function QandALessonModel({
               }}
             >
               {expandedIndex === index ? "Hide Answer" : "Show Answer"}
-            </ArvinButton>
+            </button>
           </div>
         </LiSentence>
       ))}

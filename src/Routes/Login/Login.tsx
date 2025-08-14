@@ -5,13 +5,12 @@ import {
   textGeneralFont,
   textPrimaryColorContrast,
 } from "../../Styles/Styles";
-import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
+import { backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { Alert, CircularProgress, Grid, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { NavLink } from "react-router-dom";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { isArvin } from "../../App";
 
 export function Login() {
@@ -161,7 +160,7 @@ export function Login() {
                   alignItems: "right",
                 }}
               >
-                <ArvinButton
+                <button
                   color={partnerColor()}
                   style={{
                     marginLeft: "auto",
@@ -170,7 +169,7 @@ export function Login() {
                   type="submit"
                 >
                   {button}
-                </ArvinButton>
+                </button>
               </div>
               <div
                 style={{

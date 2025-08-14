@@ -19,7 +19,6 @@ import {
 } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
 
@@ -296,7 +295,6 @@ export function MyClasses({ headers }) {
   return (
     <RouteDiv>
       <Helmets text="My Classes" />
-
       {/* Header centralizado como no SentenceMining */}
       <div
         style={{
@@ -307,19 +305,8 @@ export function MyClasses({ headers }) {
           marginBottom: "20px",
         }}
       >
-        <HOne
-          style={{
-            color: partnerColor(),
-            textAlign: "center",
-            margin: "0.5rem",
-            fontSize: "24px",
-            fontWeight: "bold",
-          }}
-        >
-          {UniversalTexts.myClasses}
-        </HOne>
+        <HOne>{UniversalTexts.myClasses}</HOne>
       </div>
-
       <section
         style={{
           padding: "20px",
@@ -481,37 +468,37 @@ export function MyClasses({ headers }) {
                           marginBottom: "12px",
                         }}
                       >
-                       <Link
-                                                   to="/homework"
-                                                   target="_blank"
-                                                   style={{
-                                                     display: "inline-flex",
-                                                     alignItems: "center",
-                     
-                                                     marginBottom: "1rem",
-                                                     gap: "0.5rem",
-                                                     backgroundColor: partnerColor(),
-                                                     color: "white",
-                                                     textDecoration: "none",
-                                                     padding: "0.5rem 1rem",
-                                                     borderRadius: "6px",
-                                                     fontSize: "10px",
-                                                     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                                                   }}
-                                                   onMouseEnter={(e) => {
-                                                     e.target.style.transform = "translateY(-1px)";
-                                                     e.target.style.boxShadow =
-                                                       "0 4px 8px rgba(0, 0, 0, 0.15)";
-                                                   }}
-                                                   onMouseLeave={(e) => {
-                                                     e.target.style.transform = "translateY(0px)";
-                                                     e.target.style.boxShadow =
-                                                       "0 2px 4px rgba(0, 0, 0, 0.1)";
-                                                   }}
-                                                 >
-                                                   <i className="fa fa-external-link" />
-                                                   {UniversalTexts.seeOnHomeworkPage}
-                                                 </Link>
+                        <Link
+                          to="/homework"
+                          target="_blank"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+
+                            marginBottom: "1rem",
+                            gap: "0.5rem",
+                            backgroundColor: partnerColor(),
+                            color: "white",
+                            textDecoration: "none",
+                            padding: "0.5rem 1rem",
+                            borderRadius: "6px",
+                            fontSize: "10px",
+                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.transform = "translateY(-1px)";
+                            e.target.style.boxShadow =
+                              "0 4px 8px rgba(0, 0, 0, 0.15)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.transform = "translateY(0px)";
+                            e.target.style.boxShadow =
+                              "0 2px 4px rgba(0, 0, 0, 0.1)";
+                          }}
+                        >
+                          <i className="fa fa-external-link" />
+                          {UniversalTexts.seeOnHomeworkPage}
+                        </Link>
                       </div>
 
                       <div

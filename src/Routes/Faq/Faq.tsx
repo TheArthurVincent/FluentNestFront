@@ -52,15 +52,7 @@ function Faq({ headers }: HeadersProps) {
   return (
     <RouteDiv>
       <Helmets text="FAQ" />
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        {UniversalTexts.faq}
-      </HOne>{" "}
-      <BackToHomePage />
+      <HOne>{UniversalTexts.faq}</HOne> <BackToHomePage />
       <Input
         style={{
           display: "flex",

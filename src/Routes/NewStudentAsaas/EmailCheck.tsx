@@ -44,14 +44,7 @@ export default function EmailCheck() {
         textAlign: "center",
       }}
     >
-      <HOne
-        style={{
-          fontSize: "2rem",
-          marginBottom: "20px",
-        }}
-      >
-        Pagamento Aprovado! Verifique seu e-mail
-      </HOne>
+      <HOne>Pagamento Aprovado! Verifique seu e-mail</HOne>
       <img
         src={myLogoDone}
         alt="arvin logo"

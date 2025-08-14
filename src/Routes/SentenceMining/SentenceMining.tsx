@@ -13,12 +13,7 @@ import {
   notifyAlert,
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
-import {
-  partnerColor,
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { partnerColor, textPrimaryColorContrast } from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import Voice from "../../Resources/Voice";
@@ -175,16 +170,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            textAlign: "center",
-            margin: "0.5rem",
-          }}
-        >
-          Sentence Mining
-        </HOne>
+        <HOne>Sentence Mining</HOne>
         <a
           style={{
             fontSize: "13px",
@@ -262,11 +248,11 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                   />
                 ))}
               </RadioGroup>
-              <ArvinButton
+              <button
                 color={word == "" || dis ? "grey" : partnerColor()}
-                cursor={word == "" || dis ? "not-allowed" : "pointer"}
                 type="submit"
                 style={{
+                  cursor: word == "" || dis ? "not-allowed" : "pointer",
                   padding: "4px 12px",
                   fontSize: "13px",
                   borderRadius: "4px",
@@ -275,7 +261,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                 disabled={word == "" || dis ? true : false}
               >
                 Mine word
-              </ArvinButton>
+              </button>
             </>
           )}
         </form>
@@ -338,9 +324,12 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       <LiSentence key={index}>
                         {!example.added && (
                           <Tooltip title={"Add to flashcards"}>
-                            <ArvinButton
-                              color={partnerColor()}
-                              cursor={"pointer"}
+                            <button
+                              style={{
+                                color: textPrimaryColorContrast(),
+                                backgroundColor: partnerColor(),
+                                cursor: "pointer",
+                              }}
                               onClick={() => {
                                 addNewCards(
                                   index,
@@ -355,7 +344,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                               }}
                             >
                               <i className="fa fa-files-o" aria-hidden="true" />
-                            </ArvinButton>
+                            </button>
                           </Tooltip>
                         )}
                         <br />
@@ -383,9 +372,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
         {thePermissions == "superadmin" && (
           <div style={{ marginTop: "5rem", display: "grid", gap: "10px" }}>
-            <ArvinButton onDoubleClick={editWordOfTheDay}>
-              Word of the day
-            </ArvinButton>
+            <button onDoubleClick={editWordOfTheDay}>Word of the day</button>
 
             <input
               type="text"

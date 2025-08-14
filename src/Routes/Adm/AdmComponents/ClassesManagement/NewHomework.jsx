@@ -5,7 +5,6 @@ import { DivGrid, backDomain } from "../../../../Resources/UniversalComponents";
 import { CircularProgress, TextField } from "@mui/material";
 import { lightGreyColor, partnerColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -185,12 +184,12 @@ export function NewHomeworkAssignment({ headers, id }) {
               />
             </div>
           </div>
-          <ArvinButton
+          <button
             style={{ borderRadius: 8, fontWeight: 600 }}
             onClick={postHW}
           >
             Postar só HW -
-          </ArvinButton>
+          </button>
         </div>
       )}
     </div>

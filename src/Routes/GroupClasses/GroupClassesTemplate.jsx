@@ -119,14 +119,7 @@ export default function GroupClassesTemplate({
       <RouteSizeControlBox>
         <RouteDiv>
           <div>
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              {title}
-            </HOne>
+            <HOne>{title}</HOne>
             <HTwo>{chosenTitle}</HTwo>
           </div>
           <FullDisplay>

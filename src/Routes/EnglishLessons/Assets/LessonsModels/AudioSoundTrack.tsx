@@ -5,7 +5,6 @@ import {
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
 import { Tooltip } from "@mui/material";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
@@ -91,8 +90,6 @@ export default function AudioSoundTrack({
           overflow: "hidden",
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
-          fontFamily:
-            "Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif",
           fontWeight: 100,
         }}
       >
@@ -131,14 +128,14 @@ export default function AudioSoundTrack({
             element.sentences.map((sentence: any, i: number) => (
               <LiSentence key={i}>
                 <Tooltip title="Add to flashcards">
-                  <ArvinButton
+                  <button
                     color="white"
                     onClick={() =>
                       addNewCards(sentence.english, sentence.portuguese)
                     }
                   >
                     <i className="fa fa-files-o" aria-hidden="true" />
-                  </ArvinButton>
+                  </button>
                 </Tooltip>
                 <br />
                 <br />

@@ -7,8 +7,6 @@ import {
   notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-
 import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
@@ -858,7 +856,7 @@ const ListeningExercise = ({
                           justifyContent: "space-evenly",
                         }}
                       >
-                        <ArvinButton
+                        <button
                           disabled={playingAudio}
                           onClick={() => {
                             setPlayingAudio(true);
@@ -896,8 +894,8 @@ const ListeningExercise = ({
                           }}
                         >
                           <i className="fa fa-volume-up" aria-hidden="true" />
-                        </ArvinButton>
-                        <ArvinButton
+                        </button>
+                        <button
                           style={{
                             display: !isDisabled ? "none" : "inline-block",
                             cursor: enableVoice ? "pointer" : "not-allowed",
@@ -940,11 +938,11 @@ const ListeningExercise = ({
                             }
                             aria-hidden="true"
                           />
-                        </ArvinButton>
+                        </button>
                       </div>
                     )}
                   </div>
-                  <ArvinButton
+                  <button
                     style={{
                       marginTop: "1rem",
                       display: isDisabled ? "none" : "inline-block",
@@ -954,7 +952,7 @@ const ListeningExercise = ({
                     onClick={() => ponctuate(transcript)}
                   >
                     Next
-                  </ArvinButton>
+                  </button>
                   <textarea
                     style={{
                       display: !isDisabled ? "none" : "inline-block",
@@ -983,9 +981,9 @@ const ListeningExercise = ({
           marginTop: "20px",
         }}
       >
-        <ArvinButton onClick={seeCardsToReview} style={{ margin: "0 5px" }}>
+        <button onClick={seeCardsToReview} style={{ margin: "0 5px" }}>
           {!see ? "Start" : <i className="fa fa-refresh" />}
-        </ArvinButton>
+        </button>
       </div>
       <ProgressCounter flashcardsToday={flashcardsToday} />
     </section>

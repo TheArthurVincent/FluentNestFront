@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import AddOneFlashCard from "./AddFlashONEFlashCard";
 import {
-  CircularProgress,
   DialogActions,
   Dialog,
   DialogTitle,
@@ -14,12 +12,6 @@ import {
 import { partnerColor } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
-
-interface Student {
-  id: string;
-  name: string;
-  lastname: string;
-}
 
 interface FlashCard {
   frontCard: string;
@@ -34,26 +26,35 @@ interface AddFlashCardsProps {
   display: string | null;
   selectedStudentId: string;
 }
-const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsProps) => {
+const AddFlashCards = ({
+  headers,
+  display,
+  selectedStudentId,
+}: AddFlashCardsProps) => {
   const { UniversalTexts } = useUserContext();
-  
+
   const [showConfirmation, setShowConfirmation] = useState(false);
-  const [myId, setMyId] = useState<string>("");
   const [addCardVisible, setAddCardVisible] = useState<boolean>(true);
-  const [cards, setCards] = useState<FlashCard[]>([]);
+  const [cards, setCards] = useState<FlashCard[]>([
+    {
+      frontCard: "",
+      backCard: "",
+      languageFront: "en",
+      languageBack: "pt",
+      backComments: "",
+    },
+  ]);
   const [myPermissions, setPermissions] = useState<string>("");
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
       const { permissions, id } = JSON.parse(user);
-      setMyId(id);
       setPermissions(permissions);
     }
   }, []);
 
   const actualHeaders = headers || {};
-  const [loading, setLoading] = useState<Boolean>(false);
 
   const addNewCard = () => {
     setCards([
@@ -98,8 +99,17 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
     setCards(newCards);
   };
 
+  // Remove um card pelo índice
+  const handleRemoveCard = (index: number) => {
+    setCards(cards.filter((_, i) => i !== index));
+  };
+
   const addNewCards = async () => {
-    const newCards = cards.map((card) => ({
+    // Filtra cards que tenham frente e verso preenchidos
+    const filteredCards = cards.filter(
+      (card) => card.frontCard.trim() !== "" && card.backCard.trim() !== ""
+    );
+    const newCards = filteredCards.map((card) => ({
       backComments: card.backComments,
       front: {
         text: card.frontCard,
@@ -118,7 +128,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
       );
 
       const showThis =
-        `${
+        `$${
           response.data.addedNewFlashcards
             ? response.data.addedNewFlashcards
             : ""
@@ -150,13 +160,13 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
       <div style={{ margin: "auto", display: "flex" }} id="addcards">
         {(myPermissions === "superadmin" || myPermissions === "teacher") && (
           <div style={{ display: "grid" }}>
-            <ArvinButton
+            <button
               style={{ display: !addCardVisible ? "block" : "none" }}
               color={partnerColor()}
               onClick={() => setAddCardVisible(true)}
             >
               {UniversalTexts?.enterFlashcards || "Adicionar cartas"}
-            </ArvinButton>
+            </button>
             <div
               style={{
                 marginTop: "1rem",
@@ -178,6 +188,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                     handleLanguageFrontChange={handleLanguageFrontChange}
                     handleLanguageBackChange={handleLanguageBackChange}
                     handleCommentsBack={handleCommentsBack}
+                    handleRemoveCard={handleRemoveCard}
                   />
                 ))}
               </div>
@@ -188,17 +199,16 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
                 }}
               >
                 {cards.length > 0 && (
-                  <ArvinButton
+                  <button
                     color={partnerColor()}
                     onClick={() => setShowConfirmation(true)}
                   >
                     {UniversalTexts?.addAllCards || "Add all cards"}
-                  </ArvinButton>
+                  </button>
                 )}
-
-                <ArvinButton color={partnerColor()} onClick={addNewCard}>
-                  {UniversalTexts?.addMoreCards || "Adicionar mais um card"}
-                </ArvinButton>
+                <button color={partnerColor()} onClick={addNewCard}>
+                  +
+                </button>
               </span>
             </div>
           </div>
@@ -211,57 +221,77 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
         fullWidth
       >
         <DialogTitle>
-          {UniversalTexts?.confirmAddFlashcards || "Confirmar adição de flashcards"}
+          {UniversalTexts?.confirmAddFlashcards ||
+            "Confirmar adição de flashcards"}
         </DialogTitle>
         <DialogContent dividers>
-          {cards.length === 0 ? (
-            <p>{UniversalTexts?.noCardsCreated || "Nenhum card criado."}</p>
-          ) : (
-            <ul
-              style={{
-                maxHeight: "15rem",
-                overflow: "auto",
-                paddingLeft: 0,
-                display: "grid",
-                gap: "1rem",
-              }}
-            >
-              {cards.map((card, index) => (
-                <li
-                  key={index}
-                  style={{
-                    listStyle: "none",
-                    padding: "1rem",
-                    border: "1px solid #ccc",
-                    borderRadius: "8px",
-                    backgroundColor: "#f9f9f9",
-                    boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
-                  }}
-                >
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>📝 {UniversalTexts?.front || "Front"}:</strong> {card.frontCard}
-                  </p>
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>💬 {UniversalTexts?.backCard || "Back"}:</strong> {card.backCard}
-                  </p>
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>🧠 {UniversalTexts?.comment || "Comentário"}:</strong>{" "}
-                    {card.backComments ? card.backComments : <i>{UniversalTexts?.none || "Nenhum"}</i>}
-                  </p>
-                  <p style={{ margin: "0.3rem 0" }}>
-                    <strong>🌐 {UniversalTexts?.languages || "Idiomas"}:</strong> {card.languageFront} →{" "}
-                    {card.languageBack}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
+          {(() => {
+            const filteredCards = cards.filter(
+              (card) =>
+                card.frontCard.trim() !== "" && card.backCard.trim() !== ""
+            );
+            if (filteredCards.length === 0) {
+              return (
+                <p>{UniversalTexts?.noCardsCreated || "Nenhum card criado."}</p>
+              );
+            }
+            return (
+              <ul
+                style={{
+                  maxHeight: "15rem",
+                  overflow: "auto",
+                  paddingLeft: 0,
+                  display: "grid",
+                  gap: "1rem",
+                }}
+              >
+                {filteredCards.map((card, index) => (
+                  <li
+                    key={index}
+                    style={{
+                      listStyle: "none",
+                      padding: "1rem",
+                      border: "1px solid #ccc",
+                      borderRadius: "8px",
+                      backgroundColor: "#f9f9f9",
+                      boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
+                    }}
+                  >
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>📝 {UniversalTexts?.front || "Front"}:</strong>{" "}
+                      {card.frontCard}
+                    </p>
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>💬 {UniversalTexts?.backCard || "Back"}:</strong>{" "}
+                      {card.backCard}
+                    </p>
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>
+                        🧠 {UniversalTexts?.comment || "Comentário"}:
+                      </strong>{" "}
+                      {card.backComments ? (
+                        card.backComments
+                      ) : (
+                        <i>{UniversalTexts?.none || "Nenhum"}</i>
+                      )}
+                    </p>
+                    <p style={{ margin: "0.3rem 0" }}>
+                      <strong>
+                        🌐 {UniversalTexts?.languages || "Idiomas"}:
+                      </strong>{" "}
+                      {card.languageFront} → {card.languageBack}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            );
+          })()}
         </DialogContent>
         <DialogActions>
-          <ArvinButton color="gray" onClick={() => setShowConfirmation(false)}>
+          <button color="gray" onClick={() => setShowConfirmation(false)}>
             {UniversalTexts?.cancel || "Cancelar"}
-          </ArvinButton>
-          <ArvinButton
+          </button>
+          <button
             color="green"
             onClick={() => {
               addNewCards();
@@ -269,7 +299,7 @@ const AddFlashCards = ({ headers, display, selectedStudentId }: AddFlashCardsPro
             }}
           >
             {UniversalTexts?.confirmAndAdd || "Confirmar e adicionar"}
-          </ArvinButton>
+          </button>
         </DialogActions>
       </Dialog>
     </div>

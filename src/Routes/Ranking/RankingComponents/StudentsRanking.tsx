@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { DivFont, HTwo } from "../../../Resources/Components/RouteBox";
+import { DivFont } from "../../../Resources/Components/RouteBox";
 import {
   ImgResponsive0,
   Xp,
@@ -19,9 +19,9 @@ import {
 } from "../../../Styles/Styles";
 import { listOfButtons } from "./ListOfCriteria";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../MyClasses/MyClasses.Styled";
 import styled, { keyframes } from "styled-components";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 interface StudentsRankingProps {
   headers: MyHeadersType | null;
@@ -32,6 +32,7 @@ export default function StudentsRanking({
   headers,
   monthNow,
 }: StudentsRankingProps) {
+  const { UniversalTexts } = useUserContext();
   interface StudentsType {
     id: string;
     lastname: string;
@@ -253,10 +254,10 @@ export default function StudentsRanking({
   const fetchStudentsScore = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
-
+    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/scoresranking/?page=${page}`,
+        `${backDomain}/api/v1/scoresranking/${id}?page=${page}`,
         {
           headers: actualHeaders,
         }
@@ -412,7 +413,7 @@ export default function StudentsRanking({
               </HThree>
               {listOfButtons.map((item, index) => {
                 return (
-                  <ArvinButton
+                  <button
                     key={index}
                     disabled={disabled}
                     style={{
@@ -430,7 +431,7 @@ export default function StudentsRanking({
                     }
                   >
                     {item.text}
-                  </ArvinButton>
+                  </button>
                 );
               })}
 
@@ -448,13 +449,13 @@ export default function StudentsRanking({
                   onChange={(e) => setDescSpecial(e.target.value)}
                   type="text"
                 />
-                <ArvinButton
+                <button
                   onClick={() =>
                     submitPlusScore(ID, plusScore, descSpecial, "Others")
                   }
                 >
                   +
-                </ArvinButton>
+                </button>
               </div>
             </div>
           )}
@@ -516,13 +517,13 @@ export default function StudentsRanking({
             </div>
           )}
           {user.permissions === "superadmin" && (
-            <ArvinButton
+            <button
               onClick={() => {
                 setCard(!card);
               }}
             >
               {card ? "See Score" : "See Card"}
-            </ArvinButton>
+            </button>
           )}
           {user.permissions === "superadmin" && (
             <p>

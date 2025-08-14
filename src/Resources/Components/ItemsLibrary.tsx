@@ -22,19 +22,6 @@ export const ArvinButton = styled.button<ArvinButtonProps>`
   background: ${(props) => (props.color ? props.color : partnerColor())};
   color: ${(props) =>
     props.colorContrast === "white" ? "black" : alwaysWhite()};
-  padding: 10px;
-  min-width: 30px;
-  margin: 0 3px;
-  cursor: ${(props) =>
-    props.cursor === "not-allowed" ? "not-allowed" : "pointer"};
-  display: inline-block;
-  font-family: ${textGeneralFont()};
-  border-radius: 6px;
-  border: none;
-  max-width: fit-content;
-  font-weight: 500;
-  transition: all 0.3s ease; /* 🔁 boa prática para hover */
-
   &:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
   }

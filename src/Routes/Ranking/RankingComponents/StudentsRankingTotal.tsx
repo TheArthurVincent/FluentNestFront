@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { AnimatedLi2, HTwo } from "../../../Resources/Components/RouteBox";
+import { AnimatedLi2 } from "../../../Resources/Components/RouteBox";
 import {
   ImgResponsive3,
   backDomain,
@@ -17,7 +17,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const [students, setStudents] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const theItems = levels();
-  const [isAdm, setIsAdm] = useState<string>("student");
 
   const [showInfo, setShowInfo] = useState<{
     [key: number]: { [key: string]: boolean };
@@ -26,18 +25,14 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const toggleInfo = (type: "points" | "hw" | "fc", index: number) => {
     setShowInfo((prevState) => {
       const newState = { ...prevState };
-
       if (!newState[index]) {
         newState[index] = { points: false, hw: false, fc: false };
       }
-
       newState[index][type] = !newState[index][type];
-
       return newState;
     });
   };
   const actualHeaders = headers || {};
-  const [ID, setID] = useState("");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [FIRST, setFIRST] = useState(true);
@@ -45,9 +40,11 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const fetchStudents = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
+    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
+
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/scorestotalranking?page=${page}&limit=10`,
+        `${backDomain}/api/v1/scorestotalranking/${id}?page=${page}&limit=10`,
         {
           headers: actualHeaders,
         }
@@ -106,15 +103,6 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
     fetchStudents();
   }, []);
 
-  const verifySee = (adm: string, score: number) => {
-    if (adm == "superadmin") {
-      return "block";
-    } else if (score >= 10000) {
-      return "block";
-    } else {
-      return "none";
-    }
-  };
   return (
     <div style={{ display: "grid" }}>
       {loading && FIRST ? (

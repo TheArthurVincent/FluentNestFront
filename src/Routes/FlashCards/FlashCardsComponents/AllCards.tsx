@@ -6,7 +6,6 @@ import {
   Xp,
 } from "../../../Resources/UniversalComponents";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { CircularProgress } from "@mui/material";
 import { languages } from "./AddFlashONEFlashCard";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -217,7 +216,7 @@ var AllCards = ({
         >
           {/* Header Controls */}
 
-          <ArvinButton
+          <button
             onClick={() => fetchMoreCards(true)}
             style={{
               borderRadius: "4px",
@@ -227,7 +226,7 @@ var AllCards = ({
             }}
           >
             <i className="fa fa-refresh" aria-hidden="true" />
-          </ArvinButton>
+          </button>
           <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
 
           <input
@@ -299,7 +298,7 @@ var AllCards = ({
                     >
                       📚 Flashcard #{index + 1}
                     </span>
-                    <ArvinButton
+                    <button
                       onClick={() => handleSeeModal(card._id)}
                       color="yellow"
                       style={{
@@ -309,7 +308,7 @@ var AllCards = ({
                       }}
                     >
                       <i className="fa fa-edit" aria-hidden="true" />
-                    </ArvinButton>
+                    </button>
                   </div>
 
                   {/* Card Content */}
@@ -413,7 +412,7 @@ var AllCards = ({
                             <i className="fa fa-volume-up" aria-hidden="true" />
                           </button>
                         )}
-                        <ArvinButton
+                        <button
                           onClick={() => handleDeleteCard(card._id)}
                           color="red"
                           style={{
@@ -423,7 +422,7 @@ var AllCards = ({
                           }}
                         >
                           <i className="fa fa-trash" aria-hidden="true" />
-                        </ArvinButton>
+                        </button>
                       </div>
                     </div>
 
@@ -571,18 +570,18 @@ var AllCards = ({
               type="text"
             />
             <div>
-              <ArvinButton
+              <button
                 onClick={() => handleDeleteCard(cardIdToEdit)}
                 color="red"
               >
                 <i className="fa fa-trash" aria-hidden="true" />
-              </ArvinButton>
-              <ArvinButton
+              </button>
+              <button
                 onClick={() => handleEditCard(cardIdToEdit)}
                 color="green"
               >
                 <i className="fa fa-folder" aria-hidden="true" />
-              </ArvinButton>
+              </button>
             </div>
           </article>
         </div>

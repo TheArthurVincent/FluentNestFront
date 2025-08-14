@@ -14,14 +14,7 @@ export default function NotFound() {
       <RouteDiv>
         <Helmets text="Not Found!" />
         <BackToHomePage />
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          Page Not Found!
-        </HOne>
+        <HOne>Page Not Found!</HOne>
       </RouteDiv>
     </RouteSizeControlBox>
   );

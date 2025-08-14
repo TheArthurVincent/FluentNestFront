@@ -76,8 +76,6 @@ export default function ExerciseLessonModel({
                     fontWeight: "500",
                     color: "#1a202c",
                     lineHeight: "1.5",
-                    fontFamily:
-                      "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                     letterSpacing: "-0.01em",
                     flex: 1,
                   }}
@@ -96,8 +94,6 @@ export default function ExerciseLessonModel({
                   border: "2px solid #e9ecef",
                   borderRadius: "8px",
                   fontSize: "14px",
-                  fontFamily:
-                    "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                   lineHeight: "1.5",
                   color: "#1a202c",
                   backgroundColor: "#ffffff",

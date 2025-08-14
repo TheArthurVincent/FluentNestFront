@@ -1,8 +1,7 @@
 import React from "react";
 import { HOne } from "../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../Styles/Styles";
+import { partnerColor } from "../Styles/Styles";
 import { myLogoDone } from "./NewStudentAsaas/EmailCheck";
-import { ArvinButton } from "../Resources/Components/ItemsLibrary";
 import { onLoggOut } from "../Resources/UniversalComponents";
 
 export function FeeNotUpToDate() {
@@ -24,7 +23,7 @@ export function FeeNotUpToDate() {
         textAlign: "center",
       }}
     >
-      <ArvinButton onClick={onLoggOut}>Sair</ArvinButton>
+      <button onClick={onLoggOut}>Sair</button>
       <img
         src={myLogoDone}
         alt="arvin logo"
@@ -36,14 +35,7 @@ export function FeeNotUpToDate() {
           objectFit: "contain",
         }}
       />
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Falta pouco para utilizar a plataforma!
-      </HOne>
+      <HOne>Falta pouco para utilizar a plataforma!</HOne>
       <p style={{ fontSize: "18px", marginTop: "20px" }}>
         Para finalizar seu pagamento, entre em contato conosco:
       </p>

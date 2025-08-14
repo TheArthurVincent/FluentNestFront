@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from "react";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
+import React, { useRef } from "react";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 interface Av {
   user: any;
@@ -61,9 +60,7 @@ export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
       />
 
       {/* Botão alternativo de upload */}
-      <ArvinButton onClick={() => fileInputRef.current?.click()}>
-        Nova foto
-      </ArvinButton>
+      <button onClick={() => fileInputRef.current?.click()}>Nova foto</button>
     </div>
   );
 }

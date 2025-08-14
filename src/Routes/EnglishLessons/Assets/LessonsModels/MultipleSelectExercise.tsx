@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { HThree } from "../../../MyClasses/MyClasses.Styled";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { darkGreyColor, lightGreyColor } from "../../../../Styles/Styles";
 import { readText } from "../Functions/FunctionLessons";
 
@@ -176,7 +174,7 @@ const SelectExercise: React.FC<SelectExerciseProps> = ({
           ))}
         </ol>
       )}
-      <ArvinButton
+      <button
         onClick={toggleShowAllAnswers}
         color={allOptionsSelected() ? "green" : "grey"}
         style={{
@@ -186,7 +184,7 @@ const SelectExercise: React.FC<SelectExerciseProps> = ({
         disabled={!allOptionsSelected()}
       >
         Explanation
-      </ArvinButton>
+      </button>
       {showAllAnswers && (
         <div>
           {element.options.map((exercise: Exercise, index: number) => (

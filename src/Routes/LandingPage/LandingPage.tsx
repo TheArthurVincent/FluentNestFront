@@ -284,7 +284,7 @@ export default LandingPage;
                 : undefined
             }
           >
-            <ArvinButton
+            <button
               type="submit"
               style={{
                 backgroundColor: partnerColor(),
@@ -293,8 +293,8 @@ export default LandingPage;
               }}
             >
               {button}
-            </ArvinButton>
-            <ArvinButton
+            </button>
+            <button
               onClick={() => window.location.assign("/request-reset-password")}
               style={{
                 backgroundColor: "#eee",
@@ -304,7 +304,7 @@ export default LandingPage;
               }}
             >
               Esqueci a senha
-            </ArvinButton>
+            </button>
           </span>
         </form> */
 }
