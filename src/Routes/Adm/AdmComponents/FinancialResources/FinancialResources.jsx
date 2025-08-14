@@ -1158,7 +1158,7 @@ export function FinancialResources({ headers, id }) {
       pdf.text("Total Saídas: R$ " + totalSaidas.toFixed(2), margin, yPosition);
       yPosition += 10;
       pdf.text(
-        "Balanço: R$ " + (totalEntradas + totalSaidas).toFixed(2),
+        "Balanço: R$ " + (totalEntradas - totalSaidas).toFixed(2),
         margin,
         yPosition
       );
