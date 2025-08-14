@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import AddOneFlashCard from "./AddFlashONEFlashCard";
 import {
-  CircularProgress,
   DialogActions,
   Dialog,
   DialogTitle,
@@ -14,12 +12,6 @@ import {
 import { partnerColor } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
-
-interface Student {
-  id: string;
-  name: string;
-  lastname: string;
-}
 
 interface FlashCard {
   frontCard: string;
@@ -168,13 +160,13 @@ const AddFlashCards = ({
       <div style={{ margin: "auto", display: "flex" }} id="addcards">
         {(myPermissions === "superadmin" || myPermissions === "teacher") && (
           <div style={{ display: "grid" }}>
-            <ArvinButton
+            <button
               style={{ display: !addCardVisible ? "block" : "none" }}
               color={partnerColor()}
               onClick={() => setAddCardVisible(true)}
             >
               {UniversalTexts?.enterFlashcards || "Adicionar cartas"}
-            </ArvinButton>
+            </button>
             <div
               style={{
                 marginTop: "1rem",
@@ -207,16 +199,16 @@ const AddFlashCards = ({
                 }}
               >
                 {cards.length > 0 && (
-                  <ArvinButton
+                  <button
                     color={partnerColor()}
                     onClick={() => setShowConfirmation(true)}
                   >
                     {UniversalTexts?.addAllCards || "Add all cards"}
-                  </ArvinButton>
+                  </button>
                 )}
-                <ArvinButton color={partnerColor()} onClick={addNewCard}>
+                <button color={partnerColor()} onClick={addNewCard}>
                   +
-                </ArvinButton>
+                </button>
               </span>
             </div>
           </div>
@@ -296,10 +288,10 @@ const AddFlashCards = ({
           })()}
         </DialogContent>
         <DialogActions>
-          <ArvinButton color="gray" onClick={() => setShowConfirmation(false)}>
+          <button color="gray" onClick={() => setShowConfirmation(false)}>
             {UniversalTexts?.cancel || "Cancelar"}
-          </ArvinButton>
-          <ArvinButton
+          </button>
+          <button
             color="green"
             onClick={() => {
               addNewCards();
@@ -307,7 +299,7 @@ const AddFlashCards = ({
             }}
           >
             {UniversalTexts?.confirmAndAdd || "Confirmar e adicionar"}
-          </ArvinButton>
+          </button>
         </DialogActions>
       </Dialog>
     </div>

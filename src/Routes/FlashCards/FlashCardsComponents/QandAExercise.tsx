@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
+import { backDomain } from "../../../Resources/UniversalComponents";
 import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { partnerColor } from "../../../Styles/Styles";
 
 // Função para limpar a string
@@ -161,7 +160,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
       {see && (
         <div>
           {loading ? (
-                <CircularProgress style={{ color: partnerColor() }} />
+            <CircularProgress style={{ color: partnerColor() }} />
           ) : (
             <>
               {thereIsQuestion ? (
@@ -173,7 +172,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     }}
                   >
                     {" "}
-                    <ArvinButton
+                    <button
                       disabled={playingAudio}
                       onClick={() => {
                         setPlayingAudio(true);
@@ -201,8 +200,8 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       ) : (
                         <i className="fa fa-volume-up" aria-hidden="true" />
                       )}
-                    </ArvinButton>
-                    <ArvinButton
+                    </button>
+                    <button
                       style={{
                         display: !isDisabled ? "none" : "inline-block",
                         cursor: enableVoice ? "pointer" : "not-allowed",
@@ -224,7 +223,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         }
                         aria-hidden="true"
                       />
-                    </ArvinButton>
+                    </button>
                     <br />
                     {!justAudio ? question : ""}
                     <br />
@@ -242,7 +241,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                       id=""
                     />
                     <Tooltip title="Você pode clicar aqui para ler a resposta, porém, a pontuação pela resposta irá cair. Tente entender escutando!">
-                      <ArvinButton
+                      <button
                         style={{
                           display: !justAudio ? "none" : "block",
                         }}
@@ -253,7 +252,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         color="yellow"
                       >
                         See text
-                      </ArvinButton>
+                      </button>
                     </Tooltip>
                   </div>
                   <div
@@ -330,14 +329,14 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                         ? "You scored 7 points because you managed to answer just by listening to the audio without reading."
                         : "You scored 3 points because you read the text."} */}
                     </div>
-                    <ArvinButton
+                    <button
                       onClick={() => {
                         setJustAudio(true);
                         handleSeeQuestion();
                       }}
                     >
                       Next
-                    </ArvinButton>
+                    </button>
                   </div>
                 </div>
               ) : (
@@ -353,7 +352,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           marginTop: "20px",
         }}
       >
-        <ArvinButton
+        <button
           style={{
             margin: "auto",
             display: "block",
@@ -361,7 +360,7 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           onClick={handleSeeQuestion}
         >
           {!see ? "Start" : <i className="fa fa-refresh" />}
-        </ArvinButton>
+        </button>
       </div>
     </section>
   );

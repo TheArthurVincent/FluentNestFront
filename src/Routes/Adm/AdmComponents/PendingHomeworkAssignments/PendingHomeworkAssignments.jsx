@@ -12,7 +12,6 @@ import {
   updateInfo,
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -231,7 +230,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                     padding: "8px 0",
                   }}
                 >
-                  <ArvinButton
+                  <button
                     disabled={disabled}
                     onClick={() =>
                       updateRealizedClass(
@@ -253,9 +252,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   >
                     <i className="fa fa-check" />
                     Up to date ({pointsMadeHW} pts)
-                  </ArvinButton>
+                  </button>
 
-                  <ArvinButton
+                  <button
                     disabled={disabled}
                     onClick={() =>
                       updateRealizedClass(
@@ -277,9 +276,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   >
                     <i className="fa fa-clock-o" />
                     Late ({pointsLateHW} pts)
-                  </ArvinButton>
+                  </button>
 
-                  <ArvinButton
+                  <button
                     disabled={disabled}
                     onClick={() => justStatus(homework._id, homework.studentID)}
                     style={{
@@ -295,9 +294,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   >
                     <i className="fa fa-edit" />
                     Just status
-                  </ArvinButton>
+                  </button>
 
-                  <ArvinButton
+                  <button
                     disabled={disabled}
                     onDoubleClick={() => deleteHomework(homework._id)}
                     style={{
@@ -313,7 +312,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   >
                     <i className="fa fa-trash" />
                     Double Click to Delete
-                  </ArvinButton>
+                  </button>
                 </div>
 
                 {/* Links Section */}

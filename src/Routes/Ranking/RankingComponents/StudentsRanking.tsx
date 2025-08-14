@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { DivFont, HTwo } from "../../../Resources/Components/RouteBox";
+import { DivFont } from "../../../Resources/Components/RouteBox";
 import {
   ImgResponsive0,
   Xp,
@@ -19,7 +19,6 @@ import {
 } from "../../../Styles/Styles";
 import { listOfButtons } from "./ListOfCriteria";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../MyClasses/MyClasses.Styled";
 import styled, { keyframes } from "styled-components";
 
@@ -412,7 +411,7 @@ export default function StudentsRanking({
               </HThree>
               {listOfButtons.map((item, index) => {
                 return (
-                  <ArvinButton
+                  <button
                     key={index}
                     disabled={disabled}
                     style={{
@@ -430,7 +429,7 @@ export default function StudentsRanking({
                     }
                   >
                     {item.text}
-                  </ArvinButton>
+                  </button>
                 );
               })}
 
@@ -448,13 +447,13 @@ export default function StudentsRanking({
                   onChange={(e) => setDescSpecial(e.target.value)}
                   type="text"
                 />
-                <ArvinButton
+                <button
                   onClick={() =>
                     submitPlusScore(ID, plusScore, descSpecial, "Others")
                   }
                 >
                   +
-                </ArvinButton>
+                </button>
               </div>
             </div>
           )}
@@ -516,13 +515,13 @@ export default function StudentsRanking({
             </div>
           )}
           {user.permissions === "superadmin" && (
-            <ArvinButton
+            <button
               onClick={() => {
                 setCard(!card);
               }}
             >
               {card ? "See Score" : "See Card"}
-            </ArvinButton>
+            </button>
           )}
           {user.permissions === "superadmin" && (
             <p>

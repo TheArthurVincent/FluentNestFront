@@ -5,7 +5,6 @@ import { DivGrid, backDomain } from "../../../../Resources/UniversalComponents";
 import { CircularProgress, TextField } from "@mui/material";
 import { lightGreyColor, partnerColor } from "../../../../Styles/Styles";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -386,7 +385,7 @@ export function NewTutoring({ headers, id }) {
                 />
                 <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
                   {!showFC && (
-                    <ArvinButton
+                    <button
                       style={{
                         background: partnerColor(),
                         color: "#fff",
@@ -401,10 +400,10 @@ export function NewTutoring({ headers, id }) {
                       }}
                     >
                       + Flashcards
-                    </ArvinButton>
+                    </button>
                   )}
                   {!showHW && (
-                    <ArvinButton
+                    <button
                       style={{
                         background: partnerColor(),
                         color: "#fff",
@@ -419,7 +418,7 @@ export function NewTutoring({ headers, id }) {
                       }}
                     >
                       + Homework
-                    </ArvinButton>
+                    </button>
                   )}
                 </div>
               </DivGrid>
@@ -444,7 +443,7 @@ export function NewTutoring({ headers, id }) {
                     }}
                   >
                     <strong style={{ fontSize: 15 }}>Flashcards</strong>
-                    <ArvinButton
+                    <button
                       style={{
                         background: "#eee",
                         color: "#888",
@@ -460,7 +459,7 @@ export function NewTutoring({ headers, id }) {
                       }}
                     >
                       Remover
-                    </ArvinButton>
+                    </button>
                   </div>
                   <TextField
                     multiline
@@ -506,7 +505,7 @@ export function NewTutoring({ headers, id }) {
                     }}
                   >
                     <HThree>Homework</HThree>
-                    <ArvinButton
+                    <button
                       style={{
                         background: "#eee",
                         color: "#888",
@@ -523,7 +522,7 @@ export function NewTutoring({ headers, id }) {
                       }}
                     >
                       Remover
-                    </ArvinButton>
+                    </button>
                   </div>
                   <input
                     style={{
@@ -550,7 +549,7 @@ export function NewTutoring({ headers, id }) {
               )}
             </div>
           ))}
-          <ArvinButton
+          <button
             style={{
               marginLeft: "auto",
               cursor: disabled || !isFormValid ? "not-allowed" : "pointer",
@@ -564,7 +563,7 @@ export function NewTutoring({ headers, id }) {
             type="submit"
           >
             {button}
-          </ArvinButton>
+          </button>
         </form>
       )}
     </div>

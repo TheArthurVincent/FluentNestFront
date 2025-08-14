@@ -3,7 +3,6 @@ import "font-awesome/css/font-awesome.min.css";
 import Helmets from "../../Resources/Helmets";
 import { backDomain } from "../../Resources/UniversalComponents";
 import axios from "axios";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import { partnerColor } from "../../Styles/Styles";
 import { TextField } from "@mui/material";
@@ -117,7 +116,7 @@ function ResetPasswordFinalChange() {
             }}
           />
 
-          <ArvinButton
+          <button
             style={{
               display: "flex",
               marginLeft: "auto",
@@ -129,7 +128,7 @@ function ResetPasswordFinalChange() {
             onClick={handleSendPassword}
           >
             Alterar Senha
-          </ArvinButton>
+          </button>
         </div>
       </div>
     </RouteDiv>

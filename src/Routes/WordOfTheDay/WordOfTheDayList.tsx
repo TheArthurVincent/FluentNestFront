@@ -5,22 +5,16 @@ import { CircularProgress, Tooltip } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
 import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
 import {
   partnerColor,
   textGeneralFont,
-  textTitleFont,
   transparentBlack,
 } from "../../Styles/Styles";
 import { Modal, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-interface WordOfTheDayListRv {
-  headers: MyHeadersType | null;
-}
-
-const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
+const WordOfTheDayList = () => {
   const [open, setOpen] = useState(false);
   const [selectedWord, setSelectedWord] = useState<any>(null);
 
@@ -108,11 +102,9 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
               <p>{wordItem.translatedSentence}</p>
             </div>
 
-            <ArvinButton
-              onClick={() => readText(wordItem.sentence, false, "en")}
-            >
+            <button onClick={() => readText(wordItem.sentence, false, "en")}>
               <i className="fa fa-volume-up" aria-hidden="true" />
-            </ArvinButton>
+            </button>
           </div>
           <div
             style={{
@@ -137,9 +129,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
               <i className="fa fa-volume-up" aria-hidden="true" /> Hear Linguee
             </a>
           </div>
-          <ArvinButton onClick={() => handleOpen(wordItem)}>
-            Ver no Card
-          </ArvinButton>
+          <button onClick={() => handleOpen(wordItem)}>Ver no Card</button>
           <Modal
             sx={{
               position: "absolute",

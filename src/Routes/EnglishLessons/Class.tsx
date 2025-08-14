@@ -8,7 +8,6 @@ import {
   TextRun,
   HeadingLevel,
   AlignmentType,
-  ImageRun,
 } from "docx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
@@ -22,7 +21,6 @@ import {
   Xp,
 } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { Link } from "react-router-dom";
 import {
   darkGreyColor,
@@ -3544,7 +3542,7 @@ export default function EnglishClassCourse2({
                 />
               </div>
               <div>
-                <ArvinButton
+                <button
                   style={{
                     display: "flex",
                     marginLeft: "auto",
@@ -3552,7 +3550,7 @@ export default function EnglishClassCourse2({
                   onClick={sendComment}
                 >
                   {UniversalTexts.leaveAComment}
-                </ArvinButton>
+                </button>
 
                 <>
                   {comments.length > 0 && (
@@ -3593,7 +3591,7 @@ export default function EnglishClassCourse2({
                             {thePermissions == "superadmin" ||
                               (thePermissions == "teacher" && (
                                 <span>
-                                  <ArvinButton
+                                  <button
                                     onClick={() => deleteComment(comment.id)}
                                     color="red"
                                   >
@@ -3601,7 +3599,7 @@ export default function EnglishClassCourse2({
                                       className="fa fa-trash"
                                       aria-hidden="true"
                                     />
-                                  </ArvinButton>
+                                  </button>
                                 </span>
                               ))}
                           </div>
@@ -3628,7 +3626,7 @@ export default function EnglishClassCourse2({
                             {thePermissions == "superadmin" ||
                               (thePermissions == "teacher" && (
                                 <span>
-                                  <ArvinButton
+                                  <button
                                     onClick={() => deleteComment(comment.id)}
                                     color="red"
                                   >
@@ -3636,7 +3634,7 @@ export default function EnglishClassCourse2({
                                       className="fa fa-trash"
                                       aria-hidden="true"
                                     />
-                                  </ArvinButton>
+                                  </button>
                                 </span>
                               ))}
                           </li>

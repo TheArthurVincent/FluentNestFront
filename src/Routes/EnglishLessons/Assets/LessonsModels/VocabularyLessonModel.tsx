@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
-import { LiSentence, UlSentences } from "../Functions/EnglishActivities.Styled";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import {
   backDomain,
   onLoggOut,
@@ -28,8 +26,12 @@ export default function VocabularyLesson({
 }: VocabularyLessonProps) {
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
-  
-  const addNewCards = async (frontText: string, backText: string, index: number) => {
+
+  const addNewCards = async (
+    frontText: string,
+    backText: string,
+    index: number
+  ) => {
     const newCards = [
       {
         front: {
@@ -59,9 +61,9 @@ export default function VocabularyLesson({
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
       notifyAlert(showThis, "green");
-      
+
       // Adicionar o índice do botão clicado ao conjunto
-      setClickedButtons(prev => new Set(prev).add(index));
+      setClickedButtons((prev) => new Set(prev).add(index));
     } catch (error) {
       alert("Erro ao enviar cards");
       onLoggOut();

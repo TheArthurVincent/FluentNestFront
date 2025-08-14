@@ -8,7 +8,6 @@
 //   partnerColor,
 //   textTitleFont,
 // } from "../../../Styles/Styles";
-// import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
 // import { monthInQuestion } from "./RankingComponents";
 
 // const medals = [
@@ -158,9 +157,9 @@
 //       }}
 //     >
 //       {isAdm && (
-//         <ArvinButton onDoubleClick={saveMonth} style={{ marginBottom: "1rem" }}>
+//         <button onDoubleClick={saveMonth} style={{ marginBottom: "1rem" }}>
 //           Gerar Mês De {monthInQuestion}
-//         </ArvinButton>
+//         </button>
 //       )}
 //       {loading ? (
 //         <CircularProgress style={{ color: partnerColor() }} />

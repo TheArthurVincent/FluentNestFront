@@ -17,7 +17,6 @@ import {
 import { useUserContext } from "../SelectLanguage/SelectLanguage";
 import { logoPartner, partnerColor } from "../../Styles/Styles";
 import { LinkItem } from "./TopBarTypes";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { SpanDisapear } from "../../Routes/HomePage/Blog.Styled";
 import axios from "axios";
 import { Modal } from "@mui/material";
@@ -666,10 +665,10 @@ export const TopBar: FC = () => {
             <option value="pt">PT-BR</option>
           </select>
         </form>
-        <ArvinButton onClick={onLoggOut}>
+        <button onClick={onLoggOut}>
           {" "}
           {UniversalTexts.leaveButton}
-        </ArvinButton>
+        </button>
       </div>
     </TopBarContainer>
   );

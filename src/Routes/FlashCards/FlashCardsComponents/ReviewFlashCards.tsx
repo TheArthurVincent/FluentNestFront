@@ -12,7 +12,6 @@ import {
   onLoggOut,
   updateInfo,
   mascotWeak,
-  formatDateBr,
 } from "../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
@@ -21,12 +20,7 @@ import {
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 
-import { ArvinButton } from "../../../Resources/Components/ItemsLibrary";
-import {
-  partnerColor,
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../../Styles/Styles";
+import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { HOne } from "../../../Resources/Components/RouteBox";
@@ -469,11 +463,11 @@ const ReviewFlashCards = ({
                   >
                     {!cardsLength ? (
                       <>
-                        <ArvinButton
+                        <button
                           disabled={isDisabled}
-                          cursor={isDisabled ? "not-allowed" : "pointer"}
                           color={isDisabled ? "grey" : partnerColor()}
                           style={{
+                            cursor: isDisabled ? "not-allowed" : "pointer",
                             color: textPrimaryColorContrast(),
                           }}
                           onClick={() => {
@@ -490,7 +484,7 @@ const ReviewFlashCards = ({
                                 : UniversalTexts?.answer || "Answer"}
                             </span>
                           )}
-                        </ArvinButton>
+                        </button>
 
                         {answer && (
                           <div style={{ marginTop: "1rem" }}>
@@ -502,14 +496,14 @@ const ReviewFlashCards = ({
                                 marginBottom: "1rem",
                               }}
                             >
-                              <ArvinButton
+                              <button
                                 onClick={() => reviewCard(cards[0]._id, "hard")}
                                 color="red"
                               >
                                 {UniversalTexts?.iMissed || "I missed (Errei)"}
-                              </ArvinButton>
+                              </button>
 
-                              <ArvinButton
+                              <button
                                 onClick={() => reviewCard(cards[0]._id, "easy")}
                                 style={{
                                   color: textPrimaryColorContrast(),
@@ -518,7 +512,7 @@ const ReviewFlashCards = ({
                               >
                                 {UniversalTexts?.iGotIt ||
                                   "I got it! (Acertei)"}
-                              </ArvinButton>
+                              </button>
                             </div>
                           </div>
                         )}

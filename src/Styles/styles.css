@@ -126,17 +126,13 @@ button {
 }
 
 button:hover {
-  border-color: #999;
-  background-color: #f5f5f5;
+  box-shadow: 0 0 0 1px #888;
 }
 
 button:active {
-  background-color: #eee;
+  box-shadow: 0 0 0 1px #111 inset;
 }
 
-button:focus {
-  box-shadow: 0 0 0 1px #111;
-}
 
 button:disabled {
   background-color: #f5f5f5;
@@ -1127,7 +1123,7 @@ EXEMPLOS DE USO:
   cursor: pointer;
 }
 
-.linguee-radio input[type="radio"]:checked + .linguee-radio-dot {
+.linguee-radio input[type="radio"]:checked+.linguee-radio-dot {
   opacity: 1;
   transform: scale(1);
 }
@@ -1136,7 +1132,7 @@ EXEMPLOS DE USO:
   outline: none;
 }
 
-.linguee-radio input[type="radio"]:focus ~ .linguee-radio {
+.linguee-radio input[type="radio"]:focus~.linguee-radio {
   border-color: #111;
   box-shadow: 0 0 0 1px #111;
 }
@@ -1194,19 +1190,16 @@ EXEMPLOS DE USO:
   cursor: pointer;
 }
 
-.linguee-checkbox input[type="checkbox"]:checked ~ .linguee-checkbox {
+.linguee-checkbox input[type="checkbox"]:checked~.linguee-checkbox {
   background-color: #111;
   border-color: #111;
 }
 
-.linguee-checkbox
-  input[type="checkbox"]:checked
-  ~ .linguee-checkbox
-  .linguee-checkbox-check {
+.linguee-checkbox input[type="checkbox"]:checked~.linguee-checkbox .linguee-checkbox-check {
   opacity: 1;
 }
 
-.linguee-checkbox input[type="checkbox"]:focus ~ .linguee-checkbox {
+.linguee-checkbox input[type="checkbox"]:focus~.linguee-checkbox {
   box-shadow: 0 0 0 1px #111;
 }
 
@@ -1255,7 +1248,7 @@ EXEMPLOS DE USO:
   cursor: pointer;
 }
 
-.linguee-toggle input[type="checkbox"]:checked + .linguee-toggle-slider {
+.linguee-toggle input[type="checkbox"]:checked+.linguee-toggle-slider {
   transform: translateX(20px);
 }
 

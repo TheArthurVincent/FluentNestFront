@@ -32,7 +32,6 @@ import axios from "axios";
 import moment from "moment";
 import { StyledDiv } from "./MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import { getEmbedUrl } from "./CalendarComponents/MyCalendarFuncions";
@@ -3076,7 +3075,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       ].map(
                                         (item, index) =>
                                           item.visible && (
-                                            <ArvinButton
+                                            <button
                                               key={index}
                                               color={item.color}
                                               onClick={item.onClick}
@@ -3088,7 +3087,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               }}
                                             >
                                               {item.text}
-                                            </ArvinButton>
+                                            </button>
                                           )
                                       )}
                                     </div>
@@ -4102,7 +4101,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                 >
                   <div style={{ display: !seeReplenish ? "block" : "none" }}>
-                    <ArvinButton
+                    <button
                       onClick={() => setSeeReplenish(true)}
                       style={{
                         width: "100%",
@@ -4112,7 +4111,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                     >
                       {UniversalTexts.calendarModal.reserveTimeForReplacement}
-                    </ArvinButton>
+                    </button>
                   </div>
 
                   <div
@@ -4142,7 +4141,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         marginTop: "1rem",
                       }}
                     >
-                      <ArvinButton
+                      <button
                         onClick={() => setSeeReplenish(false)}
                         color="red"
                         style={{
@@ -4151,8 +4150,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         }}
                       >
                         ❌ Não
-                      </ArvinButton>
-                      <ArvinButton
+                      </button>
+                      <button
                         onClick={handleScheduleReplenish}
                         color="green"
                         style={{
@@ -4161,7 +4160,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         }}
                       >
                         ✅ Sim
-                      </ArvinButton>
+                      </button>
                     </div>
                   </div>
                 </div>

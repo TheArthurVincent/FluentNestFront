@@ -4,7 +4,6 @@ import axios from "axios";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { myLogoDone } from "../NewStudentAsaas/EmailCheck";
 import { Alert, TextField } from "@mui/material";
-import { ArvinButton } from "../../Resources/Components/ItemsLibrary";
 import Helmets from "../../Resources/Helmets";
 
 export function SendMail() {
@@ -89,15 +88,15 @@ export function SendMail() {
               width: "100%",
             }}
           >
-            <ArvinButton
+            <button
               style={{ marginLeft: "auto" }}
               type="submit"
               disabled={loading}
             >
               Receber material do vídeo!
-            </ArvinButton>
+            </button>
             <br />
-            <ArvinButton
+            <button
               style={{ marginLeft: "auto" }}
               type="button"
               onClick={() => {
@@ -106,7 +105,7 @@ export function SendMail() {
               disabled={loading}
             >
               {"Cadastrar-me na plataforma"}
-            </ArvinButton>
+            </button>
           </div>
           {success && <Alert severity="success">Enviado com sucesso!</Alert>}
           {error && <Alert severity="error">{error}</Alert>}

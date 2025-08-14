@@ -12,7 +12,6 @@ import {
   textTitleFont,
   theBackgroundColor,
 } from "../../../../Styles/Styles";
-import { ArvinButton } from "../../../../Resources/Components/ItemsLibrary";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { NavLink } from "react-router-dom";
@@ -173,24 +172,24 @@ export default function WhiteLabelPreview({ headers }) {
         Visualização com o fundo, cores e fontes escolhidas.
       </p>
       <div style={{ margin: "2rem", display: "block" }}>
-        <ArvinButton
+        <button
           style={{ fontFamily: formData.textGeneralFont }}
           color="red"
         >
           Botão de exemplo
-        </ArvinButton>
-        <ArvinButton
+        </button>
+        <button
           style={{ fontFamily: formData.textGeneralFont }}
           color="orange"
         >
           Botão de exemplo
-        </ArvinButton>
-        <ArvinButton
+        </button>
+        <button
           style={{ fontFamily: formData.textGeneralFont }}
           color="green"
         >
           Botão de exemplo
-        </ArvinButton>
+        </button>
       </div>
     </div>
   );
@@ -242,9 +241,9 @@ export default function WhiteLabelPreview({ headers }) {
         Nesta aba você pode adicionar elementos futuros, exemplos de uso do
         tema, ou botões personalizados.
       </p>
-      <ArvinButton style={{ fontFamily: formData.textGeneralFont }}>
+      <button style={{ fontFamily: formData.textGeneralFont }}>
         Testar botão adicional
-      </ArvinButton>
+      </button>
     </div>
   );
 
@@ -507,9 +506,9 @@ export default function WhiteLabelPreview({ headers }) {
               </select>
             </div>
 
-            <ArvinButton type="submit" color={partnerColor()}>
+            <button type="submit" color={partnerColor()}>
               Salvar Tema
-            </ArvinButton>
+            </button>
           </form>
           {/* 🔎 Visualização do tema */}
           <div className="sample" style={sampleStyles}>

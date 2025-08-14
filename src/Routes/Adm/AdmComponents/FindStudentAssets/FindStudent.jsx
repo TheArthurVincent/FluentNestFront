@@ -46,10 +46,6 @@ import {
   textTitleFont,
 } from "../../../../Styles/Styles";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import {
-  ArvinButton,
-  MyButton,
-} from "../../../../Resources/Components/ItemsLibrary";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
@@ -3146,7 +3142,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 }}
               >
                 {listOfButtons.map((item, index) => (
-                  <ArvinButton
+                  <button
                     key={index + item.color}
                     disabled={disabled}
                     style={{
@@ -3168,7 +3164,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     }
                   >
                     {item.text}
-                  </ArvinButton>
+                  </button>
                 ))}
               </div>
 
