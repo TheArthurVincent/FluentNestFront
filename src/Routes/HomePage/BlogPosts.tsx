@@ -23,6 +23,7 @@ import {
 } from "../../Styles/Styles";
 import { Button, CircularProgress } from "@mui/material";
 import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
+import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
@@ -290,6 +291,9 @@ export function BlogPosts({ headers }: BlogPostsProps) {
       <DivModal
         className="modal"
         style={{
+          height: "90vh",
+          width: "90vw",
+          overflowY: "auto",
           display: isVisible ? "block" : "none",
         }}
       >
@@ -312,24 +316,15 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             placeholder="VideoUrl (Youtube/Vimeo)"
             type="text"
           />
-          <input
+          {/* <input
             value={newImg}
             onChange={(event) => setNewImg(event.target.value)}
             id="VideoUrl"
             placeholder="Imagem URL"
             type="text"
             className="inputs-style"
-          />
-          <textarea
-            value={newText}
-            onChange={(event) => setNewText(event.target.value)}
-            id="Texto"
-            placeholder="Texto"
-            cols={20}
-            rows={10}
-            required
-            className="inputs-style"
-          />
+          /> */}
+          <HTMLEditor initialContent={newText} onChange={setNewText} />
         </InternDivModal>
         <UniversalButtonsDivFlex
           style={{

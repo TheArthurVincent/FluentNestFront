@@ -124,13 +124,7 @@ export function HomePage({ headers }: HeadersProps) {
       path: "/",
       levelcard: true,
       component: (
-        <Blog
-          change={change}
-          headers={headers}
-          studentIdd={_StudentId}
-          picture={picture}
-          setChange={setChange}
-        />
+        <Blog change={change} headers={headers} setChange={setChange} />
       ),
     },
     {
@@ -171,18 +165,7 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "English Courses",
-      component: 
-      <div
-        style={{
-    // maxWidth:"1000px"
-  }}
-      >
-
-      <EnglishCourses headers={headers} />
-      </div>
-      
-      ,
-
+      component: <EnglishCourses headers={headers} />,
     },
     {
       levelcard: true,
@@ -232,13 +215,7 @@ export function HomePage({ headers }: HeadersProps) {
         verifyToken() && (admin || teacher) ? (
           <Adm headers={headers} />
         ) : (
-          <Blog
-            change={change}
-            headers={headers}
-            setChange={setChange}
-            studentIdd={_StudentId}
-            picture={picture}
-          />
+          <Blog change={change} headers={headers} setChange={setChange} />
         ),
     },
   ];
@@ -482,51 +459,3 @@ export function HomePage({ headers }: HeadersProps) {
 }
 
 export default HomePage;
-// DURAÇÃO DA AULA nos eventos
-// BLOG DO TEACHER
-// DURAÇÃO DA AULA
-// DURAÇÃO DA AULA
-// LINK HOMEWORK QD MARCA SOSZINHO
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-// 🎁 Seu código promocional: yara14cal2
-
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO
-//   QUANDO CRIAR O TEACHR, TEM QUE CRIAR O WHITELABEL!!
-// DATAS DE NASCIMENTO

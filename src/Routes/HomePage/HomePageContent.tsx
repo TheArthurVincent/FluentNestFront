@@ -17,19 +17,11 @@ import { isArthurVincent } from "../../App";
 
 interface BlogProps {
   headers: MyHeadersType | null;
-  studentIdd: string;
-  picture: string;
   change: boolean;
   setChange: any;
 }
 
-export function Blog({
-  headers,
-  studentIdd,
-  picture,
-  change,
-  setChange,
-}: BlogProps) {
+export function Blog({ headers, change, setChange }: BlogProps) {
   const { UniversalTexts } = useUserContext();
   const [name, setName] = useState<string>("");
   const [classId, setClassId] = useState<string>("");
@@ -126,103 +118,101 @@ export function Blog({
   ];
 
   return (
-    <>
-      <RouteDiv>
-        <Helmets text="Home Page" />
+    <RouteDiv>
+      <Helmets text="Home Page" />
+      <div
+        style={{
+          margin: "1rem 0.5rem 0 0",
+          display: "flex",
+          maxWidth: "100%",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div
           style={{
-            margin: "1rem 0.5rem 0 0",
             display: "flex",
-            maxWidth: "100%",
-            justifyContent: "space-between",
             alignItems: "center",
+            justifyContent: "center",
+            marginLeft: "1rem",
+            maxWidth: "100%",
+            gap: "1rem",
           }}
         >
-          <div
+          <i className="fa fa-user" aria-hidden="true" />
+          <p>
+            {UniversalTexts.hello}
+            {name}!
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: "5px" }}></div>
+      </div>
+      <DivFlex>
+        <div className="grid-flex-2">
+          <DivMarginBorder>
+            <ReviewFlashCards
+              selectedStudentId={myId}
+              change={change}
+              onChange={setChange}
+              headers={headers}
+            />
+          </DivMarginBorder>
+        </div>
+        <div className="grid-flex-2">
+          <DivMarginBorder>
+            {loadingLESSON ? (
+              <CircularProgress style={{ color: partnerColor() }} />
+            ) : (
+              <div className="study-container">
+                <HOne
+                  style={{
+                    fontFamily: textTitleFont(),
+                    color: partnerColor(),
+                  }}
+                >
+                  {UniversalTexts.studyEnglish}
+                </HOne>
+                <div className="grid-container">
+                  {sessions.map((session) => (
+                    <a
+                      key={session.id}
+                      href={session.link}
+                      className="grid-item"
+                      style={{
+                        display: session.display,
+                      }}
+                    >
+                      <span className="session-title">{session.title}</span>
+                      <div
+                        className="image-background"
+                        style={{ backgroundImage: `url(${session.img})` }}
+                      />
+
+                      <div className="overlay">
+                        <p className="session-description">
+                          {session.description}
+                        </p>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+          </DivMarginBorder>
+        </div>
+        <div className="grid-flex-2">
+          <DivMarginBorder
             style={{
               display: "flex",
-              alignItems: "center",
               justifyContent: "center",
-              marginLeft: "1rem",
-              maxWidth: "100%",
-              gap: "1rem",
             }}
           >
-            <i className="fa fa-user" aria-hidden="true" />
-            <p>
-              {UniversalTexts.hello}
-              {name}!
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: "5px" }}></div>
+            {/* @ts-ignore */}
+            <BlogPosts headers={actualHeaders} />
+          </DivMarginBorder>
         </div>
-        <DivFlex>
-          <div className="grid-flex-2">
-            <DivMarginBorder>
-              <ReviewFlashCards
-                selectedStudentId={myId}
-                change={change}
-                onChange={setChange}
-                headers={headers}
-              />
-            </DivMarginBorder>
-          </div>
-          <div className="grid-flex-2">
-            <DivMarginBorder>
-              {loadingLESSON ? (
-                <CircularProgress style={{ color: partnerColor() }} />
-              ) : (
-                <div className="study-container">
-                  <HOne
-                    style={{
-                      fontFamily: textTitleFont(),
-                      color: partnerColor(),
-                    }}
-                  >
-                    {UniversalTexts.studyEnglish}
-                  </HOne>
-                  <div className="grid-container">
-                    {sessions.map((session) => (
-                      <a
-                        key={session.id}
-                        href={session.link}
-                        className="grid-item"
-                        style={{
-                          display: session.display,
-                        }}
-                      >
-                        <span className="session-title">{session.title}</span>
-                        <div
-                          className="image-background"
-                          style={{ backgroundImage: `url(${session.img})` }}
-                        />
-
-                        <div className="overlay">
-                          <p className="session-description">
-                            {session.description}
-                          </p>
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </DivMarginBorder>
-          </div>
-          <div className="grid-flex-2">
-            <DivMarginBorder
-              style={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              {/* @ts-ignore */}
-              <BlogPosts headers={actualHeaders} />
-            </DivMarginBorder>
-          </div>
-        </DivFlex>
-      </RouteDiv>
-    </>
+      </DivFlex>
+    </RouteDiv>
   );
 }
 
