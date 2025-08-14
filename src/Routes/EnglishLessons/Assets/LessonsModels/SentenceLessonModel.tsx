@@ -218,8 +218,6 @@ export default function SentenceLessonModel({
                     color: "#1a202c",
                     lineHeight: "1.6",
                     marginBottom: "16px",
-                    fontFamily:
-                      "'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                     letterSpacing: "-0.01em",
                     textShadow: "0 1px 2px rgba(0,0,0,0.04)",
                   }}
@@ -232,8 +230,6 @@ export default function SentenceLessonModel({
                     // fontSize: "15px",
                     color: "#6b7280",
                     lineHeight: "1.5",
-                    fontFamily:
-                      "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
                     padding: "12px 20px",
                     backgroundColor: "#f8fafc",
                     borderRadius: "12px",

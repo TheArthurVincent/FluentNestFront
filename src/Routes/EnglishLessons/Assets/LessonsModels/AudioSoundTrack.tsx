@@ -90,8 +90,6 @@ export default function AudioSoundTrack({
           overflow: "hidden",
           whiteSpace: "nowrap",
           textOverflow: "ellipsis",
-          fontFamily:
-            "Interstate, Lucida Grande, Lucida Sans Unicode, Lucida Sans, Garuda, Verdana, Tahoma, sans-serif",
           fontWeight: 100,
         }}
       >
