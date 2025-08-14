@@ -950,7 +950,7 @@ export function FinancialResources({ headers, id }) {
         return total;
       }, 0);
 
-    const saldo = entradas + saidas;
+    const saldo = entradas - saidas;
 
     return [
       {
