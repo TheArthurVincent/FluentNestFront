@@ -40,11 +40,11 @@ export default function StudentsRankingTotal({ headers }: HeadersProps) {
   const fetchStudents = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
-    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
+    const { teacherID } = JSON.parse(localStorage.getItem("loggedIn") || "");
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/scorestotalranking/${id}?page=${page}&limit=10`,
+        `${backDomain}/api/v1/scorestotalranking/${teacherID}?page=${page}&limit=10`,
         {
           headers: actualHeaders,
         }
