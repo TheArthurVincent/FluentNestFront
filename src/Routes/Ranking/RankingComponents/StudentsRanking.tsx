@@ -32,6 +32,7 @@ export default function StudentsRanking({
   headers,
   monthNow,
 }: StudentsRankingProps) {
+  const { UniversalTexts } = useUserContext();
   interface StudentsType {
     id: string;
     lastname: string;
@@ -254,8 +255,6 @@ export default function StudentsRanking({
     if (!hasMore || loading) return;
     setLoading(true);
     const { id } = JSON.parse(localStorage.getItem("loggedIn") || "");
-    const { UniversalTexts } = useUserContext();
-
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/scoresranking/${id}?page=${page}`,
