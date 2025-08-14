@@ -2787,7 +2787,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             onChange={handleCategoryChange}
                                             name="category"
                                             value={category}
-                                            // className="inputs-style"
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
@@ -2835,7 +2834,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               }
                                             </label>
                                             <select
-                                              // className="inputs-style"
                                               onChange={handleStudentChange}
                                               name="students"
                                               value={newStudentId}
@@ -2891,7 +2889,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               📅 Date
                                             </label>
                                             <input
-                                              // className="inputs-style"
                                               value={date}
                                               onChange={(e) =>
                                                 setDate(e.target.value)
@@ -2920,7 +2917,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               ⏰ Time
                                             </label>
                                             <input
-                                              // className="inputs-style"
                                               value={theTime}
                                               onChange={(e) =>
                                                 setTheTime(e.target.value)
@@ -2992,7 +2988,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             {UniversalTexts.calendarModal.link}
                                           </label>
                                           <input
-                                            // className="inputs-style"
                                             value={link}
                                             onChange={(e) =>
                                               setLink(e.target.value)
@@ -3027,7 +3022,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             }
                                           </label>
                                           <input
-                                            // className="inputs-style"
                                             type="text"
                                             value={description}
                                             onChange={(e) =>
