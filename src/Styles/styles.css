@@ -4,19 +4,19 @@
 @import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
 
-@import url('https://fonts.googleapis.com/css2?family=Athiti&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Oswald&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Athiti&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
 
 *::-webkit-scrollbar {
   width: 11px;
@@ -59,13 +59,90 @@ html {
   }
 }
 
-/* 
-* {
-  animation-name: slideInLeft;
-  animation-duration: 0.4s;
-  animation-timing-function: forward;
-  transition: all 0.1s forward;
-} */
+input,
+textarea,
+select {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px 12px;
+  outline: none;
+  background-color: #fff;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #111;
+  box-shadow: 0 0 0 1px #111;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
+
+select {
+  min-width: 120px;
+  min-height: 36px;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 8px center;
+  background-repeat: no-repeat;
+  background-size: 16px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+  width: 100%;
+}
+
+/* Universal button style - linguee inspired, discrete, structure only */
+button {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px 16px;
+  background-color: #fff;
+  color: #111;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, background-color 0.2s, box-shadow 0.2s;
+  min-height: 36px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+button:hover {
+  border-color: #999;
+  background-color: #f5f5f5;
+}
+
+button:active {
+  background-color: #eee;
+}
+
+button:focus {
+  box-shadow: 0 0 0 1px #111;
+}
+
+button:disabled {
+  background-color: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+}
 
 h1,
 h2,
@@ -129,7 +206,7 @@ h4 {
 }
 
 .timeline-date {
-  font-family: 'Athiti', sans-serif;
+  font-family: "Athiti", sans-serif;
   color: #888;
   min-width: 100px;
   text-align: right;
@@ -179,14 +256,14 @@ h4 {
 
 .type {
   margin: 0 0 5px;
-  font-family: 'Athiti', sans-serif;
+  font-family: "Athiti", sans-serif;
   color: black;
 }
 
 .loading {
   text-align: center;
   padding: 40px;
-  font-family: 'Lato', sans-serif;
+  font-family: "Lato", sans-serif;
   color: #444;
 }
 
@@ -233,7 +310,6 @@ h4 {
   animation-timing-function: ease;
 }
 
-
 .maxwidth {
   max-width: 1800px;
   margin-left: auto;
@@ -247,11 +323,6 @@ body {
   background-position: center;
 }
 
-
-
-
-
-
 .study-title {
   font-size: 28px;
   font-weight: bold;
@@ -263,7 +334,6 @@ body {
   padding: 24px;
   text-align: center;
   align-content: center;
-
 }
 
 .grid-container {
@@ -477,7 +547,6 @@ li {
   padding: 1rem;
 }
 
-
 .flashcard-front {
   background-color: white;
   box-shadow: 5px 5px 10px #555;
@@ -594,23 +663,6 @@ body {
   overflow-x: hidden;
 }
 
-input.inputs-style {
-  float: right;
-  width: 95%;
-  padding: 10px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border-radius: 6px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  background-color: rgb(245, 245, 245);
-  border: 1px solid #898989;
-  color: #000;
-  font-weight: bold;
-  margin: 2px auto;
-}
-
 .limited-text {
   margin: 1rem;
   font-size: 1.1rem;
@@ -624,19 +676,6 @@ input.inputs-style {
   /* Esconde o excesso de texto */
   white-space: pre-wrap;
   /* Mantém quebras de linha */
-}
-
-input.inputs-style:hover {
-  background-color: #c6c6c6;
-  transition: 0.1s;
-  border: 1px solid #777;
-  color: #011042;
-}
-
-input.inputs-style:focus {
-  background-color: #ffffff;
-  border: 1px solid #434343;
-  color: #000000;
 }
 
 .box-shadow-white {
@@ -680,7 +719,8 @@ input.inputs-style:focus {
   font-weight: 800;
   background: linear-gradient(-45deg, #c9d000, #fbff78, #f6ff00, #c9d000);
   background-size: 400% 400%;
-  animation: waterFlow 4s linear infinite, pulseGlow 2s ease-in-out infinite, pulseGlowText 2s ease-in-out infinite;
+  animation: waterFlow 4s linear infinite, pulseGlow 2s ease-in-out infinite,
+    pulseGlowText 2s ease-in-out infinite;
   transition: transform 0.2s ease;
 }
 
@@ -796,36 +836,6 @@ input.inputs-style:focus {
   margin: 5px 0;
 }
 
-textarea.inputs-style {
-  float: right;
-  margin: 0 auto;
-  width: 90%;
-  padding: 10px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border-radius: 6px;
-  -moz-background-clip: padding;
-  -webkit-background-clip: padding-box;
-  background-clip: padding-box;
-  background-color: rgb(245, 245, 245);
-  border: 1px solid #898989;
-  color: #000;
-  font-weight: bold;
-}
-
-textarea.inputs-style:hover {
-  background-color: #c6c6c6;
-  transition: 0.1s;
-  border: 1px solid #777;
-  color: #000;
-}
-
-textarea.inputs-style:focus {
-  background-color: #ffffff;
-  border: 1px solid #434343;
-  color: #000000;
-}
-
 .lesson-container {
   font-size: 16px;
   color: #333;
@@ -876,7 +886,6 @@ textarea.inputs-style:focus {
 .comments2:focus {
   border-bottom: 1px solid black;
 }
-
 
 .comments:hover,
 .comments2:hover {
@@ -989,7 +998,7 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   outline: none;
@@ -1030,7 +1039,7 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   outline: none;
@@ -1056,7 +1065,7 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -1147,7 +1156,7 @@ EXEMPLOS DE USO:
 
 .linguee-radio-label {
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   cursor: pointer;
   user-select: none;
@@ -1190,7 +1199,10 @@ EXEMPLOS DE USO:
   border-color: #111;
 }
 
-.linguee-checkbox input[type="checkbox"]:checked ~ .linguee-checkbox .linguee-checkbox-check {
+.linguee-checkbox
+  input[type="checkbox"]:checked
+  ~ .linguee-checkbox
+  .linguee-checkbox-check {
   opacity: 1;
 }
 
@@ -1213,7 +1225,7 @@ EXEMPLOS DE USO:
 
 .linguee-checkbox-label {
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   cursor: pointer;
   user-select: none;
@@ -1277,7 +1289,7 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   cursor: pointer;
@@ -1351,7 +1363,7 @@ EXEMPLOS DE USO:
 .linguee-label {
   display: block;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   margin-bottom: 4px;
   font-weight: 500;

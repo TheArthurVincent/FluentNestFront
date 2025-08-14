@@ -288,9 +288,29 @@ export function BlogPosts({ headers }: BlogPostsProps) {
           </>
         )}
       </div>
-      <DivModal
+      <div
+        style={{
+          height: "100%",
+          width: "100%",
+          position: "absolute",
+          top: 0,
+          left: 0,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 99,
+          display: isVisible ? "block" : "none",
+        }}
+        onClick={() => handleSeeModal()}
+      />
+      <div
         className="modal"
         style={{
+          position: "fixed",
+          zIndex: 100,
+          backgroundColor: `${alwaysWhite()}`,
+          padding: "1rem",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
           height: "90vh",
           width: "90vw",
           overflowY: "auto",
@@ -298,7 +318,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
         }}
       >
         <Xp onClick={() => handleSeeModal()}>X</Xp>
-        <HTwo>{UniversalTexts.editPost}</HTwo>
+        <HOne>{UniversalTexts.editPost}</HOne>
         <InternDivModal>
           <input
             value={newTitle}
@@ -306,24 +326,14 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             id="title"
             placeholder="Title"
             type="text"
-            className="inputs-style"
           />
           <input
-            className="inputs-style"
             value={newUrlVideo}
             onChange={(event) => setNewUrlVideo(event.target.value)}
             id="VideoUrl"
             placeholder="VideoUrl (Youtube/Vimeo)"
             type="text"
           />
-          {/* <input
-            value={newImg}
-            onChange={(event) => setNewImg(event.target.value)}
-            id="VideoUrl"
-            placeholder="Imagem URL"
-            type="text"
-            className="inputs-style"
-          /> */}
           <HTMLEditor initialContent={newText} onChange={setNewText} />
         </InternDivModal>
         <UniversalButtonsDivFlex
@@ -331,7 +341,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             display: !seeConfirmDelete ? "flex" : "none",
           }}
         >
-          <Button
+          <button
             style={{
               color: alwaysWhite(),
               backgroundColor: "#ba3c3c",
@@ -339,8 +349,8 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             onClick={() => handleConfirmDelete()}
           >
             {UniversalTexts.delete}
-          </Button>
-          <Button
+          </button>
+          <button
             style={{
               color: alwaysWhite(),
               backgroundColor: "#194169",
@@ -348,8 +358,8 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             onClick={() => handleSeeModal()}
           >
             {UniversalTexts.cancel}
-          </Button>
-          <Button
+          </button>
+          <button
             style={{
               color: alwaysWhite(),
               backgroundColor: "#138017",
@@ -357,7 +367,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             onClick={() => editPost(_id)}
           >
             {UniversalTexts.save}
-          </Button>
+          </button>
         </UniversalButtonsDivFlex>
         <div
           style={{
@@ -376,7 +386,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
             {UniversalTexts.deleteConfirm}
           </p>
           <UniversalButtonsDivFlex>
-            <Button
+            <button
               style={{
                 color: alwaysWhite(),
                 backgroundColor: "#194169",
@@ -384,8 +394,8 @@ export function BlogPosts({ headers }: BlogPostsProps) {
               onClick={() => handleConfirmDelete()}
             >
               {UniversalTexts.no}
-            </Button>
-            <Button
+            </button>
+            <button
               style={{
                 color: alwaysWhite(),
                 backgroundColor: "#ba3c3c",
@@ -393,10 +403,10 @@ export function BlogPosts({ headers }: BlogPostsProps) {
               onClick={() => deletePost(_id)}
             >
               {UniversalTexts.yes}
-            </Button>
+            </button>
           </UniversalButtonsDivFlex>
         </div>
-      </DivModal>
+      </div>
       <BackgroundClickBlog
         onClick={() => handleSeeModal()}
         style={{ display: !isVisible ? "none" : "flex" }}
