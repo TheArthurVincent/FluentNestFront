@@ -69,14 +69,7 @@ function RequestResetPassword() {
                   objectFit: "contain",
                 }}
               />
-              <HOne
-                style={{
-                  fontFamily: textTitleFont(),
-                  color: partnerColor(),
-                }}
-              >
-                Altere sua senha
-              </HOne>
+              <HOne>Altere sua senha</HOne>
               <TextField
                 label="E-mail"
                 name="email"

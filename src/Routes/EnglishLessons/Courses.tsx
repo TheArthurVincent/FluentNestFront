@@ -100,14 +100,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
               maxWidth: "800px",
             }}
           >
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              {UniversalTexts.theCourses}
-            </HOne>
+            <HOne>{UniversalTexts.theCourses}</HOne>
             <ArvinButton onClick={getCourses}>
               <span
                 style={{

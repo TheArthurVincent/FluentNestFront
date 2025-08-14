@@ -71,15 +71,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
         maxWidth: "800px",
       }}
     >
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Word of the Day
-      </HOne>
-
+      <HOne>Word of the Day</HOne>
       {words.map((wordItem: any) => (
         <div
           key={wordItem._id}
@@ -185,14 +177,7 @@ const WordOfTheDayList = ({ headers }: WordOfTheDayListRv) => {
                     gap: "10px",
                   }}
                 >
-                  <HOne
-                    style={{
-                      margin: 0,
-                      fontSize: "2.5rem",
-                      fontFamily: textTitleFont(),
-                      color: partnerColor(),
-                    }}
-                  >
+                  <HOne>
                     {selectedWord.word} - {selectedWord.translatedWord}
                   </HOne>
 

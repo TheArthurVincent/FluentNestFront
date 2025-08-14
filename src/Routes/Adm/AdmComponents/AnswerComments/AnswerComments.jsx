@@ -73,14 +73,7 @@ export function AllComments({ headers }) {
 
   return (
     <div>
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Comentários Pendentes
-      </HOne>
+      <HOne>Comentários Pendentes</HOne>
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (

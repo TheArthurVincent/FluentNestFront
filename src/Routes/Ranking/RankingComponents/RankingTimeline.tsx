@@ -121,15 +121,7 @@ export default function RankingTimeline({
           flexWrap: "wrap",
         }}
       >
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            fontSize: "1.8rem",
-          }}
-        >
-          Histórico de Pontuação - {actualName}
-        </HOne>
+        <HOne>Histórico de Pontuação - {actualName}</HOne>
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
           {permissions === "superadmin" && (
             <select

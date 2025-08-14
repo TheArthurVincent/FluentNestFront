@@ -2243,14 +2243,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
           marginTop: "18px",
         }}
       >
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          {UniversalTexts.myStudents}
-        </HOne>
+        <HOne>{UniversalTexts.myStudents}</HOne>
         <input
           style={{
             width: "100%",

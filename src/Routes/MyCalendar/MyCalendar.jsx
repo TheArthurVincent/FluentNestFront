@@ -1494,14 +1494,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           }}
         >
           <div>
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              {UniversalTexts.calendar}
-            </HOne>
+            <HOne>{UniversalTexts.calendar}</HOne>
 
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />

@@ -164,14 +164,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
               <div className="study-container">
-                <HOne
-                  style={{
-                    fontFamily: textTitleFont(),
-                    color: partnerColor(),
-                  }}
-                >
-                  {UniversalTexts.studyEnglish}
-                </HOne>
+                <HOne>{UniversalTexts.studyEnglish}</HOne>
                 <div className="grid-container">
                   {sessions.map((session) => (
                     <a

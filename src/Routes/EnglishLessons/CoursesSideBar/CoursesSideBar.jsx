@@ -76,21 +76,8 @@ function CoursesSideBar({ courses }) {
                   zIndex: -1,
                 }}
               >
-                <HOne
-                  style={{
-                    fontFamily: textTitleFont(),
-                    color: partnerColor(),
-                  }}
-                >
-                  Modules
-                </HOne>
-                <HOne
-                  style={{
-                    fontFamily: textTitleFont(),
-                    color: partnerColor(),
-                    fontSize: "10px",
-                  }}
-                >
+                <HOne>Modules</HOne>
+                <HOne>
                   <i
                     className={`fa fa-arrow-${arrow ? "left" : "right"}`}
                     style={{ fontSize: "16px" }}

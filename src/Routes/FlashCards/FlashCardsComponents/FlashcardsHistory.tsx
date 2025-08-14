@@ -137,16 +137,7 @@ const FlashcardsHistory = ({
         </select>
       </div>
 
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-          textAlign: "center",
-          marginBottom: "1rem",
-        }}
-      >
-        Flashcard Reviews
-      </HOne>
+      <HOne>Flashcard Reviews</HOne>
       {flashcardHistory.length > 0 ? (
         <div
           className="flashcard-history-list"

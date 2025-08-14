@@ -150,19 +150,12 @@ export function Invoice({ headers }: HeadersProps) {
           padding: "1rem",
         }}
       >
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          Recibo de Pagamento
-        </HOne>
+        <HOne>Recibo de Pagamento</HOne>
         <div>
           <p>
             Recibo referente ao recebimento da importância de R${" "}
-            {formatCurrency(fee)}{" "}
-            recebida de {name}, (CPF: {doc}), no mês de {thisMonth}.
+            {formatCurrency(fee)} recebida de {name}, (CPF: {doc}), no mês de{" "}
+            {thisMonth}.
           </p>
           {comments && (
             <div>

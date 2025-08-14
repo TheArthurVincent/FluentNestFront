@@ -136,9 +136,7 @@ export function NewTutoring({ headers, id }) {
 
   return (
     <div style={{ background: "#fff" }}>
-      <HOne style={{ marginBottom: 24, textAlign: "center", fontWeight: 700 }}>
-        Postar aula particular dada
-      </HOne>
+      <HOne>Postar aula particular dada</HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
           <CircularProgress style={{ color: partnerColor() }} />

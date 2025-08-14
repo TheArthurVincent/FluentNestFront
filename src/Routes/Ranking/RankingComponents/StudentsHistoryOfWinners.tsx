@@ -177,16 +177,7 @@ export default function StudentsHistoryOfWinners({ headers, monthNow }) {
               boxShadow: "0px 6px 10px rgba(0, 0, 0, 0.08)",
             }}
           >
-            <HOne
-              style={{
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-                textAlign: "center",
-                margin: "0.5rem",
-              }}
-            >
-              {month?.score[0]?.month}
-            </HOne>
+            <HOne>{month?.score[0]?.month}</HOne>
             {month.score.map((item, i) => (
               <ModelListItem
                 key={i}

@@ -81,14 +81,7 @@ export default function Ranking({ headers }: HeadersProps) {
   return (
     <RouteDiv>
       <Helmets text="Ranking" />
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Ranking
-      </HOne>
+      <HOne>Ranking</HOne>
       <TabContext value={value}>
         <div
           style={{

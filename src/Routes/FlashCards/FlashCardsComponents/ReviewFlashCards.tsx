@@ -389,17 +389,7 @@ const ReviewFlashCards = ({
           padding: "0 1rem",
         }}
       >
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            margin: "0 0 0.5rem 0",
-            fontSize: "1.5rem",
-          }}
-        >
-          {UniversalTexts?.reviewFlashcards || "Review Flashcards"}
-        </HOne>
-
+        <HOne>{UniversalTexts?.reviewFlashcards || "Review Flashcards"}</HOne>
         <a
           style={{
             fontSize: "12px",

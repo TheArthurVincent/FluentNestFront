@@ -147,14 +147,7 @@ export default function Modules({
       </Routes>
       {displayRouteDiv ? (
         <div>
-          <HOne
-            style={{
-              fontFamily: textTitleFont(),
-              color: partnerColor(),
-            }}
-          >
-            {title}
-          </HOne>
+          <HOne>{title}</HOne>
           {loading ? (
             <>...</>
           ) : (

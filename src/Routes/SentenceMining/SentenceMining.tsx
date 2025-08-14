@@ -175,16 +175,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
           justifyContent: "center",
         }}
       >
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            textAlign: "center",
-            margin: "0.5rem",
-          }}
-        >
-          Sentence Mining
-        </HOne>
+        <HOne>Sentence Mining</HOne>
         <a
           style={{
             fontSize: "13px",

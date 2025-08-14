@@ -92,14 +92,7 @@ const ListeningHistory = ({ headers }: HeadersProps) => {
   return (
     <div className="flashcard-history-upper">
       <div>
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          Listening Exercises
-        </HOne>
+        <HOne>Listening Exercises</HOne>
         {listeningFlashcardHistory.length > 0 ? (
           <div className="flashcard-history-list">
             {Object.entries(groupedListeningHistory).map(([date, group]) => (

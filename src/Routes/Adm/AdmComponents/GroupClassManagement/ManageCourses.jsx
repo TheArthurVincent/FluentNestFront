@@ -155,14 +155,7 @@ export function ManageGroupClasses({ headers }) {
 
   return (
     <>
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Gerenciar Aulas em Grupo
-      </HOne>
+      <HOne>Gerenciar Aulas em Grupo</HOne>
       <div id="1">
         {" "}
         <HTwo>Postar aula em grupo</HTwo>

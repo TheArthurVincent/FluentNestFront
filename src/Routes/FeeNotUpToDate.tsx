@@ -36,14 +36,7 @@ export function FeeNotUpToDate() {
           objectFit: "contain",
         }}
       />
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-        }}
-      >
-        Falta pouco para utilizar a plataforma!
-      </HOne>
+      <HOne>Falta pouco para utilizar a plataforma!</HOne>
       <p style={{ fontSize: "18px", marginTop: "20px" }}>
         Para finalizar seu pagamento, entre em contato conosco:
       </p>

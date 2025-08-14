@@ -172,14 +172,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
       }}
     >
       <div>
-        <HOne
-          style={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-          }}
-        >
-          {UniversalTexts.mural}
-        </HOne>
+        <HOne>{UniversalTexts.mural}</HOne>
         {posts.length > 0 ? (
           <div>
             {posts.map((post: any, index: number) => (

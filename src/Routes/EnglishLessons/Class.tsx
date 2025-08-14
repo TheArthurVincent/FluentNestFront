@@ -2956,27 +2956,7 @@ export default function EnglishClassCourse2({
                 No previous class
               </span>
             )}
-            <HOne
-              style={{
-                fontSize: "18px",
-                fontFamily: textTitleFont(),
-                color: partnerColor(),
-              }}
-            >
-              {`${order + 1}- ${theclass.title}`}{" "}
-              {/* {isCompleted && (
-                <i
-                  style={{
-                    color: "white",
-                    backgroundColor: partnerColor(),
-                    padding: "1px",
-                    borderRadius: "50%",
-                    margin: "0 0.5rem",
-                  }}
-                  className={`fa fa-check`}
-                />
-              )} */}
-            </HOne>
+            <HOne>{`${order + 1}- ${theclass.title}`} </HOne>
 
             {nextClass !== "123456" ? (
               <span

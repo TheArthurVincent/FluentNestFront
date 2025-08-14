@@ -136,16 +136,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
   return (
     <div>
       <Helmets text="Pending Homework" />
-      <HOne
-        style={{
-          fontFamily: textTitleFont(),
-          color: partnerColor(),
-          textAlign: "center",
-          marginBottom: "2rem",
-        }}
-      >
-        Lições Pendentes
-      </HOne>
+      <HOne>Lições Pendentes</HOne>
       <div>
         <ul
           style={{

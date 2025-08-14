@@ -399,16 +399,7 @@ export default function WhiteLabelPreview({ headers }) {
       className="page-wrapper"
       style={{ padding: "40px", fontFamily: formData.textGeneralFont }}
     >
-      <HOne
-        style={{
-          color: partnerColor(),
-          fontFamily: textTitleFont(),
-          fontSize: "20px",
-          marginBottom: "15px",
-        }}
-      >
-        🎨 Personalizar Tema
-      </HOne>
+      <HOne>🎨 Personalizar Tema</HOne>
 
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
