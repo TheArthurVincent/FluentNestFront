@@ -1517,6 +1517,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
+  const updateTask = async (index, taskID) => {
+    try {
+      console.log(index, taskID);
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/todochecklist/${id}?todoId=${taskID}&checkList=${index}`,
+        {
+          headers,
+        }
+      );
+      fetchTodo(taskID);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <>
       {headers ? (
@@ -1533,10 +1551,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   position: "fixed",
                   top: 0,
                   left: 0,
+                  zIndex: 2000,
                   width: "100vw",
                   height: "100vh",
                   background: "rgba(0,0,0,0.25)",
-                  zIndex: 2000,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -1549,24 +1567,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     boxShadow: "0 8px 32px #0002",
                     minWidth: "340px",
                     maxWidth: "95vw",
-                    padding: "2.5rem 2rem 2rem 2rem",
+                    padding: "1rem",
                     position: "relative",
                   }}
                 >
                   <button
-                    onClick={() => setModalEditTodo(false)}
+                    onClick={() => {
+                      fetchGeneralEvents();
+                      setModalEditTodo(false);
+                    }}
                     style={{
                       position: "absolute",
                       top: "18px",
                       right: "18px",
-                      background: "#eee",
                       border: "none",
                       borderRadius: "50%",
-                      width: "8px",
-                      height: "8px",
                       cursor: "pointer",
-                      boxShadow: "0 2px 8px #0001",
-                      color: "#555",
+                      fontSize: "1rem",
+                      fontWeight: "900",
                       transition: "background 0.2s",
                     }}
                     title="Fechar"
@@ -1646,7 +1664,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             <input
                               type="checkbox"
                               checked={item.checked}
-                              onClick={()=>{console.log(item)}}
+                              onClick={() => {
+                                updateTask(i, task._id);
+                              }}
                               style={{
                                 accentColor: item.checked ? "#22c55e" : "#ddd",
                                 width: "20px",
@@ -6041,7 +6061,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 <div
                   style={{
                     width: "1px",
-                    height: "20px",
+                    height: "20px", 
                     background: "#e9ecef",
                     margin: "0 4px",
                   }}
