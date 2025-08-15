@@ -12,6 +12,7 @@ import {
   alwaysWhite,
   partnerColor,
   textGeneralFont,
+  textpartnerColorContrast,
   textPrimaryColorContrast,
   textTitleFont,
   transparentWhite,
@@ -35,6 +36,7 @@ import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import { getEmbedUrl } from "./CalendarComponents/MyCalendarFuncions";
+import ToDoAddButton from "./CalendarComponents/ToDoNew";
 
 // File handling functions
 const convertToBase64 = (file) => {
@@ -60,11 +62,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [alternateText, setAlternateText] = useState("... Updating Class");
-
+  const [modalEditTodo, setModalEditTodo] = useState(false);
+  const [alternateBoolean, setAlternateBoolean] = useState(false);
   const handleCalendarScroll = () => {
     setShouldScrollToToday(false);
-    console.log("foi", shouldScrollToToday);
   };
+  function refreshTodos() {
+    setAlternateBoolean(!alternateBoolean);
+    console.log("ToDo criado! Atualize a lista aqui.");
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -144,6 +150,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [flashcardsAdded, setFlashcardsAdded] = useState(false);
   const [showHomework, setShowHomework] = useState(false);
   const [showFlashcards, setShowFlashcards] = useState(false);
+  const [showEditSection, setShowEditSection] = useState(false);
+
+  const [editDescription, setEditDescription] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
   const [duration, setDuration] = useState(60);
@@ -316,6 +328,27 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
+  const [task, setTask] = useState({});
+
+  const fetchTodo = async (id) => {
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/todo/${myId}?todoId=${id}`,
+          {
+            headers,
+          }
+        );
+
+        setTask(response.data.todo);
+        console.log(response.data.todo);
+        setModalEditTodo(true);
+      } catch (error) {
+        console.log(error, "Erro ao encontrar alunos");
+      }
+    }
+  };
+
   const [isFee, setIsFee] = useState(true);
 
   const resetEveryThing = () => {
@@ -328,6 +361,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setLoading(false);
   };
 
+  const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
     setLoading(true);
     try {
@@ -348,14 +382,23 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       const res = response.data.eventsList;
-      console.log(response.data.eventsList);
+      const resTodos = response.data.todosList;
+
       const eventsLoop = res.map((event) => {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
-
         return event;
       });
+
+      const todosLoop = resTodos.map((todo) => {
+        const nextDay = new Date(todo.date);
+        nextDay.setDate(nextDay.getDate() + 1);
+        todo.date = formattedDates(nextDay);
+        return todo;
+      });
+
+      setTodoList(todosLoop);
       setEvents(eventsLoop);
       resetEverything();
     } catch (error) {
@@ -367,11 +410,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
   useEffect(() => {
     fetchGeneralEvents();
-  }, []);
+  }, [alternateBoolean]);
 
   const handleChangeWeek = async (sum) => {
     setDisabledAvoid(false);
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
+    var user = JSON.parse(localStorage.getItem("loggedIn"));
     const id = user.id;
     setLoading(true);
     const chosenDate = today;
@@ -462,7 +505,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
-      console.log(response.data.event);
       const test =
         response.data.event.category == "Rep" ||
         response.data.event.category == "Tutoring" ||
@@ -1478,8 +1520,66 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchGeneralEvents();
       handleCloseModal();
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    }
+  };
 
+  const updateChecklistTask = async (index, taskID) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+      const response = await axios.put(
+        `${backDomain}/api/v1/todochecklist/${id}?todoId=${taskID}&checkList=${index}`,
+        {
+          headers,
+        }
+      );
+      fetchTodo(taskID);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleUpdateInfoTask = async (taskID) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
+
+        {
+          description: editDescription,
+          category: editCategory,
+          date: editDate,
+        },
+        {
+          headers,
+        }
+      );
+      fetchTodo(taskID);
+      setShowEditSection(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteTask = async (taskID) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+
+      const response = await axios.delete(
+        `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
+        {
+          headers,
+        }
+      );
+      setModalEditTodo(false);
+      setSeeEditTutoring(false);
+      setSeeReplenish(false);
+      setShowEditSection(false);
+      fetchGeneralEvents();
+    } catch (error) {
       console.error(error);
     }
   };
@@ -1493,6 +1593,292 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           }}
         >
           <div>
+            {modalEditTodo && (
+              <div
+                className="todo-modal"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  zIndex: 2000,
+                  width: "100vw",
+                  height: "100vh",
+                  background: "rgba(0,0,0,0.25)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: "16px",
+                    boxShadow: "0 8px 32px #0002",
+                    minWidth: "340px",
+                    maxWidth: "95vw",
+                    padding: "1rem",
+                    position: "relative",
+                  }}
+                >
+                  <button
+                    onClick={() => {
+                      fetchGeneralEvents();
+                      setModalEditTodo(false);
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: "18px",
+                      right: "18px",
+                      border: "none",
+                      borderRadius: "50%",
+                      cursor: "pointer",
+                      fontSize: "1rem",
+                      fontWeight: "900",
+                      transition: "background 0.2s",
+                    }}
+                    title="Fechar"
+                  >
+                    ×
+                  </button>
+                  <HTwo>{task.description || "ToDo"}</HTwo>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1.5rem",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        background: "#f3f4f6",
+                        color: "#555",
+                        borderRadius: "6px",
+                        padding: "4px 12px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {task.category}
+                    </span>
+                    <span
+                      style={{
+                        background: "#f3f4f6",
+                        color: "#555",
+                        borderRadius: "6px",
+                        padding: "4px 12px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {task.date}
+                    </span>
+                    <button
+                      onClick={() => {
+                        setEditCategory(task.category);
+                        setEditDate(task.date);
+                        setEditDescription(task.description);
+                        setShowEditSection(true);
+                      }}
+                      style={{
+                        background: partnerColor(),
+                        color: textpartnerColorContrast(),
+                        border: "none",
+                        borderRadius: "6px",
+                        padding: "6px 16px",
+                        fontWeight: 600,
+                        marginLeft: "8px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Editar
+                    </button>
+                  </div>
+                  <div>
+                    {showEditSection && (
+                      <div
+                        style={{
+                          marginTop: "1rem",
+                          background: "#f6f6f6",
+                          borderRadius: "8px",
+                          padding: "1rem",
+                          boxShadow: "0 2px 8px #0001",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          maxWidth: "320px",
+                        }}
+                      >
+                        <input
+                          type="text"
+                          value={editDescription}
+                          onChange={(e) => setEditDescription(e.target.value)}
+                          placeholder="Descrição"
+                          style={{
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                        <input
+                          type="date"
+                          value={editDate}
+                          onChange={(e) => setEditDate(e.target.value)}
+                          style={{
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                        <select
+                          value={editCategory}
+                          onChange={(e) => setEditCategory(e.target.value)}
+                          style={{
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          <option value="">Selecione a categoria</option>
+                          <option value="personal">Vida pessoal</option>
+                          <option value="finance">Financeiro</option>
+                          <option value="work">Trabalho</option>
+                          <option value="study">Estudos</option>
+                          <option value="health">Saúde</option>
+                          <option value="family">Família</option>
+                          <option value="other">Outro</option>
+                        </select>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "1rem",
+                            justifyContent: "flex-end",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <button
+                            onClick={() => {
+                              handleDeleteTask(task._id);
+                            }}
+                            style={{
+                              background: "red",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 16px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            Excluir
+                          </button>
+                          <button
+                            onClick={() => setShowEditSection(false)}
+                            style={{
+                              background: "#eee",
+                              color: "#333",
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 16px",
+                              fontWeight: 500,
+                            }}
+                          >
+                            Cancelar
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              handleUpdateInfoTask(task._id);
+                            }}
+                            style={{
+                              background: partnerColor(),
+                              color: textpartnerColorContrast(),
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 16px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            Salvar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div style={{ marginBottom: "1.2rem" }}>
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        fontSize: "1.05rem",
+                      }}
+                    >
+                      Checklist
+                    </span>
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: "10px 0 0 0",
+                        background: "#f9fafb",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 8px #0001",
+                        border: "1px solid #e5e7eb",
+                        maxWidth: "320px",
+                      }}
+                    >
+                      {[1, 2, 3, 4, 5].map((i) => {
+                        const item = task[`checkList${i}`];
+                        if (!item || !item.description) return null;
+                        return (
+                          <li
+                            key={i}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "10px",
+                              padding: "8px 12px",
+                              borderBottom: i < 5 ? "1px solid #eee" : "none",
+                              transition: "background 0.2s",
+                              background: item.checked
+                                ? "#e6fbe8"
+                                : "transparent",
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={item.checked}
+                              onClick={() => {
+                                updateChecklistTask(i, task._id);
+                              }}
+                              style={{
+                                accentColor: item.checked ? "#22c55e" : "#ddd",
+                                width: "20px",
+                                height: "20px",
+                                marginRight: "12px",
+                                cursor: "pointer",
+                                boxShadow: item.checked
+                                  ? "0 0 0 2px #22c55e33"
+                                  : "none",
+                              }}
+                            />
+                            <span
+                              style={{
+                                textDecoration: item.checked
+                                  ? "line-through"
+                                  : "none",
+                                color: item.checked ? "#22c55e" : "#333",
+                                fontWeight: 600,
+                                fontSize: "15px",
+                                letterSpacing: "0.2px",
+                              }}
+                            >
+                              {item.description}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <HOne>{UniversalTexts.calendar}</HOne>
 
             {loading ? (
@@ -1574,6 +1960,73 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       </div>
 
                       {/* Events Container */}
+                      <div>
+                        {todoList && todoList.length > 0 && (
+                          <div style={{ margin: "8px 4px" }}>
+                            {todoList
+                              .filter(
+                                (event) =>
+                                  event.date.toDateString() ===
+                                  date.toDateString()
+                              )
+                              .map((todo, idx) => (
+                                <div
+                                  key={todo._id || idx}
+                                  onClick={() => {
+                                    fetchTodo(todo._id);
+                                  }}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    margin: "2px",
+                                    cursor: "pointer",
+                                    background: "#f6f6f6",
+                                    borderRadius: "6px",
+                                    padding: "5px",
+                                    boxShadow: "0 1px 2px #b8b8b8ff",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontSize: "11px",
+                                    }}
+                                  >
+                                    {todo.description}
+                                  </span>
+                                  <span
+                                    style={{
+                                      display: "flex",
+                                      gap: "4px",
+                                      marginLeft: "8px",
+                                    }}
+                                  >
+                                    {[1, 2, 3, 4, 5].map((i) => {
+                                      const check = todo[`checkList${i}`];
+                                      if (!check || !check.description)
+                                        return null;
+                                      return (
+                                        <span
+                                          key={i}
+                                          title={check.description}
+                                          style={{
+                                            display: "inline-block",
+                                            width: "8px",
+                                            height: "8px",
+                                            borderRadius: "50%",
+                                            background: check.checked
+                                              ? "#22c55e"
+                                              : "#ddd",
+                                            border: "1px solid #bbb",
+                                          }}
+                                        />
+                                      );
+                                    })}
+                                  </span>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
                       <div style={{ padding: "0 5px 1rem" }}>
                         {events
                           .filter(
@@ -2792,16 +3245,40 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               Select category...
                                             </option>
                                             {[
-                                              "Test",
-                                              "Standalone",
-                                              "Group Class",
-                                              "Rep",
-                                              "Prize Class",
-                                              "Tutoring",
-                                              "Marcar Reposição",
+                                              {
+                                                text: "Aula experimental",
+                                                value: "Test",
+                                              },
+                                              {
+                                                text: "Aula única",
+                                                value: "Standalone",
+                                              },
+                                              {
+                                                text: "teste",
+                                                value: "Group Class",
+                                              },
+                                              {
+                                                text: "Aula de reposição",
+                                                value: "Rep",
+                                              },
+                                              {
+                                                text: "Aula de prêmio",
+                                                value: "Prize Class",
+                                              },
+                                              {
+                                                text: "Aula de tutoria",
+                                                value: "Tutoring",
+                                              },
+                                              {
+                                                text: "Horário vazio para reposição",
+                                                value: "Marcar Reposição",
+                                              },
                                             ].map((cat, index) => (
-                                              <option key={index} value={cat}>
-                                                {cat}
+                                              <option
+                                                key={index}
+                                                value={cat.value}
+                                              >
+                                                {cat.text}
                                               </option>
                                             ))}
                                           </select>
@@ -5141,16 +5618,37 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           Selecione a categoria...
                         </option>
                         {[
-                          "Test",
-                          "Standalone",
-                          "Group Class",
-                          "Rep",
-                          "Prize Class",
-                          "Tutoring",
-                          "Marcar Reposição",
+                          {
+                            text: "Aula experimental",
+                            value: "Test",
+                          },
+                          {
+                            text: "Aula única",
+                            value: "Standalone",
+                          },
+                          {
+                            text: "Aula de grupo",
+                            value: "Group Class",
+                          },
+                          {
+                            text: "Aula de reposição",
+                            value: "Rep",
+                          },
+                          {
+                            text: "Aula de prêmio",
+                            value: "Prize Class",
+                          },
+                          {
+                            text: "Aula de tutoria",
+                            value: "Tutoring",
+                          },
+                          {
+                            text: "Horário vazio para reposição",
+                            value: "Marcar Reposição",
+                          },
                         ].map((cat, index) => (
-                          <option key={index} value={cat}>
-                            {cat}
+                          <option key={index} value={cat.value}>
+                            {cat.text}
                           </option>
                         ))}
                       </select>
@@ -5783,7 +6281,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <i className="fa fa-refresh" />
                 </button>
-
                 {/* Separador */}
                 <div
                   style={{
@@ -5798,79 +6295,98 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 {(thePermissions === "superadmin" ||
                   thePermissions === "teacher") && (
                   <>
-                    {/* Botão Nova Aula */}
-                    <button
+                    {/* Botão Novo ToDo */}
+                    <div
                       style={{
-                        padding: "6px 12px",
-                        background: "#ffffff",
-                        border: `1px solid ${partnerColor()}`,
-                        borderRadius: "6px",
-                        color: partnerColor(),
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        transition: "all 0.15s ease",
                         display: "flex",
                         alignItems: "center",
-                        gap: "4px",
-                      }}
-                      onClick={() => {
-                        handleSeeModalNew();
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = partnerColor();
-                        e.target.style.color = "white";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = "#ffffff";
-                        e.target.style.color = partnerColor();
+                        gap: "1rem",
+                        marginBottom: "1rem",
                       }}
                     >
-                      <i className="fa fa-plus" style={{ fontSize: "10px" }} />
-                      <span>{UniversalTexts.calendarModal.singleClass}</span>
-                    </button>
-
-                    {/* Botão Recorrentes */}
-                    <button
-                      disabled={!disabledAvoid}
-                      style={{
-                        padding: "6px 12px",
-                        background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                        border: `1px solid ${
-                          !disabledAvoid ? "#dee2e6" : "#22c55e"
-                        }`,
-                        borderRadius: "6px",
-                        color: !disabledAvoid ? "#adb5bd" : "#22c55e",
-                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        transition: "all 0.15s ease",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                      }}
-                      onClick={() => handleSeeModalOfTutorings()}
-                      onMouseEnter={(e) => {
-                        if (disabledAvoid) {
-                          e.target.style.background = "#22c55e";
-                          e.target.style.color = "white";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (disabledAvoid) {
-                          e.target.style.background = "#ffffff";
-                          e.target.style.color = "#22c55e";
-                        }
-                      }}
-                    >
-                      <i
-                        className="fa fa-repeat"
-                        style={{ fontSize: "10px" }}
+                      <ToDoAddButton
+                        userId={myId}
+                        onCreated={() => {
+                          refreshTodos();
+                          /* Atualize a lista de todos aqui se necessário */
+                        }}
                       />
-                      <span>
-                        {UniversalTexts.calendarModal.recurringClasses}
-                      </span>
-                    </button>
+                      {/* Botão Nova Aula */}
+                      <button
+                        style={{
+                          padding: "6px 12px",
+                          background: "#ffffff",
+                          border: `1px solid ${partnerColor()}`,
+                          borderRadius: "6px",
+                          color: partnerColor(),
+                          cursor: "pointer",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                        onClick={() => {
+                          handleSeeModalNew();
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = partnerColor();
+                          e.target.style.color = "white";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = "#ffffff";
+                          e.target.style.color = partnerColor();
+                        }}
+                      >
+                        <i
+                          className="fa fa-plus"
+                          style={{ fontSize: "10px" }}
+                        />
+                        <span>{UniversalTexts.calendarModal.singleClass}</span>
+                      </button>
+                      {/* Botão Recorrentes */}
+                      <button
+                        disabled={!disabledAvoid}
+                        style={{
+                          padding: "6px 12px",
+                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                          border: `1px solid ${
+                            !disabledAvoid ? "#dee2e6" : "#22c55e"
+                          }`,
+                          borderRadius: "6px",
+                          color: !disabledAvoid ? "#adb5bd" : "#22c55e",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                        onClick={() => handleSeeModalOfTutorings()}
+                        onMouseEnter={(e) => {
+                          if (disabledAvoid) {
+                            e.target.style.background = "#22c55e";
+                            e.target.style.color = "white";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (disabledAvoid) {
+                            e.target.style.background = "#ffffff";
+                            e.target.style.color = "#22c55e";
+                          }
+                        }}
+                      >
+                        <i
+                          className="fa fa-repeat"
+                          style={{ fontSize: "10px" }}
+                        />
+                        <span>
+                          {UniversalTexts.calendarModal.recurringClasses}
+                        </span>
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
