@@ -12,6 +12,7 @@ import {
   alwaysWhite,
   partnerColor,
   textGeneralFont,
+  textpartnerColorContrast,
   textPrimaryColorContrast,
   textTitleFont,
   transparentWhite,
@@ -149,6 +150,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [flashcardsAdded, setFlashcardsAdded] = useState(false);
   const [showHomework, setShowHomework] = useState(false);
   const [showFlashcards, setShowFlashcards] = useState(false);
+  const [showEditSection, setShowEditSection] = useState(false);
+
+  const [editDescription, setEditDescription] = useState("");
+  const [editDate, setEditDate] = useState("");
+  const [editCategory, setEditCategory] = useState("");
+
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
   const [duration, setDuration] = useState(60);
@@ -1517,12 +1524,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
-  const updateTask = async (index, taskID) => {
+  const updateChecklistTask = async (index, taskID) => {
     try {
-      console.log(index, taskID);
       const user = JSON.parse(localStorage.getItem("loggedIn"));
       const { id } = user;
-
       const response = await axios.put(
         `${backDomain}/api/v1/todochecklist/${id}?todoId=${taskID}&checkList=${index}`,
         {
@@ -1530,6 +1535,50 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       fetchTodo(taskID);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleUpdateInfoTask = async (taskID) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+
+      const response = await axios.put(
+        `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
+
+        {
+          description: editDescription,
+          category: editCategory,
+          date: editDate,
+        },
+        {
+          headers,
+        }
+      );
+      fetchTodo(taskID);
+      setShowEditSection(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteTask = async (taskID) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+
+      const response = await axios.delete(
+        `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
+        {
+          headers,
+        }
+      );
+      setModalEditTodo(false);
+      setSeeEditTutoring(false);
+      setSeeReplenish(false);
+      setShowEditSection(false);
+      fetchGeneralEvents();
     } catch (error) {
       console.error(error);
     }
@@ -1621,6 +1670,136 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     >
                       {task.date}
                     </span>
+                    <button
+                      onClick={() => {
+                        setEditCategory(task.category);
+                        setEditDate(task.date);
+                        setEditDescription(task.description);
+                        setShowEditSection(true);
+                      }}
+                      style={{
+                        background: partnerColor(),
+                        color: textpartnerColorContrast(),
+                        border: "none",
+                        borderRadius: "6px",
+                        padding: "6px 16px",
+                        fontWeight: 600,
+                        marginLeft: "8px",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Editar
+                    </button>
+                  </div>
+                  <div>
+                    {showEditSection && (
+                      <div
+                        style={{
+                          marginTop: "1rem",
+                          background: "#f6f6f6",
+                          borderRadius: "8px",
+                          padding: "1rem",
+                          boxShadow: "0 2px 8px #0001",
+                          display: "flex",
+                          flexDirection: "column",
+                          gap: "10px",
+                          maxWidth: "320px",
+                        }}
+                      >
+                        <input
+                          type="text"
+                          value={editDescription}
+                          onChange={(e) => setEditDescription(e.target.value)}
+                          placeholder="Descrição"
+                          style={{
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                        <input
+                          type="date"
+                          value={editDate}
+                          onChange={(e) => setEditDate(e.target.value)}
+                          style={{
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        />
+                        <select
+                          value={editCategory}
+                          onChange={(e) => setEditCategory(e.target.value)}
+                          style={{
+                            padding: "8px",
+                            borderRadius: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          <option value="">Selecione a categoria</option>
+                          <option value="personal">Vida pessoal</option>
+                          <option value="finance">Financeiro</option>
+                          <option value="work">Trabalho</option>
+                          <option value="study">Estudos</option>
+                          <option value="health">Saúde</option>
+                          <option value="family">Família</option>
+                          <option value="other">Outro</option>
+                        </select>
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "1rem",
+                            justifyContent: "flex-end",
+                            marginTop: "10px",
+                          }}
+                        >
+                          <button
+                            onClick={() => {
+                              handleDeleteTask(task._id);
+                            }}
+                            style={{
+                              background: "red",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 16px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            Excluir
+                          </button>
+                          <button
+                            onClick={() => setShowEditSection(false)}
+                            style={{
+                              background: "#eee",
+                              color: "#333",
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 16px",
+                              fontWeight: 500,
+                            }}
+                          >
+                            Cancelar
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              handleUpdateInfoTask(task._id);
+                            }}
+                            style={{
+                              background: partnerColor(),
+                              color: textpartnerColorContrast(),
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 16px",
+                              fontWeight: 600,
+                            }}
+                          >
+                            Salvar
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div style={{ marginBottom: "1.2rem" }}>
                     <span
@@ -1665,7 +1844,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               type="checkbox"
                               checked={item.checked}
                               onClick={() => {
-                                updateTask(i, task._id);
+                                updateChecklistTask(i, task._id);
                               }}
                               style={{
                                 accentColor: item.checked ? "#22c55e" : "#ddd",
@@ -3066,16 +3245,40 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               Select category...
                                             </option>
                                             {[
-                                              "Test",
-                                              "Standalone",
-                                              "Group Class",
-                                              "Rep",
-                                              "Prize Class",
-                                              "Tutoring",
-                                              "Marcar Reposição",
+                                              {
+                                                text: "Aula experimental",
+                                                value: "Test",
+                                              },
+                                              {
+                                                text: "Aula única",
+                                                value: "Standalone",
+                                              },
+                                              {
+                                                text: "teste",
+                                                value: "Group Class",
+                                              },
+                                              {
+                                                text: "Aula de reposição",
+                                                value: "Rep",
+                                              },
+                                              {
+                                                text: "Aula de prêmio",
+                                                value: "Prize Class",
+                                              },
+                                              {
+                                                text: "Aula de tutoria",
+                                                value: "Tutoring",
+                                              },
+                                              {
+                                                text: "Horário vazio para reposição",
+                                                value: "Marcar Reposição",
+                                              },
                                             ].map((cat, index) => (
-                                              <option key={index} value={cat}>
-                                                {cat}
+                                              <option
+                                                key={index}
+                                                value={cat.value}
+                                              >
+                                                {cat.text}
                                               </option>
                                             ))}
                                           </select>
@@ -5415,16 +5618,37 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           Selecione a categoria...
                         </option>
                         {[
-                          "Test",
-                          "Standalone",
-                          "Group Class",
-                          "Rep",
-                          "Prize Class",
-                          "Tutoring",
-                          "Marcar Reposição",
+                          {
+                            text: "Aula experimental",
+                            value: "Test",
+                          },
+                          {
+                            text: "Aula única",
+                            value: "Standalone",
+                          },
+                          {
+                            text: "Aula de grupo",
+                            value: "Group Class",
+                          },
+                          {
+                            text: "Aula de reposição",
+                            value: "Rep",
+                          },
+                          {
+                            text: "Aula de prêmio",
+                            value: "Prize Class",
+                          },
+                          {
+                            text: "Aula de tutoria",
+                            value: "Tutoring",
+                          },
+                          {
+                            text: "Horário vazio para reposição",
+                            value: "Marcar Reposição",
+                          },
                         ].map((cat, index) => (
-                          <option key={index} value={cat}>
-                            {cat}
+                          <option key={index} value={cat.value}>
+                            {cat.text}
                           </option>
                         ))}
                       </select>
@@ -6061,7 +6285,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 <div
                   style={{
                     width: "1px",
-                    height: "20px", 
+                    height: "20px",
                     background: "#e9ecef",
                     margin: "0 4px",
                   }}
