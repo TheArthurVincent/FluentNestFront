@@ -467,7 +467,9 @@ const ReviewFlashCards = ({
                           disabled={isDisabled}
                           style={{
                             cursor: isDisabled ? "not-allowed" : "pointer",
-                            color: isDisabled ? "grey" : textPrimaryColorContrast(),
+                            color: isDisabled
+                              ? "grey"
+                              : textPrimaryColorContrast(),
                             backgroundColor: isDisabled
                               ? "#ccc"
                               : partnerColor(),
@@ -500,7 +502,10 @@ const ReviewFlashCards = ({
                             >
                               <button
                                 onClick={() => reviewCard(cards[0]._id, "hard")}
-                                color="red"
+                                style={{
+                                  backgroundColor: "red",
+                                  color: "white",
+                                }}
                               >
                                 {UniversalTexts?.iMissed || "I missed (Errei)"}
                               </button>
@@ -508,9 +513,9 @@ const ReviewFlashCards = ({
                               <button
                                 onClick={() => reviewCard(cards[0]._id, "easy")}
                                 style={{
+                                  backgroundColor: partnerColor(),
                                   color: textPrimaryColorContrast(),
                                 }}
-                                color={partnerColor()}
                               >
                                 {UniversalTexts?.iGotIt ||
                                   "I got it! (Acertei)"}

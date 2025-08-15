@@ -5803,16 +5803,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               transition: "all 0.15s ease",
                               minWidth: "auto",
                             }}
-                            onMouseEnter={(e) => {
-                              if (newClass.duration != minutes) {
-                                e.target.style.backgroundColor = "#f8f9fa";
-                              }
-                            }}
-                            onMouseLeave={(e) => {
-                              if (newClass.duration != minutes) {
-                                e.target.style.backgroundColor = "white";
-                              }
-                            }}
                           >
                             {minutes < 60
                               ? `${minutes}min`
@@ -5938,12 +5928,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           fontWeight: "500",
                           transition: "all 0.2s ease",
                         }}
-                        onMouseEnter={(e) => {
-                          e.target.style.backgroundColor = "#5a6268";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.backgroundColor = "#6c757d";
-                        }}
                       >
                         <i
                           className="fa fa-times"
@@ -5988,17 +5972,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               ? 0.6
                               : 1,
                           transition: "all 0.2s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          if (!e.target.disabled) {
-                            e.target.style.transform = "translateY(-2px)";
-                            e.target.style.boxShadow =
-                              "0 4px 12px rgba(0,0,0,0.15)";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.transform = "translateY(0)";
-                          e.target.style.boxShadow = "none";
                         }}
                       >
                         <i
@@ -6063,18 +6036,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     fontSize: "12px",
                   }}
                   onClick={() => handleChangeWeek(-7)}
-                  onMouseEnter={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#f8f9fa";
-                      e.target.style.borderColor = "#ced4da";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#ffffff";
-                      e.target.style.borderColor = "#dee2e6";
-                    }
-                  }}
                 >
                   <i className="fa fa-chevron-left" />
                 </button>
@@ -6112,18 +6073,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     fontSize: "12px",
                   }}
                   onClick={() => handleChangeWeek(7)}
-                  onMouseEnter={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#f8f9fa";
-                      e.target.style.borderColor = "#ced4da";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#ffffff";
-                      e.target.style.borderColor = "#dee2e6";
-                    }
-                  }}
                 >
                   <i className="fa fa-chevron-right" />
                 </button>
@@ -6160,7 +6109,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
               {/* Ações rápidas - Compactas */}
               <div
-                style={{ display: "flex", gap: "6px", alignItems: "center" }}
+                style={{
+                  display: "flex",
+
+                  gap: "6px",
+                  alignItems: "center",
+                }}
               >
                 {/* Botão Hoje */}
                 <button
@@ -6225,20 +6179,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }, 200);
                     }
                   }}
-                  onMouseEnter={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#f8f9fa";
-                      e.target.style.borderColor = partnerColor();
-                      e.target.style.color = partnerColor();
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#ffffff";
-                      e.target.style.borderColor = "#dee2e6";
-                      e.target.style.color = "#495057";
-                    }
-                  }}
                 >
                   <i className="fa fa-home" style={{ fontSize: "10px" }} />
                   <span>{UniversalTexts.calendarModal.today}</span>
@@ -6262,132 +6202,67 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     justifyContent: "center",
                   }}
                   onClick={() => fetchGeneralEvents()}
-                  onMouseEnter={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#f8f9fa";
-                      e.target.style.borderColor = partnerColor();
-                      e.target.style.color = partnerColor();
-                      e.target.style.transform = "rotate(90deg)";
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (disabledAvoid) {
-                      e.target.style.background = "#ffffff";
-                      e.target.style.borderColor = "#dee2e6";
-                      e.target.style.color = "#6c757d";
-                      e.target.style.transform = "rotate(0deg)";
-                    }
-                  }}
                 >
                   <i className="fa fa-refresh" />
                 </button>
-                {/* Separador */}
-                <div
-                  style={{
-                    width: "1px",
-                    height: "20px",
-                    background: "#e9ecef",
-                    margin: "0 4px",
-                  }}
-                />
 
-                {/* Botões de Criação - Compactos */}
                 {(thePermissions === "superadmin" ||
                   thePermissions === "teacher") && (
-                  <>
-                    {/* Botão Novo ToDo */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "1rem",
-                        marginBottom: "1rem",
-                      }}
-                    >
-                      <ToDoAddButton
-                        userId={myId}
-                        onCreated={() => {
-                          refreshTodos();
-                          /* Atualize a lista de todos aqui se necessário */
-                        }}
-                      />
-                      {/* Botão Nova Aula */}
-                      <button
-                        style={{
-                          padding: "6px 12px",
-                          background: "#ffffff",
-                          border: `1px solid ${partnerColor()}`,
-                          borderRadius: "6px",
-                          color: partnerColor(),
-                          cursor: "pointer",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          transition: "all 0.15s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                        onClick={() => {
-                          handleSeeModalNew();
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = partnerColor();
-                          e.target.style.color = "white";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = "#ffffff";
-                          e.target.style.color = partnerColor();
-                        }}
-                      >
-                        <i
-                          className="fa fa-plus"
-                          style={{ fontSize: "10px" }}
-                        />
-                        <span>{UniversalTexts.calendarModal.singleClass}</span>
-                      </button>
-                      {/* Botão Recorrentes */}
-                      <button
-                        disabled={!disabledAvoid}
-                        style={{
-                          padding: "6px 12px",
-                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                          border: `1px solid ${
-                            !disabledAvoid ? "#dee2e6" : "#22c55e"
-                          }`,
-                          borderRadius: "6px",
-                          color: !disabledAvoid ? "#adb5bd" : "#22c55e",
-                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                          fontSize: "12px",
-                          fontWeight: "500",
-                          transition: "all 0.15s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                        }}
-                        onClick={() => handleSeeModalOfTutorings()}
-                        onMouseEnter={(e) => {
-                          if (disabledAvoid) {
-                            e.target.style.background = "#22c55e";
-                            e.target.style.color = "white";
-                          }
-                        }}
-                        onMouseLeave={(e) => {
-                          if (disabledAvoid) {
-                            e.target.style.background = "#ffffff";
-                            e.target.style.color = "#22c55e";
-                          }
-                        }}
-                      >
-                        <i
-                          className="fa fa-repeat"
-                          style={{ fontSize: "10px" }}
-                        />
-                        <span>
-                          {UniversalTexts.calendarModal.recurringClasses}
-                        </span>
-                      </button>
-                    </div>
-                  </>
+                  <ToDoAddButton
+                    userId={myId}
+                    onCreated={() => {
+                      refreshTodos();
+                      /* Atualize a lista de todos aqui se necessário */
+                    }}
+                  />
+                )}
+                {/* Botão Nova Aula */}
+
+                {(thePermissions === "superadmin" ||
+                  thePermissions === "teacher") && (
+                  <button
+                    style={{
+                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                      border: "1px solid #dee2e6",
+                      borderRadius: "6px",
+                      color: !disabledAvoid ? "#adb5bd" : "#6c757d",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      fontSize: "12px",
+                      transition: "all 0.15s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => {
+                      handleSeeModalNew();
+                    }}
+                  >
+                    <i className="fa fa-plus" />
+                    <span>{UniversalTexts.calendarModal.singleClass}</span>
+                  </button>
+                )}
+                {/* Botão Recorrentes */}
+                {(thePermissions === "superadmin" ||
+                  thePermissions === "teacher") && (
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                      border: "1px solid #dee2e6",
+                      borderRadius: "6px",
+                      color: !disabledAvoid ? "#adb5bd" : "#6c757d",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      fontSize: "12px",
+                      transition: "all 0.15s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => handleSeeModalOfTutorings()}
+                  >
+                    <i className="fa fa-repeat" style={{ fontSize: "10px" }} />
+                    <span>{UniversalTexts.calendarModal.recurringClasses}</span>
+                  </button>
                 )}
               </div>
             </div>
