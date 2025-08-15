@@ -363,6 +363,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
+                  setModalEditTodo(false);
+
     setLoading(true);
     try {
       const user = JSON.parse(localStorage.getItem("loggedIn"));
@@ -1556,8 +1558,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-      fetchTodo(taskID);
+      setSeeEditTutoring(false);
+      setSeeReplenish(false);
       setShowEditSection(false);
+      fetchGeneralEvents();
     } catch (error) {
       console.error(error);
     }
@@ -1574,7 +1578,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-      setModalEditTodo(false);
       setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
@@ -1609,7 +1612,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  setModalEditTodo(false);
+                  fetchGeneralEvents();
                 }}
               >
                 <div
@@ -1627,7 +1630,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <button
                     onClick={() => {
                       fetchGeneralEvents();
-                      setModalEditTodo(false);
                     }}
                     style={{
                       position: "absolute",
