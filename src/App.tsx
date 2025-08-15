@@ -1,25 +1,24 @@
-(function ensureWhiteLabel() {
-  try {
-    const wl = localStorage.getItem("whiteLabel");
-    if (!wl) {
-      // Monta objeto padrão
-      const defaultWL = {
-        backgroundType: "color",
-        color: "rgba(236, 236, 236, 1)",
-        backgroundColor: "rgba(188, 221, 248, 1)",
-        contrastColor: "#eee",
-        backgroundImage:
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
-        logo: "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166",
-        textGeneralFont: "Lato",
-        textTitleFont: "Athiti",
-      };
-      localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
-    }
-  } catch (err) {
-    console.error("[App] Erro ao garantir whiteLabel no localStorage:", err);
+// WhiteLabel: protege localStorage
+try {
+  const wl = localStorage.getItem("whiteLabel");
+  if (!wl) {
+    const defaultWL = {
+      backgroundType: "color",
+      color: "rgba(236, 236, 236, 1)",
+      backgroundColor: "rgba(188, 221, 248, 1)",
+      contrastColor: "#eee",
+      backgroundImage:
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
+      logo: "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166",
+      textGeneralFont: "Lato",
+      textTitleFont: "Athiti",
+    };
+    localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
   }
-})();
+} catch (err) {
+  // Não trava a página
+  console.warn("[App] WhiteLabel localStorage falhou:", err);
+}
 
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -121,61 +120,50 @@ var headers: MyHeadersType = {
 function App() {
   var [_StudentId, setStudentId] = useState<string>("");
 
+  // Protege manipulação do DOM
   try {
     if (isArthurVincent) {
       document.body.style.backgroundImage = `url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769")`;
+      document.body.style.backgroundColor = "";
     } else if (isArvin || isLocalHost) {
-      if (backgroundType() == "color") {
+      if (backgroundType() === "color") {
         document.body.style.backgroundColor = theBackgroundColor();
+        document.body.style.backgroundImage = "";
       } else {
         document.body.style.backgroundImage = `url(${backgroundImage()})`;
+        document.body.style.backgroundColor = "";
       }
     }
   } catch (err) {
-    console.error("[App] Erro ao definir background:", err);
+    // Não trava a página
+    console.warn("[App] Erro ao definir background:", err);
   }
 
   useEffect(() => {
     try {
-      var user = localStorage.getItem("loggedIn");
-      var textElement = document.querySelector("body");
-      if (textElement) {
-        textElement.style.fontFamily = textGeneralFont();
-      }
-
-      var hOne = document.querySelector("h1");
-      if (hOne) {
-        hOne.style.fontFamily = textTitleFont();
-        hOne.style.color = partnerColor();
-      }
-
-      var hTwo = document.querySelector("h2");
-      if (hTwo) {
-        hTwo.style.fontFamily = textTitleFont();
-        hTwo.style.color = partnerColor();
-      }
-
-      var inputElement = document.querySelector("input");
-      if (inputElement) {
-        inputElement.style.fontFamily = textGeneralFont();
-      }
-
-      var selectElement = document.querySelector("select");
-      if (selectElement) {
-        selectElement.style.fontFamily = textTitleFont();
-      }
-
-      var h1Element = document.querySelector("h1");
-      if (h1Element) {
-        h1Element.style.fontFamily = textTitleFont();
-      }
+      const user = localStorage.getItem("loggedIn");
+      // Aplica fontes apenas se existir
+      document.body.style.fontFamily = textGeneralFont();
+      // Aplica em h1/h2 apenas se existir
+      ["h1", "h2"].forEach((tag) => {
+        const el = document.querySelector(tag);
+        if (el && el instanceof HTMLElement) {
+          el.style.fontFamily = textTitleFont();
+          el.style.color = partnerColor();
+        }
+      });
+      // Aplica em input/select apenas se existir
+      const inputEl = document.querySelector("input");
+      if (inputEl) inputEl.style.fontFamily = textGeneralFont();
+      const selectEl = document.querySelector("select");
+      if (selectEl) selectEl.style.fontFamily = textTitleFont();
 
       if (user) {
         try {
-          var { id } = JSON.parse(user);
-          setStudentId(id || _StudentId);
+          const { id } = JSON.parse(user);
+          if (id && id !== _StudentId) setStudentId(id);
         } catch (error) {
-          console.error(
+          console.warn(
             "[App] Erro ao fazer parse do JSON do usuário:",
             error,
             user
@@ -183,7 +171,8 @@ function App() {
         }
       }
     } catch (err) {
-      console.error("[App] Erro no useEffect de estilos e usuário:", err);
+      // Não trava a página
+      console.warn("[App] Erro no useEffect de estilos e usuário:", err);
     }
   }, []);
 
