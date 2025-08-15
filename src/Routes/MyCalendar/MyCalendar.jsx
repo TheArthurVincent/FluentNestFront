@@ -363,6 +363,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
+                  setModalEditTodo(false);
+
     setLoading(true);
     try {
       const user = JSON.parse(localStorage.getItem("loggedIn"));
@@ -1556,8 +1558,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-      fetchTodo(taskID);
+      setSeeEditTutoring(false);
+      setSeeReplenish(false);
       setShowEditSection(false);
+      fetchGeneralEvents();
     } catch (error) {
       console.error(error);
     }
@@ -1574,7 +1578,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-      setModalEditTodo(false);
       setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
@@ -1608,8 +1611,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                onClick={() => {
+                  fetchGeneralEvents();
+                }}
               >
                 <div
+                  onClick={(e) => e.stopPropagation()}
                   style={{
                     background: "#fff",
                     borderRadius: "16px",
@@ -1623,7 +1630,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <button
                     onClick={() => {
                       fetchGeneralEvents();
-                      setModalEditTodo(false);
                     }}
                     style={{
                       position: "absolute",
@@ -1822,7 +1828,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         maxWidth: "320px",
                       }}
                     >
-                      {[1, 2, 3, 4, 5].map((i) => {
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
                         const item = task[`checkList${i}`];
                         if (!item || !item.description) return null;
                         return (
@@ -1980,7 +1986,22 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     alignItems: "center",
                                     margin: "2px",
                                     cursor: "pointer",
-                                    background: "#f6f6f6",
+                                    backgroundColor:
+                                      todo.category == "personal"
+                                        ? "rgba(215, 192, 192, 0.7)"
+                                        : todo.category == "finance"
+                                        ? "rgba(234, 215, 191, 0.7)"
+                                        : todo.category == "work"
+                                        ? "rgba(234, 234, 191, 0.7)"
+                                        : todo.category == "study"
+                                        ? "rgba(215, 234, 191, 0.7)"
+                                        : todo.category == "health"
+                                        ? "rgba(191, 234, 212, 0.7)"
+                                        : todo.category == "family"
+                                        ? "rgba(191, 201, 234, 0.7)"
+                                        : todo.category == "other"
+                                        ? "rgba(216, 191, 234, 0.7)"
+                                        : "rgba(234, 191, 215, 0.7)",
                                     borderRadius: "6px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
@@ -1988,7 +2009,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 >
                                   <span
                                     style={{
-                                      fontSize: "11px",
+                                      fontSize: "10px",
                                     }}
                                   >
                                     {todo.description}
@@ -2000,27 +2021,29 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       marginLeft: "8px",
                                     }}
                                   >
-                                    {[1, 2, 3, 4, 5].map((i) => {
-                                      const check = todo[`checkList${i}`];
-                                      if (!check || !check.description)
-                                        return null;
-                                      return (
-                                        <span
-                                          key={i}
-                                          title={check.description}
-                                          style={{
-                                            display: "inline-block",
-                                            width: "8px",
-                                            height: "8px",
-                                            borderRadius: "50%",
-                                            background: check.checked
-                                              ? "#22c55e"
-                                              : "#ddd",
-                                            border: "1px solid #bbb",
-                                          }}
-                                        />
-                                      );
-                                    })}
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+                                      (i) => {
+                                        const check = todo[`checkList${i}`];
+                                        if (!check || !check.description)
+                                          return null;
+                                        return (
+                                          <span
+                                            key={i}
+                                            title={check.description}
+                                            style={{
+                                              display: "inline-block",
+                                              width: "8px",
+                                              height: "8px",
+                                              borderRadius: "50%",
+                                              background: check.checked
+                                                ? "#22c55e"
+                                                : "#ddd",
+                                              border: "1px solid #bbb",
+                                            }}
+                                          />
+                                        );
+                                      }
+                                    )}
                                   </span>
                                 </div>
                               ))}

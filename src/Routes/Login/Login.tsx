@@ -26,7 +26,7 @@ export function Login() {
     setLoading(true);
 
     setButton(
-      <CircularProgress style={{ color: textPrimaryColorContrast() }} />
+      <CircularProgress style={{ color: "grey"}} />
     );
 
     try {
