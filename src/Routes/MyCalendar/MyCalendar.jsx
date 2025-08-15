@@ -1608,8 +1608,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   alignItems: "center",
                   justifyContent: "center",
                 }}
+                onClick={() => {
+                  fetchGeneralEvents();
+                  setModalEditTodo(false);
+                }}
               >
                 <div
+                  onClick={(e) => e.stopPropagation()}
                   style={{
                     background: "#fff",
                     borderRadius: "16px",
@@ -1822,7 +1827,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         maxWidth: "320px",
                       }}
                     >
-                      {[1, 2, 3, 4, 5].map((i) => {
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
                         const item = task[`checkList${i}`];
                         if (!item || !item.description) return null;
                         return (
@@ -1988,7 +1993,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 >
                                   <span
                                     style={{
-                                      fontSize: "11px",
+                                      fontSize: "10px",
                                     }}
                                   >
                                     {todo.description}
@@ -2000,27 +2005,29 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       marginLeft: "8px",
                                     }}
                                   >
-                                    {[1, 2, 3, 4, 5].map((i) => {
-                                      const check = todo[`checkList${i}`];
-                                      if (!check || !check.description)
-                                        return null;
-                                      return (
-                                        <span
-                                          key={i}
-                                          title={check.description}
-                                          style={{
-                                            display: "inline-block",
-                                            width: "8px",
-                                            height: "8px",
-                                            borderRadius: "50%",
-                                            background: check.checked
-                                              ? "#22c55e"
-                                              : "#ddd",
-                                            border: "1px solid #bbb",
-                                          }}
-                                        />
-                                      );
-                                    })}
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+                                      (i) => {
+                                        const check = todo[`checkList${i}`];
+                                        if (!check || !check.description)
+                                          return null;
+                                        return (
+                                          <span
+                                            key={i}
+                                            title={check.description}
+                                            style={{
+                                              display: "inline-block",
+                                              width: "8px",
+                                              height: "8px",
+                                              borderRadius: "50%",
+                                              background: check.checked
+                                                ? "#22c55e"
+                                                : "#ddd",
+                                              border: "1px solid #bbb",
+                                            }}
+                                          />
+                                        );
+                                      }
+                                    )}
                                   </span>
                                 </div>
                               ))}

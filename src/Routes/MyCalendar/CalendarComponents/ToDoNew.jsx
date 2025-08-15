@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { partnerColor, textpartnerColorContrast } from "../../../Styles/Styles";
 import { backDomain } from "../../../Resources/UniversalComponents";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 function ToDoAddButton({ userId, onCreated }) {
   const [open, setOpen] = useState(false);
@@ -14,7 +15,14 @@ function ToDoAddButton({ userId, onCreated }) {
     checkList3: "",
     checkList4: "",
     checkList5: "",
+    checkList6: "",
+    checkList7: "",
+    checkList8: "",
+    checkList9: "",
+    checkList10: "",
   });
+
+  const { UniversalTexts } = useUserContext();
 
   // Categorias fixas para o backend e labels para o select
   const categories = [
@@ -82,7 +90,7 @@ function ToDoAddButton({ userId, onCreated }) {
         onClick={() => setOpen(true)}
         title="Novo ToDo"
       >
-        + Task
+        + {UniversalTexts.task}
       </button>
       {open && (
         <div
@@ -111,10 +119,10 @@ function ToDoAddButton({ userId, onCreated }) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3>Novo ToDo</h3>
+            <h3>{UniversalTexts.newTask}</h3>
             <input
               name="description"
-              placeholder="Descrição"
+              placeholder={UniversalTexts.description}
               value={form.description}
               onChange={handleChange}
               style={{ width: "100%", marginBottom: "8px" }}
@@ -140,7 +148,7 @@ function ToDoAddButton({ userId, onCreated }) {
               onChange={handleChange}
               style={{ width: "100%", marginBottom: "8px" }}
             />
-            {[1, 2, 3, 4, 5].map((i) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
               <input
                 key={i}
                 name={`checkList${i}`}
@@ -169,7 +177,7 @@ function ToDoAddButton({ userId, onCreated }) {
                   padding: "8px 16px",
                 }}
               >
-                Cancelar
+                {UniversalTexts.cancel}
               </button>
               <button
                 onClick={handleSubmit}
@@ -183,7 +191,7 @@ function ToDoAddButton({ userId, onCreated }) {
                   fontWeight: 600,
                 }}
               >
-                {loading ? "Salvando..." : "Salvar"}
+                {loading ? UniversalTexts.saving : UniversalTexts.save}
               </button>
             </div>
           </div>
