@@ -104,7 +104,7 @@ export function Contract({ headers }: HeadersProps) {
 
   const handleSignContract = async () => {
     try {
-      await axios.put(`${backDomain}/api/v1/contract/sign/${newID}`, null, {
+      await axios.put(`${backDomain}/api/v1/signcontract/${newID}`, null, {
         headers: actualHeaders,
       });
       notifyAlert("Contrato assinado com sucesso!", partnerColor());
