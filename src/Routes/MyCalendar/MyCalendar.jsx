@@ -35,6 +35,7 @@ import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import { getEmbedUrl } from "./CalendarComponents/MyCalendarFuncions";
+import ToDoAddButton from "./CalendarComponents/ToDoNew";
 
 // File handling functions
 const convertToBase64 = (file) => {
@@ -60,11 +61,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false); // Novo estado para controlar a exibição do formulário de edição
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [alternateText, setAlternateText] = useState("... Updating Class");
-
+  const [modalEditTodo, setModalEditTodo] = useState(false);
+  const [alternateBoolean, setAlternateBoolean] = useState(false);
   const handleCalendarScroll = () => {
     setShouldScrollToToday(false);
-    console.log("foi", shouldScrollToToday);
   };
+  function refreshTodos() {
+    setAlternateBoolean(!alternateBoolean);
+    console.log("ToDo criado! Atualize a lista aqui.");
+  }
 
   useEffect(() => {
     setTimeout(() => {
@@ -316,6 +321,27 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
+  const [task, setTask] = useState({});
+
+  const fetchTodo = async (id) => {
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/todo/${myId}?todoId=${id}`,
+          {
+            headers,
+          }
+        );
+
+        setTask(response.data.todo);
+        console.log(response.data.todo);
+        setModalEditTodo(true);
+      } catch (error) {
+        console.log(error, "Erro ao encontrar alunos");
+      }
+    }
+  };
+
   const [isFee, setIsFee] = useState(true);
 
   const resetEveryThing = () => {
@@ -328,6 +354,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setLoading(false);
   };
 
+  const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
     setLoading(true);
     try {
@@ -348,14 +375,23 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       const res = response.data.eventsList;
-      console.log(response.data.eventsList);
+      const resTodos = response.data.todosList;
+
       const eventsLoop = res.map((event) => {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
-
         return event;
       });
+
+      const todosLoop = resTodos.map((todo) => {
+        const nextDay = new Date(todo.date);
+        nextDay.setDate(nextDay.getDate() + 1);
+        todo.date = formattedDates(nextDay);
+        return todo;
+      });
+
+      setTodoList(todosLoop);
       setEvents(eventsLoop);
       resetEverything();
     } catch (error) {
@@ -367,11 +403,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
   useEffect(() => {
     fetchGeneralEvents();
-  }, []);
+  }, [alternateBoolean]);
 
   const handleChangeWeek = async (sum) => {
     setDisabledAvoid(false);
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
+    var user = JSON.parse(localStorage.getItem("loggedIn"));
     const id = user.id;
     setLoading(true);
     const chosenDate = today;
@@ -462,7 +498,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
-      console.log(response.data.event);
       const test =
         response.data.event.category == "Rep" ||
         response.data.event.category == "Tutoring" ||
@@ -1478,8 +1513,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchGeneralEvents();
       handleCloseModal();
     } catch (error) {
-      console.log(error);
-
       console.error(error);
     }
   };
@@ -1493,6 +1526,160 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           }}
         >
           <div>
+            {modalEditTodo && (
+              <div
+                className="todo-modal"
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  width: "100vw",
+                  height: "100vh",
+                  background: "rgba(0,0,0,0.25)",
+                  zIndex: 2000,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: "16px",
+                    boxShadow: "0 8px 32px #0002",
+                    minWidth: "340px",
+                    maxWidth: "95vw",
+                    padding: "2.5rem 2rem 2rem 2rem",
+                    position: "relative",
+                  }}
+                >
+                  <button
+                    onClick={() => setModalEditTodo(false)}
+                    style={{
+                      position: "absolute",
+                      top: "18px",
+                      right: "18px",
+                      background: "#eee",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "8px",
+                      height: "8px",
+                      cursor: "pointer",
+                      boxShadow: "0 2px 8px #0001",
+                      color: "#555",
+                      transition: "background 0.2s",
+                    }}
+                    title="Fechar"
+                  >
+                    ×
+                  </button>
+                  <HTwo>{task.description || "ToDo"}</HTwo>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1.5rem",
+                      marginBottom: "1rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        background: "#f3f4f6",
+                        color: "#555",
+                        borderRadius: "6px",
+                        padding: "4px 12px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {task.category}
+                    </span>
+                    <span
+                      style={{
+                        background: "#f3f4f6",
+                        color: "#555",
+                        borderRadius: "6px",
+                        padding: "4px 12px",
+                        fontWeight: 500,
+                      }}
+                    >
+                      {task.date}
+                    </span>
+                  </div>
+                  <div style={{ marginBottom: "1.2rem" }}>
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        fontSize: "1.05rem",
+                      }}
+                    >
+                      Checklist
+                    </span>
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: "10px 0 0 0",
+                        background: "#f9fafb",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 8px #0001",
+                        border: "1px solid #e5e7eb",
+                        maxWidth: "320px",
+                      }}
+                    >
+                      {[1, 2, 3, 4, 5].map((i) => {
+                        const item = task[`checkList${i}`];
+                        if (!item || !item.description) return null;
+                        return (
+                          <li
+                            key={i}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "10px",
+                              padding: "8px 12px",
+                              borderBottom: i < 5 ? "1px solid #eee" : "none",
+                              transition: "background 0.2s",
+                              background: item.checked
+                                ? "#e6fbe8"
+                                : "transparent",
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={item.checked}
+                              onClick={()=>{console.log(item)}}
+                              style={{
+                                accentColor: item.checked ? "#22c55e" : "#ddd",
+                                width: "20px",
+                                height: "20px",
+                                marginRight: "12px",
+                                cursor: "pointer",
+                                boxShadow: item.checked
+                                  ? "0 0 0 2px #22c55e33"
+                                  : "none",
+                              }}
+                            />
+                            <span
+                              style={{
+                                textDecoration: item.checked
+                                  ? "line-through"
+                                  : "none",
+                                color: item.checked ? "#22c55e" : "#333",
+                                fontWeight: 600,
+                                fontSize: "15px",
+                                letterSpacing: "0.2px",
+                              }}
+                            >
+                              {item.description}
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <HOne>{UniversalTexts.calendar}</HOne>
 
             {loading ? (
@@ -1574,6 +1761,73 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       </div>
 
                       {/* Events Container */}
+                      <div>
+                        {todoList && todoList.length > 0 && (
+                          <div style={{ margin: "8px 4px" }}>
+                            {todoList
+                              .filter(
+                                (event) =>
+                                  event.date.toDateString() ===
+                                  date.toDateString()
+                              )
+                              .map((todo, idx) => (
+                                <div
+                                  key={todo._id || idx}
+                                  onClick={() => {
+                                    fetchTodo(todo._id);
+                                  }}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    margin: "2px",
+                                    cursor: "pointer",
+                                    background: "#f6f6f6",
+                                    borderRadius: "6px",
+                                    padding: "5px",
+                                    boxShadow: "0 1px 2px #b8b8b8ff",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontSize: "11px",
+                                    }}
+                                  >
+                                    {todo.description}
+                                  </span>
+                                  <span
+                                    style={{
+                                      display: "flex",
+                                      gap: "4px",
+                                      marginLeft: "8px",
+                                    }}
+                                  >
+                                    {[1, 2, 3, 4, 5].map((i) => {
+                                      const check = todo[`checkList${i}`];
+                                      if (!check || !check.description)
+                                        return null;
+                                      return (
+                                        <span
+                                          key={i}
+                                          title={check.description}
+                                          style={{
+                                            display: "inline-block",
+                                            width: "8px",
+                                            height: "8px",
+                                            borderRadius: "50%",
+                                            background: check.checked
+                                              ? "#22c55e"
+                                              : "#ddd",
+                                            border: "1px solid #bbb",
+                                          }}
+                                        />
+                                      );
+                                    })}
+                                  </span>
+                                </div>
+                              ))}
+                          </div>
+                        )}
+                      </div>
                       <div style={{ padding: "0 5px 1rem" }}>
                         {events
                           .filter(
@@ -5783,7 +6037,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <i className="fa fa-refresh" />
                 </button>
-
                 {/* Separador */}
                 <div
                   style={{
@@ -5798,79 +6051,98 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 {(thePermissions === "superadmin" ||
                   thePermissions === "teacher") && (
                   <>
-                    {/* Botão Nova Aula */}
-                    <button
+                    {/* Botão Novo ToDo */}
+                    <div
                       style={{
-                        padding: "6px 12px",
-                        background: "#ffffff",
-                        border: `1px solid ${partnerColor()}`,
-                        borderRadius: "6px",
-                        color: partnerColor(),
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        transition: "all 0.15s ease",
                         display: "flex",
                         alignItems: "center",
-                        gap: "4px",
-                      }}
-                      onClick={() => {
-                        handleSeeModalNew();
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = partnerColor();
-                        e.target.style.color = "white";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = "#ffffff";
-                        e.target.style.color = partnerColor();
+                        gap: "1rem",
+                        marginBottom: "1rem",
                       }}
                     >
-                      <i className="fa fa-plus" style={{ fontSize: "10px" }} />
-                      <span>{UniversalTexts.calendarModal.singleClass}</span>
-                    </button>
-
-                    {/* Botão Recorrentes */}
-                    <button
-                      disabled={!disabledAvoid}
-                      style={{
-                        padding: "6px 12px",
-                        background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                        border: `1px solid ${
-                          !disabledAvoid ? "#dee2e6" : "#22c55e"
-                        }`,
-                        borderRadius: "6px",
-                        color: !disabledAvoid ? "#adb5bd" : "#22c55e",
-                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                        fontSize: "12px",
-                        fontWeight: "500",
-                        transition: "all 0.15s ease",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "4px",
-                      }}
-                      onClick={() => handleSeeModalOfTutorings()}
-                      onMouseEnter={(e) => {
-                        if (disabledAvoid) {
-                          e.target.style.background = "#22c55e";
-                          e.target.style.color = "white";
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (disabledAvoid) {
-                          e.target.style.background = "#ffffff";
-                          e.target.style.color = "#22c55e";
-                        }
-                      }}
-                    >
-                      <i
-                        className="fa fa-repeat"
-                        style={{ fontSize: "10px" }}
+                      <ToDoAddButton
+                        userId={myId}
+                        onCreated={() => {
+                          refreshTodos();
+                          /* Atualize a lista de todos aqui se necessário */
+                        }}
                       />
-                      <span>
-                        {UniversalTexts.calendarModal.recurringClasses}
-                      </span>
-                    </button>
+                      {/* Botão Nova Aula */}
+                      <button
+                        style={{
+                          padding: "6px 12px",
+                          background: "#ffffff",
+                          border: `1px solid ${partnerColor()}`,
+                          borderRadius: "6px",
+                          color: partnerColor(),
+                          cursor: "pointer",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                        onClick={() => {
+                          handleSeeModalNew();
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = partnerColor();
+                          e.target.style.color = "white";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = "#ffffff";
+                          e.target.style.color = partnerColor();
+                        }}
+                      >
+                        <i
+                          className="fa fa-plus"
+                          style={{ fontSize: "10px" }}
+                        />
+                        <span>{UniversalTexts.calendarModal.singleClass}</span>
+                      </button>
+                      {/* Botão Recorrentes */}
+                      <button
+                        disabled={!disabledAvoid}
+                        style={{
+                          padding: "6px 12px",
+                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                          border: `1px solid ${
+                            !disabledAvoid ? "#dee2e6" : "#22c55e"
+                          }`,
+                          borderRadius: "6px",
+                          color: !disabledAvoid ? "#adb5bd" : "#22c55e",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                          fontSize: "12px",
+                          fontWeight: "500",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                        }}
+                        onClick={() => handleSeeModalOfTutorings()}
+                        onMouseEnter={(e) => {
+                          if (disabledAvoid) {
+                            e.target.style.background = "#22c55e";
+                            e.target.style.color = "white";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (disabledAvoid) {
+                            e.target.style.background = "#ffffff";
+                            e.target.style.color = "#22c55e";
+                          }
+                        }}
+                      >
+                        <i
+                          className="fa fa-repeat"
+                          style={{ fontSize: "10px" }}
+                        />
+                        <span>
+                          {UniversalTexts.calendarModal.recurringClasses}
+                        </span>
+                      </button>
+                    </div>
                   </>
                 )}
               </div>
