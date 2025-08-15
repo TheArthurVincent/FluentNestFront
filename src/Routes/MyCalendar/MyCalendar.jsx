@@ -1609,7 +1609,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  fetchGeneralEvents();
                   setModalEditTodo(false);
                 }}
               >
@@ -1985,7 +1984,22 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     alignItems: "center",
                                     margin: "2px",
                                     cursor: "pointer",
-                                    background: "#f6f6f6",
+                                    backgroundColor:
+                                      todo.category == "personal"
+                                        ? "rgba(215, 192, 192, 1)"
+                                        : todo.category == "finance"
+                                        ? "rgba(234, 215, 191, 1)"
+                                        : todo.category == "work"
+                                        ? "rgba(234, 234, 191, 1)"
+                                        : todo.category == "study"
+                                        ? "rgba(215, 234, 191, 1)"
+                                        : todo.category == "health"
+                                        ? "rgba(191, 234, 212, 1)"
+                                        : todo.category == "family"
+                                        ? "rgba(191, 201, 234, 1)"
+                                        : todo.category == "other"
+                                        ? "rgba(216, 191, 234, 1)"
+                                        : "rgba(234, 191, 215, 1)",
                                     borderRadius: "6px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",

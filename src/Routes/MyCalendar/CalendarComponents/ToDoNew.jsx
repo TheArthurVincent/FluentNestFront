@@ -170,7 +170,7 @@ function ToDoAddButton({ userId, onCreated }) {
               <button
                 onClick={() => setOpen(false)}
                 style={{
-                  background: "red",
+                  background: "blue",
                   color: "white",
                   border: "none",
                   borderRadius: "6px",
@@ -183,8 +183,8 @@ function ToDoAddButton({ userId, onCreated }) {
                 onClick={handleSubmit}
                 disabled={loading}
                 style={{
-                  background: partnerColor(),
-                  color: textpartnerColorContrast(),
+                  backgroundColor: "green",
+                  color: "white",
                   border: "none",
                   borderRadius: "6px",
                   padding: "8px 16px",
