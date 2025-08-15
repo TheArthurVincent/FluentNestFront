@@ -1988,20 +1988,20 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     cursor: "pointer",
                                     backgroundColor:
                                       todo.category == "personal"
-                                        ? "rgba(215, 192, 192, 1)"
+                                        ? "rgba(215, 192, 192, 0.7)"
                                         : todo.category == "finance"
-                                        ? "rgba(234, 215, 191, 1)"
+                                        ? "rgba(234, 215, 191, 0.7)"
                                         : todo.category == "work"
-                                        ? "rgba(234, 234, 191, 1)"
+                                        ? "rgba(234, 234, 191, 0.7)"
                                         : todo.category == "study"
-                                        ? "rgba(215, 234, 191, 1)"
+                                        ? "rgba(215, 234, 191, 0.7)"
                                         : todo.category == "health"
-                                        ? "rgba(191, 234, 212, 1)"
+                                        ? "rgba(191, 234, 212, 0.7)"
                                         : todo.category == "family"
-                                        ? "rgba(191, 201, 234, 1)"
+                                        ? "rgba(191, 201, 234, 0.7)"
                                         : todo.category == "other"
-                                        ? "rgba(216, 191, 234, 1)"
-                                        : "rgba(234, 191, 215, 1)",
+                                        ? "rgba(216, 191, 234, 0.7)"
+                                        : "rgba(234, 191, 215, 0.7)",
                                     borderRadius: "6px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
