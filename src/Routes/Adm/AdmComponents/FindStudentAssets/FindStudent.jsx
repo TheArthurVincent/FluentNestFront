@@ -80,7 +80,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [totalScore, setTotalScore] = useState(0);
   const [monthlyScore, setMonthlyScore] = useState(0);
   const [feeUpToDate, setFeeUpToDate] = useState(false);
-  const [replenishTarget, setReplenishTarget] = useState(false);
   const [tutoree, setTutoree] = useState(false);
   const [isAdm, setIsAdm] = useState(false);
 
@@ -123,7 +122,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
           : ""
       );
       setFeeUpToDate(response.data.formattedStudentData.feeUpToDate);
-      setReplenishTarget(response.data.formattedStudentData.replenishTarget);
+      serReplenish(response.data.formattedStudentData.replenish);
       setTutoree(response.data.formattedStudentData.tutoree);
       setPermissions(response.data.formattedStudentData.permissions);
       setWeeklyClasses(response.data.formattedStudentData.weeklyClasses);
@@ -200,7 +199,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
       notifyAlert("Usuário editado com sucesso!", "green");
       setSelectedStudent(null);
-
       handleSeeModal();
       fetchStudents();
     } catch (error) {
@@ -244,6 +242,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       });
       setStudents(response.data.listOfStudents);
       setLoading(false);
+      console.log(response);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     }
@@ -387,6 +386,29 @@ export function FindStudent({ uploadStatus, headers, id }) {
     }
   };
   const [onHold, setOnHold] = useState(false);
+  const [replenish, setReplenish] = useState(false);
+
+
+
+  const updateReplenish = async (id) => {
+    setLoadingPermissions(true);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/replenish/${id}`,
+        {},
+        {
+          headers,
+        }
+      );
+
+      setReplenish(response.data.replenishTarget);
+      fetchStudents();
+      setLoadingPermissions(false);
+    } catch (error) {
+      setLoadingPermissions(false);
+      console.log("error", error);
+    }
+  };
   const updateOnHold = async (id) => {
     setLoadingPermissions(true);
     try {
@@ -414,14 +436,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
     // editStudentPassword(ID);
   };
 
-  const updateReplenishTargetStatus = async (id) => {
-    try {
-      await axios.put(`${backDomain}/api/v1/replenish/${id}`, {}, { headers });
-      setReplenishTarget(!replenishTarget);
-    } catch (error) {
-      notifyAlert("Erro ao atualizar reposição");
-    }
-  };
 
   const handleDelete = () => {
     if (!ID) return;
@@ -615,6 +629,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 setPermissions(selectedStudent.permissions);
                 setFeeUpToDate(selectedStudent.feeUpToDate);
                 setOnHold(selectedStudent.onHold);
+                setReplenish(selectedStudent.replenish);
                 setTutoree(selectedStudent.tutoree);
                 setFee(selectedStudent.fee || 0);
                 setTotalScore(selectedStudent.totalScore || 0);
@@ -2186,8 +2201,41 @@ export function FindStudent({ uploadStatus, headers, id }) {
                           <Typography
                             style={{ fontSize: "14px", color: "#2c3e50" }}
                           >
-                            Matrícula Ativa
+                            Matrícula trancada?
                             {onHold ? ": Não" : ": Sim"}
+                          </Typography>
+                        }
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={replenish}
+                            onChange={() => {
+                              setLoadingPermissions(true);
+                              updateReplenish(selectedStudent.theId);
+                              fetchStudents();
+                              setReplenish(!replenish);
+                              setLoadingPermissions(false);
+                            }}
+                            sx={{
+                              "& .MuiSwitch-switchBase.Mui-checked": {
+                                color: partnerColor(),
+                              },
+                              "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track":
+                                {
+                                  backgroundColor: partnerColor(),
+                                },
+                            }}
+                          />
+                        }
+                        label={
+                          <Typography
+                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                          >
+                            Permitir remarcar reposição
+                            {replenish ? ": Sim" : ": Não"}
                           </Typography>
                         }
                       />
@@ -2327,6 +2375,9 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       key={student._id || index}
                       onClick={() => {
                         setSelectedStudent(student);
+                        console.log(student);
+                              setReplenish(student.replenishTarget);
+
                         setFeeUpToDate(student.feeUpToDate);
                         setTutoree(student.tutoree);
                         setOnHold(student.onHold);
