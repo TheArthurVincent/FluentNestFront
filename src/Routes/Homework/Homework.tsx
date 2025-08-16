@@ -609,68 +609,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         )}
                       </div>
                     </div>
-                    {homework.status !== "done" && !homework.submitted && (
-                      <div
-                        style={{
-                          padding:
-                            window.innerWidth <= 768 ? "16px 12px" : "12px",
-                          backgroundColor: "#f8fafc",
-                          borderBottom: "1px solid #e2e8f0",
-                          display: "flex",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <button
-                          onClick={() =>
-                            openSubmissionModal(
-                              homework._id,
-                              homework.answers || homework.description
-                            )
-                          }
-                          style={{
-                            backgroundColor: "transparent",
-                            color: "#666",
-                            border: "1px solid #ddd",
-                            padding:
-                              window.innerWidth <= 768
-                                ? "10px 16px"
-                                : "6px 12px",
-                            borderRadius: "3px",
-                            fontSize:
-                              window.innerWidth <= 768 ? "14px" : "12px",
-                            fontWeight: "normal",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: window.innerWidth <= 768 ? "6px" : "4px",
-                            cursor: "pointer",
-                            transition: "all 0.2s ease",
-                            minHeight:
-                              window.innerWidth <= 768 ? "44px" : "auto",
-                          }}
-                          onMouseOver={(e) => {
-                            e.currentTarget.style.backgroundColor = "#f5f5f5";
-                            e.currentTarget.style.borderColor = "#bbb";
-                          }}
-                          onMouseOut={(e) => {
-                            e.currentTarget.style.backgroundColor =
-                              "transparent";
-                            e.currentTarget.style.borderColor = "#ddd";
-                          }}
-                        >
-                          <i
-                            className="fa fa-upload"
-                            style={{
-                              fontSize:
-                                window.innerWidth <= 768 ? "13px" : "11px",
-                            }}
-                          />
-
-                          {homework.submitted
-                            ? UniversalTexts.edit
-                            : UniversalTexts?.submitHomework}
-                        </button>
-                      </div>
-                    )}
 
                     {/* Action Buttons Section */}
                     {((homework.status &&
@@ -1241,6 +1179,103 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       )}
                     </div>
 
+                    {/* Description Section */}
+                    <div
+                      style={{
+                        margin: "1rem",
+                        padding: "1rem",
+                        backgroundColor: "#ffffff",
+                        border: "1px solid #e2e8f0",
+                        borderRadius: "8px",
+                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <h4
+                          style={{
+                            margin: "0 0 12px 0",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                            color: "#374151",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <i className="fa fa-file-text-o" />
+                          {UniversalTexts.homeworkDescription}
+                        </h4>
+                        <button
+                          onClick={() =>
+                            openSubmissionModal(
+                              homework._id,
+                              homework.answers || homework.description
+                            )
+                          }
+                          style={{
+                            backgroundColor: "transparent",
+                            color: "#666",
+                            border: "1px solid #ddd",
+                            padding:
+                              window.innerWidth <= 768
+                                ? "10px 16px"
+                                : "6px 12px",
+                            borderRadius: "3px",
+                            fontSize:
+                              window.innerWidth <= 768 ? "14px" : "12px",
+                            fontWeight: "normal",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: window.innerWidth <= 768 ? "6px" : "4px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                            minHeight:
+                              window.innerWidth <= 768 ? "44px" : "auto",
+                          }}
+                          onMouseOver={(e) => {
+                            e.currentTarget.style.backgroundColor = "#f5f5f5";
+                            e.currentTarget.style.borderColor = "#bbb";
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.style.backgroundColor =
+                              "transparent";
+                            e.currentTarget.style.borderColor = "#ddd";
+                          }}
+                        >
+                          <i
+                            className="fa fa-upload"
+                            style={{
+                              fontSize:
+                                window.innerWidth <= 768 ? "13px" : "11px",
+                            }}
+                          />
+
+                          {homework.submitted
+                            ? UniversalTexts.edit
+                            : UniversalTexts?.submitHomework}
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          lineHeight: "1.6",
+                          color: "#374151",
+                          fontSize: "14px",
+                        }}
+                      >
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: homework.description,
+                          }}
+                        />
+                      </div>
+                    </div>
                     {/* Class Details Section */}
                     {homework.eventDetails && (
                       <div
@@ -1347,46 +1382,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         </div>
                       </div>
                     )}
-
-                    {/* Description Section */}
-                    <div
-                      style={{
-                        margin: "1rem",
-                        padding: "1rem",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #e2e8f0",
-                        borderRadius: "8px",
-                        boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
-                      }}
-                    >
-                      <h4
-                        style={{
-                          margin: "0 0 12px 0",
-                          fontSize: "14px",
-                          fontWeight: "600",
-                          color: "#374151",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <i className="fa fa-file-text-o" />
-                        {UniversalTexts.homeworkDescription}
-                      </h4>
-                      <div
-                        style={{
-                          lineHeight: "1.6",
-                          color: "#374151",
-                          fontSize: "14px",
-                        }}
-                      >
-                        <div
-                          dangerouslySetInnerHTML={{
-                            __html: homework.description,
-                          }}
-                        />
-                      </div>
-                    </div>
 
                     {/* Video Section - moved to bottom */}
                     {homework.eventDetails?.video && (
