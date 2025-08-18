@@ -74,6 +74,7 @@ export function Groups({ headers, id }) {
   const [arrayOfIds, setArrayOfIds] = useState([]);
   // Removido campo de nome do grupo
   const [loading, setLoading] = useState(true);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   // Função para lidar com seleção dos alunos
   const handleCheckboxChange = (studentId) => {
@@ -175,6 +176,10 @@ export function Groups({ headers, id }) {
           headers,
         }
       );
+      fetchStudents();
+      getGroups();
+      setArrayOfIds([]);
+      setSelectedGroupId(null);
       console.log(response);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
@@ -294,16 +299,93 @@ export function Groups({ headers, id }) {
           backgroundColor: selectedGroupId ? "#efefefff" : "transparent",
         }}
       >
-        <h2
+        <div
           style={{
-            fontWeight: 500,
-            fontSize: 20,
-            marginBottom: 12,
-            color: "#222",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "12px",
           }}
         >
-          {selectedGroupId ? "Editar grupo" : "Criar novo grupo"}
-        </h2>
+          <h2
+            style={{
+              fontWeight: 500,
+              fontSize: 20,
+              marginBottom: 12,
+              color: "#222",
+            }}
+          >
+            {selectedGroupId ? "Editar grupo" : "Criar novo grupo"}
+          </h2>
+          {selectedGroupId && (
+            <button
+              onClick={() => setShowDeleteConfirm(true)}
+              style={{
+                backgroundColor: "red",
+                color: "white",
+              }}
+            >
+              <i className="fas fa-trash" />
+            </button>
+          )}
+        </div>
+        {showDeleteConfirm && (
+          <div
+            style={{
+              margin: "12px 0px",
+              background: "#fff3f3",
+              border: "1px solid #e53935",
+              borderRadius: 6,
+              padding: 12,
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                color: "#e53935",
+                fontWeight: 500,
+                marginBottom: 8,
+              }}
+            >
+              Tem certeza que deseja excluir este grupo?
+            </div>
+            <button
+              onClick={() => {
+                deleteGroup(selectedGroupId);
+                setShowDeleteConfirm(false);
+                handleCancelEdit();
+              }}
+              style={{
+                padding: "8px 16px",
+                background: "#e53935",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                fontWeight: 500,
+                fontSize: 15,
+                marginRight: 8,
+                cursor: "pointer",
+              }}
+            >
+              Confirmar exclusão
+            </button>
+            <button
+              onClick={() => setShowDeleteConfirm(false)}
+              style={{
+                padding: "8px 16px",
+                background: "#eee",
+                color: "#222",
+                border: "none",
+                borderRadius: 4,
+                fontWeight: 500,
+                fontSize: 15,
+                cursor: "pointer",
+              }}
+            >
+              Cancelar
+            </button>
+          </div>
+        )}
         <div style={{ marginBottom: 12 }}>
           <span
             style={{
@@ -375,23 +457,25 @@ export function Groups({ headers, id }) {
             Criar grupo
           </button>
         ) : (
-          <button
-            onClick={handleCancelEdit}
-            style={{
-              width: "100%",
-              padding: "10px 0",
-              background: "#eee",
-              color: "#222",
-              border: "none",
-              borderRadius: 4,
-              fontWeight: 500,
-              fontSize: 16,
-              marginTop: 8,
-              cursor: "pointer",
-            }}
-          >
-            Ver todos os grupos
-          </button>
+          <>
+            <button
+              onClick={handleCancelEdit}
+              style={{
+                width: "100%",
+                padding: "10px 0",
+                background: "#eee",
+                color: "#222",
+                border: "none",
+                borderRadius: 4,
+                fontWeight: 500,
+                fontSize: 16,
+                marginTop: 8,
+                cursor: "pointer",
+              }}
+            >
+              Ver todos os grupos
+            </button>
+          </>
         )}
       </section>
     </div>
