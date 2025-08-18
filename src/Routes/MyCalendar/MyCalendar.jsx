@@ -368,7 +368,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
     setModalEditTodo(false);
-                          setShowDeleteEventConfirmation(false);
+    setShowDeleteEventConfirmation(false);
 
     setLoading(true);
     try {
@@ -420,7 +420,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   }, [alternateBoolean]);
 
   const handleChangeWeek = async (sum) => {
-                          setShowDeleteEventConfirmation(false);
+    setShowDeleteEventConfirmation(false);
 
     setDisabledAvoid(false);
     var user = JSON.parse(localStorage.getItem("loggedIn"));
@@ -716,7 +716,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const editInside = () => {
     editOneEvent(newEventId);
   };
+  const ignoreBlurRef = useRef(false);
 
+  function commit(i, value) {}
   const updateScheduled = async (id) => {
     console.log(status, "STATUS");
 
@@ -1337,6 +1339,35 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
+  // util: checa se existe algum slot vazio
+  const hasEmptySlot = (() => {
+    for (let i = 1; i <= 10; i++) {
+      const item = task[`checkList${i}`];
+      if (!item || !item.description || !item.description.trim()) return true;
+    }
+    return false;
+  })();
+  const handleAddChecklistItem = () => {
+    const placeholder = "Novo item";
+
+    for (let i = 1; i <= 10; i++) {
+      const item = task[`checkList${i}`];
+
+      // considera vazio se não existir ou se description estiver vazia/whitespace
+      if (!item || !item.description || !item.description.trim()) {
+        // atualiza no backend/store
+        updateChecklistTaskDescripton(i, task._id, placeholder);
+        // prepara para editar
+        setDescriptionChecklistToEdit(placeholder);
+        setEditingIndex(i);
+        return;
+      }
+    }
+
+    // (opcional) todos preenchidos
+    // toast.warn("Todos os 10 itens já estão preenchidos.");
+  };
+
   const handleCheckbox4Change = async () => {
     try {
       const response = await axios.put(
@@ -1604,7 +1635,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
-                          setShowDeleteEventConfirmation(false);
+      setShowDeleteEventConfirmation(false);
 
       fetchGeneralEvents();
     } catch (error) {
@@ -1908,9 +1939,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     >
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
                         const item = task[`checkList${i}`];
-                        if (!item || !item.description) return null;
-
                         const isEditing = editingIndex === i;
+
+                        // ⚠️ MUDANÇA AQUI: não esconda se estiver editando
+                        if (!item || (!item.description && !isEditing))
+                          return null;
 
                         return (
                           <li
@@ -1918,7 +1951,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              marginBottom: "10px",
                               padding: "8px 12px",
                               borderBottom: i < 5 ? "1px solid #eee" : "none",
                               transition: "background 0.2s",
@@ -1930,11 +1962,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             <input
                               type="checkbox"
                               checked={item.checked}
-                              onClick={() => updateChecklistTask(i, task._id)}
+                              onChange={() => updateChecklistTask(i, task._id)}
                               style={{
                                 accentColor: item.checked ? "#22c55e" : "#ddd",
-                                width: "20px",
-                                height: "20px",
+                                width: "15px",
+                                height: "15px",
                                 marginRight: "12px",
                                 cursor: "pointer",
                                 boxShadow: item.checked
@@ -1945,57 +1977,99 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
                             {!isEditing ? (
                               <span
-                                style={{
-                                  textDecoration: item.checked
-                                    ? "line-through"
-                                    : "none",
-                                  color: item.checked ? "#22c55e" : "#333",
-                                  fontWeight: 600,
-                                  fontSize: "15px",
-                                  letterSpacing: "0.2px",
-                                  cursor: "text",
-                                }}
+                                /* estilos */
                                 onClick={() => {
                                   setEditingIndex(i);
+                                  // carrega no estado local o texto atual (pode ser "Novo item" ou o que tiver)
                                   setDescriptionChecklistToEdit(
-                                    item.description
+                                    item.description || ""
                                   );
                                 }}
                               >
                                 {item.description}
                               </span>
                             ) : (
-                              <input
-                                type="text"
-                                value={descriptionChecklistToEdit}
-                                autoFocus
-                                onBlur={() => setEditingIndex(null)}
-                                onChange={(e) => {
-                                  setDescriptionChecklistToEdit(e.target.value);
-                                  updateChecklistTaskDescripton(
-                                    i,
-                                    task._id,
-                                    e.target.value
-                                  );
-                                }}
-                                style={{
-                                  textDecoration: item.checked
-                                    ? "line-through"
-                                    : "none",
-                                  color: item.checked ? "#22c55e" : "#333",
-                                  fontWeight: 600,
-                                  fontSize: "15px",
-                                  letterSpacing: "0.2px",
-                                  border: "1px solid #ccc",
-                                  borderRadius: "4px",
-                                  padding: "2px 6px",
-                                }}
-                              />
+                              <span>
+                                <input
+                                  type="text"
+                                  value={descriptionChecklistToEdit}
+                                  autoFocus
+                                  // 👉 só atualiza o estado local; NÃO salva ainda
+                                  onChange={(e) =>
+                                    setDescriptionChecklistToEdit(
+                                      e.target.value
+                                    )
+                                  }
+                                  // 👉 salva somente ao sair (e some se estiver vazio)
+                                  onBlur={() => {
+                                    const value =
+                                      descriptionChecklistToEdit.trim();
+                                    updateChecklistTaskDescripton(
+                                      i,
+                                      task._id,
+                                      value
+                                    ); // "" faz sumir
+                                    setEditingIndex(null);
+                                  }}
+                                  // (opcional) Enter confirma / Escape cancela
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter")
+                                      e.currentTarget.blur();
+                                    if (e.key === "Escape") {
+                                      // cancela: volta ao texto atual do item no backend
+                                      setDescriptionChecklistToEdit(
+                                        item.description || ""
+                                      );
+                                      setEditingIndex(null);
+                                    }
+                                  }}
+                                />
+                                {/*                          
+  <button
+              type="button"
+              // onMouseDown={() => {
+              //   // previne o onBlur de salvar de novo
+              //   ignoreBlurRef.current = true;
+              // }}
+              onClick={() => {
+  
+                setDescriptionChecklistToEdit("")
+                updateChecklistTaskDescripton(i, task._id, "");
+  // setEditingIndex(null);
+              }}
+              style={{
+                padding: "4px 8px",
+                border: "1px solid #eee",
+                borderRadius: 6,
+                cursor: "pointer",
+                background: "#fff",
+              }}
+            >
+              Delete
+            </button> */}
+                              </span>
                             )}
                           </li>
                         );
                       })}
                     </ul>
+                    {hasEmptySlot && (
+                      <button
+                        type="button"
+                        onClick={handleAddChecklistItem}
+                        style={{
+                          padding: "8px 12px",
+                          borderRadius: 8,
+                          border: "1px solid #e5e7eb",
+                          background: "#fff",
+                          boxShadow: "0 1px 3px #0001",
+                          cursor: "pointer",
+                          marginTop: 8,
+                        }}
+                      >
+                        + Adicionar item
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
