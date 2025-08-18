@@ -65,7 +65,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [modalEditTodo, setModalEditTodo] = useState(false);
   const [descriptionChecklistToEdit, setDescriptionChecklistToEdit] =
     useState("");
-const [editingIndex, setEditingIndex] = useState(null);
+  const [editingIndex, setEditingIndex] = useState(null);
 
   const [alternateBoolean, setAlternateBoolean] = useState(false);
   const handleCalendarScroll = () => {
@@ -368,6 +368,7 @@ const [editingIndex, setEditingIndex] = useState(null);
   const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
     setModalEditTodo(false);
+                          setShowDeleteEventConfirmation(false);
 
     setLoading(true);
     try {
@@ -419,6 +420,8 @@ const [editingIndex, setEditingIndex] = useState(null);
   }, [alternateBoolean]);
 
   const handleChangeWeek = async (sum) => {
+                          setShowDeleteEventConfirmation(false);
+
     setDisabledAvoid(false);
     var user = JSON.parse(localStorage.getItem("loggedIn"));
     const id = user.id;
@@ -1585,7 +1588,8 @@ const [editingIndex, setEditingIndex] = useState(null);
       console.error(error);
     }
   };
-
+  const [showDeleteEventConfirmation, setShowDeleteEventConfirmation] =
+    useState(false);
   const handleDeleteTask = async (taskID) => {
     try {
       const user = JSON.parse(localStorage.getItem("loggedIn"));
@@ -1600,6 +1604,8 @@ const [editingIndex, setEditingIndex] = useState(null);
       setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
+                          setShowDeleteEventConfirmation(false);
+
       fetchGeneralEvents();
     } catch (error) {
       console.error(error);
@@ -1770,61 +1776,113 @@ const [editingIndex, setEditingIndex] = useState(null);
                           <option value="family">Família</option>
                           <option value="other">Outro</option>
                         </select>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "1rem",
-                            justifyContent: "flex-end",
-                            marginTop: "10px",
-                          }}
-                        >
-                          <button
-                            onClick={() => {
-                              handleDeleteTask(task._id);
-                            }}
+                        {!showDeleteEventConfirmation && (
+                          <div
                             style={{
-                              background: "red",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "6px",
-                              padding: "6px 16px",
-                              fontWeight: 600,
+                              display: "flex",
+                              gap: "1rem",
+                              justifyContent: "flex-end",
+                              marginTop: "10px",
                             }}
                           >
-                            Excluir
-                          </button>
-                          <button
-                            onClick={() => setShowEditSection(false)}
-                            style={{
-                              background: "#eee",
-                              color: "#333",
-                              border: "none",
-                              borderRadius: "6px",
-                              padding: "6px 16px",
-                              fontWeight: 500,
-                            }}
-                          >
-                            Cancelar
-                          </button>
+                            <button
+                              onClick={() => {
+                                setShowDeleteEventConfirmation(true);
+                              }}
+                              style={{
+                                background: "red",
+                                color: "white",
+                                border: "none",
+                                borderRadius: "6px",
+                                padding: "6px 16px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Excluir
+                            </button>
 
-                          <button
-                            onClick={() => {
-                              handleUpdateInfoTask(task._id);
-                            }}
-                            style={{
-                              background: partnerColor(),
-                              color: textpartnerColorContrast(),
-                              border: "none",
-                              borderRadius: "6px",
-                              padding: "6px 16px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            Salvar
-                          </button>
-                        </div>
+                            <button
+                              onClick={() => setShowEditSection(false)}
+                              style={{
+                                background: "#eee",
+                                color: "#333",
+                                border: "none",
+                                borderRadius: "6px",
+                                padding: "6px 16px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              Cancelar
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                setShowDeleteEventConfirmation(true);
+                              }}
+                              style={{
+                                background: partnerColor(),
+                                color: textpartnerColorContrast(),
+                                border: "none",
+                                borderRadius: "6px",
+                                padding: "6px 16px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Salvar
+                            </button>
+                          </div>
+                        )}
                       </div>
                     )}
+                  </div>
+                  <div
+                    style={{
+                      display: showDeleteEventConfirmation ? "block" : "none",
+                      background: "#f9fafb",
+                      borderRadius: "8px",
+                      padding: "12px 16px",
+                      boxShadow: "0 2px 8px #0001",
+                      border: "1px solid #e5e7eb",
+                    }}
+                  >
+                    Deseja mesmo excluir esta tarefa?
+                    <div
+                      style={{
+                        display: "flex",
+                        margin: "2px",
+                      }}
+                    >
+                      <button
+                        onClick={() => {
+                          setShowDeleteEventConfirmation(false);
+                        }}
+                        style={{
+                          background: "blue",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "6px 16px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Não{" "}
+                      </button>
+                      <button
+                        onClick={() => {
+                          handleDeleteTask(task._id);
+                        }}
+                        style={{
+                          background: "red",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "6px",
+                          padding: "6px 16px",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Sim
+                      </button>
+                    </div>
                   </div>
                   <div style={{ marginBottom: "1.2rem" }}>
                     <span
@@ -1835,95 +1893,109 @@ const [editingIndex, setEditingIndex] = useState(null);
                     >
                       Checklist
                     </span>
-           
-<ul
-  style={{
-    listStyle: "none",
-    padding: 0,
-    margin: "10px 0 0 0",
-    background: "#f9fafb",
-    borderRadius: "8px",
-    boxShadow: "0 2px 8px #0001",
-    border: "1px solid #e5e7eb",
-    maxWidth: "320px",
-  }}
->
-  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
-    const item = task[`checkList${i}`];
-    if (!item || !item.description) return null;
 
-    const isEditing = editingIndex === i;
+                    <ul
+                      style={{
+                        listStyle: "none",
+                        padding: 0,
+                        margin: "10px 0 0 0",
+                        background: "#f9fafb",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 8px #0001",
+                        border: "1px solid #e5e7eb",
+                        maxWidth: "320px",
+                      }}
+                    >
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
+                        const item = task[`checkList${i}`];
+                        if (!item || !item.description) return null;
 
-    return (
-      <li
-        key={i}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          marginBottom: "10px",
-          padding: "8px 12px",
-          borderBottom: i < 5 ? "1px solid #eee" : "none",
-          transition: "background 0.2s",
-          background: item.checked ? "#e6fbe8" : "transparent",
-        }}
-      >
-        <input
-          type="checkbox"
-          checked={item.checked}
-          onClick={() => updateChecklistTask(i, task._id)}
-          style={{
-            accentColor: item.checked ? "#22c55e" : "#ddd",
-            width: "20px",
-            height: "20px",
-            marginRight: "12px",
-            cursor: "pointer",
-            boxShadow: item.checked ? "0 0 0 2px #22c55e33" : "none",
-          }}
-        />
+                        const isEditing = editingIndex === i;
 
-        {!isEditing ? (
-          <span
-            style={{
-              textDecoration: item.checked ? "line-through" : "none",
-              color: item.checked ? "#22c55e" : "#333",
-              fontWeight: 600,
-              fontSize: "15px",
-              letterSpacing: "0.2px",
-              cursor: "text",
-            }}
-            onClick={() => {
-              setEditingIndex(i);
-              setDescriptionChecklistToEdit(item.description);
-            }}
-          >
-            {item.description}
-          </span>
-        ) : (
-          <input
-            type="text"
-            value={descriptionChecklistToEdit}
-            autoFocus
-            onBlur={() => setEditingIndex(null)}
-            onChange={(e) => {
-              setDescriptionChecklistToEdit(e.target.value);
-              updateChecklistTaskDescripton(i, task._id, e.target.value);
-            }}
-            style={{
-              textDecoration: item.checked ? "line-through" : "none",
-              color: item.checked ? "#22c55e" : "#333",
-              fontWeight: 600,
-              fontSize: "15px",
-              letterSpacing: "0.2px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              padding: "2px 6px",
-            }}
-          />
-        )}
-      </li>
-    );
-  })}
-</ul>
+                        return (
+                          <li
+                            key={i}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "10px",
+                              padding: "8px 12px",
+                              borderBottom: i < 5 ? "1px solid #eee" : "none",
+                              transition: "background 0.2s",
+                              background: item.checked
+                                ? "#e6fbe8"
+                                : "transparent",
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={item.checked}
+                              onClick={() => updateChecklistTask(i, task._id)}
+                              style={{
+                                accentColor: item.checked ? "#22c55e" : "#ddd",
+                                width: "20px",
+                                height: "20px",
+                                marginRight: "12px",
+                                cursor: "pointer",
+                                boxShadow: item.checked
+                                  ? "0 0 0 2px #22c55e33"
+                                  : "none",
+                              }}
+                            />
+
+                            {!isEditing ? (
+                              <span
+                                style={{
+                                  textDecoration: item.checked
+                                    ? "line-through"
+                                    : "none",
+                                  color: item.checked ? "#22c55e" : "#333",
+                                  fontWeight: 600,
+                                  fontSize: "15px",
+                                  letterSpacing: "0.2px",
+                                  cursor: "text",
+                                }}
+                                onClick={() => {
+                                  setEditingIndex(i);
+                                  setDescriptionChecklistToEdit(
+                                    item.description
+                                  );
+                                }}
+                              >
+                                {item.description}
+                              </span>
+                            ) : (
+                              <input
+                                type="text"
+                                value={descriptionChecklistToEdit}
+                                autoFocus
+                                onBlur={() => setEditingIndex(null)}
+                                onChange={(e) => {
+                                  setDescriptionChecklistToEdit(e.target.value);
+                                  updateChecklistTaskDescripton(
+                                    i,
+                                    task._id,
+                                    e.target.value
+                                  );
+                                }}
+                                style={{
+                                  textDecoration: item.checked
+                                    ? "line-through"
+                                    : "none",
+                                  color: item.checked ? "#22c55e" : "#333",
+                                  fontWeight: 600,
+                                  fontSize: "15px",
+                                  letterSpacing: "0.2px",
+                                  border: "1px solid #ccc",
+                                  borderRadius: "4px",
+                                  padding: "2px 6px",
+                                }}
+                              />
+                            )}
+                          </li>
+                        );
+                      })}
+                    </ul>
                   </div>
                 </div>
               </div>
