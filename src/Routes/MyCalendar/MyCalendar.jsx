@@ -63,6 +63,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [alternateText, setAlternateText] = useState("... Updating Class");
   const [modalEditTodo, setModalEditTodo] = useState(false);
+  const [descriptionChecklistToEdit, setDescriptionChecklistToEdit] =
+    useState("");
+const [editingIndex, setEditingIndex] = useState(null);
+
   const [alternateBoolean, setAlternateBoolean] = useState(false);
   const handleCalendarScroll = () => {
     setShouldScrollToToday(false);
@@ -363,7 +367,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const [todoList, setTodoList] = useState([]);
   const fetchGeneralEvents = async () => {
-                  setModalEditTodo(false);
+    setModalEditTodo(false);
 
     setLoading(true);
     try {
@@ -1541,6 +1545,21 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       console.error(error);
     }
   };
+  const updateChecklistTaskDescripton = async (index, taskID, desc) => {
+    try {
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const { id } = user;
+      const response = await axios.put(
+        `${backDomain}/api/v1/todochecklistname/${id}?todoId=${taskID}&checkList=${index}&newDescription=${desc}`,
+        {
+          headers,
+        }
+      );
+      fetchTodo(taskID);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleUpdateInfoTask = async (taskID) => {
     try {
       const user = JSON.parse(localStorage.getItem("loggedIn"));
@@ -1816,70 +1835,95 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     >
                       Checklist
                     </span>
-                    <ul
-                      style={{
-                        listStyle: "none",
-                        padding: 0,
-                        margin: "10px 0 0 0",
-                        background: "#f9fafb",
-                        borderRadius: "8px",
-                        boxShadow: "0 2px 8px #0001",
-                        border: "1px solid #e5e7eb",
-                        maxWidth: "320px",
-                      }}
-                    >
-                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
-                        const item = task[`checkList${i}`];
-                        if (!item || !item.description) return null;
-                        return (
-                          <li
-                            key={i}
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              marginBottom: "10px",
-                              padding: "8px 12px",
-                              borderBottom: i < 5 ? "1px solid #eee" : "none",
-                              transition: "background 0.2s",
-                              background: item.checked
-                                ? "#e6fbe8"
-                                : "transparent",
-                            }}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={item.checked}
-                              onClick={() => {
-                                updateChecklistTask(i, task._id);
-                              }}
-                              style={{
-                                accentColor: item.checked ? "#22c55e" : "#ddd",
-                                width: "20px",
-                                height: "20px",
-                                marginRight: "12px",
-                                cursor: "pointer",
-                                boxShadow: item.checked
-                                  ? "0 0 0 2px #22c55e33"
-                                  : "none",
-                              }}
-                            />
-                            <span
-                              style={{
-                                textDecoration: item.checked
-                                  ? "line-through"
-                                  : "none",
-                                color: item.checked ? "#22c55e" : "#333",
-                                fontWeight: 600,
-                                fontSize: "15px",
-                                letterSpacing: "0.2px",
-                              }}
-                            >
-                              {item.description}
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
+           
+<ul
+  style={{
+    listStyle: "none",
+    padding: 0,
+    margin: "10px 0 0 0",
+    background: "#f9fafb",
+    borderRadius: "8px",
+    boxShadow: "0 2px 8px #0001",
+    border: "1px solid #e5e7eb",
+    maxWidth: "320px",
+  }}
+>
+  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
+    const item = task[`checkList${i}`];
+    if (!item || !item.description) return null;
+
+    const isEditing = editingIndex === i;
+
+    return (
+      <li
+        key={i}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          marginBottom: "10px",
+          padding: "8px 12px",
+          borderBottom: i < 5 ? "1px solid #eee" : "none",
+          transition: "background 0.2s",
+          background: item.checked ? "#e6fbe8" : "transparent",
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={item.checked}
+          onClick={() => updateChecklistTask(i, task._id)}
+          style={{
+            accentColor: item.checked ? "#22c55e" : "#ddd",
+            width: "20px",
+            height: "20px",
+            marginRight: "12px",
+            cursor: "pointer",
+            boxShadow: item.checked ? "0 0 0 2px #22c55e33" : "none",
+          }}
+        />
+
+        {!isEditing ? (
+          <span
+            style={{
+              textDecoration: item.checked ? "line-through" : "none",
+              color: item.checked ? "#22c55e" : "#333",
+              fontWeight: 600,
+              fontSize: "15px",
+              letterSpacing: "0.2px",
+              cursor: "text",
+            }}
+            onClick={() => {
+              setEditingIndex(i);
+              setDescriptionChecklistToEdit(item.description);
+            }}
+          >
+            {item.description}
+          </span>
+        ) : (
+          <input
+            type="text"
+            value={descriptionChecklistToEdit}
+            autoFocus
+            onBlur={() => setEditingIndex(null)}
+            onChange={(e) => {
+              setDescriptionChecklistToEdit(e.target.value);
+              updateChecklistTaskDescripton(i, task._id, e.target.value);
+            }}
+            style={{
+              textDecoration: item.checked ? "line-through" : "none",
+              color: item.checked ? "#22c55e" : "#333",
+              fontWeight: 600,
+              fontSize: "15px",
+              letterSpacing: "0.2px",
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              padding: "2px 6px",
+            }}
+          />
+        )}
+      </li>
+    );
+  })}
+</ul>
                   </div>
                 </div>
               </div>
