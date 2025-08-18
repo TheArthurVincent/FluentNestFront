@@ -27,6 +27,7 @@ import {
   formatDateBr,
   onLoggOut,
   onLoggOutFee,
+  truncateString,
   updateInfo,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
@@ -2114,7 +2115,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
                           : "0 2px 8px rgba(0,0,0,0.08)",
                         transition: "all 0.3s ease",
-                        minWidth: "280px",
+                        minWidth: "200px",
                       }}
                       key={index}
                     >
@@ -2202,7 +2203,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       fontSize: "10px",
                                     }}
                                   >
-                                    {todo.description}
+                                    {truncateString(todo.description, 5)}
                                   </span>
                                   <span
                                     style={{
@@ -2405,8 +2406,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       paddingRight: "4rem",
                                     }}
                                   >
-                                    {event.student ||
-                                      event.description ||
+                                    {truncateString(event.student,11) ||
+                                      truncateString(event.description, 10) ||
                                       "No description"}
                                   </div>
 
