@@ -325,7 +325,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   };
   const cellTable = {
     whiteSpace: "nowrap",
-    padding: "12px 16px",
+    padding: "10px 16px",
     fontSize: "14px",
     fontWeight: "400",
     color: "#2c3e50",
@@ -388,8 +388,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [onHold, setOnHold] = useState(false);
   const [replenish, setReplenish] = useState(false);
 
-
-
   const updateReplenish = async (id) => {
     setLoadingPermissions(true);
     try {
@@ -435,7 +433,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
     editStudentPermissions(ID);
     // editStudentPassword(ID);
   };
-
 
   const handleDelete = () => {
     if (!ID) return;
@@ -554,7 +551,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginBottom: "24px",
-            borderRadius: "12px",
+            borderRadius: "10px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -644,11 +641,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
               }}
               style={{
                 minWidth: "auto",
-                padding: "8px 12px",
+                padding: "8px 10px",
                 borderRadius: "8px",
                 color: partnerColor(),
                 borderColor: partnerColor(),
-                fontSize: "12px",
+                fontSize: "10px",
                 fontWeight: "500",
               }}
             >
@@ -918,8 +915,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "12px",
-                    fontSize: "12px",
+                    borderRadius: "10px",
+                    fontSize: "10px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.feeUpToDate
                       ? "#d4f6d4"
@@ -966,8 +963,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "12px",
-                    fontSize: "12px",
+                    borderRadius: "10px",
+                    fontSize: "10px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.onHold
                       ? "#fff3cd"
@@ -1014,8 +1011,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "12px",
-                    fontSize: "12px",
+                    borderRadius: "10px",
+                    fontSize: "10px",
                     fontWeight: "500",
                     backgroundColor:
                       selectedStudent.permissions === "superadmin"
@@ -1101,8 +1098,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       display: "inline-flex",
                       alignItems: "center",
                       padding: "4px 8px",
-                      borderRadius: "12px",
-                      fontSize: "12px",
+                      borderRadius: "10px",
+                      fontSize: "10px",
                       fontWeight: "500",
                       backgroundColor: "#e1f5fe",
                       color: "#0277bd",
@@ -1231,7 +1228,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               backgroundColor: "#ffffff",
               margin: "auto",
               marginTop: "16px",
-              borderRadius: "12px",
+              borderRadius: "10px",
               boxShadow:
                 "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
               border: "1px solid #e8eaed",
@@ -1271,7 +1268,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   style={{
                     display: "flex",
                     flexDirection: "column",
-                    gap: "12px",
+                    gap: "10px",
                   }}
                 >
                   {selectedStudent.financialReports
@@ -1288,7 +1285,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       <div
                         key={index + report.month}
                         style={{
-                          padding: "12px 16px",
+                          padding: "10px 16px",
                           backgroundColor: "#fafbfc",
                           borderRadius: "8px",
                           border: "1px solid #e8eaed",
@@ -1309,7 +1306,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: "12px",
+                              gap: "10px",
                             }}
                           >
                             <Typography
@@ -1328,7 +1325,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                               style={{
                                 fontWeight: "500",
                                 color: "#6c757d",
-                                fontSize: "12px",
+                                fontSize: "10px",
                                 textTransform: "uppercase",
                                 letterSpacing: "0.5px",
                               }}
@@ -1424,7 +1421,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                             {report.discount > 0 && (
                               <Typography
                                 style={{
-                                  fontSize: "12px",
+                                  fontSize: "10px",
                                   color: "#f59e0b",
                                   fontWeight: "500",
                                 }}
@@ -1436,7 +1433,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                             {report.paidSoFar > 0 && (
                               <Typography
                                 style={{
-                                  fontSize: "12px",
+                                  fontSize: "10px",
                                   color: "#1976d2",
                                   fontWeight: "500",
                                 }}
@@ -1448,7 +1445,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                             {!report.paidFor && (
                               <Typography
                                 style={{
-                                  fontSize: "12px",
+                                  fontSize: "10px",
                                   color: "#d32f2f",
                                   fontWeight: "500",
                                 }}
@@ -1464,7 +1461,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                           {report.dueDate && (
                             <Typography
                               style={{
-                                fontSize: "12px",
+                                fontSize: "10px",
                                 color: "#6c757d",
                                 fontWeight: "400",
                               }}
@@ -1483,7 +1480,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 <div
                   style={{
                     marginTop: "16px",
-                    padding: "12px 16px",
+                    padding: "10px 16px",
                     backgroundColor: "#f8f9fa",
                     borderRadius: "8px",
                     border: "1px solid #dee2e6",
@@ -1508,7 +1505,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     <div>
                       <Typography
                         style={{
-                          fontSize: "12px",
+                          fontSize: "10px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1529,7 +1526,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     <div>
                       <Typography
                         style={{
-                          fontSize: "12px",
+                          fontSize: "10px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1556,7 +1553,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     <div>
                       <Typography
                         style={{
-                          fontSize: "12px",
+                          fontSize: "10px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1581,7 +1578,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     <div>
                       <Typography
                         style={{
-                          fontSize: "12px",
+                          fontSize: "10px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1606,7 +1603,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     <div>
                       <Typography
                         style={{
-                          fontSize: "12px",
+                          fontSize: "10px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1633,7 +1630,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     <div>
                       <Typography
                         style={{
-                          fontSize: "12px",
+                          fontSize: "10px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1662,7 +1659,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 <div
                   style={{
                     marginTop: "16px",
-                    padding: "8px 12px",
+                    padding: "8px 10px",
                     backgroundColor: "#f8f9fa",
                     borderRadius: "6px",
                     border: "1px solid #dee2e6",
@@ -1681,7 +1678,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     Status dos Meses
                   </Typography>
 
-                  <div style={{ fontSize: "12px", lineHeight: "1.4" }}>
+                  <div style={{ fontSize: "10px", lineHeight: "1.4" }}>
                     {selectedStudent.financialReports
                       .sort((a, b) => {
                         // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
@@ -1737,7 +1734,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "12px",
+            borderRadius: "10px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -1799,7 +1796,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                             style={{
                               backgroundColor: "#ffffff",
                               border: "1px solid #e9ecef",
-                              borderRadius: "12px",
+                              borderRadius: "10px",
                               padding: "20px",
                               transition: "all 0.3s ease",
                               borderLeft: `4px solid ${
@@ -1828,7 +1825,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                 style={{
                                   display: "flex",
                                   alignItems: "center",
-                                  gap: "12px",
+                                  gap: "10px",
                                 }}
                               >
                                 <div
@@ -1849,10 +1846,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                         : event.status === "reagendado"
                                         ? "#856404"
                                         : "#495057",
-                                    padding: "4px 12px",
+                                    padding: "4px 10px",
                                     borderRadius: "20px",
-                                    fontSize: "12px",
-                                    fontWeight: "bold",
+                                    fontSize: "10px",
+
                                     textTransform: "uppercase",
                                   }}
                                 >
@@ -1864,8 +1861,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                     color: "#495057",
                                     padding: "4px 8px",
                                     borderRadius: "6px",
-                                    fontSize: "12px",
-                                    fontWeight: "bold",
+                                    fontSize: "10px",
                                   }}
                                 >
                                   {event.category || "Categoria N/A"}
@@ -1894,7 +1890,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "12px",
+                                    fontSize: "10px",
                                     color: "#6c757d",
                                     marginBottom: "4px",
                                   }}
@@ -1903,7 +1899,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                 </div>
                                 <div
                                   style={{
-                                    fontWeight: "bold",
                                     color: "#333",
                                   }}
                                 >
@@ -1914,7 +1909,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "12px",
+                                    fontSize: "10px",
                                     color: "#6c757d",
                                     marginBottom: "4px",
                                   }}
@@ -1923,7 +1918,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                 </div>
                                 <div
                                   style={{
-                                    fontWeight: "bold",
                                     color: "#333",
                                   }}
                                 >
@@ -1935,46 +1929,11 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                   às {event.time || "N/A"}
                                 </div>
                               </div>
-
-                              {event.link && (
-                                <div>
-                                  <div
-                                    style={{
-                                      fontSize: "12px",
-                                      color: "#6c757d",
-                                      marginBottom: "4px",
-                                    }}
-                                  >
-                                    🔗 LINK
-                                  </div>
-                                  <div
-                                    style={{
-                                      fontWeight: "bold",
-                                      color: "#007bff",
-                                    }}
-                                  >
-                                    <a
-                                      href={event.link}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      style={{
-                                        textDecoration: "none",
-                                        color: "#007bff",
-                                      }}
-                                    >
-                                      {event.link.length > 30
-                                        ? event.link.substring(0, 30) + "..."
-                                        : event.link}
-                                    </a>
-                                  </div>
-                                </div>
-                              )}
-
                               {event.description && (
                                 <div style={{ gridColumn: "1 / -1" }}>
                                   <div
                                     style={{
-                                      fontSize: "12px",
+                                      fontSize: "10px",
                                       color: "#6c757d",
                                       marginBottom: "4px",
                                     }}
@@ -1992,73 +1951,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                 </div>
                               )}
                             </div>
-
-                            {/* CheckList */}
-                            {/* Indicadores de ações */}
-                            <div
-                              style={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: "12px",
-                                paddingTop: "16px",
-                                borderTop: "1px solid #e9ecef",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "4px",
-                                  fontSize: "12px",
-                                  color: "#6c757d",
-                                }}
-                              >
-                                {event.homeworkAdded ? "📚✅" : "📚❌"} Homework
-                              </div>
-
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "4px",
-                                  fontSize: "12px",
-                                  color: event.flashcardsAdded
-                                    ? "#28a745"
-                                    : "#6c757d",
-                                }}
-                              >
-                                {event.flashcardsAdded ? "🎯✅" : "🎯❌"}{" "}
-                                Flashcards
-                              </div>
-
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "4px",
-                                  fontSize: "12px",
-                                  color: "#6c757d",
-                                }}
-                              >
-                                {event.edited ? "✏️" : "📄"}{" "}
-                                {event.edited ? "Editado" : "Original"}
-                              </div>
-
-                              <div
-                                style={{
-                                  fontSize: "11px",
-                                  color: "#6c757d",
-                                  marginLeft: "auto",
-                                }}
-                              >
-                                Criado:{" "}
-                                {event.createdAt
-                                  ? new Date(
-                                      event.createdAt
-                                    ).toLocaleDateString("pt-BR")
-                                  : "N/A"}
-                              </div>
-                            </div>
                           </div>
                         ))}
                     </>
@@ -2072,7 +1964,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     textAlign: "center",
                     padding: "40px 20px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                     border: "2px dashed #dee2e6",
                   }}
                 >
@@ -2083,7 +1975,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                     style={{
                       fontSize: "18px",
                       color: "#6c757d",
-                      fontWeight: "bold",
                     }}
                   >
                     Não há histórico de aulas passadas para este aluno.
@@ -2100,7 +1991,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "12px",
+            borderRadius: "10px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -2138,7 +2029,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   style={{
                     backgroundColor: "#ffffff",
                     padding: "24px",
-                    borderRadius: "12px",
+                    borderRadius: "10px",
                     marginBottom: "24px",
                     border: "1px solid #e8eaed",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -2291,8 +2182,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
         <input
           style={{
             width: "100%",
-            padding: "12px 16px",
-            margin: "12px",
+            padding: "10px 16px",
+            margin: "10px",
             border: "1px solid #e8eaed",
             borderRadius: "8px",
             fontSize: "14px",
@@ -2322,7 +2213,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "1rem",
-            borderRadius: "12px",
+            borderRadius: "10px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -2376,7 +2267,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       onClick={() => {
                         setSelectedStudent(student);
                         console.log(student);
-                              setReplenish(student.replenishTarget);
+                        setReplenish(student.replenishTarget);
 
                         setFeeUpToDate(student.feeUpToDate);
                         setTutoree(student.tutoree);
@@ -2431,8 +2322,8 @@ export function FindStudent({ uploadStatus, headers, id }) {
                         <span
                           style={{
                             padding: "4px 8px",
-                            borderRadius: "12px",
-                            fontSize: "12px",
+                            borderRadius: "10px",
+                            fontSize: "10px",
                             fontWeight: "500",
                             backgroundColor:
                               student.permissions === "superadmin"
@@ -2482,7 +2373,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             borderRadius: "8px",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
-            padding: "12px 16px",
+            padding: "10px 16px",
           }}
         >
           <Typography
@@ -2703,7 +2594,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "12px",
+              borderRadius: "10px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -2963,7 +2854,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "12px",
+              borderRadius: "10px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3035,7 +2926,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               style={{
                 backgroundColor: "#ffffff",
                 padding: "24px",
-                borderRadius: "12px",
+                borderRadius: "10px",
                 marginBottom: "24px",
                 border: "1px solid #e8eaed",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3068,7 +2959,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "12px",
+                        fontSize: "10px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3100,7 +2991,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "12px",
+                        fontSize: "10px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3132,7 +3023,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "12px",
+                        fontSize: "10px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3164,7 +3055,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "12px",
+                        fontSize: "10px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3187,7 +3078,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               <div
                 style={{
                   display: "flex",
-                  gap: "12px",
+                  gap: "10px",
                   flexWrap: "wrap",
                   marginBottom: "24px",
                 }}
@@ -3321,7 +3212,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "12px",
+              borderRadius: "10px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3462,7 +3353,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               >
                 Excluir Aluno
               </Button>
-              <div style={{ display: "flex", gap: "12px" }}>
+              <div style={{ display: "flex", gap: "10px" }}>
                 <Button
                   onClick={handleSeeModal}
                   style={{
@@ -3501,7 +3392,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   color: "#dc3545",
                   fontWeight: "600",
                   fontSize: "16px",
-                  marginBottom: "12px",
+                  marginBottom: "10px",
                 }}
               >
                 Confirmar Exclusão
@@ -3525,7 +3416,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 style={{
                   display: "flex",
                   justifyContent: "center",
-                  gap: "12px",
+                  gap: "10px",
                   marginTop: "20px",
                 }}
               >
@@ -3574,7 +3465,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             borderColor: "#dc3545",
             color: "#dc3545",
             fontWeight: "500",
-            padding: "12px 24px",
+            padding: "10px 24px",
             borderRadius: "8px",
             textTransform: "none",
             fontSize: "14px",
@@ -3610,7 +3501,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "12px",
+              borderRadius: "10px",
               marginTop: "20px",
               border: "1px solid #ffeaa7",
               boxShadow: "0 2px 8px rgba(255,193,7,0.1)",
@@ -3658,7 +3549,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   backgroundColor: "#dc3545",
                   color: "#ffffff",
                   fontWeight: "500",
-                  padding: "12px 24px",
+                  padding: "10px 24px",
                   borderRadius: "8px",
                   textTransform: "none",
                   fontSize: "14px",
@@ -3676,7 +3567,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                   borderColor: "#6c757d",
                   color: "#6c757d",
                   fontWeight: "500",
-                  padding: "12px 24px",
+                  padding: "10px 24px",
                   borderRadius: "8px",
                   textTransform: "none",
                   fontSize: "14px",
@@ -3692,7 +3583,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               style={{
                 display: resetVisible ? "block" : "none",
                 marginTop: "20px",
-                padding: "12px",
+                padding: "10px",
                 backgroundColor: "#d4edda",
                 borderRadius: "8px",
                 border: "1px solid #c3e6cb",

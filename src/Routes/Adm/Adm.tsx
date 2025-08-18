@@ -20,6 +20,7 @@ import { RouteDiv } from "../../Resources/Components/RouteBox";
 import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignments/PendingHomeworkAssignments";
 import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
 import Manual from "./AdmComponents/Manual/Manual";
+import Groups from "./AdmComponents/Groups/Groups";
 
 export function Adm({ headers }: HeadersProps) {
   const { id } = localStorageLoggedIn;
@@ -33,14 +34,14 @@ export function Adm({ headers }: HeadersProps) {
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
       component: <AllStudents id={id} headers={headers} />,
     },
-    // {
-    //   title: "Aulas",
-    //   displayArthur: "block",
-    //   value: "2",
-    //   tooltip:
-    //     "Agende e registre aulas particulares para os alunos. Informe o link do vídeo, materiais de apoio e data da aula. Adicione também flashcards e tarefas de casa relacionadas à aula.",
-    //   component: <NewTutoring id={id} headers={headers} />,
-    // },
+    {
+      title: "Grupos",
+      displayArthur: "block",
+      value: "2",
+      tooltip:
+        "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
+      component: <Groups id={id} headers={headers} />,
+    },
     {
       title: "Homework",
       displayArthur: "block",

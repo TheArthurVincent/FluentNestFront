@@ -4606,14 +4606,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       style={{
                         width: "100%",
                         padding: "5px",
-
                         fontWeight: "500",
                       }}
                     >
                       {UniversalTexts.calendarModal.reserveTimeForReplacement}
                     </button>
                   </div>
-
                   <div
                     style={{
                       display: seeReplenish ? "block" : "none",
@@ -4627,7 +4625,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     <p
                       style={{
                         margin: "0 0 1rem 0",
-
                         fontWeight: "500",
                       }}
                     >
