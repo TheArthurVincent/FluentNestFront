@@ -2203,7 +2203,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       fontSize: "10px",
                                     }}
                                   >
-                                    {truncateString(todo.description, 5)}
+                                    {todo.description && truncateString(todo.description, 5)}
                                   </span>
                                   <span
                                     style={{
@@ -2406,8 +2406,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       paddingRight: "4rem",
                                     }}
                                   >
-                                    {truncateString(event.student,11) ||
-                                      truncateString(event.description, 10) ||
+                                    {event.student && truncateString(event.student, 11) ||
+                                      event.description && truncateString(event.description, 10) ||
                                       "No description"}
                                   </div>
 
