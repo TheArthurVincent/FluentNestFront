@@ -2354,7 +2354,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             width: "6px",
                                             height: "6px",
                                             backgroundColor: "white",
-                                            borderRadius: "8px%",
+                                            borderRadius: "8px",
                                             marginRight: "5px",
                                             animation: "pulse 2s infinite",
                                           }}
@@ -2371,7 +2371,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     color: categoryColor.text,
                                     padding: "5px",
                                     position: "relative",
-                                    paddingBottom: `${event.duration / 3}px`,
+                                    paddingBottom: `${event.duration / 5}px`,
                                   }}
                                 >
                                   {/* Category Badge */}
@@ -2389,7 +2389,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       letterSpacing: "0.3px",
                                     }}
                                   >
-                                    {event.category}
+                                    <i className="fa fa-clock-o" style={{}} />{" "}
+                                    {formatTimeRange(
+                                      event.time,
+                                      event.duration
+                                    )}
                                   </div>
 
                                   {/* Event Title/Description */}
@@ -2407,7 +2411,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   </div>
 
                                   {/* Time Display */}
-                                  <div
+                                  {/* <div
                                     style={{
                                       fontWeight: "700",
                                       opacity: 0.9,
@@ -2416,12 +2420,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       gap: "2px",
                                     }}
                                   >
-                                    <i className="fa fa-clock-o" style={{}} />
-                                    {formatTimeRange(
-                                      event.time,
-                                      event.duration
-                                    )}
-                                  </div>
+                                    
+                                  </div> */}
                                 </div>
 
                                 {/* Status Footer */}
