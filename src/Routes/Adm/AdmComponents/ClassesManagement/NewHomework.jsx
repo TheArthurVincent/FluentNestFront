@@ -122,23 +122,34 @@ export function NewHomeworkAssignment({ headers, id }) {
   };
 
   return (
-    <div style={{ background: "#fff" }}>
-      <HOne>Postar Homework</HOne>
+    <div>
+      <HOne
+        style={{ textAlign: "center", marginBottom: "2rem", fontWeight: 700 }}
+      >
+        Postar Homework Avulso
+      </HOne>
       {loadingS ? (
         <div style={{ textAlign: "center", padding: "2rem 0" }}>
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       ) : (
-        <div>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            postHW();
+          }}
+          style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        >
           <select
             required
             style={{
-              flex: 1,
-              padding: "0.6rem",
+              padding: "0.8rem 1rem",
               borderRadius: 8,
               border: `1px solid ${lightGreyColor()}`,
-              fontSize: "1rem",
+              fontSize: "1.08rem",
               background: "#f5f6fa",
+              marginBottom: "0.5rem",
+              fontWeight: 500,
             }}
             onChange={(e) => setStudentList(e.target.value)}
             value={selectedStudentID}
@@ -152,45 +163,61 @@ export function NewHomeworkAssignment({ headers, id }) {
               </option>
             ))}
           </select>
-          <div>
-            <input
-              style={{
-                padding: "0.5rem",
-                borderRadius: 6,
-                border: `1px solid ${lightGreyColor()}`,
-                fontSize: "1rem",
-                marginBottom: 12,
-              }}
-              type="date"
-              placeholder="Data"
-              value={dueDate}
-              onChange={(e) => {
-                setDueDate(e.target.value);
-              }}
+          <input
+            style={{
+              padding: "0.8rem 1rem",
+              borderRadius: 8,
+              border: `1px solid ${lightGreyColor()}`,
+              fontSize: "1.08rem",
+              marginBottom: "0.5rem",
+              fontWeight: 500,
+            }}
+            type="date"
+            placeholder="Data"
+            value={dueDate}
+            onChange={(e) => {
+              setDueDate(e.target.value);
+            }}
+          />
+          <div
+            style={{
+              marginBottom: "0.5rem",
+              border: `1px solid ${lightGreyColor()}`,
+              borderRadius: 8,
+              background: "#fff",
+              padding: "1rem",
+              minHeight: "120px",
+            }}
+          >
+            <HTMLEditor
+              key={editorKey} // Force re-render when key changes
+              initialContent={"Type here"}
+              onChange={handleHWDescriptionChange}
             />
-            <div
-              style={{
-                marginBottom: "1.5rem",
-                border: `1px solid ${lightGreyColor()}`,
-                borderRadius: 6,
-                background: "#fff",
-                padding: 8,
-              }}
-            >
-              <HTMLEditor
-                key={editorKey} // Force re-render when key changes
-                initialContent={"Type here"}
-                onChange={handleHWDescriptionChange}
-              />
-            </div>
           </div>
           <button
-            style={{ borderRadius: 8, fontWeight: 600 }}
-            onClick={postHW}
+            type="submit"
+            style={{
+              borderRadius: 8,
+              fontWeight: 700,
+              fontSize: "1.08rem",
+              padding: "0.8rem 1.5rem",
+              background: partnerColor(),
+              color: "#fff",
+              border: "none",
+              boxShadow: "0 2px 8px #0001",
+              cursor: "pointer",
+              marginTop: "0.5rem",
+            }}
+            disabled={loadingHW}
           >
-            Postar só HW -
+            {loadingHW ? (
+              <CircularProgress size={24} style={{ color: "#fff" }} />
+            ) : (
+              "Postar Homework"
+            )}
           </button>
-        </div>
+        </form>
       )}
     </div>
   );

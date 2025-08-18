@@ -156,6 +156,7 @@ export default function Modules({
                 display: "flex",
                 alignItems: "center",
                 marginBottom: "1rem",
+                width: "90vw",
                 justifyContent: "left",
                 gap: "1rem",
               }}

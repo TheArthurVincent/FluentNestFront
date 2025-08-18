@@ -96,7 +96,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
               padding: "10px 20px",
               borderRadius: "10px",
               boxShadow: "0 2px 4px rgba(0, 0, 0, 0.59)",
-              maxWidth: "800px",
+              width: "90vw",
             }}
           >
             <HOne>{UniversalTexts.theCourses}</HOne>
