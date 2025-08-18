@@ -1848,7 +1848,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
                             <button
                               onClick={() => {
-                                setShowDeleteEventConfirmation(true);
                                 handleUpdateInfoTask(task._id);
                               }}
                               style={{
