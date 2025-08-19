@@ -70,8 +70,7 @@ export function Groups({ headers, id }) {
   };
   const { UniversalTexts } = useUserContext();
   const [students, setStudents] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [arrayOfIds, setArrayOfIds] = useState([]);
+const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = useState([]);
   // Removido campo de nome do grupo
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -216,16 +215,11 @@ export function Groups({ headers, id }) {
           Meus grupos
         </h2>
         <ul style={{ padding: 0, margin: 0 }}>
-          {groups.length === 0 ? (
-            <li style={{ color: "#888", fontSize: 15, listStyle: "none" }}>
-              Nenhum grupo criado ainda.
-            </li>
-          ) : (
-            groups.map((group, index) => {
-              return (
-                <li
-                  key={group.id}
-                  style={{
+          {Array.isArray(groups) && groups.length > 0 && groups.map((group, index) => {
+            return (
+              <li
+                key={group.id}
+                style={{
                     listStyle: "none",
                     marginBottom: 10,
                     padding: "10px",
@@ -290,7 +284,7 @@ export function Groups({ headers, id }) {
                 </li>
               );
             })
-          )}
+          }
         </ul>
       </section>
       <section
