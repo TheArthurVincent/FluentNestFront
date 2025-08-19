@@ -269,7 +269,16 @@ export function Groups({ headers, id }) {
     >
       <section style={{ marginBottom: 32 }}>
         <HOne>Meus grupos</HOne>
-        <ul style={{ padding: 0, margin: 0 }}>
+        <ul
+          style={{
+            padding: 10,
+            margin: 0,
+            maxHeight: "300px",
+          backgroundColor: "white",
+            overflowY: "auto",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1) inset",
+          }}
+        >
           {groups.map((group, index) => {
             return (
               <li
@@ -281,7 +290,7 @@ export function Groups({ headers, id }) {
                   borderRadius: "8px",
                   borderBottom: "1px solid #f2f2f2",
                   background:
-                    group._id === selectedGroupId ? "#e7f8d6ff" : "transparent",
+                    group._id === selectedGroupId ? "#e7f8d6ff" : "#fcfcfcff",
                   cursor: "pointer",
                   display: selectedGroupId
                     ? group._id === selectedGroupId
@@ -358,7 +367,7 @@ export function Groups({ headers, id }) {
       <section
         style={{
           padding: "10px",
-          backgroundColor: selectedGroupId ? "#e7f8d6ff" : "transparent",
+          backgroundColor: selectedGroupId ? "#e7f8d6ff" : "#fcfcfcff",
         }}
       >
         <div
