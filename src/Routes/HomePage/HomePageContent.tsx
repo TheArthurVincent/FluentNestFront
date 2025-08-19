@@ -77,6 +77,14 @@ export function Blog({ headers, change, setChange }: BlogProps) {
   const actualHeaders = headers || {};
   const sessions = [
     {
+      id: "flash-cards",
+      title: "Flashcards",
+      description: UniversalTexts.revise,
+      display: "flex",
+      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcards.png?updatedAt=1742402052092",
+      link: "/flash-cards",
+    },
+    {
       id: "current-lesson",
       title: NO
         ? `${UniversalTexts.currentLesson}  - ${lesson}`
@@ -92,18 +100,10 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         : "/english-courses/english-grammar/667ac39b4b4d6245dc8f385b",
     },
     {
-      id: "flash-cards",
-      title: "Flashcards",
-      description: UniversalTexts.revise,
-      display: "flex",
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcards.png?updatedAt=1742402052092",
-      link: "/flash-cards",
-    },
-    {
       id: "listening",
       title: UniversalTexts.listening,
       description: UniversalTexts.pratique,
-      display: isArthurVincent ? "flex" : "none",
+      display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/list.png?updatedAt=1742402052061",
       link: "/listening",
     },
@@ -148,7 +148,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         <div style={{ display: "flex", gap: "5px" }}></div>
       </div>
       <DivFlex>
-        <div className="grid-flex-2">
+        {/* <div className="grid-flex-2">
           <DivMarginBorder>
             <ReviewFlashCards
               selectedStudentId={myId}
@@ -157,7 +157,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
               headers={headers}
             />
           </DivMarginBorder>
-        </div>
+        </div> */}
         <div className="grid-flex-2">
           <DivMarginBorder>
             {loadingLESSON ? (

@@ -170,12 +170,9 @@ export function HomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Listening",
-      component:
-        isArthurVincent || isLocalHost ? (
-          <Listening change={change} onChange={setChange} headers={headers} />
-        ) : (
-          <Redirect to={"/flash-cards"} />
-        ),
+      component: (
+        <Listening change={change} onChange={setChange} headers={headers} />
+      ),
     },
     {
       levelcard: true,
