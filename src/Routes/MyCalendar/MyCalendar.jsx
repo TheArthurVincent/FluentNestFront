@@ -1,35 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  HOne,
-  HTwo,
-  RouteDiv,
-  RouteDivCalendar,
-  RouteSizeControlBox,
-} from "../../Resources/Components/RouteBox";
+import { HOne, HTwo, RouteDiv, RouteDivCalendar, RouteSizeControlBox, } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
-import {
-  alwaysBlack,
-  alwaysWhite,
-  partnerColor,
-  textGeneralFont,
-  textpartnerColorContrast,
-  textPrimaryColorContrast,
-  textTitleFont,
-  transparentWhite,
-} from "../../Styles/Styles";
+import { alwaysBlack, alwaysWhite, partnerColor, textGeneralFont, textpartnerColorContrast, textPrimaryColorContrast, textTitleFont, transparentWhite, } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { CircularProgress, LinearProgress } from "@mui/material";
-import {
-  Xp,
-  abreviateName,
-  backDomain,
-  formatDate,
-  formatDateBr,
-  onLoggOut,
-  onLoggOutFee,
-  truncateString,
-  updateInfo,
-} from "../../Resources/UniversalComponents";
+import { Xp, abreviateName, backDomain, formatDate, formatDateBr, onLoggOut, onLoggOutFee, truncateString, updateInfo, } from "../../Resources/UniversalComponents";
 import axios from "axios";
 import moment from "moment";
 import { StyledDiv } from "./MyCalendar.Styled";
@@ -56,7 +31,6 @@ import {
   styleLiChecked,
   updateButton,
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
-
 export default function MyCalendar({ headers, thePermissions, myId }) {
   const [seePlusButtons, setSeePlusButtons] = useState(false);
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
@@ -64,8 +38,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
   const [seeEditTutoring, setSeeEditTutoring] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false); // Novo estado para controlar a exibição do formulário de edição
-  const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false); // Novo estado para controlar a exibição do formulário de edição
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false);
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [alternateText, setAlternateText] = useState("... Updating Class");
   const [modalEditTodo, setModalEditTodo] = useState(false);
@@ -73,7 +47,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     useState("");
   const [editingIndex, setEditingIndex] = useState(null);
   const [alternateBoolean, setAlternateBoolean] = useState(false);
-
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
     useState(false);
   const [loading, setLoading] = useState(true);
@@ -88,7 +61,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [dueDate, setDueDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-
   const [base64String, setBase64String] = useState("");
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("");
@@ -101,7 +73,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [tutoringsListOfOneStudent, setTutoringsListOfOneStudent] = useState(
     []
   );
-
   const [loadingModalInfo, setLoadingModalInfo] = useState(false);
   const [eventFull, setEventFull] = useState({});
   const [loadingTutoringDays, setLoadingTutoringDays] = useState(false);
@@ -114,11 +85,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [showHomework, setShowHomework] = useState(false);
   const [showFlashcards, setShowFlashcards] = useState(false);
   const [showEditSection, setShowEditSection] = useState(false);
-
   const [editDescription, setEditDescription] = useState("");
   const [editDate, setEditDate] = useState("");
   const [editCategory, setEditCategory] = useState("");
-
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
   const [duration, setDuration] = useState(60);
@@ -145,7 +114,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     studentID: "",
   });
   const [loadingNewClass, setLoadingNewClass] = useState(false);
-
   useEffect(() => {
     setTimeout(() => {
       setAlternateText("... Formatting Flashcards");
@@ -184,7 +152,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setAlternateText("... Updating Class");
     }, 22000);
   }, [loadingInfo]);
-
   const resetEverything = () => {
     setShowEditForm(false);
     setShowHomework(false);
@@ -231,39 +198,28 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setShowFlashcards(false);
     setLoading(false);
   };
-
-  // Função para verificar se a tutoria expira em menos de 1 mês
   const isTutoringExpiringWithinMonth = (tutoring) => {
     if (!tutoring.endDate) return false;
-
     const today = new Date();
     const oneMonthFromNow = new Date(today);
     oneMonthFromNow.setMonth(today.getMonth() + 1);
-
     const endDate = new Date(tutoring.endDate);
     return endDate < oneMonthFromNow;
   };
-
-  // Função para calcular dias restantes
   const getDaysUntilExpiration = (tutoring) => {
     if (!tutoring.endDate) return null;
-
     const today = new Date();
     const endDate = new Date(tutoring.endDate);
     const diffTime = endDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
     return diffDays;
   };
-
   var hj = new Date();
   var lm = getLastMonday(hj);
-
   const [task, setTask] = useState({});
   const [disabledAvoid, setDisabledAvoid] = useState(true);
   const [today, setTheToday] = useState(lm);
   const { UniversalTexts } = useUserContext();
-
   useEffect(() => {
     if (numberOfWeeks && numberOfWeeks > 0) {
       const today = new Date();
@@ -273,23 +229,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       nextWeekDay.setDate(today.getDate() + daysUntilMonday);
       const endDate = new Date(nextWeekDay);
       endDate.setDate(nextWeekDay.getDate() + numberOfWeeks * 7 - 1);
-
       setEndDateForTutoring(endDate);
     } else {
       setEndDateForTutoring(null);
     }
   }, [numberOfWeeks]);
-
   const futureDates = [];
-
   const fetchStudents = async () => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${myId}`,
-          {
-            headers,
-          }
+          { headers }
         );
         const res = response.data.listOfStudents;
         setStudentsList(res);
@@ -298,17 +249,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     }
   };
-
   const fetchTodo = async (id) => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/todo/${myId}?todoId=${id}`,
-          {
-            headers,
-          }
+          { headers }
         );
-
         setTask(response.data.todo);
         console.log(response.data.todo);
         setModalEditTodo(true);
@@ -317,9 +264,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     }
   };
-
   const [isFee, setIsFee] = useState(true);
-
   const resetEveryThing = () => {
     setStudentsList([]);
     setEvents([]);
@@ -407,9 +352,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
-        // Garantir que todos os eventos tenham um status
+
         if (!event.status) {
-          event.status = "marcado"; // Status padrão para eventos sem status
+          event.status = "marcado";
         }
         return event;
       });
@@ -432,7 +377,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
     try {
       const targetDate = new Date(e.target.value);
-      const newDate = getLastMonday(targetDate); // Obtém a última segunda-feira em relação à data escolhida
+      const newDate = getLastMonday(targetDate);
       setTheToday(newDate);
 
       const response = await axios.get(
@@ -446,7 +391,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const nextDay = new Date(event.date);
         nextDay.setDate(nextDay.getDate() + 1);
         event.date = formattedDates(nextDay);
-        // Garantir que todos os eventos tenham um status
+
         if (!event.status) {
           event.status = "marcado";
         }
@@ -454,7 +399,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       });
       setEvents(eventsLoop);
 
-      // Reset formulários sem afetar o loading
       setShowEditForm(false);
       setShowHomework(false);
       setShowFlashcards(false);
@@ -462,7 +406,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     } catch (error) {
       console.log(error, "Erro ao encontrar eventos para a data selecionada");
     } finally {
-      // Garantir que o loading sempre seja definido como false no final
       setTimeout(() => {
         setLoading(false);
       }, 200);
@@ -508,7 +451,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newTime = response.data.event.time;
       const newEventId = response.data.event._id;
 
-      // Mapear status do backend para frontend
       let mappedStatus = newStatus;
       if (newStatus === "marcado") {
         mappedStatus = "Scheduled";
@@ -627,7 +569,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const editOneEvent = async (id) => {
     setLoadingInfo(true);
     try {
-      // Converter status do frontend para o backend
       let backendStatus = status;
       if (status === "Scheduled") {
         backendStatus = "marcado";
@@ -682,7 +623,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
   const ignoreBlurRef = useRef(false);
 
-  function commit(i, value) {}
+  function commit(i, value) { }
   const updateScheduled = async (id) => {
     console.log(status, "STATUS");
 
@@ -697,7 +638,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       if (response) {
-        // Buscar o evento atualizado do backend para garantir o status correto
         fetchOneEvent(id);
       }
     } catch (error) {
@@ -717,7 +657,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       if (response) {
-        // Buscar o evento atualizado do backend para garantir o status correto
         fetchOneEvent(id);
       }
     } catch (error) {
@@ -738,7 +677,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       if (response) {
-        // Buscar o evento atualizado do backend para garantir o status correto
         fetchOneEvent(id);
       }
     } catch (error) {
@@ -773,7 +711,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const newTutoring = async () => {
-    // Validação: verificar se endDate é em menos de 1 mês
     if (endDateForTutoring) {
       const today = new Date();
       const oneMonthFromNow = new Date(today);
@@ -792,7 +729,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         const confirmMessage = `⚠️ ATENÇÃO: O período selecionado termina em ${endDateFormatted}, que é em menos de 1 mês.\n\nPara períodos curtos, recomendamos:\n• Excluir esta configuração de tutoria recorrente\n• Criar eventos únicos através do botão "Criar Evento"\n\nDeseja continuar mesmo assim?`;
 
         if (!confirm(confirmMessage)) {
-          return; // Cancela a criação se o usuário não confirmar
+          return;
         }
       }
     }
@@ -958,7 +895,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         link: newClass.link,
         description: newClass.description,
         category: newClass.category,
-        duration: newClass.duration || 55, // Duração padrão de 55 minutos
+        duration: newClass.duration || 55,
         studentID: newClass.studentId || null,
         teacherId: myId,
         status: "marcado",
@@ -973,7 +910,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response.status === 200 || response.status === 201) {
         notifyAlert("Aula criada com sucesso!", partnerColor());
         handleCloseNewClassForm();
-        fetchGeneralEvents(); // Atualiza a lista de eventos
+        fetchGeneralEvents();
       }
     } catch (error) {
       console.log("❌ Erro ao criar nova aula:", error);
@@ -1214,7 +1151,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setDeleteVisible(false);
   };
 
-  // Formulas
   const handleCheckbox1Change = async () => {
     try {
       const response = await axios.put(
@@ -1254,7 +1190,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
-  // util: checa se existe algum slot vazio
   const hasEmptySlot = (() => {
     for (let i = 1; i <= 10; i++) {
       const item = task[`checkList${i}`];
@@ -1268,19 +1203,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     for (let i = 1; i <= 10; i++) {
       const item = task[`checkList${i}`];
 
-      // considera vazio se não existir ou se description estiver vazia/whitespace
       if (!item || !item.description || !item.description.trim()) {
-        // atualiza no backend/store
         updateChecklistTaskDescripton(i, task._id, placeholder);
-        // prepara para editar
+
         setDescriptionChecklistToEdit(placeholder);
         setEditingIndex(i);
         return;
       }
     }
-
-    // (opcional) todos preenchidos
-    // toast.warn("Todos os 10 itens já estão preenchidos.");
   };
 
   const handleCheckbox4Change = async () => {
@@ -1318,7 +1248,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const calendarRef = useRef(null);
   const todayRef = useRef(null);
 
-  // ...existing code...
   {
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
       const item = task[`checkList${i}`];
@@ -1407,14 +1336,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const container = calendarRef.current;
       const todayElement = todayRef.current;
 
-      // Calcula a posição para centralizar
       const containerWidth = container.offsetWidth;
       const todayWidth = todayElement.offsetWidth;
       const todayLeft = todayElement.offsetLeft;
 
       const scrollLeft = todayLeft - containerWidth / 2 + todayWidth / 2;
 
-      // Faz o scroll suave
       container.scrollTo({
         left: scrollLeft,
         behavior: "smooth",
@@ -1439,9 +1366,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   function newFormatDate(date) {
     let d = new Date(date);
-    d.setDate(d.getDate() + 1); // Aumenta um dia na data
+    d.setDate(d.getDate() + 1);
     let day = String(d.getDate()).padStart(2, "0");
-    let month = String(d.getMonth() + 1).padStart(2, "0"); // Janeiro é 0!
+    let month = String(d.getMonth() + 1).padStart(2, "0");
     let year = d.getFullYear();
     let final = `${day}/${month}/${year}`;
     return final;
@@ -2053,18 +1980,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       todo.category == "personal"
                                         ? "rgba(215, 192, 192, 0.7)"
                                         : todo.category == "finance"
-                                        ? "rgba(234, 215, 191, 0.7)"
-                                        : todo.category == "work"
-                                        ? "rgba(234, 234, 191, 0.7)"
-                                        : todo.category == "study"
-                                        ? "rgba(215, 234, 191, 0.7)"
-                                        : todo.category == "health"
-                                        ? "rgba(191, 234, 212, 0.7)"
-                                        : todo.category == "family"
-                                        ? "rgba(191, 201, 234, 0.7)"
-                                        : todo.category == "other"
-                                        ? "rgba(216, 191, 234, 0.7)"
-                                        : "rgba(234, 191, 215, 0.7)",
+                                          ? "rgba(234, 215, 191, 0.7)"
+                                          : todo.category == "work"
+                                            ? "rgba(234, 234, 191, 0.7)"
+                                            : todo.category == "study"
+                                              ? "rgba(215, 234, 191, 0.7)"
+                                              : todo.category == "health"
+                                                ? "rgba(191, 234, 212, 0.7)"
+                                                : todo.category == "family"
+                                                  ? "rgba(191, 201, 234, 0.7)"
+                                                  : todo.category == "other"
+                                                    ? "rgba(216, 191, 234, 0.7)"
+                                                    : "rgba(234, 191, 215, 0.7)",
                                     borderRadius: "6px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
@@ -2315,34 +2242,34 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 >
                                   {(event.status === "desmarcado" ||
                                     event.status === "Canceled") && (
-                                    <>
-                                      <i
-                                        className="fa fa-times-circle"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      Canceled
-                                    </>
-                                  )}
+                                      <>
+                                        <i
+                                          className="fa fa-times-circle"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        Canceled
+                                      </>
+                                    )}
                                   {(event.status === "marcado" ||
                                     event.status === "Scheduled") && (
-                                    <>
-                                      <i
-                                        className="fa fa-calendar-check-o"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      Scheduled
-                                    </>
-                                  )}
+                                      <>
+                                        <i
+                                          className="fa fa-calendar-check-o"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        Scheduled
+                                      </>
+                                    )}
                                   {(event.status === "realizada" ||
                                     event.status === "Completed") && (
-                                    <>
-                                      <i
-                                        className="fa fa-check-circle"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      Completed
-                                    </>
-                                  )}
+                                      <>
+                                        <i
+                                          className="fa fa-check-circle"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        Completed
+                                      </>
+                                    )}
                                 </div>
                               </div>
                             );
@@ -2353,23 +2280,23 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           (event) =>
                             event.date.toDateString() === date.toDateString()
                         ).length === 0 && (
-                          <div
-                            style={{
-                              textAlign: "center",
-                              padding: "2rem 1rem",
-                              color: "#94a3b8",
-                            }}
-                          >
-                            <i
-                              className="fa fa-calendar-o"
+                            <div
                               style={{
-                                marginBottom: "5px",
-                                display: "block",
+                                textAlign: "center",
+                                padding: "2rem 1rem",
+                                color: "#94a3b8",
                               }}
-                            />
-                            No events scheduled
-                          </div>
-                        )}
+                            >
+                              <i
+                                className="fa fa-calendar-o"
+                                style={{
+                                  marginBottom: "5px",
+                                  display: "block",
+                                }}
+                              />
+                              No events scheduled
+                            </div>
+                          )}
                       </div>
                     </StyledDiv>
                   );
@@ -2558,12 +2485,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       style={{
                                         fontSize:
                                           status == "Scheduled" ||
-                                          status == "marcado"
+                                            status == "marcado"
                                             ? "24px"
                                             : "18px",
                                         color:
                                           status == "Scheduled" ||
-                                          status == "marcado"
+                                            status == "marcado"
                                             ? "#007bff"
                                             : "#6c757d",
                                         transition: "all 0.2s",
@@ -2573,7 +2500,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       style={{
                                         color:
                                           status == "Scheduled" ||
-                                          status == "marcado"
+                                            status == "marcado"
                                             ? "#007bff"
                                             : "#6c757d",
                                         marginTop: "2px",
@@ -2597,12 +2524,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       style={{
                                         fontSize:
                                           status == "Realized" ||
-                                          status == "realizado"
+                                            status == "realizado"
                                             ? "24px"
                                             : "18px",
                                         color:
                                           status == "Realized" ||
-                                          status == "realizado"
+                                            status == "realizado"
                                             ? "#28a745"
                                             : "#6c757d",
                                         transition: "all 0.2s",
@@ -2612,7 +2539,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       style={{
                                         color:
                                           status == "Realized" ||
-                                          status == "realizado"
+                                            status == "realizado"
                                             ? "#28a745"
                                             : "#6c757d",
                                         marginTop: "2px",
@@ -2636,12 +2563,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       style={{
                                         fontSize:
                                           status == "Canceled" ||
-                                          status == "desmarcado"
+                                            status == "desmarcado"
                                             ? "24px"
                                             : "18px",
                                         color:
                                           status == "Canceled" ||
-                                          status == "desmarcado"
+                                            status == "desmarcado"
                                             ? "#dc3545"
                                             : "#6c757d",
                                         transition: "all 0.2s",
@@ -2651,7 +2578,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       style={{
                                         color:
                                           status == "Canceled" ||
-                                          status == "desmarcado"
+                                            status == "desmarcado"
                                             ? "#dc3545"
                                             : "#6c757d",
                                         marginTop: "2px",
@@ -2741,7 +2668,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   >
                                     {/* Seção para Aulas Realizadas */}
                                     {status == "marcado" ||
-                                    status == "Realized" ? (
+                                      status == "Realized" ? (
                                       <div
                                         style={{
                                           boxSizing: "border-box",
@@ -3274,7 +3201,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     fontSize: "0.75rem",
                                                     color:
                                                       flashcards &&
-                                                      flashcards.length > 900
+                                                        flashcards.length > 900
                                                         ? "#dc3545"
                                                         : "#6c757d",
                                                     marginTop: "0.25rem",
@@ -3500,14 +3427,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               {duration < 60
                                                 ? `${duration} min`
                                                 : duration === 60
-                                                ? "1h"
-                                                : duration % 60 === 0
-                                                ? `${Math.floor(
-                                                    duration / 60
-                                                  )}h`
-                                                : `${Math.floor(
-                                                    duration / 60
-                                                  )}h ${duration % 60}min`}
+                                                  ? "1h"
+                                                  : duration % 60 === 0
+                                                    ? `${Math.floor(
+                                                      duration / 60
+                                                    )}h`
+                                                    : `${Math.floor(
+                                                      duration / 60
+                                                    )}h ${duration % 60}min`}
                                             </label>
                                             <input
                                               value={duration}
@@ -3828,12 +3755,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               {duration < 60
                                 ? `${duration} min`
                                 : duration === 60
-                                ? "1h"
-                                : duration % 60 === 0
-                                ? `${Math.floor(duration / 60)}h`
-                                : `${Math.floor(duration / 60)}h ${
-                                    duration % 60
-                                  }min`}
+                                  ? "1h"
+                                  : duration % 60 === 0
+                                    ? `${Math.floor(duration / 60)}h`
+                                    : `${Math.floor(duration / 60)}h ${duration % 60
+                                    }min`}
                             </span>
                           </div>
                         )}
@@ -3898,18 +3824,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     {category === "Test"
                                       ? "Test Class"
                                       : category === "Standalone"
-                                      ? "Standalone Class"
-                                      : category === "Group Class"
-                                      ? "Group Class"
-                                      : category === "Rep"
-                                      ? "Marcar Reposição"
-                                      : category === "Marcar Reposição"
-                                      ? "Janela de Marcar Reposição"
-                                      : category === "Prize Class"
-                                      ? "Prize Class"
-                                      : category === "Tutoring"
-                                      ? "Tutoring: Private Class"
-                                      : ""}
+                                        ? "Standalone Class"
+                                        : category === "Group Class"
+                                          ? "Group Class"
+                                          : category === "Rep"
+                                            ? "Marcar Reposição"
+                                            : category === "Marcar Reposição"
+                                              ? "Janela de Marcar Reposição"
+                                              : category === "Prize Class"
+                                                ? "Prize Class"
+                                                : category === "Tutoring"
+                                                  ? "Tutoring: Private Class"
+                                                  : ""}
                                   </span>
                                 </div>
 
@@ -4052,11 +3978,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     >
                                       <i className="fa fa-external-link" />
                                       {video.includes("youtube.com") ||
-                                      video.includes("youtu.be")
+                                        video.includes("youtu.be")
                                         ? "YouTube"
                                         : video.includes("vimeo.com")
-                                        ? "Vimeo"
-                                        : "Vídeo"}
+                                          ? "Vimeo"
+                                          : "Vídeo"}
                                     </a>
                                   </div>
                                 </div>
@@ -4101,18 +4027,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   {category === "Test"
                                     ? "Test Class"
                                     : category === "Standalone"
-                                    ? "Standalone Class"
-                                    : category === "Group Class"
-                                    ? "Group Class"
-                                    : category === "Rep"
-                                    ? "Marcar Reposição"
-                                    : category === "Marcar Reposição"
-                                    ? "Janela de Marcar Reposição"
-                                    : category === "Prize Class"
-                                    ? "Prize Class"
-                                    : category === "Tutoring"
-                                    ? "Tutoring: Private Class"
-                                    : ""}
+                                      ? "Standalone Class"
+                                      : category === "Group Class"
+                                        ? "Group Class"
+                                        : category === "Rep"
+                                          ? "Marcar Reposição"
+                                          : category === "Marcar Reposição"
+                                            ? "Janela de Marcar Reposição"
+                                            : category === "Prize Class"
+                                              ? "Prize Class"
+                                              : category === "Tutoring"
+                                                ? "Tutoring: Private Class"
+                                                : ""}
                                 </span>
                               </div>
                               <div
@@ -4215,7 +4141,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   color: "#6b7280",
                                   backgroundColor:
                                     eventFull.homeworkDetails.status ===
-                                    "pending"
+                                      "pending"
                                       ? "#fef3c7"
                                       : "#dcfce7",
                                   padding: "2px 8px",
@@ -4817,16 +4743,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   >
                                     ⚠️
                                     {daysLeft > 0
-                                      ? `${
-                                          UniversalTexts.endsIn
-                                        } ${daysLeft} dia${
-                                          daysLeft > 1 ? "s" : ""
-                                        } (${new Date(
-                                          item.endDate
-                                        ).toLocaleDateString("pt-BR")})`
+                                      ? `${UniversalTexts.endsIn
+                                      } ${daysLeft} dia${daysLeft > 1 ? "s" : ""
+                                      } (${new Date(
+                                        item.endDate
+                                      ).toLocaleDateString("pt-BR")})`
                                       : `${UniversalTexts.expired} ${new Date(
-                                          item.endDate
-                                        ).toLocaleDateString("pt-BR")}`}{" "}
+                                        item.endDate
+                                      ).toLocaleDateString("pt-BR")}`}{" "}
                                     {UniversalTexts.tutoringExpiring}
                                   </div>
                                 )}
@@ -5420,9 +5344,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   nextWeekDay
                                 )} até ${formatDate(
                                   endDate
-                                )} (${numberOfWeeks} semana${
-                                  numberOfWeeks > 1 ? "s" : ""
-                                })`;
+                                )} (${numberOfWeeks} semana${numberOfWeeks > 1 ? "s" : ""
+                                  })`;
                               })()}
                             </div>
                           ) : (
@@ -5477,7 +5400,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               )}
             </div>
           </>
-
           {/* Nova Seção: Criar Nova Aula */}
           <>
             <div
@@ -5493,7 +5415,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               }}
               onClick={handleCloseNewClassForm}
             />
-
             <div
               className="modal box-shadow-white"
               style={{
@@ -5645,43 +5566,43 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     {(newClass.category === "Tutoring" ||
                       newClass.category === "Prize Class" ||
                       newClass.category === "Rep") && (
-                      <div>
-                        <label
-                          style={{
-                            display: "block",
-                            marginBottom: "0.5rem",
-                            fontWeight: "600",
-                            color: "#495057",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          👤 Selecionar Aluno
-                        </label>
-                        <select
-                          value={newClass.studentId}
-                          onChange={(e) =>
-                            handleNewClassChange("studentId", e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "8px",
-                            border: "1px solid #ced4da",
-                            fontSize: "0.9rem",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="" hidden>
-                            Selecione o aluno...
-                          </option>
-                          {studentsList.map((student, index) => (
-                            <option key={index} value={student.id}>
-                              {student.name} {student.lastname}
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "600",
+                              color: "#495057",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            👤 Selecionar Aluno
+                          </label>
+                          <select
+                            value={newClass.studentId}
+                            onChange={(e) =>
+                              handleNewClassChange("studentId", e.target.value)
+                            }
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "8px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                              backgroundColor: "white",
+                            }}
+                          >
+                            <option value="" hidden>
+                              Selecione o aluno...
                             </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
+                            {studentsList.map((student, index) => (
+                              <option key={index} value={student.id}>
+                                {student.name} {student.lastname}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
 
                     {/* Data e Hora */}
 
@@ -5770,11 +5691,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             }
                             style={{
                               padding: "0.25rem 0.5rem",
-                              border: `1px solid ${
-                                newClass.duration == minutes
+                              border: `1px solid ${newClass.duration == minutes
                                   ? "#adb5bd"
                                   : "#e9ecef"
-                              }`,
+                                }`,
                               backgroundColor:
                                 newClass.duration == minutes
                                   ? "#f8f9fa"
@@ -5793,9 +5713,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           >
                             {minutes < 60
                               ? `${minutes}min`
-                              : `${minutes / 60}h${
-                                  minutes % 60 ? ` ${minutes % 60}min` : ""
-                                }`}
+                              : `${minutes / 60}h${minutes % 60 ? ` ${minutes % 60}min` : ""
+                              }`}
                           </button>
                         ))}
                         <input
@@ -5942,20 +5861,20 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           borderRadius: "8px",
                           cursor:
                             !newClass.category ||
-                            !newClass.date ||
-                            !newClass.time ||
-                            !newClass.link ||
-                            !newClass.description
+                              !newClass.date ||
+                              !newClass.time ||
+                              !newClass.link ||
+                              !newClass.description
                               ? "not-allowed"
                               : "pointer",
                           fontSize: "0.9rem",
                           fontWeight: "500",
                           opacity:
                             !newClass.category ||
-                            !newClass.date ||
-                            !newClass.time ||
-                            !newClass.link ||
-                            !newClass.description
+                              !newClass.date ||
+                              !newClass.time ||
+                              !newClass.link ||
+                              !newClass.description
                               ? 0.6
                               : 1,
                           transition: "all 0.2s ease",
@@ -5971,8 +5890,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   </div>
                 </div>
               )}
-            </div>
-          </>
+            </div>{" "}
+          </>{" "}
           <div
             style={{
               marginBottom: "1rem",
@@ -5983,6 +5902,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               padding: "12px 16px",
             }}
           >
+            {" "}
             <div
               style={{
                 display: "flex",
@@ -5992,6 +5912,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 gap: "8px",
               }}
             >
+              {" "}
               <div
                 style={{
                   display: "flex",
@@ -6002,6 +5923,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   padding: "2px",
                 }}
               >
+                {" "}
                 <button
                   disabled={!disabledAvoid}
                   style={{
@@ -6020,8 +5942,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                   onClick={() => handleChangeWeek(-7)}
                 >
-                  <i className="fa fa-chevron-left" />
-                </button>
+                  {" "}
+                  <i className="fa fa-chevron-left" />{" "}
+                </button>{" "}
                 <div
                   style={{
                     padding: "0 12px",
@@ -6032,11 +5955,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     textAlign: "center",
                   }}
                 >
+                  {" "}
                   {today.toLocaleDateString("pt-BR", {
                     month: "short",
                     year: "numeric",
-                  })}
-                </div>
+                  })}{" "}
+                </div>{" "}
                 <button
                   disabled={!disabledAvoid}
                   style={{
@@ -6055,10 +5979,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                   onClick={() => handleChangeWeek(7)}
                 >
-                  <i className="fa fa-chevron-right" />
-                </button>
-              </div>
-              {/* Seletor de Data - Minimalista */}
+                  {" "}
+                  <i className="fa fa-chevron-right" />{" "}
+                </button>{" "}
+              </div>{" "}
+              {/* Seletor de Data - Minimalista */}{" "}
               <div
                 style={{
                   position: "relative",
@@ -6068,6 +5993,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   overflow: "hidden",
                 }}
               >
+                {" "}
                 <input
                   type="date"
                   onChange={handleDateChange}
@@ -6084,23 +6010,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     cursor: loading ? "not-allowed" : "pointer",
                     opacity: loading ? 0.6 : 1,
                   }}
-                />
-              </div>
-              <div
-                style={{
-                  display: "grid",
-                  gap: "5px",
-                }}
-              >
-                {/* Ações rápidas - Compactas */}
+                />{" "}
+              </div>{" "}
+              <div style={{ display: "grid", gap: "5px" }}>
+                {" "}
+                {/* Ações rápidas - Compactas */}{" "}
                 <div
-                  style={{
-                    display: "flex",
-                    gap: "6px",
-                    alignItems: "center",
-                  }}
+                  style={{ display: "flex", gap: "6px", alignItems: "center" }}
                 >
-                  {/* Botão Hoje */}
+                  {" "}
+                  {/* Botão Hoje */}{" "}
                   <button
                     disabled={!disabledAvoid}
                     style={{
@@ -6110,11 +6029,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       cursor: !disabledAvoid ? "not-allowed" : "pointer",
                     }}
                     onClick={async () => {
-                      if (!disabledAvoid) return; // Não executar se estiver desabilitado
+                      if (!disabledAvoid) return;
                       setShouldScrollToToday(true);
                       setDisabledAvoid(false);
                       setLoading(true);
-
                       try {
                         const user = JSON.parse(
                           localStorage.getItem("loggedIn")
@@ -6123,12 +6041,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         const todayy = new Date();
                         const newDate = getLastMonday(todayy);
                         setTheToday(newDate);
-
                         const response = await axios.get(
                           `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
-                          {
-                            headers,
-                          }
+                          { headers }
                         );
                         const res = response.data.eventsList;
                         const eventsLoop = res.map((event) => {
@@ -6155,10 +6070,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }
                     }}
                   >
-                    <i className="fa fa-home" style={{ fontSize: "10px" }} />
-                    <span>{UniversalTexts.calendarModal.today}</span>
-                  </button>
-                  {/* Botão Atualizar */}
+                    {" "}
+                    <i
+                      className="fa fa-home"
+                      style={{ fontSize: "10px" }}
+                    />{" "}
+                    <span>{UniversalTexts.calendarModal.today}</span>{" "}
+                  </button>{" "}
+                  {/* Botão Atualizar */}{" "}
                   <button
                     disabled={!disabledAvoid}
                     style={{
@@ -6171,9 +6090,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       fetchGeneralEvents();
                     }}
                   >
-                    <i className="fa fa-refresh" />
-                  </button>
-                  {/* Botão Recorrentes */}
+                    {" "}
+                    <i className="fa fa-refresh" />{" "}
+                  </button>{" "}
+                  {/* Botão Recorrentes */}{" "}
                   {authorizeOrNot && (
                     <button
                       disabled={!disabledAvoid}
@@ -6187,16 +6107,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         setSeePlusButtons(false);
                       }}
                     >
+                      {" "}
                       <i
                         className="fa fa-repeat"
                         style={{ fontSize: "10px" }}
-                      />
+                      />{" "}
                       <span>
-                        {UniversalTexts.calendarModal.recurringClasses}
-                      </span>
+                        {" "}
+                        {UniversalTexts.calendarModal.recurringClasses}{" "}
+                      </span>{" "}
                     </button>
-                  )}
-                  {/* Botão Ver Adições */}
+                  )}{" "}
+                  {/* Botão Ver Adições */}{" "}
                   {!seePlusButtons && (
                     <button
                       style={{
@@ -6205,14 +6127,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       onClick={() => setSeePlusButtons(!seePlusButtons)}
                     >
-                      +
+                      {" "}
+                      +{" "}
                     </button>
-                  )}
-                  {/* Botões das Adições */}
-                </div>
+                  )}{" "}
+                  {/* Botões das Adições */}{" "}
+                </div>{" "}
                 {seePlusButtons && (
                   <div style={containerPlus}>
-                    {/* Botão Nova  Tarefa */}
+                    {" "}
+                    {/* Botão Nova  Tarefa */}{" "}
                     {authorizeOrNot && (
                       <ToDoAddButton
                         userId={myId}
@@ -6220,8 +6144,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           setAlternateBoolean(!alternateBoolean);
                         }}
                       />
-                    )}
-                    {/* Botão Nova Aula */}
+                    )}{" "}
+                    {/* Botão Nova Aula */}{" "}
                     {authorizeOrNot && (
                       <button
                         style={{
@@ -6234,22 +6158,24 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           setSeePlusButtons(false);
                         }}
                       >
-                        <i className="fa fa-plus" />
-                        <span>{UniversalTexts.calendarModal.singleClass}</span>
+                        {" "}
+                        <i className="fa fa-plus" />{" "}
+                        <span>{UniversalTexts.calendarModal.singleClass}</span>{" "}
                       </button>
-                    )}
+                    )}{" "}
                   </div>
-                )}
-              </div>
-            </div>
-          </div>
+                )}{" "}
+              </div>{" "}
+            </div>{" "}
+          </div>{" "}
         </RouteDiv>
       ) : (
         <RouteSizeControlBox>
-          {UniversalTexts.calendarModal.noLoggedUser}
+          {" "}
+          {UniversalTexts.calendarModal.noLoggedUser}{" "}
         </RouteSizeControlBox>
-      )}
-      <Helmets text="Calendar" />
+      )}{" "}
+      <Helmets text="Calendar" />{" "}
     </>
   );
 }

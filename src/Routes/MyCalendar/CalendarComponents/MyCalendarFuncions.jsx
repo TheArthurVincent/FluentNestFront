@@ -1,4 +1,3 @@
-// File handling functions
 export const convertToBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -11,7 +10,6 @@ export const convertToBase64 = (file) => {
     reader.onerror = (error) => reject(error);
   });
 };
-
 export const formattedDates = (dateString) => {
   const date = new Date(dateString);
   date.toLocaleString("en-US", {
@@ -26,8 +24,6 @@ export const formattedDates = (dateString) => {
   });
   return new Date(date);
 };
-
-// Function to convert video URLs to embed URLs
 export const getEmbedUrl = (url) => {
   if (!url) return null;
 
@@ -54,9 +50,7 @@ export const getEmbedUrl = (url) => {
   // If it's already an embed URL or other format, return as is
   return url;
 };
-
 export const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 export const times = [
   "6:00",
   "6:15",
@@ -143,7 +137,6 @@ export const times = [
   "22:30",
   "22:45",
 ];
-
 export const getLastMonday = (targetDate) => {
   const date = new Date(targetDate);
   const dayOfWeek = date.getDay();
@@ -175,7 +168,6 @@ export function isEventTimeNowConsideringDuration(
   eventEndTime.setMinutes(eventEndTime.getMinutes() + durationInMinutes);
   return hj >= eventStartTime && hj <= eventEndTime;
 }
-
 export function newFormatDate(date) {
   let d = new Date(date);
   d.setDate(d.getDate() + 1); // Aumenta um dia na data
@@ -185,7 +177,6 @@ export function newFormatDate(date) {
   let final = `${day}/${month}/${year}`;
   return final;
 }
-
 export const formatTimeRange = (startTime, durationMinutes = 60) => {
   const [hours, minutes] = startTime.split(":").map(Number);
   const startFormatted = `${hours.toString().padStart(2, "0")}:${minutes
