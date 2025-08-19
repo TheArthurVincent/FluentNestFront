@@ -274,7 +274,7 @@ export function Groups({ headers, id }) {
             padding: 10,
             margin: 0,
             maxHeight: "300px",
-          backgroundColor: "white",
+            backgroundColor: "white",
             overflowY: "auto",
             boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1) inset",
           }}
