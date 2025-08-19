@@ -315,7 +315,7 @@ export default function WhiteLabelPreview({ headers }) {
         { finalFormData },
         { headers }
       );
-      notifyAlert("Tema salvo com sucesso!", "green");
+      notifyAlert("Tema salvo com sucesso!", partnerColor());
       setFormData(finalFormData);
       updateInfo(studentID, headers);
       setTimeout(() => {
