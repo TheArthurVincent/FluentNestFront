@@ -202,7 +202,7 @@ export default function SentenceLessonModel({
                   style={{
                     fontWeight: 600,
                     color: "#222",
-                    fontSize: "18px",
+                    fontSize: "15px",
                     fontFamily: textTitleFont(),
                     marginBottom: 2,
                     wordBreak: "break-word",
