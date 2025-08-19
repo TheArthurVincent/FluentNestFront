@@ -1392,9 +1392,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       );
     });
   }
-  // ...existing code...
-
-  // Adicione este useEffect para centralizar o dia de hoje
   useEffect(() => {
     if (
       todayRef.current &&
@@ -1650,7 +1647,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         cursor: "pointer",
                       }}
                     >
-                      Editar
+                      {UniversalTexts.edit}
                     </button>
                   </div>
                   <div>
@@ -1729,8 +1726,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 600,
                               }}
                             >
-                              Excluir
-                            </button>
+{UniversalTexts.delete}                            </button>
 
                             <button
                               onClick={() => setShowEditSection(false)}
@@ -1743,8 +1739,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 500,
                               }}
                             >
-                              Cancelar
-                            </button>
+    {UniversalTexts.cancel}                            </button>
 
                             <button
                               onClick={() => {
@@ -1759,7 +1754,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 600,
                               }}
                             >
-                              Salvar
+                              {UniversalTexts.save}
                             </button>
                           </div>
                         )}
@@ -1776,7 +1771,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       border: "1px solid #e5e7eb",
                     }}
                   >
-                    Deseja mesmo excluir esta tarefa?
+                    {UniversalTexts.deleteConfirm}
                     <div
                       style={{
                         display: "flex",
@@ -1796,7 +1791,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           fontWeight: 600,
                         }}
                       >
-                        Não{" "}
+
+{UniversalTexts.cancel}
                       </button>
                       <button
                         onClick={() => {
@@ -1811,7 +1807,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           fontWeight: 600,
                         }}
                       >
-                        Sim
+                  {UniversalTexts.delete}
                       </button>
                     </div>
                   </div>
@@ -1840,11 +1836,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
                         const item = task[`checkList${i}`];
                         const isEditing = editingIndex === i;
-
-                        // ⚠️ MUDANÇA AQUI: não esconda se estiver editando
-                        if (!item || (!item.description && !isEditing))
+                        if (!item || (!item.description && !isEditing)) {
                           return null;
-
+                        }
                         return (
                           <li
                             key={i}
@@ -1877,10 +1871,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
                             {!isEditing ? (
                               <span
-                                /* estilos */
                                 onClick={() => {
                                   setEditingIndex(i);
-                                  // carrega no estado local o texto atual (pode ser "Novo item" ou o que tiver)
                                   setDescriptionChecklistToEdit(
                                     item.description || ""
                                   );
@@ -1894,13 +1886,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   type="text"
                                   value={descriptionChecklistToEdit}
                                   autoFocus
-                                  // 👉 só atualiza o estado local; NÃO salva ainda
                                   onChange={(e) =>
                                     setDescriptionChecklistToEdit(
                                       e.target.value
                                     )
                                   }
-                                  // 👉 salva somente ao sair (e some se estiver vazio)
                                   onBlur={() => {
                                     const value =
                                       descriptionChecklistToEdit.trim();
@@ -1908,15 +1898,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       i,
                                       task._id,
                                       value
-                                    ); // "" faz sumir
+                                    );
                                     setEditingIndex(null);
                                   }}
-                                  // (opcional) Enter confirma / Escape cancela
                                   onKeyDown={(e) => {
                                     if (e.key === "Enter")
                                       e.currentTarget.blur();
                                     if (e.key === "Escape") {
-                                      // cancela: volta ao texto atual do item no backend
                                       setDescriptionChecklistToEdit(
                                         item.description || ""
                                       );
@@ -1924,29 +1912,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     }
                                   }}
                                 />
-                                {/*                          
-  <button
-              type="button"
-              // onMouseDown={() => {
-              //   // previne o onBlur de salvar de novo
-              //   ignoreBlurRef.current = true;
-              // }}
-              onClick={() => {
-  
-                setDescriptionChecklistToEdit("")
-                updateChecklistTaskDescripton(i, task._id, "");
-  // setEditingIndex(null);
-              }}
-              style={{
-                padding: "4px 8px",
-                border: "1px solid #eee",
-                borderRadius: 6,
-                cursor: "pointer",
-                background: "#fff",
-              }}
-            >
-              Delete
-            </button> */}
                               </span>
                             )}
                           </li>
@@ -1967,7 +1932,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           marginTop: 8,
                         }}
                       >
-                        + Adicionar item
+                        + Add
                       </button>
                     )}
                   </div>
@@ -1976,7 +1941,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
             )}
 
             <HOne>{UniversalTexts.calendar}</HOne>
-
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
@@ -2020,7 +1984,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                       key={index}
                     >
-                      {/* Date Header */}
                       <div
                         style={{
                           padding: "6px",
@@ -2057,7 +2020,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         </div>
                       </div>
 
-                      {/* Events Container */}
                       <div>
                         {todoList && todoList.length > 0 && (
                           <div style={{ margin: "8px 4px" }}>
@@ -2189,7 +2151,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 border: "#66bb6a",
                               },
                             };
-
                             const categoryColor = categoryColors[
                               event.category
                             ] || { bg: "#000", text: "#fff" };
@@ -2266,8 +2227,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       </div>
                                     </div>
                                   )}
-
-                                {/* Event Content */}
                                 <div
                                   style={{
                                     background: categoryColor.bg,
@@ -2277,7 +2236,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     paddingBottom: `${event.duration / 5}px`,
                                   }}
                                 >
-                                  {/* Category Badge */}
                                   <div
                                     style={{
                                       position: "absolute",
@@ -2521,7 +2479,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             gap: "1.5rem",
                           }}
                         >
-                          {/* Botão Editar */}
                           {!postNew && !showEditForm && (
                             <div style={{ textAlign: "center" }}>
                               {name && (
@@ -2567,9 +2524,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 }}
                               >
                                 <i className="fa fa-edit" />
-                                Editar Evento
+                                {UniversalTexts.edit}
                               </button>
-                              {/* Status Icons */}
                               {!postNew && (
                                 <div
                                   style={{
@@ -6060,7 +6016,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <i className="fa fa-chevron-left" />
                 </button>
-
                 <div
                   style={{
                     padding: "0 12px",
@@ -6076,7 +6031,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     year: "numeric",
                   })}
                 </div>
-
                 <button
                   disabled={!disabledAvoid}
                   style={{
@@ -6098,7 +6052,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <i className="fa fa-chevron-right" />
                 </button>
               </div>
-
               {/* Seletor de Data - Minimalista */}
               <div
                 style={{
@@ -6127,7 +6080,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                 />
               </div>
-
               <div
                 style={{
                   display: "grid",
@@ -6192,7 +6144,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           return event;
                         });
                         setEvents(eventsLoop);
-
                         // Reset formulários
                         setShowEditForm(false);
                         setShowHomework(false);
@@ -6341,7 +6292,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           </div>
         </RouteDiv>
       ) : (
-        <RouteSizeControlBox>Nenhum usuário logado</RouteSizeControlBox>
+        <RouteSizeControlBox>
+          {UniversalTexts.calendarModal.noLoggedUser}
+        </RouteSizeControlBox>
       )}
       <Helmets text="Calendar" />
     </>
