@@ -260,27 +260,15 @@ export function Groups({ headers, id }) {
   return (
     <div
       style={{
-        maxWidth: 420,
         margin: "32px auto",
         fontFamily: "Segoe UI, Arial, sans-serif",
         background: "#fff",
         borderRadius: 8,
-        boxShadow: "0 2px 8px #eee",
-        border: "1px solid #eee",
         padding: "24px 18px",
       }}
     >
       <section style={{ marginBottom: 32 }}>
-        <h2
-          style={{
-            fontWeight: 500,
-            fontSize: 20,
-            marginBottom: 12,
-            color: "#222",
-          }}
-        >
-          Meus grupos
-        </h2>
+        <HOne>Meus grupos</HOne>
         <ul style={{ padding: 0, margin: 0 }}>
           {groups.map((group, index) => {
             return (
@@ -396,16 +384,9 @@ export function Groups({ headers, id }) {
                 alignItems: "center",
               }}
             >
-              <h2
-                style={{
-                  fontWeight: 500,
-                  fontSize: 20,
-                  marginBottom: 12,
-                  color: "#222",
-                }}
-              >
+              <HOne>
                 {selectedGroupId ? "Editar grupo" : "Criar novo grupo"}
-              </h2>
+              </HOne>
 
               {/* Botão só aparece se não estiver editando */}
 
