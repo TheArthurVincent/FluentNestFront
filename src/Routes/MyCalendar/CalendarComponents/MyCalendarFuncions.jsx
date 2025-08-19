@@ -27,7 +27,6 @@ export const formattedDates = (dateString) => {
   return new Date(date);
 };
 
-
 // Function to convert video URLs to embed URLs
 export const getEmbedUrl = (url) => {
   if (!url) return null;
@@ -145,6 +144,38 @@ export const times = [
   "22:45",
 ];
 
+export const getLastMonday = (targetDate) => {
+  const date = new Date(targetDate);
+  const dayOfWeek = date.getDay();
+  const diff = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+  const lastMonday = new Date(date.setDate(diff));
+  return lastMonday;
+};
+export function isEventTimeNowConsideringDuration(
+  eventTime,
+  hj,
+  date,
+  durationInMinutes
+) {
+  const [eventHour, eventMinute] = eventTime.time.split(":").map(Number);
+  // Verificar se é o mesmo dia
+  if (
+    hj.getDate() !== date.getDate() ||
+    hj.getMonth() !== date.getMonth() ||
+    hj.getFullYear() !== date.getFullYear()
+  ) {
+    return false;
+  }
+
+  // Criar objetos Date para o início e fim da aula
+  const eventStartTime = new Date(date);
+  eventStartTime.setHours(eventHour, eventMinute, 0, 0);
+
+  const eventEndTime = new Date(eventStartTime);
+  eventEndTime.setMinutes(eventEndTime.getMinutes() + durationInMinutes);
+  return hj >= eventStartTime && hj <= eventEndTime;
+}
+
 export function newFormatDate(date) {
   let d = new Date(date);
   d.setDate(d.getDate() + 1); // Aumenta um dia na data
@@ -155,3 +186,18 @@ export function newFormatDate(date) {
   return final;
 }
 
+export const formatTimeRange = (startTime, durationMinutes = 60) => {
+  const [hours, minutes] = startTime.split(":").map(Number);
+  const startFormatted = `${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}`;
+
+  const totalMinutes = hours * 60 + minutes + durationMinutes;
+  const endHours = Math.floor(totalMinutes / 60);
+  const endMinutes = totalMinutes % 60;
+  const endFormatted = `${endHours.toString().padStart(2, "0")}:${endMinutes
+    .toString()
+    .padStart(2, "0")}`;
+
+  return `${startFormatted} - ${endFormatted}`;
+};
