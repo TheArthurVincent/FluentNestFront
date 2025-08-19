@@ -387,6 +387,7 @@ export function Groups({ headers, id }) {
             style={{
               display: "block",
               marginBottom: "12px",
+              width: "100%",
             }}
           >
             <div
