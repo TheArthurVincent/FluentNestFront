@@ -105,10 +105,10 @@ export default function VocabularyLesson({
                 justifyContent: "flex-start",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.boxShadow = "0 2px 8px #e3e6ea";
+                e.currentTarget.style.background = "#f3f3f3ff";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.boxShadow = "0 1px 4px #e3e6ea";
+                e.currentTarget.style.background = "#fff";
               }}
             >
               <div
@@ -136,6 +136,7 @@ export default function VocabularyLesson({
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "13px",
+                        background:"none",
                         boxShadow: "0 1px 2px #e3e6ea",
                         transition: "all 0.2s",
                         opacity: 0.6,
