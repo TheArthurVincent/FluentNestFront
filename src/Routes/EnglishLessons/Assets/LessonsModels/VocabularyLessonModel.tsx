@@ -73,14 +73,19 @@ export default function VocabularyLesson({
   return (
     <div
       style={{
-        padding: "8px",
+        padding: "0px",
+        background: "#f6f7f9",
+        minHeight: "100px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 8px #eee",
+        fontFamily: "Segoe UI, Arial, sans-serif",
       }}
     >
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "16px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gap: "10px",
         }}
       >
         {element.sentences &&
@@ -88,129 +93,133 @@ export default function VocabularyLesson({
             <div
               key={i}
               style={{
-                backgroundColor: "#ffffff",
-                // border: "2px solid #e9ecef",
-                borderRadius: "8px",
-                padding: "5px",
-                transition: "all 0.3s ease",
+                background: "#fff",
+                border: "1px solid #e3e6ea",
+                borderRadius: "7px",
+                padding: "8px 12px 8px 12px",
                 position: "relative",
-                overflow: "hidden",
+                boxShadow: "0 1px 4px #e3e6ea",
+                minHeight: "40px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "#dee2e6";
-                e.currentTarget.style.boxShadow = `0 2px 8px rgba(0,0,0,0.05)`;
+                e.currentTarget.style.boxShadow = "0 2px 8px #e3e6ea";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = "#e9ecef";
-                e.currentTarget.style.boxShadow = "none";
+                e.currentTarget.style.boxShadow = "0 1px 4px #e3e6ea";
               }}
             >
-              {/* Botão + para adicionar aos flashcards */}
-              {!clickedButtons.has(i) && (
-                <Tooltip title="Add to flashcards" placement="top" arrow>
-                  <button
-                    style={{
-                      position: "absolute",
-                      top: "8px",
-                      left: "8px",
-                      backgroundColor: partnerColor(),
-                      color: "white",
-                      border: "none",
-                      borderRadius: "50%",
-                      width: "24px",
-                      height: "24px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addNewCards(sentence.english, sentence.portuguese, i);
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.1)";
-                      e.currentTarget.style.boxShadow =
-                        "0 4px 8px rgba(0, 0, 0, 0.28)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1)";
-                      e.currentTarget.style.boxShadow =
-                        "0 2px 4px rgba(0,0,0,0.1)";
-                    }}
-                  >
-                    +
-                  </button>
-                </Tooltip>
-              )}
-
-              {/* Botão de áudio */}
-              <button
-                style={{
-                  position: "absolute",
-                  top: "8px",
-                  right: "8px",
-                  background: "#f8f9fa",
-                  border: "1px solid #e9ecef",
-                  color: partnerColor(),
-                  cursor: "pointer",
-                  // fontSize: "14px",
-                  padding: "6px",
-                  borderRadius: "50%",
-                  width: "28px",
-                  height: "28px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s ease",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  readText(sentence.english, true, "en", selectedVoice);
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = partnerColor();
-                  e.currentTarget.style.color = "white";
-                  e.currentTarget.style.borderColor = partnerColor();
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f8f9fa";
-                  e.currentTarget.style.color = partnerColor();
-                  e.currentTarget.style.borderColor = "#e9ecef";
-                }}
-              >
-                <i className="fa fa-volume-up" aria-hidden="true" />
-              </button>
-
               <div
                 style={{
-                  marginTop: "16px",
-                  paddingTop: "16px",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  justifyContent: "space-between",
                 }}
               >
-                <div
-                  style={{
-                    // fontSize: "14px",
-                    fontWeight: "600",
-                    color: "#111",
-                    fontFamily: textTitleFont(),
-                  }}
+                {/* Botão + para adicionar aos flashcards */}
+                <span
+                  style={{ display: "flex", alignItems: "center", gap: 12 }}
                 >
-                  {sentence.english}
-                </div>
-                <div
-                  style={{
-                    // fontSize: "12px",
-                    color: "#6c757d",
-                    fontStyle: "italic",
-                  }}
-                >
-                  {sentence.portuguese}
-                </div>
+                  {/* Botão de áudio */}
+                  <Tooltip title="Ouvir" placement="top" arrow>
+                    <button
+                      style={{
+                        border: "none",
+                        color: partnerColor(),
+                        cursor: "pointer",
+                        padding: "0",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "13px",
+                        boxShadow: "0 1px 2px #e3e6ea",
+                        transition: "all 0.2s",
+                        opacity: 0.6,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        readText(sentence.english, true, "en", selectedVoice);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = "1";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = "0.6";
+                      }}
+                    >
+                      <i className="fa fa-volume-up" aria-hidden="true" />
+                    </button>
+                  </Tooltip>
+                  <div style={{ marginLeft: 10 }}>
+                    <div
+                      style={{
+                        fontWeight: 600,
+                        color: "#222",
+                        fontFamily: textTitleFont(),
+                        fontSize: "15px",
+                        marginBottom: 2,
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {sentence.english}
+                    </div>
+                    <div
+                      style={{
+                        color: "#6c757d",
+                        fontStyle: "italic",
+                        fontSize: "13px",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {sentence.portuguese}
+                    </div>
+                  </div>
+                </span>
+                <span>
+                  {!clickedButtons.has(i) && (
+                    <Tooltip
+                      title="Adicionar ao flashcard"
+                      placement="top"
+                      arrow
+                    >
+                      <button
+                        style={{
+                          backgroundColor: partnerColor(),
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "22px",
+                          height: "22px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          boxShadow: "0 1px 2px #e3e6ea",
+                          transition: "all 0.2s",
+                          opacity: 0.7,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addNewCards(sentence.english, sentence.portuguese, i);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.opacity = "1";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.opacity = "0.7";
+                        }}
+                      >
+                        +
+                      </button>
+                    </Tooltip>
+                  )}
+                </span>
               </div>
             </div>
           ))}

@@ -6128,147 +6128,96 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 />
               </div>
 
-            <div
-            style={{
-              display:"grid",gap:"5px"
-            }}
-            >
-              {/* Ações rápidas - Compactas */}
               <div
                 style={{
-                  display: "flex",
-                  gap: "6px",
-                  alignItems: "center",
+                  display: "grid",
+                  gap: "5px",
                 }}
               >
-                {/* Botão Hoje */}
-                <button
-                  disabled={!disabledAvoid}
+                {/* Ações rápidas - Compactas */}
+                <div
                   style={{
-                    padding: "6px 12px",
-                    background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    color: !disabledAvoid ? "#adb5bd" : "#495057",
-                    cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                    fontSize: "12px",
-                    fontWeight: "400",
-                    transition: "all 0.15s ease",
                     display: "flex",
+                    gap: "6px",
                     alignItems: "center",
-                    gap: "4px",
-                  }}
-                  onClick={async () => {
-                    if (!disabledAvoid) return; // Não executar se estiver desabilitado
-                    setShouldScrollToToday(true);
-                    setDisabledAvoid(false);
-                    setLoading(true);
-
-                    try {
-                      const user = JSON.parse(localStorage.getItem("loggedIn"));
-                      const id = user.id;
-                      const todayy = new Date();
-                      const newDate = getLastMonday(todayy);
-                      setTheToday(newDate);
-
-                      const response = await axios.get(
-                        `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
-                        {
-                          headers,
-                        }
-                      );
-                      const res = response.data.eventsList;
-                      const eventsLoop = res.map((event) => {
-                        const nextDay = new Date(event.date);
-                        nextDay.setDate(nextDay.getDate() + 1);
-                        event.date = formattedDates(nextDay);
-                        // Garantir que todos os eventos tenham um status
-                        if (!event.status) {
-                          event.status = "marcado";
-                        }
-                        return event;
-                      });
-                      setEvents(eventsLoop);
-
-                      // Reset formulários
-                      setShowEditForm(false);
-                      setShowHomework(false);
-                      setShowFlashcards(false);
-                      setShowNewClassForm(false);
-                    } catch (error) {
-                      console.log(error, "Erro ao voltar para hoje");
-                    } finally {
-                      setTimeout(() => {
-                        setLoading(false);
-                        setDisabledAvoid(true);
-                      }, 200);
-                    }
                   }}
                 >
-                  <i className="fa fa-home" style={{ fontSize: "10px" }} />
-                  <span>{UniversalTexts.calendarModal.today}</span>
-                </button>
-                {/* Botão Atualizar */}
-                <button
-                  disabled={!disabledAvoid}
-                  style={{
-                    width: "32px",
-                    height: "32px",
-                    background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "6px",
-                    color: !disabledAvoid ? "#adb5bd" : "#6c757d",
-                    cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                    fontSize: "12px",
-                    transition: "all 0.15s ease",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                  onClick={() => {
-                    fetchGeneralEvents();
-                  }}
-                >
-                  <i className="fa fa-refresh" />
-                </button>
-                      {/* Botão Recorrentes */}
-                    {(thePermissions === "superadmin" ||
-                      thePermissions === "teacher") && (
-                      <button
-                        disabled={!disabledAvoid}
-                        style={{
-                          border: "1px solid #dee2e6",
-                          borderRadius: "6px",
-                          fontSize: "12px",
-                          transition: "all 0.15s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "grey",
-                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                        }}
-                        onClick={() => {
-                          handleSeeModalOfTutorings();
-                          setSeePlusButtons(false);
-                        }}
-                      >
-                        <i
-                          className="fa fa-repeat"
-                          style={{ fontSize: "10px" }}
-                        />
-                        <span>
-                          {UniversalTexts.calendarModal.recurringClasses}
-                        </span>
-                      </button>
-                    )}
-                {/* Botão Ver Adições */}
-                {!seePlusButtons && (
+                  {/* Botão Hoje */}
                   <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      padding: "6px 12px",
+                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                      border: "1px solid #dee2e6",
+                      borderRadius: "6px",
+                      color: !disabledAvoid ? "#adb5bd" : "#495057",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      fontSize: "12px",
+                      fontWeight: "400",
+                      transition: "all 0.15s ease",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                    onClick={async () => {
+                      if (!disabledAvoid) return; // Não executar se estiver desabilitado
+                      setShouldScrollToToday(true);
+                      setDisabledAvoid(false);
+                      setLoading(true);
+
+                      try {
+                        const user = JSON.parse(
+                          localStorage.getItem("loggedIn")
+                        );
+                        const id = user.id;
+                        const todayy = new Date();
+                        const newDate = getLastMonday(todayy);
+                        setTheToday(newDate);
+
+                        const response = await axios.get(
+                          `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
+                          {
+                            headers,
+                          }
+                        );
+                        const res = response.data.eventsList;
+                        const eventsLoop = res.map((event) => {
+                          const nextDay = new Date(event.date);
+                          nextDay.setDate(nextDay.getDate() + 1);
+                          event.date = formattedDates(nextDay);
+                          // Garantir que todos os eventos tenham um status
+                          if (!event.status) {
+                            event.status = "marcado";
+                          }
+                          return event;
+                        });
+                        setEvents(eventsLoop);
+
+                        // Reset formulários
+                        setShowEditForm(false);
+                        setShowHomework(false);
+                        setShowFlashcards(false);
+                        setShowNewClassForm(false);
+                      } catch (error) {
+                        console.log(error, "Erro ao voltar para hoje");
+                      } finally {
+                        setTimeout(() => {
+                          setLoading(false);
+                          setDisabledAvoid(true);
+                        }, 200);
+                      }
+                    }}
+                  >
+                    <i className="fa fa-home" style={{ fontSize: "10px" }} />
+                    <span>{UniversalTexts.calendarModal.today}</span>
+                  </button>
+                  {/* Botão Atualizar */}
+                  <button
+                    disabled={!disabledAvoid}
                     style={{
                       width: "32px",
                       height: "32px",
-                      background: "#9fe39fff",
+                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
                       border: "1px solid #dee2e6",
                       borderRadius: "6px",
                       color: !disabledAvoid ? "#adb5bd" : "#6c757d",
@@ -6279,13 +6228,67 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       alignItems: "center",
                       justifyContent: "center",
                     }}
-                    onClick={() => setSeePlusButtons(!seePlusButtons)}
+                    onClick={() => {
+                      fetchGeneralEvents();
+                    }}
                   >
-                    +
+                    <i className="fa fa-refresh" />
                   </button>
-                )}
-                {/* Botões das Adições */}
-</div>
+                  {/* Botão Recorrentes */}
+                  {(thePermissions === "superadmin" ||
+                    thePermissions === "teacher") && (
+                    <button
+                      disabled={!disabledAvoid}
+                      style={{
+                        border: "1px solid #dee2e6",
+                        borderRadius: "6px",
+                        fontSize: "12px",
+                        transition: "all 0.15s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "grey",
+                        background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      }}
+                      onClick={() => {
+                        handleSeeModalOfTutorings();
+                        setSeePlusButtons(false);
+                      }}
+                    >
+                      <i
+                        className="fa fa-repeat"
+                        style={{ fontSize: "10px" }}
+                      />
+                      <span>
+                        {UniversalTexts.calendarModal.recurringClasses}
+                      </span>
+                    </button>
+                  )}
+                  {/* Botão Ver Adições */}
+                  {!seePlusButtons && (
+                    <button
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        background: "#9fe39fff",
+                        border: "1px solid #dee2e6",
+                        borderRadius: "6px",
+                        color: !disabledAvoid ? "#adb5bd" : "#6c757d",
+                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                        fontSize: "12px",
+                        transition: "all 0.15s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => setSeePlusButtons(!seePlusButtons)}
+                    >
+                      +
+                    </button>
+                  )}
+                  {/* Botões das Adições */}
+                </div>
                 {seePlusButtons && (
                   <div
                     style={{
@@ -6299,7 +6302,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     {/* Botão Nova  Tarefa */}
                     {(thePermissions === "superadmin" ||
                       thePermissions === "teacher") && (
-           
                       <ToDoAddButton
                         userId={myId}
                         onCreated={() => {
@@ -6332,7 +6334,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         <span>{UniversalTexts.calendarModal.singleClass}</span>
                       </button>
                     )}
-              
                   </div>
                 )}
               </div>
