@@ -6,7 +6,6 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
 import NewPost from "./AdmComponents/PostsManagement/NewPost";
-import NewTutoring from "./AdmComponents/ClassesManagement/NewTutoring";
 import Helmets from "../../Resources/Helmets";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Contract from "./AdmComponents/Contract/Contract";
@@ -19,8 +18,8 @@ import { Tooltip } from "@mui/material";
 import { RouteDiv } from "../../Resources/Components/RouteBox";
 import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignments/PendingHomeworkAssignments";
 import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
-import Manual from "./AdmComponents/Manual/Manual";
 import Groups from "./AdmComponents/Groups/Groups";
+import ArthurSection from "./AdmComponents/ArthurSection/ArthurSection";
 
 export function Adm({ headers }: HeadersProps) {
   const { id } = localStorageLoggedIn;
@@ -107,6 +106,14 @@ export function Adm({ headers }: HeadersProps) {
       component: <AllComments headers={headers} />,
       displayArthur: "block",
     },
+      isArthurVincent && {
+      title: "Arthur Section",
+      value: "10",
+      tooltip:
+        "OUT!",
+      component: <ArthurSection headers={headers} />,
+      displayArthur: "block",
+    }
   ].filter(Boolean); // Remove elementos false do array
 
   // Encontrar a primeira tab visível para inicializar o estado

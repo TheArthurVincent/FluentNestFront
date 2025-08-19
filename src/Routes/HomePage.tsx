@@ -83,6 +83,15 @@ export function HomePage({ headers }: HeadersProps) {
         } else {
           console.log("SFC");
         }
+
+        const response2 = await axios.get(
+          `${backDomain}/api/v1/uploadneeded/${id}`
+        );
+
+        console.log(response2.data.uploadNeeded);
+        if (response2.data.uploadNeeded) {
+          window.location.reload();
+        } else console.log("N.U.");
       }
     } catch (error) {
       console.error("Error checking fee status:", error);
