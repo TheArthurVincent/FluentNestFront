@@ -55,22 +55,28 @@ import { isArthurVincent } from "../../../../App";
 
 export function Groups({ headers, id }) {
   const [selectedGroupId, setSelectedGroupId] = useState(null);
+  const [groupNameToEdit, setGroupNameToEdit] = useState("");
+  const [groupDescriptionToEdit, setGroupDescriptionToEdit] = useState("");
 
-  // Quando seleciona um grupo, mostra alunos desse grupo
   const handleSelectGroup = (group) => {
     setSelectedGroupId(group._id);
     setArrayOfIds(group.studentIds);
+    setGroupDescriptionToEdit(group.description);
+    setGroupNameToEdit(group.name);
     console.log(group);
   };
 
   // Para sair do modo edição
   const handleCancelEdit = () => {
     setSelectedGroupId(null);
+    setGroupDescriptionToEdit("");
+    setGroupNameToEdit("");
     setArrayOfIds([]);
   };
   const { UniversalTexts } = useUserContext();
   const [students, setStudents] = useState([]);
-const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [arrayOfIds, setArrayOfIds] = useState([]);
   // Removido campo de nome do grupo
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -124,8 +130,8 @@ const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = u
       const response = await axios.get(`${backDomain}/api/v1/groups/${id}`, {
         headers,
       });
-      console.log(response);
-      setGroups(response.data.groupsWithStudents);
+      console.log(response.data.groups);
+      setGroups(response.data.groups);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     }
@@ -167,6 +173,41 @@ const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = u
       notifyAlert("Erro ao encontrar alunos");
     }
   };
+
+  const handleChangeName = async (groupId, groupName) => {
+    setGroupNameToEdit(groupName);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/group-name/${groupId}`,
+        {
+          name: groupName,
+        },
+        {
+          headers,
+        }
+      );
+    } catch (error) {
+      notifyAlert("Erro ao encontrar alunos");
+    }
+  };
+
+  const handleChangeDescription = async (groupId, groupDescription) => {
+    setGroupDescriptionToEdit(groupDescription);
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/group-description/${groupId}`,
+        {
+          description: groupDescription,
+        },
+        {
+          headers,
+        }
+      );
+    } catch (error) {
+      notifyAlert("Erro ao encontrar alunos");
+    }
+  };
+
   const deleteGroup = async (groupId) => {
     try {
       const response = await axios.delete(
@@ -215,82 +256,93 @@ const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = u
           Meus grupos
         </h2>
         <ul style={{ padding: 0, margin: 0 }}>
-          {Array.isArray(groups) && groups.length > 0 && groups.map((group, index) => {
+          {groups.map((group, index) => {
             return (
               <li
                 key={group.id}
                 style={{
-                    listStyle: "none",
-                    marginBottom: 10,
-                    padding: "10px",
-                    borderRadius: "8px",
-                    borderBottom: "1px solid #f2f2f2",
-                    background:
-                      group._id === selectedGroupId
-                        ? "#efefefff"
-                        : "transparent",
-                    cursor: "pointer",
-                    display: selectedGroupId
-                      ? group._id === selectedGroupId
-                        ? "block"
-                        : "none"
-                      : "block",
-                  }}
-                  onClick={() => {
-                    console.log(group._id);
-                    console.log(selectedGroupId);
-                    handleSelectGroup(group);
+                  listStyle: "none",
+                  marginBottom: 10,
+                  padding: "10px",
+                  borderRadius: "8px",
+                  borderBottom: "1px solid #f2f2f2",
+                  background:
+                    group._id === selectedGroupId ? "#e7f8d6ff" : "transparent",
+                  cursor: "pointer",
+                  display: selectedGroupId
+                    ? group._id === selectedGroupId
+                      ? "block"
+                      : "none"
+                    : "block",
+                }}
+                onClick={() => {
+                  console.log(group._id);
+                  console.log(selectedGroupId);
+                  handleSelectGroup(group);
+                }}
+              >
+                <span
+                  style={{
+                    fontWeight: 500,
+                    color: partnerColor(),
+                    fontSize: 15,
                   }}
                 >
-                  <span
-                    style={{
-                      fontWeight: 500,
-                      color: partnerColor(),
-                      fontSize: 15,
-                    }}
-                  >
-                    Grupo #{index + 1}
-                  </span>
-                  <div
-                    style={{
-                      display: "flex",
-                      marginTop: "10px",
-                      textWrap: "nowrap",
-                      flexWrap: "wrap",
-                      gap: "5px",
-                    }}
-                  >
-                    {group.studentIds.map((studentId) => {
-                      const student = students.find((s) => s.id === studentId);
-                      return (
-                        <span
-                          key={studentId}
-                          style={{
-                            color: textpartnerColorContrast(),
-                            backgroundColor: partnerColor(),
-                            fontSize: 12,
-                            padding: "3px 6px",
-                            borderRadius: "12px",
-                            marginRight: 10,
-                          }}
-                        >
-                          {student
-                            ? `${student.name} ${student.lastname}`
-                            : "Aluno não encontrado"}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </li>
-              );
-            })
-          }
+                  #{index + 1} | {group.name ? group.name : "Grupo sem nome"}
+                </span>
+                <br />
+                <span
+                  style={{
+                    fontWeight: 300,
+                    color: "grey",
+                    fontSize: 11,
+                    fontStyle: "italic",
+                  }}
+                >
+                  #{index + 1} |{" "}
+                  {group.description
+                    ? group.description
+                    : "Grupo sem descrição"}
+                </span>
+                <div
+                  style={{
+                    display: "flex",
+                    marginTop: "10px",
+                    textWrap: "nowrap",
+                    flexWrap: "wrap",
+                    gap: "5px",
+                  }}
+                >
+                  {group.studentIds.map((studentId) => {
+                    const student = students.find((s) => s.id === studentId);
+                    return (
+                      <span
+                        key={studentId}
+                        style={{
+                          color: textpartnerColorContrast(),
+                          backgroundColor: partnerColor(),
+                          fontSize: 12,
+                          padding: "3px 6px",
+                          borderRadius: "12px",
+                          marginRight: 10,
+                        }}
+                      >
+                        {student
+                          ? `${student.name} ${student.lastname}`
+                          : "Aluno não encontrado"}
+                      </span>
+                    );
+                  })}
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </section>
       <section
         style={{
           padding: "10px",
-          backgroundColor: selectedGroupId ? "#efefefff" : "transparent",
+          backgroundColor: selectedGroupId ? "#e7f8d6ff" : "transparent",
         }}
       >
         <div
@@ -301,27 +353,85 @@ const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = u
             marginBottom: "12px",
           }}
         >
-          <h2
+          {" "}
+          <div
             style={{
-              fontWeight: 500,
-              fontSize: 20,
-              marginBottom: 12,
-              color: "#222",
+              display: "block",
+              marginBottom: "12px",
             }}
           >
-            {selectedGroupId ? "Editar grupo" : "Criar novo grupo"}
-          </h2>
-          {selectedGroupId && (
-            <button
-              onClick={() => setShowDeleteConfirm(true)}
+            <div
               style={{
-                backgroundColor: "red",
-                color: "white",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
               }}
             >
-              <i className="fas fa-trash" />
-            </button>
-          )}
+              <h2
+                style={{
+                  fontWeight: 500,
+                  fontSize: 20,
+                  marginBottom: 12,
+                  color: "#222",
+                }}
+              >
+                {selectedGroupId ? "Editar grupo" : "Criar novo grupo"}
+              </h2>
+
+              {/* Botão só aparece se não estiver editando */}
+
+              {selectedGroupId && (
+                <button
+                  onClick={() => setShowDeleteConfirm(true)}
+                  style={{
+                    backgroundColor: "red",
+                    color: "white",
+                  }}
+                >
+                  <i className="fas fa-trash" />
+                </button>
+              )}
+            </div>
+            <div
+              style={{
+                display: "grid",
+                width: "100%",
+              }}
+            >
+              <input
+                onMouseLeave={getGroups}
+                className="no-focus"
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontFamily: textTitleFont(),
+                  fontWeight:600,fontSize: 16,
+                }}
+                type="text"
+                placeholder="Nome do grupo"
+                value={groupNameToEdit}
+                onChange={(e) =>
+                  handleChangeName(selectedGroupId, e.target.value)
+                }
+              />
+              <input
+                onMouseLeave={getGroups}
+                className="no-focus"
+                style={{
+                  backgroundColor: "transparent",
+                  border: "none",
+                  fontWeight:600,fontSize: 16,
+                  fontFamily: textTitleFont(),
+                }}
+                type="text"
+                placeholder="Descrição do grupo"
+                value={groupDescriptionToEdit}
+                onChange={(e) =>
+                  handleChangeDescription(selectedGroupId, e.target.value)
+                }
+              />
+            </div>
+          </div>
         </div>
         {showDeleteConfirm && (
           <div
@@ -429,7 +539,6 @@ const [groups, setGroups] = useState([]);  const [arrayOfIds, setArrayOfIds] = u
             </div>
           )}
         </div>
-        {/* Botão só aparece se não estiver editando */}
         {!selectedGroupId ? (
           <button
             onClick={postGroup}
