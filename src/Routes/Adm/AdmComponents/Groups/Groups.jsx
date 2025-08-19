@@ -58,12 +58,16 @@ export function Groups({ headers, id }) {
   const [groupNameToEdit, setGroupNameToEdit] = useState("");
   const [groupDescriptionToEdit, setGroupDescriptionToEdit] = useState("");
 
+  // 3) Ao selecionar um grupo para editar, normalize também:
   const handleSelectGroup = (group) => {
     setSelectedGroupId(group._id);
-    setArrayOfIds(group.studentIds);
-    setGroupDescriptionToEdit(group.description);
-    setGroupNameToEdit(group.name);
-    console.log(group);
+    // Se vierem objetos em vez de strings, mapeie; se já vierem strings, mantém:
+    const ids = Array.isArray(group.studentIds)
+      ? group.studentIds.map((x) => String(x?._id ?? x))
+      : [];
+    setArrayOfIds(ids);
+    setGroupDescriptionToEdit(group.description ?? "");
+    setGroupNameToEdit(group.name ?? "");
   };
 
   // Para sair do modo edição
@@ -77,23 +81,24 @@ export function Groups({ headers, id }) {
   const [students, setStudents] = useState([]);
   const [groups, setGroups] = useState([]);
   const [arrayOfIds, setArrayOfIds] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newDescription, setNewDescription] = useState("");
   // Removido campo de nome do grupo
   const [loading, setLoading] = useState(true);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  // Função para lidar com seleção dos alunos
+  // 2) handleCheckboxChange agora já recebe o id normalizado (string)
   const handleCheckboxChange = (studentId) => {
     if (selectedGroupId) {
-      // Modo edição: chama editGroup com o id do grupo e do aluno clicado
-      editGroup(selectedGroupId, studentId);
+      editGroup(selectedGroupId, studentId); // PUT
     } else {
-      // Modo criação: só atualiza arrayOfIds
       setArrayOfIds((prev) =>
         prev.includes(studentId)
           ? prev.filter((id) => id !== studentId)
           : [...prev, studentId]
       );
     }
+    console.log("arrayOfIds", arrayOfIds);
   };
 
   const fetchStudents = async () => {
@@ -107,24 +112,32 @@ export function Groups({ headers, id }) {
       notifyAlert("Erro ao encontrar alunos");
     }
   };
-
-  // Função para criar grupo (sem nome)
+  // 4) No POST, envie o nome igual ao backend espera e os IDs como strings
   const postGroup = async () => {
     try {
       await axios.post(
         `${backDomain}/api/v1/group/${id}`,
         {
-          arrayOfIds,
+          arrayOfIds: arrayOfIds.map(String),
+          name: newName.trim(),
+          description: newDescription.trim(),
         },
         { headers }
       );
       notifyAlert("Grupo criado com sucesso!", partnerColor());
       setArrayOfIds([]);
+      setNewName("");
+      setNewDescription("");
+      setGroupNameToEdit("");
+      setGroupDescriptionToEdit("");
+      setSelectedGroupId(null);
       getGroups();
     } catch (error) {
+      console.error(error?.response?.data || error.message);
       notifyAlert("Erro ao criar grupo");
     }
   };
+
   const getGroups = async () => {
     try {
       const response = await axios.get(`${backDomain}/api/v1/groups/${id}`, {
@@ -176,35 +189,46 @@ export function Groups({ headers, id }) {
 
   const handleChangeName = async (groupId, groupName) => {
     setGroupNameToEdit(groupName);
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/group-name/${groupId}`,
-        {
-          name: groupName,
-        },
-        {
-          headers,
-        }
-      );
-    } catch (error) {
-      notifyAlert("Erro ao encontrar alunos");
+    console.log("no", groupName, groupNameToEdit);
+    if (groupId) {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/group-name/${groupId}`,
+          {
+            name: groupName,
+          },
+          {
+            headers,
+          }
+        );
+      } catch (error) {
+        notifyAlert("Erro ao encontrar alunos");
+      }
+    } else {
+      console.log("no", groupName);
     }
   };
 
   const handleChangeDescription = async (groupId, groupDescription) => {
     setGroupDescriptionToEdit(groupDescription);
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/group-description/${groupId}`,
-        {
-          description: groupDescription,
-        },
-        {
-          headers,
-        }
-      );
-    } catch (error) {
-      notifyAlert("Erro ao encontrar alunos");
+    console.log(groupDescription);
+
+    if (groupId) {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/group-description/${groupId}`,
+          {
+            description: groupDescription,
+          },
+          {
+            headers,
+          }
+        );
+      } catch (error) {
+        notifyAlert("Erro ao encontrar alunos");
+      }
+    } else {
+      console.log("no", groupDescription);
     }
   };
 
@@ -314,10 +338,13 @@ export function Groups({ headers, id }) {
                   }}
                 >
                   {group.studentIds.map((studentId) => {
-                    const student = students.find((s) => s.id === studentId);
+                    const sid = String(studentId?._id ?? studentId);
+                    const student = students.find(
+                      (s) => String(s._id ?? s.id) === sid
+                    );
                     return (
                       <span
-                        key={studentId}
+                        key={sid}
                         style={{
                           color: textpartnerColorContrast(),
                           backgroundColor: partnerColor(),
@@ -399,36 +426,55 @@ export function Groups({ headers, id }) {
               }}
             >
               <input
-                onMouseLeave={getGroups}
+                /* REMOVER onMouseLeave={getGroups} */
                 className="no-focus"
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
                   fontFamily: textTitleFont(),
-                  fontWeight:600,fontSize: 16,
+                  fontWeight: 600,
+                  fontSize: 16,
                 }}
                 type="text"
                 placeholder="Nome do grupo"
-                value={groupNameToEdit}
-                onChange={(e) =>
-                  handleChangeName(selectedGroupId, e.target.value)
-                }
+                value={selectedGroupId ? groupNameToEdit : newName}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (selectedGroupId) {
+                    setGroupNameToEdit(v);
+                    handleChangeName(selectedGroupId, v); // PUT durante edição
+                  } else {
+                    setNewName(v); // criação
+                    setGroupNameToEdit(v); // mantém o campo visualmente preenchido
+                  }
+                }}
               />
+
               <input
-                onMouseLeave={getGroups}
+                /* REMOVER onMouseLeave={getGroups} */
                 className="no-focus"
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
-                  fontWeight:600,fontSize: 16,
+                  fontWeight: 600,
+                  fontSize: 16,
                   fontFamily: textTitleFont(),
                 }}
                 type="text"
                 placeholder="Descrição do grupo"
-                value={groupDescriptionToEdit}
-                onChange={(e) =>
-                  handleChangeDescription(selectedGroupId, e.target.value)
+                value={
+                  selectedGroupId ? groupDescriptionToEdit : newDescription
                 }
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (selectedGroupId) {
+                    setGroupDescriptionToEdit(v);
+                    handleChangeDescription(selectedGroupId, v); // PUT durante edição
+                  } else {
+                    setNewDescription(v); // criação
+                    setGroupDescriptionToEdit(v); // mantém o campo visualmente preenchido
+                  }
+                }}
               />
             </div>
           </div>
@@ -542,7 +588,11 @@ export function Groups({ headers, id }) {
         {!selectedGroupId ? (
           <button
             onClick={postGroup}
-            disabled={arrayOfIds.length === 0}
+            disabled={
+              arrayOfIds.length === 0 ||
+              groupNameToEdit === "" ||
+              groupDescriptionToEdit === ""
+            }
             style={{
               width: "100%",
               padding: "10px 0",
@@ -552,8 +602,18 @@ export function Groups({ headers, id }) {
               borderRadius: 4,
               fontWeight: 500,
               fontSize: 16,
-              cursor: arrayOfIds.length === 0 ? "not-allowed" : "pointer",
-              opacity: arrayOfIds.length === 0 ? 0.6 : 1,
+              cursor:
+                arrayOfIds.length === 0 ||
+                groupNameToEdit === "" ||
+                groupDescriptionToEdit === ""
+                  ? "not-allowed"
+                  : "pointer",
+              opacity:
+                arrayOfIds.length === 0 ||
+                groupNameToEdit === "" ||
+                groupDescriptionToEdit === ""
+                  ? 0.6
+                  : 1,
               transition: "opacity 0.2s",
             }}
           >
