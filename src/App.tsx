@@ -122,20 +122,10 @@ function App() {
 
   // Protege manipulação do DOM
   try {
-    if (isArthurVincent) {
-      document.body.style.backgroundImage = `url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769")`;
-      document.body.style.backgroundColor = "";
-    } else if (isArvin || isLocalHost) {
-      if (backgroundType() === "color") {
         document.body.style.backgroundColor = theBackgroundColor();
         document.body.style.backgroundImage = "";
-      } else {
-        document.body.style.backgroundImage = `url(${backgroundImage()})`;
-        document.body.style.backgroundColor = "";
-      }
-    }
+
   } catch (err) {
-    // Não trava a página
     console.warn("[App] Erro ao definir background:", err);
   }
 
