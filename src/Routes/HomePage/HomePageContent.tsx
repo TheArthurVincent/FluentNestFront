@@ -165,7 +165,9 @@ export function Blog({ headers, change, setChange }: BlogProps) {
             ) : (
               <div className="study-container">
                 <HOne>{UniversalTexts.studyEnglish}</HOne>
-                <div className="grid-container">
+                <div 
+                className="grid-container"
+                >
                   {sessions.map((session) => (
                     <a
                       key={session.id}
@@ -181,11 +183,11 @@ export function Blog({ headers, change, setChange }: BlogProps) {
                         style={{ backgroundImage: `url(${session.img})` }}
                       />
 
-                      <div className="overlay">
+                      {/* <div className="overlay">
                         <p className="session-description">
                           {session.description}
                         </p>
-                      </div>
+                      </div> */}
                     </a>
                   ))}
                 </div>

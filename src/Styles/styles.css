@@ -338,12 +338,14 @@ body {
 
 .study-container {
   padding: 24px;
-  text-align: center;
   align-content: center;
 }
 
 .grid-container {
   display: grid;
+  text-align: center;
+  margin-top: 1rem;
+  gap: 16px;
   justify-content: center;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
@@ -352,8 +354,6 @@ body {
   position: relative;
   overflow: hidden;
   border-radius: 10px;
-  max-width: 80%;
-  max-height: 80%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-decoration: none;
   display: flex;
@@ -372,7 +372,7 @@ body {
 }
 
 /* Contêiner da sobreposição */
-.overlay {
+/* .overlay {
   position: absolute;
   inset: 0;
   display: flex;
@@ -381,7 +381,7 @@ body {
   text-align: center;
   padding: 10px;
   transition: opacity 0.3s ease-in-out;
-}
+} */
 
 /* Título inicial no centro, SEM escurecimento */
 .session-title {
@@ -398,8 +398,7 @@ body {
   justify-content: center;
 }
 
-/* Descrição oculta por padrão */
-.session-description {
+/* .session-description {
   color: white;
   font-size: 14px;
   background-color: rgba(0, 0, 0, 0.8);
@@ -411,19 +410,17 @@ body {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Efeito hover: escurece a imagem */
 .grid-item:hover .image-background {
   filter: brightness(50%);
 }
 
-/* Efeito hover: some o título e aparece a descrição */
 .grid-item:hover .session-title {
   opacity: 0;
 }
 
 .grid-item:hover .session-description {
   opacity: 1;
-}
+} */
 
 .the-hover:hover {
   cursor: pointer;
