@@ -99,7 +99,9 @@ export function FinancialResources({ headers, id }) {
   // Financial Report Edit Modal States
   const [financialReportModalOpen, setFinancialReportModalOpen] =
     useState(false);
+  const [reportEditId, setReportEditId] = useState("");
   const [selectedFinancialReport, setSelectedFinancialReport] = useState(null);
+  const [seeButtonDeleteItem, setSeeButtonDeleteItem] = useState(false);
   const [editReportDescription, setEditReportDescription] = useState("");
   const [editReportAmount, setEditReportAmount] = useState("");
   const [editReportDiscount, setEditReportDiscount] = useState("");
@@ -257,6 +259,7 @@ export function FinancialResources({ headers, id }) {
     setEditReportPaidSoFar(0);
     setFinancialReportModalOpen(!financialReportModalOpen);
     if (report) {
+      setReportEditId(report._id);
       setSelectedFinancialReport(report);
       setEditReportDescription(report.description);
       setEditReportAmount(report.amount.toString());
@@ -328,7 +331,13 @@ export function FinancialResources({ headers, id }) {
         typeOfItem
       );
       notifyAlert("Custo fixo adicionado com sucesso!", "green");
-      handleNewCostModal();
+      setShowGenerateButton(false);
+
+      setIncludeThisMonth(false);
+
+      setNewCostModalOpen(!newCostModalOpen);
+      setNewCostAmount("");
+      setNewCostDescription("");
     } catch (error) {
       notifyAlert("Erro ao adicionar custo fixo");
       console.log("error", error);
@@ -434,6 +443,28 @@ export function FinancialResources({ headers, id }) {
       setShowDeleteConfirmation(false); // Reset confirmation
     } catch (error) {
       notifyAlert("Erro ao excluir custo");
+      console.log("error", error);
+    }
+  };
+
+  const handleDeleteMonthlyEntry = async (id) => {
+    try {
+      const response = await axios.delete(
+        `${backDomain}/api/v1/finance-item/${id}`,
+        {
+          headers,
+        }
+      );
+      notifyAlert("Ítem excluído com sucesso!", "green");
+      await seeReports(currentMonthYear);
+
+      // Fecha o modal
+      handleFinancialReportModal();
+
+      // Resetar botão de confirmação
+      setSeeButtonDeleteItem(false);
+    } catch (error) {
+      notifyAlert("Erro ao excluir ítem");
       console.log("error", error);
     }
   };
@@ -3571,30 +3602,124 @@ export function FinancialResources({ headers, id }) {
                     {/* Só mostra o toggle "Quitado" se "Contabilizar" estiver marcado */}
                     {editReportAccountFor && (
                       <div className="linguee-form-group">
-                        <label className="linguee-checkbox-item">
-                          <div className="linguee-toggle">
-                            <input
-                              type="checkbox"
-                              checked={editReportPaidFor}
-                              onChange={(e) => {
-                                setEditReportPaidFor(e.target.checked);
-                                if (e.target.checked) {
-                                  const finalAmount =
-                                    Math.abs(editReportAmount) -
-                                    (parseFloat(editReportDiscount) || 0);
-                                  setEditReportPaidSoFar(finalAmount);
-                                }
-                              }}
-                            />
-                            <div className="linguee-toggle-slider"></div>
-                          </div>
-                          <span className="linguee-checkbox-label">
-                            Quitado
-                          </span>
-                        </label>
+                        {reportEditId !== "" && (
+                          <label className="linguee-checkbox-item">
+                            <div className="linguee-toggle">
+                              <input
+                                type="checkbox"
+                                checked={editReportPaidFor}
+                                onChange={(e) => {
+                                  setEditReportPaidFor(e.target.checked);
+                                  if (e.target.checked) {
+                                    const finalAmount =
+                                      Math.abs(editReportAmount) -
+                                      (parseFloat(editReportDiscount) || 0);
+                                    setEditReportPaidSoFar(finalAmount);
+                                  }
+                                }}
+                              />
+                              <div className="linguee-toggle-slider"></div>
+                            </div>
+                            <span className="linguee-checkbox-label">
+                              Quitado
+                            </span>
+                          </label>
+                        )}
                       </div>
                     )}
                   </div>
+                  {/* Trash button */}
+                  {reportEditId !== "" && (
+                    <div>
+                      {!seeButtonDeleteItem && (
+                        <button
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            color: "#d9534f",
+                            fontSize: "18px",
+                            padding: "4px",
+                            transition: "background 0.2s",
+                          }}
+                          title="Excluir entrada do mês"
+                          onClick={() => {
+                            setSeeButtonDeleteItem(true);
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.currentTarget.style.background = "#fbe9e7")
+                          }
+                          onMouseLeave={(e) =>
+                            (e.currentTarget.style.background = "none")
+                          }
+                        >
+                          🗑️ Excluir este ítem
+                        </button>
+                      )}
+                      {seeButtonDeleteItem && (
+                        <div
+                          style={{
+                            display: "grid",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            backgroundColor: "#ffdbdbff",
+                            padding: "1rem",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          <p>Tem certeza que deseja excluir este item?</p>
+                          <div style={{ display: "flex" }}>
+                            <button
+                              style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "blue",
+                                fontSize: "18px",
+                                padding: "4px",
+                                transition: "background 0.2s",
+                              }}
+                              title="Excluir entrada do mês"
+                              onClick={() => {
+                                setSeeButtonDeleteItem(false);
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.currentTarget.style.background = "#fbe9e7")
+                              }
+                              onMouseLeave={(e) =>
+                                (e.currentTarget.style.background = "none")
+                              }
+                            >
+                              Não!{" "}
+                            </button>
+                            <button
+                              style={{
+                                background: "none",
+                                border: "none",
+                                cursor: "pointer",
+                                color: "#d9534f",
+                                fontSize: "18px",
+                                padding: "4px",
+                                transition: "background 0.2s",
+                              }}
+                              title="Excluir entrada do mês"
+                              onClick={() => {
+                                handleDeleteMonthlyEntry(reportEditId);
+                              }}
+                              onMouseEnter={(e) =>
+                                (e.currentTarget.style.background = "#fbe9e7")
+                              }
+                              onMouseLeave={(e) =>
+                                (e.currentTarget.style.background = "none")
+                              }
+                            >
+                              Sim! Excluir este item{" "}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </DialogContent>

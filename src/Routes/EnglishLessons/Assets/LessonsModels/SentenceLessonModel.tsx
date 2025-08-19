@@ -7,7 +7,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import { partnerColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 interface SentenceLessonModelProps {
   headers: MyHeadersType | null;
@@ -70,15 +70,21 @@ export default function SentenceLessonModel({
 
   return (
     <div
-    style={{
-        width: "80%",
+      style={{
+        padding: "0px",
+        background: "#f6f7f9",
+        minHeight: "100px",
+        borderRadius: "8px",
+        boxShadow: "0 2px 8px #eee",
+        fontFamily: "Segoe UI, Arial, sans-serif",
+        width: "100%",
         margin: "auto",
       }}
     >
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+          display: "flex",
+          flexDirection: "column",
           gap: "10px",
         }}
       >
@@ -87,154 +93,129 @@ export default function SentenceLessonModel({
             <div
               key={i}
               style={{
-                borderRadius: "5px",
-                padding: "5px",
-                transition: "all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                background: "#fff",
+                border: "1px solid #e3e6ea",
+                borderRadius: "7px",
+                padding: "8px 12px 8px 12px",
                 position: "relative",
-                overflow: "hidden",
-                boxShadow: "0 4px 20px rgba(170, 170, 170, 0.08), 0 1px 3px rgba(116, 116, 116, 0.1)",
+                boxShadow: "0 1px 4px #e3e6ea",
+                minHeight: "40px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-start",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "#f8f8f8ff";
-                
+                e.currentTarget.style.background = "#f3f3f3ff";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "#fff";
+                e.currentTarget.style.background = "#fff";
               }}
             >
-              {/* Botão + para adicionar aos flashcards */}
-              {!clickedButtons.has(i) && (
-                <Tooltip title="Add to flashcards" placement="top" arrow>
-                  <button
-                    style={{
-                      position: "absolute",
-                      top: "16px",
-                      left: "16px",
-                      background: `linear-gradient(135deg, ${partnerColor()} 0%, ${partnerColor()}dd 100%)`,
-                      color: "white",
-                      border: "none",
-                      borderRadius: "12px",
-                      width: "32px",
-                      height: "32px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontWeight: "bold",
-                      cursor: "pointer",
-                      transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                      boxShadow: `0 4px 15px ${partnerColor()}40, 0 2px 4px rgba(0,0,0,0.1)`,
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      addNewCards(sentence.english, sentence.portuguese, i);
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform =
-                        "scale(1.1) rotate(90deg)";
-                      e.currentTarget.style.boxShadow = `0 8px 25px ${partnerColor()}50, 0 4px 8px rgba(0,0,0,0.15)`;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1) rotate(0deg)";
-                      e.currentTarget.style.boxShadow = `0 4px 15px ${partnerColor()}40, 0 2px 4px rgba(0,0,0,0.1)`;
-                    }}
-                  >
-                    +
-                  </button>
-                </Tooltip>
-              )}
-
-              {/* Botão de áudio */}
-              <button
-                style={{
-                  position: "absolute",
-                  top: "16px",
-                  right: "16px",
-                  background:
-                    "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-                  border: "1px solid #dee2e6",
-                  color: partnerColor(),
-                  cursor: "pointer",
-                  // fontSize: "14px",
-                  padding: "8px",
-                  borderRadius: "12px",
-                  width: "36px",
-                  height: "36px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                  boxShadow:
-                    "0 3px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)",
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  readText(sentence.english, true, "en", selectedVoice);
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = `linear-gradient(135deg, ${partnerColor()} 0%, ${partnerColor()}dd 100%)`;
-                  e.currentTarget.style.color = "white";
-                  e.currentTarget.style.borderColor = partnerColor();
-                  e.currentTarget.style.transform = "scale(1.05)";
-                  e.currentTarget.style.boxShadow = `0 6px 20px ${partnerColor()}30, inset 0 1px 0 rgba(255,255,255,0.3)`;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background =
-                    "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)";
-                  e.currentTarget.style.color = partnerColor();
-                  e.currentTarget.style.borderColor = "#dee2e6";
-                  e.currentTarget.style.transform = "scale(1)";
-                  e.currentTarget.style.boxShadow =
-                    "0 3px 10px rgba(0,0,0,0.08), inset 0 1px 0 rgba(255,255,255,0.6)";
-                }}
-              >
-                <i className="fa fa-volume-up" aria-hidden="true" />
-              </button>
-
               <div
                 style={{
-                  marginTop: "60px",
-                  paddingTop: "20px",
-                  borderTop: "1px solid #f0f3f6",
-                  position: "relative",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  justifyContent: "space-between",
+                  marginBottom: 4,
                 }}
               >
-                {/* Decorative line */}
+                <span
+                  style={{ display: "flex", alignItems: "center", gap: 12 }}
+                >
+                  <Tooltip title="Ouvir" placement="top" arrow>
+                    <button
+                      style={{
+                        border: "none",
+                        color: partnerColor(),
+                        cursor: "pointer",
+                        padding: "0",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "13px",
+                        background: "none",
+                        boxShadow: "0 1px 2px #e3e6ea",
+                        transition: "all 0.2s",
+                        opacity: 0.6,
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        readText(sentence.english, true, "en", selectedVoice);
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = "1";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = "0.6";
+                      }}
+                    >
+                      <i className="fa fa-volume-up" aria-hidden="true" />
+                    </button>
+                  </Tooltip>
+                </span>
+                <span>
+                  {!clickedButtons.has(i) && (
+                    <Tooltip
+                      title="Adicionar ao flashcard"
+                      placement="top"
+                      arrow
+                    >
+                      <button
+                        style={{
+                          backgroundColor: partnerColor(),
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "22px",
+                          height: "22px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontWeight: "bold",
+                          fontSize: "15px",
+                          cursor: "pointer",
+                          boxShadow: "0 1px 2px #e3e6ea",
+                          transition: "all 0.2s",
+                          opacity: 0.7,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          addNewCards(sentence.english, sentence.portuguese, i);
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.opacity = "1";
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.opacity = "0.7";
+                        }}
+                      >
+                        +
+                      </button>
+                    </Tooltip>
+                  )}
+                </span>
+              </div>
+              <div>
                 <div
                   style={{
-                    position: "absolute",
-                    top: "-1px",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: "60px",
-                    height: "2px",
-                    background: `linear-gradient(90deg, transparent 0%, ${partnerColor()} 50%, transparent 100%)`,
-                  }}
-                />
-
-                <div
-                  style={{
-                    // fontSize: "18px",
-                    fontWeight: "600",
-                    color: "#1a202c",
-                    lineHeight: "1.6",
-                    marginBottom: "16px",
-                    letterSpacing: "-0.01em",
-                    textShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                    fontWeight: 600,
+                    color: "#222",
+                    fontSize: "15px",
+                    fontFamily: textTitleFont(),
+                    marginBottom: 2,
+                    wordBreak: "break-word",
                   }}
                 >
                   {sentence.english}
                 </div>
-
                 <div
                   style={{
-                    // fontSize: "15px",
-                    color: "#6b7280",
-                    lineHeight: "1.5",
-                    padding: "12px 20px",
-                    backgroundColor: "#f8fafc",
-                    borderRadius: "12px",
-                    borderLeft: `4px solid ${partnerColor()}30`,
-                    boxShadow: "inset 0 1px 2px rgba(0,0,0,0.03)",
+                    color: "#6c757d",
+                    fontStyle: "italic",
+                    fontSize: "14px",
+                    wordBreak: "break-word",
                   }}
                 >
                   {sentence.portuguese}

@@ -286,7 +286,8 @@ export const TopBar: FC = () => {
               {UniversalTexts.homePage}
             </span>
           </NavLink>
-          {toTutoree.map((link, index) => {
+   
+          {allLinksForUser.map((link, index) => {
             return (
               <NavLink
                 key={index}
@@ -313,7 +314,7 @@ export const TopBar: FC = () => {
               </NavLink>
             );
           })}
-          {allLinksForUser.map((link, index) => {
+                 {toTutoree.map((link, index) => {
             return (
               <NavLink
                 key={index}
@@ -422,30 +423,7 @@ export const TopBar: FC = () => {
                       left: "0",
                     }}
                   >
-                    {toTutoree.map((link, index) => {
-                      return (
-                        <NavLink
-                          key={index}
-                          style={{
-                            margin: "5px",
-                            color: location.pathname.includes(link.endpoint)
-                              ? partnerColor()
-                              : "#000",
-                            paddingBottom: "5px",
-                            cursor: location.pathname.includes(link.endpoint)
-                              ? "default"
-                              : "pointer",
-                            textDecoration: "none",
-                          }}
-                          to={link.endpoint}
-                        >
-                          <SpanHover>
-                            <i className={`fa fa-${link.icon}`} />
-                            {link.title}
-                          </SpanHover>
-                        </NavLink>
-                      );
-                    })}
+          
                     {allLinksForUser
                       .filter((link) => link.isLearning)
                       .map((link: any, index: any) => (
@@ -471,6 +449,30 @@ export const TopBar: FC = () => {
                           </SpanHover>
                         </NavLink>
                       ))}
+                                {toTutoree.map((link, index) => {
+                      return (
+                        <NavLink
+                          key={index}
+                          style={{
+                            margin: "5px",
+                            color: location.pathname.includes(link.endpoint)
+                              ? partnerColor()
+                              : "#000",
+                            paddingBottom: "5px",
+                            cursor: location.pathname.includes(link.endpoint)
+                              ? "default"
+                              : "pointer",
+                            textDecoration: "none",
+                          }}
+                          to={link.endpoint}
+                        >
+                          <SpanHover>
+                            <i className={`fa fa-${link.icon}`} />
+                            {link.title}
+                          </SpanHover>
+                        </NavLink>
+                      );
+                    })}
                   </div>
                 )}
               </div>
