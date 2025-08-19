@@ -80,6 +80,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [showClasses, setShowClasses] = useState(false);
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
+  const [theGroup, setTheGroup] = useState("");
   const [video, setVideo] = useState("");
   const [googleDriveLink, setGoogleDriveLink] = useState("");
   const [homework, setHomework] = useState("");
@@ -103,6 +104,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [loadingTutoringDays, setLoadingTutoringDays] = useState(false);
   const [newEventId, setNewEventId] = useState("");
   const [studentsList, setStudentsList] = useState([]);
+  const [groupsList, setGroupsList] = useState([]);
   const [events, setEvents] = useState([]);
   const [isTutoring, setIsTutoring] = useState(false);
   const [homeworkAdded, setHomeworkAdded] = useState(false);
@@ -115,6 +117,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [editCategory, setEditCategory] = useState("");
   const [seeReplenish, setSeeReplenish] = useState(false);
   const [status, setStatus] = useState("");
+  const [groupName, setGroupName] = useState("");
+  const [groupId, setGroupId] = useState("");
   const [duration, setDuration] = useState(60);
   const [name, setName] = useState("");
   const [isModalOfTutoringsVisible, setIsModalOfTutoringsVisible] =
@@ -132,6 +136,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [newClass, setNewClass] = useState({
     date: "",
     time: "",
+    group: "",
     link: "",
     description: "",
     category: "",
@@ -216,7 +221,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setGoogleDriveLink("");
     setHomework("");
     setDueDate(new Date().toISOString().split("T")[0]);
+    setGroupsList([]);
     setStudentsList([]);
+    setGroupsList([]);
     setShowSeeEditTutoring(false);
     setShowEditForm(false);
     setShowHomework(false);
@@ -273,6 +280,19 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         console.log(error, "Erro ao encontrar alunos");
       }
     }
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/groups/${myId}`,
+          { headers }
+        );
+        const res = response.data.groups;
+        console.log(response.data.groups);
+        setGroupsList(res);
+      } catch (error) {
+        console.log(error, "Erro ao encontrar grupos");
+      }
+    }
   };
   const fetchTodo = async (id) => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
@@ -291,6 +311,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
   const [isFee, setIsFee] = useState(true);
   const resetEveryThing = () => {
+    setGroupsList([]);
     setStudentsList([]);
     setEvents([]);
     setShowSeeEditTutoring(false);
@@ -325,6 +346,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
+
+      console.log(response.data);
       const res = response.data.eventsList;
       const resTodos = response.data.todosList;
 
@@ -374,6 +397,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
+
+      console.log(response.data);
       const res = response.data.eventsList;
       const eventsLoop = res.map((event) => {
         const nextDay = new Date(event.date);
@@ -413,6 +438,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
+
+      console.log(response.data);
       const res = response.data.eventsList;
       const eventsLoop = res.map((event) => {
         const nextDay = new Date(event.date);
@@ -477,7 +504,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newFlashcards = response.data.event.flashcards || "";
       const newTime = response.data.event.time;
       const newEventId = response.data.event._id;
-
+      const newGroupId = response.data.event.group || "";
+      const newGroupName = response.data.event.groupName || "";
+      console.log("olha aqq", response.data);
       let mappedStatus = newStatus;
       if (newStatus === "marcado") {
         mappedStatus = "Scheduled";
@@ -491,6 +520,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setHomeworkAdded(newHomeworkAdded);
       setName(newStudent);
       setStatus(mappedStatus);
+      setGroupName(newGroupName);
+      setGroupId(newGroupId);
       setCategory(newCategory);
       setNewStudentId(newStudentID);
       setNewEventId(newEventId);
@@ -551,6 +582,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           date,
           time: theTime,
           link,
+          group: theGroup,
           description,
         },
         {
@@ -867,6 +899,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
     const missingFields = [];
     if (!updatedClass.category) missingFields.push("category");
+    if (!updatedClass.group) missingFields.push("group");
     if (!updatedClass.date) missingFields.push("date");
     if (!updatedClass.time) missingFields.push("time");
     if (!updatedClass.link) missingFields.push("link");
@@ -920,6 +953,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         date: newClass.date,
         time: newClass.time,
         link: newClass.link,
+        group: newClass.group || "",
         description: newClass.description,
         category: newClass.category,
         duration: newClass.duration || 55,
@@ -2086,6 +2120,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           .map((event, eventIndex) => {
                             const categoryColors = {
                               "Group Class": { bg: "#ff6b35", text: "#fff" },
+                              "Established Group Class": {
+                                bg: "#2700a9ff",
+                                text: "#fff",
+                              },
                               Rep: { bg: partnerColor(), text: "#fff" },
                               Tutoring: { bg: "#111", text: "#fff" },
                               "Prize Class": { bg: "#27ae60", text: "#fff" },
@@ -2229,28 +2267,14 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       paddingRight: "4rem",
                                     }}
                                   >
-                                    {(event.student &&
-                                      truncateString(event.student, 11)) ||
-                                      (event.description &&
-                                        truncateString(
-                                          event.description,
-                                          10
-                                        )) ||
-                                      "No description"}
+                                    {event.groupName
+                                      ? truncateString(event.groupName, 11)
+                                      : event.student
+                                      ? truncateString(event.student, 11)
+                                      : event.description
+                                      ? truncateString(event.description, 10)
+                                      : "No description"}
                                   </div>
-
-                                  {/* Time Display */}
-                                  {/* <div
-                                    style={{
-                                      fontWeight: "700",
-                                      opacity: 0.9,
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "2px",
-                                    }}
-                                  >
-                                    
-                                  </div> */}
                                 </div>
 
                                 {/* Status Footer */}
@@ -4064,6 +4088,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     ? "Janela de Marcar Reposição"
                                     : category === "Prize Class"
                                     ? "Prize Class"
+                                    : category === "Established Group Class"
+                                    ? `Aula do grupo: ${groupName}`
                                     : category === "Tutoring"
                                     ? "Tutoring: Private Class"
                                     : ""}
@@ -5566,8 +5592,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             value: "Standalone",
                           },
                           {
-                            text: "Aula de grupo",
+                            text: "Aula Geral",
                             value: "Group Class",
+                          },
+                          {
+                            text: "Aula de um Grupo",
+                            value: "Established Group Class",
                           },
                           {
                             text: "Aula de reposição",
@@ -5629,6 +5659,45 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           {studentsList.map((student, index) => (
                             <option key={index} value={student.id}>
                               {student.name} {student.lastname}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
+                    {/* Student Selection (if tutoring) */}
+                    {newClass.category === "Established Group Class" && (
+                      <div>
+                        <label
+                          style={{
+                            display: "block",
+                            marginBottom: "0.5rem",
+                            fontWeight: "600",
+                            color: "#495057",
+                            fontSize: "0.9rem",
+                          }}
+                        >
+                          👤 Selecionar Grupo
+                        </label>
+                        <select
+                          value={newClass.group}
+                          onChange={(e) =>
+                            handleNewClassChange("group", e.target.value)
+                          }
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            fontSize: "0.9rem",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="" hidden>
+                            Selecione o grupo...
+                          </option>
+                          {groupsList.map((group, index) => (
+                            <option key={index} value={group._id}>
+                              {group.name}
                             </option>
                           ))}
                         </select>
@@ -6078,7 +6147,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
                           { headers }
                         );
+
+                        console.log(response.data);
                         const res = response.data.eventsList;
+
                         const eventsLoop = res.map((event) => {
                           const nextDay = new Date(event.date);
                           nextDay.setDate(nextDay.getDate() + 1);

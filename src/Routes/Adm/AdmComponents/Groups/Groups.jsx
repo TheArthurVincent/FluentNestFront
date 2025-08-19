@@ -204,6 +204,7 @@ export function Groups({ headers, id }) {
       } catch (error) {
         notifyAlert("Erro ao encontrar alunos");
       }
+      getGroups();
     } else {
       console.log("no", groupName);
     }
@@ -227,6 +228,7 @@ export function Groups({ headers, id }) {
       } catch (error) {
         notifyAlert("Erro ao encontrar alunos");
       }
+      getGroups();
     } else {
       console.log("no", groupDescription);
     }
