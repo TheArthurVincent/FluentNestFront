@@ -47,9 +47,14 @@ import {
 } from "./CalendarComponents/MyCalendarFuncions";
 import ToDoAddButton from "./CalendarComponents/ToDoNew";
 import {
+  containerPlus,
   inputCheckBox,
+  recurrentButton,
+  seePlusButtonsStyles,
+  singleClassButton,
   spanChecked,
   styleLiChecked,
+  updateButton,
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
@@ -1540,6 +1545,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     }
   };
 
+  const authorizeOrNot =
+    thePermissions === "superadmin" || thePermissions === "teacher";
+
   return (
     <>
       {headers ? (
@@ -1726,7 +1734,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 600,
                               }}
                             >
-{UniversalTexts.delete}                            </button>
+                              {UniversalTexts.delete}{" "}
+                            </button>
 
                             <button
                               onClick={() => setShowEditSection(false)}
@@ -1739,7 +1748,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 500,
                               }}
                             >
-    {UniversalTexts.cancel}                            </button>
+                              {UniversalTexts.cancel}{" "}
+                            </button>
 
                             <button
                               onClick={() => {
@@ -1791,8 +1801,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           fontWeight: 600,
                         }}
                       >
-
-{UniversalTexts.cancel}
+                        {UniversalTexts.cancel}
                       </button>
                       <button
                         onClick={() => {
@@ -1807,7 +1816,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           fontWeight: 600,
                         }}
                       >
-                  {UniversalTexts.delete}
+                        {UniversalTexts.delete}
                       </button>
                     </div>
                   </div>
@@ -2467,8 +2476,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     }}
                   >
                     {/* Admin Section */}
-                    {(thePermissions == "superadmin" ||
-                      thePermissions == "teacher") && (
+                    {authorizeOrNot && (
                       <div>
                         <div
                           style={{
@@ -4474,99 +4482,97 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           </div>
                         )}
-                        {!postNew &&
-                          (thePermissions == "teacher" ||
-                            thePermissions == "superadmin") && (
-                            <div
+                        {!postNew && authorizeOrNot && (
+                          <div
+                            style={{
+                              backgroundColor: "#f8f9fa",
+                              padding: "1.5rem",
+                              borderRadius: "8px",
+                              border: "1px solid #e9ecef",
+                            }}
+                          >
+                            <h4
                               style={{
-                                backgroundColor: "#f8f9fa",
-                                padding: "1.5rem",
-                                borderRadius: "8px",
-                                border: "1px solid #e9ecef",
+                                margin: "0 0 1rem 0",
+                                color: partnerColor(),
                               }}
                             >
-                              <h4
-                                style={{
-                                  margin: "0 0 1rem 0",
-                                  color: partnerColor(),
-                                }}
-                              >
-                                {UniversalTexts.calendarModal.taskChecklist}
-                              </h4>
-                              <div style={{ display: "grid", gap: "5px" }}>
-                                {[
-                                  {
-                                    key: "checkList1",
-                                    text: UniversalTexts.calendarModal
-                                      .realizedClass,
-                                    handler: handleCheckbox1Change,
-                                  },
-                                  {
-                                    key: "checkList2",
-                                    text: UniversalTexts.calendarModal
-                                      .uploadVideo,
-                                    handler: handleCheckbox2Change,
-                                  },
-                                  {
-                                    key: "checkList3",
-                                    text: UniversalTexts.calendarModal
-                                      .uploadClassesToPlatform,
-                                    handler: handleCheckbox3Change,
-                                  },
-                                  {
-                                    key: "checkList4",
-                                    text: UniversalTexts.calendarModal
-                                      .addHomeworkActivities,
-                                    handler: handleCheckbox4Change,
-                                  },
-                                  {
-                                    key: "checkList5",
-                                    text: UniversalTexts.calendarModal
-                                      .uploadFlashcards,
-                                    handler: handleCheckbox5Change,
-                                  },
-                                ].map((item, index) => (
-                                  <label
-                                    key={index}
+                              {UniversalTexts.calendarModal.taskChecklist}
+                            </h4>
+                            <div style={{ display: "grid", gap: "5px" }}>
+                              {[
+                                {
+                                  key: "checkList1",
+                                  text: UniversalTexts.calendarModal
+                                    .realizedClass,
+                                  handler: handleCheckbox1Change,
+                                },
+                                {
+                                  key: "checkList2",
+                                  text: UniversalTexts.calendarModal
+                                    .uploadVideo,
+                                  handler: handleCheckbox2Change,
+                                },
+                                {
+                                  key: "checkList3",
+                                  text: UniversalTexts.calendarModal
+                                    .uploadClassesToPlatform,
+                                  handler: handleCheckbox3Change,
+                                },
+                                {
+                                  key: "checkList4",
+                                  text: UniversalTexts.calendarModal
+                                    .addHomeworkActivities,
+                                  handler: handleCheckbox4Change,
+                                },
+                                {
+                                  key: "checkList5",
+                                  text: UniversalTexts.calendarModal
+                                    .uploadFlashcards,
+                                  handler: handleCheckbox5Change,
+                                },
+                              ].map((item, index) => (
+                                <label
+                                  key={index}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "5px",
+                                    padding: "5px",
+                                    backgroundColor: eventFull[item.key]
+                                      ? "#d4edda"
+                                      : "white",
+                                    borderRadius: "8px",
+                                    border: "1px solid #dee2e6",
+                                    cursor: "pointer",
+                                    transition: "all 0.2s",
+                                  }}
+                                >
+                                  <input
+                                    checked={eventFull[item.key] || false}
+                                    type="checkbox"
+                                    onChange={item.handler}
                                     style={{
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "5px",
-                                      padding: "5px",
-                                      backgroundColor: eventFull[item.key]
-                                        ? "#d4edda"
-                                        : "white",
-                                      borderRadius: "8px",
-                                      border: "1px solid #dee2e6",
+                                      width: "18px",
+                                      height: "18px",
                                       cursor: "pointer",
-                                      transition: "all 0.2s",
+                                    }}
+                                  />
+                                  <span
+                                    style={{
+                                      color: "#495057",
+                                      textDecoration: eventFull[item.key]
+                                        ? "line-through"
+                                        : "none",
                                     }}
                                   >
-                                    <input
-                                      checked={eventFull[item.key] || false}
-                                      type="checkbox"
-                                      onChange={item.handler}
-                                      style={{
-                                        width: "18px",
-                                        height: "18px",
-                                        cursor: "pointer",
-                                      }}
-                                    />
-                                    <span
-                                      style={{
-                                        color: "#495057",
-                                        textDecoration: eventFull[item.key]
-                                          ? "line-through"
-                                          : "none",
-                                      }}
-                                    >
-                                      {item.text}
-                                    </span>
-                                  </label>
-                                ))}
-                              </div>
+                                    {item.text}
+                                  </span>
+                                </label>
+                              ))}
                             </div>
-                          )}
+                          </div>
+                        )}
                       </span>
                     )}
                   </div>
@@ -6098,18 +6104,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <button
                     disabled={!disabledAvoid}
                     style={{
-                      padding: "6px 12px",
-                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                      border: "1px solid #dee2e6",
-                      borderRadius: "6px",
+                      ...singleClassButton,
                       color: !disabledAvoid ? "#adb5bd" : "#495057",
+                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
                       cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      fontSize: "12px",
-                      fontWeight: "400",
-                      transition: "all 0.15s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "4px",
                     }}
                     onClick={async () => {
                       if (!disabledAvoid) return; // Não executar se estiver desabilitado
@@ -6137,14 +6135,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           const nextDay = new Date(event.date);
                           nextDay.setDate(nextDay.getDate() + 1);
                           event.date = formattedDates(nextDay);
-                          // Garantir que todos os eventos tenham um status
                           if (!event.status) {
                             event.status = "marcado";
                           }
                           return event;
                         });
                         setEvents(eventsLoop);
-                        // Reset formulários
                         setShowEditForm(false);
                         setShowHomework(false);
                         setShowFlashcards(false);
@@ -6166,18 +6162,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   <button
                     disabled={!disabledAvoid}
                     style={{
-                      width: "32px",
-                      height: "32px",
+                      ...updateButton,
                       background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                      border: "1px solid #dee2e6",
-                      borderRadius: "6px",
                       color: !disabledAvoid ? "#adb5bd" : "#6c757d",
                       cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      fontSize: "12px",
-                      transition: "all 0.15s ease",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
                     }}
                     onClick={() => {
                       fetchGeneralEvents();
@@ -6186,19 +6174,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     <i className="fa fa-refresh" />
                   </button>
                   {/* Botão Recorrentes */}
-                  {(thePermissions === "superadmin" ||
-                    thePermissions === "teacher") && (
+                  {authorizeOrNot && (
                     <button
                       disabled={!disabledAvoid}
                       style={{
-                        border: "1px solid #dee2e6",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                        transition: "all 0.15s ease",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        color: "grey",
+                        ...recurrentButton,
                         background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
                         cursor: !disabledAvoid ? "not-allowed" : "pointer",
                       }}
@@ -6220,18 +6200,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   {!seePlusButtons && (
                     <button
                       style={{
-                        width: "32px",
-                        height: "32px",
-                        background: "#9fe39fff",
-                        border: "1px solid #dee2e6",
-                        borderRadius: "6px",
-                        color: !disabledAvoid ? "#adb5bd" : "#6c757d",
+                        ...seePlusButtonsStyles,
                         cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                        fontSize: "12px",
-                        transition: "all 0.15s ease",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
                       }}
                       onClick={() => setSeePlusButtons(!seePlusButtons)}
                     >
@@ -6241,18 +6211,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   {/* Botões das Adições */}
                 </div>
                 {seePlusButtons && (
-                  <div
-                    style={{
-                      background: "#9fe39fff",
-                      display: "flex",
-                      gap: "2px",
-                      padding: "5px",
-                      borderRadius: "5px",
-                    }}
-                  >
+                  <div style={containerPlus}>
                     {/* Botão Nova  Tarefa */}
-                    {(thePermissions === "superadmin" ||
-                      thePermissions === "teacher") && (
+                    {authorizeOrNot && (
                       <ToDoAddButton
                         userId={myId}
                         onCreated={() => {
@@ -6261,20 +6222,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       />
                     )}
                     {/* Botão Nova Aula */}
-                    {(thePermissions === "superadmin" ||
-                      thePermissions === "teacher") && (
+                    {authorizeOrNot && (
                       <button
                         style={{
-                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                          border: "1px solid #dee2e6",
-                          borderRadius: "6px",
-                          color: "grey",
+                          ...singleClassButton,
                           cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                          fontSize: "12px",
-                          transition: "all 0.15s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
                         }}
                         onClick={() => {
                           handleSeeModalNew();
