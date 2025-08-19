@@ -325,7 +325,6 @@ export function Groups({ headers, id }) {
                     fontStyle: "italic",
                   }}
                 >
-                  #{index + 1} |{" "}
                   {group.description
                     ? group.description
                     : "Grupo sem descrição"}
