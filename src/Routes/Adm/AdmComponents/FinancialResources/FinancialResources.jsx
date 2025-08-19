@@ -456,13 +456,13 @@ export function FinancialResources({ headers, id }) {
         }
       );
       notifyAlert("Ítem excluído com sucesso!", "green");
-  await seeReports(currentMonthYear);
+      await seeReports(currentMonthYear);
 
-    // Fecha o modal
-    handleFinancialReportModal();
+      // Fecha o modal
+      handleFinancialReportModal();
 
-    // Resetar botão de confirmação
-    setSeeButtonDeleteItem(false);
+      // Resetar botão de confirmação
+      setSeeButtonDeleteItem(false);
     } catch (error) {
       notifyAlert("Erro ao excluir ítem");
       console.log("error", error);
