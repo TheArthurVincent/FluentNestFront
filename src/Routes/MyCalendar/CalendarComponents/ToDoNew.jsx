@@ -189,6 +189,7 @@ function ToDoAddButton({ userId, onCreated }) {
                   padding: "8px 16px",
                   fontWeight: 600,
                   backgroundColor: "#edededff",
+                  color: "grey",
                   marginBottom: "1rem",
                 }}
               >

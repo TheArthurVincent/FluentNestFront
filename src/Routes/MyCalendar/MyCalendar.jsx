@@ -53,6 +53,7 @@ import {
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
 
 export default function MyCalendar({ headers, thePermissions, myId }) {
+  const [seePlusButtons, setSeePlusButtons] = useState(false);
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
@@ -6010,8 +6011,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               )}
             </div>
           </>
-
-          {/* Toolbar moderna do calendário */}
           <div
             style={{
               marginBottom: "1rem",
@@ -6022,7 +6021,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               padding: "12px 16px",
             }}
           >
-            {/* Seção Principal - Navegação compacta */}
             <div
               style={{
                 display: "flex",
@@ -6032,7 +6030,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 gap: "8px",
               }}
             >
-              {/* Navegação de Semana - Compacta */}
               <div
                 style={{
                   display: "flex",
@@ -6131,11 +6128,15 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 />
               </div>
 
+            <div
+            style={{
+              display:"grid",gap:"5px"
+            }}
+            >
               {/* Ações rápidas - Compactas */}
               <div
                 style={{
                   display: "flex",
-
                   gap: "6px",
                   alignItems: "center",
                 }}
@@ -6224,25 +6225,19 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     alignItems: "center",
                     justifyContent: "center",
                   }}
-                  onClick={() => fetchGeneralEvents()}
+                  onClick={() => {
+                    fetchGeneralEvents();
+                  }}
                 >
                   <i className="fa fa-refresh" />
                 </button>
-                {(thePermissions === "superadmin" ||
-                  thePermissions === "teacher") && (
-                  <ToDoAddButton
-                    userId={myId}
-                    onCreated={() => {
-                      setAlternateBoolean(!alternateBoolean);
-                    }}
-                  />
-                )}
-                {/* Botão Nova Aula */}
-                {(thePermissions === "superadmin" ||
-                  thePermissions === "teacher") && (
+                {/* Botão Ver Adições */}
+                {!seePlusButtons && (
                   <button
                     style={{
-                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                      width: "32px",
+                      height: "32px",
+                      background: "#9fe39fff",
                       border: "1px solid #dee2e6",
                       borderRadius: "6px",
                       color: !disabledAvoid ? "#adb5bd" : "#6c757d",
@@ -6253,36 +6248,91 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       alignItems: "center",
                       justifyContent: "center",
                     }}
-                    onClick={() => {
-                      handleSeeModalNew();
-                    }}
+                    onClick={() => setSeePlusButtons(!seePlusButtons)}
                   >
-                    <i className="fa fa-plus" />
-                    <span>{UniversalTexts.calendarModal.singleClass}</span>
+                    +
                   </button>
                 )}
-                {/* Botão Recorrentes */}
-                {(thePermissions === "superadmin" ||
-                  thePermissions === "teacher") && (
-                  <button
-                    disabled={!disabledAvoid}
+                {/* Botões das Adições */}
+</div>
+                {seePlusButtons && (
+                  <div
                     style={{
-                      border: "1px solid #dee2e6",
-                      borderRadius: "6px",
-                      fontSize: "12px",
-                      transition: "all 0.15s ease",
+                      background: "#9fe39fff",
                       display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: !disabledAvoid ? "#adb5bd" : "#6c757d",
-                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      gap: "2px",
+                      padding: "5px",
+                      borderRadius: "5px",
                     }}
-                    onClick={() => handleSeeModalOfTutorings()}
                   >
-                    <i className="fa fa-repeat" style={{ fontSize: "10px" }} />
-                    <span>{UniversalTexts.calendarModal.recurringClasses}</span>
-                  </button>
+                    {/* Botão Nova  Tarefa */}
+                    {(thePermissions === "superadmin" ||
+                      thePermissions === "teacher") && (
+           
+                      <ToDoAddButton
+                        userId={myId}
+                        onCreated={() => {
+                          setAlternateBoolean(!alternateBoolean);
+                        }}
+                      />
+                    )}
+                    {/* Botão Nova Aula */}
+                    {(thePermissions === "superadmin" ||
+                      thePermissions === "teacher") && (
+                      <button
+                        style={{
+                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                          border: "1px solid #dee2e6",
+                          borderRadius: "6px",
+                          color: "grey",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                          fontSize: "12px",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        onClick={() => {
+                          handleSeeModalNew();
+                          setSeePlusButtons(false);
+                        }}
+                      >
+                        <i className="fa fa-plus" />
+                        <span>{UniversalTexts.calendarModal.singleClass}</span>
+                      </button>
+                    )}
+                    {/* Botão Recorrentes */}
+                    {(thePermissions === "superadmin" ||
+                      thePermissions === "teacher") && (
+                      <button
+                        disabled={!disabledAvoid}
+                        style={{
+                          border: "1px solid #dee2e6",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "grey",
+                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                        }}
+                        onClick={() => {
+                          handleSeeModalOfTutorings();
+                          setSeePlusButtons(false);
+                        }}
+                      >
+                        <i
+                          className="fa fa-repeat"
+                          style={{ fontSize: "10px" }}
+                        />
+                        <span>
+                          {UniversalTexts.calendarModal.recurringClasses}
+                        </span>
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </div>
