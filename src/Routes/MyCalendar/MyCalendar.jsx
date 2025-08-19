@@ -6231,6 +6231,37 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <i className="fa fa-refresh" />
                 </button>
+                      {/* Botão Recorrentes */}
+                    {(thePermissions === "superadmin" ||
+                      thePermissions === "teacher") && (
+                      <button
+                        disabled={!disabledAvoid}
+                        style={{
+                          border: "1px solid #dee2e6",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                          transition: "all 0.15s ease",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          color: "grey",
+                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                        }}
+                        onClick={() => {
+                          handleSeeModalOfTutorings();
+                          setSeePlusButtons(false);
+                        }}
+                      >
+                        <i
+                          className="fa fa-repeat"
+                          style={{ fontSize: "10px" }}
+                        />
+                        <span>
+                          {UniversalTexts.calendarModal.recurringClasses}
+                        </span>
+                      </button>
+                    )}
                 {/* Botão Ver Adições */}
                 {!seePlusButtons && (
                   <button
@@ -6301,37 +6332,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         <span>{UniversalTexts.calendarModal.singleClass}</span>
                       </button>
                     )}
-                    {/* Botão Recorrentes */}
-                    {(thePermissions === "superadmin" ||
-                      thePermissions === "teacher") && (
-                      <button
-                        disabled={!disabledAvoid}
-                        style={{
-                          border: "1px solid #dee2e6",
-                          borderRadius: "6px",
-                          fontSize: "12px",
-                          transition: "all 0.15s ease",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "grey",
-                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                        }}
-                        onClick={() => {
-                          handleSeeModalOfTutorings();
-                          setSeePlusButtons(false);
-                        }}
-                      >
-                        <i
-                          className="fa fa-repeat"
-                          style={{ fontSize: "10px" }}
-                        />
-                        <span>
-                          {UniversalTexts.calendarModal.recurringClasses}
-                        </span>
-                      </button>
-                    )}
+              
                   </div>
                 )}
               </div>
