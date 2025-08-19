@@ -49,6 +49,7 @@ import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
+import axios from "axios";
 
 export var currentUrl = window.location.href;
 export var isArvin = currentUrl.includes("arvinplatform");
@@ -122,9 +123,8 @@ function App() {
 
   // Protege manipulação do DOM
   try {
-        document.body.style.backgroundColor = theBackgroundColor();
-        document.body.style.backgroundImage = "";
-
+    document.body.style.backgroundColor = theBackgroundColor();
+    document.body.style.backgroundImage = "";
   } catch (err) {
     console.warn("[App] Erro ao definir background:", err);
   }
