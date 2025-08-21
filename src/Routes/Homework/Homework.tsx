@@ -28,9 +28,7 @@ interface HWProps {
 }
 
 export default function Homework({ headers, setChange, change }: HWProps) {
-  const [theStatus, setTheStatus] = useState<"all" | "pending" | "done">(
-    "pending"
-  );
+  const [theStatus, setTheStatus] = useState<"all" | "pending" | "done">("all");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [both, setBoth] = useState<boolean>(false);
   const [tutoringList, setTutoringList] = useState<any>([]);
@@ -392,7 +390,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               maxWidth: window.innerWidth <= 768 ? "100%" : "800px",
             }}
           >
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 gap: "0.5rem",
@@ -434,7 +432,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               >
                 Completed
               </button>
-            </div>{" "}
+            </div> */}
             <div
               style={{
                 display: "flex",
@@ -444,6 +442,18 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                 alignItems: "center",
               }}
             >
+              <button
+                style={{
+                  border: both
+                    ? `1px solid ${partnerColor()}`
+                    : "1px solid #ddd",
+                }}
+                onClick={() => {
+                  setBoth(true); /* opcional: setIsSubmitted(false); */
+                }}
+              >
+                All
+              </button>
               <button
                 style={{
                   border: isSubmitted
@@ -472,20 +482,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               >
                 Not submitted
               </button>
-
-              <button
-                style={{
-                  border: both
-                    ? `1px solid ${partnerColor()}`
-                    : "1px solid #ddd",
-                }}
-                onClick={() => {
-                  setBoth(true); /* opcional: setIsSubmitted(false); */
-                }}
-              >
-                All
-              </button>
-            </div>{" "}
+            </div>
             <ul
               style={{
                 width: "100%",
@@ -507,8 +504,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     <li
                       key={index}
                       style={{
-                        display:
-                          statusMatch && submittedMatch ? "block" : "none",
+                        display: submittedMatch ? "block" : "none",
 
                         listStyle: "none",
                         margin:
@@ -526,11 +522,9 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       onMouseEnter={(e) => {
                         e.currentTarget.style.boxShadow =
                           "0 2px 8px rgba(0, 0, 0, 0.08)";
-                        e.currentTarget.style.borderColor = "#e0e0e0";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.boxShadow = "none";
-                        e.currentTarget.style.borderColor = "#f0f0f0";
                       }}
                     >
                       {/* Header Section */}
