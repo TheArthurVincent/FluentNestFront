@@ -31,6 +31,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   const [theStatus, setTheStatus] = useState<"all" | "pending" | "done">(
     "pending"
   );
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [both, setBoth] = useState<boolean>(false);
   const [tutoringList, setTutoringList] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -479,6 +481,37 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                 Completed
               </button>
             </div>{" "}
+                <div
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                marginBottom: "1rem",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+      <button
+  style={{ border: isSubmitted ? `1px solid ${partnerColor()}` : "1px solid #ddd" }}
+  onClick={() => { setIsSubmitted(true); setBoth(false); }}
+>
+  Submitted
+</button>
+
+<button
+  style={{ border: !isSubmitted && !both ? `1px solid ${partnerColor()}` : "1px solid #ddd" }}
+  onClick={() => { setIsSubmitted(false); setBoth(false); }} // <- AQUI estava true
+>
+  Not submitted
+</button>
+
+<button
+  style={{ border: both ? `1px solid ${partnerColor()}` : "1px solid #ddd" }}
+  onClick={() => { setBoth(true); /* opcional: setIsSubmitted(false); */ }}
+>
+  All
+</button>
+
+            </div>{" "}
             <ul
               style={{
                 width: "100%",
@@ -488,14 +521,17 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               }}
             >
               {tutoringList.length > 0 ? (
-                tutoringList.map((homework: any, index: number) => (
-                  <li
+                tutoringList.map((homework: any, index: number) => 
+{
+                  const statusMatch = theStatus === "all" || theStatus === homework.status;
+
+const submittedMatch =  both || (isSubmitted ? !!homework.submitted : !homework.submitted);
+
+ return                 <li
                     key={index}
                     style={{
-                      display:
-                        theStatus === "all" || theStatus === homework.status
-                          ? "block"
-                          : "none",
+                      display: statusMatch && submittedMatch ? "block" : "none",
+
                       listStyle: "none",
                       margin:
                         window.innerWidth <= 768 ? "0.75rem 0.5rem" : "1rem 0",
@@ -1444,8 +1480,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                         </div>
                       </div>
                     )}
-                  </li>
-                ))
+                  </li>}
+                )
               ) : (
                 <li
                   style={{
