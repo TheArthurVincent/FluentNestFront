@@ -351,7 +351,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         gap: "12px",
                       }}
                     >
-                      {user.tutoree && (
+                      {user.tutoree && isArthurVincent && (
                         <div>
                           <span style={styles.profileLabel}>
                             🎁 Código promocional
