@@ -189,7 +189,6 @@ export function Invoice({ headers }: HeadersProps) {
         <div className="invoice__inner">
           <div className="invoice__head">
             <div className="brand">
-     
               {isArthurVincent && (
                 <img
                   src={
