@@ -74,6 +74,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [alternateBoolean, setAlternateBoolean] = useState(false);
   const [loadingModalTutoringsInfo, setLoadingModalTutoringsInfo] =
     useState(false);
+  const [showStudentsRecurring, setShowStudentsRecurring] = useState(true);
+  const [showGroupsRecurring, setShowGroupsRecurring] = useState(false);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState("");
   const [theTime, setTheTime] = useState("");
@@ -95,8 +97,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [uploading, setUploading] = useState(false);
   const [category, setCategory] = useState("");
   const [newStudentId, setNewStudentId] = useState("");
+  const [newGroupId, setNewGroupId] = useState("");
   const [showSeeEditTutoring, setShowSeeEditTutoring] = useState(false);
-  const [tutoringsListOfOneStudent, setTutoringsListOfOneStudent] = useState(
+  const [tutoringsListOfOneStudentOrGroup, setTutoringsListOfOneStudentOrGroup] = useState(
     []
   );
   const [loadingModalInfo, setLoadingModalInfo] = useState(false);
@@ -212,7 +215,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setCategory("");
     setNewStudentId("");
     setShowSeeEditTutoring(false);
-    setTutoringsListOfOneStudent([]);
+    setTutoringsListOfOneStudentOrGroup([]);
     setTheTime("");
     setShowClasses(false);
     setLink("");
@@ -557,7 +560,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       );
       const tutorings = response.data.tutorings;
       setLoadingTutoringDays(true);
-      setTutoringsListOfOneStudent(response.data.tutorings);
+      setTutoringsListOfOneStudentOrGroup(response.data.tutorings);
       setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
@@ -566,6 +569,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const fetchOneSetOfTutoringsInside = (e) => {
     const eTargetValue = e.target.value;
     setNewStudentId(eTargetValue);
+    setShowClasses(true);
+  };
+
+  const fetchOneSetOfGroupClassesInside = (e) => {
+    const eTargetValue = e.target.value;
+    setNewGroupId(eTargetValue);
+    console.log("e.target.value: ", e.target.value, "newGroupId: ", newGroupId);
     setShowClasses(true);
   };
 
@@ -4692,50 +4702,148 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   ×
                 </Xp>
               </div>
-
               {loadingModalTutoringsInfo ? (
                 <div style={{ textAlign: "center", padding: "2rem" }}>
                   <CircularProgress style={{ color: partnerColor() }} />
-                  ...
                 </div>
               ) : (
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label
+                  <div
                     style={{
-                      display: "block",
-                      marginBottom: "5px",
-                      fontWeight: "600",
-                      color: "#495057",
+                      display: "flex",
+                      gap: "1rem",
+                      justifyContent: "space-between",
                     }}
                   >
-                    {UniversalTexts.calendarModal.selectStudent}:
-                  </label>
-                  <select
-                    onChange={(e) => {
-                      fetchOneSetOfTutoringsInside(e);
-                    }}
-                    name="students"
-                    value={newStudentId}
-                    style={{
-                      width: "100%",
-                      padding: "5px",
-                      borderRadius: "8px",
-                      border: "1px solid #ced4da",
-
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <option value="category" hidden>
-                      Select student
-                    </option>
-                    {studentsList.map((student, index) => {
-                      return (
-                        <option key={index} value={student.id}>
-                          {student.name + " " + student.lastname}
+                    <div
+                      style={{
+                        borderRadius: "1rem 1rem 0 0",
+                        padding: "10px",
+                        backgroundColor: showStudentsRecurring
+                          ? "#eee"
+                          : "white",
+                      }}
+                    >
+                      <button
+                        style={{
+                          backgroundColor: showStudentsRecurring
+                            ? partnerColor()
+                            : "grey",
+                          color: "white",
+                          padding: "5px 1rem",
+                          borderRadius: "8px",
+                          border: "none",
+                          cursor: "pointer",
+                          marginBottom: "1rem",
+                        }}
+                        onClick={() => {
+                          setShowStudentsRecurring(true);
+                          setShowGroupsRecurring(false);
+                        }}
+                      >
+                        Selecionar Aluno
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        borderRadius: "1rem 1rem 0 0",
+                        padding: "10px",
+                        backgroundColor: showGroupsRecurring ? "#eee" : "white",
+                      }}
+                    >
+                      <button
+                        style={{
+                          backgroundColor: showGroupsRecurring
+                            ? partnerColor()
+                            : "grey",
+                          color: "white",
+                          padding: "5px 1rem",
+                          borderRadius: "8px",
+                          border: "none",
+                          cursor: "pointer",
+                          marginBottom: "1rem",
+                        }}
+                        onClick={() => {
+                          setShowStudentsRecurring(false);
+                          setShowGroupsRecurring(true);
+                        }}
+                      >
+                        Selecionar Grupo
+                      </button>
+                    </div>
+                  </div>
+                  {showStudentsRecurring && (
+                    <div
+                      style={{
+                        borderRadius: " 0 0 1rem 1rem",
+                        padding: "10px",
+                        backgroundColor: "#eee",
+                      }}
+                    >
+                      {/*Seleção do aluno para aulas recorrentes*/}
+                      <select
+                        onChange={(e) => {
+                          fetchOneSetOfTutoringsInside(e);
+                        }}
+                        value={newStudentId}
+                        style={{
+                          width: "100%",
+                          padding: "0.75rem",
+                          borderRadius: "8px",
+                          border: "1px solid #ced4da",
+                          fontSize: "0.9rem",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <option value="category" hidden>
+                          Select student
                         </option>
-                      );
-                    })}
-                  </select>
+                        {studentsList.map((student, index) => {
+                          return (
+                            <option key={index} value={student.id}>
+                              {student.name + " " + student.lastname}
+                            </option>
+                          );
+                        })}
+                      </select>
+                    </div>
+                  )}
+                  {showGroupsRecurring && (
+                    <>
+                      {/*Seleção do grupo para aulas recorrentes*/}
+                      <div
+                        style={{
+                          borderRadius: " 0 0 1rem 1rem",
+                          padding: "10px",
+                          backgroundColor: "#eee",
+                        }}
+                      >
+                        <select
+                          value={newGroupId}
+                          onChange={(e) => {
+                            fetchOneSetOfGroupClassesInside(e);
+                          }}
+                          style={{
+                            width: "100%",
+                            padding: "0.75rem",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            fontSize: "0.9rem",
+                            backgroundColor: "white",
+                          }}
+                        >
+                          <option value="" hidden>
+                            Selecione o grupo...
+                          </option>
+                          {groupsList.map((group, index) => (
+                            <option key={index} value={group._id}>
+                              {group.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
               {loadingTutoringDays ? (
@@ -4744,7 +4852,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 </div>
               ) : (
                 <div style={{ marginBottom: "1.5rem" }}>
-                  {showClasses && tutoringsListOfOneStudent.length > 0 && (
+                  {showClasses && tutoringsListOfOneStudentOrGroup.length > 0 && (
                     <div>
                       <h4
                         style={{ color: partnerColor(), marginBottom: "1rem" }}
@@ -4752,7 +4860,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         {UniversalTexts.calendarModal.currentClasses}
                       </h4>
                       <div style={{ display: "grid", gap: "5px" }}>
-                        {tutoringsListOfOneStudent
+                        {tutoringsListOfOneStudentOrGroup
                           .sort(
                             (a, b) =>
                               moment(a.day, "dddd").day() -
