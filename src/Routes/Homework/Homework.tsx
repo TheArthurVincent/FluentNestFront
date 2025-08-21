@@ -502,6 +502,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       backgroundColor: "#fdfdfd",
                       border: "1px solid #f0f0f0",
                       borderRadius: "4px",
+                      borderBottom: `${partnerColor()} 4px solid`,
+                      paddingBottom: `2rem`,
                       overflow: "hidden",
                       transition: "box-shadow 0.2s ease",
                     }}
