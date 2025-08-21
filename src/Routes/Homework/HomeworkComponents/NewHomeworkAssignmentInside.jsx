@@ -5,6 +5,7 @@ import { CircularProgress } from "@mui/material";
 import HTMLEditor from "../../../Resources/Components/HTMLEditor";
 import { partnerColor, textTitleFont } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 export function NewHomeworkAssignmentHere({
   headers,
@@ -14,21 +15,11 @@ export function NewHomeworkAssignmentHere({
   update,
   setUpdate,
 }) {
-  const [newDate, setNewDate] = useState("");
-  const [newAttachments, setAttachments] = useState("");
+  const { UniversalTexts } = useUserContext();
   const [dueDate, setDueDate] = useState("");
-  const [seeHW, setSeeHW] = useState(false);
   const [loadingHW, setLoadingHW] = useState(false);
-  const [loadingFlashcards, setLoadingFlashcards] = useState(false);
-  const [newFlashcards, setNewFlashcardsList] = useState("");
   const [newHWDescription, setNewHWDescription] = useState("");
-  const [student, setStudent] = useState([]);
-  const [standardValue, setStandardValue] = useState("Aluno");
-  const [button, setButton] = useState("Criar");
-  const [tutorings, setTutorings] = useState([]);
-  const [disabled, setDisabled] = useState(true);
-  const [loadingS, setLoadingS] = useState(true);
-  const [editorKey, setEditorKey] = useState(0); // Force re-render key
+  const [editorKey, setEditorKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const postHW = async () => {
@@ -42,8 +33,8 @@ export function NewHomeworkAssignmentHere({
         }
       );
       notifyAlert("HW criado com sucesso!", partnerColor());
-      handleHWDescriptionChange(""); // Clear the HTML editor
-      setEditorKey((prev) => prev + 1); // Force HTMLEditor re-render
+      handleHWDescriptionChange("");
+      setEditorKey((prev) => prev + 1);
       setIsModalOpen(false);
       setUpdate(!update);
     } catch (error) {
@@ -55,12 +46,9 @@ export function NewHomeworkAssignmentHere({
   const handleHWDescriptionChange = (htmlContent) => {
     setNewHWDescription(htmlContent);
   };
-  const handleFC = (htmlContent) => {
-    setNewFlashcardsList(htmlContent);
-  };
   return (
     <>
-      <button onClick={() => setIsModalOpen(true)}>Adicionar Homework</button>
+      <button onClick={() => setIsModalOpen(true)}>+ Homework</button>
       <article
         onClick={() => setIsModalOpen(false)}
         style={{
@@ -131,17 +119,8 @@ export function NewHomeworkAssignmentHere({
                 letterSpacing: "0.5px",
               }}
             >
-              Homework Avulso para <span>{studentName}</span>
-            </p>
-            <p
-              style={{
-                color: "#64748b",
-                fontSize: "0.75rem",
-                fontStyle: "italic",
-                marginTop: "0.5rem",
-              }}
-            >
-              Preencha os campos abaixo para criar um novo homework.
+              {UniversalTexts?.homeworkTitle || "Homework Avulso para"}{" "}
+              <span>{studentName}</span>
             </p>
           </div>
           <form
@@ -159,7 +138,7 @@ export function NewHomeworkAssignmentHere({
                 marginBottom: "0.3rem",
               }}
             >
-              Data de entrega
+              {UniversalTexts?.dueDate || "Data de entrega"}
             </label>
             <input
               style={{
@@ -190,7 +169,7 @@ export function NewHomeworkAssignmentHere({
                 marginBottom: "0.3rem",
               }}
             >
-              Descrição do Homework
+              {UniversalTexts?.homeworkDescription || "Descrição do Homework"}
             </label>
             <div
               style={{
@@ -202,7 +181,7 @@ export function NewHomeworkAssignmentHere({
               }}
             >
               <HTMLEditor
-                key={editorKey} // Force re-render when key changes
+                key={editorKey}
                 initialContent={"Type here"}
                 onChange={handleHWDescriptionChange}
               />
@@ -211,7 +190,7 @@ export function NewHomeworkAssignmentHere({
               {loadingHW ? (
                 <CircularProgress size={24} style={{ color: partnerColor() }} />
               ) : (
-                "Postar Homework"
+                UniversalTexts?.postHomework || "Postar Homework"
               )}
             </button>
           </form>
