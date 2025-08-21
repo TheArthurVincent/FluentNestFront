@@ -99,9 +99,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [newStudentId, setNewStudentId] = useState("");
   const [newGroupId, setNewGroupId] = useState("");
   const [showSeeEditTutoring, setShowSeeEditTutoring] = useState(false);
-  const [tutoringsListOfOneStudentOrGroup, setTutoringsListOfOneStudentOrGroup] = useState(
-    []
-  );
+  const [
+    tutoringsListOfOneStudentOrGroup,
+    setTutoringsListOfOneStudentOrGroup,
+  ] = useState([]);
   const [loadingModalInfo, setLoadingModalInfo] = useState(false);
   const [eventFull, setEventFull] = useState({});
   const [loadingTutoringDays, setLoadingTutoringDays] = useState(false);
@@ -646,6 +647,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (status === "Realized") {
         backendStatus = "realizada";
       }
+          const user = JSON.parse(localStorage.getItem("loggedIn"));
+    
 
       const response = await axios.put(
         `${backDomain}/api/v1/event/${id}`,
@@ -668,6 +671,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           fileType,
           newFlashcards: flashcards,
           description,
+          teacherID: user.id,
           POSTNEWINFOCLASS,
         },
         {
@@ -3067,7 +3071,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             </div>
                                           )}{" "}
                                           {/* File Upload */}{" "}
-                                          {!homeworkAdded && showHomework && (
+                                          {!homeworkAdded && showHomework && category !== "Group Class" &&
+                                            category !== "Standalone" &&
+                                            category !== "Aula experimental" &&
+                                            category !== "Aula única" &&
+                                            category !==
+                                              "Horário vazio para reposição" && (
                                             <div>
                                               {" "}
                                               <label
@@ -3139,145 +3148,169 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               )}{" "}
                                             </div>
                                           )}{" "}
-                                          {/* Flashcards */}{" "}
-                                          {!flashcardsAdded && (
-                                            <button
-                                              type="button"
-                                              onClick={() =>
-                                                setShowFlashcards(
-                                                  !showFlashcards
-                                                )
-                                              }
-                                              style={{
-                                                padding: "6px 12px",
-                                                fontSize: "13px",
-                                                fontWeight: "500",
-                                                color: "#6c757d",
-                                                backgroundColor: "transparent",
-                                                border: "1px solid #e9ecef",
-                                                borderRadius: "4px",
-                                                cursor: "pointer",
-                                                transition: "all 0.2s ease",
-                                                marginBottom: "8px",
-                                                display: "inline-flex",
-                                                alignItems: "center",
-                                                gap: "4px",
-                                              }}
-                                              onMouseEnter={(e) => {
-                                                e.target.style.backgroundColor =
-                                                  "#f8f9fa";
-                                                e.target.style.borderColor =
-                                                  "#dee2e6";
-                                                e.target.style.color =
-                                                  "#495057";
-                                              }}
-                                              onMouseLeave={(e) => {
-                                                e.target.style.backgroundColor =
-                                                  "transparent";
-                                                e.target.style.borderColor =
-                                                  "#e9ecef";
-                                                e.target.style.color =
-                                                  "#6c757d";
-                                              }}
-                                            >
-                                              {" "}
-                                              <span
-                                                style={{ fontSize: "12px" }}
-                                              >
-                                                {" "}
-                                                {showFlashcards
-                                                  ? "🃏"
-                                                  : "➕"}{" "}
-                                              </span>{" "}
-                                              {showFlashcards
-                                                ? "Hide Flashcards"
-                                                : "Add Flashcards"}{" "}
-                                            </button>
-                                          )}{" "}
-                                          {!flashcardsAdded &&
-                                            showFlashcards && (
+                                          {category !== "Group Class" &&
+                                            category !== "Standalone" &&
+                                            category !== "Aula experimental" &&
+                                            category !== "Aula única" &&
+                                            category !==
+                                              "Horário vazio para reposição" && (
                                               <div>
-                                                {" "}
-                                                <label
-                                                  style={{
-                                                    display: "block",
-                                                    marginBottom: "0.5rem",
-                                                    fontWeight: "500",
-                                                    color: "#374151",
-                                                    fontSize: "0.875rem",
-                                                  }}
-                                                >
-                                                  {" "}
-                                                  🃏{" "}
-                                                  {
-                                                    UniversalTexts.calendarModal
-                                                      .uploadFlashcards
-                                                  }
-                                                </label>
-                                                <textarea
-                                                  value={flashcards || ""}
-                                                  onChange={(e) => {
-                                                    const newValue =
-                                                      e.target.value;
-                                                    if (
-                                                      newValue.length <= 2000
-                                                    ) {
-                                                      setFlashcards(newValue);
+                                                {/* Flashcards */}{" "}
+                                                {!flashcardsAdded && (
+                                                  <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                      setShowFlashcards(
+                                                        !showFlashcards
+                                                      )
                                                     }
-                                                  }}
-                                                  placeholder={
-                                                    UniversalTexts.calendarModal
-                                                      .enterFlashcards
-                                                  }
-                                                  rows={4}
-                                                  maxLength={2000}
-                                                  style={{
-                                                    width: "90%",
-                                                    padding: "0.75rem",
-                                                    borderRadius: "6px",
-                                                    border: "1px solid #d1d5db",
-                                                    fontSize: "0.875rem",
-                                                    backgroundColor: "#ffffff",
-                                                    lineHeight: "1.5",
-                                                    transition:
-                                                      "border-color 0.2s ease",
-                                                    resize: "vertical",
-                                                  }}
-                                                  onFocus={(e) => {
-                                                    e.target.style.borderColor =
-                                                      partnerColor();
-                                                    e.target.style.outline =
-                                                      "none";
-                                                    e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                                  }}
-                                                  onBlur={(e) => {
-                                                    e.target.style.borderColor =
-                                                      "#d1d5db";
-                                                    e.target.style.boxShadow =
-                                                      "none";
-                                                  }}
-                                                />
-                                                <div
-                                                  style={{
-                                                    fontSize: "0.75rem",
-                                                    color:
-                                                      flashcards &&
-                                                      flashcards.length > 900
-                                                        ? "#dc3545"
-                                                        : "#6c757d",
-                                                    marginTop: "0.25rem",
-                                                    textAlign: "right",
-                                                    width: "90%",
-                                                  }}
-                                                >
-                                                  {flashcards
-                                                    ? `${flashcards.length}/2000 caracteres`
-                                                    : "0/2000 caracteres"}
+                                                    style={{
+                                                      padding: "6px 12px",
+                                                      fontSize: "13px",
+                                                      fontWeight: "500",
+                                                      color: "#6c757d",
+                                                      backgroundColor:
+                                                        "transparent",
+                                                      border:
+                                                        "1px solid #e9ecef",
+                                                      borderRadius: "4px",
+                                                      cursor: "pointer",
+                                                      transition:
+                                                        "all 0.2s ease",
+                                                      marginBottom: "8px",
+                                                      display: "inline-flex",
+                                                      alignItems: "center",
+                                                      gap: "4px",
+                                                    }}
+                                                    onMouseEnter={(e) => {
+                                                      e.target.style.backgroundColor =
+                                                        "#f8f9fa";
+                                                      e.target.style.borderColor =
+                                                        "#dee2e6";
+                                                      e.target.style.color =
+                                                        "#495057";
+                                                    }}
+                                                    onMouseLeave={(e) => {
+                                                      e.target.style.backgroundColor =
+                                                        "transparent";
+                                                      e.target.style.borderColor =
+                                                        "#e9ecef";
+                                                      e.target.style.color =
+                                                        "#6c757d";
+                                                    }}
+                                                  >
+                                                    {" "}
+                                                    <span
+                                                      style={{
+                                                        fontSize: "12px",
+                                                      }}
+                                                    >
+                                                      {" "}
+                                                      {showFlashcards
+                                                        ? "🃏"
+                                                        : "➕"}{" "}
+                                                    </span>{" "}
+                                                    {showFlashcards
+                                                      ? "Hide Flashcards"
+                                                      : "Add Flashcards"}{" "}
+                                                  </button>
+                                                )}{" "}
+                                                {!flashcardsAdded &&
+                                                  showFlashcards && (
+                                                    <div>
+                                                      {" "}
+                                                      <label
+                                                        style={{
+                                                          display: "block",
+                                                          marginBottom:
+                                                            "0.5rem",
+                                                          fontWeight: "500",
+                                                          color: "#374151",
+                                                          fontSize: "0.875rem",
+                                                        }}
+                                                      >
+                                                        {" "}
+                                                        🃏{" "}
+                                                        {
+                                                          UniversalTexts
+                                                            .calendarModal
+                                                            .uploadFlashcards
+                                                        }
+                                                      </label>
+                                                      <textarea
+                                                        value={flashcards || ""}
+                                                        onChange={(e) => {
+                                                          const newValue =
+                                                            e.target.value;
+                                                          if (
+                                                            newValue.length <=
+                                                            2000
+                                                          ) {
+                                                            setFlashcards(
+                                                              newValue
+                                                            );
+                                                          }
+                                                        }}
+                                                        placeholder={
+                                                          UniversalTexts
+                                                            .calendarModal
+                                                            .enterFlashcards
+                                                        }
+                                                        rows={4}
+                                                        maxLength={2000}
+                                                        style={{
+                                                          width: "90%",
+                                                          padding: "0.75rem",
+                                                          borderRadius: "6px",
+                                                          border:
+                                                            "1px solid #d1d5db",
+                                                          fontSize: "0.875rem",
+                                                          backgroundColor:
+                                                            "#ffffff",
+                                                          lineHeight: "1.5",
+                                                          transition:
+                                                            "border-color 0.2s ease",
+                                                          resize: "vertical",
+                                                        }}
+                                                        onFocus={(e) => {
+                                                          e.target.style.borderColor =
+                                                            partnerColor();
+                                                          e.target.style.outline =
+                                                            "none";
+                                                          e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                        }}
+                                                        onBlur={(e) => {
+                                                          e.target.style.borderColor =
+                                                            "#d1d5db";
+                                                          e.target.style.boxShadow =
+                                                            "none";
+                                                        }}
+                                                      />
+                                                      <div
+                                                        style={{
+                                                          fontSize: "0.75rem",
+                                                          color:
+                                                            flashcards &&
+                                                            flashcards.length >
+                                                              900
+                                                              ? "#dc3545"
+                                                              : "#6c757d",
+                                                          marginTop: "0.25rem",
+                                                          textAlign: "right",
+                                                          width: "90%",
+                                                        }}
+                                                      >
+                                                        {flashcards
+                                                          ? `${flashcards.length}/2000 caracteres`
+                                                          : "0/2000 caracteres"}
 
-                                                  <br />
-                                                  {flashcards.length > 1900 &&
-                                                    "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
-                                                </div>
+                                                        <br />
+                                                        {flashcards.length >
+                                                          1900 &&
+                                                          "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
+                                                      </div>
+                                                    </div>
+                                                  )}
                                               </div>
                                             )}
                                         </div>
@@ -4852,162 +4885,168 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 </div>
               ) : (
                 <div style={{ marginBottom: "1.5rem" }}>
-                  {showClasses && tutoringsListOfOneStudentOrGroup.length > 0 && (
-                    <div>
-                      <h4
-                        style={{ color: partnerColor(), marginBottom: "1rem" }}
-                      >
-                        {UniversalTexts.calendarModal.currentClasses}
-                      </h4>
-                      <div style={{ display: "grid", gap: "5px" }}>
-                        {tutoringsListOfOneStudentOrGroup
-                          .sort(
-                            (a, b) =>
-                              moment(a.day, "dddd").day() -
-                              moment(b.day, "dddd").day()
-                          )
-                          .map((item, index) => {
-                            const isExpiring =
-                              isTutoringExpiringWithinMonth(item);
-                            const daysLeft = getDaysUntilExpiration(item);
+                  {showClasses &&
+                    tutoringsListOfOneStudentOrGroup.length > 0 && (
+                      <div>
+                        <h4
+                          style={{
+                            color: partnerColor(),
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          {UniversalTexts.calendarModal.currentClasses}
+                        </h4>
+                        <div style={{ display: "grid", gap: "5px" }}>
+                          {tutoringsListOfOneStudentOrGroup
+                            .sort(
+                              (a, b) =>
+                                moment(a.day, "dddd").day() -
+                                moment(b.day, "dddd").day()
+                            )
+                            .map((item, index) => {
+                              const isExpiring =
+                                isTutoringExpiringWithinMonth(item);
+                              const daysLeft = getDaysUntilExpiration(item);
 
-                            return (
-                              <div
-                                key={index}
-                                style={{
-                                  backgroundColor: isExpiring
-                                    ? "#ffebee"
-                                    : "#f8f9fa",
-                                  padding: "0.5rem",
-                                  borderRadius: "8px",
-                                  border: isExpiring
-                                    ? "2px solid #f44336"
-                                    : "1px solid #dee2e6",
-                                  boxShadow: isExpiring
-                                    ? "0 2px 8px rgba(244, 67, 54, 0.2)"
-                                    : "none",
-                                }}
-                              >
-                                {isExpiring && (
-                                  <div
-                                    style={{
-                                      backgroundColor: "#f44336",
-                                      color: "white",
-                                      padding: "4px 8px",
-                                      borderRadius: "4px",
-                                      fontSize: "11px",
-                                      fontWeight: "600",
-                                      marginBottom: "8px",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "4px",
-                                    }}
-                                  >
-                                    ⚠️
-                                    {daysLeft > 0
-                                      ? `${
-                                          UniversalTexts.endsIn
-                                        } ${daysLeft} dia${
-                                          daysLeft > 1 ? "s" : ""
-                                        } (${new Date(
-                                          item.endDate
-                                        ).toLocaleDateString("pt-BR")})`
-                                      : `${UniversalTexts.expired} ${new Date(
-                                          item.endDate
-                                        ).toLocaleDateString("pt-BR")}`}{" "}
-                                    {UniversalTexts.tutoringExpiring}
-                                  </div>
-                                )}
-
+                              return (
                                 <div
+                                  key={index}
                                   style={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    flexWrap: "wrap",
-                                    gap: "5px",
+                                    backgroundColor: isExpiring
+                                      ? "#ffebee"
+                                      : "#f8f9fa",
+                                    padding: "0.5rem",
+                                    borderRadius: "8px",
+                                    border: isExpiring
+                                      ? "2px solid #f44336"
+                                      : "1px solid #dee2e6",
+                                    boxShadow: isExpiring
+                                      ? "0 2px 8px rgba(244, 67, 54, 0.2)"
+                                      : "none",
                                   }}
                                 >
-                                  <div>
-                                    <span
-                                      style={{
-                                        fontWeight: "600",
-                                        color: "#495057",
-                                      }}
-                                    >
-                                      {UniversalTexts.Class} #{index + 1}
-                                    </span>
+                                  {isExpiring && (
                                     <div
                                       style={{
-                                        color: "#6c757d",
-                                        marginTop: "2px",
+                                        backgroundColor: "#f44336",
+                                        color: "white",
+                                        padding: "4px 8px",
+                                        borderRadius: "4px",
+                                        fontSize: "11px",
+                                        fontWeight: "600",
+                                        marginBottom: "8px",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "4px",
                                       }}
                                     >
-                                      {item.day} - {item.time} -
-                                      <Link
-                                        target="_blank"
-                                        to={item.link}
+                                      ⚠️
+                                      {daysLeft > 0
+                                        ? `${
+                                            UniversalTexts.endsIn
+                                          } ${daysLeft} dia${
+                                            daysLeft > 1 ? "s" : ""
+                                          } (${new Date(
+                                            item.endDate
+                                          ).toLocaleDateString("pt-BR")})`
+                                        : `${UniversalTexts.expired} ${new Date(
+                                            item.endDate
+                                          ).toLocaleDateString("pt-BR")}`}{" "}
+                                      {UniversalTexts.tutoringExpiring}
+                                    </div>
+                                  )}
+
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "center",
+                                      flexWrap: "wrap",
+                                      gap: "5px",
+                                    }}
+                                  >
+                                    <div>
+                                      <span
                                         style={{
-                                          color: partnerColor(),
-                                          textDecoration: "none",
-                                          marginLeft: "5px",
+                                          fontWeight: "600",
+                                          color: "#495057",
                                         }}
                                       >
-                                        {UniversalTexts.accessClass}
-                                      </Link>
-                                      {item.endDate && (
-                                        <span
+                                        {UniversalTexts.Class} #{index + 1}
+                                      </span>
+                                      <div
+                                        style={{
+                                          color: "#6c757d",
+                                          marginTop: "2px",
+                                        }}
+                                      >
+                                        {item.day} - {item.time} -
+                                        <Link
+                                          target="_blank"
+                                          to={item.link}
                                           style={{
+                                            color: partnerColor(),
+                                            textDecoration: "none",
                                             marginLeft: "5px",
-                                            color: "#6c757d",
                                           }}
                                         >
-                                          (Ends on:{" "}
-                                          {moment(item.endDate).format(
-                                            "DD/MM/YYYY"
-                                          )}
-                                          )
-                                        </span>
-                                      )}
+                                          {UniversalTexts.accessClass}
+                                        </Link>
+                                        {item.endDate && (
+                                          <span
+                                            style={{
+                                              marginLeft: "5px",
+                                              color: "#6c757d",
+                                            }}
+                                          >
+                                            (Ends on:{" "}
+                                            {moment(item.endDate).format(
+                                              "DD/MM/YYYY"
+                                            )}
+                                            )
+                                          </span>
+                                        )}
+                                      </div>
+                                    </div>
+                                    <div
+                                      style={{ display: "flex", gap: "5px" }}
+                                    >
+                                      <button
+                                        onClick={() => {
+                                          seeEditOneTutoring(item);
+                                        }}
+                                        style={{
+                                          padding: "5px 1rem",
+                                          backgroundColor: partnerColor(),
+                                          color: "white",
+                                          border: "none",
+                                          borderRadius: "8px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        Edit
+                                      </button>
+                                      <button
+                                        onClick={() => deleteTutoring(item)}
+                                        style={{
+                                          padding: "5px 1rem",
+                                          backgroundColor: "#dc3545",
+                                          color: "white",
+                                          border: "none",
+                                          borderRadius: "8px",
+                                          cursor: "pointer",
+                                        }}
+                                      >
+                                        Delete
+                                      </button>
                                     </div>
                                   </div>
-                                  <div style={{ display: "flex", gap: "5px" }}>
-                                    <button
-                                      onClick={() => {
-                                        seeEditOneTutoring(item);
-                                      }}
-                                      style={{
-                                        padding: "5px 1rem",
-                                        backgroundColor: partnerColor(),
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-                                      }}
-                                    >
-                                      Edit
-                                    </button>
-                                    <button
-                                      onClick={() => deleteTutoring(item)}
-                                      style={{
-                                        padding: "5px 1rem",
-                                        backgroundColor: "#dc3545",
-                                        color: "white",
-                                        border: "none",
-                                        borderRadius: "8px",
-                                        cursor: "pointer",
-                                      }}
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
                                 </div>
-                              </div>
-                            );
-                          })}
+                              );
+                            })}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               )}
               <div
