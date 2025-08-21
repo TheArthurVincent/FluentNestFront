@@ -8,7 +8,7 @@ import {
 import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { CircularProgress } from "@mui/material";
-import { partnerColor } from "../../../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 import {
   getWhiteLabel,
   isArthurVincent,
@@ -99,9 +99,9 @@ export function Invoice({ headers }: HeadersProps) {
         .invoice { max-width: 860px; margin: 2rem auto; background: var(--bg); color: var(--ink); border:1px solid var(--line); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
         .invoice__inner { padding: 2rem; }
         .invoice__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--line); padding-bottom:1rem; }
-        .brand { display:flex; align-items:center; gap:1rem; }
-        .brand img { height: 48px; width:auto; border-radius: 8px; }
-        .brand h1 { font-size: 1.25rem; margin:0; letter-spacing:.02em; }
+        .brand { display:grid; align-items:center; gap:1rem; }
+        .brand img { height: 28px; width:auto; border-radius: 8px; }
+        .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; text-shadow: 0 1px 3px rgba(0,0,0,.2); }
         .meta { text-align:right; }
         .meta .title { font-weight:600; color:var(--muted); font-size:.85rem; }
         .meta .value { font-size:1rem; }
@@ -189,6 +189,7 @@ export function Invoice({ headers }: HeadersProps) {
         <div className="invoice__inner">
           <div className="invoice__head">
             <div className="brand">
+     
               {isArthurVincent && (
                 <img
                   src={
@@ -198,7 +199,14 @@ export function Invoice({ headers }: HeadersProps) {
                   alt="Logo"
                 />
               )}
-              <h1>Recibo de Pagamento</h1>
+              <h1
+                style={{
+                  fontFamily: textTitleFont(),
+                  color: partnerColor(),
+                }}
+              >
+                Recibo de Pagamento
+              </h1>
             </div>
             <div className="meta">
               <div className="title">Recibo Nº</div>
