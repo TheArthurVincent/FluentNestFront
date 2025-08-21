@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
-import { listOfCriteria } from "../../../Ranking/RankingComponents/ListOfCriteria";
-import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
+import { listOfCriteria } from "../../Ranking/RankingComponents/ListOfCriteria";
 import axios from "axios";
-import { backDomain } from "../../../../Resources/UniversalComponents";
+import { backDomain, formatDate } from "../../../Resources/UniversalComponents";
+import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../Styles/Styles";
+import { CircularProgress } from "@mui/material";
+import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
+import { Link } from "react-router-dom";
 
-export function PendingHomeworkAssignments({ id, headers }) {
-  const [pendingHomeworkList, setPendingHomeworkList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [disabled, setDisabled] = useState(false);
+export function PendingHomeworkAssignments({ headers }) {
+  var [pendingHomeworkList, setPendingHomeworkList] = useState([]);
+  var [loading, setLoading] = useState(true);
+  var [disabled, setDisabled] = useState(false);
 
-  const { UniversalTexts } = useUserContext();
-  const actualHeaders = headers || {};
+  var { UniversalTexts } = useUserContext();
+  var actualHeaders = headers || {};
 
   // Pontuações do ranking
-  const pointsMadeHW = listOfCriteria[0].score[0].score;
-  const pointsLateHW = listOfCriteria[0].score[1].score;
+  var pointsMadeHW = listOfCriteria[0].score[0].score;
+  var pointsLateHW = listOfCriteria[0].score[1].score;
+  var fetchPendingHomework = async () => {
+    var getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    var { id, permissions } = getLoggedUser;
 
-  const fetchPendingHomework = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(
+      var response = await axios.get(
         `${backDomain}/api/v1/pendinghomework/${id}`,
         {
           headers: actualHeaders,
@@ -35,7 +41,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
     }
   };
 
-  const updateRealizedClass = async (tutoringId, studentId, score) => {
+  var updateRealizedClass = async (tutoringId, studentId, score) => {
     setDisabled(true);
     try {
       await axios.put(
@@ -48,7 +54,8 @@ export function PendingHomeworkAssignments({ id, headers }) {
           headers: actualHeaders,
         }
       );
-      notifyAlert("Homework atualizado com sucesso!", "green");
+      fetchPendingHomework();
+      notifyAlert("Homework atualizado com sucesso!", partnerColor());
     } catch (error) {
       notifyAlert("Erro ao atualizar homework");
       console.error(error);
@@ -57,7 +64,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
     }
   };
 
-  const justStatus = async (tutoringId, studentId) => {
+  var justStatus = async (tutoringId, studentId) => {
     setDisabled(true);
     try {
       await axios.put(
@@ -69,7 +76,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
           headers: actualHeaders,
         }
       );
-      notifyAlert("Status atualizado com sucesso!", "green");
+      fetchPendingHomework();
+
+      notifyAlert("Status atualizado com sucesso!", partnerColor());
     } catch (error) {
       notifyAlert("Erro ao atualizar status");
       console.error(error);
@@ -78,13 +87,14 @@ export function PendingHomeworkAssignments({ id, headers }) {
     }
   };
 
-  const deleteHomework = async (homeworkId) => {
+  var deleteHomework = async (homeworkId) => {
     setDisabled(true);
     try {
       await axios.delete(`${backDomain}/api/v1/homework/${homeworkId}`, {
         headers: actualHeaders,
       });
-      notifyAlert("Homework deletado com sucesso!", "green");
+      notifyAlert("Homework deletado com sucesso!", partnerColor());
+      fetchPendingHomework();
     } catch (error) {
       notifyAlert("Erro ao deletar homework");
       console.error(error);
@@ -118,8 +128,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
 
   return (
     <div>
-      <Helmets text="Pending Homework" />
-      <HOne>Lições Pendentes</HOne>
       <div>
         <ul
           style={{
@@ -170,7 +178,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   <HTwo
                     style={{ margin: 0, color: "#333", fontWeight: "bold" }}
                   >
-                    {UniversalTexts.dueDate} {formatDateBr(homework.dueDate)}
+                    {UniversalTexts.dueDate} {formatDate(homework.dueDate)}
                   </HTwo>
                   <div
                     style={{

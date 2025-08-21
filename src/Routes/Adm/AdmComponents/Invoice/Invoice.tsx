@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { HeadersProps } from "../../../../Resources/types.universalInterfaces";
 import {
@@ -7,7 +7,6 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
-import { HOne } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 import {
@@ -17,37 +16,40 @@ import {
 } from "../../../../App";
 
 export function Invoice({ headers }: HeadersProps) {
-  const [studentsList, setStudentsList] = useState<any>([]);
+  const [studentsList, setStudentsList] = useState<any[]>([]);
   const [newID, setNewID] = useState<string>("");
 
   const [name, setName] = useState<string>("");
   const [doc, setDoc] = useState<string>("");
-  const [today, setDate] = useState<any>(new Date());
-  const [thisMonth, setThisMonth] = useState<string>("Janeiro/1999");
+  const [today, setDate] = useState<any>(
+    new Date(new Date().setDate(new Date().getDate() + 1))
+  );
+  const [thisMonth, setThisMonth] = useState<string>("Janeiro/2000");
   const [fee, setFee] = useState<number>(1000);
-  const [loading, setLoading] = useState<Boolean>(false);
+  const [comments, setComments] = useState<string>(
+    `Mensalidade de aulas particulares — referência: ${thisMonth}`
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
+  const actualHeaders = headers || {};
   const MYID = localStorageLoggedIn?.id || "";
 
-  const [comments, setComments] = useState<string>("");
-  const handleStudentChange = async (event: any) => {
-    setNewID(event.target.value);
+  const handleStudentChange = async (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const id = event.target.value;
+    setNewID(id);
     try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/student/${event.target.value}`,
-        {
-          headers: actualHeaders,
-        }
-      );
+      const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
+        headers: actualHeaders,
+      });
       setName(response.data.formattedStudentData.fullname);
       setFee(response.data.formattedStudentData.fee);
       setDoc(response.data.formattedStudentData.doc);
     } catch (error) {
-      alert("Erro ao encontrar alunos");
+      alert("Erro ao encontrar aluno");
     }
   };
-
-  const actualHeaders = headers || {};
 
   const fetchStudents = async () => {
     setLoading(true);
@@ -58,163 +60,255 @@ export function Invoice({ headers }: HeadersProps) {
           headers: actualHeaders,
         }
       );
-      setStudentsList(response.data.listOfStudents);
-      setLoading(false);
+      setStudentsList(response.data.listOfStudents || []);
     } catch (error) {
       alert("Erro ao encontrar alunos");
+    } finally {
+      setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchStudents();
   }, []);
 
-  const generatePDF = () => {
-    window.print();
-  };
+  const generatePDF = () => window.print();
 
-  const formatCurrency = (value: number) => {
-    return value.toFixed(2).replace(".", ",");
-  };
+  const formatter = useMemo(
+    () =>
+      new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }),
+    []
+  );
+
+  const currency = (v: number) => formatter.format(isFinite(v) ? v : 0);
 
   return (
     <div>
+      <style>{`
+        :root {
+          --primary: ${partnerColor()};
+          --ink: #111827;
+          --muted: #6b7280;
+          --line: #e5e7eb;
+          --bg: #ffffff;
+        }
+        .toolbar { display:flex; gap:.75rem; align-items:center; padding:1rem; justify-content:center; }
+        .toolbar input, .toolbar select { padding:.5rem .6rem; border:1px solid var(--line); border-radius:.5rem; font-size:.95rem; }
+        .toolbar .btn-print { margin-left:.5rem; }
+
+        .invoice { max-width: 860px; margin: 2rem auto; background: var(--bg); color: var(--ink); border:1px solid var(--line); border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+        .invoice__inner { padding: 2rem; }
+        .invoice__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--line); padding-bottom:1rem; }
+        .brand { display:grid; align-items:center; gap:1rem; }
+        .brand img { height: 28px; width:auto; border-radius: 8px; }
+        .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; }
+        .meta { text-align:right; }
+        .meta .title { font-weight:600; color:var(--muted); font-size:.85rem; }
+        .meta .value { font-size:1rem; }
+
+        .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
+        .panel { border:1px solid var(--line); border-radius: 12px; padding:1rem; }
+        .panel h3 { margin:0 0 .5rem; font-size: .95rem; color: var(--muted); font-weight:600; letter-spacing:.02em; }
+        .panel p { margin:.15rem 0; }
+
+        table { width:100%; border-collapse:collapse; margin-top:1.25rem; }
+        th, td { text-align:left; padding:.9rem 1rem; border-bottom:1px solid var(--line); }
+        th { font-size:.85rem; color:var(--muted); font-weight:600; letter-spacing:.03em; }
+        tfoot td { font-weight:700; }
+        .right { text-align:right; }
+
+        .notes { margin-top:1rem; border:1px dashed var(--line); padding:1rem; border-radius:12px; background:#fafafa; }
+        .signature { margin-top:3rem; text-align:center; }
+        .signature img { max-width: 10rem; display:block; margin:.5rem auto 0; }
+        .issuer { margin-top:1.5rem; border-top:1px solid var(--line); padding-top:1rem; text-align:center; color:var(--muted); font-size:.95rem; }
+
+        @media print {
+          body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          .no-print, .toolbar { display:none !important; }
+          .invoice { box-shadow:none; border:none; margin:0; max-width: 100%; }
+          .invoice__inner { padding: 0; }
+          @page { size: A4; margin: 14mm 12mm; }
+        }
+      `}</style>
+
       {loading ? (
-        <CircularProgress style={{ color: partnerColor() }} />
+        <div style={{ display: "grid", placeItems: "center", padding: "3rem" }}>
+          <CircularProgress style={{ color: partnerColor() }} />
+        </div>
       ) : (
-        <div
-          style={{
-            display: "grid",
-            gap: "5px",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "0 5rem",
-          }}
-        >
-          <select
-            onChange={handleStudentChange}
-            name="students"
-            className="no-print"
-            id=""
-            value={newID}
-          >
-            {studentsList.map((student: any, index: number) => {
-              return (
-                <option key={index} value={student.id}>
-                  {student.name + " " + student.lastname}
-                </option>
-              );
-            })}
+        <div className="toolbar no-print">
+          <select onChange={handleStudentChange} name="students" value={newID}>
+            <option value="" disabled>
+              Selecione o aluno
+            </option>
+            {studentsList.map((s: any, idx: number) => (
+              <option key={idx} value={s.id}>
+                {`${s.name} ${s.lastname || ""}`.trim()}
+              </option>
+            ))}
           </select>
           <input
-            className="no-print"
             type="date"
             onChange={(e) => {
-              setDate(e.target.value);
+              console.log(e.target.value);
+              const value = e.target.value; // ex.: "2025-08-21"
+              if (value) {
+                const [year, month, day] = value.split("-").map(Number);
+                setDate(new Date(year, month - 1, day + 1)); // cria a data no fuso local
+              }
             }}
           />
+
           <input
-            className="no-print"
             value={thisMonth}
             type="text"
-            onChange={(e) => {
-              setThisMonth(e.target.value);
-            }}
-          />{" "}
+            placeholder="Mês/Ano (ex.: Agosto/2025)"
+            onChange={(e) => setThisMonth(e.target.value)}
+            aria-label="Referência do mês"
+          />
+
           <input
-            className="no-print"
             value={fee}
             type="number"
-            onChange={(e) => {
-              setFee(Number(e.target.value));
-            }}
+            step="0.01"
+            onChange={(e) => setFee(Number(e.target.value))}
+            aria-label="Valor"
           />
+
           <input
-            className="no-print"
             value={comments}
-            placeholder="comments"
+            placeholder="Observações"
             type="text"
-            onChange={(e) => {
-              setComments(e.target.value);
-            }}
+            onChange={(e) => setComments(e.target.value)}
+            aria-label="Observações"
           />
-          <span className="no-print">
-            <MyButton onClick={generatePDF}>Gerar PDF</MyButton>
-          </span>
+
+          <MyButton className="btn-print" onClick={generatePDF}>
+            Imprimir / PDF
+          </MyButton>
         </div>
       )}
 
-      <div
-        style={{
-          fontSize: "25px",
-          textAlign: "center",
-          padding: "1rem",
-        }}
-      >
-        <HOne>Recibo de Pagamento</HOne>
-        <div>
-          <p>
-            Recibo referente ao recebimento da importância de R${" "}
-            {formatCurrency(fee)} recebida de {name}, (CPF: {doc}), no mês de{" "}
-            {thisMonth}.
-          </p>
-          {comments && (
-            <div>
-              <p>{comments}</p>
+      {/* INVOICE */}
+      <div className="invoice">
+        <div className="invoice__inner">
+          <div className="invoice__head">
+            <div className="brand">
+              {isArthurVincent && (
+                <img
+                  src={
+                    getWhiteLabel.logo ||
+                    "https://ik.imagekit.io/vjz75qw96/assets/logo.png?updatedAt=1717680390615"
+                  }
+                  alt="Logo"
+                />
+              )}
+              <h1
+                style={{
+                  fontFamily: textTitleFont(),
+                  color: partnerColor(),
+                }}
+              >
+                Recibo de Pagamento
+              </h1>
             </div>
-          )}
-          {isArthurVincent && (
-            <img
-              style={{
-                margin: "auto",
-                display: "block",
-                maxWidth: "10rem",
-                marginTop: "10rem",
-                borderBottom: "solid 2px",
-              }}
-              src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
-              alt="signatureArth"
-            />
-          )}{" "}
-          <br />
-          <br />
-          <br />
-          <div
-            style={{
-              borderTop: "solid 2px",
-              padding: "1rem",
-              fontSize: "16px",
-            }}
-          >
-            <p>
-              {localStorageLoggedIn.name + " " + localStorageLoggedIn.lastname}
-            </p>
-            <p>{localStorageLoggedIn.doc}</p>
-            <br />
-            <p
-              style={{
-                fontStyle: "italic",
-              }}
-            >
-              {" "}
+            <div className="meta">
+              <div className="title">Recibo Nº</div>
+              <div className="value">
+                {newID ? `INV-${newID}${new Date().getMilliseconds()}` : "—"}
+              </div>
+              <div className="title" style={{ marginTop: ".35rem" }}>
+                Data
+              </div>
+              <div className="value">{formatDateBr(today)}</div>
+            </div>
+          </div>
+
+          <div className="grid">
+            <div className="panel">
+              <h3>De</h3>
+              <p>
+                <strong>
+                  {`${localStorageLoggedIn?.name || ""} ${
+                    localStorageLoggedIn?.lastname || ""
+                  }`.trim()}
+                </strong>
+              </p>
+              {localStorageLoggedIn?.doc && (
+                <p>CPF/CNPJ: {localStorageLoggedIn.doc}</p>
+              )}
+            </div>
+            <div className="panel">
+              <h3>Para</h3>
+              <p>
+                <strong>{name || "Aluno(a)"}</strong>
+              </p>
+              {doc && <p>CPF: {doc}</p>}
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Descrição</th>
+                <th className="right">Valor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  {comments && (
+                    <div className="notes">
+                      <p style={{ marginTop: ".35rem" }}>{comments}</p>
+                    </div>
+                  )}
+                </td>
+                <td className="right">{currency(fee)}</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td className="right">Total</td>
+                <td className="right">{currency(fee)}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <div className="signature">
+            {isArthurVincent && (
+              <>
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/signature.png?updatedAt=1717680390615"
+                  alt="Assinatura"
+                />
+                <div
+                  style={{
+                    width: "260px",
+                    margin: "0 auto",
+                    borderTop: "2px solid #111",
+                  }}
+                />
+              </>
+            )}
+          </div>
+
+          <div className="issuer">
+            <div>
+              {`${localStorageLoggedIn?.name || ""} ${
+                localStorageLoggedIn?.lastname || ""
+              }`.trim()}
+            </div>
+            {localStorageLoggedIn?.doc && <div>{localStorageLoggedIn.doc}</div>}
+            <div style={{ fontStyle: "italic", marginTop: ".25rem" }}>
               {formatDateBr(today)}
-            </p>
+            </div>
           </div>
         </div>
       </div>
-      <img
-        style={{
-          margin: "auto",
-          marginTop: "3rem",
-          display: "block",
-          maxWidth: "12rem",
-        }}
-        src={
-          getWhiteLabel.logo ||
-          "https://ik.imagekit.io/vjz75qw96/assets/logo.png?updatedAt=1717680390615"
-        }
-        alt="signatureArth"
+
+      <Helmets
+        text={`Recibo de Pagamento de Aulas Particulares | ${name || "Aluno"}`}
       />
-      <Helmets text={`Recibo de Pagamento de Aulas Particulares | ${name}`} />
     </div>
   );
 }
