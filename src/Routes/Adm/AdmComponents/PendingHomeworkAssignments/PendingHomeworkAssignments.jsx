@@ -183,7 +183,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                     paddingBottom: "12px",
                   }}
                 >
-                  <HTwo style={{ margin: 0, color: "#333" }}>
+                  <HTwo style={{ margin: 0, color: "#333", fontWeight: "bold" }}>
                     {UniversalTexts.dueDate} {formatDateBr(homework.dueDate)}
                   </HTwo>
                   <div

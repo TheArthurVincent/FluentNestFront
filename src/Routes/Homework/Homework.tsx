@@ -11,7 +11,11 @@ import {
 import axios from "axios";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, alwaysWhite } from "../../Styles/Styles";
+import {
+  partnerColor,
+  alwaysWhite,
+  textpartnerColorContrast,
+} from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress } from "@mui/material";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
@@ -530,22 +534,24 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       <div
                         style={{
                           display: "flex",
+                          padding: " 3px 12px",
+                          borderRadius: "10px",
+                          backgroundColor: partnerColor(),
+                          boxShadow: `0 1px 4px rgba(0, 0, 0, 0.77)`,
                           flexDirection: "column",
                           gap: "4px",
                         }}
                       >
-                        <HTwo
+                        <h2
                           style={{
-                            margin: 0,
-                            fontSize:
-                              window.innerWidth <= 768 ? "16px" : "14px",
-                            fontWeight: "500",
-                            color: "#333",
+                            fontWeight: "700",
+                            color: textpartnerColorContrast(),
+                            fontSize: "18px",
                           }}
                         >
                           {UniversalTexts.dueDate}{" "}
                           {formatDateBr(homework.dueDate)}
-                        </HTwo>
+                        </h2>
                       </div>
                       <div
                         style={{
