@@ -1,22 +1,9 @@
 import React, { useEffect, useState } from "react";
-import {
-  HOne,
-  HTwo,
-  RouteDiv,
-} from "../../../../Resources/Components/RouteBox";
-import Helmets from "../../../../Resources/Helmets";
-import { Link } from "react-router-dom";
-import {
-  backDomain,
-  formatDateBr,
-  updateInfo,
-} from "../../../../Resources/UniversalComponents";
-import axios from "axios";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
-import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { CircularProgress } from "@mui/material";
 import { listOfCriteria } from "../../../Ranking/RankingComponents/ListOfCriteria";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import axios from "axios";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 
 export function PendingHomeworkAssignments({ id, headers }) {
   const [pendingHomeworkList, setPendingHomeworkList] = useState([]);
@@ -62,7 +49,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
         }
       );
       notifyAlert("Homework atualizado com sucesso!", "green");
-      fetchPendingHomework(); // Recarrega a lista
     } catch (error) {
       notifyAlert("Erro ao atualizar homework");
       console.error(error);
@@ -84,7 +70,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
         }
       );
       notifyAlert("Status atualizado com sucesso!", "green");
-      fetchPendingHomework(); // Recarrega a lista
     } catch (error) {
       notifyAlert("Erro ao atualizar status");
       console.error(error);
@@ -100,7 +85,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
         headers: actualHeaders,
       });
       notifyAlert("Homework deletado com sucesso!", "green");
-      fetchPendingHomework(); // Recarrega a lista
     } catch (error) {
       notifyAlert("Erro ao deletar homework");
       console.error(error);
@@ -183,7 +167,9 @@ export function PendingHomeworkAssignments({ id, headers }) {
                     paddingBottom: "12px",
                   }}
                 >
-                  <HTwo style={{ margin: 0, color: "#333", fontWeight: "bold" }}>
+                  <HTwo
+                    style={{ margin: 0, color: "#333", fontWeight: "bold" }}
+                  >
                     {UniversalTexts.dueDate} {formatDateBr(homework.dueDate)}
                   </HTwo>
                   <div
@@ -277,7 +263,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
                     <i className="fa fa-clock-o" />
                     Late ({pointsLateHW} pts)
                   </button>
-
                   <button
                     disabled={disabled}
                     onClick={() => justStatus(homework._id, homework.studentID)}

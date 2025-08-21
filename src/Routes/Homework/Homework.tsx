@@ -20,6 +20,7 @@ import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons"
 import { CircularProgress } from "@mui/material";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
+import NewHomeworkAssignmentHere from "./HomeworkComponents/NewHomeworkAssignmentInside";
 
 interface HWProps {
   headers: MyHeadersType | null;
@@ -28,7 +29,6 @@ interface HWProps {
 }
 
 export default function Homework({ headers, setChange, change }: HWProps) {
-  const [theStatus, setTheStatus] = useState<"all" | "pending" | "done">("all");
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [both, setBoth] = useState<boolean>(false);
   const [tutoringList, setTutoringList] = useState<any>([]);
@@ -36,9 +36,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
   const [ID, setID] = useState<string>("");
+  const [studentName, setStudentName] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
+  const [update, setUpdate] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedHomeworkId, setSelectedHomeworkId] = useState<string>("");
   const [selectedHomeworkContent, setSelectedHomeworkContent] =
@@ -168,6 +170,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setStudentID(event.target.value);
     fetchHW(event.target.value);
+    console.log(event.target.options[event.target.selectedIndex].text);
+    setStudentName(event.target.options[event.target.selectedIndex].text);
   };
 
   const fetchStudents = async () => {
@@ -226,6 +230,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
     updateInfo(id, actualHeaders);
     setPermissions(permissions);
   }, []);
+
+  useEffect(() => {
+    fetchHW(studentID);
+  }, [update]);
 
   useEffect(() => {
     fetchStudents();
@@ -380,6 +388,14 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               <i className="fa fa-refresh" />
             </button>
           </div>
+          <NewHomeworkAssignmentHere
+            headers={headers}
+            id={ID}
+            selectedStudentID={studentID}
+            studentName={studentName}
+            update={update}
+            setUpdate={setUpdate}
+          />
           <div
             style={{
               display: "flex",
@@ -390,49 +406,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               maxWidth: window.innerWidth <= 768 ? "100%" : "800px",
             }}
           >
-            {/* <div
-              style={{
-                display: "flex",
-                gap: "0.5rem",
-                marginBottom: "1rem",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <button
-                style={{
-                  border:
-                    theStatus === "pending"
-                      ? `1px solid ${partnerColor()}`
-                      : "1px solid #ddd",
-                }}
-                onClick={() => setTheStatus("pending")}
-              >
-                Pending
-              </button>
-              <button
-                style={{
-                  border:
-                    theStatus === "all"
-                      ? `1px solid ${partnerColor()}`
-                      : "1px solid #ddd",
-                }}
-                onClick={() => setTheStatus("all")}
-              >
-                All
-              </button>
-              <button
-                style={{
-                  border:
-                    theStatus === "done"
-                      ? `1px solid ${partnerColor()}`
-                      : "1px solid #ddd",
-                }}
-                onClick={() => setTheStatus("done")}
-              >
-                Completed
-              </button>
-            </div> */}
             <div
               style={{
                 display: "flex",
@@ -493,9 +466,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             >
               {tutoringList.length > 0 ? (
                 tutoringList.map((homework: any, index: number) => {
-                  const statusMatch =
-                    theStatus === "all" || theStatus === homework.status;
-
                   const submittedMatch =
                     both ||
                     (isSubmitted ? !!homework.submitted : !homework.submitted);
