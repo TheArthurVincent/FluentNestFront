@@ -11,7 +11,7 @@ import {
 import axios from "axios";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, textTitleFont, alwaysWhite } from "../../Styles/Styles";
+import { partnerColor, alwaysWhite } from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress } from "@mui/material";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
@@ -24,8 +24,8 @@ interface HWProps {
 }
 
 export default function Homework({ headers, setChange, change }: HWProps) {
+  const [theStatus, setTheStatus] = useState<"all" | "pending" | "done">("all");
   const [tutoringList, setTutoringList] = useState<any>([]);
-  const [filteredTutoringList, setFilteredTutoringList] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
@@ -33,8 +33,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   const [myPermissions, setPermissions] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
-  const [selectedDueDate, setSelectedDueDate] = useState<string>("");
-  const [availableDueDates, setAvailableDueDates] = useState<string[]>([]);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedHomeworkId, setSelectedHomeworkId] = useState<string>("");
   const [selectedHomeworkContent, setSelectedHomeworkContent] =
@@ -206,41 +204,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       );
       const tt = response.data.tutoringHomeworkList;
       setTutoringList(tt);
-      processDueDates(tt);
+      console.log(tt);
       setLoading(false);
     } catch (error) {
       console.log(error, "erro ao listar homework");
     }
-  };
-
-  const processDueDates = (homeworkList: any[]) => {
-    // Extract unique due dates and sort from newest to oldest
-    const dueDates = [...new Set(homeworkList.map((hw) => hw.dueDate))].sort(
-      (a, b) => new Date(b).getTime() - new Date(a).getTime()
-    );
-
-    setAvailableDueDates(dueDates);
-    if (!selectedDueDate) {
-      setFilteredTutoringList([]);
-    } else {
-      filterHomeworkByDueDate(homeworkList, selectedDueDate);
-    }
-  };
-
-  const filterHomeworkByDueDate = (homeworkList: any[], dueDate: string) => {
-    if (!dueDate) {
-      setFilteredTutoringList(homeworkList);
-      return;
-    }
-
-    const filtered = homeworkList.filter((hw) => hw.dueDate === dueDate);
-    setFilteredTutoringList(filtered);
-  };
-
-  const handleDueDateChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newDueDate = event.target.value;
-    setSelectedDueDate(newDueDate);
-    filterHomeworkByDueDate(tutoringList, newDueDate);
   };
 
   useEffect(() => {
@@ -257,15 +225,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
     fetchStudents();
   }, [ID]);
 
-  useEffect(() => {
-    if (tutoringList.length > 0) {
-      if (!selectedDueDate) {
-        setFilteredTutoringList([]);
-      } else {
-        filterHomeworkByDueDate(tutoringList, selectedDueDate);
-      }
-    }
-  }, [selectedDueDate, tutoringList]);
   const [disabled, setDisabled] = useState<boolean>(false);
 
   const updateRealizedClass = async (tutoringId: string, score: number) => {
@@ -391,7 +350,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       )}
 
       {/* Due Date Filter */}
-      <div
+      {/* <div
         style={{
           padding: window.innerWidth <= 768 ? "0.75rem" : "1rem",
           backgroundColor: alwaysWhite(),
@@ -449,7 +408,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
             </option>
           ))}
         </select>
-      </div>
+      </div> */}
 
       {loading ? (
         <CircularProgress
@@ -471,6 +430,49 @@ export default function Homework({ headers, setChange, change }: HWProps) {
               maxWidth: window.innerWidth <= 768 ? "100%" : "800px",
             }}
           >
+            <div
+              style={{
+                display: "flex",
+                gap: "0.5rem",
+                marginBottom: "1rem",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <button
+                style={{
+                  border:
+                    theStatus === "all"
+                      ? `1px solid ${partnerColor()}`
+                      : "1px solid #ddd",
+                }}
+                onClick={() => setTheStatus("all")}
+              >
+                All
+              </button>
+              <button
+                style={{
+                  border:
+                    theStatus === "pending"
+                      ? `1px solid ${partnerColor()}`
+                      : "1px solid #ddd",
+                }}
+                onClick={() => setTheStatus("pending")}
+              >
+                Pending
+              </button>
+              <button
+                style={{
+                  border:
+                    theStatus === "done"
+                      ? `1px solid ${partnerColor()}`
+                      : "1px solid #ddd",
+                }}
+                onClick={() => setTheStatus("done")}
+              >
+                Completed
+              </button>
+            </div>{" "}
             <ul
               style={{
                 width: "100%",
@@ -479,11 +481,15 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                 listStyle: "none",
               }}
             >
-              {filteredTutoringList.length > 0 ? (
-                filteredTutoringList.map((homework: any, index: number) => (
+              {tutoringList.length > 0 ? (
+                tutoringList.map((homework: any, index: number) => (
                   <li
                     key={index}
                     style={{
+                      display:
+                        theStatus === "all" || theStatus === homework.status
+                          ? "block"
+                          : "none",
                       listStyle: "none",
                       margin:
                         window.innerWidth <= 768 ? "0.75rem 0.5rem" : "1rem 0",
@@ -1441,15 +1447,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                     fontStyle: "italic",
                   }}
                 >
-                  {selectedDueDate
-                    ? `📚 ${
-                        UniversalTexts?.noHomeworkFound ||
-                        "Nenhum homework encontrado para"
-                      } ${formatDateBr(selectedDueDate)}`
-                    : `📚 ${
-                        UniversalTexts?.selectDueDateToSeeHomework ||
-                        "Selecione uma data de entrega para ver os homeworks"
-                      }`}
+                  Nenhum homework encontrado para
                 </li>
               )}
             </ul>
