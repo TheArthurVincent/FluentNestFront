@@ -101,7 +101,7 @@ export function Invoice({ headers }: HeadersProps) {
         .invoice__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--line); padding-bottom:1rem; }
         .brand { display:grid; align-items:center; gap:1rem; }
         .brand img { height: 28px; width:auto; border-radius: 8px; }
-        .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; text-shadow: 0 1px 3px rgba(0,0,0,.2); }
+        .brand h1 { font-size: 1.5rem; margin:0; letter-spacing:.02em; }
         .meta { text-align:right; }
         .meta .title { font-weight:600; color:var(--muted); font-size:.85rem; }
         .meta .value { font-size:1rem; }
@@ -147,11 +147,16 @@ export function Invoice({ headers }: HeadersProps) {
               </option>
             ))}
           </select>
-
           <input
             type="date"
-            onChange={(e) => setDate(new Date(e.target.value))}
-            aria-label="Data do recibo"
+            onChange={(e) => {
+              console.log(e.target.value);
+              const value = e.target.value; // ex.: "2025-08-21"
+              if (value) {
+                const [year, month, day] = value.split("-").map(Number);
+                setDate(new Date(year, month - 1, day + 1)); // cria a data no fuso local
+              }
+            }}
           />
 
           <input
