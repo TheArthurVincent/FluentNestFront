@@ -9,7 +9,7 @@ import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { CircularProgress } from "@mui/material";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import {
   getWhiteLabel,
   isArthurVincent,
@@ -201,19 +201,21 @@ export function Invoice({ headers }: HeadersProps) {
           </div>
         </div>
       </div>
-      <img
-        style={{
-          margin: "auto",
-          marginTop: "3rem",
-          display: "block",
-          maxWidth: "12rem",
-        }}
-        src={
-          getWhiteLabel.logo ||
-          "https://ik.imagekit.io/vjz75qw96/assets/logo.png?updatedAt=1717680390615"
-        }
-        alt="signatureArth"
-      />
+      {isArthurVincent && (
+        <img
+          style={{
+            margin: "auto",
+            marginTop: "3rem",
+            display: "block",
+            maxWidth: "12rem",
+          }}
+          src={
+            getWhiteLabel.logo ||
+            "https://ik.imagekit.io/vjz75qw96/assets/logo.png?updatedAt=1717680390615"
+          }
+          alt="signatureArth"
+        />
+      )}
       <Helmets text={`Recibo de Pagamento de Aulas Particulares | ${name}`} />
     </div>
   );
