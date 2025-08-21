@@ -365,14 +365,23 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       ) : (
         <span>
           <Helmets text="Homework" />
-          <HOne>{UniversalTexts.homework}</HOne>
-          <button
-            onClick={() => {
-              fetchHW(studentID);
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <i className="fa fa-refresh" />
-          </button>
+            {" "}
+            <HOne>{UniversalTexts.homework}</HOne>
+            <button
+              onClick={() => {
+                fetchHW(studentID);
+              }}
+            >
+              <i className="fa fa-refresh" />
+            </button>
+          </div>
           <div
             style={{
               display: "flex",
