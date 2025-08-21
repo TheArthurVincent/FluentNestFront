@@ -351,24 +351,24 @@ export function MyProfile({ headers }: HeadersProps) {
                         gap: "12px",
                       }}
                     >
-                      <div>
-                        {user.tutoree && (
+                      {user.tutoree && isArthurVincent && (
+                        <div>
                           <span style={styles.profileLabel}>
                             🎁 Código promocional
                           </span>
-                        )}
-                        <p
-                          style={{
-                            margin: "4px 0 0 0",
-                            fontSize: "12px",
-                            color: "#6c757d",
-                          }}
-                        >
-                          Recomende a plataforma para ganhar{" "}
-                          <strong>20% de desconto</strong> nos 3 primeiros
-                          meses!
-                        </p>
-                      </div>
+                          <p
+                            style={{
+                              margin: "4px 0 0 0",
+                              fontSize: "12px",
+                              color: "#6c757d",
+                            }}
+                          >
+                            Recomende a plataforma para ganhar{" "}
+                            <strong>20% de desconto</strong> nos 3 primeiros
+                            meses!
+                          </p>
+                        </div>
+                      )}
                       <button
                         onClick={copyToClipboard}
                         style={{
