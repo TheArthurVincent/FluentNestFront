@@ -352,9 +352,11 @@ export function MyProfile({ headers }: HeadersProps) {
                       }}
                     >
                       <div>
-                        <span style={styles.profileLabel}>
-                          🎁 Código promocional
-                        </span>
+                        {user.tutoree && (
+                          <span style={styles.profileLabel}>
+                            🎁 Código promocional
+                          </span>
+                        )}
                         <p
                           style={{
                             margin: "4px 0 0 0",

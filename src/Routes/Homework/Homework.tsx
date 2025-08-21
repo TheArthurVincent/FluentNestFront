@@ -238,10 +238,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   }, [update]);
 
   useEffect(() => {
-
     fetchStudents();
-
-
   }, [ID]);
 
   const [disabled, setDisabled] = useState<boolean>(false);
