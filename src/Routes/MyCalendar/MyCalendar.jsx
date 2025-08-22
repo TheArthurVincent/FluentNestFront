@@ -4259,7 +4259,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               style={{
                                 display: "inline-flex",
                                 alignItems: "center",
-
                                 marginBottom: "1rem",
                                 gap: "0.5rem",
                                 backgroundColor: partnerColor(),
