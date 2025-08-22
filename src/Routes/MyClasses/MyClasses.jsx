@@ -456,7 +456,7 @@ export function MyClasses({ headers }) {
                           marginBottom: "12px",
                         }}
                       >
-                        <Link
+                        {/* <Link
                           to="/my-homework-and-lessons"
                           target="_blank"
                           style={{
@@ -484,9 +484,9 @@ export function MyClasses({ headers }) {
                               "0 2px 4px rgba(0, 0, 0, 0.1)";
                           }}
                         >
-                          <i className="fa fa-external-link" />
-                          {UniversalTexts.seeOnHomeworkPage}
-                        </Link>
+                          <i className="fa fa-external-link" /> */}
+                        {UniversalTexts.seeOnHomeworkPage}
+                        {/* </Link> */}
                       </div>
 
                       <div
