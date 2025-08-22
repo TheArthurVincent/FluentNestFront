@@ -38,7 +38,6 @@ export const TopBar: FC = () => {
   const [permissions, setPermissions] = useState<string>("");
   const [theNotifications, setNotifications] = useState<number>(0);
   const [id, setid] = useState<string>("");
-  const [tutoree, setTutoree] = useState<string>("");
   var [myNotifications, setMyNotifications] = useState<any>([]);
 
   const updateNumberOfNotifications = async (id: any) => {
@@ -94,7 +93,6 @@ export const TopBar: FC = () => {
     );
     setPermissions(getLoggedUser.permissions);
     setNotifications(notifications);
-    setTutoree(getLoggedUser.tutoree);
     setid(getLoggedUser.id);
     setTimeout(() => {
       updateNumberOfNotifications(getLoggedUser.id);
@@ -109,22 +107,15 @@ export const TopBar: FC = () => {
       display: "none",
     },
   ];
-  const toTutoree: LinkItem[] = [
-    {
-      title: UniversalTexts.homework,
-      endpoint: "/homework",
-      icon: "book",
-      display: "block",
-    },
-    {
-      title: UniversalTexts.myClasses,
-      endpoint: "/my-classes",
-      icon: "user",
-      display: "block",
-    },
-  ];
+  const toTutoree: LinkItem[] = [];
 
   const allLinksForUser = [
+    {
+      title: UniversalTexts.homeworkAndLessons,
+      endpoint: "/my-homework-and-lessons",
+      icon: "pencil",
+      display: "block",
+    },
     {
       title: UniversalTexts.theCourses,
       endpoint: "/english-courses",
@@ -286,7 +277,7 @@ export const TopBar: FC = () => {
               {UniversalTexts.homePage}
             </span>
           </NavLink>
-   
+
           {allLinksForUser.map((link, index) => {
             return (
               <NavLink
@@ -314,7 +305,7 @@ export const TopBar: FC = () => {
               </NavLink>
             );
           })}
-                 {toTutoree.map((link, index) => {
+          {toTutoree.map((link, index) => {
             return (
               <NavLink
                 key={index}
@@ -423,7 +414,6 @@ export const TopBar: FC = () => {
                       left: "0",
                     }}
                   >
-          
                     {allLinksForUser
                       .filter((link) => link.isLearning)
                       .map((link: any, index: any) => (
@@ -449,7 +439,7 @@ export const TopBar: FC = () => {
                           </SpanHover>
                         </NavLink>
                       ))}
-                                {toTutoree.map((link, index) => {
+                    {toTutoree.map((link, index) => {
                       return (
                         <NavLink
                           key={index}
@@ -665,10 +655,10 @@ export const TopBar: FC = () => {
             id="language"
             name="language"
             onChange={(e) => handleLanguageChange(e.target.value)}
-            defaultValue="en"
+            defaultValue="pt"
           >
-            <option value="en">EN-US</option>
             <option value="pt">PT-BR</option>
+            <option value="en">EN-US</option>
           </select>
         </form>
         <button
