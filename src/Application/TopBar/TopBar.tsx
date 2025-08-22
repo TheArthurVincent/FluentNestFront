@@ -38,7 +38,6 @@ export const TopBar: FC = () => {
   const [permissions, setPermissions] = useState<string>("");
   const [theNotifications, setNotifications] = useState<number>(0);
   const [id, setid] = useState<string>("");
-  const [tutoree, setTutoree] = useState<string>("");
   var [myNotifications, setMyNotifications] = useState<any>([]);
 
   const updateNumberOfNotifications = async (id: any) => {
@@ -94,7 +93,6 @@ export const TopBar: FC = () => {
     );
     setPermissions(getLoggedUser.permissions);
     setNotifications(notifications);
-    setTutoree(getLoggedUser.tutoree);
     setid(getLoggedUser.id);
     setTimeout(() => {
       updateNumberOfNotifications(getLoggedUser.id);
@@ -111,14 +109,8 @@ export const TopBar: FC = () => {
   ];
   const toTutoree: LinkItem[] = [
     {
-      title: UniversalTexts.homework,
-      endpoint: "/homework",
-      icon: "book",
-      display: "block",
-    },
-    {
-      title: UniversalTexts.myClasses,
-      endpoint: "/my-classes",
+      title: UniversalTexts.homeworkAndLessons,
+      endpoint: "/my-homework-and-lessons",
       icon: "user",
       display: "block",
     },

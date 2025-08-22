@@ -4254,7 +4254,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               </span>
                             </div>
                             <Link
-                              to="/homework"
+                              to="/my-homework-and-lessons"
                               target="_blank"
                               style={{
                                 display: "inline-flex",

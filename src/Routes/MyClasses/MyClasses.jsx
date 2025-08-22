@@ -457,7 +457,7 @@ export function MyClasses({ headers }) {
                         }}
                       >
                         <Link
-                          to="/homework"
+                          to="/my-homework-and-lessons"
                           target="_blank"
                           style={{
                             display: "inline-flex",

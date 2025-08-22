@@ -155,7 +155,15 @@ export function HomePage({ headers }: HeadersProps) {
       component: (
         <Homework change={change} setChange={setChange} headers={headers} />
       ),
+    },    {
+      path:"my-homework-and-lessons",
+      title: "Homework",
+      levelcard: false,
+      component: (
+        <Homework change={change} setChange={setChange} headers={headers} />
+      ),
     },
+    
         {
       title: "Homework",
       levelcard: false,
