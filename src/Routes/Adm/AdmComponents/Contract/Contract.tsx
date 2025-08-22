@@ -281,7 +281,7 @@ export function Contract({ headers }: HeadersProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <TextField label="CPF" value={doc} disabled />
+                  <TextField label="CPF" value={doc} />
                 </>
               ) : (
                 <>
