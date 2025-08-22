@@ -293,20 +293,8 @@ export function MyClasses({ headers }) {
   };
 
   return (
-    <RouteDiv>
-      <Helmets text="My Classes" />
-      {/* Header centralizado como no SentenceMining */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <HOne>{UniversalTexts.myClasses}</HOne>
-      </div>
+    <>
+      <HOne>{UniversalTexts.myClasses}</HOne>
       <section
         style={{
           padding: "20px",
@@ -668,7 +656,7 @@ export function MyClasses({ headers }) {
           </div>
         )}
       </section>
-    </RouteDiv>
+    </>
   );
 }
 

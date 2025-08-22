@@ -665,10 +665,10 @@ export const TopBar: FC = () => {
             id="language"
             name="language"
             onChange={(e) => handleLanguageChange(e.target.value)}
-            defaultValue="en"
+            defaultValue="pt"
           >
-            <option value="en">EN-US</option>
             <option value="pt">PT-BR</option>
+            <option value="en">EN-US</option>
           </select>
         </form>
         <button

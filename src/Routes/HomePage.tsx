@@ -137,8 +137,13 @@ export function HomePage({ headers }: HeadersProps) {
       ),
     },
     {
+     path:"/dispose",
       title: "My Classes",
-      component: <MyClasses headers={headers} />,
+      component: (
+        <>
+          <MyClasses headers={headers} />
+        </>
+      ),
     },
     {
       title: "Words of The Day",
@@ -147,6 +152,14 @@ export function HomePage({ headers }: HeadersProps) {
     {
       title: "Homework",
       levelcard: false,
+      component: (
+        <Homework change={change} setChange={setChange} headers={headers} />
+      ),
+    },
+        {
+      title: "Homework",
+      levelcard: false,
+      path: "/my-classes",
       component: (
         <Homework change={change} setChange={setChange} headers={headers} />
       ),

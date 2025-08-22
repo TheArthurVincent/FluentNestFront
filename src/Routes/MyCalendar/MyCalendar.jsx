@@ -647,8 +647,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (status === "Realized") {
         backendStatus = "realizada";
       }
-          const user = JSON.parse(localStorage.getItem("loggedIn"));
-    
+      const user = JSON.parse(localStorage.getItem("loggedIn"));
 
       const response = await axios.put(
         `${backDomain}/api/v1/event/${id}`,
@@ -671,6 +670,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           fileType,
           newFlashcards: flashcards,
           description,
+          group: groupId,
           teacherID: user.id,
           POSTNEWINFOCLASS,
         },
@@ -3071,83 +3071,85 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             </div>
                                           )}{" "}
                                           {/* File Upload */}{" "}
-                                          {!homeworkAdded && showHomework && category !== "Group Class" &&
+                                          {!homeworkAdded &&
+                                            showHomework &&
+                                            category !== "Group Class" &&
                                             category !== "Standalone" &&
                                             category !== "Aula experimental" &&
                                             category !== "Aula única" &&
                                             category !==
                                               "Horário vazio para reposição" && (
-                                            <div>
-                                              {" "}
-                                              <label
-                                                style={{
-                                                  display: "block",
-                                                  marginBottom: "0.5rem",
-                                                  fontWeight: "500",
-                                                  color: "#374151",
-                                                  fontSize: "0.875rem",
-                                                }}
-                                              >
+                                              <div>
                                                 {" "}
-                                                📎 Anexar Arquivo{" "}
-                                              </label>{" "}
-                                              <input
-                                                type="file"
-                                                onChange={handleFileChange}
-                                                accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
-                                                style={{
-                                                  width: "90%",
-                                                  padding: "0.75rem",
-                                                  borderRadius: "6px",
-                                                  border: "1px solid #d1d5db",
-                                                  fontSize: "0.875rem",
-                                                  backgroundColor: "#ffffff",
-                                                  cursor: "pointer",
-                                                }}
-                                              />{" "}
-                                              {uploading && (
-                                                <div
+                                                <label
                                                   style={{
-                                                    fontSize: "0.8rem",
-                                                    color: "#666",
-                                                    marginTop: "0.5rem",
-                                                    fontStyle: "italic",
+                                                    display: "block",
+                                                    marginBottom: "0.5rem",
+                                                    fontWeight: "500",
+                                                    color: "#374151",
+                                                    fontSize: "0.875rem",
                                                   }}
                                                 >
                                                   {" "}
-                                                  Processando arquivo...{" "}
-                                                </div>
-                                              )}{" "}
-                                              {selectedFile && !uploading && (
-                                                <div
+                                                  📎 Anexar Arquivo{" "}
+                                                </label>{" "}
+                                                <input
+                                                  type="file"
+                                                  onChange={handleFileChange}
+                                                  accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
                                                   style={{
-                                                    fontSize: "0.8rem",
-                                                    color: "#28a745",
-                                                    marginTop: "0.5rem",
-                                                    fontStyle: "italic",
+                                                    width: "90%",
+                                                    padding: "0.75rem",
+                                                    borderRadius: "6px",
+                                                    border: "1px solid #d1d5db",
+                                                    fontSize: "0.875rem",
+                                                    backgroundColor: "#ffffff",
+                                                    cursor: "pointer",
                                                   }}
-                                                >
-                                                  {" "}
-                                                  ✅ {selectedFile.name}{" "}
-                                                  <button
-                                                    type="button"
-                                                    onClick={clearFile}
+                                                />{" "}
+                                                {uploading && (
+                                                  <div
                                                     style={{
-                                                      marginLeft: "0.5rem",
-                                                      background: "none",
-                                                      border: "none",
-                                                      color: "#dc3545",
-                                                      cursor: "pointer",
                                                       fontSize: "0.8rem",
+                                                      color: "#666",
+                                                      marginTop: "0.5rem",
+                                                      fontStyle: "italic",
                                                     }}
                                                   >
                                                     {" "}
-                                                    ❌ Remover{" "}
-                                                  </button>{" "}
-                                                </div>
-                                              )}{" "}
-                                            </div>
-                                          )}{" "}
+                                                    Processando arquivo...{" "}
+                                                  </div>
+                                                )}{" "}
+                                                {selectedFile && !uploading && (
+                                                  <div
+                                                    style={{
+                                                      fontSize: "0.8rem",
+                                                      color: "#28a745",
+                                                      marginTop: "0.5rem",
+                                                      fontStyle: "italic",
+                                                    }}
+                                                  >
+                                                    {" "}
+                                                    ✅ {selectedFile.name}{" "}
+                                                    <button
+                                                      type="button"
+                                                      onClick={clearFile}
+                                                      style={{
+                                                        marginLeft: "0.5rem",
+                                                        background: "none",
+                                                        border: "none",
+                                                        color: "#dc3545",
+                                                        cursor: "pointer",
+                                                        fontSize: "0.8rem",
+                                                      }}
+                                                    >
+                                                      {" "}
+                                                      ❌ Remover{" "}
+                                                    </button>{" "}
+                                                  </div>
+                                                )}{" "}
+                                              </div>
+                                            )}{" "}
                                           {category !== "Group Class" &&
                                             category !== "Standalone" &&
                                             category !== "Aula experimental" &&
@@ -6372,17 +6374,21 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     </button>
                   )}{" "}
                   {/* Botão Ver Adições */}{" "}
-                  {!seePlusButtons && (
-                    <button
-                      style={{
-                        ...seePlusButtonsStyles,
-                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      }}
-                      onClick={() => setSeePlusButtons(!seePlusButtons)}
-                    >
-                      {" "}
-                      +{" "}
-                    </button>
+                  {authorizeOrNot && (
+                    <>
+                      {!seePlusButtons && (
+                        <button
+                          style={{
+                            ...seePlusButtonsStyles,
+                            cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                          }}
+                          onClick={() => setSeePlusButtons(!seePlusButtons)}
+                        >
+                          {" "}
+                          +{" "}
+                        </button>
+                      )}
+                    </>
                   )}{" "}
                   {/* Botões das Adições */}{" "}
                 </div>{" "}

@@ -5,8 +5,8 @@ const UserContext = createContext();
 export const useUserContext = () => useContext(UserContext);
 
 export const UserProvider = ({ children }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
-  const [textContent, setTextContent] = useState("UniversalTextsEn");
+  const [selectedLanguage, setSelectedLanguage] = useState("pt");
+  const [textContent, setTextContent] = useState("UniversalTexts");
   const [UniversalTexts, setUniversalTexts] = useState({});
 
   const handleLanguageChange = (newLanguage) => {
@@ -35,7 +35,7 @@ export const UserProvider = ({ children }) => {
   // Load initial texts on mount
   useEffect(() => {
     const importInitialTexts = async () => {
-      const module = await import("../../Resources/UniversalTextsEn.json");
+      const module = await import("../../Resources/UniversalTexts.json");
       setUniversalTexts(module.default);
     };
     
