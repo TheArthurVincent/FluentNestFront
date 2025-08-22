@@ -90,7 +90,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         ? `${UniversalTexts.currentLesson}  - ${lesson}`
         : "Begin your journey!",
       description: UniversalTexts.retome,
-      display: loadingLESSON ? "flex" : "none",
+      display: !loadingLESSON ? "flex" : "none",
       img: img,
       link: NO
         ? `/english-courses/${course
