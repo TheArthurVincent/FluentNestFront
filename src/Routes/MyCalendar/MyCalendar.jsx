@@ -2714,34 +2714,38 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       .scheduleOneClass
                                   }
                                 </HTwo>
-                                <button
-                                  onClick={() => {
-                                    setShowEditForm(false);
-                                    setPOSTNEWINFOCLASS(false);
-                                  }}
-                                  style={{
-                                    padding: "0.5rem 1rem",
-                                    backgroundColor: "#6c757d",
-                                    color: "white",
-                                    border: "none",
-                                    marginLeft: "auto",
-                                    borderRadius: "6px",
-                                    fontSize: "0.9rem",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s ease",
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = "#5a6268";
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.target.style.backgroundColor = "#6c757d";
-                                  }}
-                                >
-                                  <i
-                                    className="fa fa-times"
-                                    style={{ marginRight: "0.5rem" }}
-                                  />
-                                </button>
+                                {!loadingInfo && (
+                                  <button
+                                    onClick={() => {
+                                      setShowEditForm(false);
+                                      setPOSTNEWINFOCLASS(false);
+                                    }}
+                                    style={{
+                                      padding: "0.5rem 1rem",
+                                      backgroundColor: "#6c757d",
+                                      color: "white",
+                                      border: "none",
+                                      marginLeft: "auto",
+                                      borderRadius: "6px",
+                                      fontSize: "0.9rem",
+                                      cursor: "pointer",
+                                      transition: "all 0.2s ease",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.backgroundColor =
+                                        "#5a6268";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.backgroundColor =
+                                        "#6c757d";
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-times"
+                                      style={{ marginRight: "0.5rem" }}
+                                    />
+                                  </button>
+                                )}
                               </div>
 
                               {loadingInfo ? (
