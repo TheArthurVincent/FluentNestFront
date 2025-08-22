@@ -113,7 +113,7 @@ export const TopBar: FC = () => {
     {
       title: UniversalTexts.homeworkAndLessons,
       endpoint: "/my-homework-and-lessons",
-      icon: "user",
+      icon: "pencil",
       display: "block",
     },
     {
