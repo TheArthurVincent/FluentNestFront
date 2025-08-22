@@ -90,7 +90,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         ? `${UniversalTexts.currentLesson}  - ${lesson}`
         : "Begin your journey!",
       description: UniversalTexts.retome,
-      display: "flex",
+      display: loadingLESSON ? "flex" : "none",
       img: img,
       link: NO
         ? `/english-courses/${course
@@ -160,9 +160,9 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         </div> */}
         <div className="grid-flex-2">
           <DivMarginBorder>
-            {loadingLESSON ? (
+            {/* {loadingLESSON ? (
               <CircularProgress style={{ color: partnerColor() }} />
-            ) : (
+            ) : ( */}
               <div className="study-container">
                 <HOne>{UniversalTexts.studyEnglish}</HOne>
                 <div 
@@ -192,7 +192,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
                   ))}
                 </div>
               </div>
-            )}
+        {/*       )}*/}
           </DivMarginBorder>
         </div>
         <div className="grid-flex-2">
