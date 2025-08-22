@@ -107,16 +107,15 @@ export const TopBar: FC = () => {
       display: "none",
     },
   ];
-  const toTutoree: LinkItem[] = [
+  const toTutoree: LinkItem[] = [];
+
+  const allLinksForUser = [
     {
       title: UniversalTexts.homeworkAndLessons,
       endpoint: "/my-homework-and-lessons",
       icon: "user",
       display: "block",
     },
-  ];
-
-  const allLinksForUser = [
     {
       title: UniversalTexts.theCourses,
       endpoint: "/english-courses",
@@ -278,7 +277,7 @@ export const TopBar: FC = () => {
               {UniversalTexts.homePage}
             </span>
           </NavLink>
-   
+
           {allLinksForUser.map((link, index) => {
             return (
               <NavLink
@@ -306,7 +305,7 @@ export const TopBar: FC = () => {
               </NavLink>
             );
           })}
-                 {toTutoree.map((link, index) => {
+          {toTutoree.map((link, index) => {
             return (
               <NavLink
                 key={index}
@@ -415,7 +414,6 @@ export const TopBar: FC = () => {
                       left: "0",
                     }}
                   >
-          
                     {allLinksForUser
                       .filter((link) => link.isLearning)
                       .map((link: any, index: any) => (
@@ -441,7 +439,7 @@ export const TopBar: FC = () => {
                           </SpanHover>
                         </NavLink>
                       ))}
-                                {toTutoree.map((link, index) => {
+                    {toTutoree.map((link, index) => {
                       return (
                         <NavLink
                           key={index}
