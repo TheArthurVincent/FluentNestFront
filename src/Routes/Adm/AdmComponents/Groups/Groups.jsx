@@ -54,21 +54,93 @@ import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria
 import { isArthurVincent } from "../../../../App";
 
 export function Groups({ headers, id }) {
+  const statusTokens = (status) => {
+    switch (status) {
+      case "realizada":
+        return {
+          leftBorder: "#28a745",
+          pillBg: "#d4edda",
+          pillFg: "#155724",
+          neutralFg: "#495057",
+          neutralBg: "#e9ecef",
+        };
+      case "desmarcado":
+        return {
+          leftBorder: "#dc3545",
+          pillBg: "#f8d7da",
+          pillFg: "#721c24",
+          neutralFg: "#495057",
+          neutralBg: "#e9ecef",
+        };
+      case "reagendado":
+        return {
+          leftBorder: "#ffc107",
+          pillBg: "#fff3cd",
+          pillFg: "#856404",
+          neutralFg: "#495057",
+          neutralBg: "#e9ecef",
+        };
+      default:
+        return {
+          leftBorder: "#6c757d",
+          pillBg: "#e9ecef",
+          pillFg: "#495057",
+          neutralFg: "#495057",
+          neutralBg: "#e9ecef",
+        };
+    }
+  };
+
+  const styles = {
+    card: {
+      backgroundColor: "#ffffff",
+      margin: "auto",
+      marginTop: "16px",
+      borderRadius: "10px",
+      boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+      border: "1px solid #e8eaed",
+      padding: "20px",
+      gap: "10px",
+    },
+    h3: {
+      color: "#2c3e50",
+      fontSize: "18px",
+      fontWeight: 600,
+      marginBottom: "20px",
+      borderBottom: "2px solid #e8eaed",
+      paddingBottom: "8px",
+    },
+    item: (borderColor) => ({
+      backgroundColor: "#fff",
+      border: "1px solid #e9ecef",
+      borderRadius: "10px",
+      padding: "20px",
+      transition: "all 0.3s ease",
+      borderLeft: `4px solid ${borderColor}`,
+    }),
+    listHeader: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      marginBottom: "12px",
+      flexWrap: "wrap",
+      gap: "8px",
+    },
+    grid: {
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+      gap: "12px",
+    },
+    label: { fontSize: "11px", color: "#6c757d", marginBottom: "4px" },
+    link: { color: "#007bff", textDecoration: "none", fontSize: "13px" },
+  };
+
   const [selectedGroupId, setSelectedGroupId] = useState(null);
   const [groupNameToEdit, setGroupNameToEdit] = useState("");
   const [groupDescriptionToEdit, setGroupDescriptionToEdit] = useState("");
-
+  const [classesGroup, setClassesGroup] = useState([]);
+  const [loadingGroupClasses, setLoadingGroupClasses] = useState(false);
   // 3) Ao selecionar um grupo para editar, normalize também:
-  const handleSelectGroup = (group) => {
-    setSelectedGroupId(group._id);
-    // Se vierem objetos em vez de strings, mapeie; se já vierem strings, mantém:
-    const ids = Array.isArray(group.studentIds)
-      ? group.studentIds.map((x) => String(x?._id ?? x))
-      : [];
-    setArrayOfIds(ids);
-    setGroupDescriptionToEdit(group.description ?? "");
-    setGroupNameToEdit(group.name ?? "");
-  };
 
   // Para sair do modo edição
   const handleCancelEdit = () => {
@@ -257,11 +329,39 @@ export function Groups({ headers, id }) {
     getGroups();
   }, []);
 
+  const handleSelectGroup = async (group) => {
+    setSelectedGroupId(group._id);
+    // Se vierem objetos em vez de strings, mapeie; se já vierem strings, mantém:
+    const ids = Array.isArray(group.studentIds)
+      ? group.studentIds.map((x) => String(x?._id ?? x))
+      : [];
+    setArrayOfIds(ids);
+    setGroupDescriptionToEdit(group.description ?? "");
+    setGroupNameToEdit(group.name ?? "");
+
+    try {
+      setLoadingGroupClasses(true);
+
+      const response = await axios.get(
+        `${backDomain}/api/v1/grouphistory/${group._id}`,
+        {
+          headers,
+        }
+      );
+
+      setClassesGroup(response.data.classesGroup);
+      console.log(response.data.classesGroup);
+      setLoadingGroupClasses(false);
+    } catch (error) {
+      notifyAlert("Erro ao encontrar aulas dos grupos");
+      setLoadingGroupClasses(false);
+    }
+  };
+
   return (
     <div
       style={{
         margin: "32px auto",
-        fontFamily: "Segoe UI, Arial, sans-serif",
         background: "#fff",
         borderRadius: 8,
         padding: "24px 18px",
@@ -290,7 +390,7 @@ export function Groups({ headers, id }) {
                   borderRadius: "8px",
                   borderBottom: "1px solid #f2f2f2",
                   background:
-                    group._id === selectedGroupId ? "#e7f8d6ff" : "#fcfcfcff",
+                    group._id === selectedGroupId ? "#f6f6f6ff" : "#fcfcfcff",
                   cursor: "pointer",
                   display: selectedGroupId
                     ? group._id === selectedGroupId
@@ -367,7 +467,7 @@ export function Groups({ headers, id }) {
       <section
         style={{
           padding: "10px",
-          backgroundColor: selectedGroupId ? "#e7f8d6ff" : "#fcfcfcff",
+          backgroundColor: selectedGroupId ? "#f6f6f6ff" : "#fcfcfcff",
         }}
       >
         <div
@@ -400,15 +500,31 @@ export function Groups({ headers, id }) {
               {/* Botão só aparece se não estiver editando */}
 
               {selectedGroupId && (
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
+                <div
                   style={{
-                    backgroundColor: "red",
-                    color: "white",
+                    display: "flex",
+                    gap: "10px",
                   }}
                 >
-                  <i className="fas fa-trash" />
-                </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    style={{
+                      backgroundColor: partnerColor(),
+                      color: textpartnerColorContrast(),
+                    }}
+                  >
+                    Voltar aos grupos
+                  </button>
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    style={{
+                      backgroundColor: "red",
+                      color: "white",
+                    }}
+                  >
+                    <i className="fa fa-trash-o" />
+                  </button>
+                </div>
               )}
             </div>
             <div
@@ -577,7 +693,131 @@ export function Groups({ headers, id }) {
             </div>
           )}
         </div>
-        {!selectedGroupId ? (
+        {selectedGroupId && (
+          <div style={styles.card}>
+            <h3 style={styles.h3}>
+              📚 Histórico de Aulas em Grupo: {groupNameToEdit}
+            </h3>
+
+            <div style={{ marginBottom: 12 }}>
+              Número de aulas: {classesGroup?.length ?? 0}
+            </div>
+
+            {(classesGroup && classesGroup.length > 0
+              ? [...classesGroup].sort(
+                  (a, b) => new Date(b.date) - new Date(a.date)
+                )
+              : []
+            ).map((event, idx) => {
+              const t = statusTokens(event?.status);
+              const key = event?._id || `${event?.date}-${idx}`;
+              const time = event?.time ? ` às ${event.time}` : "";
+
+              return (
+                <div
+                  key={key}
+                  style={{ marginBottom: "1rem", ...styles.item(t.leftBorder) }}
+                >
+                  {/* Cabeçalho */}
+                  <div style={styles.listHeader}>
+                    <div style={{ fontWeight: 600, color: "#2c3e50" }}>
+                      # {idx + 1}
+                    </div>
+
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          backgroundColor: t.pillBg,
+                          color: t.pillFg,
+                          padding: "4px 10px",
+                          borderRadius: "20px",
+                          fontSize: "11px",
+                          textTransform: "uppercase",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {event?.status || "—"}
+                      </span>
+
+                      <span
+                        style={{
+                          backgroundColor: "#f1f3f5",
+                          color: "#495057",
+                          padding: "4px 8px",
+                          borderRadius: "6px",
+                          fontSize: "11px",
+                        }}
+                      >
+                        {event?.category || "—"}
+                      </span>
+                    </div>
+
+                    <div style={{ fontSize: "13px", color: "#6c757d" }}>
+                      🕒 {event?.duration ?? "—"} min
+                    </div>
+                  </div>
+
+                  {/* Informações principais */}
+                  <div style={styles.grid}>
+                    <div>
+                      <div style={styles.label}>📅 Data & Horário</div>
+                      <div style={{ color: "#333" }}>
+                        {event?.date
+                          ? new Date(event.date).toLocaleDateString("pt-BR")
+                          : "—"}
+                        {time}
+                      </div>
+                    </div>
+
+                    {event?.description && event.description.trim() !== "" && (
+                      <div style={{ gridColumn: "1 / -1" }}>
+                        <div style={styles.label}>📝 Descrição</div>
+                        <div style={{ color: "#333", lineHeight: 1.5 }}>
+                          {event.description}
+                        </div>
+                      </div>
+                    )}
+
+                    {event?.video && (
+                      <div>
+                        <div style={styles.label}>🎥 Vídeo</div>
+                        <a
+                          href={event.video}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={styles.link}
+                        >
+                          Assista no YouTube
+                        </a>
+                      </div>
+                    )}
+
+                    {event?.importantLink && (
+                      <div>
+                        <div style={styles.label}>🔗 Link Importante</div>
+                        <a
+                          href={event.importantLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={styles.link}
+                        >
+                          Abrir Material
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+        {!selectedGroupId && (
           <button
             onClick={postGroup}
             disabled={
@@ -611,26 +851,6 @@ export function Groups({ headers, id }) {
           >
             Criar grupo
           </button>
-        ) : (
-          <>
-            <button
-              onClick={handleCancelEdit}
-              style={{
-                width: "100%",
-                padding: "10px 0",
-                background: "#eee",
-                color: "#222",
-                border: "none",
-                borderRadius: 4,
-                fontWeight: 500,
-                fontSize: 16,
-                marginTop: 8,
-                cursor: "pointer",
-              }}
-            >
-              Ver todos os grupos
-            </button>
-          </>
         )}
       </section>
     </div>

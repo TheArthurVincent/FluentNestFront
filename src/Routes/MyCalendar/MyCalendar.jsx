@@ -89,6 +89,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [dueDate, setDueDate] = useState(
     new Date().toISOString().split("T")[0]
   );
+
   const [base64String, setBase64String] = useState("");
   const [fileName, setFileName] = useState("");
   const [fileType, setFileType] = useState("");
@@ -234,6 +235,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setShowFlashcards(false);
     setLoading(false);
   };
+
   const isTutoringExpiringWithinMonth = (tutoring) => {
     if (!tutoring.endDate) return false;
     const today = new Date();
@@ -469,6 +471,35 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }, 200);
     }
   };
+  var [studentsInGroup, setStudentsInGroup] = useState([
+    {
+      _id: "",
+      lastname: "",
+      name: "",
+    },
+  ]);
+  const [comments, setComments] = useState([]);
+  useEffect(() => {
+    if (studentsInGroup.length > 0) {
+      setComments(
+        studentsInGroup.map((student) => ({
+          studentId: student._id,
+          comment: "",
+        }))
+      );
+    }
+  }, [studentsInGroup]);
+
+  // Função para atualizar o comentário de um aluno específico
+  const handleStudentDescriptionChange = (index, value) => {
+    setComments((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], comment: value };
+      return updated;
+    });
+    console.log(comments);
+  };
+
   const fetchOneEvent = async (id) => {
     setLoadingModalInfo(true);
 
@@ -480,6 +511,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
+      var theStudentsFromEvent;
+      if (response.data.event.listOfStudents) {
+        theStudentsFromEvent = response.data.event.listOfStudents;
+        setStudentsInGroup(theStudentsFromEvent);
+      }
+
       const test =
         response.data.event.category == "Rep" ||
         response.data.event.category == "Tutoring" ||
@@ -510,7 +547,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newEventId = response.data.event._id;
       const newGroupId = response.data.event.group || "";
       const newGroupName = response.data.event.groupName || "";
-      console.log("olha aqq", response.data);
       let mappedStatus = newStatus;
       if (newStatus === "marcado") {
         mappedStatus = "Scheduled";
@@ -673,6 +709,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           group: groupId,
           teacherID: user.id,
           POSTNEWINFOCLASS,
+          comments,
         },
         {
           headers,
@@ -2838,6 +2875,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             gap: "1.5rem",
                                           }}
                                         >
+
                                           {/* Vídeo */}
                                           <div>
                                             <label
@@ -2899,7 +2937,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 fontSize: "0.875rem",
                                               }}
                                             >
-                                              GDLink
+                                              Important link
                                             </label>
                                             <input
                                               value={googleDriveLink}
@@ -2908,7 +2946,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   e.target.value
                                                 )
                                               }
-                                              placeholder="https://drive.google.com/..."
                                               type="url"
                                               style={{
                                                 width: "90%",
@@ -3015,6 +3052,57 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   initialContent={"Type here"}
                                                 />{" "}
                                               </div>{" "}
+
+
+
+                                                               {studentsInGroup.length > 0 && (
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              📝 Descrição individual para cada aluno.
+                                            </label>
+
+                                            {studentsInGroup.map(
+                                              (student, index) => (
+                                                <div key={student._id || index}>
+                                                  {student.name +
+                                                    " " +
+                                                    student.lastname}
+                                                  <input
+                                                    type="text"
+                                                    value={
+                                                      comments[index]
+                                                        ?.comment || ""
+                                                    }
+                                                    onChange={(e) =>
+                                                      handleStudentDescriptionChange(
+                                                        index,
+                                                        e.target.value
+                                                      )
+                                                    }
+                                                    placeholder="Comentário para o aluno"
+                                                    style={{
+                                                      width: "100%",
+                                                      padding: "0.75rem",
+                                                      borderRadius: "8px",
+                                                      border:
+                                                        "1px solid #ced4da",
+                                                      fontSize: "0.9rem",
+                                                      marginTop: "0.5rem",
+                                                    }}
+                                                  />
+                                                </div>
+                                              )
+                                            )}
+                                          </div>
+                                        )}
                                             </div>
                                           )}{" "}
                                           {/* Due Date */}{" "}
@@ -3619,6 +3707,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             required
                                           />
                                         </div>
+
+                       
                                       </span>
                                     )}
                                   </form>
