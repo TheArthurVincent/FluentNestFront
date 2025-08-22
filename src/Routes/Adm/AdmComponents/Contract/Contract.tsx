@@ -281,7 +281,11 @@ export function Contract({ headers }: HeadersProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <TextField label="CPF" value={doc} />
+                  <TextField
+                    label="CPF"
+                    onChange={(e) => setDoc(e.target.value)}
+                    value={doc}
+                  />
                 </>
               ) : (
                 <>
