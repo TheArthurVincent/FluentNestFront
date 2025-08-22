@@ -24,7 +24,6 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import NewHomeworkAssignmentHere from "./HomeworkComponents/NewHomeworkAssignmentInside";
 import PendingHomeworkAssignments from "./HomeworkComponents/PendingHomeworkAssignmentsInside";
 import MyClasses from "../MyClasses/MyClasses";
-import { Box } from "@mui/system";
 
 interface HWProps {
   headers: MyHeadersType | null;
@@ -34,7 +33,7 @@ interface HWProps {
 
 export default function Homework({ headers, setChange, change }: HWProps) {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
-  const [both, setBoth] = useState<boolean>(false);
+  const [both, setBoth] = useState<boolean>(true);
   const [tutoringList, setTutoringList] = useState<any>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [studentsList, setStudentsList] = useState<any>([]);
