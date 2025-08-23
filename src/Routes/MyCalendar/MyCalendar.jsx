@@ -216,6 +216,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setUploading(false);
     setCategory("");
     setNewStudentId("");
+      setNewGroupId("");
+
     setShowSeeEditTutoring(false);
     setTutoringsListOfOneStudentOrGroup([]);
     setTheTime("");
@@ -328,6 +330,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const [todoList, setTodoList] = useState([]);
+
   const fetchGeneralEvents = async () => {
     setModalEditTodo(false);
     setSeePlusButtons(false);
@@ -609,11 +612,32 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setShowClasses(true);
   };
 
+  const fetchOneSetOfGroups = async (groupID) => {
+    if (!groupID) return;
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/groupsrecurrentevents/${groupID}`,
+        {
+          headers,
+        }
+      );
+      const groups = response.data.tutorings;
+      console.log(groups);
+      setLoadingTutoringDays(true);
+      setTutoringsListOfOneStudentOrGroup(groups);
+      setLoadingTutoringDays(false);
+    } catch (error) {
+      console.log(error, "Erro ao encontrar alunos");
+    }
+  };
+
   const fetchOneSetOfGroupClassesInside = (e) => {
     const eTargetValue = e.target.value;
     setNewGroupId(eTargetValue);
+    setNewStudentId("")
     console.log("e.target.value: ", e.target.value, "newGroupId: ", newGroupId);
     setShowClasses(true);
+    setSeeEditTutoring(false);
   };
 
   const postNewEvent = async () => {
@@ -801,7 +825,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         `${backDomain}/api/v1/tutoringevent`,
         {
           id: tutoringId,
-          studentID: newStudentId,
+          studentID: newStudentId || "",
+          groupId: newGroupId || "",
           day: weekDay,
           time: timeOfTutoring,
           duration,
@@ -812,7 +837,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       setSeeEditTutoring(false);
-
       fetchOneSetOfTutorings(newStudentId);
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
@@ -853,6 +877,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           duration,
           link: theNewLink,
           studentID: newStudentId,
+          teacherID: myId,
+          groupId: newGroupId,
           numberOfWeeks: numberOfWeeks || 4,
           endDate: endDateForTutoring,
         },
@@ -863,7 +889,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response) {
         setSeeEditTutoring(false);
         setShowSeeEditTutoring(false);
-        fetchOneSetOfTutorings(newStudentId);
+        if (newStudentId) {
+          fetchOneSetOfTutorings(newStudentId);
+        } else if (newGroupId) {
+          fetchOneSetOfGroups(newGroupId);
+        }
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
@@ -896,13 +926,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
             day: item.day,
             id: item.id,
             studentID: newStudentId,
+            groupId: newGroupId,
           },
           headers,
         }
       );
       if (response) {
         setSeeEditTutoring(false);
-        fetchOneSetOfTutorings(newStudentId);
+        if (newGroupId) {
+          fetchOneSetOfGroups(newGroupId);
+        } else {
+          fetchOneSetOfTutorings(newStudentId);
+        }
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
@@ -915,6 +950,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchOneSetOfTutorings(newStudentId);
     }
   }, [newStudentId]);
+
+  useEffect(() => {
+    if (newGroupId !== "") {
+      fetchOneSetOfGroups(newGroupId);
+    }
+  }, [newGroupId]);
 
   const handleSeeModalNew = () => {
     setShowNewClassForm(true);
@@ -1154,6 +1195,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const handleStudentChange = (e) => {
     setNewStudentId(e.target.value);
+    setNewGroupId("");
   };
 
   const handleTheNewWeekDayChange = (e) => {
@@ -1234,6 +1276,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setDate("");
       setTheTime("");
       setNewStudentId("");
+      setNewGroupId("");
       setDescription("");
       setCategory("");
       setStatus("");
@@ -5277,219 +5320,118 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   </button>
                 </div>
               </div>
-              {newStudentId !== "" && (
-                <button
-                  onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
-                  style={{
-                    padding: "8px 1.5rem",
-                    marginBottom: "5px",
-                    borderRadius: "8px",
-                    backgroundColor: !showSeeEditTutoring
-                      ? "#f0f9f0"
-                      : "#fdf2f2",
-                    border: !showSeeEditTutoring
-                      ? "1px solid #d4e6d4"
-                      : "1px solid #f5c6c6",
-                    color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
-                    cursor: "pointer",
-                    fontWeight: "500",
-                    transition: "all 0.2s ease",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = !showSeeEditTutoring
-                      ? "#e8f5e8"
-                      : "#fce8e8";
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = !showSeeEditTutoring
-                      ? "#f0f9f0"
-                      : "#fdf2f2";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-                  }}
-                >
-                  {showSeeEditTutoring
-                    ? UniversalTexts.hideShowClasses
-                    : UniversalTexts.showShowClasses}
-                </button>
-              )}
-              {newStudentId !== "" && showSeeEditTutoring && (
-                <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                  <div
+              {newStudentId !== "" ||
+                (newGroupId !== "" && (
+                  <button
+                    onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
                     style={{
-                      padding: "1.5rem",
+                      padding: "8px 1.5rem",
+                      marginBottom: "5px",
                       borderRadius: "8px",
-                      backgroundColor: "#d4edda",
-                      border: "1px solid #c3e6cb",
+                      backgroundColor: !showSeeEditTutoring
+                        ? "#f0f9f0"
+                        : "#fdf2f2",
+                      border: !showSeeEditTutoring
+                        ? "1px solid #d4e6d4"
+                        : "1px solid #f5c6c6",
+                      color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
+                      cursor: "pointer",
+                      fontWeight: "500",
+                      transition: "all 0.2s ease",
+                      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.backgroundColor = !showSeeEditTutoring
+                        ? "#e8f5e8"
+                        : "#fce8e8";
+                      e.target.style.transform = "translateY(-1px)";
+                      e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.backgroundColor = !showSeeEditTutoring
+                        ? "#f0f9f0"
+                        : "#fdf2f2";
+                      e.target.style.transform = "translateY(0)";
+                      e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
                     }}
                   >
-                    <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
-                      {UniversalTexts.calendarModal.addNewClass}
-                    </h4>
-                    <div style={{ display: "grid", gap: "1rem" }}>
-                      <select
-                        onChange={handleTheNewWeekDayChange}
-                        value={theNewWeekDay}
-                        style={{
-                          padding: "5px",
-                          borderRadius: "8px",
-                          border: "1px solid #ced4da",
-                          backgroundColor: "white",
-                        }}
-                      >
-                        <option hidden value="select week day">
-                          {UniversalTexts.calendarModal.selectWeekDayOption}
-                        </option>
-                        {weekDays.map((weekDay, index) => {
-                          return (
-                            <option key={index} value={weekDay}>
-                              {weekDay}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <select
-                        onChange={handleTheNewTimeChange}
-                        value={theNewTimeOfTutoring}
-                        style={{
-                          padding: "5px",
-                          borderRadius: "8px",
-                          border: "1px solid #ced4da",
-
-                          backgroundColor: "white",
-                        }}
-                      >
-                        <option hidden value="Select Time">
-                          {UniversalTexts.calendarModal.selectTimeOption}
-                        </option>
-                        {times.map((time, index) => {
-                          return (
-                            <option key={index} value={time}>
-                              {time}
-                            </option>
-                          );
-                        })}
-                      </select>
-                      <input
-                        placeholder={UniversalTexts.calendarModal.meetingLink}
-                        value={theNewLink}
-                        onChange={(e) => {
-                          setTheNewLink(e.target.value);
-                        }}
-                        type="text"
-                        style={{
-                          padding: "5px",
-                          borderRadius: "8px",
-                          border: "1px solid #ced4da",
-                        }}
-                        required
-                      />
-                      <div>
-                        <p
+                    {showSeeEditTutoring
+                      ? UniversalTexts.hideShowClasses
+                      : UniversalTexts.showShowClasses}
+                  </button>
+                ))}
+              {(newStudentId !== "" || newGroupId !== "") &&
+                showSeeEditTutoring && (
+                  <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
+                    <div
+                      style={{
+                        padding: "1.5rem",
+                        borderRadius: "8px",
+                        backgroundColor: "#d4edda",
+                        border: "1px solid #c3e6cb",
+                      }}
+                    >
+                      <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
+                        {UniversalTexts.calendarModal.addNewClass}
+                      </h4>
+                      <div style={{ display: "grid", gap: "1rem" }}>
+                        <select
+                          onChange={handleTheNewWeekDayChange}
+                          value={theNewWeekDay}
                           style={{
-                            display: "block",
-                            marginBottom: "5px",
-                            fontSize: "12px",
-                            color: "#6c757d",
-                            fontWeight: "500",
-                            margin: "0 0 5px 0",
+                            padding: "5px",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            backgroundColor: "white",
                           }}
                         >
-                          {UniversalTexts.repeatFor}:
-                        </p>
-                        <div
+                          <option hidden value="select week day">
+                            {UniversalTexts.calendarModal.selectWeekDayOption}
+                          </option>
+                          {weekDays.map((weekDay, index) => {
+                            return (
+                              <option key={index} value={weekDay}>
+                                {weekDay}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <select
+                          onChange={handleTheNewTimeChange}
+                          value={theNewTimeOfTutoring}
                           style={{
-                            display: "flex",
-                            gap: "4px",
-                            marginBottom: "8px",
-                            alignItems: "center",
-                            justifyContent: "space-between",
+                            padding: "5px",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                            backgroundColor: "white",
                           }}
                         >
-                          {[
-                            { label: "1m", weeks: 4, tooltip: "1 mês" },
-                            { label: "3m", weeks: 12, tooltip: "3 meses" },
-                            { label: "6m", weeks: 24, tooltip: "6 meses" },
-                            { label: "1a", weeks: 52, tooltip: "1 ano" },
-                            { label: "2a", weeks: 104, tooltip: "2 anos" },
-                          ].map(({ label, weeks, tooltip }) => (
-                            <button
-                              key={label}
-                              title={tooltip}
-                              style={{
-                                backgroundColor:
-                                  numberOfWeeks == weeks
-                                    ? "#e3f2fd"
-                                    : "#f8f9fa",
-                                border:
-                                  numberOfWeeks == weeks
-                                    ? "1px solid #2196f3"
-                                    : "1px solid #e0e0e0",
-                                cursor: "pointer",
-                                padding: "2px 6px",
-                                borderRadius: "4px",
-                                fontSize: "10px",
-                                fontWeight: "500",
-                                color:
-                                  numberOfWeeks == weeks
-                                    ? "#1976d2"
-                                    : "#6c757d",
-                                transition: "all 0.2s ease",
-                                minWidth: "24px",
-                                height: "20px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                              onClick={() => setNumberOfWeeks(weeks)}
-                              onMouseEnter={(e) => {
-                                if (numberOfWeeks != weeks) {
-                                  e.target.style.backgroundColor = "#f0f0f0";
-                                  e.target.style.borderColor = "#bdbdbd";
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                if (numberOfWeeks != weeks) {
-                                  e.target.style.backgroundColor = "#f8f9fa";
-                                  e.target.style.borderColor = "#e0e0e0";
-                                }
-                              }}
-                            >
-                              {label}
-                            </button>
-                          ))}
-
-                          <input
-                            placeholder="Ex: 8"
-                            value={numberOfWeeks}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (
-                                value === "" ||
-                                (value.length <= 2 &&
-                                  Number(value) >= 0 &&
-                                  Number(value) <= 99)
-                              ) {
-                                setNumberOfWeeks(value);
-                              }
-                            }}
-                            type="number"
-                            min="1"
-                            max="99"
-                            style={{
-                              padding: "6px",
-                              maxWidth: "60px",
-                              borderRadius: "4px",
-                              border: "1px solid #ced4da",
-                              fontSize: "12px",
-                              textAlign: "center",
-                            }}
-                            required
-                          />
-
+                          <option hidden value="Select Time">
+                            {UniversalTexts.calendarModal.selectTimeOption}
+                          </option>
+                          {times.map((time, index) => {
+                            return (
+                              <option key={index} value={time}>
+                                {time}
+                              </option>
+                            );
+                          })}
+                        </select>
+                        <input
+                          placeholder={UniversalTexts.calendarModal.meetingLink}
+                          value={theNewLink}
+                          onChange={(e) => {
+                            setTheNewLink(e.target.value);
+                          }}
+                          type="text"
+                          style={{
+                            padding: "5px",
+                            borderRadius: "8px",
+                            border: "1px solid #ced4da",
+                          }}
+                          required
+                        />
+                        <div>
                           <p
                             style={{
                               display: "block",
@@ -5500,202 +5442,308 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               margin: "0 0 5px 0",
                             }}
                           >
-                            {UniversalTexts.duration}:
+                            {UniversalTexts.repeatFor}:
                           </p>
-                        </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            gap: "4px",
-                            marginBottom: "8px",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          {[
-                            {
-                              label: "30min",
-                              minutes: 30,
-                              tooltip: "30 minutos",
-                            },
-                            {
-                              label: "45min",
-                              minutes: 45,
-                              tooltip: "45 minutos",
-                            },
-                            { label: "1h", minutes: 60, tooltip: "1 hora" },
-                            {
-                              label: "1h30min",
-                              minutes: 90,
-                              tooltip: "1 hora e 30 minutos",
-                            },
-                            { label: "2h", minutes: 120, tooltip: "2 horas" },
-                          ].map(({ label, minutes, tooltip }) => (
-                            <button
-                              key={label}
-                              title={tooltip}
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "4px",
+                              marginBottom: "8px",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            {[
+                              { label: "1m", weeks: 4, tooltip: "1 mês" },
+                              { label: "3m", weeks: 12, tooltip: "3 meses" },
+                              { label: "6m", weeks: 24, tooltip: "6 meses" },
+                              { label: "1a", weeks: 52, tooltip: "1 ano" },
+                              { label: "2a", weeks: 104, tooltip: "2 anos" },
+                            ].map(({ label, weeks, tooltip }) => (
+                              <button
+                                key={label}
+                                title={tooltip}
+                                style={{
+                                  backgroundColor:
+                                    numberOfWeeks == weeks
+                                      ? "#e3f2fd"
+                                      : "#f8f9fa",
+                                  border:
+                                    numberOfWeeks == weeks
+                                      ? "1px solid #2196f3"
+                                      : "1px solid #e0e0e0",
+                                  cursor: "pointer",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                  fontSize: "10px",
+                                  fontWeight: "500",
+                                  color:
+                                    numberOfWeeks == weeks
+                                      ? "#1976d2"
+                                      : "#6c757d",
+                                  transition: "all 0.2s ease",
+                                  minWidth: "24px",
+                                  height: "20px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                                onClick={() => setNumberOfWeeks(weeks)}
+                                onMouseEnter={(e) => {
+                                  if (numberOfWeeks != weeks) {
+                                    e.target.style.backgroundColor = "#f0f0f0";
+                                    e.target.style.borderColor = "#bdbdbd";
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (numberOfWeeks != weeks) {
+                                    e.target.style.backgroundColor = "#f8f9fa";
+                                    e.target.style.borderColor = "#e0e0e0";
+                                  }
+                                }}
+                              >
+                                {label}
+                              </button>
+                            ))}
+
+                            <input
+                              placeholder="Ex: 8"
+                              value={numberOfWeeks}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (
+                                  value === "" ||
+                                  (value.length <= 2 &&
+                                    Number(value) >= 0 &&
+                                    Number(value) <= 99)
+                                ) {
+                                  setNumberOfWeeks(value);
+                                }
+                              }}
+                              type="number"
+                              min="1"
+                              max="99"
                               style={{
-                                backgroundColor:
-                                  duration == minutes ? "#e3f2fd" : "#f8f9fa",
-                                border:
-                                  duration == minutes
-                                    ? "1px solid #2196f3"
-                                    : "1px solid #e0e0e0",
-                                cursor: "pointer",
-                                padding: "2px 6px",
+                                padding: "6px",
+                                maxWidth: "60px",
                                 borderRadius: "4px",
-                                fontSize: "10px",
+                                border: "1px solid #ced4da",
+                                fontSize: "12px",
+                                textAlign: "center",
+                              }}
+                              required
+                            />
+
+                            <p
+                              style={{
+                                display: "block",
+                                marginBottom: "5px",
+                                fontSize: "12px",
+                                color: "#6c757d",
                                 fontWeight: "500",
-                                color:
-                                  duration == minutes ? "#1976d2" : "#6c757d",
-                                transition: "all 0.2s ease",
-                                minWidth: "24px",
-                                height: "20px",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                              onClick={() => setDuration(minutes)}
-                              onMouseEnter={(e) => {
-                                if (duration != minutes) {
-                                  e.target.style.backgroundColor = "#f0f0f0";
-                                  e.target.style.borderColor = "#bdbdbd";
-                                }
-                              }}
-                              onMouseLeave={(e) => {
-                                if (duration != minutes) {
-                                  e.target.style.backgroundColor = "#f8f9fa";
-                                  e.target.style.borderColor = "#e0e0e0";
-                                }
+                                margin: "0 0 5px 0",
                               }}
                             >
-                              {label}
-                            </button>
-                          ))}
-
-                          <input
-                            placeholder="Ex: 55"
-                            value={duration}
-                            onChange={(e) => {
-                              const value = e.target.value;
-                              if (
-                                value === "" ||
-                                (value.length <= 3 &&
-                                  Number(value) >= 0 &&
-                                  Number(value) <= 300)
-                              ) {
-                                setDuration(value);
-                              }
-                            }}
-                            type="number"
-                            min="1"
-                            max="300"
+                              {UniversalTexts.duration}:
+                            </p>
+                          </div>
+                          <div
                             style={{
-                              padding: "6px",
-                              maxWidth: "60px",
-                              borderRadius: "4px",
-                              border: "1px solid #ced4da",
-                              fontSize: "12px",
-                              textAlign: "center",
+                              display: "flex",
+                              gap: "4px",
+                              marginBottom: "8px",
+                              alignItems: "center",
+                              justifyContent: "space-between",
                             }}
-                            required
-                          />
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "8px",
-                            padding: "6px 8px",
-                            backgroundColor: "#f8f9fa",
-                            border: "1px solid #e9ecef",
-                            borderRadius: "4px",
-                            fontSize: "11px",
-                            color: "#6c757d",
-                            lineHeight: "1.3",
-                          }}
-                        >
-                          {numberOfWeeks && numberOfWeeks > 0 ? (
-                            <div>
-                              {(() => {
-                                const today = new Date();
-                                const nextWeekDay = new Date(today);
-                                const dayOfWeek = today.getDay();
-                                const daysUntilMonday =
-                                  dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
-                                nextWeekDay.setDate(
-                                  today.getDate() + daysUntilMonday
-                                );
-                                const endDate = new Date(nextWeekDay);
-                                endDate.setDate(
-                                  nextWeekDay.getDate() + numberOfWeeks * 7 - 1
-                                );
-
-                                const formatDate = (date) => {
-                                  return date.toLocaleDateString("pt-BR", {
-                                    day: "2-digit",
-                                    month: "2-digit",
-                                    year: "numeric",
-                                  });
-                                };
-
-                                return `${formatDate(
-                                  nextWeekDay
-                                )} até ${formatDate(
-                                  endDate
-                                )} (${numberOfWeeks} semana${
-                                  numberOfWeeks > 1 ? "s" : ""
-                                })`;
-                              })()}
-                            </div>
-                          ) : (
-                            <div>
-                              {UniversalTexts.calendarModal.selectNumberOfWeeks}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      {(() => {
-                        const isFormIncomplete =
-                          !theNewWeekDay ||
-                          !theNewTimeOfTutoring ||
-                          !theNewLink ||
-                          !newStudentId ||
-                          !numberOfWeeks ||
-                          numberOfWeeks <= 0 ||
-                          duration <= 0;
-
-                        return (
-                          <button
-                            onClick={newTutoring}
-                            disabled={isFormIncomplete}
-                            style={{
-                              padding: "5px 1.5rem",
-                              backgroundColor: isFormIncomplete
-                                ? "#6c757d"
-                                : partnerColor(),
-                              color: "white",
-                              border: "none",
-                              borderRadius: "8px",
-                              cursor: isFormIncomplete
-                                ? "not-allowed"
-                                : "pointer",
-                              fontWeight: "500",
-                              opacity: isFormIncomplete ? 0.6 : 1,
-                              transition: "all 0.2s ease",
-                            }}
-                            title={
-                              isFormIncomplete
-                                ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas"
-                                : "Clique para criar a tutoria recorrente"
-                            }
                           >
-                            {UniversalTexts.calendarModal.addNewClass}
-                          </button>
-                        );
-                      })()}
+                            {[
+                              {
+                                label: "30min",
+                                minutes: 30,
+                                tooltip: "30 minutos",
+                              },
+                              {
+                                label: "45min",
+                                minutes: 45,
+                                tooltip: "45 minutos",
+                              },
+                              { label: "1h", minutes: 60, tooltip: "1 hora" },
+                              {
+                                label: "1h30min",
+                                minutes: 90,
+                                tooltip: "1 hora e 30 minutos",
+                              },
+                              { label: "2h", minutes: 120, tooltip: "2 horas" },
+                            ].map(({ label, minutes, tooltip }) => (
+                              <button
+                                key={label}
+                                title={tooltip}
+                                style={{
+                                  backgroundColor:
+                                    duration == minutes ? "#e3f2fd" : "#f8f9fa",
+                                  border:
+                                    duration == minutes
+                                      ? "1px solid #2196f3"
+                                      : "1px solid #e0e0e0",
+                                  cursor: "pointer",
+                                  padding: "2px 6px",
+                                  borderRadius: "4px",
+                                  fontSize: "10px",
+                                  fontWeight: "500",
+                                  color:
+                                    duration == minutes ? "#1976d2" : "#6c757d",
+                                  transition: "all 0.2s ease",
+                                  minWidth: "24px",
+                                  height: "20px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                }}
+                                onClick={() => setDuration(minutes)}
+                                onMouseEnter={(e) => {
+                                  if (duration != minutes) {
+                                    e.target.style.backgroundColor = "#f0f0f0";
+                                    e.target.style.borderColor = "#bdbdbd";
+                                  }
+                                }}
+                                onMouseLeave={(e) => {
+                                  if (duration != minutes) {
+                                    e.target.style.backgroundColor = "#f8f9fa";
+                                    e.target.style.borderColor = "#e0e0e0";
+                                  }
+                                }}
+                              >
+                                {label}
+                              </button>
+                            ))}
+
+                            <input
+                              placeholder="Ex: 55"
+                              value={duration}
+                              onChange={(e) => {
+                                const value = e.target.value;
+                                if (
+                                  value === "" ||
+                                  (value.length <= 3 &&
+                                    Number(value) >= 0 &&
+                                    Number(value) <= 300)
+                                ) {
+                                  setDuration(value);
+                                }
+                              }}
+                              type="number"
+                              min="1"
+                              max="300"
+                              style={{
+                                padding: "6px",
+                                maxWidth: "60px",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                                fontSize: "12px",
+                                textAlign: "center",
+                              }}
+                              required
+                            />
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "8px",
+                              padding: "6px 8px",
+                              backgroundColor: "#f8f9fa",
+                              border: "1px solid #e9ecef",
+                              borderRadius: "4px",
+                              fontSize: "11px",
+                              color: "#6c757d",
+                              lineHeight: "1.3",
+                            }}
+                          >
+                            {numberOfWeeks && numberOfWeeks > 0 ? (
+                              <div>
+                                {(() => {
+                                  const today = new Date();
+                                  const nextWeekDay = new Date(today);
+                                  const dayOfWeek = today.getDay();
+                                  const daysUntilMonday =
+                                    dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
+                                  nextWeekDay.setDate(
+                                    today.getDate() + daysUntilMonday
+                                  );
+                                  const endDate = new Date(nextWeekDay);
+                                  endDate.setDate(
+                                    nextWeekDay.getDate() +
+                                      numberOfWeeks * 7 -
+                                      1
+                                  );
+
+                                  const formatDate = (date) => {
+                                    return date.toLocaleDateString("pt-BR", {
+                                      day: "2-digit",
+                                      month: "2-digit",
+                                      year: "numeric",
+                                    });
+                                  };
+
+                                  return `${formatDate(
+                                    nextWeekDay
+                                  )} até ${formatDate(
+                                    endDate
+                                  )} (${numberOfWeeks} semana${
+                                    numberOfWeeks > 1 ? "s" : ""
+                                  })`;
+                                })()}
+                              </div>
+                            ) : (
+                              <div>
+                                {
+                                  UniversalTexts.calendarModal
+                                    .selectNumberOfWeeks
+                                }
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {(() => {
+                          const isFormIncomplete =
+                            !theNewWeekDay ||
+                            !theNewTimeOfTutoring ||
+                            !theNewLink ||
+                            !numberOfWeeks ||
+                            numberOfWeeks <= 0 ||
+                            duration <= 0;
+
+                          return (
+                            <button
+                              onClick={newTutoring}
+                              disabled={isFormIncomplete}
+                              style={{
+                                padding: "5px 1.5rem",
+                                backgroundColor: isFormIncomplete
+                                  ? "#6c757d"
+                                  : partnerColor(),
+                                color: "white",
+                                border: "none",
+                                borderRadius: "8px",
+                                cursor: isFormIncomplete
+                                  ? "not-allowed"
+                                  : "pointer",
+                                fontWeight: "500",
+                                opacity: isFormIncomplete ? 0.6 : 1,
+                                transition: "all 0.2s ease",
+                              }}
+                              title={
+                                isFormIncomplete
+                                  ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas"
+                                  : "Clique para criar a tutoria recorrente"
+                              }
+                            >
+                              {UniversalTexts.calendarModal.addNewClass}
+                            </button>
+                          );
+                        })()}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </>
           {/* Nova Seção: Criar Nova Aula */}
