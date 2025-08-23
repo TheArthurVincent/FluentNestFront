@@ -2714,34 +2714,38 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       .scheduleOneClass
                                   }
                                 </HTwo>
-                                <button
-                                  onClick={() => {
-                                    setShowEditForm(false);
-                                    setPOSTNEWINFOCLASS(false);
-                                  }}
-                                  style={{
-                                    padding: "0.5rem 1rem",
-                                    backgroundColor: "#6c757d",
-                                    color: "white",
-                                    border: "none",
-                                    marginLeft: "auto",
-                                    borderRadius: "6px",
-                                    fontSize: "0.9rem",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s ease",
-                                  }}
-                                  onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = "#5a6268";
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.target.style.backgroundColor = "#6c757d";
-                                  }}
-                                >
-                                  <i
-                                    className="fa fa-times"
-                                    style={{ marginRight: "0.5rem" }}
-                                  />
-                                </button>
+                                {!loadingInfo && (
+                                  <button
+                                    onClick={() => {
+                                      setShowEditForm(false);
+                                      setPOSTNEWINFOCLASS(false);
+                                    }}
+                                    style={{
+                                      padding: "0.5rem 1rem",
+                                      backgroundColor: "#6c757d",
+                                      color: "white",
+                                      border: "none",
+                                      marginLeft: "auto",
+                                      borderRadius: "6px",
+                                      fontSize: "0.9rem",
+                                      cursor: "pointer",
+                                      transition: "all 0.2s ease",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      e.target.style.backgroundColor =
+                                        "#5a6268";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      e.target.style.backgroundColor =
+                                        "#6c757d";
+                                    }}
+                                  >
+                                    <i
+                                      className="fa fa-times"
+                                      style={{ marginRight: "0.5rem" }}
+                                    />
+                                  </button>
+                                )}
                               </div>
 
                               {loadingInfo ? (
@@ -2875,7 +2879,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             gap: "1.5rem",
                                           }}
                                         >
-
                                           {/* Vídeo */}
                                           <div>
                                             <label
@@ -3052,57 +3055,59 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   initialContent={"Type here"}
                                                 />{" "}
                                               </div>{" "}
-
-
-
-                                                               {studentsInGroup.length > 0 && (
-                                          <div>
-                                            <label
-                                              style={{
-                                                display: "block",
-                                                marginBottom: "0.5rem",
-                                                fontWeight: "600",
-                                                color: "#495057",
-                                                fontSize: "0.9rem",
-                                              }}
-                                            >
-                                              📝 Descrição individual para cada aluno.
-                                            </label>
-
-                                            {studentsInGroup.map(
-                                              (student, index) => (
-                                                <div key={student._id || index}>
-                                                  {student.name +
-                                                    " " +
-                                                    student.lastname}
-                                                  <input
-                                                    type="text"
-                                                    value={
-                                                      comments[index]
-                                                        ?.comment || ""
-                                                    }
-                                                    onChange={(e) =>
-                                                      handleStudentDescriptionChange(
-                                                        index,
-                                                        e.target.value
-                                                      )
-                                                    }
-                                                    placeholder="Comentário para o aluno"
+                                              {studentsInGroup.length > 0 && (
+                                                <div>
+                                                  <label
                                                     style={{
-                                                      width: "100%",
-                                                      padding: "0.75rem",
-                                                      borderRadius: "8px",
-                                                      border:
-                                                        "1px solid #ced4da",
+                                                      display: "block",
+                                                      marginBottom: "0.5rem",
+                                                      fontWeight: "600",
+                                                      color: "#495057",
                                                       fontSize: "0.9rem",
-                                                      marginTop: "0.5rem",
                                                     }}
-                                                  />
+                                                  >
+                                                    📝 Descrição individual para
+                                                    cada aluno.
+                                                  </label>
+
+                                                  {studentsInGroup.map(
+                                                    (student, index) => (
+                                                      <div
+                                                        key={
+                                                          student._id || index
+                                                        }
+                                                      >
+                                                        {student.name +
+                                                          " " +
+                                                          student.lastname}
+                                                        <input
+                                                          type="text"
+                                                          value={
+                                                            comments[index]
+                                                              ?.comment || ""
+                                                          }
+                                                          onChange={(e) =>
+                                                            handleStudentDescriptionChange(
+                                                              index,
+                                                              e.target.value
+                                                            )
+                                                          }
+                                                          placeholder="Comentário para o aluno"
+                                                          style={{
+                                                            width: "100%",
+                                                            padding: "0.75rem",
+                                                            borderRadius: "8px",
+                                                            border:
+                                                              "1px solid #ced4da",
+                                                            fontSize: "0.9rem",
+                                                            marginTop: "0.5rem",
+                                                          }}
+                                                        />
+                                                      </div>
+                                                    )
+                                                  )}
                                                 </div>
-                                              )
-                                            )}
-                                          </div>
-                                        )}
+                                              )}
                                             </div>
                                           )}{" "}
                                           {/* Due Date */}{" "}
@@ -3707,8 +3712,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             required
                                           />
                                         </div>
-
-                       
                                       </span>
                                     )}
                                   </form>
