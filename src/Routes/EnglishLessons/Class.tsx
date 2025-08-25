@@ -3647,23 +3647,6 @@ export default function EnglishClassCourse2({
               </div>
             </div>
           )}
-
-          <label>
-            <input
-              style={{
-                cursor: "pointer",
-              }}
-              type="checkbox"
-              checked={isCompleted}
-              onChange={handleToggle}
-              disabled={loading}
-            />
-            {loading
-              ? "  Atualizando..."
-              : isCompleted
-              ? "  Completed"
-              : "  Not Completed"}
-          </label>
         </>
       )}
       <>
