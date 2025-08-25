@@ -13,16 +13,15 @@ import { isArthurVincent, isArvin } from "../../App";
 function RequestResetPassword() {
   const [email, setEmail] = useState<string>("");
 
-  
   const handleSendPassword = async () => {
-  try {
-    const response = await axios.put(
-      `${backDomain}/api/v1/resetpassword/${email}`,
-      {
-        isArthurVincent,
-        isArvin
-      }
-    );
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/resetpassword/${email}`,
+        {
+          isArthurVincent,
+          isArvin,
+        }
+      );
       notifyAlert(response.data.message, partnerColor());
       setTimeout(() => {
         window.location.assign("/login");
