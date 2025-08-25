@@ -18,12 +18,12 @@ export const backgroundType = (): string => {
 
 export const partnerColor = (): string => {
   const wl = getWhiteLabel();
-  return wl.color || "#ff5b1e";
+  return wl.color || "#ed5914";
 };
 
 export const theBackgroundColor = (): string => {
   const wl = getWhiteLabel();
-  return wl.backgroundColor || "rgba(207, 207, 207, 1)";
+  return wl.backgroundColor || "#e7e7e7ff";
 };
 
 export const textPrimaryColorContrast = (): string => {
@@ -43,13 +43,13 @@ export const logoPartner = (): string => {
   const wl = getWhiteLabel();
   return (
     wl.logo ||
-    "https://ik.imagekit.io/vjz75qw96/assets/icons/Ingl%C3%AAs%20de%20Neg%C3%B3cios%20(Miniatura%20do%20YouTube)%20(3).png?updatedAt=1754392979150"
+    "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679"
   );
 };
 
 export const textGeneralFont = (): string => {
   const wl = getWhiteLabel();
-  return wl.textGeneralFont || "Lato";
+  return wl.textGeneralFont || "Roboto";
 };
 
 export const textpartnerColorContrast = (): string => "#f2f2f2";

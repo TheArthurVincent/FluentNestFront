@@ -4,13 +4,12 @@ try {
   if (!wl) {
     const defaultWL = {
       backgroundType: "color",
-      color: "rgba(236, 236, 236, 1)",
-      backgroundColor: "rgba(188, 221, 248, 1)",
+      color: "#ed5914",
+      backgroundColor: "#e7e7e7ff",
       contrastColor: "#eee",
-      backgroundImage:
-        "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
-      logo: "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166",
-      textGeneralFont: "Lato",
+      backgroundImage: "",
+      logo: "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679",
+      textGeneralFont: "Roboto",
       textTitleFont: "Athiti",
     };
     localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
@@ -49,15 +48,18 @@ import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
-import axios from "axios";
+import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
+import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 
 export var currentUrl = window.location.href;
-export var isArvin = currentUrl.includes("arvinplatform");
 export var isLocalHost = currentUrl.includes("localhost");
 export var isArthurVincent =
   currentUrl.includes("arthurvincent") ||
   currentUrl.includes("staging") ||
   isLocalHost;
+export var isArvin = currentUrl.includes("arvinplatform");
+export var isPortal = currentUrl.includes("portal");
+export var isArvinLandingPage = isArvin && !isPortal;
 export var getWhiteLabel = (() => {
   try {
     const wl = localStorage.getItem("whiteLabel");
@@ -129,9 +131,24 @@ function App() {
     console.warn("[App] Erro ao definir background:", err);
   }
 
+  const [isResponsible, setIsResponsible] = useState<boolean>(false);
+  useEffect(() => {}, []);
+
   useEffect(() => {
     try {
       const user = localStorage.getItem("loggedIn");
+
+      try {
+        const user = localStorage.getItem("loggedIn");
+        if (user) {
+          const userHereJSON = JSON.parse(user);
+          if (userHereJSON.responsible) {
+            setIsResponsible(true);
+          }
+        }
+      } catch (err) {
+        console.warn("[App] Erro ao verificar responsável:", err);
+      }
       // Aplica fontes apenas se existir
       document.body.style.fontFamily = textGeneralFont();
       // Aplica em h1/h2 apenas se existir
@@ -168,6 +185,41 @@ function App() {
 
   var routes = [
     {
+      path: "/*",
+      element: (() => {
+        try {
+          return verifyToken() ? (
+            <HomePage headers={headers} />
+          ) : isArvinLandingPage ? (
+            <Redirect to={"/lp"} />
+          ) : (
+            <Redirect to={isLocalHost ? "/login" : "/cadastre-se"} />
+          );
+        } catch (err) {
+          console.error("[App] Erro ao definir rota /*:", err);
+          return <NotFound />;
+        }
+      })(),
+    },
+
+    {
+      path: "/lp",
+      element: (() => {
+        return <LandingPageArvin />;
+      })(),
+    },
+    {
+      path: "/cadastre-se",
+      element: (() => {
+        try {
+          return isPortal ? <Login /> : <LandingPage />;
+        } catch (err) {
+          console.error("[App] Erro ao definir rota /cadastre-se:", err);
+          return <Login />;
+        }
+      })(),
+    },
+    {
       path: "/login",
       element: (() => {
         try {
@@ -179,36 +231,10 @@ function App() {
       })(),
     },
     {
-      path: "/*",
-      element: (() => {
-        try {
-          return verifyToken() ? (
-            <HomePage headers={headers} />
-          ) : (
-            <Redirect to={isArvin ? "/login" : "/cadastre-se"} />
-          );
-        } catch (err) {
-          console.error("[App] Erro ao definir rota /*:", err);
-          return <NotFound />;
-        }
-      })(),
-    },
-    {
-      path: "/cadastre-se",
-      element: (() => {
-        try {
-          return isArvin ? <Login /> : <LandingPage />;
-        } catch (err) {
-          console.error("[App] Erro ao definir rota /cadastre-se:", err);
-          return <Login />;
-        }
-      })(),
-    },
-    {
       path: "/signup",
       element: (() => {
         try {
-          return isArvin ? <Login /> : <LandingPage />;
+          return <Login />;
         } catch (err) {
           console.error("[App] Erro ao definir rota /signup:", err);
           return <Login />;
@@ -266,12 +292,32 @@ function App() {
       element: <FeeNotUpToDate />,
     },
   ];
+  var routesResponsible = [
+    {
+      path: "/",
+
+      element: (() => {
+        try {
+          return verifyToken() ? (
+            <HomePageResponsibleArea headers={headers} />
+          ) : isArvinLandingPage ? (
+            <Redirect to={"/lp"} />
+          ) : (
+            <Redirect to={"/login"} />
+          );
+        } catch (err) {
+          console.error("[App] Erro ao definir rota /*:", err);
+          return <NotFound />;
+        }
+      })(),
+    },
+  ];
 
   return (
     <UserProvider>
       <Router>
         <Routes>
-          {routes.map((route, index) => {
+          {(isResponsible ? routesResponsible : routes).map((route, index) => {
             try {
               return (
                 <Route key={index} path={route.path} element={route.element} />

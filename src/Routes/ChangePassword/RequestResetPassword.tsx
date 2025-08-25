@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { logoPartner, partnerColor, textTitleFont } from "../../Styles/Styles";
-import { LogoSVG, backDomain } from "../../Resources/UniversalComponents";
+import { backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";
 import { Button, TextField } from "@mui/material";
@@ -8,6 +8,7 @@ import Helmets from "../../Resources/Helmets";
 import { HOne } from "../../Resources/Components/RouteBox";
 import { NavLink } from "react-router-dom";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { isArthurVincent, isArvin } from "../../App";
 
 function RequestResetPassword() {
   const [email, setEmail] = useState<string>("");
@@ -15,9 +16,12 @@ function RequestResetPassword() {
   const handleSendPassword = async () => {
     try {
       const response = await axios.put(
-        `${backDomain}/api/v1/resetpassword/${email}`
+        `${backDomain}/api/v1/resetpassword/${email}`,
+        {
+          isArthurVincent,
+          isArvin,
+        }
       );
-
       notifyAlert(response.data.message, partnerColor());
       setTimeout(() => {
         window.location.assign("/login");

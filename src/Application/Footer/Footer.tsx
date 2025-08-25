@@ -23,13 +23,12 @@ export default function AppFooter({ see }: AppFooterIn) {
       }}
     >
       <img
-        src="https://ik.imagekit.io/vjz75qw96/assets/icons/Ingl%C3%AAs%20de%20Neg%C3%B3cios%20(Miniatura%20do%20YouTube)%20(3).png?updatedAt=1754392979150"
+        src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679"
         alt="ARVIN Logo"
         style={{
           height: "1.5rem",
           width: "auto",
           opacity: "0.7",
-          filter: "grayscale(100%)",
           objectFit: "contain",
         }}
       />

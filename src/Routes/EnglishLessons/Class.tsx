@@ -2977,6 +2977,271 @@ export default function EnglishClassCourse2({
             )}
           </div>
 
+          {/* Combined controls container - discrete */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              margin: "0.5rem 0",
+              padding: "4px 8px",
+              background: "rgba(255,255,255)", // evita transparência por trás
+              position: "sticky", // cola no topo ao chegar
+              top: "3.6rem", // mesma altura da topbar/espacador
+              zIndex: 5, // fica acima do conteúdo
+              flexWrap: "wrap",
+              gap: "8px",
+              backdropFilter: "saturate(1.1) blur(2px)", // opcional
+              boxShadow: "0 1px 8px rgba(0,0,0,0.06)", // opcional
+            }}
+          >
+            <button
+              title="Ver Quadro"
+              onClick={() => {
+                setSeeSlides(!seeSlides);
+              }}
+              className="isMobileDisapear"
+              style={{
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: "500",
+                borderRadius: "4px",
+                height: "28px",
+                gap: "6px",
+                border: "1px solid #e2e8f0",
+                background: seeSlides ? partnerColor() : "#f8fafc",
+                color: seeSlides ? "white" : "#64748b",
+                boxShadow: "none",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+                fontFamily: textGeneralFont(),
+              }}
+              onMouseEnter={(e) => {
+                const target = e.target as HTMLElement;
+                if (!seeSlides) {
+                  target.style.background = "#f1f5f9";
+                }
+              }}
+              onMouseLeave={(e) => {
+                const target = e.target as HTMLElement;
+                if (!seeSlides) {
+                  target.style.background = "#f8fafc";
+                }
+              }}
+            >
+              <i
+                className={seeSlides ? "fa fa-eye-slash" : "fa fa-eye"}
+                aria-hidden="true"
+                style={{ fontSize: "10px" }}
+              />
+              {seeSlides ? "Hide Board" : "See Board"}
+            </button>
+            {/* Left side: Student select (if admin/teacher) */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <span
+                style={{
+                  display:
+                    thePermissions === "superadmin" ||
+                    thePermissions === "teacher"
+                      ? "block"
+                      : "none",
+                }}
+              >
+                <select
+                  onChange={(e) => handleStudentChange(e)}
+                  value={studentID}
+                  style={{
+                    borderRadius: "4px",
+                    border: "1px solid #e2e8f0",
+                    backgroundColor: "#f8fafc",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    color: "#64748b",
+                    padding: "4px 6px",
+                    height: "28px",
+                    minWidth: "120px",
+                    maxWidth: "150px",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                  onFocus={(e) =>
+                    (e.currentTarget.style.borderColor = partnerColor())
+                  }
+                  onBlur={(e) =>
+                    (e.currentTarget.style.borderColor = "#e2e8f0")
+                  }
+                >
+                  {studentsList.map((student: any, index: number) => (
+                    <option key={index} value={student.id}>
+                      {student.name + " " + student.lastname}
+                    </option>
+                  ))}
+                </select>
+              </span>
+              <Voice
+                maxW="120px"
+                changeB={changeNumber}
+                setChangeB={setChangeNumber}
+              />
+            </div>
+
+            {/* Right side: Export buttons and completed checkbox */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <button
+                title="Gerar PowerPoint"
+                style={{
+                  padding: "4px 6px",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  borderRadius: "4px",
+                  minWidth: "28px",
+                  height: "28px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1px solid #e2e8f0",
+                  background: "#f8fafc",
+                  color: "#64748b",
+                  boxShadow: "none",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generatePPT}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.background = "#f1f5f9";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.background = "#f8fafc";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                  alt="PowerPoint"
+                  style={{ width: "12px", height: "12px" }}
+                />
+              </button>
+
+              <button
+                title="Gerar Word"
+                style={{
+                  padding: "4px 6px",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  borderRadius: "4px",
+                  minWidth: "28px",
+                  height: "28px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1px solid #e2e8f0",
+                  background: "#f8fafc",
+                  color: "#64748b",
+                  boxShadow: "none",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generateWord}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.background = "#f1f5f9";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.background = "#f8fafc";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                  alt="Word"
+                  style={{ width: "12px", height: "12px" }}
+                />
+              </button>
+
+              <button
+                title="Gerar PDF"
+                style={{
+                  padding: "4px 6px",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  borderRadius: "4px",
+                  minWidth: "28px",
+                  height: "28px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  border: "1px solid #e2e8f0",
+                  background: "#f8fafc",
+                  color: "#64748b",
+                  boxShadow: "none",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                }}
+                onClick={generatePDF}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.background = "#f1f5f9";
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  target.style.background = "#f8fafc";
+                }}
+              >
+                <img
+                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                  alt="PDF"
+                  style={{ width: "12px", height: "12px" }}
+                />
+              </button>
+
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  cursor: "pointer",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  fontFamily: textGeneralFont(),
+                }}
+              >
+                <input
+                  style={{
+                    cursor: "pointer",
+                    width: "12px",
+                    height: "12px",
+                    accentColor: partnerColor(),
+                  }}
+                  type="checkbox"
+                  checked={isCompleted}
+                  onChange={handleToggle}
+                  disabled={loading}
+                />
+                <span className="isMobileDisapear">
+                  {" "}
+                  {loading
+                    ? "Loading..."
+                    : isCompleted
+                    ? "Completed"
+                    : "Complete"}
+                </span>
+              </label>
+            </div>
+          </div>
           <div
             style={{
               maxWidth: "1200px",
@@ -2993,9 +3258,6 @@ export default function EnglishClassCourse2({
             {/* Subtle decorative element */}
             <div
               style={{
-                position: "absolute",
-                top: "-10px",
-                right: "-10px",
                 width: "40px",
                 height: "40px",
                 background: `${partnerColor()}05`,
@@ -3005,267 +3267,6 @@ export default function EnglishClassCourse2({
               }}
             />
 
-            {/* Combined controls container - discrete */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                margin: "0.5rem 0",
-                padding: "4px 8px",
-                background: "transparent",
-                position: "relative",
-                zIndex: 1,
-                flexWrap: "wrap",
-                gap: "8px",
-              }}
-            >
-              <button
-                title="Ver Quadro"
-                onClick={() => {
-                  setSeeSlides(!seeSlides);
-                }}
-                style={{
-                  padding: "6px 12px",
-                  fontSize: "11px",
-                  fontWeight: "500",
-                  borderRadius: "4px",
-                  height: "28px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "6px",
-                  border: "1px solid #e2e8f0",
-                  background: seeSlides ? partnerColor() : "#f8fafc",
-                  color: seeSlides ? "white" : "#64748b",
-                  boxShadow: "none",
-                  transition: "all 0.2s ease",
-                  cursor: "pointer",
-                  fontFamily: textGeneralFont(),
-                }}
-                onMouseEnter={(e) => {
-                  const target = e.target as HTMLElement;
-                  if (!seeSlides) {
-                    target.style.background = "#f1f5f9";
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  const target = e.target as HTMLElement;
-                  if (!seeSlides) {
-                    target.style.background = "#f8fafc";
-                  }
-                }}
-              >
-                <i
-                  className={seeSlides ? "fa fa-eye-slash" : "fa fa-eye"}
-                  aria-hidden="true"
-                  style={{ fontSize: "10px" }}
-                />
-                {seeSlides ? "Hide Board" : "See Board"}
-              </button>
-              {/* Left side: Student select (if admin/teacher) */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <span
-                  style={{
-                    display:
-                      thePermissions === "superadmin" ||
-                      thePermissions === "teacher"
-                        ? "block"
-                        : "none",
-                  }}
-                >
-                  <select
-                    onChange={(e) => handleStudentChange(e)}
-                    value={studentID}
-                    style={{
-                      borderRadius: "4px",
-                      border: "1px solid #e2e8f0",
-                      backgroundColor: "#f8fafc",
-                      fontSize: "11px",
-                      fontWeight: "400",
-                      color: "#64748b",
-                      padding: "4px 6px",
-                      height: "28px",
-                      minWidth: "120px",
-                      maxWidth: "150px",
-                      outline: "none",
-                      cursor: "pointer",
-                    }}
-                    onFocus={(e) =>
-                      (e.currentTarget.style.borderColor = partnerColor())
-                    }
-                    onBlur={(e) =>
-                      (e.currentTarget.style.borderColor = "#e2e8f0")
-                    }
-                  >
-                    {studentsList.map((student: any, index: number) => (
-                      <option key={index} value={student.id}>
-                        {student.name + " " + student.lastname}
-                      </option>
-                    ))}
-                  </select>
-                </span>
-                <Voice
-                  maxW="120px"
-                  changeB={changeNumber}
-                  setChangeB={setChangeNumber}
-                />
-              </div>
-
-              {/* Right side: Export buttons and completed checkbox */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-              >
-                <button
-                  title="Gerar PowerPoint"
-                  style={{
-                    padding: "4px 6px",
-                    fontSize: "11px",
-                    fontWeight: "400",
-                    borderRadius: "4px",
-                    minWidth: "28px",
-                    height: "28px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid #e2e8f0",
-                    background: "#f8fafc",
-                    color: "#64748b",
-                    boxShadow: "none",
-                    transition: "all 0.2s ease",
-                    cursor: "pointer",
-                  }}
-                  onClick={generatePPT}
-                  onMouseEnter={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.background = "#f1f5f9";
-                  }}
-                  onMouseLeave={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.background = "#f8fafc";
-                  }}
-                >
-                  <img
-                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                    alt="PowerPoint"
-                    style={{ width: "12px", height: "12px" }}
-                  />
-                </button>
-
-                <button
-                  title="Gerar Word"
-                  style={{
-                    padding: "4px 6px",
-                    fontSize: "11px",
-                    fontWeight: "400",
-                    borderRadius: "4px",
-                    minWidth: "28px",
-                    height: "28px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid #e2e8f0",
-                    background: "#f8fafc",
-                    color: "#64748b",
-                    boxShadow: "none",
-                    transition: "all 0.2s ease",
-                    cursor: "pointer",
-                  }}
-                  onClick={generateWord}
-                  onMouseEnter={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.background = "#f1f5f9";
-                  }}
-                  onMouseLeave={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.background = "#f8fafc";
-                  }}
-                >
-                  <img
-                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                    alt="Word"
-                    style={{ width: "12px", height: "12px" }}
-                  />
-                </button>
-
-                <button
-                  title="Gerar PDF"
-                  style={{
-                    padding: "4px 6px",
-                    fontSize: "11px",
-                    fontWeight: "400",
-                    borderRadius: "4px",
-                    minWidth: "28px",
-                    height: "28px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    border: "1px solid #e2e8f0",
-                    background: "#f8fafc",
-                    color: "#64748b",
-                    boxShadow: "none",
-                    transition: "all 0.2s ease",
-                    cursor: "pointer",
-                  }}
-                  onClick={generatePDF}
-                  onMouseEnter={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.background = "#f1f5f9";
-                  }}
-                  onMouseLeave={(e) => {
-                    const target = e.target as HTMLElement;
-                    target.style.background = "#f8fafc";
-                  }}
-                >
-                  <img
-                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                    alt="PDF"
-                    style={{ width: "12px", height: "12px" }}
-                  />
-                </button>
-
-                <label
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    cursor: "pointer",
-                    fontSize: "11px",
-                    fontWeight: "400",
-                    color: "#64748b",
-                    fontFamily: textGeneralFont(),
-                  }}
-                >
-                  <input
-                    style={{
-                      cursor: "pointer",
-                      width: "12px",
-                      height: "12px",
-                      accentColor: partnerColor(),
-                    }}
-                    type="checkbox"
-                    checked={isCompleted}
-                    onChange={handleToggle}
-                    disabled={loading}
-                  />
-                  {loading
-                    ? "Loading..."
-                    : isCompleted
-                    ? "Completed"
-                    : "Complete"}
-                </label>
-              </div>
-            </div>
             {theclass.image && (
               <ImgLesson src={theclass.image} alt={theclass.subtitle} />
             )}
@@ -3646,23 +3647,6 @@ export default function EnglishClassCourse2({
               </div>
             </div>
           )}
-
-          <label>
-            <input
-              style={{
-                cursor: "pointer",
-              }}
-              type="checkbox"
-              checked={isCompleted}
-              onChange={handleToggle}
-              disabled={loading}
-            />
-            {loading
-              ? "  Atualizando..."
-              : isCompleted
-              ? "  Completed"
-              : "  Not Completed"}
-          </label>
         </>
       )}
       <>
