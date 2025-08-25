@@ -48,15 +48,17 @@ import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
+import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
 
 export var currentUrl = window.location.href;
-export var isArvin = currentUrl.includes("arvinplatform");
 export var isLocalHost = currentUrl.includes("localhost");
 export var isArthurVincent =
   currentUrl.includes("arthurvincent") ||
   currentUrl.includes("staging") ||
   isLocalHost;
+export var isArvin = currentUrl.includes("arvinplatform");
 export var isPortal = currentUrl.includes("portal");
+export var isArvinLandingPage = isArvin && !isPortal;
 export var getWhiteLabel = (() => {
   try {
     const wl = localStorage.getItem("whiteLabel");
@@ -167,29 +169,27 @@ function App() {
 
   var routes = [
     {
-      path: "/login",
-      element: (() => {
-        try {
-          return verifyToken() ? <Redirect to={"/"} /> : <Login />;
-        } catch (err) {
-          console.error("[App] Erro ao definir rota /login:", err);
-          return <Login />;
-        }
-      })(),
-    },
-    {
       path: "/*",
       element: (() => {
         try {
           return verifyToken() ? (
             <HomePage headers={headers} />
+          ) : isArvinLandingPage ? (
+            <Redirect to={"/lp"} />
           ) : (
-            <Redirect to={isPortal ? "/login" : "/cadastre-se"} />
+            <Redirect to={isLocalHost ? "/login" : "/cadastre-se"} />
           );
         } catch (err) {
           console.error("[App] Erro ao definir rota /*:", err);
           return <NotFound />;
         }
+      })(),
+    },
+
+    {
+      path: "/lp",
+      element: (() => {
+        return <LandingPageArvin />;
       })(),
     },
     {
@@ -199,6 +199,17 @@ function App() {
           return isPortal ? <Login /> : <LandingPage />;
         } catch (err) {
           console.error("[App] Erro ao definir rota /cadastre-se:", err);
+          return <Login />;
+        }
+      })(),
+    },
+    {
+      path: "/login",
+      element: (() => {
+        try {
+          return verifyToken() ? <Redirect to={"/"} /> : <Login />;
+        } catch (err) {
+          console.error("[App] Erro ao definir rota /login:", err);
           return <Login />;
         }
       })(),
