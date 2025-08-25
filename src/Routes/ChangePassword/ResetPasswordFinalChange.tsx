@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import "font-awesome/css/font-awesome.min.css";
 import Helmets from "../../Resources/Helmets";
 import { backDomain } from "../../Resources/UniversalComponents";
@@ -7,6 +7,7 @@ import { RouteDiv } from "../../Resources/Components/RouteBox";
 import { partnerColor } from "../../Styles/Styles";
 import { TextField } from "@mui/material";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import { isArthurVincent, isArvin } from "../../App";
 
 function ResetPasswordFinalChange() {
   const [Password, setPassword] = useState<string>("");
@@ -22,6 +23,8 @@ function ResetPasswordFinalChange() {
         `${backDomain}/api/v1/resetpasswordfinal/${id}`,
         {
           newPassword: Password,
+          isArthurVincent,
+          isArvin,
         }
       );
       setTimeout(() => {
@@ -121,8 +124,7 @@ function ResetPasswordFinalChange() {
               display: "flex",
               marginLeft: "auto",
               cursor: Password1 !== Password ? "not-allowed" : "pointer",
-              backgroundColor:
-                Password1 !== Password ? "gray" : partnerColor(),
+              backgroundColor: Password1 !== Password ? "gray" : partnerColor(),
             }}
             disabled={Password1 !== Password}
             onClick={handleSendPassword}
