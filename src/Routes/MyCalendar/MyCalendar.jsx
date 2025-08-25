@@ -216,7 +216,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setUploading(false);
     setCategory("");
     setNewStudentId("");
-      setNewGroupId("");
+    setNewGroupId("");
 
     setShowSeeEditTutoring(false);
     setTutoringsListOfOneStudentOrGroup([]);
@@ -634,7 +634,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const fetchOneSetOfGroupClassesInside = (e) => {
     const eTargetValue = e.target.value;
     setNewGroupId(eTargetValue);
-    setNewStudentId("")
+    setNewStudentId("");
     console.log("e.target.value: ", e.target.value, "newGroupId: ", newGroupId);
     setShowClasses(true);
     setSeeEditTutoring(false);
@@ -5320,8 +5320,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   </button>
                 </div>
               </div>
-              {newStudentId !== "" ||
-                (newGroupId !== "" && (
+              {(newStudentId !== "" || newGroupId !== "") && (
                   <button
                     onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
                     style={{
@@ -5359,9 +5358,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       ? UniversalTexts.hideShowClasses
                       : UniversalTexts.showShowClasses}
                   </button>
-                ))}
-              {(newStudentId !== "" || newGroupId !== "") &&
-                showSeeEditTutoring && (
+                )}
+              {(newStudentId !== "" || newGroupId !== "")
+              &&  showSeeEditTutoring 
+              && (
                   <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
                     <div
                       style={{
@@ -6577,4 +6577,4 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       <Helmets text="Calendar" />{" "}
     </>
   );
-}
+}  
