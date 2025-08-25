@@ -227,7 +227,8 @@ function LandingPageArvin() {
           </div>
         </section>
         <section id="subscription-section" className="thesection-3">
-          <Subscription />
+Breve
+          {/* <Subscription /> */}
         </section>
         <footer
           className="footer no-print"
