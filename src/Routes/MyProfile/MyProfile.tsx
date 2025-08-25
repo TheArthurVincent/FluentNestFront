@@ -93,7 +93,53 @@ export function MyProfile({ headers }: HeadersProps) {
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
-  const fileInputRef = React.useRef<any>(null);
+
+const [showEditModal, setShowEditModal] = useState(false);
+const [editData, setEditData] = useState({
+  name: "",
+  lastname: "",
+  doc: "",
+  phoneNumber: "",
+  email: "",
+  dateOfBirth: "",
+});
+
+useEffect(() => {
+  if (user) {
+    setEditData({
+      name: user.name || "",
+      lastname: user.lastname || "",
+      doc: user.doc || "",
+      phoneNumber: user.phoneNumber || "",
+      email: user.email || "",
+      dateOfBirth: user.dateOfBirth
+        ? new Date(user.dateOfBirth).toISOString().split("T")[0]
+        : "",
+    });
+  }
+}, [user]);
+
+
+const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+  setEditData((prev) => ({ ...prev, [name]: value }));
+};
+
+const saveEditProfile = async () => {
+  try {
+    await axios.put(
+      `${backDomain}/api/v1/students/${user.id}`,
+      { ...editData },
+      { headers: actualHeaders }
+    );
+    notifyAlert("Dados atualizados com sucesso!", partnerColor());
+    updateInfo(user.id, headers);
+    setShowEditModal(false);
+    window.location.reload();
+  } catch (err) {
+    notifyAlert("Erro ao atualizar dados.");
+  }
+};
 
   const resizeAndConvertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -273,6 +319,140 @@ export function MyProfile({ headers }: HeadersProps) {
                     marginBottom: "20px",
                   }}
                 >
+                  <div style={{ textAlign: "right", marginBottom: "12px" }}>
+  <button
+    onClick={() => setShowEditModal(true)}
+    style={{
+      padding: "8px 16px",
+      fontSize: "13px",
+      fontWeight: "500",
+      backgroundColor: partnerColor(),
+      color: "#fff",
+      border: "none",
+      borderRadius: "8px",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+    }}
+  >
+    Editar Dados
+  </button>
+</div>
+
+{/* Modal de edição */}
+{showEditModal && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: "rgba(0,0,0,0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1001,
+    }}
+  >
+    <div
+      style={{
+        background: "#fff",
+        padding: "32px 24px",
+        borderRadius: "12px",
+        width: "90%",
+        maxWidth: "400px",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
+      }}
+    >
+      <h2 style={{ marginBottom: "18px", fontSize: "18px", fontWeight: 600 }}>
+        Editar Dados Pessoais
+      </h2>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          saveEditProfile();
+        }}
+        style={{ display: "grid", gap: "14px" }}
+      >
+        <TextField
+          label="Nome"
+          name="name"
+          value={editData.name}
+          onChange={handleEditChange}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="Sobrenome"
+          name="lastname"
+          value={editData.lastname}
+          onChange={handleEditChange}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="Telefone"
+          name="phoneNumber"
+          value={editData.phoneNumber}
+          onChange={handleEditChange}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="Email"
+          name="email"
+          value={editData.email}
+          onChange={handleEditChange}
+          fullWidth
+          size="small"
+        />
+        <TextField
+          label="Nascimento"
+          name="dateOfBirth"
+          type="date"
+          value={editData.dateOfBirth}
+          onChange={handleEditChange}
+          fullWidth
+          size="small"
+          InputLabelProps={{ shrink: true }}
+        />
+        <div style={{ display: "flex", gap: "12px", marginTop: "10px", justifyContent: "center" }}>
+          <button
+            type="button"
+            onClick={() => setShowEditModal(false)}
+            style={{
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "500",
+              backgroundColor: "#6c757d",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            style={{
+              padding: "10px 20px",
+              fontSize: "14px",
+              fontWeight: "500",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+            }}
+          >
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
                   <div>
                     <HOne>{UniversalTexts.myProfile}</HOne>
                     <p
