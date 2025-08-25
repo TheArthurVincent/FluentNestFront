@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-function Redirect({to}) {
+function Redirect({ to }) {
   useEffect(() => {
     window.location.assign(to);
   }, []);
