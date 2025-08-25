@@ -5321,47 +5321,46 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 </div>
               </div>
               {(newStudentId !== "" || newGroupId !== "") && (
-                  <button
-                    onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
-                    style={{
-                      padding: "8px 1.5rem",
-                      marginBottom: "5px",
-                      borderRadius: "8px",
-                      backgroundColor: !showSeeEditTutoring
-                        ? "#f0f9f0"
-                        : "#fdf2f2",
-                      border: !showSeeEditTutoring
-                        ? "1px solid #d4e6d4"
-                        : "1px solid #f5c6c6",
-                      color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                      transition: "all 0.2s ease",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = !showSeeEditTutoring
-                        ? "#e8f5e8"
-                        : "#fce8e8";
-                      e.target.style.transform = "translateY(-1px)";
-                      e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = !showSeeEditTutoring
-                        ? "#f0f9f0"
-                        : "#fdf2f2";
-                      e.target.style.transform = "translateY(0)";
-                      e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-                    }}
-                  >
-                    {showSeeEditTutoring
-                      ? UniversalTexts.hideShowClasses
-                      : UniversalTexts.showShowClasses}
-                  </button>
-                )}
-              {(newStudentId !== "" || newGroupId !== "")
-              &&  showSeeEditTutoring 
-              && (
+                <button
+                  onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
+                  style={{
+                    padding: "8px 1.5rem",
+                    marginBottom: "5px",
+                    borderRadius: "8px",
+                    backgroundColor: !showSeeEditTutoring
+                      ? "#f0f9f0"
+                      : "#fdf2f2",
+                    border: !showSeeEditTutoring
+                      ? "1px solid #d4e6d4"
+                      : "1px solid #f5c6c6",
+                    color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
+                    cursor: "pointer",
+                    fontWeight: "500",
+                    transition: "all 0.2s ease",
+                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = !showSeeEditTutoring
+                      ? "#e8f5e8"
+                      : "#fce8e8";
+                    e.target.style.transform = "translateY(-1px)";
+                    e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = !showSeeEditTutoring
+                      ? "#f0f9f0"
+                      : "#fdf2f2";
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                  }}
+                >
+                  {showSeeEditTutoring
+                    ? UniversalTexts.hideShowClasses
+                    : UniversalTexts.showShowClasses}
+                </button>
+              )}
+              {(newStudentId !== "" || newGroupId !== "") &&
+                showSeeEditTutoring && (
                   <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
                     <div
                       style={{
@@ -6577,4 +6576,4 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       <Helmets text="Calendar" />{" "}
     </>
   );
-}  
+}
