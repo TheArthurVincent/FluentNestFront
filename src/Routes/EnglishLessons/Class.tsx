@@ -3000,15 +3000,13 @@ export default function EnglishClassCourse2({
               onClick={() => {
                 setSeeSlides(!seeSlides);
               }}
+              className="isMobileDisapear"
               style={{
                 padding: "6px 12px",
                 fontSize: "11px",
                 fontWeight: "500",
                 borderRadius: "4px",
                 height: "28px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
                 gap: "6px",
                 border: "1px solid #e2e8f0",
                 background: seeSlides ? partnerColor() : "#f8fafc",
@@ -3233,11 +3231,14 @@ export default function EnglishClassCourse2({
                   onChange={handleToggle}
                   disabled={loading}
                 />
-                {loading
-                  ? "Loading..."
-                  : isCompleted
-                  ? "Completed"
-                  : "Complete"}
+                <span className="isMobileDisapear">
+                  {" "}
+                  {loading
+                    ? "Loading..."
+                    : isCompleted
+                    ? "Completed"
+                    : "Complete"}
+                </span>
               </label>
             </div>
           </div>

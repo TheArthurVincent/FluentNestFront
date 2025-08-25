@@ -107,6 +107,7 @@ body {
   gap: 40px;
 }
 
+
 @media (min-width: 768px) {
   .hero-content {
     flex-direction: row;
