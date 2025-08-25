@@ -6,6 +6,8 @@ import Subscription from "../NewStudentAsaas/NewStudentAsaas";
 import { useMediaQuery } from "@mui/material"; // Adicione isso
 import { isArvinLandingPage } from "../../App";
 
+
+
 function LandingPageArvin() {
   const isMobile = useMediaQuery("(max-width:768px)");
   const videos = [
