@@ -49,6 +49,7 @@ import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
+import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -130,9 +131,24 @@ function App() {
     console.warn("[App] Erro ao definir background:", err);
   }
 
+  const [isResponsible, setIsResponsible] = useState<boolean>(false);
+  useEffect(() => {}, []);
+
   useEffect(() => {
     try {
       const user = localStorage.getItem("loggedIn");
+
+      try {
+        const user = localStorage.getItem("loggedIn");
+        if (user) {
+          const userHereJSON = JSON.parse(user);
+          if (userHereJSON.responsible) {
+            setIsResponsible(true);
+          }
+        }
+      } catch (err) {
+        console.warn("[App] Erro ao verificar responsável:", err);
+      }
       // Aplica fontes apenas se existir
       document.body.style.fontFamily = textGeneralFont();
       // Aplica em h1/h2 apenas se existir
@@ -276,12 +292,32 @@ function App() {
       element: <FeeNotUpToDate />,
     },
   ];
+  var routesResponsible = [
+    {
+      path: "/",
+
+      element: (() => {
+        try {
+          return verifyToken() ? (
+            <HomePageResponsibleArea headers={headers} />
+          ) : isArvinLandingPage ? (
+            <Redirect to={"/lp"} />
+          ) : (
+            <Redirect to={"/login"} />
+          );
+        } catch (err) {
+          console.error("[App] Erro ao definir rota /*:", err);
+          return <NotFound />;
+        }
+      })(),
+    },
+  ];
 
   return (
     <UserProvider>
       <Router>
         <Routes>
-          {routes.map((route, index) => {
+          {(isResponsible ? routesResponsible : routes).map((route, index) => {
             try {
               return (
                 <Route key={index} path={route.path} element={route.element} />

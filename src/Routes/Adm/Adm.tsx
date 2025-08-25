@@ -20,6 +20,7 @@ import PendingHomeworkAssignment from "./AdmComponents/PendingHomeworkAssignment
 import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
 import Groups from "./AdmComponents/Groups/Groups";
 import ArthurSection from "./AdmComponents/ArthurSection/ArthurSection";
+import NewResponsible from "./AdmComponents/NewResponsible/NewResponsible";
 
 export function Adm({ headers }: HeadersProps) {
   const { id } = localStorageLoggedIn;
@@ -67,6 +68,18 @@ export function Adm({ headers }: HeadersProps) {
       ),
     },
     {
+      title: "Pai ou Responsável",
+      displayArthur: "block",
+      value: "44",
+      tooltip:
+        "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
+      component: (
+        <>
+          <NewResponsible id={id} headers={headers} />
+        </>
+      ),
+    },
+    {
       title: "Postagens",
       displayArthur: "block",
       value: "5",
@@ -106,14 +119,13 @@ export function Adm({ headers }: HeadersProps) {
       component: <AllComments headers={headers} />,
       displayArthur: "block",
     },
-      isArthurVincent && {
+    isArthurVincent && {
       title: "Arthur Section",
       value: "10",
-      tooltip:
-        "OUT!",
+      tooltip: "OUT!",
       component: <ArthurSection headers={headers} />,
       displayArthur: "block",
-    }
+    },
   ].filter(Boolean); // Remove elementos false do array
 
   // Encontrar a primeira tab visível para inicializar o estado
