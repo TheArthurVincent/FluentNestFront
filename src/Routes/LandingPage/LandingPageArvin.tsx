@@ -155,7 +155,7 @@ function LandingPageArvin() {
                 href="#subscription-section"
                 className="cta-button"
               >
-                teacher{" "}
+                Inscreva-se
               </a>
             </div>
           </div>
@@ -227,7 +227,27 @@ function LandingPageArvin() {
           </div>
         </section>
         <section id="subscription-section" className="thesection-3">
-          Breve
+          <button
+            onClick={() =>
+              window.location.assign("https://wa.me/5511950925086")
+            }
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              backgroundColor: "#25D366", // verde do WhatsApp
+              color: "white",
+              padding: "12px 18px",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              cursor: "pointer",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+            }}
+          >
+            Fale com nossa equipe no WhatsApp
+          </button>
           {/* <Subscription /> */}
         </section>
         <footer
