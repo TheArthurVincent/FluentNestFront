@@ -7,13 +7,9 @@ import {
   DivFlex,
   DivMarginBorder,
 } from "../../Resources/UniversalComponents";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
-import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
-import ReviewFlashCards from "../FlashCards/FlashCardsComponents/ReviewFlashCards";
 import BlogPosts from "./BlogPosts";
-import { isArthurVincent } from "../../App";
 
 interface BlogProps {
   headers: MyHeadersType | null;
@@ -148,51 +144,35 @@ export function Blog({ headers, change, setChange }: BlogProps) {
         <div style={{ display: "flex", gap: "5px" }}></div>
       </div>
       <DivFlex>
-        {/* <div className="grid-flex-2">
-          <DivMarginBorder>
-            <ReviewFlashCards
-              selectedStudentId={myId}
-              change={change}
-              onChange={setChange}
-              headers={headers}
-            />
-          </DivMarginBorder>
-        </div> */}
         <div className="grid-flex-2">
           <DivMarginBorder>
-            {/* {loadingLESSON ? (
-              <CircularProgress style={{ color: partnerColor() }} />
-            ) : ( */}
-              <div className="study-container">
-                <HOne>{UniversalTexts.studyEnglish}</HOne>
-                <div 
-                className="grid-container"
-                >
-                  {sessions.map((session) => (
-                    <a
-                      key={session.id}
-                      href={session.link}
-                      className="grid-item"
-                      style={{
-                        display: session.display,
-                      }}
-                    >
-                      <span className="session-title">{session.title}</span>
-                      <div
-                        className="image-background"
-                        style={{ backgroundImage: `url(${session.img})` }}
-                      />
+            <div className="study-container">
+              <HOne>{UniversalTexts.learning}</HOne>
+              <div className="grid-container">
+                {sessions.map((session) => (
+                  <a
+                    key={session.id}
+                    href={session.link}
+                    className="grid-item"
+                    style={{
+                      display: session.display,
+                    }}
+                  >
+                    <span className="session-title">{session.title}</span>
+                    <div
+                      className="image-background"
+                      style={{ backgroundImage: `url(${session.img})` }}
+                    />
 
-                      {/* <div className="overlay">
+                    {/* <div className="overlay">
                         <p className="session-description">
                           {session.description}
                         </p>
                       </div> */}
-                    </a>
-                  ))}
-                </div>
+                  </a>
+                ))}
               </div>
-        {/*       )}*/}
+            </div>
           </DivMarginBorder>
         </div>
         <div className="grid-flex-2">
