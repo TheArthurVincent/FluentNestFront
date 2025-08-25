@@ -3,7 +3,6 @@ import {
   logoPartner,
   partnerColor,
   textGeneralFont,
-  textPrimaryColorContrast,
 } from "../../Styles/Styles";
 import { backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
@@ -62,8 +61,6 @@ export function Login() {
     }
   };
 
-  const myLogoPartner = logoPartner();
-
   return (
     <div
       style={{
@@ -96,7 +93,7 @@ export function Login() {
               {!loading && (
                 <>
                   <img
-                    src={myLogoPartner}
+                    src={logoPartner()}
                     alt="arvin logo"
                     style={{
                       margin: "auto",

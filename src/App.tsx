@@ -4,13 +4,12 @@ try {
   if (!wl) {
     const defaultWL = {
       backgroundType: "color",
-      color: "rgba(236, 236, 236, 1)",
-      backgroundColor: "rgba(188, 221, 248, 1)",
+      color: "#ed5914",
+      backgroundColor: "#e7e7e7ff",
       contrastColor: "#eee",
-      backgroundImage:
-        "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769",
-      logo: "https://ik.imagekit.io/vjz75qw96/logos/arvin-platform-final?updatedAt=1752033415166",
-      textGeneralFont: "Lato",
+      backgroundImage: "",
+      logo: "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679",
+      textGeneralFont: "Roboto",
       textTitleFont: "Athiti",
     };
     localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
@@ -49,7 +48,6 @@ import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
-import axios from "axios";
 
 export var currentUrl = window.location.href;
 export var isArvin = currentUrl.includes("arvinplatform");
@@ -58,6 +56,7 @@ export var isArthurVincent =
   currentUrl.includes("arthurvincent") ||
   currentUrl.includes("staging") ||
   isLocalHost;
+export var isPortal = currentUrl.includes("portal");
 export var getWhiteLabel = (() => {
   try {
     const wl = localStorage.getItem("whiteLabel");
@@ -185,7 +184,7 @@ function App() {
           return verifyToken() ? (
             <HomePage headers={headers} />
           ) : (
-            <Redirect to={isArvin ? "/login" : "/cadastre-se"} />
+            <Redirect to={isPortal ? "/login" : "/cadastre-se"} />
           );
         } catch (err) {
           console.error("[App] Erro ao definir rota /*:", err);
@@ -197,7 +196,7 @@ function App() {
       path: "/cadastre-se",
       element: (() => {
         try {
-          return isArvin ? <Login /> : <LandingPage />;
+          return isPortal ? <Login /> : <LandingPage />;
         } catch (err) {
           console.error("[App] Erro ao definir rota /cadastre-se:", err);
           return <Login />;
@@ -208,7 +207,7 @@ function App() {
       path: "/signup",
       element: (() => {
         try {
-          return isArvin ? <Login /> : <LandingPage />;
+          return <Login />;
         } catch (err) {
           console.error("[App] Erro ao definir rota /signup:", err);
           return <Login />;
