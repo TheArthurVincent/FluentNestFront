@@ -59,7 +59,7 @@ export var isArthurVincent =
   isLocalHost;
 export var isArvin = currentUrl.includes("arvinplatform");
 export var isPortal = currentUrl.includes("portal");
-export var isArvinLandingPage = isArvin && !isPortal;
+export var isArvinLandingPage = isArvin && isPortal;
 export var getWhiteLabel = (() => {
   try {
     const wl = localStorage.getItem("whiteLabel");
