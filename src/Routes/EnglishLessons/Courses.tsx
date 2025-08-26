@@ -43,12 +43,10 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       var classesDB = response.data.courses;
       var classesNADB = response.data.coursesNonAuth;
       setListOfCoursesFromDatabase(classesDB);
-      if (permissions == "teacher")
+      if (permissions == "superadmin" || permissions == "teacher")
         setListOfNonAllowedCoursesFromDatabase(classesNADB);
       setLoading(false);
-      console.log(response.data, "courses");
     } catch (error) {
-      console.log("Erro ao obter aulas");
       onLoggOut();
       setLoading(false);
     }
@@ -107,15 +105,17 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             }}
           >
             <HOne>{UniversalTexts.theCourses}</HOne>
-            <button onClick={getCourses}>
-              <span
-                style={{
-                  marginBottom: "12px",
-                }}
-              >
+            {/* <button
+              style={{
+                marginBottom: "1rem",
+                border: "none",
+              }}
+              onClick={getCourses}
+            >
+              <span>
                 <i className="fa fa-refresh" aria-hidden={true} />
               </span>
-            </button>
+            </button> */}
             <div>
               <ul
                 style={{
@@ -197,7 +197,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                         listStyle: "none",
                         borderRadius: "6px",
                         overflow: "hidden",
-                        cursor: "not-allowed",
+                        cursor: "default",
                         transition: "transform 0.3s",
                       }}
                       className="card"

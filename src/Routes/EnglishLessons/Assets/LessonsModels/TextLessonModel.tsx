@@ -55,7 +55,6 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
             />
           </div>
         )}
-
         {/* Text content */}
         <div
           style={{
@@ -74,7 +73,6 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
         >
           {text}
         </div>
-        <TextAreaLesson />
       </div>
     </div>
   );
