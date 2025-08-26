@@ -6408,8 +6408,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       }}
                     >
                       {" "}
-                 +
-                      <span>{UniversalTexts.calendarModal.singleClass}</span>{" "}
+                      +<span>
+                        {UniversalTexts.calendarModal.singleClass}
+                      </span>{" "}
                     </button>
                   )}{" "}
                 </div>{" "}
