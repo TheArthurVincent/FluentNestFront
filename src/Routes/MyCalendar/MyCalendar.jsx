@@ -187,6 +187,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setAlternateText("... Updating Class");
     }, 22000);
   }, [loadingInfo]);
+
   const resetEverything = () => {
     setShowEditForm(false);
     setShowHomework(false);
@@ -217,7 +218,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setCategory("");
     setNewStudentId("");
     setNewGroupId("");
-
     setShowSeeEditTutoring(false);
     setTutoringsListOfOneStudentOrGroup([]);
     setTheTime("");
@@ -331,148 +331,98 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   const [todoList, setTodoList] = useState([]);
 
-  const fetchGeneralEvents = async () => {
-    setModalEditTodo(false);
-    setSeePlusButtons(false);
-
+  const loadGeneral = async (baseDate) => {
+    console.log("usando nova fórmula", baseDate);
+    // Pré-UI
     setShowDeleteEventConfirmation(false);
-
+    setDisabledAvoid(false);
     setLoading(true);
+    setShouldScrollToToday(!!baseDate === false); // opcional
+
     try {
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      // Usuário + mensalidade
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id, feeUpToDate } = user;
       updateInfo(id, headers);
-      setIsFee(feeUpToDate);
-
+      setIsFee(!!feeUpToDate);
       if (!feeUpToDate) {
         onLoggOutFee();
-      } else {
+        return;
       }
 
+      const raw = baseDate ? new Date(baseDate) : new Date();
+      const monday = getLastMonday(raw);
+      setTheToday(monday);
+
+      // Requisição
       const response = await axios.get(
-        `${backDomain}/api/v1/eventsgeneral/${id}?today=${today}`,
-        {
-          headers,
-        }
+        `${backDomain}/api/v1/eventsgeneral/${id}`,
+        { headers, params: { today: monday } }
       );
 
-      console.log(response.data);
-      const res = response.data.eventsList;
-      const resTodos = response.data.todosList;
+      // Normalizadores
+      const addOneDayAndFormat = (dt) => {
+        const d = new Date(dt);
+        d.setDate(d.getDate() + 1);
+        return formattedDates(d);
+      };
 
-      const eventsLoop = res.map((event) => {
-        const nextDay = new Date(event.date);
-        nextDay.setDate(nextDay.getDate() + 1);
-        event.date = formattedDates(nextDay);
-        return event;
+      const normalizeEvent = (ev) => ({
+        ...ev,
+        date: addOneDayAndFormat(ev.date),
+        status: ev.status || "marcado",
       });
 
-      const todosLoop = resTodos.map((todo) => {
-        const nextDay = new Date(todo.date);
-        nextDay.setDate(nextDay.getDate() + 1);
-        todo.date = formattedDates(nextDay);
-        return todo;
+      const normalizeTodo = (td) => ({
+        ...td,
+        date: addOneDayAndFormat(td.date),
       });
 
-      setTodoList(todosLoop);
-      setEvents(eventsLoop);
+      // Dados
+      const { eventsList = [], todosList = [] } = response.data || {};
+      setEvents(eventsList.map(normalizeEvent));
+      if (todosList.length) setTodoList(todosList.map(normalizeTodo));
+
+      // Pós-UI padrão
       resetEverything();
-    } catch (error) {
-      notifyAlert(error.response.data.error, partnerColor());
-      setTimeout(() => {
-        onLoggOut();
-      }, 1000);
-    }
-  };
-  useEffect(() => {
-    fetchGeneralEvents();
-  }, [alternateBoolean]);
-
-  const handleChangeWeek = async (sum) => {
-    setShowDeleteEventConfirmation(false);
-
-    setDisabledAvoid(false);
-    var user = JSON.parse(localStorage.getItem("loggedIn"));
-    const id = user.id;
-    setLoading(true);
-    const chosenDate = today;
-    chosenDate.setDate(chosenDate.getDate() + sum);
-    const newDate = getLastMonday(chosenDate);
-    setTheToday(newDate);
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
-        {
-          headers,
-        }
-      );
-
-      console.log(response.data);
-      const res = response.data.eventsList;
-      const eventsLoop = res.map((event) => {
-        const nextDay = new Date(event.date);
-        nextDay.setDate(nextDay.getDate() + 1);
-        event.date = formattedDates(nextDay);
-
-        if (!event.status) {
-          event.status = "marcado";
-        }
-        return event;
-      });
-      setEvents(eventsLoop);
-      resetEverything();
-      setTimeout(() => {
-        setLoading(false);
-        setDisabledAvoid(true);
-      }, 100);
-    } catch (error) {
-      console.log(error, "Erro ao encontrar alunos");
-      console.log(error);
-    }
-  };
-
-  const handleDateChange = async (e) => {
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
-    const id = user.id;
-    setLoading(true);
-
-    try {
-      const targetDate = new Date(e.target.value);
-      const newDate = getLastMonday(targetDate);
-      setTheToday(newDate);
-
-      const response = await axios.get(
-        `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
-        {
-          headers,
-        }
-      );
-
-      console.log(response.data);
-      const res = response.data.eventsList;
-      const eventsLoop = res.map((event) => {
-        const nextDay = new Date(event.date);
-        nextDay.setDate(nextDay.getDate() + 1);
-        event.date = formattedDates(nextDay);
-
-        if (!event.status) {
-          event.status = "marcado";
-        }
-        return event;
-      });
-      setEvents(eventsLoop);
-
       setShowEditForm(false);
       setShowHomework(false);
       setShowFlashcards(false);
       setShowNewClassForm(false);
+      setSeePlusButtons(false);
+      setModalEditTodo(false);
     } catch (error) {
-      console.log(error, "Erro ao encontrar eventos para a data selecionada");
+      if (error?.response?.data?.error) {
+        notifyAlert(error.response.data.error, partnerColor());
+        setTimeout(() => onLoggOut(), 1000);
+      } else {
+        console.log(error, "Erro ao carregar eventos");
+      }
     } finally {
       setTimeout(() => {
         setLoading(false);
-      }, 200);
+        setDisabledAvoid(true);
+      }, 150);
     }
+  };
+
+  useEffect(() => {
+    loadGeneral(new Date());
+    // loadGeneral(new Date());
+  }, [alternateBoolean]);
+
+  const handleChangeWeek = async (sum) => {
+    setShowDeleteEventConfirmation(false);
+    setDisabledAvoid(false);
+
+    const chosen = new Date(today);
+    chosen.setDate(chosen.getDate() + sum);
+    loadGeneral(chosen);
+  };
+
+  const handleDateChange = async (e) => {
+    const targetDate = new Date(e.target.value);
+    loadGeneral(targetDate);
   };
   var [studentsInGroup, setStudentsInGroup] = useState([
     {
@@ -665,7 +615,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setCategory("");
       setNewStudentId("");
       setDate("");
-      fetchGeneralEvents();
+      loadGeneral(new Date());
     } catch (error) {
       console.log(error, "Erro ao criar evento");
     }
@@ -685,7 +635,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response) {
         setIsVisible(false);
         setLoadingInfo(false);
-        fetchGeneralEvents();
+        loadGeneral(new Date());
       }
     } catch (error) {
       console.log(error, "Erro ao excluir evento");
@@ -745,7 +695,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response) {
         setIsVisible(false);
         setLoadingInfo(false);
-        fetchGeneralEvents();
+        loadGeneral(new Date());
       }
     } catch (error) {
       console.log(error, "Erro ao criar evento");
@@ -1063,7 +1013,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response.status === 200 || response.status === 201) {
         notifyAlert("Aula criada com sucesso!", partnerColor());
         handleCloseNewClassForm();
-        fetchGeneralEvents();
+        loadGeneral(new Date());
       }
     } catch (error) {
       console.log("❌ Erro ao criar nova aula:", error);
@@ -1116,7 +1066,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     clearFile();
     setDueDate(new Date().toISOString().split("T")[0]);
     setFlashcards("");
-    fetchGeneralEvents();
+    loadGeneral(new Date());
   };
 
   const handleFileChange = async (event) => {
@@ -1190,7 +1140,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
     setIsModalOfTutoringsVisible(false);
-    fetchGeneralEvents();
+    loadGeneral(new Date());
   };
 
   const handleStudentChange = (e) => {
@@ -1299,7 +1249,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setLoadingInfo(false);
     }
     if (isVisible) {
-      fetchGeneralEvents();
+      loadGeneral(new Date());
     } else {
       null;
     }
@@ -1541,7 +1491,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
 
-      fetchGeneralEvents();
+      loadGeneral(new Date());
       handleCloseModal();
     } catch (error) {
       console.error(error);
@@ -1598,7 +1548,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
-      fetchGeneralEvents();
+      loadGeneral(new Date());
     } catch (error) {
       console.error(error);
     }
@@ -1621,7 +1571,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setShowEditSection(false);
       setShowDeleteEventConfirmation(false);
 
-      fetchGeneralEvents();
+      loadGeneral(new Date());
     } catch (error) {
       console.error(error);
     }
@@ -1655,7 +1605,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  fetchGeneralEvents();
+                  loadGeneral(new Date());
                 }}
               >
                 <div
@@ -1672,7 +1622,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <button
                     onClick={() => {
-                      fetchGeneralEvents();
+                      loadGeneral(new Date());
                     }}
                     style={{
                       position: "absolute",
@@ -2836,9 +2786,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         >
                                           <div
                                             style={{
-                                              width: "28px",
-                                              height: "28px",
-                                              backgroundColor: "#059669",
                                               borderRadius: "6px",
                                               display: "flex",
                                               alignItems: "center",
@@ -2848,12 +2795,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             <i
                                               className="fa fa-check"
                                               style={{
-                                                color: "white",
-                                                fontSize: "0.8rem",
+                                                color: "#059669",
                                               }}
                                             />
                                           </div>
-                                          <h4
+                                          <h3
                                             style={{
                                               margin: 0,
                                               color: "#374151",
@@ -2861,8 +2807,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               fontSize: "1rem",
                                             }}
                                           >
-                                            Conteúdo da Aula Realizada
-                                          </h4>
+                                            Conteúdo da Aula Realizada - Aluno:{" "}
+                                            <strong>{name}</strong>
+                                          </h3>
                                         </div>
                                         {/* Descrição */}
                                         <div>
@@ -6412,90 +6359,21 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   {/* Botão Hoje */}{" "}
                   <button
                     disabled={!disabledAvoid}
-                    style={{
-                      ...singleClassButton,
-                      color: !disabledAvoid ? "#adb5bd" : "#495057",
-                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                    }}
-                    onClick={async () => {
-                      if (!disabledAvoid) return;
-                      setShouldScrollToToday(true);
-                      setDisabledAvoid(false);
-                      setLoading(true);
-                      try {
-                        const user = JSON.parse(
-                          localStorage.getItem("loggedIn")
-                        );
-                        const id = user.id;
-                        const todayy = new Date();
-                        const newDate = getLastMonday(todayy);
-                        setTheToday(newDate);
-                        const response = await axios.get(
-                          `${backDomain}/api/v1/eventsgeneral/${id}?today=${newDate}`,
-                          { headers }
-                        );
-
-                        console.log(response.data);
-                        const res = response.data.eventsList;
-
-                        const eventsLoop = res.map((event) => {
-                          const nextDay = new Date(event.date);
-                          nextDay.setDate(nextDay.getDate() + 1);
-                          event.date = formattedDates(nextDay);
-                          if (!event.status) {
-                            event.status = "marcado";
-                          }
-                          return event;
-                        });
-                        setEvents(eventsLoop);
-                        setShowEditForm(false);
-                        setSeePlusButtons(false);
-                        setShowHomework(false);
-                        setShowFlashcards(false);
-                        setShowNewClassForm(false);
-                      } catch (error) {
-                        console.log(error, "Erro ao voltar para hoje");
-                      } finally {
-                        setTimeout(() => {
-                          setLoading(false);
-                          setDisabledAvoid(true);
-                        }, 200);
-                      }
+                    onClick={() => {
+                      loadGeneral(new Date());
                     }}
                   >
                     {" "}
                     <i
-                      className="fa fa-home"
+                      className="fa fa-refresh"
                       style={{ fontSize: "10px" }}
                     />{" "}
                     <span>{UniversalTexts.calendarModal.today}</span>{" "}
-                  </button>{" "}
-                  {/* Botão Atualizar */}{" "}
-                  <button
-                    disabled={!disabledAvoid}
-                    style={{
-                      ...updateButton,
-                      background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                      color: !disabledAvoid ? "#adb5bd" : "#6c757d",
-                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                    }}
-                    onClick={() => {
-                      fetchGeneralEvents();
-                    }}
-                  >
-                    {" "}
-                    <i className="fa fa-refresh" />{" "}
                   </button>{" "}
                   {/* Botão Recorrentes */}{" "}
                   {authorizeOrNot && (
                     <button
                       disabled={!disabledAvoid}
-                      style={{
-                        ...recurrentButton,
-                        background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                        cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      }}
                       onClick={() => {
                         handleSeeModalOfTutorings();
                         setSeePlusButtons(false);
@@ -6512,57 +6390,29 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       </span>{" "}
                     </button>
                   )}{" "}
-                  {/* Botão Ver Adições */}{" "}
                   {authorizeOrNot && (
-                    <>
-                      {!seePlusButtons && (
-                        <button
-                          style={{
-                            ...seePlusButtonsStyles,
-                            cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                          }}
-                          onClick={() => setSeePlusButtons(!seePlusButtons)}
-                        >
-                          {" "}
-                          +{" "}
-                        </button>
-                      )}
-                    </>
+                    <ToDoAddButton
+                      userId={myId}
+                      onCreated={() => {
+                        setAlternateBoolean(!alternateBoolean);
+                      }}
+                    />
                   )}{" "}
-                  {/* Botões das Adições */}{" "}
+                  {/* Botão Nova Aula */}{" "}
+                  {authorizeOrNot && (
+                    <button
+                      onClick={() => {
+                        handleSeeModalNew();
+                        setSeePlusButtons(false);
+                      }}
+                    >
+                      {" "}
+                      +<span>
+                        {UniversalTexts.calendarModal.singleClass}
+                      </span>{" "}
+                    </button>
+                  )}{" "}
                 </div>{" "}
-                {seePlusButtons && (
-                  <div style={containerPlus}>
-                    {" "}
-                    {/* Botão Nova  Tarefa */}{" "}
-                    {authorizeOrNot && (
-                      <ToDoAddButton
-                        userId={myId}
-                        onCreated={() => {
-                          setAlternateBoolean(!alternateBoolean);
-                        }}
-                      />
-                    )}{" "}
-                    {/* Botão Nova Aula */}{" "}
-                    {authorizeOrNot && (
-                      <button
-                        style={{
-                          ...singleClassButton,
-                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                          background: !disabledAvoid ? "#f8f9fa" : "#ffffff",
-                        }}
-                        onClick={() => {
-                          handleSeeModalNew();
-                          setSeePlusButtons(false);
-                        }}
-                      >
-                        {" "}
-                        <i className="fa fa-plus" />{" "}
-                        <span>{UniversalTexts.calendarModal.singleClass}</span>{" "}
-                      </button>
-                    )}{" "}
-                  </div>
-                )}{" "}
               </div>{" "}
             </div>{" "}
           </div>{" "}

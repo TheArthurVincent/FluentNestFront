@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
-import { partnerColor } from "../../../Styles/Styles";
+import { partnerColor, textpartnerColorContrast } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
@@ -25,11 +25,13 @@ interface AddFlashCardsProps {
   headers: MyHeadersType | null;
   display: string | null;
   selectedStudentId: string;
+  selectedStudentName: string;
 }
 const AddFlashCards = ({
   headers,
   display,
   selectedStudentId,
+  selectedStudentName,
 }: AddFlashCardsProps) => {
   const { UniversalTexts } = useUserContext();
 
@@ -201,7 +203,16 @@ const AddFlashCards = ({
                 {cards.length > 0 && (
                   <button
                     color={partnerColor()}
-                    onClick={() => setShowConfirmation(true)}
+                    onClick={() => {
+                      if (selectedStudentName) {
+                        setShowConfirmation(true);
+                      } else {
+                        notifyAlert(
+                          "Nenhum aluno selecionado! Selecione um aluno",
+                          partnerColor()
+                        );
+                      }
+                    }}
                   >
                     {UniversalTexts?.addAllCards || "Add all cards"}
                   </button>
@@ -220,11 +231,16 @@ const AddFlashCards = ({
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle>
+        <h1 style={{ padding: "10px" }}>
           {UniversalTexts?.confirmAddFlashcards ||
-            "Confirmar adição de flashcards"}
-        </DialogTitle>
-        <DialogContent dividers>
+            "Confirmar adição de flashcards"}{" "}
+          | {selectedStudentName || "Selecionar aluno"}
+        </h1>
+        <div
+          style={{
+            padding: "0 24px 20px 24px",
+          }}
+        >
           {(() => {
             const filteredCards = cards.filter(
               (card) =>
@@ -286,13 +302,23 @@ const AddFlashCards = ({
               </ul>
             );
           })()}
-        </DialogContent>
-        <DialogActions>
-          <button color="gray" onClick={() => setShowConfirmation(false)}>
+        </div>
+        <div
+          style={{
+            padding: "0 24px 20px 24px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <button onClick={() => setShowConfirmation(false)}>
             {UniversalTexts?.cancel || "Cancelar"}
           </button>
           <button
-            color="green"
+            style={{
+              backgroundColor: partnerColor(),
+              color: textpartnerColorContrast(),
+            }}
             onClick={() => {
               addNewCards();
               setShowConfirmation(false);
@@ -300,7 +326,12 @@ const AddFlashCards = ({
           >
             {UniversalTexts?.confirmAndAdd || "Confirmar e adicionar"}
           </button>
-        </DialogActions>
+        </div>
+        <h1 style={{ padding: "10px" }}>
+          {UniversalTexts?.confirmAddFlashcards ||
+            "Confirmar adição de flashcards"}{" "}
+          | {selectedStudentName || "Selecionar aluno"}
+        </h1>
       </Dialog>
     </div>
   );

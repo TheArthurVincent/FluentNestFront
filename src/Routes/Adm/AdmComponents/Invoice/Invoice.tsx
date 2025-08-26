@@ -136,7 +136,15 @@ export function Invoice({ headers }: HeadersProps) {
           <CircularProgress style={{ color: partnerColor() }} />
         </div>
       ) : (
-        <div className="toolbar no-print">
+        <div
+          style={{
+            display: "grid",
+            gap: "10px",
+            alignItems: "center",
+            justifyItems: "center",
+            gridTemplateColumns: " 1fr 1fr",
+          }}
+        >
           <select onChange={handleStudentChange} name="students" value={newID}>
             <option value="" disabled>
               Selecione o aluno
@@ -148,6 +156,9 @@ export function Invoice({ headers }: HeadersProps) {
             ))}
           </select>
           <input
+            style={{
+              maxWidth: "150px",
+            }}
             type="date"
             onChange={(e) => {
               console.log(e.target.value);
@@ -160,22 +171,38 @@ export function Invoice({ headers }: HeadersProps) {
           />
 
           <input
+            style={{
+              maxWidth: "150px",
+            }}
             value={thisMonth}
             type="text"
             placeholder="Mês/Ano (ex.: Agosto/2025)"
             onChange={(e) => setThisMonth(e.target.value)}
             aria-label="Referência do mês"
           />
-
+          <div
+            style={{
+              display: "flex",
+              gap: "12px",
+              alignItems: "center",
+            }}
+          >
+            <label>Valor</label>
+            <input
+              style={{
+                maxWidth: "150px",
+              }}
+              value={fee}
+              type="number"
+              step="0.01"
+              onChange={(e) => setFee(Number(e.target.value))}
+              aria-label="Valor"
+            />
+          </div>
           <input
-            value={fee}
-            type="number"
-            step="0.01"
-            onChange={(e) => setFee(Number(e.target.value))}
-            aria-label="Valor"
-          />
-
-          <input
+            style={{
+              maxWidth: "150px",
+            }}
             value={comments}
             placeholder="Observações"
             type="text"

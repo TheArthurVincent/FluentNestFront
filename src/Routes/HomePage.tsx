@@ -209,6 +209,7 @@ export function HomePage({ headers }: HeadersProps) {
       title: "Sentence Mining",
       component: (
         <SentenceMining
+        myPermissions={thePermissions}
           onChange={setChange}
           change={change}
           headers={headers}
