@@ -137,6 +137,7 @@ export function Invoice({ headers }: HeadersProps) {
         </div>
       ) : (
         <div
+          className="no-print"
           style={{
             display: "grid",
             gap: "10px",
