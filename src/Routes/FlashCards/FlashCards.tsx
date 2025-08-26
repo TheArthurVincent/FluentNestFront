@@ -27,6 +27,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
   // Student management states
   const [students, setStudents] = useState<any[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
 
   const actualHeaders = headers || {};
@@ -149,6 +150,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       component: (
         <AddFlashCards
           display="block"
+          selectedStudentName={selectedStudent}
           headers={headers}
           selectedStudentId={getCurrentStudentId()}
         />
@@ -193,7 +195,15 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             <CircularProgress size={20} style={{ color: partnerColor() }} />
           ) : (
             <select
-              onChange={handleStudentChange}
+              onChange={(e) => {
+                handleStudentChange(e);
+                const studentSelected = students.find(
+                  (student) => student.id === e.target.value
+                );
+                setSelectedStudent(
+                  studentSelected.name + " " + studentSelected.lastname
+                );
+              }}
               value={selectedStudentId}
               style={{
                 borderRadius: "4px",
@@ -217,7 +227,9 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
                 e.target.style.backgroundColor = "#f8fafc";
               }}
             >
-              <option value="">{UniversalTexts?.selectAStudent || "Selecione um aluno..."}</option>
+              <option value="">
+                {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
+              </option>
               {students.map((student) => (
                 <option
                   key={student.id || student.theId}

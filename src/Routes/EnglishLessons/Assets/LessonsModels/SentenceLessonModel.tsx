@@ -7,7 +7,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor, textpartnerColorContrast, textTitleFont } from "../../../../Styles/Styles";
 
 interface SentenceLessonModelProps {
   headers: MyHeadersType | null;
@@ -164,12 +164,12 @@ export default function SentenceLessonModel({
                     >
                       <button
                         style={{
-                          backgroundColor: partnerColor(),
-                          color: "#fff",
+                          backgroundColor: textpartnerColorContrast(),
+                          color: partnerColor(),
+                          width: "10px",
+                          height: "10px",
                           border: "none",
                           borderRadius: "50%",
-                          width: "22px",
-                          height: "22px",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",

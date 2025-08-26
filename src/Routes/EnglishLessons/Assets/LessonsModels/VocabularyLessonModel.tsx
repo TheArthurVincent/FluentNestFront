@@ -7,7 +7,11 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import {
+  partnerColor,
+  textpartnerColorContrast,
+  textTitleFont,
+} from "../../../../Styles/Styles";
 
 interface VocabularyLessonProps {
   headers: MyHeadersType | null;
@@ -93,7 +97,6 @@ export default function VocabularyLesson({
             <div
               key={i}
               style={{
-                background: "#fff",
                 border: "1px solid #e3e6ea",
                 borderRadius: "7px",
                 padding: "8px 12px 8px 12px",
@@ -102,6 +105,7 @@ export default function VocabularyLesson({
                 minHeight: "40px",
                 display: "flex",
                 flexDirection: "column",
+                background: "#fff",
                 justifyContent: "flex-start",
               }}
               onMouseEnter={(e) => {
@@ -136,7 +140,7 @@ export default function VocabularyLesson({
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: "13px",
-                        background:"none",
+                        background: "none",
                         boxShadow: "0 1px 2px #e3e6ea",
                         transition: "all 0.2s",
                         opacity: 0.6,
@@ -189,12 +193,12 @@ export default function VocabularyLesson({
                     >
                       <button
                         style={{
-                          backgroundColor: partnerColor(),
-                          color: "#fff",
+                          backgroundColor: textpartnerColorContrast(),
+                          color: partnerColor(),
+                          width: "10px",
+                          height: "10px",
                           border: "none",
                           borderRadius: "50%",
-                          width: "22px",
-                          height: "22px",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",

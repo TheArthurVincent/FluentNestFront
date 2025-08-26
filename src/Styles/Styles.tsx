@@ -52,7 +52,7 @@ export const textGeneralFont = (): string => {
   return wl.textGeneralFont || "Lato";
 };
 
-export const textpartnerColorContrast = (): string => "#f2f2f2";
+export const textpartnerColorContrast = (): string => "#fff";
 
 export const textTitleFont = (): string => {
   const wl = getWhiteLabel();
