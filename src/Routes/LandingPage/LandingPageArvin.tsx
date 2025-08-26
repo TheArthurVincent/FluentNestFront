@@ -170,7 +170,7 @@ function LandingPageArvin() {
       </div>
 
       {/* ESPAÇADOR para não ficar por baixo do header fixo */}
-      <div style={{ height: "2.5rem" }} aria-hidden />
+      <div style={{ height: "2.95rem" }} aria-hidden />
       <div className="container">
         <section className="hero-section thesection-1">
           <div className="hero-grid">
