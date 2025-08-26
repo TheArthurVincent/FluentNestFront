@@ -38,6 +38,7 @@ function HTMLEditor({ onChange, initialContent }) {
     };
   }, []);
 
+  
   useEffect(() => {
     if (!editor) return;
 
@@ -78,17 +79,23 @@ function HTMLEditor({ onChange, initialContent }) {
     }
   }, [editor, initialContent]);
 
+  if (editor) {
+    editor.root.setAttribute("spellcheck", "false");
+  }
+
   const memoizedEditor = useMemo(() => {
     return (
       <div
         ref={editorRef}
         style={{
-          height: "98.5%",
           marginTop: "1rem",
-          fontSize: "12px",
+          fontSize: "18px",
           width: "100%",
           direction: "ltr",
           textAlign: "left",
+          boxSizing: "border-box",
+          overflow: "auto",
+          height: "90.5%",
         }}
       />
     );

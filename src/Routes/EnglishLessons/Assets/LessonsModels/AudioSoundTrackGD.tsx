@@ -63,8 +63,6 @@ export default function AudioFile({ element, selectedVoice }: AudioFileProps) {
           <div style={{ color: "#444" }}>{element.text}</div>
         </div>
       )}
-      {/* Text area section */}
-      <TextAreaLesson />
     </div>
   );
 }

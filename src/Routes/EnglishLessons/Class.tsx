@@ -44,12 +44,7 @@ import DialogueLessonModel from "./Assets/LessonsModels/DialogueLessonModel";
 import SingleImageLessonModel from "./Assets/LessonsModels/SingleImageLessonModel";
 import ListenAndTranslateLessonModel from "./Assets/LessonsModels/ListenAndTranslateLessonModel";
 import TextsWithTranslateLessonModel from "./Assets/LessonsModels/TextWithNoAudio";
-import SentenceLessonModelSlide from "./Assets/SlideModels/SentenceLessonModelSlide";
-import TextLessonModelSlide from "./Assets/SlideModels/TextLessonModelSlide";
-import TextsWithTranslateSlideLessonModel from "./Assets/SlideModels/TextWithNoAudio";
-import ExerciseLessonModelLesson from "./Assets/LessonsModels/ExerciseLessonModelExercise";
-import ImageLessonModelSlide from "./Assets/SlideModels/ImageLessonModelSlide";
-import { CircularProgress, TextareaAutosize } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import QandALessonPersonalModel from "./Assets/LessonsModels/QandALessonPersonalModel";
 import NoFlashcardsSentenceLessonModel from "./Assets/LessonsModels/NoFlashcardsSentenceLessonModel";
 import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
@@ -60,6 +55,7 @@ import { isArthurVincent } from "../../App";
 import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
 import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
 import AudioFile from "./Assets/LessonsModels/AudioSoundTrackGD";
+import HTMLEditor from "../../Resources/Components/HTMLEditor";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -151,6 +147,12 @@ export default function EnglishClassCourse2({
   const [thePermissions, setPermissions] = useState<string>("");
   const [thePicture, setPicture] = useState<string>("");
   const [seeSlides, setSeeSlides] = useState<boolean>(false);
+  const [editorKey, setEditorKey] = useState(0); // Force re-render key
+
+  const [newHWDescription, setNewHWDescription] = useState("");
+  const handleHWDescriptionChange = (htmlContent: any) => {
+    setNewHWDescription(htmlContent);
+  };
   const [loading, setLoading] = useState<boolean>(false);
   const [theclass, setheClass] = useState<any>({});
   const [classTitle, setClassTitle] = useState<string>("");
@@ -452,8 +454,7 @@ export default function EnglishClassCourse2({
         for (const element of sortedElements) {
           try {
             console.log(
-              `📄 Processando elemento: ${element.type} - ${
-                element.subtitle || "Sem título"
+              `📄 Processando elemento: ${element.type} - ${element.subtitle || "Sem título"
               }`
             );
 
@@ -519,9 +520,8 @@ export default function EnglishClassCourse2({
                   });
                 }
 
-                const sessionSubtitle = `Sessão: ${
-                  element.subtitle || "Conteúdo"
-                }`;
+                const sessionSubtitle = `Sessão: ${element.subtitle || "Conteúdo"
+                  }`;
                 subtitleSlide.addText(sessionSubtitle, {
                   x: imageToUse ? 4 : 1,
                   y: 6.2,
@@ -595,10 +595,9 @@ export default function EnglishClassCourse2({
                     const sentencesSlide = pptx.addSlide();
 
                     const safeSubtitle = sanitizeText(
-                      `${element.subtitle || "Frases"}${
-                        sentenceGroups.length > 1
-                          ? ` (${groupIndex + 1}/${sentenceGroups.length})`
-                          : ""
+                      `${element.subtitle || "Frases"}${sentenceGroups.length > 1
+                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                        : ""
                       }`,
                       100
                     );
@@ -663,10 +662,9 @@ export default function EnglishClassCourse2({
                     const sentencesSlide = pptx.addSlide();
 
                     const safeSubtitle = sanitizeText(
-                      `${element.subtitle || "Frases"}${
-                        sentenceGroups.length > 1
-                          ? ` (${groupIndex + 1}/${sentenceGroups.length})`
-                          : ""
+                      `${element.subtitle || "Frases"}${sentenceGroups.length > 1
+                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                        : ""
                       }`,
                       100
                     );
@@ -740,10 +738,9 @@ export default function EnglishClassCourse2({
                         const exerciseSlide = pptx.addSlide();
 
                         const safeTitle = sanitizeText(
-                          `${element.subtitle || "Exercise"}${
-                            exerciseGroups.length > 1
-                              ? ` (${groupIndex + 1}/${exerciseGroups.length})`
-                              : ""
+                          `${element.subtitle || "Exercise"}${exerciseGroups.length > 1
+                            ? ` (${groupIndex + 1}/${exerciseGroups.length})`
+                            : ""
                           }`,
                           100
                         );
@@ -825,10 +822,9 @@ export default function EnglishClassCourse2({
                         const htmlSlide = pptx.addSlide();
 
                         const safeHtmlTitle = sanitizeText(
-                          `${element.subtitle || "Content"}${
-                            paragraphGroups.length > 1
-                              ? ` (${groupIndex + 1}/${paragraphGroups.length})`
-                              : ""
+                          `${element.subtitle || "Content"}${paragraphGroups.length > 1
+                            ? ` (${groupIndex + 1}/${paragraphGroups.length})`
+                            : ""
                           }`,
                           100
                         );
@@ -889,10 +885,9 @@ export default function EnglishClassCourse2({
                         const imageSlide = pptx.addSlide();
 
                         const safeImageTitle = sanitizeText(
-                          `${element.subtitle || "Images"}${
-                            imageGroups.length > 1
-                              ? ` (${groupIndex + 1}/${imageGroups.length})`
-                              : ""
+                          `${element.subtitle || "Images"}${imageGroups.length > 1
+                            ? ` (${groupIndex + 1}/${imageGroups.length})`
+                            : ""
                           }`,
                           100
                         );
@@ -982,10 +977,9 @@ export default function EnglishClassCourse2({
                         const imageSlide = pptx.addSlide();
 
                         const safeImageTitle = sanitizeText(
-                          `${element.subtitle || "Image"}${
-                            element.images.length > 1
-                              ? ` (${imageIndex + 1}/${element.images.length})`
-                              : ""
+                          `${element.subtitle || "Image"}${element.images.length > 1
+                            ? ` (${imageIndex + 1}/${element.images.length})`
+                            : ""
                           }`,
                           100
                         );
@@ -1074,10 +1068,9 @@ export default function EnglishClassCourse2({
                     const audioSentencesSlide = pptx.addSlide();
 
                     const safeTitle = sanitizeText(
-                      `${element.subtitle || "Audio"} - Frases${
-                        sentenceGroups.length > 1
-                          ? ` (${groupIndex + 1}/${sentenceGroups.length})`
-                          : ""
+                      `${element.subtitle || "Audio"} - Frases${sentenceGroups.length > 1
+                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                        : ""
                       }`,
                       100
                     );
@@ -1494,8 +1487,7 @@ export default function EnglishClassCourse2({
             }
           } catch (elementError) {
             console.log(
-              `⚠️ Erro ao processar elemento "${
-                element.subtitle || element.type
+              `⚠️ Erro ao processar elemento "${element.subtitle || element.type
               }", pulando sessão:`,
               elementError
             );
@@ -2176,8 +2168,7 @@ export default function EnglishClassCourse2({
             );
           } catch (elementError) {
             console.log(
-              `⚠️ Erro ao processar elemento "${
-                element.subtitle || element.type
+              `⚠️ Erro ao processar elemento "${element.subtitle || element.type
               }" no Word, pulando sessão:`,
               elementError
             );
@@ -2617,7 +2608,7 @@ export default function EnglishClassCourse2({
                             englishLines.length,
                             portugueseLines.length
                           ) *
-                            4 +
+                          4 +
                           5;
                       }
                     }
@@ -2678,8 +2669,7 @@ export default function EnglishClassCourse2({
             yPosition += 10;
           } catch (elementError) {
             console.log(
-              `⚠️ Erro ao processar elemento "${
-                element.subtitle || element.type
+              `⚠️ Erro ao processar elemento "${element.subtitle || element.type
               }" no PDF, pulando sessão:`,
               elementError
             );
@@ -2736,20 +2726,6 @@ export default function EnglishClassCourse2({
     }
   }, [commentsTrigger]);
 
-  const handleKeyDown = (event: any) => {
-    if (event.key === "Escape") {
-      setSeeSlides(false);
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, []);
-
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     setStudentID(theid);
@@ -2785,7 +2761,6 @@ export default function EnglishClassCourse2({
   const [showCourses, setShowCourses] = useState(true);
   const [comment, setComment] = useState("");
   const [arrow, setArrow] = useState(false);
-  const [loadingComments, setLoadingComments] = useState(false);
   const [myComments, setMyComments] = useState([]);
   const [comments, setComments] = useState([]);
   const getComments = async () => {
@@ -2865,6 +2840,245 @@ export default function EnglishClassCourse2({
     setSelectedVoice(storedVoice);
   }, [selectedVoice, changeNumber]);
 
+  const [editorContent, setEditorContent] = useState<string>("");
+  useEffect(() => {
+    const generateInitialBoardContent = () => {
+      const h1Size = 32;
+      const h2Size = 26;
+      const h3Size = 22;
+      const baseSize = 20;
+
+      let content = `<h1 style="font-size:${h1Size}px;text-align:center;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
+        classTitle || "Aula de Inglês",
+        100
+      )}</h1>`;
+
+      content += `<h2 style="margin-top:1rem;font-size:${h2Size}px;text-align:center;color:#555;margin-bottom:1rem;">${sanitizeText(
+        courseTitle,
+        60
+      )}</h2>`;
+
+      content += `<p style="margin-top:1rem;text-align:center;color:#888;font-size:${baseSize}px;margin-bottom:1rem;">Data: ${new Date().toLocaleDateString(
+        "pt-BR"
+      )}</p>`;
+
+      if (theclass.description) {
+        content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Descrição:</h3>`;
+        content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
+          theclass.description,
+          500
+        )}</p>`;
+      }
+
+      if (theclass.elements && Array.isArray(theclass.elements)) {
+        const sortedElements = theclass.elements.sort(
+          (a: any, b: any) => (a.order || 0) - (b.order || 0)
+        );
+
+        sortedElements.forEach((element: any) => {
+          if (element.subtitle) {
+            content += `<h2 style="font-size:${h2Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
+              element.subtitle,
+              100
+            )}</h2>`;
+          }
+
+          if (element.description) {
+            content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+              element.description,
+              300
+            )}</p>`;
+          }
+
+          switch (element.type) {
+            case "text":
+              if (element.text) {
+                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
+                  element.text,
+                  2000
+                )}</p>`;
+              }
+              break;
+
+            case "sentences":
+            case "nfsentences":
+              if (element.sentences && Array.isArray(element.sentences)) {
+                element.sentences.forEach((sentence: any) => {
+                  if (sentence.english) {
+                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;color:${partnerColor()};"><b>${sanitizeText(
+                      sentence.english,
+                      200
+                    )}</b></p>`;
+                  }
+                  if (sentence.portuguese) {
+                    content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+                      sentence.portuguese,
+                      200
+                    )}</p>`;
+                  }
+                });
+              }
+              break;
+
+            case "exercise":
+              if (element.items && Array.isArray(element.items)) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Exercícios:</h3>`;
+                element.items.forEach((item: any, idx: number) => {
+                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${idx + 1
+                    }. ${sanitizeText(item, 300)}</p>`;
+                });
+              }
+              break;
+
+            case "html":
+              if (element.text) {
+                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
+                  element.text
+                )}</p>`;
+              }
+              break;
+
+            case "audiosoundtrack":
+              if (element.text) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Conteúdo do Áudio:</h3>`;
+                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
+                  element.text
+                )}</p>`;
+              }
+              if (element.sentences && Array.isArray(element.sentences)) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Frases do Áudio:</h3>`;
+                element.sentences.forEach((sentence: any) => {
+                  if (sentence.english) {
+                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b style="color:${partnerColor()};">${sanitizeText(
+                      sentence.english,
+                      200
+                    )}</b></p>`;
+                  }
+                  if (sentence.portuguese) {
+                    content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+                      sentence.portuguese,
+                      200
+                    )}</p>`;
+                  }
+                });
+              }
+              break;
+
+            case "images":
+              if (element.images && Array.isArray(element.images)) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
+                element.images.forEach((imageItem: any) => {
+                  if (imageItem.img) {
+                    content += `<img src="${imageItem.img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
+                  }
+                  if (imageItem.english) {
+                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
+                      imageItem.english,
+                      100
+                    )}</p>`;
+                  }
+                  if (imageItem.portuguese) {
+                    content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+                      imageItem.portuguese,
+                      100
+                    )}</p>`;
+                  }
+                });
+              }
+              break;
+            case "singleimages":
+              if (element.images && Array.isArray(element.images)) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
+                element.images.forEach((img: any) => {
+                  content += `<img src="${img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
+                });
+              }
+              break;
+            case "explanation":
+              if (element.explanation && Array.isArray(element.explanation)) {
+                element.explanation.forEach((explanationItem: any) => {
+                  if (explanationItem.title) {
+                    content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
+                      explanationItem.title,
+                      100
+                    )}</h3>`;
+                  }
+                  if (
+                    explanationItem.list &&
+                    Array.isArray(explanationItem.list)
+                  ) {
+                    explanationItem.list.forEach((listItem: string) => {
+                      content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">• ${sanitizeText(
+                        listItem,
+                        400
+                      )}</p>`;
+                    });
+                  }
+                });
+              }
+              break;
+
+            case "vocabulary":
+              if (element.sentences && Array.isArray(element.sentences)) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Vocabulário:</h3>`;
+                element.sentences.forEach((vocab: any) => {
+                  if (vocab.english && vocab.portuguese) {
+                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${sanitizeText(
+                      vocab.english,
+                      100
+                    )}</b> - <i style="color:#555">${sanitizeText(
+                      vocab.portuguese,
+                      100
+                    )}</i></p>`;
+                  }
+                });
+              }
+              break;
+
+            case "dialogue":
+              if (element.dialogue && Array.isArray(element.dialogue)) {
+                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Diálogo:</h3>`;
+                element.dialogue.forEach(
+                  (dialogueText: string, idx: number) => {
+                    const speaker = idx % 2 === 0 ? "A" : "B";
+                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${speaker}:</b> ${sanitizeText(
+                      dialogueText,
+                      200
+                    )}</p>`;
+                  }
+                );
+              }
+              break;
+
+            default:
+              break;
+          }
+
+          content += `<hr style="margin:1rem 0;border:none;border-top:1px solid #eee;" />`;
+        });
+      }
+
+      return content;
+    };
+
+    if (!seeSlides && !editorContent && theclass && classTitle) {
+      setEditorContent(generateInitialBoardContent());
+    }
+    // eslint-disable-next-line
+  }, [theclass, classTitle, courseTitle]);
+
+  const [hasAudioElement, setHasAudioElement] = useState(false);
+
+  useEffect(() => {
+    if (theclass?.elements && Array.isArray(theclass.elements)) {
+      const found = theclass.elements.some(
+        (el: any) => el && el.type === "audio"
+      );
+      setHasAudioElement(found);
+    } else {
+      setHasAudioElement(false);
+    }
+  }, [theclass]);
   return (
     <div
       style={{
@@ -3043,7 +3257,7 @@ export default function EnglishClassCourse2({
                 style={{
                   display:
                     thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
+                      thePermissions === "teacher"
                       ? "block"
                       : "none",
                 }}
@@ -3231,8 +3445,8 @@ export default function EnglishClassCourse2({
                   {loading
                     ? "Loading..."
                     : isCompleted
-                    ? "Completed"
-                    : "Complete"}
+                      ? "Completed"
+                      : "Complete"}
                 </span>
               </label>
             </div>
@@ -3660,6 +3874,7 @@ export default function EnglishClassCourse2({
             height: "100000000vw",
           }}
         />
+
         <div
           style={{
             padding: "2rem",
@@ -3667,11 +3882,11 @@ export default function EnglishClassCourse2({
             display: seeSlides ? "block" : "none",
             top: 5,
             left: 5,
-            width: "94vw",
             border: "1px grey solid",
             borderRadius: "6px",
-            height: "97vh",
-            zIndex: 10000000000000,
+            width: "95vw",
+            height: "90vh",
+            zIndex: 100000000000,
             backgroundColor: "white",
           }}
         >
@@ -3683,48 +3898,104 @@ export default function EnglishClassCourse2({
           >
             x
           </Xp>
-          <div
+          <span
             style={{
-              height: "75vh",
-              overflow: "auto",
+              display:
+                thePermissions === "superadmin" || thePermissions === "teacher"
+                  ? "block"
+                  : "none",
             }}
           >
-            {theclass.elements &&
-              theclass.elements
-                .sort((a: any, b: any) => a.order - b.order)
-                .map((element: any, index: number) => (
-                  <div key={index} style={{ marginBottom: "10px" }}>
-                    {element.type === "sentences" ? (
-                      <SentenceLessonModelSlide
-                        studentId={studentID}
-                        element={element}
-                        selectedVoice={selectedVoice}
-                        headers={headers}
-                      />
-                    ) : element.type === "text" ? (
-                      <TextLessonModelSlide
-                        text={element.text ? element.text : ""}
-                      />
-                    ) : element.type === "listinenglish" ? (
-                      <TextsWithTranslateSlideLessonModel
-                        headers={headers}
-                        element={element}
-                      />
-                    ) : element.type === "exercise" ? (
-                      <ExerciseLessonModelLesson
-                        headers={headers}
-                        item={element.items}
-                      />
-                    ) : element.type === "images" ? (
-                      <ImageLessonModelSlide
-                        element={element}
-                        selectedVoice={selectedVoice}
-                      />
-                    ) : (
-                      <></>
-                    )}
-                  </div>
-                ))}
+            <select
+              onChange={(e) => handleStudentChange(e)}
+              value={studentID}
+              style={{
+                borderRadius: "4px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#f8fafc",
+                fontSize: "11px",
+                fontWeight: "400",
+                color: "#64748b",
+                padding: "4px 6px",
+                height: "28px",
+                minWidth: "120px",
+                maxWidth: "150px",
+                outline: "none",
+                cursor: "pointer",
+              }}
+              onFocus={(e) =>
+                (e.currentTarget.style.borderColor = partnerColor())
+              }
+              onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+            >
+              {studentsList.map((student: any, index: number) => (
+                <option key={index} value={student.id}>
+                  {student.name + " " + student.lastname}
+                </option>
+              ))}
+            </select>
+          </span>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: hasAudioElement ? "1fr 0.4fr" : "1fr",
+            }}
+          >
+            <div
+              style={{
+                height: "95vh",
+              }}
+            >
+              <HTMLEditor
+                key={editorKey}
+                initialContent={editorContent}
+                onChange={handleHWDescriptionChange}
+              />
+            </div>
+            {hasAudioElement && (
+              <div
+                style={{
+                  margin: "12px",
+                  maxHeight: "90vh",
+                  overflowY: "auto",
+                }}
+              >
+                <HTwo>Áudios</HTwo>
+                {theclass.elements &&
+                  theclass.elements
+                    .sort((a: any, b: any) => a.order - b.order)
+                    .map((element: any, index: number) => (
+                      <div
+                        key={index}
+                        style={{
+                          margin: "24px 0",
+                          position: "relative",
+                        }}
+                      >
+                        {element.type === "audio" ? (
+                          <AudioFile
+                            element={element}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "audiosoundtrack" ? (
+                          <AudioSoundTrack
+                            headers={headers}
+                            text={element.text}
+                            src={element.src}
+                            studentId={studentID}
+                            mainTag={theclass.mainTag}
+                            element={element}
+                            link={element.link}
+                            subtitle={element.subtitle}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    ))}
+              </div>
+            )}
           </div>
         </div>
       </>
