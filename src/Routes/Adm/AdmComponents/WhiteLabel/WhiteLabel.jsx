@@ -8,6 +8,7 @@ import {
   logoPartner,
   partnerColor,
   textGeneralFont,
+  textpartnerColorContrast,
   textPrimaryColorContrast,
   textTitleFont,
   theBackgroundColor,
@@ -32,6 +33,16 @@ export default function WhiteLabelPreview({ headers }) {
   const [previewLogo, setPreviewLogo] = useState(logoPartner());
   const [previewBackground, setPreviewBackground] = useState(backgroundImage());
   const [tabValue, setTabValue] = useState("1");
+  const [formData, setFormData] = useState({
+    backgroundType: "color", // "image" ou "color"
+    backgroundImage: backgroundImage(),
+    backgroundColor: theBackgroundColor(),
+    logo: logoPartner(),
+    color: partnerColor(),
+    contrastColor: textPrimaryColorContrast(),
+    textTitleFont: textTitleFont(),
+    textGeneralFont: textGeneralFont(),
+  });
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
@@ -125,16 +136,7 @@ export default function WhiteLabelPreview({ headers }) {
       alert("Erro ao processar o fundo.");
     }
   };
-  const [formData, setFormData] = useState({
-    backgroundType: "color", // "image" ou "color"
-    backgroundImage: backgroundImage(),
-    backgroundColor: "#eee",
-    logo: logoPartner(),
-    color: partnerColor(),
-    contrastColor: textPrimaryColorContrast(),
-    textTitleFont: textTitleFont(),
-    textGeneralFont: textGeneralFont(),
-  });
+
   const TabPreview = () => (
     <div>
       <h1
@@ -171,23 +173,25 @@ export default function WhiteLabelPreview({ headers }) {
       <p style={{ fontFamily: formData.textGeneralFont }}>
         Visualização com o fundo, cores e fontes escolhidas.
       </p>
-      <div style={{ margin: "2rem", display: "block" }}>
+      <div
+        style={{
+          margin: "2rem",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
         <button
-          style={{ fontFamily: formData.textGeneralFont }}
-          color="red"
+          style={{
+            backgroundColor: formData.color,
+            color: formData.contrastColor,
+            fontFamily: formData.textGeneralFont,
+          }}
         >
           Botão de exemplo
         </button>
-        <button
-          style={{ fontFamily: formData.textGeneralFont }}
-          color="orange"
-        >
-          Botão de exemplo
-        </button>
-        <button
-          style={{ fontFamily: formData.textGeneralFont }}
-          color="green"
-        >
+        <button style={{ fontFamily: formData.textGeneralFont }}>
           Botão de exemplo
         </button>
       </div>
@@ -296,6 +300,7 @@ export default function WhiteLabelPreview({ headers }) {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+    console.log(formData);
   };
 
   var [loading, setLoading] = useState(false);
@@ -394,10 +399,7 @@ export default function WhiteLabelPreview({ headers }) {
   ];
 
   return (
-    <div
-      className="page-wrapper"
-      style={{ padding: "40px", fontFamily: formData.textGeneralFont }}
-    >
+    <div className="page-wrapper" style={{ padding: "40px" }}>
       <HOne>🎨 Personalizar Tema</HOne>
 
       {loading ? (
@@ -409,104 +411,213 @@ export default function WhiteLabelPreview({ headers }) {
             className="form-wrapper"
             style={{ maxWidth: "700px", margin: "40px auto" }}
           >
-            {/* <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label>Tipo de fundo:</label>
-              <select
-                name="backgroundType"
-                value={formData.backgroundType}
-                onChange={handleChange}
-                style={{ marginLeft: "10px", width: "220px" }}
-              >
-                <option value="image">Imagem</option>
-                <option value="color">Cor sólida</option>
-              </select>
-            </div> */}
-            {/* Se for imagem, mostra o input de upload */}
-            {/* {formData.backgroundType === "image" && (
-              <div className="form-group" style={{ marginBottom: "15 px" }}>
-                <label>Imagem de fundo (upload): </label>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
+            >
+              <div className="form-group">
+                <label>Logo (upload): </label>
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleBackgroundChange}
-                  ref={backgroundInputRef}
+                  onChange={handleLogoChange}
+                  ref={logoInputRef}
                 />
               </div>
-            )} */}
+            </div>
 
-            <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label>Cor de fundo: </label>
+            {/* Cores corretas */}
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
+            >
+              {" "}
+              <div className="form-group">
+                <label
+                  style={{
+                    color: formData.color,
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Cor Principal do seu negócio:{" "}
+                </label>
+                <input
+                  type="color"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
+            >
+              {" "}
+              <div className="form-group">
+                <label
+                  style={{
+                    color: formData.contrastColor,
+                    backgroundColor: formData.color,
+                    padding: "5px",
+                    borderRadius: "5px",
+                  }}
+                >
+                  Cor de contraste:{" "}
+                </label>
+                <select
+                  name="contrastColor"
+                  value={formData.contrastColor}
+                  onChange={handleChange}
+                  style={{ marginLeft: "10px", width: "220px" }}
+                >
+                  <option value="black">Black</option>
+                  <option value="white">White</option>
+                </select>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
+            >
+              <label
+                style={{
+                  padding: "5px",
+                  borderRadius: "5px",
+                }}
+              >
+                Cor de fundo:{" "}
+              </label>
               <input
                 type="color"
                 name="backgroundColor"
                 value={formData.backgroundColor}
                 onChange={handleChange}
               />
-            </div>
-            <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label>Logo (upload): </label>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
-                ref={logoInputRef}
+              <div
+                style={{
+                  height: "1rem",
+                  width: "1rem",
+                  backgroundColor: formData.backgroundColor,
+                }}
               />
             </div>
 
-            {/* Cores corretas */}
-            <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label>Cor Principal do seu negócio: </label>
-              <input
-                type="color"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label>Cor de contraste: </label>
-              <select
-                name="contrastColor"
-                value={formData.contrastColor}
-                onChange={handleChange}
-                style={{ marginLeft: "10px", width: "220px" }}
-              >
-                <option value="black">Black</option>
-                <option value="white">White</option>
-              </select>
-            </div>
-            <div className="form-group" style={{ marginBottom: "15px" }}>
-              <label>Fonte Primária (para títulos): </label>
-              <select
-                name="textTitleFont"
-                value={formData.textTitleFont}
-                onChange={handleChange}
-                style={{ marginLeft: "10px", width: "220px" }}
-              >
-                {titleFonts.map((font) => (
-                  <option key={font} value={font}>
-                    {font}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group" style={{ marginBottom: "20px" }}>
-              <label>Fonte Secundária (para textos): </label>
-              <select
-                name="textGeneralFont"
-                value={formData.textGeneralFont}
-                onChange={handleChange}
-                style={{ marginLeft: "10px", width: "220px" }}
-              >
-                {generalTextFonts.map((font) => (
-                  <option key={font} value={font}>
-                    {font}
-                  </option>
-                ))}
-              </select>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
+            >
+              <div className="form-group">
+                <label
+                  style={{
+                    padding: "5px",
+                    borderRadius: "5px",
+                    color: formData.color,
+                    fontSize: "1.4rem",
+                    fontWeight: "600",
+                    fontFamily: formData.textTitleFont,
+                  }}
+                >
+                  Fonte Primária (para títulos):{" "}
+                </label>
+                <select
+                  name="textTitleFont"
+                  value={formData.textTitleFont}
+                  onChange={handleChange}
+                  style={{ marginLeft: "10px", width: "220px" }}
+                >
+                  {titleFonts.map((font) => (
+                    <option key={font} value={font}>
+                      {font}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
 
-            <button type="submit" color={partnerColor()}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginBottom: "15px",
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+              }}
+            >
+              <div className="form-group">
+                <label
+                  style={{
+                    padding: "5px",
+                    borderRadius: "5px",
+                    fontFamily: formData.textGeneralFont,
+                  }}
+                >
+                  Fonte Secundária (para textos):{" "}
+                </label>
+                <select
+                  name="textGeneralFont"
+                  value={formData.textGeneralFont}
+                  onChange={handleChange}
+                  style={{ marginLeft: "10px", width: "220px" }}
+                >
+                  {generalTextFonts.map((font) => (
+                    <option key={font} value={font}>
+                      {font}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: partnerColor(),
+                color: textpartnerColorContrast(),
+                marginLeft: "auto",
+                display: "flex",
+              }}
+              color={partnerColor()}
+            >
               Salvar Tema
             </button>
           </form>
