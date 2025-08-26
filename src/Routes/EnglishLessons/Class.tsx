@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PptxGenJS from "pptxgenjs";
 import {
@@ -156,7 +156,6 @@ export default function EnglishClassCourse2({
   const [classTitle, setClassTitle] = useState<string>("");
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [commentsTrigger, setCommentsTrigger] = useState<boolean>(false);
-  const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const actualHeaders = headers || {};
 
