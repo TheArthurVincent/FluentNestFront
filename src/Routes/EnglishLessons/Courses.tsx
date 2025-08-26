@@ -43,7 +43,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       var classesDB = response.data.courses;
       var classesNADB = response.data.coursesNonAuth;
       setListOfCoursesFromDatabase(classesDB);
-      if (permissions == "teacher")
+      if (permissions == "superadmin" || permissions == "teacher")
         setListOfNonAllowedCoursesFromDatabase(classesNADB);
       setLoading(false);
       console.log(response.data, "courses");
@@ -197,7 +197,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                         listStyle: "none",
                         borderRadius: "6px",
                         overflow: "hidden",
-                        cursor: "not-allowed",
+                        cursor: "default",
                         transition: "transform 0.3s",
                       }}
                       className="card"
