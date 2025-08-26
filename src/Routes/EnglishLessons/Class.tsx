@@ -2741,6 +2741,7 @@ export default function EnglishClassCourse2({
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     setStudentID(theid);
+    getBoard(theid);
   };
   const fetchStudents = async () => {
     try {
@@ -3066,8 +3067,6 @@ export default function EnglishClassCourse2({
             default:
               break;
           }
-
-          content += `<hr style="margin:1rem 0;border:none;border-top:1px solid #eee;" />`;
         });
       }
 
@@ -3078,7 +3077,7 @@ export default function EnglishClassCourse2({
       setEditorContent(generateInitialBoardContent());
     }
     // eslint-disable-next-line
-  }, [theclass, classTitle, courseTitle]);
+  }, []);
 
   const [hasAudioElement, setHasAudioElement] = useState(false);
 
@@ -3092,6 +3091,21 @@ export default function EnglishClassCourse2({
       setHasAudioElement(false);
     }
   }, [theclass]);
+
+  const getBoard = async (studentId: string) => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/board/${classId}?student=${studentId}`,
+        { headers: actualHeaders }
+      );
+      console.log(response.data.studentSavedBoard);
+      if (response.data.studentSavedBoard) {
+        setEditorContent(response.data.studentSavedBoard);
+      }
+    } catch (error) {
+      console.error(error, "Erro ao obter board");
+    }
+  };
   return (
     <div
       style={{
@@ -3252,11 +3266,11 @@ export default function EnglishClassCourse2({
               }}
             >
               <i
-                className={seeSlides ? "fa fa-eye-slash" : "fa fa-eye"}
+                className={"fa fa-pencil"}
                 aria-hidden="true"
                 style={{ fontSize: "10px" }}
               />
-              {seeSlides ? "Hide Board" : "See Board"}
+              {UniversalTexts.board}
             </button>
             {/* Left side: Student select (if admin/teacher) */}
             <div
@@ -3913,9 +3927,11 @@ export default function EnglishClassCourse2({
           </Xp>
           <span
             style={{
+              gap: "1rem",
+              alignItems: "center",
               display:
                 thePermissions === "superadmin" || thePermissions === "teacher"
-                  ? "block"
+                  ? "flex"
                   : "none",
             }}
           >
@@ -3947,6 +3963,7 @@ export default function EnglishClassCourse2({
                 </option>
               ))}
             </select>
+            <button>Salvar lousa do aluno</button>
           </span>
           <div
             style={{
