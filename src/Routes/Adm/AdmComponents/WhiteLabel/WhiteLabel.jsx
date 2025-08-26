@@ -405,11 +405,11 @@ export default function WhiteLabelPreview({ headers }) {
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
-        <>
+        <div className="personalization-wrapper">
           <form
             onSubmit={handleSubmit}
             className="form-wrapper"
-            style={{ maxWidth: "700px", margin: "40px auto" }}
+            style={{ maxWidth: "400px", margin: "40px auto" }}
           >
             <div
               style={{
@@ -418,13 +418,17 @@ export default function WhiteLabelPreview({ headers }) {
                 gap: "10px",
                 marginBottom: "15px",
                 padding: "10px",
+                width: "200px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
               }}
             >
-              <div className="form-group">
+              <div style={{ display: "grid", gap: "5px" }}>
                 <label>Logo (upload): </label>
                 <input
+                  style={{
+                    maxWidth: "137px",
+                  }}
                   type="file"
                   accept="image/*"
                   onChange={handleLogoChange}
@@ -442,12 +446,15 @@ export default function WhiteLabelPreview({ headers }) {
                 gap: "10px",
                 marginBottom: "15px",
                 padding: "10px",
+                width: "200px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
               }}
             >
               {" "}
-              <div className="form-group">
+              <div
+                style={{ display: "flex", gap: "5px", alignItems: "center" }}
+              >
                 <label
                   style={{
                     color: formData.color,
@@ -455,13 +462,23 @@ export default function WhiteLabelPreview({ headers }) {
                     borderRadius: "5px",
                   }}
                 >
-                  Cor Principal do seu negócio:{" "}
+                  Cor Principal
                 </label>
                 <input
+                  style={{
+                    maxWidth: "160px",
+                  }}
                   type="color"
                   name="color"
                   value={formData.color}
                   onChange={handleChange}
+                />
+                <div
+                  style={{
+                    height: "1rem",
+                    width: "1rem",
+                    backgroundColor: formData.color,
+                  }}
                 />
               </div>
             </div>
@@ -473,12 +490,13 @@ export default function WhiteLabelPreview({ headers }) {
                 gap: "10px",
                 marginBottom: "15px",
                 padding: "10px",
+                width: "200px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
               }}
             >
               {" "}
-              <div className="form-group">
+              <div style={{ display: "grid", gap: "5px" }}>
                 <label
                   style={{
                     color: formData.contrastColor,
@@ -490,10 +508,12 @@ export default function WhiteLabelPreview({ headers }) {
                   Cor de contraste:{" "}
                 </label>
                 <select
+                  style={{
+                    maxWidth: "160px",
+                  }}
                   name="contrastColor"
                   value={formData.contrastColor}
                   onChange={handleChange}
-                  style={{ marginLeft: "10px", width: "220px" }}
                 >
                   <option value="black">Black</option>
                   <option value="white">White</option>
@@ -507,6 +527,7 @@ export default function WhiteLabelPreview({ headers }) {
                 gap: "10px",
                 marginBottom: "15px",
                 padding: "10px",
+                width: "200px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
               }}
@@ -520,6 +541,9 @@ export default function WhiteLabelPreview({ headers }) {
                 Cor de fundo:{" "}
               </label>
               <input
+                style={{
+                  maxWidth: "160px",
+                }}
                 type="color"
                 name="backgroundColor"
                 value={formData.backgroundColor}
@@ -541,11 +565,13 @@ export default function WhiteLabelPreview({ headers }) {
                 gap: "10px",
                 marginBottom: "15px",
                 padding: "10px",
+                width: "200px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
               }}
             >
-              <div className="form-group">
+              <div style={{ display: "grid", gap: "5px" }}>
+                {" "}
                 <label
                   style={{
                     padding: "5px",
@@ -559,10 +585,12 @@ export default function WhiteLabelPreview({ headers }) {
                   Fonte Primária (para títulos):{" "}
                 </label>
                 <select
+                  style={{
+                    maxWidth: "160px",
+                  }}
                   name="textTitleFont"
                   value={formData.textTitleFont}
                   onChange={handleChange}
-                  style={{ marginLeft: "10px", width: "220px" }}
                 >
                   {titleFonts.map((font) => (
                     <option key={font} value={font}>
@@ -580,11 +608,12 @@ export default function WhiteLabelPreview({ headers }) {
                 gap: "10px",
                 marginBottom: "15px",
                 padding: "10px",
+                width: "200px",
                 border: "1px solid #ccc",
                 borderRadius: "5px",
               }}
             >
-              <div className="form-group">
+              <div style={{ display: "grid" }}>
                 <label
                   style={{
                     padding: "5px",
@@ -598,7 +627,6 @@ export default function WhiteLabelPreview({ headers }) {
                   name="textGeneralFont"
                   value={formData.textGeneralFont}
                   onChange={handleChange}
-                  style={{ marginLeft: "10px", width: "220px" }}
                 >
                   {generalTextFonts.map((font) => (
                     <option key={font} value={font}>
@@ -796,7 +824,7 @@ export default function WhiteLabelPreview({ headers }) {
             </div>
             <AppFooter style={{ marginTop: "auto" }} see={true} />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

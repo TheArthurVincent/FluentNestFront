@@ -105,6 +105,14 @@ textarea {
   width: 100%;
 }
 
+.personalization-wrapper {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: 0.1fr 1fr;
+}
+
+
+
 /* Universal button style - linguee inspired, discrete, structure only */
 button {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -653,6 +661,12 @@ li {
 }
 
 @media (max-width: 750px) {
+
+  .personalization-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+
   .isMobileDisapear {
     display: none;
   }
