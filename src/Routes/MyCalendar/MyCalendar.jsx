@@ -2836,9 +2836,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         >
                                           <div
                                             style={{
-                                              width: "28px",
-                                              height: "28px",
-                                              backgroundColor: "#059669",
                                               borderRadius: "6px",
                                               display: "flex",
                                               alignItems: "center",
@@ -2848,12 +2845,11 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             <i
                                               className="fa fa-check"
                                               style={{
-                                                color: "white",
-                                                fontSize: "0.8rem",
+                                                color: "#059669",
                                               }}
                                             />
                                           </div>
-                                          <h4
+                                          <h3
                                             style={{
                                               margin: 0,
                                               color: "#374151",
@@ -2861,8 +2857,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               fontSize: "1rem",
                                             }}
                                           >
-                                            Conteúdo da Aula Realizada
-                                          </h4>
+                                            Conteúdo da Aula Realizada - Aluno:{" "}
+                                            <strong>{name}</strong>
+                                          </h3>
                                         </div>
                                         {/* Descrição */}
                                         <div>

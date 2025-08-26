@@ -538,7 +538,7 @@ const ReviewFlashCards = ({
                           >
                             <div>
                               <span style={{ fontSize: "12px" }}>
-                                {Math.round(cards[0]?.numberOfReviews) || "no"}{" "}
+                                {Math.round(cards[0]?.numberOfReviews) || 0}{" "}
                                 {Math.round(cards[0]?.numberOfReviews) === 1
                                   ? UniversalTexts?.review || "review"
                                   : UniversalTexts?.reviews || "reviews"}
