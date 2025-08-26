@@ -117,7 +117,7 @@ function LandingPageArvin() {
             lineHeight: 1,
             whiteSpace: "nowrap",
           }}
-          href="https://portal.arvinplatform.com"
+          href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
           Sou Aluno
@@ -134,7 +134,7 @@ function LandingPageArvin() {
             lineHeight: 1, // evita crescer por line-height
             whiteSpace: "nowrap",
           }}
-          href="https://portal.arvinplatform.com"
+          href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
           Sou Responsável por Aluno
@@ -151,7 +151,7 @@ function LandingPageArvin() {
             lineHeight: 1, // evita crescer por line-height
             whiteSpace: "nowrap",
           }}
-          href="https://portal.arvinplatform.com"
+          href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
           Sou Professor
