@@ -454,7 +454,8 @@ export default function EnglishClassCourse2({
         for (const element of sortedElements) {
           try {
             console.log(
-              `📄 Processando elemento: ${element.type} - ${element.subtitle || "Sem título"
+              `📄 Processando elemento: ${element.type} - ${
+                element.subtitle || "Sem título"
               }`
             );
 
@@ -520,8 +521,9 @@ export default function EnglishClassCourse2({
                   });
                 }
 
-                const sessionSubtitle = `Sessão: ${element.subtitle || "Conteúdo"
-                  }`;
+                const sessionSubtitle = `Sessão: ${
+                  element.subtitle || "Conteúdo"
+                }`;
                 subtitleSlide.addText(sessionSubtitle, {
                   x: imageToUse ? 4 : 1,
                   y: 6.2,
@@ -595,9 +597,10 @@ export default function EnglishClassCourse2({
                     const sentencesSlide = pptx.addSlide();
 
                     const safeSubtitle = sanitizeText(
-                      `${element.subtitle || "Frases"}${sentenceGroups.length > 1
-                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
-                        : ""
+                      `${element.subtitle || "Frases"}${
+                        sentenceGroups.length > 1
+                          ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                          : ""
                       }`,
                       100
                     );
@@ -662,9 +665,10 @@ export default function EnglishClassCourse2({
                     const sentencesSlide = pptx.addSlide();
 
                     const safeSubtitle = sanitizeText(
-                      `${element.subtitle || "Frases"}${sentenceGroups.length > 1
-                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
-                        : ""
+                      `${element.subtitle || "Frases"}${
+                        sentenceGroups.length > 1
+                          ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                          : ""
                       }`,
                       100
                     );
@@ -738,9 +742,10 @@ export default function EnglishClassCourse2({
                         const exerciseSlide = pptx.addSlide();
 
                         const safeTitle = sanitizeText(
-                          `${element.subtitle || "Exercise"}${exerciseGroups.length > 1
-                            ? ` (${groupIndex + 1}/${exerciseGroups.length})`
-                            : ""
+                          `${element.subtitle || "Exercise"}${
+                            exerciseGroups.length > 1
+                              ? ` (${groupIndex + 1}/${exerciseGroups.length})`
+                              : ""
                           }`,
                           100
                         );
@@ -822,9 +827,10 @@ export default function EnglishClassCourse2({
                         const htmlSlide = pptx.addSlide();
 
                         const safeHtmlTitle = sanitizeText(
-                          `${element.subtitle || "Content"}${paragraphGroups.length > 1
-                            ? ` (${groupIndex + 1}/${paragraphGroups.length})`
-                            : ""
+                          `${element.subtitle || "Content"}${
+                            paragraphGroups.length > 1
+                              ? ` (${groupIndex + 1}/${paragraphGroups.length})`
+                              : ""
                           }`,
                           100
                         );
@@ -885,9 +891,10 @@ export default function EnglishClassCourse2({
                         const imageSlide = pptx.addSlide();
 
                         const safeImageTitle = sanitizeText(
-                          `${element.subtitle || "Images"}${imageGroups.length > 1
-                            ? ` (${groupIndex + 1}/${imageGroups.length})`
-                            : ""
+                          `${element.subtitle || "Images"}${
+                            imageGroups.length > 1
+                              ? ` (${groupIndex + 1}/${imageGroups.length})`
+                              : ""
                           }`,
                           100
                         );
@@ -977,9 +984,10 @@ export default function EnglishClassCourse2({
                         const imageSlide = pptx.addSlide();
 
                         const safeImageTitle = sanitizeText(
-                          `${element.subtitle || "Image"}${element.images.length > 1
-                            ? ` (${imageIndex + 1}/${element.images.length})`
-                            : ""
+                          `${element.subtitle || "Image"}${
+                            element.images.length > 1
+                              ? ` (${imageIndex + 1}/${element.images.length})`
+                              : ""
                           }`,
                           100
                         );
@@ -1068,9 +1076,10 @@ export default function EnglishClassCourse2({
                     const audioSentencesSlide = pptx.addSlide();
 
                     const safeTitle = sanitizeText(
-                      `${element.subtitle || "Audio"} - Frases${sentenceGroups.length > 1
-                        ? ` (${groupIndex + 1}/${sentenceGroups.length})`
-                        : ""
+                      `${element.subtitle || "Audio"} - Frases${
+                        sentenceGroups.length > 1
+                          ? ` (${groupIndex + 1}/${sentenceGroups.length})`
+                          : ""
                       }`,
                       100
                     );
@@ -1487,7 +1496,8 @@ export default function EnglishClassCourse2({
             }
           } catch (elementError) {
             console.log(
-              `⚠️ Erro ao processar elemento "${element.subtitle || element.type
+              `⚠️ Erro ao processar elemento "${
+                element.subtitle || element.type
               }", pulando sessão:`,
               elementError
             );
@@ -2168,7 +2178,8 @@ export default function EnglishClassCourse2({
             );
           } catch (elementError) {
             console.log(
-              `⚠️ Erro ao processar elemento "${element.subtitle || element.type
+              `⚠️ Erro ao processar elemento "${
+                element.subtitle || element.type
               }" no Word, pulando sessão:`,
               elementError
             );
@@ -2608,7 +2619,7 @@ export default function EnglishClassCourse2({
                             englishLines.length,
                             portugueseLines.length
                           ) *
-                          4 +
+                            4 +
                           5;
                       }
                     }
@@ -2669,7 +2680,8 @@ export default function EnglishClassCourse2({
             yPosition += 10;
           } catch (elementError) {
             console.log(
-              `⚠️ Erro ao processar elemento "${element.subtitle || element.type
+              `⚠️ Erro ao processar elemento "${
+                element.subtitle || element.type
               }" no PDF, pulando sessão:`,
               elementError
             );
@@ -2924,8 +2936,9 @@ export default function EnglishClassCourse2({
               if (element.items && Array.isArray(element.items)) {
                 content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Exercícios:</h3>`;
                 element.items.forEach((item: any, idx: number) => {
-                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${idx + 1
-                    }. ${sanitizeText(item, 300)}</p>`;
+                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${
+                    idx + 1
+                  }. ${sanitizeText(item, 300)}</p>`;
                 });
               }
               break;
@@ -3257,7 +3270,7 @@ export default function EnglishClassCourse2({
                 style={{
                   display:
                     thePermissions === "superadmin" ||
-                      thePermissions === "teacher"
+                    thePermissions === "teacher"
                       ? "block"
                       : "none",
                 }}
@@ -3445,8 +3458,8 @@ export default function EnglishClassCourse2({
                   {loading
                     ? "Loading..."
                     : isCompleted
-                      ? "Completed"
-                      : "Complete"}
+                    ? "Completed"
+                    : "Complete"}
                 </span>
               </label>
             </div>

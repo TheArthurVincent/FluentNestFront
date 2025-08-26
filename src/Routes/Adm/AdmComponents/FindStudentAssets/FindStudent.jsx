@@ -288,6 +288,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
 
       setEventsList(response.data.events);
+      console.log(response.data.events);
       setTimeout(() => {
         setLoadingEventsList(false);
       }, 100);
@@ -1905,7 +1906,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                   {event.student || "N/A"}
                                 </div>
                               </div>
-
                               <div>
                                 <div
                                   style={{
@@ -1948,6 +1948,28 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                   >
                                     {event.description}
                                   </div>
+                                </div>
+                              )}{" "}
+                              {event.homework && (
+                                <div style={{ gridColumn: "1 / -1" }}>
+                                  <div
+                                    style={{
+                                      fontSize: "10px",
+                                      color: "#6c757d",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    📝 HOMEWORK
+                                  </div>
+                                  <div
+                                    style={{
+                                      color: "#333",
+                                      lineHeight: "1.4",
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                      __html: event.homework,
+                                    }}
+                                  />
                                 </div>
                               )}
                             </div>
