@@ -103,15 +103,7 @@ function ToDoAddButton({ userId, onCreated }) {
   return (
     <>
       <button
-        style={{
-          border: "1px solid #dee2e6",
-          borderRadius: "6px",
-          fontSize: "12px",
-          transition: "all 0.15s ease",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+
         onClick={() => setOpen(true)}
         title="Novo ToDo"
       >
