@@ -184,7 +184,6 @@ const SentenceMining = ({
 
   const fetchData = async () => {
     if (myPermissions === "superadmin" || myPermissions === "teacher") {
-
       console.log("User is admin/teacher, fetching students...");
       setLoadingStudents(true);
       try {

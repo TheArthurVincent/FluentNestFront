@@ -218,7 +218,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setCategory("");
     setNewStudentId("");
     setNewGroupId("");
-
     setShowSeeEditTutoring(false);
     setTutoringsListOfOneStudentOrGroup([]);
     setTheTime("");
