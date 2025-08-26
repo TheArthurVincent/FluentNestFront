@@ -148,7 +148,7 @@ function LandingPageArvin() {
           href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
-          Responsável por um aluno
+          Responsável
         </a>
         <a
           style={{
