@@ -188,10 +188,10 @@ function App() {
       path: "/*",
       element: (() => {
         try {
-          return verifyToken() ? (
-            <HomePage headers={headers} />
-          ) : isArvinLandingPage ? (
+          return isArvinLandingPage ? (
             <Redirect to={"/lp"} />
+          ) : verifyToken() ? (
+            <HomePage headers={headers} />
           ) : (
             <Redirect to={isLocalHost ? "/login" : "/cadastre-se"} />
           );
