@@ -22,7 +22,7 @@ export function Invoice({ headers }: HeadersProps) {
   const [name, setName] = useState<string>("");
   const [doc, setDoc] = useState<string>("");
   const [today, setDate] = useState<any>(
-    new Date(new Date().setDate(new Date().getDate() + 1))
+    new Date(new Date().setDate(new Date().getDate()))
   );
   const [thisMonth, setThisMonth] = useState<string>("Janeiro/2000");
   const [fee, setFee] = useState<number>(1000);
@@ -72,6 +72,13 @@ export function Invoice({ headers }: HeadersProps) {
     fetchStudents();
   }, []);
 
+  const formatSelectedDate = (date: Date) => {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const year = date.getFullYear();
+    //@ts-ignore
+    return `${day - 1}/${month}/${year}`;
+  };
   const generatePDF = () => window.print();
 
   const formatter = useMemo(
@@ -162,11 +169,10 @@ export function Invoice({ headers }: HeadersProps) {
             }}
             type="date"
             onChange={(e) => {
-              console.log(e.target.value);
-              const value = e.target.value; // ex.: "2025-08-21"
+              const value = e.target.value;
               if (value) {
                 const [year, month, day] = value.split("-").map(Number);
-                setDate(new Date(year, month - 1, day + 1)); // cria a data no fuso local
+                setDate(new Date(year, month - 1, day + 1));
               }
             }}
           />
@@ -248,7 +254,7 @@ export function Invoice({ headers }: HeadersProps) {
               <div className="title" style={{ marginTop: ".35rem" }}>
                 Data
               </div>
-              <div className="value">{formatDateBr(today)}</div>
+              <div className="value">{formatSelectedDate(today)}</div>
             </div>
           </div>
 
@@ -328,7 +334,7 @@ export function Invoice({ headers }: HeadersProps) {
             </div>
             {localStorageLoggedIn?.doc && <div>{localStorageLoggedIn.doc}</div>}
             <div style={{ fontStyle: "italic", marginTop: ".25rem" }}>
-              {formatDateBr(today)}
+              {formatSelectedDate(today)}
             </div>
           </div>
         </div>
