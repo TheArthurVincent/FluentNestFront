@@ -318,7 +318,6 @@ export function Groups({ headers, id }) {
       getGroups();
       setArrayOfIds([]);
       setSelectedGroupId(null);
-      console.log(response);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     }
@@ -350,7 +349,6 @@ export function Groups({ headers, id }) {
       );
 
       setClassesGroup(response.data.classesGroup);
-      console.log(response.data.classesGroup);
       setLoadingGroupClasses(false);
     } catch (error) {
       notifyAlert("Erro ao encontrar aulas dos grupos");
@@ -399,8 +397,6 @@ export function Groups({ headers, id }) {
                     : "block",
                 }}
                 onClick={() => {
-                  console.log(group._id);
-                  console.log(selectedGroupId);
                   handleSelectGroup(group);
                 }}
               >

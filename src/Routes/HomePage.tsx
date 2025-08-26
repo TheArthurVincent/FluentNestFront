@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { isArthurVincent, isLocalHost, verifyToken } from "../App";
+import { verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
   backDomain,
@@ -32,7 +32,6 @@ import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
-import Redirect from "../Redirect";
 import axios from "axios";
 
 import {
@@ -80,8 +79,6 @@ export function HomePage({ headers }: HeadersProps) {
         );
         if (response.data.feeUpToDate === false) {
           onLoggOutFee();
-        } else {
-          console.log("SFC");
         }
 
         const response2 = await axios.get(
@@ -91,7 +88,7 @@ export function HomePage({ headers }: HeadersProps) {
         console.log(response2.data.uploadNeeded);
         if (response2.data.uploadNeeded) {
           window.location.reload();
-        } else console.log("N.U.");
+        }
       }
     } catch (error) {
       console.error("Error checking fee status:", error);
@@ -137,7 +134,7 @@ export function HomePage({ headers }: HeadersProps) {
       ),
     },
     {
-     path:"/dispose",
+      path: "/dispose",
       title: "My Classes",
       component: (
         <>
@@ -155,16 +152,16 @@ export function HomePage({ headers }: HeadersProps) {
       component: (
         <Homework change={change} setChange={setChange} headers={headers} />
       ),
-    },    {
-      path:"my-homework-and-lessons",
+    },
+    {
+      path: "my-homework-and-lessons",
       title: "Homework",
       levelcard: false,
       component: (
         <Homework change={change} setChange={setChange} headers={headers} />
       ),
     },
-    
-        {
+    {
       title: "Homework",
       levelcard: false,
       path: "/my-classes",
@@ -209,7 +206,7 @@ export function HomePage({ headers }: HeadersProps) {
       title: "Sentence Mining",
       component: (
         <SentenceMining
-        myPermissions={thePermissions}
+          myPermissions={thePermissions}
           onChange={setChange}
           change={change}
           headers={headers}
