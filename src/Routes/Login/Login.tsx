@@ -10,7 +10,7 @@ import axios from "axios";
 import { Alert, CircularProgress, Grid, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { NavLink } from "react-router-dom";
-import { isArvin } from "../../App";
+import { isArvin, isLocalHost } from "../../App";
 
 export function Login() {
   const [email, setEmail] = useState<string>("");
@@ -191,24 +191,26 @@ export function Login() {
                 >
                   Esqueci minha senha
                 </NavLink>
-                <NavLink
-                  style={{
-                    padding: "10px",
-                    minWidth: "30px",
-                    textDecoration: "none",
-                    margin: "0 3px",
-                    backgroundColor: "#eee",
-                    color: "#000",
-                    fontFamily: textGeneralFont(),
-                    fontSize: "10px",
-                    borderRadius: " 6px",
-                    border: "none",
-                    maxWidth: "fit-content",
-                  }}
-                  to={isArvin ? "/" : "/signup"}
-                >
-                  Cadastre-se
-                </NavLink>
+                {(isArvin || isLocalHost) && (
+                  <NavLink
+                    style={{
+                      padding: "10px",
+                      minWidth: "30px",
+                      textDecoration: "none",
+                      margin: "0 3px",
+                      backgroundColor: "#eee",
+                      color: "#000",
+                      fontFamily: textGeneralFont(),
+                      fontSize: "10px",
+                      borderRadius: " 6px",
+                      border: "none",
+                      maxWidth: "fit-content",
+                    }}
+                    to={"/lp"}
+                  >
+                    Cadastre-se
+                  </NavLink>
+                )}
               </div>
             </form>
             <Alert
