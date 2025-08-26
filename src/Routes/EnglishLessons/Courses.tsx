@@ -46,9 +46,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       if (permissions == "superadmin" || permissions == "teacher")
         setListOfNonAllowedCoursesFromDatabase(classesNADB);
       setLoading(false);
-      console.log(response.data, "courses");
     } catch (error) {
-      console.log("Erro ao obter aulas");
       onLoggOut();
       setLoading(false);
     }
