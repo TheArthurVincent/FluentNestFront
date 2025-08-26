@@ -300,7 +300,6 @@ export default function WhiteLabelPreview({ headers }) {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    console.log(formData);
   };
 
   var [loading, setLoading] = useState(false);

@@ -38,8 +38,6 @@ function ToDoAddButton({ userId, onCreated }) {
 
   const [formChecklistAllEmpty, setFormChecklistAllEmpty] = useState(false);
   useEffect(() => {
-    console.log(form);
-    console.log(formChecklistAllEmpty);
     setFormChecklistAllEmpty(
       form.checkList1 == "" &&
         form.checkList2 == "" &&

@@ -145,10 +145,6 @@ export default function EnglishClassCourse2({
 }: EnglishClassCourse2ModelProps) {
   const { UniversalTexts } = useUserContext();
 
-  useEffect(() => {
-    console.log(studentsWhoCompletedIt, "studentsWhoCompletedIt");
-  }, []);
-
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
   const [myId, setId] = useState<string>("");

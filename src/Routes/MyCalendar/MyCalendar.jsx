@@ -295,7 +295,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           { headers }
         );
         const res = response.data.groups;
-        console.log(response.data.groups);
         setGroupsList(res);
       } catch (error) {
         console.log(error, "Erro ao encontrar grupos");
@@ -310,7 +309,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           { headers }
         );
         setTask(response.data.todo);
-        console.log(response.data.todo);
         setModalEditTodo(true);
       } catch (error) {
         console.log(error, "Erro ao encontrar alunos");
@@ -332,8 +330,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [todoList, setTodoList] = useState([]);
 
   const loadGeneral = async (baseDate) => {
-    console.log("usando nova fórmula", baseDate);
-    // Pré-UI
     setShowDeleteEventConfirmation(false);
     setDisabledAvoid(false);
     setLoading(true);
@@ -450,7 +446,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       updated[index] = { ...updated[index], comment: value };
       return updated;
     });
-    console.log(comments);
   };
 
   const fetchOneEvent = async (id) => {
@@ -709,8 +704,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   function commit(i, value) {}
   const updateScheduled = async (id) => {
-    console.log(status, "STATUS");
-
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
