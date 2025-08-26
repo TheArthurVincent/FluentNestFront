@@ -215,7 +215,7 @@ export function Login() {
             </form>
             <Alert
               style={{
-                maxWidth: "20rem",
+                maxWidth: "18rem",
                 margin: "auto",
                 display: fail ? "block" : "none",
               }}
