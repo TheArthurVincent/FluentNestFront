@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   logoPartner,
   partnerColor,
@@ -58,6 +58,38 @@ export function Login() {
       setButton("Entrar");
     }
   };
+
+  useEffect(() => {
+    const user = localStorage.getItem("loggedIn");
+    const auth = localStorage.getItem("authorization");
+    const notifications = localStorage.getItem("notifications");
+    const voiceGender = localStorage.getItem("voiceGender");
+    const voiceLang = localStorage.getItem("voiceLang");
+    const voiceOption = localStorage.getItem("voiceOption");
+    const flashcardsToday = localStorage.getItem("flashcardsToday");
+    if (user) {
+      localStorage.removeItem("loggedIn");
+    }
+    if (auth) {
+      localStorage.removeItem("authorization");
+    }
+
+    if (notifications) {
+      localStorage.removeItem("notifications");
+    }
+    if (voiceGender) {
+      localStorage.removeItem("voiceGender");
+    }
+    if (voiceLang) {
+      localStorage.removeItem("voiceLang");
+    }
+    if (voiceOption) {
+      localStorage.removeItem("voiceOption");
+    }
+    if (flashcardsToday) {
+      localStorage.removeItem("flashcardsToday");
+    }
+  }, []);
 
   return (
     <div
