@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { isArthurVincent, isLocalHost, verifyToken } from "../App";
+import { verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
   backDomain,
@@ -32,7 +32,6 @@ import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
-import Redirect from "../Redirect";
 import axios from "axios";
 
 import {
@@ -162,7 +161,6 @@ export function HomePage({ headers }: HeadersProps) {
         <Homework change={change} setChange={setChange} headers={headers} />
       ),
     },
-
     {
       title: "Homework",
       levelcard: false,
