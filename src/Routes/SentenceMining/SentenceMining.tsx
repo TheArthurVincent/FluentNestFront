@@ -8,12 +8,16 @@ import {
   Tooltip,
 } from "@mui/material";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { backDomain } from "../../Resources/UniversalComponents";
+import { backDomain, onLoggOut } from "../../Resources/UniversalComponents";
 import {
   notifyAlert,
   readText,
 } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { partnerColor, textPrimaryColorContrast } from "../../Styles/Styles";
+import {
+  alwaysWhite,
+  partnerColor,
+  textPrimaryColorContrast,
+} from "../../Styles/Styles";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import Voice from "../../Resources/Voice";
@@ -21,14 +25,23 @@ import {
   LiSentence,
   UlSentences,
 } from "../EnglishLessons/Assets/Functions/EnglishActivities.Styled";
+import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
   onChange: any;
   change: boolean;
+  myPermissions: string;
 }
 
-const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
+const SentenceMining = ({
+  headers,
+  onChange,
+  change,
+  myPermissions,
+}: FlashCardsPropsRv) => {
+  const { UniversalTexts } = useUserContext();
+
   const [myId, setId] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [dis, setDis] = useState<boolean>(false);
@@ -44,6 +57,15 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
   const [transation1, setTransation1] = useState<string>("");
   const [sentence2, setSentence2] = useState<string>("");
   const [transation2, setTransation2] = useState<string>("");
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [selectedStudent, setSelectedStudent] = useState<string>("");
+  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
+  const [students, setStudents] = useState<any[]>([]);
+  // Handle student selection
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const studentId = event.target.value;
+    setSelectedStudentId(studentId);
+  };
 
   const youglishBaseUrl = `https://youglish.com/pronounce/${theAdaptedWord}/english/us`;
 
@@ -56,6 +78,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     if (user) {
       const { id, permissions } = JSON.parse(user);
       setThePermissions(permissions);
+      setSelectedStudentId(id);
       setId(id);
     }
   }, []);
@@ -70,7 +93,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcardsvocabulary/${myId}`,
+        `${backDomain}/api/v1/flashcardsvocabulary/${selectedStudentId}`,
         {
           headers: actualHeaders,
           params: { language, word, difficulty },
@@ -144,7 +167,7 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     ];
     try {
       const response = await axios.post(
-        `${backDomain}/api/v1/flashcard/${myId}`,
+        `${backDomain}/api/v1/flashcard/${selectedStudentId}`,
         { newCards },
         { headers: actualHeaders }
       );
@@ -159,6 +182,39 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
     }
   };
 
+  const fetchData = async () => {
+    if (myPermissions === "superadmin" || myPermissions === "teacher") {
+
+      console.log("User is admin/teacher, fetching students...");
+      setLoadingStudents(true);
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/students/${myId}`,
+          {
+            headers: actualHeaders,
+          }
+        );
+
+        console.log("All users response:", response.data);
+
+        // Check if data comes in listOfStudents property
+        const allUsers = response.data.listOfStudents || response.data;
+        console.log("All users array:", allUsers);
+        setStudents(allUsers);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      } finally {
+        setLoadingStudents(false);
+      }
+    } else {
+      console.log("User is not admin/teacher, skipping student fetch");
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [actualHeaders]);
+
   return (
     <RouteDiv>
       <Helmets text="Sentence Mining" />
@@ -171,6 +227,80 @@ const SentenceMining = ({ headers, onChange, change }: FlashCardsPropsRv) => {
         }}
       >
         <HOne>Sentence Mining</HOne>
+        {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+          <div
+            style={{
+              padding: "1rem",
+              backgroundColor: alwaysWhite(),
+              borderBottom: "1px solid #e2e8f0",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "14px",
+                fontWeight: "500",
+                color: "#64748b",
+              }}
+              onClick={fetchData}
+            >
+              {/* {UniversalTexts.selectStudent}: */}
+            </span>
+            {loadingStudents ? (
+              <CircularProgress size={20} style={{ color: partnerColor() }} />
+            ) : (
+              <select
+                onChange={(e) => {
+                  handleStudentChange(e);
+                  const studentSelected = students.find(
+                    (student) => student.id === e.target.value
+                  );
+                  setSelectedStudent(
+                    studentSelected.name + " " + studentSelected.lastname
+                  );
+                }}
+                value={selectedStudentId}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "13px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "6px 8px",
+                  minWidth: "200px",
+                  maxWidth: "300px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = partnerColor();
+                  e.target.style.backgroundColor = "#ffffff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e2e8f0";
+                  e.target.style.backgroundColor = "#f8fafc";
+                }}
+              >
+                <option value="">
+                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
+                </option>
+                {students.map((student) => (
+                  <option
+                    key={student.id || student.theId}
+                    value={student.id || student.theId}
+                  >
+                    {student.name} {student.lastname}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        )}
+
         <a
           style={{
             fontSize: "13px",
