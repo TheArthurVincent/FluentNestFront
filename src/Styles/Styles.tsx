@@ -49,14 +49,14 @@ export const logoPartner = (): string => {
 
 export const textGeneralFont = (): string => {
   const wl = getWhiteLabel();
-  return wl.textGeneralFont || "Roboto";
+  return wl.textGeneralFont || "Lato";
 };
 
 export const textpartnerColorContrast = (): string => "#f2f2f2";
 
 export const textTitleFont = (): string => {
   const wl = getWhiteLabel();
-  return wl.textTitleFont || "Athiti";
+  return wl.textTitleFont || "Roboto";
 };
 
 // Cores fixas
