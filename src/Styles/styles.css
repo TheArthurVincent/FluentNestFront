@@ -708,7 +708,7 @@ body {
 
 .box-shadow-black {
   padding: 16px;
-  box-shadow: 0 4px 6px #555;
+  box-shadow: 0 2px 3px #555555a2;
 }
 
 .pointer-text:hover {
