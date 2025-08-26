@@ -43,7 +43,7 @@ export const logoPartner = (): string => {
   const wl = getWhiteLabel();
   return (
     wl.logo ||
-    "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679"
+    "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135"
   );
 };
 
