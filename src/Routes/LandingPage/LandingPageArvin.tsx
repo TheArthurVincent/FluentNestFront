@@ -301,7 +301,7 @@ function LandingPageArvin() {
           >
             <button
               onClick={() =>
-                window.location.assign("https://wa.me/5511950925086")
+                window.location.assign("https://wa.me/5511972369299")
               }
               style={{
                 margin: "auto",
