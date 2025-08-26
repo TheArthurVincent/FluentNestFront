@@ -96,22 +96,33 @@ function LandingPageArvin() {
           right: 0,
           width: "100%",
           backgroundColor: "#222",
+          color: "white",
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          padding: "8px 12px", // dá altura sem forçar
+          padding: "12px", // dá altura sem forçar
           gap: "8px",
           zIndex: 1000,
           boxSizing: "border-box",
         }}
       >
+        <span
+          style={
+            {
+              // marginRight: "1rem",
+            }
+          }
+        >
+          {" "}
+          Entrar como:{" "}
+        </span>
         <a
           style={{
-            padding: "8px 12px",
+            padding: "4px 6px",
             backgroundColor: "#ed5914",
             color: "#fff",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: "4px",
             textDecoration: "none",
             display: "inline-block",
             lineHeight: 1,
@@ -120,15 +131,15 @@ function LandingPageArvin() {
           href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
-          Sou Aluno
+          Aluno
         </a>
         <a
           style={{
-            padding: "8px 12px",
+            padding: "4px 6px",
             backgroundColor: "#ed5914",
             color: "#fff",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: "4px",
             textDecoration: "none",
             display: "inline-block",
             lineHeight: 1, // evita crescer por line-height
@@ -137,15 +148,15 @@ function LandingPageArvin() {
           href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
-          Sou Responsável por Aluno
+          Responsável por um aluno
         </a>
         <a
           style={{
-            padding: "8px 12px",
+            padding: "4px 6px",
             backgroundColor: "#ed5914",
             color: "#fff",
             border: "none",
-            borderRadius: "8px",
+            borderRadius: "4px",
             textDecoration: "none",
             display: "inline-block",
             lineHeight: 1, // evita crescer por line-height
@@ -154,7 +165,7 @@ function LandingPageArvin() {
           href="https://portal.arvinplatform.com/login"
           target="_blank"
         >
-          Sou Professor
+          Professor
         </a>{" "}
       </div>
 
@@ -292,7 +303,7 @@ function LandingPageArvin() {
                 color: "white",
                 padding: "12px 18px",
                 border: "none",
-                borderRadius: "8px",
+                borderRadius: "4px",
                 fontSize: "16px",
                 fontWeight: "bold",
                 cursor: "pointer",
