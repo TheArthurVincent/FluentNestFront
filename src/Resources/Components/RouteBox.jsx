@@ -118,7 +118,7 @@ export const HOne = styled.h1`
   font-size: 24px;
   font-weight: 600;
   color: ${partnerColor()};
-  margin: 0 0 4px 0;
+  margin: 12px 0;
   font-family: ${textTitleFont()};
 `;
 

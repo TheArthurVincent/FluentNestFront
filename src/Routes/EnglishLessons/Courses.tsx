@@ -107,15 +107,17 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             }}
           >
             <HOne>{UniversalTexts.theCourses}</HOne>
-            <button onClick={getCourses}>
-              <span
-                style={{
-                  marginBottom: "12px",
-                }}
-              >
+            {/* <button
+              style={{
+                marginBottom: "1rem",
+                border: "none",
+              }}
+              onClick={getCourses}
+            >
+              <span>
                 <i className="fa fa-refresh" aria-hidden={true} />
               </span>
-            </button>
+            </button> */}
             <div>
               <ul
                 style={{
