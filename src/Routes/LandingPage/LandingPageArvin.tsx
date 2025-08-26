@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { partnerColor } from "../../Styles/Styles";
 import "./styles.lp.css";
-import Subscription from "../NewStudentAsaas/NewStudentAsaas";
 import { useMediaQuery } from "@mui/material";
-import { isArvinLandingPage } from "../../App";
 
 function LandingPageArvin() {
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -55,7 +53,38 @@ function LandingPageArvin() {
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
   useEffect(() => {
-    isArvinLandingPage ? window.location.assign("/login") : null;
+    const user = localStorage.getItem("loggedIn");
+    const auth = localStorage.getItem("authorization");
+    const whiteLabel = localStorage.getItem("whiteLabel");
+    const notifications = localStorage.getItem("notifications");
+    const voiceGender = localStorage.getItem("voiceGender");
+    const voiceLang = localStorage.getItem("voiceLang");
+    const voiceOption = localStorage.getItem("voiceOption");
+    const flashcardsToday = localStorage.getItem("flashcardsToday");
+    if (user) {
+      localStorage.removeItem("loggedIn");
+    }
+    if (auth) {
+      localStorage.removeItem("authorization");
+    }
+    if (whiteLabel) {
+      localStorage.removeItem("whiteLabel");
+    }
+    if (notifications) {
+      localStorage.removeItem("notifications");
+    }
+    if (voiceGender) {
+      localStorage.removeItem("voiceGender");
+    }
+    if (voiceLang) {
+      localStorage.removeItem("voiceLang");
+    }
+    if (voiceOption) {
+      localStorage.removeItem("voiceOption");
+    }
+    if (flashcardsToday) {
+      localStorage.removeItem("flashcardsToday");
+    }
   }, []);
 
   return (
@@ -86,13 +115,13 @@ function LandingPageArvin() {
             borderRadius: "8px",
             textDecoration: "none",
             display: "inline-block",
-            lineHeight: 1, // evita crescer por line-height
+            lineHeight: 1,
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com"
           target="_blank"
         >
-          Sou Professor
+          Sou Aluno
         </a>
         <a
           style={{
@@ -103,14 +132,31 @@ function LandingPageArvin() {
             borderRadius: "8px",
             textDecoration: "none",
             display: "inline-block",
-            lineHeight: 1,
+            lineHeight: 1, // evita crescer por line-height
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com"
           target="_blank"
         >
-          Sou Aluno
+          Sou Responsável por Aluno
         </a>
+        <a
+          style={{
+            padding: "8px 12px",
+            backgroundColor: partnerColor(),
+            color: "#fff",
+            border: "none",
+            borderRadius: "8px",
+            textDecoration: "none",
+            display: "inline-block",
+            lineHeight: 1, // evita crescer por line-height
+            whiteSpace: "nowrap",
+          }}
+          href="https://portal.arvinplatform.com"
+          target="_blank"
+        >
+          Sou Professor
+        </a>{" "}
       </div>
 
       {/* ESPAÇADOR para não ficar por baixo do header fixo */}
@@ -155,7 +201,7 @@ function LandingPageArvin() {
                 href="#subscription-section"
                 className="cta-button"
               >
-                teacher{" "}
+                Inscreva-se
               </a>
             </div>
           </div>
@@ -168,8 +214,8 @@ function LandingPageArvin() {
               <div
                 key={index}
                 className="benefit-card"
-                onClick={() => setSelectedVideo(video)}
-                style={{ cursor: "pointer" }}
+                // onClick={() => setSelectedVideo(video)}
+                style={{ cursor: "auto" }}
               >
                 <h3>{video.title}</h3>
                 <p>{video.description}</p>
@@ -205,7 +251,7 @@ function LandingPageArvin() {
             )}
           </div>
         </section>
-        <section className="benefits-section thesection-1">
+        {/* <section className="benefits-section thesection-1">
           <h2 className="section-title">💬 Veja o que dizem os professores</h2>
           <div className="testimonial-scroller">
             {[
@@ -225,9 +271,39 @@ function LandingPageArvin() {
               </div>
             ))}
           </div>
-        </section>
-        <section id="subscription-section" className="thesection-3">
-          <Subscription />
+        </section> */}
+        <section id="subscription-section" className="thesection-1">
+          <div
+            style={{
+              padding: "3rem",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              alignContent: "center",
+            }}
+          >
+            <button
+              onClick={() =>
+                window.location.assign("https://wa.me/5511950925086")
+              }
+              style={{
+                margin: "auto",
+                gap: "8px",
+                backgroundColor: "#25D366", // verde do WhatsApp
+                color: "white",
+                padding: "12px 18px",
+                border: "none",
+                borderRadius: "8px",
+                fontSize: "16px",
+                fontWeight: "bold",
+                cursor: "pointer",
+                boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+              }}
+            >
+              Fale com nossa equipe por WhatsApp
+            </button>
+          </div>
+          {/* <Subscription /> */}
         </section>
         <footer
           className="footer no-print"
