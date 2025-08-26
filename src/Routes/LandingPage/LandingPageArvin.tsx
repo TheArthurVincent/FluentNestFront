@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { partnerColor } from "../../Styles/Styles";
 import "./styles.lp.css";
 import { useMediaQuery } from "@mui/material";
 
@@ -109,7 +108,7 @@ function LandingPageArvin() {
         <a
           style={{
             padding: "8px 12px",
-            backgroundColor: partnerColor(),
+            backgroundColor: "#ed5914",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
@@ -126,7 +125,7 @@ function LandingPageArvin() {
         <a
           style={{
             padding: "8px 12px",
-            backgroundColor: partnerColor(),
+            backgroundColor: "#ed5914",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
@@ -143,7 +142,7 @@ function LandingPageArvin() {
         <a
           style={{
             padding: "8px 12px",
-            backgroundColor: partnerColor(),
+            backgroundColor: "#ed5914",
             color: "#fff",
             border: "none",
             borderRadius: "8px",
@@ -197,7 +196,7 @@ function LandingPageArvin() {
               </p>
 
               <a
-                style={{ backgroundColor: partnerColor() }}
+                style={{ backgroundColor: "#ed5914" }}
                 href="#subscription-section"
                 className="cta-button"
               >
