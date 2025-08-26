@@ -194,8 +194,15 @@ function LandingPageArvin() {
                 }}
               />
               <p className="hero-subtitle">
-                <b>Não existe</b> outra plataforma tão completa para
-                professores!
+                <span
+                  style={{
+                    fontSize: "1.5rem",
+                  }}
+                >
+                  {" "}
+                  <b>Não existe</b> outra plataforma tão completa para
+                  professores!
+                </span>
                 <br />
                 <b>Aprenda</b> a captar alunos;
                 <br />
@@ -203,7 +210,7 @@ function LandingPageArvin() {
                 <br />
                 <b>Organize</b> a sua vida financeira;
                 <br />
-                <b>Oferece</b> uma excelente plataforma para os seus alunos.
+                <b>Ofereça</b> uma excelente plataforma para os seus alunos.
               </p>
 
               <a

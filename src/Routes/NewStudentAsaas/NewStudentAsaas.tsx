@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import React from "react";
-import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
+import { backDomain } from "../../Resources/UniversalComponents";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
