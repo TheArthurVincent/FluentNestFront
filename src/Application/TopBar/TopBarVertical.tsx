@@ -67,7 +67,7 @@ export const TopBarVertical: FC<ItemSideBarProps> = ({
     {
       isExternal: false,
       title: UniversalTexts.theCourses,
-      endpoint: "/english-courses",
+      endpoint: "/teaching-materials",
       icon: "address-book-o",
       display: "block",
     },

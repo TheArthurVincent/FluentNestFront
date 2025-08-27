@@ -1,7 +1,6 @@
 import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
-import TextAreaLesson from "../Functions/TextAreaLessons";
 
 interface ExerciseLessonModelProps {
   headers: MyHeadersType | null;
@@ -32,7 +31,6 @@ export default function ExerciseLessonModel({
               key={index}
               style={{
                 background: "linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)",
-                border: "1px solid #e1e8ed",
                 borderRadius: "12px",
                 padding: "8px",
                 transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
@@ -46,7 +44,6 @@ export default function ExerciseLessonModel({
                   display: "flex",
                   alignItems: "center",
                   gap: "16px",
-                  marginBottom: "16px",
                 }}
               >
                 {/* Número do exercício */}
@@ -68,7 +65,6 @@ export default function ExerciseLessonModel({
                 >
                   {index + 1}
                 </div>
-
                 {/* Conteúdo do exercício */}
                 <div
                   style={{
@@ -83,33 +79,6 @@ export default function ExerciseLessonModel({
                   {theitem}
                 </div>
               </div>
-
-              {/* Textarea para resposta */}
-              <textarea
-                placeholder="Write your answer here..."
-                style={{
-                  width: "97%",
-                  minHeight: "80px",
-                  padding: "8px",
-                  border: "2px solid #e9ecef",
-                  borderRadius: "8px",
-                  fontSize: "14px",
-                  lineHeight: "1.5",
-                  color: "#1a202c",
-                  backgroundColor: "#ffffff",
-                  transition: "all 0.2s ease",
-                  resize: "vertical",
-                  outline: "none",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = partnerColor();
-                  e.currentTarget.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "#e9ecef";
-                  e.currentTarget.style.boxShadow = "none";
-                }}
-              />
             </div>
           );
         })}

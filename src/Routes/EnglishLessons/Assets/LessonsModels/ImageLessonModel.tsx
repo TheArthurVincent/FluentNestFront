@@ -1,12 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
-import {
-  ImgLesson,
-  LiGridImageLessons,
-  UlGridImageLessons,
-} from "../Functions/EnglishActivities.Styled";
-import TextAreaLesson from "../Functions/TextAreaLessons";
 import axios from "axios";
 import {
   backDomain,
@@ -245,7 +239,6 @@ export default function ImageLessonModel({
                   }}
                 />
               </div>
-
               <div
                 style={{
                   fontWeight: "600",
@@ -255,24 +248,6 @@ export default function ImageLessonModel({
                 }}
               >
                 {image.text}
-              </div>
-              {/* {image.portuguese && (
-                  <div
-                    style={{
-                      color: "#666",
-                      fontSize: "14px",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {image.portuguese}
-                  </div>
-                )} */}
-              <div
-                style={{
-                  marginTop: "16px",
-                }}
-              >
-                <TextAreaLesson />
               </div>
             </div>
           ))}

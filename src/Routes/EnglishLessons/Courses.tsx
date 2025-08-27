@@ -61,8 +61,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
 
   useEffect(() => {
     const isRootPath =
-      loc.pathname === "/english-courses" ||
-      loc.pathname === "/english-courses/";
+      loc.pathname === "/teaching-materials" ||
+      loc.pathname === "/teaching-materials/";
     setDisplayRouteDiv(isRootPath);
   }, [loc.pathname]);
 

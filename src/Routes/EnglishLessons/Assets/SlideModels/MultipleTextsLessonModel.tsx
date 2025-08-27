@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { readText } from "../Functions/FunctionLessons";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
-import TextAreaLesson from "../Functions/TextAreaLessons";
 interface MultipleTextsLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
@@ -49,7 +48,6 @@ export default function MultipleTextsLessonModel({
                           />
                         </button>
                       </p>
-                      <TextAreaLesson />
                     </>
                   )}
                 </div>

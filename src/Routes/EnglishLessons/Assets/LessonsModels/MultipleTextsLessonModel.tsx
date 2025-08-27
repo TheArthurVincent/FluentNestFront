@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { pauseSpeech, readText } from "../Functions/FunctionLessons";
+import {  readText } from "../Functions/FunctionLessons";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import TextAreaLesson from "../Functions/TextAreaLessons";
 interface MultipleTextsLessonModelProps {
@@ -34,7 +34,6 @@ export default function MultipleTextsLessonModel({
                           <i className={"fa fa-volume-up"} aria-hidden="true" />
                         </button>
                       </p>
-                      <TextAreaLesson />
                     </>
                   )}
                 </div>

@@ -1,6 +1,5 @@
 import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import TextAreaLesson from "../Functions/TextAreaLessons";
 interface TextsWithTranslateLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
@@ -59,7 +58,6 @@ export default function TextsWithTranslateLessonModel({
                   </div>
                 )}
             </div>
-            <TextAreaLesson />
           </li>
         );
       })}

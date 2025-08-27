@@ -1,9 +1,4 @@
 import React from "react";
-import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { Tooltip } from "@mui/material";
-import { readText } from "../Functions/FunctionLessons";
-import TextAreaLesson from "../Functions/TextAreaLessons";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 
 interface AudioElement {
   subtitle: string;

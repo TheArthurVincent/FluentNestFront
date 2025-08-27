@@ -89,11 +89,11 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       display: !loadingLESSON ? "flex" : "none",
       img: img,
       link: NO
-        ? `/english-courses/${course
+        ? `/teaching-materials/${course
             .toLowerCase()
             .replace(/\s+/g, "-")
             .replace(/[^\w\-]+/g, "")}/${classId}`
-        : "/english-courses/english-grammar/667ac39b4b4d6245dc8f385b",
+        : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b",
     },
     {
       id: "listening",

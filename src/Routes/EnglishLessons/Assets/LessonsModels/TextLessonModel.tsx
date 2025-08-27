@@ -1,11 +1,6 @@
 import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import TextAreaLesson from "../Functions/TextAreaLessons";
-import {
-  partnerColor,
-  textGeneralFont,
-  textTitleFont,
-} from "../../../../Styles/Styles";
+import { partnerColor, textGeneralFont } from "../../../../Styles/Styles";
 
 interface TextLessonModelProps {
   headers: MyHeadersType | null;

@@ -77,8 +77,8 @@ export default function Modules({
 
   useEffect(() => {
     const isRootPath =
-      loc.pathname === `/english-courses/${pathGenerator(title)}/` ||
-      loc.pathname === `/english-courses/${pathGenerator(title)}`;
+      loc.pathname === `/teaching-materials/${pathGenerator(title)}/` ||
+      loc.pathname === `/teaching-materials/${pathGenerator(title)}`;
     setDisplayRouteDiv(isRootPath);
   }, [loc.pathname]);
 
@@ -168,7 +168,7 @@ export default function Modules({
                   textDecoration: "none",
                   color: darkGreyColor(),
                 }}
-                onClick={() => window.location.assign("/english-courses")}
+                onClick={() => window.location.assign("/teaching-materials")}
               >
                 English Courses
               </span>
