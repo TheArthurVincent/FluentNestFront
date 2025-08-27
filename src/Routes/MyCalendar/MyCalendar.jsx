@@ -495,7 +495,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       const newEventId = response.data.event._id;
       const newGroupId = response.data.event.group || "";
       const newGroupName = response.data.event.groupName || "";
-      let mappedStatus = newStatus;
+      const newTheLesson = response.data.event.theLesson || {};
+
+      var mappedStatus = newStatus;
       if (newStatus === "marcado") {
         mappedStatus = "Scheduled";
       } else if (newStatus === "desmarcado") {
@@ -503,6 +505,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
+      console.log(response.data.event);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
       setHomeworkAdded(newHomeworkAdded);
@@ -514,6 +517,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setNewStudentId(newStudentID);
       setNewEventId(newEventId);
       setLink(newLink);
+      setTheLesson(newTheLesson);
+      console.log(
+        "setTheLesson(newTheLesson)",
+        newTheLesson.id,
+        newTheLesson.title,
+        newTheLesson.course
+      );
       setTheTime(newTime);
       setVideo(newVideo);
       setHomework(newHomework);
@@ -3748,6 +3758,114 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               style={{
                                                 display: "block",
                                                 marginBottom: "0.5rem",
+                                                fontWeight: "500",
+                                                width: "90%",
+                                                color: "#374151",
+                                                fontSize: "0.875rem",
+                                              }}
+                                            >
+                                              Aula Usada
+                                            </label>
+                                            <select
+                                              onChange={handleLessonChange}
+                                              value={
+                                                theLesson?.id
+                                                  ? String(theLesson.id)
+                                                  : ""
+                                              } // garanta string
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: 8,
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                                backgroundColor: "white",
+                                              }}
+                                            >
+                                              <option value="" hidden>
+                                                Select lesson...
+                                              </option>
+
+                                              {Object.entries(grouped).map(
+                                                ([course, modules]) => (
+                                                  <optgroup
+                                                    key={course}
+                                                    label={course}
+                                                  >
+                                                    {Object.entries(
+                                                      modules
+                                                    ).map(([module, ls]) => (
+                                                      <React.Fragment
+                                                        key={`${course}-${module}`}
+                                                      >
+                                                        <option
+                                                          value={`sep:${course}:${module}`}
+                                                          disabled
+                                                        >
+                                                          — {module} —
+                                                        </option>
+                                                        {ls.map((l) => (
+                                                          <option
+                                                            key={l.id}
+                                                            value={String(l.id)}
+                                                          >
+                                                            {l.title}
+                                                          </option>
+                                                        ))}
+                                                      </React.Fragment>
+                                                    ))}
+                                                  </optgroup>
+                                                )
+                                              )}
+                                            </select>
+                                            <div
+                                              style={{
+                                                border: "1px solid #e0e0e0",
+                                                borderRadius: "10px",
+                                                padding: "1rem",
+                                                backgroundColor: "#f9fafb",
+                                                marginTop: "1rem",
+                                                boxShadow:
+                                                  "0 2px 6px rgba(0,0,0,0.08)",
+                                                maxWidth: "400px",
+                                              }}
+                                            >
+                                              <p
+                                                style={{
+                                                  marginBottom: "0.75rem",
+                                                  color: "#374151",
+                                                }}
+                                              >
+                                                🎓 Aula Selecionada
+                                              </p>
+
+                                              {theLesson ? (
+                                                <>
+                                                  <p>
+                                                    <strong>Título:</strong>{" "}
+                                                    {theLesson.title}
+                                                  </p>
+                                                  <p>
+                                                    <strong>Curso:</strong>{" "}
+                                                    {theLesson.course}
+                                                  </p>
+                                                  <p>
+                                                    <strong>Módulo:</strong>{" "}
+                                                    {theLesson.module}
+                                                  </p>
+                                                </>
+                                              ) : (
+                                                <p style={{ color: "#6b7280" }}>
+                                                  Nenhuma aula selecionada.
+                                                </p>
+                                              )}
+                                            </div>
+                                          </div>
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
                                                 fontWeight: "600",
                                                 color: "#495057",
                                                 fontSize: "0.9rem",
@@ -4426,6 +4544,54 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           )}
                         </div>
+                        {theLesson && (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginTop: "0.75rem",
+                            }}
+                          >
+                            <a
+                              target="_blank"
+                              href={`/teaching-materials/${theLesson.course
+                                .toLowerCase()
+                                .replace(/\s+/g, "-")
+                                .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
+                              style={{
+                                gap: "5px",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: partnerColor(), // tom semelhante ao linguee/google
+                                textDecoration: "none",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                fontSize: "0.95rem",
+                                padding: "10px",
+                                borderRadius: "10px",
+                                backgroundColor: textpartnerColorContrast(),
+                                fontFamily: "Arial, sans-serif",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.textDecoration =
+                                  "underline")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.textDecoration = "none")
+                              }
+                            >
+                              <span>Aula relacionada</span>
+                              <span>
+                                <strong>
+                                  {" "}
+                                  {theLesson.title} | {theLesson.course}
+                                </strong>
+                              </span>
+                            </a>
+                          </div>
+                        )}
+
                         {eventFull.homeworkDetails && (
                           <div
                             style={{
