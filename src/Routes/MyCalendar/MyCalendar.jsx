@@ -505,7 +505,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
-      console.log(response.data.event);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
       setHomeworkAdded(newHomeworkAdded);
@@ -1209,7 +1208,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     // garanta a comparação como string
     const found = lessonsList.find((l) => String(l.id) === id) || null;
     setTheLesson(found);
-    console.log("found", found);
   };
   const handleCategoryChange = (e) => {
     setLoadingInfo(true);
@@ -4182,7 +4180,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               </p>
                             </div>
                           )}
-                          {theLesson && theLesson.course && theLesson.id &&(
+                          {theLesson && theLesson.course && theLesson.id && (
                             <div
                               style={{
                                 display: "flex",

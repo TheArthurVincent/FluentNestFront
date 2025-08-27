@@ -215,7 +215,6 @@ export function Groups({ headers, id }) {
       const response = await axios.get(`${backDomain}/api/v1/groups/${id}`, {
         headers,
       });
-      console.log(response.data.groups);
       setGroups(response.data.groups);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
@@ -229,7 +228,6 @@ export function Groups({ headers, id }) {
           headers,
         }
       );
-      console.log(response);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     }
@@ -246,7 +244,6 @@ export function Groups({ headers, id }) {
           headers,
         }
       );
-      console.log(response);
       // Atualiza visual local
       setArrayOfIds((prev) =>
         prev.includes(studentId)

@@ -60,8 +60,6 @@ export function MyClasses({ headers }) {
     setStudentId(getLoggedUser.id);
     try {
       const requestConfig = { headers };
-      console.log("Full request config:", requestConfig);
-
       const response = await axios.get(
         `${backDomain}/api/v1/tutoring/${getLoggedUser.id}`,
         requestConfig
@@ -93,7 +91,6 @@ export function MyClasses({ headers }) {
         headers,
       });
       setClasses(response.data.formattedTutoringFromParticularStudent);
-      console.log("see:", response.data.formattedTutoringFromParticularStudent);
       setLoading(false);
     } catch (error) {
       console.error("Erro ao buscar aulas do aluno:", error);
