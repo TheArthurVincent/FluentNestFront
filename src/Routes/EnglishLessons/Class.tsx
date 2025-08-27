@@ -174,8 +174,7 @@ export default function EnglishClassCourse2({
     if (user) {
       setId(id);
       setStudentID(id);
-    handleGetBoard(id);
-
+      handleGetBoard(id);
     }
     try {
       const response = await axios.get(
@@ -3261,7 +3260,10 @@ export default function EnglishClassCourse2({
             <button
               title="Ver Quadro"
               onClick={() => {
-                setSeeSlides(!seeSlides);
+                handleGetBoard(myId);
+                setTimeout(() => {
+                  setSeeSlides(!seeSlides);
+                }, 500);
               }}
               className="isMobileDisapear"
               style={{
