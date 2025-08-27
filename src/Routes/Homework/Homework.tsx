@@ -24,6 +24,7 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import NewHomeworkAssignmentHere from "./HomeworkComponents/NewHomeworkAssignmentInside";
 import PendingHomeworkAssignments from "./HomeworkComponents/PendingHomeworkAssignmentsInside";
 import MyClasses from "../MyClasses/MyClasses";
+import { isArthurVincent } from "../../App";
 
 interface HWProps {
   headers: MyHeadersType | null;
@@ -315,7 +316,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   return (
     <RouteDiv>
       <Helmets text="Classes & Homework" />
-      <div style={{ borderBottom: 0, marginBottom: "1rem" }}>
+{   !isArthurVincent &&   <div style={{ borderBottom: 0, marginBottom: "1rem" }}>
         <Tabs
           value={tabValue}
           onChange={handleTabChange}
@@ -349,7 +350,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
           />
         </Tabs>
       </div>
-
+}
       <div>
         {tabValue === 0 && (
           <>
@@ -773,7 +774,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                       }}
                                     >
                                       <i className="fa fa-cogs" />
-
                                       {UniversalTexts?.teacherActions ||
                                         "Ações do Professor"}
                                     </h4>
@@ -1586,7 +1586,53 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                             {homework.eventDetails.description}
                                           </p>
                                         </div>
-                                      )}
+                                      )}{" "}
+                                      {homework.eventDetails.theLesson &&
+                                        homework.eventDetails.theLesson
+                                          .course &&
+                                        homework.eventDetails.theLesson.id && (
+                                          <div>
+                                            <a
+                                              target="_blank"
+                                              href={`/teaching-materials/${homework.eventDetails.theLesson.course
+                                                .toLowerCase()
+                                                .replace(/\s+/g, "-")
+                                                .replace(/[^\w\-]+/g, "")}/${
+                                                homework.eventDetails.theLesson
+                                                  .id
+                                              }`}
+                                              style={{
+                                                color: "#0ea5e9",
+                                                textDecoration: "none",
+                                                fontSize: "12px",
+                                                fontWeight: "500",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "4px",
+                                                padding: "4px 8px",
+                                                backgroundColor: "white",
+                                                borderRadius: "4px",
+                                                border: "1px solid #0ea5e9",
+                                              }}
+                                            >
+                                              <span>Aula relacionada: </span>
+                                              <span>
+                                                <strong>
+                                                  {" "}
+                                                  {
+                                                    homework.eventDetails
+                                                      .theLesson.title
+                                                  }{" "}
+                                                  |{" "}
+                                                  {
+                                                    homework.eventDetails
+                                                      .theLesson.course
+                                                  }
+                                                </strong>
+                                              </span>
+                                            </a>
+                                          </div>
+                                        )}
                                       <div
                                         style={{
                                           display: "flex",
