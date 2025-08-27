@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   HOne,
   HTwo,
@@ -774,6 +774,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           time: timeOfTutoring,
           duration,
           link,
+          theLesson: theLesson ? theLesson : null,
         },
         {
           headers,
@@ -1156,7 +1157,50 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const seeDelete = () => {
     setDeleteVisible(!deleteVisible);
   };
+  const [lessonsList, setLessonsList] = useState([]);
+  const [theLesson, setTheLesson] = useState(null);
 
+  const getClasses = async () => {
+    if (thePermissions === "superadmin" || thePermissions === "teacher") {
+      try {
+        const { data } = await axios.get(
+          `${backDomain}/api/v1/courses-organized/${myId}`,
+          { headers }
+        );
+        const res = data?.lessons ?? [];
+        setLessonsList(res);
+      } catch (error) {
+        console.log(error, "Erro ao encontrar cursos");
+      }
+    }
+  };
+
+  useEffect(() => {
+    getClasses();
+    // se headers/myId podem mudar, adicione-os nas deps:
+    // }, [headers, myId, thePermissions]);
+  }, []);
+
+  const grouped = useMemo(() => {
+    const byCourse = {};
+    for (const l of lessonsList) {
+      const course = l.course ?? "Sem curso";
+      const module = l.module ?? "Sem módulo";
+      byCourse[course] ||= {};
+      byCourse[course][module] ||= [];
+      byCourse[course][module].push(l);
+    }
+    return byCourse;
+  }, [lessonsList]); // <<< DEPENDÊNCIAS CORRETAS
+
+  const handleLessonChange = (e) => {
+    const id = e.target.value;
+    if (!id || id.startsWith("sep:")) return; // segurança extra
+    // garanta a comparação como string
+    const found = lessonsList.find((l) => String(l.id) === id) || null;
+    setTheLesson(found);
+    console.log("found", found);
+  };
   const handleCategoryChange = (e) => {
     setLoadingInfo(true);
     if (e.target.value == "Rep") {
@@ -2520,6 +2564,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 onClick={() => {
                                   setShowEditForm(true);
                                   setPOSTNEWINFOCLASS(true);
+                                  getClasses();
                                 }}
                                 style={{
                                   padding: "0.5rem 1rem",
@@ -2926,6 +2971,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               Important link
                                             </label>
                                             <input
+                                              placeholder="https://... .com/..."
                                               value={googleDriveLink}
                                               onChange={(e) =>
                                                 setGoogleDriveLink(
@@ -2957,6 +3003,118 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   "none";
                                               }}
                                             />
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  width: "90%",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                Aula Usada
+                                              </label>
+                                              <select
+                                                onChange={handleLessonChange}
+                                                value={
+                                                  theLesson?.id
+                                                    ? String(theLesson.id)
+                                                    : ""
+                                                } // garanta string
+                                                style={{
+                                                  width: "100%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: 8,
+                                                  border: "1px solid #ced4da",
+                                                  fontSize: "0.9rem",
+                                                  backgroundColor: "white",
+                                                }}
+                                              >
+                                                <option value="" hidden>
+                                                  Select lesson...
+                                                </option>
+
+                                                {Object.entries(grouped).map(
+                                                  ([course, modules]) => (
+                                                    <optgroup
+                                                      key={course}
+                                                      label={course}
+                                                    >
+                                                      {Object.entries(
+                                                        modules
+                                                      ).map(([module, ls]) => (
+                                                        <React.Fragment
+                                                          key={`${course}-${module}`}
+                                                        >
+                                                          <option
+                                                            value={`sep:${course}:${module}`}
+                                                            disabled
+                                                          >
+                                                            — {module} —
+                                                          </option>
+                                                          {ls.map((l) => (
+                                                            <option
+                                                              key={l.id}
+                                                              value={String(
+                                                                l.id
+                                                              )}
+                                                            >
+                                                              {l.title}
+                                                            </option>
+                                                          ))}
+                                                        </React.Fragment>
+                                                      ))}
+                                                    </optgroup>
+                                                  )
+                                                )}
+                                              </select>
+                                              <div
+                                                style={{
+                                                  border: "1px solid #e0e0e0",
+                                                  borderRadius: "10px",
+                                                  padding: "1rem",
+                                                  backgroundColor: "#f9fafb",
+                                                  marginTop: "1rem",
+                                                  boxShadow:
+                                                    "0 2px 6px rgba(0,0,0,0.08)",
+                                                  maxWidth: "400px",
+                                                }}
+                                              >
+                                                <p
+                                                  style={{
+                                                    marginBottom: "0.75rem",
+                                                    color: "#374151",
+                                                  }}
+                                                >
+                                                  🎓 Aula Selecionada
+                                                </p>
+
+                                                {theLesson ? (
+                                                  <>
+                                                    <p>
+                                                      <strong>Título:</strong>{" "}
+                                                      {theLesson.title}
+                                                    </p>
+                                                    <p>
+                                                      <strong>Curso:</strong>{" "}
+                                                      {theLesson.course}
+                                                    </p>
+                                                    <p>
+                                                      <strong>Módulo:</strong>{" "}
+                                                      {theLesson.module}
+                                                    </p>
+                                                  </>
+                                                ) : (
+                                                  <p
+                                                    style={{ color: "#6b7280" }}
+                                                  >
+                                                    Nenhuma aula selecionada.
+                                                  </p>
+                                                )}
+                                              </div>
+                                            </div>
                                           </div>
                                           {!homeworkAdded && (
                                             <button
