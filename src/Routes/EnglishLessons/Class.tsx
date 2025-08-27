@@ -199,6 +199,63 @@ export default function EnglishClassCourse2({
     }
   };
 
+  const downloadBoardPDF = () => {
+
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.left = "-9999px";
+    document.body.appendChild(iframe);
+    iframe.contentDocument!.open();
+    iframe.contentDocument!.write(`
+<html>
+  <head>
+    <title>Board PDF</title>
+    <style>
+              @import url("https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Athiti&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+                body {font-family: ${textGeneralFont()}; sans-serif; padding: 24px; }
+                h1, h2, h3 { color: ${partnerColor()};font-family: ${textGeneralFont()} }
+                img { max-width: 100%; border-radius: 8px; margin-bottom: 1rem; }
+                p { font-size: 18px; margin-bottom: 1rem; }
+    </style>
+  </head>
+  <body>
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <span style="font-size: 12px; color: gray"
+        >${formatDateBrWithHour(new Date())}</span
+      >
+      <img src="${logoPartner()}" alt="logo" style="max-width: 70px" />
+    </div>
+    <div>${newHWDescription}</div>
+  </body>
+</html>
+  `);
+    iframe.contentDocument!.close();
+    setTimeout(() => {
+      iframe.contentWindow!.focus();
+      iframe.contentWindow!.print();
+      document.body.removeChild(iframe);
+    }, 500);
+  };
+
   const getClassNoLoading = async () => {
     const user = localStorage.getItem("loggedIn");
     const { id, permissions } = JSON.parse(user || "");
@@ -3934,8 +3991,7 @@ export default function EnglishClassCourse2({
             left: 10,
             borderRadius: "6px",
             width: "96vw",
-            height: "92vh",
-
+            height: "95vh",
             zIndex: 10000000000,
             backgroundColor: "white",
           }}
@@ -3990,7 +4046,6 @@ export default function EnglishClassCourse2({
                   >
                     Salvar Lousa do Aluno
                   </button>
-
                   {seeCheck && (
                     <i
                       style={{
@@ -4004,6 +4059,28 @@ export default function EnglishClassCourse2({
                     />
                   )}
                 </span>
+
+                <button
+                  style={{
+                    backgroundColor: "#c22210ff",
+                    color: "#fff",
+                    marginRight: "10px",
+                    borderRadius: "6px",
+                    padding: "6px 14px",
+                    fontWeight: 600,
+                    fontSize: "13px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onClick={downloadBoardPDF}
+                >
+                  <img
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                    alt="PDF"
+                    style={{ width: "12px", height: "12px" }}
+                  />{" "}
+                  Baixar PDF da Lousa
+                </button>
 
                 {seeConfirm ? (
                   <div
