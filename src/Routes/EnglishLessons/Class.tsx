@@ -2821,6 +2821,8 @@ export default function EnglishClassCourse2({
   };
   const handleGetBoard = async (id: string) => {
     setLoadingBoard(true);
+                  setConfirm(false);
+
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/board/${classId}?student=${id}`,
@@ -3263,6 +3265,7 @@ export default function EnglishClassCourse2({
                 handleGetBoard(studentID || myId);
                 setTimeout(() => {
                   setSeeSlides(!seeSlides);
+                  setConfirm(false);
                 }, 500);
               }}
               className="isMobileDisapear"
