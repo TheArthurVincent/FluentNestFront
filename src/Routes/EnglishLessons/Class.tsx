@@ -241,10 +241,15 @@ export default function EnglishClassCourse2({
       <span style="font-size: 12px; color: gray"
         >${formatDateBrWithHour(new Date())}</span
       >
+              <span style="font-size: 12px; color: gray"
+        >${studentName}</span
+      >
       <img src="${logoPartner()}" alt="logo" style="max-width: 70px" />
     </div>
     <div>${newHWDescription}</div>
-  </body>
+  
+  
+    </body>
 </html>
   `);
     iframe.contentDocument!.close();
@@ -2800,10 +2805,17 @@ export default function EnglishClassCourse2({
 
   const [confirm, setConfirm] = useState(false);
   const [seeConfirm, setSeeConfirm] = useState(false);
+  const [studentName, setStudentName] = useState("");
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     setStudentID(theid);
     handleGetBoard(theid);
+    const selectedStudent = studentsList.find(
+      (student: any) => student.id === theid
+    );
+    if (selectedStudent) {
+      setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
+    }
   };
   const fetchStudents = async () => {
     try {
@@ -2870,6 +2882,7 @@ export default function EnglishClassCourse2({
       );
       setConfirm(false);
       setSeeCheck(true);
+      setSeeConfirm(false);
       setBoardDate(new Date());
       setTimeout(() => {
         setSeeCheck(false);
@@ -4062,7 +4075,7 @@ export default function EnglishClassCourse2({
                       color: "white",
                     }}
                   >
-                    Salvar Lousa do Aluno
+                    Salvar Lousa do Aluno {studentName}
                   </button>
                   {seeCheck && (
                     <i
@@ -4184,7 +4197,8 @@ export default function EnglishClassCourse2({
                 margin: " 10px 0",
               }}
             >
-              Última edição desta lousa: {formatDateBrWithHour(boardDate)}
+              Última edição desta para {studentName}:{" "}
+              <strong>{formatDateBrWithHour(boardDate)}</strong>
             </span>
           )}
 
