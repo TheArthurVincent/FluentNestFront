@@ -4075,22 +4075,23 @@ export default function EnglishClassCourse2({
             </div>
           ) : (
             <span
-            style={{
-              display:"flex",justifyContent:"right"
-            }}
-            >
-
-            <button
               style={{
-                backgroundColor: "red",
-                color: "white",
-              }}
-              onClick={() => {
-                setSeeSlides(!seeSlides);
+                display: "flex",
+                justifyContent: "right",
               }}
             >
-              x
-            </button></span>
+              <button
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                }}
+                onClick={() => {
+                  setSeeSlides(!seeSlides);
+                }}
+              >
+                x
+              </button>
+            </span>
           )}
           <div
             style={{
@@ -4104,17 +4105,23 @@ export default function EnglishClassCourse2({
                   height: "95vh",
                 }}
               >
-
-{(thePermissions == "teacher" || thePermissions == "superadmin")
-                ? <HTMLEditor
-                  key={editorKey}
-                  initialContent={editorContent}
-                  onChange={handleHWDescriptionChange}
-                />
-:
-<div dangerouslySetInnerHTML={{ __html: editorContent }} />
-}
-
+                {thePermissions == "teacher" ||
+                thePermissions == "superadmin" ? (
+                  <HTMLEditor
+                    key={editorKey}
+                    initialContent={editorContent}
+                    onChange={handleHWDescriptionChange}
+                  />
+                ) : (
+                  <div
+                  style={{
+                    maxHeight:"80vh",
+                    overflowY: "auto",margin:"20px"
+                  }}
+                  >
+                  <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+                </div>
+                )}
               </div>
             ) : (
               <CircularProgress style={{ color: partnerColor() }} />
