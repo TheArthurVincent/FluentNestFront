@@ -200,7 +200,6 @@ export default function EnglishClassCourse2({
   };
 
   const downloadBoardPDF = () => {
-
     const iframe = document.createElement("iframe");
     iframe.style.position = "absolute";
     iframe.style.left = "-9999px";
@@ -2879,6 +2878,25 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao buscar comentários");
     }
   };
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        if (
+          (thePermissions === "teacher" || thePermissions === "superadmin") &&
+          seeSlides
+        ) {
+          handleSaveBoard();
+          notifyAlert("Lousa salva com sucesso!", partnerColor());
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [seeSlides, thePermissions, newHWDescription, studentID]);
+
   const handleGetBoard = async (id: string) => {
     setLoadingBoard(true);
     setConfirm(false);
