@@ -227,19 +227,6 @@ const QnAExercise = ({ headers, onChange, change }: FlashCardsPropsRv) => {
                     <br />
                     {!justAudio ? question : ""}
                     <br />
-                    <textarea
-                      style={{
-                        display: !isDisabled ? "none" : "inline-block",
-                        marginTop: "1rem",
-                        width: "85%",
-                        padding: "10px",
-                        borderRadius: "6px",
-                        border: "1px solid #ccc",
-                      }}
-                      placeholder="Use this area for reference if you need to transcribe what you hear"
-                      name=""
-                      id=""
-                    />
                     <Tooltip title="Você pode clicar aqui para ler a resposta, porém, a pontuação pela resposta irá cair. Tente entender escutando!">
                       <button
                         style={{

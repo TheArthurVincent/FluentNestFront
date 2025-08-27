@@ -1,5 +1,4 @@
 import React from "react";
-import TextAreaLesson from "../Functions/TextAreaLessons";
 interface TextLessonModelSlideProps {
   text: string;
 }
@@ -17,7 +16,6 @@ export default function TextLessonModelSlide({
     >
       <div>
         {text}
-        <TextAreaLesson />
       </div>
     </div>
   );

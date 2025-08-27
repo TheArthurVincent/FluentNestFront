@@ -103,22 +103,6 @@ export default function QandALessonPersonalModel({
             </IconButton>
           </div>
           <div>
-            <p>
-              <textarea
-                style={{
-                  alignItems: "center",
-                  justifyContent: "space-around",
-                  padding: "0.5rem",
-                  margin: "0",
-                  fontSize: "1.1rem",
-                  fontWeight: 500,
-                }}
-                placeholder="Your answer"
-                name="Text"
-                id=""
-                required
-              />
-            </p>
           </div>
         </LiSentence>
       ))}

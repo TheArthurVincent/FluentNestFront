@@ -3882,7 +3882,6 @@ export default function EnglishClassCourse2({
                     setComment(e.target.value);
                   }}
                   //@ts-ignore
-
                   type="text"
                   className="comments2"
                   placeholder="Type your comment here..."

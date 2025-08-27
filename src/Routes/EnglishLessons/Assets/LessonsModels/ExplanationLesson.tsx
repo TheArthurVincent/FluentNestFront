@@ -164,8 +164,6 @@ export default function ExplanationLesson({
                             {listItem}
                           </div>
                         </div>
-
-                        {/* Textarea para notas/respostas */}
                       </div>
                     )
                   )}
@@ -173,32 +171,6 @@ export default function ExplanationLesson({
               </div>
             )
           )}
-        {/* <textarea
-                          placeholder="Write your notes or thoughts here..."
-                          style={{
-                            width: "95%",
-                            minHeight: "80px",
-                            padding: "12px 16px",
-                            border: "2px solid #e9ecef",
-                            borderRadius: "8px",
-                            fontSize: "14px",
-                            fontFamily: textGeneralFont(),
-                            lineHeight: "1.5",
-                            color: "#1a202c",
-                            backgroundColor: "#ffffff",
-                            transition: "all 0.2s ease",
-                            resize: "vertical",
-                            outline: "none",
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor = partnerColor();
-                            e.currentTarget.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor = "#e9ecef";
-                            e.currentTarget.style.boxShadow = "none";
-                          }}
-                        /> */}
       </div>
     </div>
   );

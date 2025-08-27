@@ -101,30 +101,6 @@ export default function SentenceLessonModelSlide({
             >
               {sentence.portuguese}
             </span>
-            <br />
-            <textarea
-              placeholder="Blackboard"
-              style={{
-                width: "80%",
-                minHeight: "200px",
-                padding: "12px 16px",
-                borderRadius: "12px",
-                marginTop: "1rem",
-                border: "1px solid #ccc",
-                outline: "none",
-                fontSize: "3rem",
-                fontFamily: textTitleFont(),
-                color: "black",
-                backgroundColor: textPrimaryColorContrast(),
-                boxShadow: "2px 2px 8px rgba(0, 0, 0, 0.5)",
-                transition: "all 0.3s ease",
-                resize: "vertical",
-              }}
-              onFocus={(e) =>
-                (e.target.style.border = `1px solid${partnerColor()}`)
-              }
-              onBlur={(e) => (e.target.style.border = "1px solid #ccc")}
-            />{" "}
           </li>
         ))}
     </ul>
