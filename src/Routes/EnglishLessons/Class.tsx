@@ -2741,7 +2741,7 @@ export default function EnglishClassCourse2({
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     setStudentID(theid);
-    getBoard(theid);
+    getBoard(theid)
   };
   const fetchStudents = async () => {
     try {
@@ -2796,6 +2796,17 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao buscar comentários");
     }
   };
+  const getBoard = async (id:string) => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/board/${classId}?student=${id}`,
+        { headers: actualHeaders }
+      );
+      console.log(response.data.studentSavedBoard);
+    } catch (error) {
+      console.error(error, "Erro ao buscar comentários");
+    }
+  };
   const sendComment = async () => {
     try {
       const response = await axios.post(
@@ -2824,11 +2835,6 @@ export default function EnglishClassCourse2({
   useEffect(() => {
     getComments();
   }, [commentsTrigger]);
-
-  const handleShowCourses = () => {
-    setShowCourses(!showCourses);
-    setArrow(!arrow);
-  };
 
   const deleteComment = async (id: any) => {
     try {
@@ -3067,6 +3073,8 @@ export default function EnglishClassCourse2({
             default:
               break;
           }
+
+          content += `<hr style="margin:1rem 0;border:none;border-top:1px solid #eee;" />`;
         });
       }
 
@@ -3077,7 +3085,7 @@ export default function EnglishClassCourse2({
       setEditorContent(generateInitialBoardContent());
     }
     // eslint-disable-next-line
-  }, []);
+  }, [theclass, classTitle, courseTitle]);
 
   const [hasAudioElement, setHasAudioElement] = useState(false);
 
@@ -3091,21 +3099,6 @@ export default function EnglishClassCourse2({
       setHasAudioElement(false);
     }
   }, [theclass]);
-
-  const getBoard = async (studentId: string) => {
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/board/${classId}?student=${studentId}`,
-        { headers: actualHeaders }
-      );
-      console.log(response.data.studentSavedBoard);
-      if (response.data.studentSavedBoard) {
-        setEditorContent(response.data.studentSavedBoard);
-      }
-    } catch (error) {
-      console.error(error, "Erro ao obter board");
-    }
-  };
   return (
     <div
       style={{
@@ -3266,11 +3259,11 @@ export default function EnglishClassCourse2({
               }}
             >
               <i
-                className={"fa fa-pencil"}
+                className={seeSlides ? "fa fa-eye-slash" : "fa fa-eye"}
                 aria-hidden="true"
                 style={{ fontSize: "10px" }}
               />
-              {UniversalTexts.board}
+              {seeSlides ? "Hide Board" : "See Board"}
             </button>
             {/* Left side: Student select (if admin/teacher) */}
             <div
@@ -3904,67 +3897,80 @@ export default function EnglishClassCourse2({
 
         <div
           style={{
-            padding: "2rem",
+            padding: "1rem",
             position: "fixed",
             display: seeSlides ? "block" : "none",
             top: 5,
-            left: 5,
-            border: "1px grey solid",
+            left: 10,
             borderRadius: "6px",
-            width: "95vw",
-            height: "90vh",
-            zIndex: 100000000000,
+            width: "96vw",
+            height: "92vh",
+            zIndex: 10000000000,
             backgroundColor: "white",
           }}
         >
-          <Xp
-            style={{ margin: "1rem auto", display: "block" }}
-            onClick={() => {
-              setSeeSlides(!seeSlides);
-            }}
-          >
-            x
-          </Xp>
-          <span
+          <div
             style={{
-              gap: "1rem",
+              display: "flex",
               alignItems: "center",
-              display:
-                thePermissions === "superadmin" || thePermissions === "teacher"
-                  ? "flex"
-                  : "none",
+              paddingRight: "1rem",
             }}
           >
-            <select
-              onChange={(e) => handleStudentChange(e)}
-              value={studentID}
-              style={{
-                borderRadius: "4px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "11px",
-                fontWeight: "400",
-                color: "#64748b",
-                padding: "4px 6px",
-                height: "28px",
-                minWidth: "120px",
-                maxWidth: "150px",
-                outline: "none",
-                cursor: "pointer",
+            <Xp
+              style={{ margin: "1rem 2rem ", display: "block" }}
+              onClick={() => {
+                setSeeSlides(!seeSlides);
               }}
-              onFocus={(e) =>
-                (e.currentTarget.style.borderColor = partnerColor())
-              }
-              onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
             >
-              {studentsList.map((student: any, index: number) => (
-                <option key={index} value={student.id}>
-                  {student.name + " " + student.lastname}
-                </option>
-              ))}
-            </select>
-            <button>Salvar lousa do aluno</button>
-          </span>
+              x
+            </Xp>
+            <span
+              style={{
+                display:
+                  thePermissions === "superadmin" ||
+                  thePermissions === "teacher"
+                    ? "block"
+                    : "none",
+              }}
+            >
+              <select
+                onChange={(e) => handleStudentChange(e)}
+                value={studentID}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "4px 6px",
+                  height: "28px",
+                  minWidth: "120px",
+                  maxWidth: "150px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = partnerColor())
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+              >
+                {studentsList.map((student: any, index: number) => (
+                  <option key={index} value={student.id}>
+                    {student.name + " " + student.lastname}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => {
+                  // Save the student's whiteboard content
+                  console.log("oi");
+                }}
+              >
+                Salvar Lousa do Aluno
+              </button>
+            </span>
+          </div>
           <div
             style={{
               display: "grid",
