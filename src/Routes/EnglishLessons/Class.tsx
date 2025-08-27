@@ -3941,7 +3941,10 @@ export default function EnglishClassCourse2({
             backgroundColor: "white",
           }}
         >
-          <div
+         {
+               (thePermissions === "superadmin" ||
+                  thePermissions === "teacher") ?
+         <div
             style={{
               display: "flex",
               alignItems: "center",
@@ -4078,11 +4081,24 @@ export default function EnglishClassCourse2({
               </button>
             )}
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: hasAudioElement ? "1fr 0.4fr" : "1fr",
-            }}
+        :
+          <button
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                }}
+                onClick={() => {
+                    setSeeSlides(!seeSlides);
+                }}
+              >
+                x
+              </button>
+        }
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: hasAudioElement ? "1fr 0.4fr" : "1fr",
+          }}
           >
             {!loadingBoard ? (
               <div
