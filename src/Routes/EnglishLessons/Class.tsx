@@ -3935,179 +3935,164 @@ export default function EnglishClassCourse2({
             borderRadius: "6px",
             width: "96vw",
             height: "92vh",
+
             zIndex: 10000000000,
             backgroundColor: "white",
           }}
         >
-          {thePermissions === "superadmin" || thePermissions === "teacher" ? (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                paddingRight: "1rem",
-              }}
-            >
-              <span
+          <div
+            style={{
+              marginBottom: "10px",
+            }}
+          >
+            {thePermissions === "superadmin" || thePermissions === "teacher" ? (
+              <div
                 style={{
-                  gap: "10px",
+                  display: "flex",
                   alignItems: "center",
-                  display:
-                    thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
-                      ? "flex"
-                      : "none",
+                  justifyContent: "space-between",
+                  paddingRight: "1rem",
                 }}
               >
-                {/* <select
-                onChange={(e) => handleStudentChange(e)}
-                value={studentID}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "11px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "4px 6px",
-                  height: "28px",
-                  minWidth: "120px",
-                  maxWidth: "150px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = partnerColor())
-                }
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
-              >
-                {studentsList.map((student: any, index: number) => (
-                  <option key={index} value={student.id}>
-                    {student.name + " " + student.lastname}
-                  </option>
-                ))}
-              </select> */}
-                <button
-                  onClick={() => {
-                    console.log(generateInitialBoardContent());
-                    setEditorKey(editorKey + 1);
-                    setNewHWDescription(generateInitialBoardContent());
-                    setEditorContent(generateInitialBoardContent());
-                    setConfirm(true);
-                  }}
+                <span
                   style={{
-                    backgroundColor: partnerColor(),
-                    color: textpartnerColorContrast(),
-                  }}
-                >
-                  Restaurar Lousa
-                </button>
-                <button
-                  onClick={handleSaveBoard}
-                  style={{
-                    display: !confirm ? "none" : "block",
-                    backgroundColor: "green",
-                    color: "white",
-                  }}
-                >
-                  Salvar Lousa do Aluno
-                </button>
-                {boardDate && (
-                  <span
-                    style={{
-                      color: "grey",
-                      fontSize: "12px",
-                      fontStyle: "italic",
-                    }}
-                  >
-                    Última edição desta lousa: {formatDateBrWithHour(boardDate)}
-                  </span>
-                )}
-                {seeCheck && (
-                  <i
-                    style={{
-                      backgroundColor: "green",
-                      padding: "5px",
-                      borderRadius: "50%",
-                      color: "white",
-                      marginLeft: "1rem",
-                    }}
-                    className="fa fa-check"
-                  />
-                )}
-              </span>
-
-              {seeConfirm ? (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
+                    gap: "10px",
                     alignItems: "center",
+                    display:
+                      thePermissions === "superadmin" ||
+                      thePermissions === "teacher"
+                        ? "flex"
+                        : "none",
                   }}
                 >
                   <button
+                    onClick={() => {
+                      console.log(generateInitialBoardContent());
+                      setEditorKey(editorKey + 1);
+                      setNewHWDescription(generateInitialBoardContent());
+                      setEditorContent(generateInitialBoardContent());
+                      setConfirm(true);
+                    }}
                     style={{
-                      backgroundColor: "blue",
+                      backgroundColor: partnerColor(),
+                      color: textpartnerColorContrast(),
+                    }}
+                  >
+                    Restaurar Lousa
+                  </button>
+                  <button
+                    onClick={handleSaveBoard}
+                    style={{
+                      display: !confirm ? "none" : "block",
+                      backgroundColor: "green",
                       color: "white",
                     }}
-                    onClick={() => setSeeConfirm(false)}
                   >
-                    Cancelar
+                    Salvar Lousa do Aluno
                   </button>
+
+                  {seeCheck && (
+                    <i
+                      style={{
+                        backgroundColor: "green",
+                        padding: "5px",
+                        borderRadius: "50%",
+                        color: "white",
+                        marginLeft: "1rem",
+                      }}
+                      className="fa fa-check"
+                    />
+                  )}
+                </span>
+
+                {seeConfirm ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    <button
+                      style={{
+                        backgroundColor: "blue",
+                        color: "white",
+                      }}
+                      onClick={() => setSeeConfirm(false)}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                      }}
+                      onClick={() => {
+                        setSeeConfirm(false);
+                        setSeeSlides(!seeSlides);
+                        setEditorContent(generateInitialBoardContent());
+                        setNewHWDescription(generateInitialBoardContent());
+                      }}
+                    >
+                      X Fechar sem salvar
+                    </button>
+                  </div>
+                ) : (
                   <button
                     style={{
                       backgroundColor: "red",
                       color: "white",
                     }}
                     onClick={() => {
-                      setSeeConfirm(false);
-                      setSeeSlides(!seeSlides);
-                      setEditorContent(generateInitialBoardContent());
-                      setNewHWDescription(generateInitialBoardContent());
+                      console.log(confirm);
+                      if (confirm) {
+                        setSeeConfirm(true);
+                      } else {
+                        setSeeSlides(!seeSlides);
+                      }
                     }}
                   >
-                    X Fechar sem salvar
+                    x
                   </button>
-                </div>
-              ) : (
+                )}
+              </div>
+            ) : (
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
                 <button
                   style={{
                     backgroundColor: "red",
                     color: "white",
                   }}
                   onClick={() => {
-                    console.log(confirm);
-                    if (confirm) {
-                      setSeeConfirm(true);
-                    } else {
-                      setSeeSlides(!seeSlides);
-                    }
+                    setSeeSlides(!seeSlides);
                   }}
                 >
                   x
                 </button>
-              )}
-            </div>
-          ) : (
+              </span>
+            )}
+          </div>
+
+          {boardDate && (
             <span
               style={{
-                display: "flex",
-                justifyContent: "right",
+                color: "grey",
+                fontSize: "12px",
+                fontStyle: "italic",
+                margin: " 10px 0",
               }}
             >
-              <button
-                style={{
-                  backgroundColor: "red",
-                  color: "white",
-                }}
-                onClick={() => {
-                  setSeeSlides(!seeSlides);
-                }}
-              >
-                x
-              </button>
+              Última edição desta lousa: {formatDateBrWithHour(boardDate)}
             </span>
           )}
+
           <div
             style={{
               display: "grid",
