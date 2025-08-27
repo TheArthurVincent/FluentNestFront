@@ -287,7 +287,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
 
       setEventsList(response.data.events);
-      console.log(response.data.events);
       setTimeout(() => {
         setLoadingEventsList(false);
       }, 100);
@@ -2333,9 +2332,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       key={student._id || index}
                       onClick={() => {
                         setSelectedStudent(student);
-                        console.log(student);
                         setReplenish(student.replenishTarget);
-
                         setFeeUpToDate(student.feeUpToDate);
                         setTutoree(student.tutoree);
                         setOnHold(student.onHold);
