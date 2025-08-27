@@ -505,7 +505,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
-      console.log(response.data.event);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
       setHomeworkAdded(newHomeworkAdded);
@@ -4182,7 +4181,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               </p>
                             </div>
                           )}
-                          {theLesson && theLesson.course && theLesson.id &&(
+                          {theLesson && theLesson.course && theLesson.id && (
                             <div
                               style={{
                                 display: "flex",

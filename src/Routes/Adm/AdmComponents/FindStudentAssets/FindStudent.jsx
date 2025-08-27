@@ -242,7 +242,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       });
       setStudents(response.data.listOfStudents);
       setLoading(false);
-      console.log(response);
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     }
@@ -288,7 +287,6 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
 
       setEventsList(response.data.events);
-      console.log(response.data.events);
       setTimeout(() => {
         setLoadingEventsList(false);
       }, 100);

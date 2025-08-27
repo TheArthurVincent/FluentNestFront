@@ -2925,7 +2925,6 @@ export default function EnglishClassCourse2({
         setLoadingBoard(false);
         return;
       }
-      console.log(response.data.studentSavedBoard);
       setEditorContent(response.data.studentSavedBoard);
       setBoardDate(response.data.date);
       setNewHWDescription(response.data);
