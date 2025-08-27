@@ -4149,6 +4149,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           </div>
                         )}
                         {/* Descrição */}
+
+                        <div
+                          style={{
+                            display: "grid",
+maxWidth:"85%",
+                            alignItems: "center",
+                            justifyContent: "center",
+
+margin:"auto"                          }}
+                        >
                         {description && (
                           <div
                             style={{
@@ -4171,6 +4181,54 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </p>
                           </div>
                         )}
+                                      {theLesson && (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "center",
+                              marginTop: "0.75rem",
+                            }}
+                          >
+                            <a
+                              target="_blank"
+                              href={`/teaching-materials/${theLesson.course
+                                .toLowerCase()
+                                .replace(/\s+/g, "-")
+                                .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
+                              style={{
+                                gap: "5px",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                color: partnerColor(), // tom semelhante ao linguee/google
+                                textDecoration: "none",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                fontSize: "0.95rem",
+                                padding: "10px",
+                                borderRadius: "10px",
+                                backgroundColor: textpartnerColorContrast(),
+                                fontFamily: "Arial, sans-serif",
+                              }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.textDecoration =
+                                  "underline")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.textDecoration = "none")
+                              }
+                            >
+                              <span>Aula relacionada</span>
+                              <span>
+                                <strong>
+                                  {" "}
+                                  {theLesson.title} | {theLesson.course}
+                                </strong>
+                              </span>
+                            </a>
+                          </div>
+                        )}
+</div>
                         {duration && (
                           <div
                             style={{
@@ -4544,53 +4602,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           )}
                         </div>
-                        {theLesson && (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              marginTop: "0.75rem",
-                            }}
-                          >
-                            <a
-                              target="_blank"
-                              href={`/teaching-materials/${theLesson.course
-                                .toLowerCase()
-                                .replace(/\s+/g, "-")
-                                .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
-                              style={{
-                                gap: "5px",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: partnerColor(), // tom semelhante ao linguee/google
-                                textDecoration: "none",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                                fontSize: "0.95rem",
-                                padding: "10px",
-                                borderRadius: "10px",
-                                backgroundColor: textpartnerColorContrast(),
-                                fontFamily: "Arial, sans-serif",
-                              }}
-                              onMouseOver={(e) =>
-                                (e.currentTarget.style.textDecoration =
-                                  "underline")
-                              }
-                              onMouseOut={(e) =>
-                                (e.currentTarget.style.textDecoration = "none")
-                              }
-                            >
-                              <span>Aula relacionada</span>
-                              <span>
-                                <strong>
-                                  {" "}
-                                  {theLesson.title} | {theLesson.course}
-                                </strong>
-                              </span>
-                            </a>
-                          </div>
-                        )}
+          
 
                         {eventFull.homeworkDetails && (
                           <div
