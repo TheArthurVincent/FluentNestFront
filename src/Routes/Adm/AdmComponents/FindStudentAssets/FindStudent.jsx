@@ -287,6 +287,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
       );
 
       setEventsList(response.data.events);
+      console.log(response.data.events)
       setTimeout(() => {
         setLoadingEventsList(false);
       }, 100);
@@ -1948,6 +1949,16 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                   </div>
                                 </div>
                               )}{" "}
+
+
+
+
+
+
+
+
+
+
                               {event.homework && (
                                 <div style={{ gridColumn: "1 / -1" }}>
                                   <div
@@ -1970,6 +1981,82 @@ export function FindStudent({ uploadStatus, headers, id }) {
                                   />
                                 </div>
                               )}
+
+
+
+
+
+
+
+
+     {event.theLesson &&
+                                        event.theLesson
+                                          .course &&
+                                        event.theLesson.id && (
+                                                                <div style={{ gridColumn: "1 / -1" }}>
+
+                                                <div
+                                    style={{
+                                      fontSize: "10px",
+                                      color: "#6c757d",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    📝 LIÇÃO RELACIONADA
+                                  </div>
+                                            <a
+                                              target="_blank"
+                                              href={`/teaching-materials/${event.theLesson.course
+                                                .toLowerCase()
+                                                .replace(/\s+/g, "-")
+                                                .replace(/[^\w\-]+/g, "")}/${
+                                                event.theLesson
+                                                  .id
+                                              }`}
+                                              style={{
+                                                color: "#0ea5e9",
+                                                textDecoration: "none",
+                                                fontSize: "18px",
+                                                marginTop:"1rem",
+                                                fontWeight: "500",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: "4px",
+                                                padding: "4px 8px",
+                                                backgroundColor: "white",
+                                                borderRadius: "4px",
+                                                border: "1px solid #0ea5e9",
+                                              }}
+                                            >
+                                              <span>
+                                                <strong>
+                                                  {" "}
+                                                  {
+                                                    event
+                                                      .theLesson.title
+                                                  }{" "}
+                                                  |{" "}
+                                                  {
+                                                    event
+                                                      .theLesson.course
+                                                  }
+                                                </strong>
+                                              </span>
+                                            </a>
+                                          </div>
+                                        )}
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
                           </div>
                         ))}
