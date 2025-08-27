@@ -85,7 +85,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
               user.permissions === "student" || user.permissions === "admin"
           );
 
-          console.log("Filtered students:", studentUsers);
           setStudents(studentUsers);
         } catch (error) {
           console.error("Error fetching students:", error);

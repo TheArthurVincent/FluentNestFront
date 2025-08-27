@@ -1208,7 +1208,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     // garanta a comparação como string
     const found = lessonsList.find((l) => String(l.id) === id) || null;
     setTheLesson(found);
-    console.log("found", found);
   };
   const handleCategoryChange = (e) => {
     setLoadingInfo(true);
