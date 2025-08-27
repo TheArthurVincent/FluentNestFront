@@ -38,7 +38,6 @@ function HTMLEditor({ onChange, initialContent }) {
     };
   }, []);
 
-  
   useEffect(() => {
     if (!editor) return;
 
@@ -95,7 +94,7 @@ function HTMLEditor({ onChange, initialContent }) {
           textAlign: "left",
           boxSizing: "border-box",
           overflow: "auto",
-          height: "90.5%",
+          maxHeight: "85vh",
         }}
       />
     );

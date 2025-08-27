@@ -15,6 +15,7 @@ import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import {
   backDomain,
   formatDateBr,
+  formatDateBrWithHour,
   getVideoEmbedUrl,
   onLoggOut,
   pathGenerator,
@@ -196,6 +197,67 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao obter aulas");
       setLoading(false);
     }
+  };
+
+  const downloadBoardPDF = () => {
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.left = "-9999px";
+    document.body.appendChild(iframe);
+    iframe.contentDocument!.open();
+    iframe.contentDocument!.write(`
+<html>
+  <head>
+    <title>Board PDF</title>
+    <style>
+              @import url("https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Athiti&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Nunito&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Oswald&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=PT+Sans&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+                body {font-family: ${textGeneralFont()}; sans-serif; padding: 24px; }
+                h1, h2, h3 { color: ${partnerColor()};font-family: ${textGeneralFont()} }
+                img { max-width: 100%; border-radius: 8px; margin-bottom: 1rem; }
+                p { font-size: 18px; margin-bottom: 1rem; }
+    </style>
+  </head>
+  <body>
+    <div
+      style="display: flex; justify-content: space-between; align-items: center"
+    >
+      <span style="font-size: 12px; color: gray"
+        >${formatDateBrWithHour(new Date())}</span
+      >
+              <span style="font-size: 12px; color: gray"
+        >${studentName}</span
+      >
+      <img src="${logoPartner()}" alt="logo" style="max-width: 70px" />
+    </div>
+    <div>${newHWDescription}</div>
+  
+  
+    </body>
+</html>
+  `);
+    iframe.contentDocument!.close();
+    setTimeout(() => {
+      iframe.contentWindow!.focus();
+      iframe.contentWindow!.print();
+      document.body.removeChild(iframe);
+    }, 500);
   };
 
   const getClassNoLoading = async () => {
@@ -2743,10 +2805,17 @@ export default function EnglishClassCourse2({
 
   const [confirm, setConfirm] = useState(false);
   const [seeConfirm, setSeeConfirm] = useState(false);
+  const [studentName, setStudentName] = useState("");
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     setStudentID(theid);
     handleGetBoard(theid);
+    const selectedStudent = studentsList.find(
+      (student: any) => student.id === theid
+    );
+    if (selectedStudent) {
+      setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
+    }
   };
   const fetchStudents = async () => {
     try {
@@ -2802,16 +2871,19 @@ export default function EnglishClassCourse2({
     }
   };
   const [seeCheck, setSeeCheck] = useState(false);
+  const [boardDate, setBoardDate] = useState<Date | any>(null);
 
   const handleSaveBoard = async () => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/board/${classId}?student=${studentID}`,
-        { content: newHWDescription },
+        { content: newHWDescription, date: new Date() },
         { headers: actualHeaders }
       );
       setConfirm(false);
       setSeeCheck(true);
+      setSeeConfirm(false);
+      setBoardDate(new Date());
       setTimeout(() => {
         setSeeCheck(false);
       }, 2000);
@@ -2819,8 +2891,29 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao buscar comentários");
     }
   };
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        if (
+          (thePermissions === "teacher" || thePermissions === "superadmin") &&
+          seeSlides
+        ) {
+          handleSaveBoard();
+          notifyAlert("Lousa salva com sucesso!", partnerColor());
+        }
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [seeSlides, thePermissions, newHWDescription, studentID]);
+
   const handleGetBoard = async (id: string) => {
     setLoadingBoard(true);
+    setConfirm(false);
+
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/board/${classId}?student=${id}`,
@@ -2834,7 +2927,8 @@ export default function EnglishClassCourse2({
       }
       console.log(response.data.studentSavedBoard);
       setEditorContent(response.data.studentSavedBoard);
-      setNewHWDescription(response.data.studentSavedBoard);
+      setBoardDate(response.data.date);
+      setNewHWDescription(response.data);
       setLoadingBoard(false);
     } catch (error) {
       setLoadingBoard(false);
@@ -2906,22 +3000,9 @@ export default function EnglishClassCourse2({
       100
     )}</h1>`;
 
-    content += `<h2 style="margin-top:1rem;font-size:${h2Size}px;text-align:center;color:#555;margin-bottom:1rem;">${sanitizeText(
-      courseTitle,
-      60
-    )}</h2>`;
-
     content += `<p style="margin-top:1rem;text-align:center;color:#888;font-size:${baseSize}px;margin-bottom:1rem;">Data: ${new Date().toLocaleDateString(
       "pt-BR"
     )}</p>`;
-
-    if (theclass.description) {
-      content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Descrição:</h3>`;
-      content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-        theclass.description,
-        500
-      )}</p>`;
-    }
 
     if (theclass.elements && Array.isArray(theclass.elements)) {
       const sortedElements = theclass.elements.sort(
@@ -3260,9 +3341,10 @@ export default function EnglishClassCourse2({
             <button
               title="Ver Quadro"
               onClick={() => {
-                handleGetBoard(studentID || myId);
+                handleGetBoard(studentID);
                 setTimeout(() => {
                   setSeeSlides(!seeSlides);
+                  setConfirm(false);
                 }, 500);
               }}
               className="isMobileDisapear"
@@ -3940,162 +4022,186 @@ export default function EnglishClassCourse2({
             left: 10,
             borderRadius: "6px",
             width: "96vw",
-            height: "92vh",
+            height: "95vh",
             zIndex: 10000000000,
             backgroundColor: "white",
           }}
         >
-          {thePermissions === "superadmin" || thePermissions === "teacher" ? (
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                paddingRight: "1rem",
-              }}
-            >
-              <span
+          <div
+            style={{
+              marginBottom: "10px",
+            }}
+          >
+            {thePermissions === "superadmin" || thePermissions === "teacher" ? (
+              <div
                 style={{
-                  gap: "10px",
+                  display: "flex",
                   alignItems: "center",
-                  display:
-                    thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
-                      ? "flex"
-                      : "none",
+                  justifyContent: "space-between",
+                  paddingRight: "1rem",
                 }}
               >
-                {/* <select
-                onChange={(e) => handleStudentChange(e)}
-                value={studentID}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "11px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "4px 6px",
-                  height: "28px",
-                  minWidth: "120px",
-                  maxWidth: "150px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = partnerColor())
-                }
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
-              >
-                {studentsList.map((student: any, index: number) => (
-                  <option key={index} value={student.id}>
-                    {student.name + " " + student.lastname}
-                  </option>
-                ))}
-              </select> */}
-                <button
-                  onClick={() => {
-                    console.log(generateInitialBoardContent());
-                    setEditorKey(editorKey + 1);
-                    setNewHWDescription(generateInitialBoardContent());
-                    setEditorContent(generateInitialBoardContent());
-                    setConfirm(true);
-                  }}
+                <span
                   style={{
-                    backgroundColor: partnerColor(),
-                    color: textpartnerColorContrast(),
-                  }}
-                >
-                  Restaurar Lousa
-                </button>
-                <button
-                  onClick={handleSaveBoard}
-                  style={{
-                    display: !confirm ? "none" : "block",
-                    backgroundColor: "green",
-                    color: "white",
-                  }}
-                >
-                  Salvar Lousa do Aluno
-                </button>
-                {seeCheck && (
-                  <i
-                    style={{
-                      backgroundColor: "green",
-                      padding: "5px",
-                      borderRadius: "50%",
-                      color: "white",
-                      marginLeft: "1rem",
-                    }}
-                    className="fa fa-check"
-                  />
-                )}
-              </span>
-
-              {seeConfirm ? (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
+                    gap: "10px",
                     alignItems: "center",
+                    display:
+                      thePermissions === "superadmin" ||
+                      thePermissions === "teacher"
+                        ? "flex"
+                        : "none",
                   }}
                 >
                   <button
+                    onClick={() => {
+                      console.log(generateInitialBoardContent());
+                      setEditorKey(editorKey + 1);
+                      setNewHWDescription(generateInitialBoardContent());
+                      setEditorContent(generateInitialBoardContent());
+                      setConfirm(true);
+                    }}
                     style={{
-                      backgroundColor: "blue",
+                      backgroundColor: partnerColor(),
+                      color: textpartnerColorContrast(),
+                    }}
+                  >
+                    Restaurar Lousa
+                  </button>
+                  <button
+                    onClick={handleSaveBoard}
+                    style={{
+                      display: !confirm ? "none" : "block",
+                      backgroundColor: "green",
                       color: "white",
                     }}
-                    onClick={() => setSeeConfirm(false)}
                   >
-                    Cancelar
+                    Salvar Lousa do Aluno {studentName}
                   </button>
+                  {seeCheck && (
+                    <i
+                      style={{
+                        backgroundColor: "green",
+                        padding: "5px",
+                        borderRadius: "50%",
+                        color: "white",
+                        marginLeft: "1rem",
+                      }}
+                      className="fa fa-check"
+                    />
+                  )}
+                </span>
+
+                <button
+                  style={{
+                    backgroundColor: "#c22210ff",
+                    color: "#fff",
+                    marginRight: "10px",
+                    borderRadius: "6px",
+                    padding: "6px 14px",
+                    fontWeight: 600,
+                    fontSize: "13px",
+                    border: "none",
+                    cursor: "pointer",
+                  }}
+                  onClick={downloadBoardPDF}
+                >
+                  <img
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                    alt="PDF"
+                    style={{ width: "12px", height: "12px" }}
+                  />{" "}
+                  Baixar PDF da Lousa
+                </button>
+
+                {seeConfirm ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    <button
+                      style={{
+                        backgroundColor: "blue",
+                        color: "white",
+                      }}
+                      onClick={() => setSeeConfirm(false)}
+                    >
+                      Cancelar
+                    </button>
+                    <button
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                      }}
+                      onClick={() => {
+                        setSeeConfirm(false);
+                        setSeeSlides(!seeSlides);
+                        setEditorContent(generateInitialBoardContent());
+                        setNewHWDescription(generateInitialBoardContent());
+                      }}
+                    >
+                      X Fechar sem salvar
+                    </button>
+                  </div>
+                ) : (
                   <button
                     style={{
                       backgroundColor: "red",
                       color: "white",
                     }}
                     onClick={() => {
-                      setSeeConfirm(false);
-                      setSeeSlides(!seeSlides);
-                      setEditorContent(generateInitialBoardContent());
-                      setNewHWDescription(generateInitialBoardContent());
+                      console.log(confirm);
+                      if (confirm) {
+                        setSeeConfirm(true);
+                      } else {
+                        setSeeSlides(!seeSlides);
+                      }
                     }}
                   >
-                    X Fechar sem salvar
+                    x
                   </button>
-                </div>
-              ) : (
+                )}
+              </div>
+            ) : (
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                  alignItems: "center",
+                  gap: "1rem",
+                }}
+              >
                 <button
                   style={{
                     backgroundColor: "red",
                     color: "white",
                   }}
                   onClick={() => {
-                    console.log(confirm);
-                    if (confirm) {
-                      setSeeConfirm(true);
-                    } else {
-                      setSeeSlides(!seeSlides);
-                    }
+                    setSeeSlides(!seeSlides);
                   }}
                 >
                   x
                 </button>
-              )}
-            </div>
-          ) : (
-            <button
+              </span>
+            )}
+          </div>
+
+          {boardDate && (
+            <span
               style={{
-                backgroundColor: "red",
-                color: "white",
-              }}
-              onClick={() => {
-                setSeeSlides(!seeSlides);
+                color: "grey",
+                fontSize: "12px",
+                fontStyle: "italic",
+                margin: " 10px 0",
               }}
             >
-              x
-            </button>
+              Última edição desta para {studentName}:{" "}
+              <strong>{formatDateBrWithHour(boardDate)}</strong>
+            </span>
           )}
+
           <div
             style={{
               display: "grid",
@@ -4108,11 +4214,24 @@ export default function EnglishClassCourse2({
                   height: "95vh",
                 }}
               >
-                <HTMLEditor
-                  key={editorKey}
-                  initialContent={editorContent}
-                  onChange={handleHWDescriptionChange}
-                />
+                {thePermissions == "teacher" ||
+                thePermissions == "superadmin" ? (
+                  <HTMLEditor
+                    key={editorKey}
+                    initialContent={editorContent}
+                    onChange={handleHWDescriptionChange}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      maxHeight: "80vh",
+                      overflowY: "auto",
+                      margin: "20px",
+                    }}
+                  >
+                    <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+                  </div>
+                )}
               </div>
             ) : (
               <CircularProgress style={{ color: partnerColor() }} />

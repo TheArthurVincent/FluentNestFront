@@ -745,6 +745,17 @@ export function formatDateBr(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString("pt-BR", options);
 }
+export function formatDateBrWithHour(dateString) {
+  const options = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+  };
+  const date = new Date(dateString);
+  return date.toLocaleDateString("pt-BR", options);
+}
 
 export function getVideoEmbedUrl(videoUrl) {
   let embedUrl = "";

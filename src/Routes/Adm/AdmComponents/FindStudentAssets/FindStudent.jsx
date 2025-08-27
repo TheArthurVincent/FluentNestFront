@@ -3347,134 +3347,105 @@ export function FindStudent({ uploadStatus, headers, id }) {
               </Button>
             </div>
           </div>
-        </DialogContent>
-
-        <DialogActions
-          style={{
-            padding: "24px",
-            borderTop: "1px solid #e8eaed",
-            justifyContent: "space-between",
-            backgroundColor: "#fafbfc",
-          }}
-        >
-          {!seeConfirmDelete ? (
-            <>
-              <Button
-                color="error"
-                variant="outlined"
-                onClick={() => setSeeConfirmDelete(true)}
-                style={{
-                  fontWeight: "500",
-                  padding: "10px 20px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  fontSize: "14px",
-                  borderColor: "#dc3545",
-                  color: "#dc3545",
-                }}
-              >
-                Excluir Aluno
-              </Button>
-              <div style={{ display: "flex", gap: "10px" }}>
-                <Button
-                  onClick={handleSeeModal}
-                  style={{
-                    fontWeight: "500",
-                    padding: "10px 20px",
-                    borderRadius: "8px",
-                    textTransform: "none",
-                    fontSize: "14px",
-                    color: "#6c757d",
-                  }}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleSaveAll}
-                  style={{
-                    backgroundColor: partnerColor(),
-                    color: "#fff",
-                    fontWeight: "500",
-                    padding: "10px 20px",
-                    borderRadius: "8px",
-                    textTransform: "none",
-                    fontSize: "14px",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                  }}
-                >
-                  Salvar Tudo
-                </Button>
-              </div>
-            </>
-          ) : (
-            <div style={{ width: "100%", textAlign: "center" }}>
-              <Typography
-                style={{
-                  color: "#dc3545",
-                  fontWeight: "600",
-                  fontSize: "16px",
-                  marginBottom: "10px",
-                }}
-              >
-                Confirmar Exclusão
-              </Typography>
-              <Typography
-                style={{
-                  color: "#6c757d",
-                  fontSize: "14px",
-                  marginBottom: "20px",
-                }}
-              >
-                Tem certeza que deseja excluir{" "}
-                <strong style={{ color: "#2c3e50" }}>
-                  {newName} {newLastName}
-                </strong>
-                ?
-                <br />
-                <small>Esta ação não pode ser desfeita.</small>
-              </Typography>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  gap: "10px",
-                  marginTop: "20px",
-                }}
-              >
-                <Button
-                  onClick={() => setSeeConfirmDelete(false)}
-                  style={{
-                    fontWeight: "500",
-                    padding: "10px 20px",
-                    borderRadius: "8px",
-                    textTransform: "none",
-                    fontSize: "14px",
-                    color: "#6c757d",
-                  }}
-                >
-                  Cancelar
-                </Button>
+          <div
+            style={{
+              backgroundColor: "#ffeaeaff",
+              padding: "1rem",
+              display: "grid",
+              justifyItems: "center",
+              alignItems: "center",
+              borderRadius: "10px",
+              border: "1px solid #ffcccc",
+            }}
+          >
+            {!seeConfirmDelete ? (
+              <>
                 <Button
                   color="error"
-                  variant="contained"
-                  onClick={handleDelete}
+                  variant="outlined"
+                  onClick={() => setSeeConfirmDelete(true)}
                   style={{
                     fontWeight: "500",
                     padding: "10px 20px",
                     borderRadius: "8px",
                     textTransform: "none",
                     fontSize: "14px",
-                    backgroundColor: "#dc3545",
-                    color: "#fff",
+                    borderColor: "#dc3545",
+                    color: "#dc3545",
+                  }}
+                >
+                  Excluir Aluno
+                </Button>
+              </>
+            ) : (
+              <div style={{ width: "100%", textAlign: "center" }}>
+                <Typography
+                  style={{
+                    color: "#dc3545",
+                    fontWeight: "600",
+                    fontSize: "16px",
+                    marginBottom: "10px",
                   }}
                 >
                   Confirmar Exclusão
-                </Button>
+                </Typography>
+                <Typography
+                  style={{
+                    color: "#6c757d",
+                    fontSize: "14px",
+                    marginBottom: "20px",
+                  }}
+                >
+                  Tem certeza que deseja excluir{" "}
+                  <strong style={{ color: "#2c3e50" }}>
+                    {newName} {newLastName}
+                  </strong>
+                  ?
+                  <br />
+                  <small>Esta ação não pode ser desfeita.</small>
+                </Typography>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: "10px",
+                    marginTop: "20px",
+                  }}
+                >
+                  <Button
+                    onClick={() => setSeeConfirmDelete(false)}
+                    style={{
+                      fontWeight: "500",
+                      padding: "10px 20px",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      fontSize: "14px",
+                      color: "#6c757d",
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  <Button
+                    color="error"
+                    variant="contained"
+                    onClick={handleDelete}
+                    style={{
+                      fontWeight: "500",
+                      padding: "10px 20px",
+                      borderRadius: "8px",
+                      textTransform: "none",
+                      fontSize: "14px",
+                      backgroundColor: "#dc3545",
+                      color: "#fff",
+                    }}
+                  >
+                    Confirmar Exclusão
+                  </Button>
+                </div>
               </div>
-            </div>
-          )}
-        </DialogActions>
+            )}
+          </div>
+        </DialogContent>
       </Dialog>
 
       {isArthurVincent && (
