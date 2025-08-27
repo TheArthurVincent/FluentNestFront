@@ -31,7 +31,6 @@ export default function ExerciseLessonModel({
               key={index}
               style={{
                 background: "linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)",
-                border: "1px solid #e1e8ed",
                 borderRadius: "12px",
                 padding: "8px",
                 transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
@@ -45,7 +44,6 @@ export default function ExerciseLessonModel({
                   display: "flex",
                   alignItems: "center",
                   gap: "16px",
-                  marginBottom: "16px",
                 }}
               >
                 {/* Número do exercício */}
@@ -67,7 +65,6 @@ export default function ExerciseLessonModel({
                 >
                   {index + 1}
                 </div>
-
                 {/* Conteúdo do exercício */}
                 <div
                   style={{
