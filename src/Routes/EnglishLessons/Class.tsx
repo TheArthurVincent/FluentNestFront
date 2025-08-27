@@ -2821,7 +2821,7 @@ export default function EnglishClassCourse2({
   };
   const handleGetBoard = async (id: string) => {
     setLoadingBoard(true);
-                  setConfirm(false);
+    setConfirm(false);
 
     try {
       const response = await axios.get(
@@ -2908,22 +2908,9 @@ export default function EnglishClassCourse2({
       100
     )}</h1>`;
 
-    content += `<h2 style="margin-top:1rem;font-size:${h2Size}px;text-align:center;color:#555;margin-bottom:1rem;">${sanitizeText(
-      courseTitle,
-      60
-    )}</h2>`;
-
     content += `<p style="margin-top:1rem;text-align:center;color:#888;font-size:${baseSize}px;margin-bottom:1rem;">Data: ${new Date().toLocaleDateString(
       "pt-BR"
     )}</p>`;
-
-    if (theclass.description) {
-      content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Descrição:</h3>`;
-      content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-        theclass.description,
-        500
-      )}</p>`;
-    }
 
     if (theclass.elements && Array.isArray(theclass.elements)) {
       const sortedElements = theclass.elements.sort(
@@ -4087,6 +4074,12 @@ export default function EnglishClassCourse2({
               )}
             </div>
           ) : (
+            <span
+            style={{
+              display:"flex",justifyContent:"right"
+            }}
+            >
+
             <button
               style={{
                 backgroundColor: "red",
@@ -4097,7 +4090,7 @@ export default function EnglishClassCourse2({
               }}
             >
               x
-            </button>
+            </button></span>
           )}
           <div
             style={{
@@ -4111,11 +4104,17 @@ export default function EnglishClassCourse2({
                   height: "95vh",
                 }}
               >
-                <HTMLEditor
+
+{(thePermissions == "teacher" || thePermissions == "superadmin")
+                ? <HTMLEditor
                   key={editorKey}
                   initialContent={editorContent}
                   onChange={handleHWDescriptionChange}
                 />
+:
+<div dangerouslySetInnerHTML={{ __html: editorContent }} />
+}
+
               </div>
             ) : (
               <CircularProgress style={{ color: partnerColor() }} />
