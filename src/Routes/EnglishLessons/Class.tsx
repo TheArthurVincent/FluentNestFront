@@ -15,6 +15,7 @@ import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import {
   backDomain,
   formatDateBr,
+  formatDateBrWithHour,
   getVideoEmbedUrl,
   onLoggOut,
   pathGenerator,
@@ -2802,16 +2803,18 @@ export default function EnglishClassCourse2({
     }
   };
   const [seeCheck, setSeeCheck] = useState(false);
+  const [boardDate, setBoardDate] = useState<Date | any>(null);
 
   const handleSaveBoard = async () => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/board/${classId}?student=${studentID}`,
-        { content: newHWDescription },
+        { content: newHWDescription, date: new Date() },
         { headers: actualHeaders }
       );
       setConfirm(false);
       setSeeCheck(true);
+      setBoardDate(new Date());
       setTimeout(() => {
         setSeeCheck(false);
       }, 2000);
@@ -2836,7 +2839,8 @@ export default function EnglishClassCourse2({
       }
       console.log(response.data.studentSavedBoard);
       setEditorContent(response.data.studentSavedBoard);
-      setNewHWDescription(response.data.studentSavedBoard);
+      setBoardDate(response.data.date);
+      setNewHWDescription(response.data);
       setLoadingBoard(false);
     } catch (error) {
       setLoadingBoard(false);
@@ -3249,7 +3253,7 @@ export default function EnglishClassCourse2({
             <button
               title="Ver Quadro"
               onClick={() => {
-                handleGetBoard(studentID || myId);
+                handleGetBoard(studentID);
                 setTimeout(() => {
                   setSeeSlides(!seeSlides);
                   setConfirm(false);
@@ -4008,6 +4012,17 @@ export default function EnglishClassCourse2({
                 >
                   Salvar Lousa do Aluno
                 </button>
+                {boardDate && (
+                  <span
+                    style={{
+                      color: "grey",
+                      fontSize: "12px",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Última edição desta lousa: {formatDateBrWithHour(boardDate)}
+                  </span>
+                )}
                 {seeCheck && (
                   <i
                     style={{
@@ -4114,13 +4129,14 @@ export default function EnglishClassCourse2({
                   />
                 ) : (
                   <div
-                  style={{
-                    maxHeight:"80vh",
-                    overflowY: "auto",margin:"20px"
-                  }}
+                    style={{
+                      maxHeight: "80vh",
+                      overflowY: "auto",
+                      margin: "20px",
+                    }}
                   >
-                  <div dangerouslySetInnerHTML={{ __html: editorContent }} />
-                </div>
+                    <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+                  </div>
                 )}
               </div>
             ) : (
