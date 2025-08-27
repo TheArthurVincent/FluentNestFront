@@ -29,6 +29,7 @@ import {
   textGeneralFont,
   logoPartner,
   transparentBlack,
+  textpartnerColorContrast,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
 import { ImgLesson } from "./Assets/Functions/EnglishActivities.Styled";
@@ -150,7 +151,9 @@ export default function EnglishClassCourse2({
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
 
   const [newHWDescription, setNewHWDescription] = useState("");
+  const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
   const handleHWDescriptionChange = (htmlContent: any) => {
+    setConfirm(true);
     setNewHWDescription(htmlContent);
   };
   const [loading, setLoading] = useState<boolean>(false);
@@ -190,7 +193,6 @@ export default function EnglishClassCourse2({
       setCommentsTrigger(true);
     } catch (error) {
       console.error(error, "Erro ao obter aulas");
-      onLoggOut();
       setLoading(false);
     }
   };
@@ -2738,10 +2740,12 @@ export default function EnglishClassCourse2({
     }
   }, [commentsTrigger]);
 
+  const [confirm, setConfirm] = useState(false);
+  const [seeConfirm, setSeeConfirm] = useState(false);
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     setStudentID(theid);
-    getBoard(theid)
+    handleGetBoard(theid);
   };
   const fetchStudents = async () => {
     try {
@@ -2796,14 +2800,44 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao buscar comentários");
     }
   };
-  const getBoard = async (id:string) => {
+  const [seeCheck, setSeeCheck] = useState(false);
+
+  const handleSaveBoard = async () => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/board/${classId}?student=${studentID}`,
+        { content: newHWDescription },
+        { headers: actualHeaders }
+      );
+      setConfirm(false);
+      setSeeCheck(true);
+      setTimeout(() => {
+        setSeeCheck(false);
+      }, 2000);
+    } catch (error) {
+      console.error(error, "Erro ao buscar comentários");
+    }
+  };
+  const handleGetBoard = async (id: string) => {
+    setLoadingBoard(true);
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/board/${classId}?student=${id}`,
         { headers: actualHeaders }
       );
+      if (!response.data.studentSavedBoard) {
+        setNewHWDescription(generateInitialBoardContent());
+        setEditorContent(generateInitialBoardContent());
+        setLoadingBoard(false);
+        return;
+      }
       console.log(response.data.studentSavedBoard);
+      setEditorContent(response.data.studentSavedBoard);
+      setNewHWDescription(response.data.studentSavedBoard);
+      setLoadingBoard(false);
     } catch (error) {
+      setLoadingBoard(false);
+
       console.error(error, "Erro ao buscar comentários");
     }
   };
@@ -2860,227 +2894,225 @@ export default function EnglishClassCourse2({
   }, [selectedVoice, changeNumber]);
 
   const [editorContent, setEditorContent] = useState<string>("");
-  useEffect(() => {
-    const generateInitialBoardContent = () => {
-      const h1Size = 32;
-      const h2Size = 26;
-      const h3Size = 22;
-      const baseSize = 20;
+  const generateInitialBoardContent = () => {
+    const h1Size = 32;
+    const h2Size = 26;
+    const h3Size = 22;
+    const baseSize = 20;
 
-      let content = `<h1 style="font-size:${h1Size}px;text-align:center;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
-        classTitle || "Aula de Inglês",
-        100
-      )}</h1>`;
+    let content = `<h1 style="font-size:${h1Size}px;text-align:center;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
+      classTitle || "Aula de Inglês",
+      100
+    )}</h1>`;
 
-      content += `<h2 style="margin-top:1rem;font-size:${h2Size}px;text-align:center;color:#555;margin-bottom:1rem;">${sanitizeText(
-        courseTitle,
-        60
-      )}</h2>`;
+    content += `<h2 style="margin-top:1rem;font-size:${h2Size}px;text-align:center;color:#555;margin-bottom:1rem;">${sanitizeText(
+      courseTitle,
+      60
+    )}</h2>`;
 
-      content += `<p style="margin-top:1rem;text-align:center;color:#888;font-size:${baseSize}px;margin-bottom:1rem;">Data: ${new Date().toLocaleDateString(
-        "pt-BR"
+    content += `<p style="margin-top:1rem;text-align:center;color:#888;font-size:${baseSize}px;margin-bottom:1rem;">Data: ${new Date().toLocaleDateString(
+      "pt-BR"
+    )}</p>`;
+
+    if (theclass.description) {
+      content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Descrição:</h3>`;
+      content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
+        theclass.description,
+        500
       )}</p>`;
+    }
 
-      if (theclass.description) {
-        content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Descrição:</h3>`;
-        content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-          theclass.description,
-          500
-        )}</p>`;
-      }
+    if (theclass.elements && Array.isArray(theclass.elements)) {
+      const sortedElements = theclass.elements.sort(
+        (a: any, b: any) => (a.order || 0) - (b.order || 0)
+      );
 
-      if (theclass.elements && Array.isArray(theclass.elements)) {
-        const sortedElements = theclass.elements.sort(
-          (a: any, b: any) => (a.order || 0) - (b.order || 0)
-        );
+      sortedElements.forEach((element: any) => {
+        if (element.subtitle) {
+          content += `<h2 style="font-size:${h2Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
+            element.subtitle,
+            100
+          )}</h2>`;
+        }
 
-        sortedElements.forEach((element: any) => {
-          if (element.subtitle) {
-            content += `<h2 style="font-size:${h2Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
-              element.subtitle,
-              100
-            )}</h2>`;
-          }
+        if (element.description) {
+          content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+            element.description,
+            300
+          )}</p>`;
+        }
 
-          if (element.description) {
-            content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-              element.description,
-              300
-            )}</p>`;
-          }
+        switch (element.type) {
+          case "text":
+            if (element.text) {
+              content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
+                element.text,
+                2000
+              )}</p>`;
+            }
+            break;
 
-          switch (element.type) {
-            case "text":
-              if (element.text) {
-                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-                  element.text,
-                  2000
+          case "sentences":
+          case "nfsentences":
+            if (element.sentences && Array.isArray(element.sentences)) {
+              element.sentences.forEach((sentence: any) => {
+                if (sentence.english) {
+                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;color:${partnerColor()};"><b>${sanitizeText(
+                    sentence.english,
+                    200
+                  )}</b></p>`;
+                }
+                if (sentence.portuguese) {
+                  content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+                    sentence.portuguese,
+                    200
+                  )}</p>`;
+                }
+              });
+            }
+            break;
+
+          case "exercise":
+            if (element.items && Array.isArray(element.items)) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Exercícios:</h3>`;
+              element.items.forEach((item: any, idx: number) => {
+                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${
+                  idx + 1
+                }. ${sanitizeText(item, 300)}</p>`;
+              });
+            }
+            break;
+
+          case "html":
+            if (element.text) {
+              content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
+                element.text
+              )}</p>`;
+            }
+            break;
+
+          case "audiosoundtrack":
+            if (element.text) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Conteúdo do Áudio:</h3>`;
+              content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
+                element.text
+              )}</p>`;
+            }
+            if (element.sentences && Array.isArray(element.sentences)) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Frases do Áudio:</h3>`;
+              element.sentences.forEach((sentence: any) => {
+                if (sentence.english) {
+                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b style="color:${partnerColor()};">${sanitizeText(
+                    sentence.english,
+                    200
+                  )}</b></p>`;
+                }
+                if (sentence.portuguese) {
+                  content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+                    sentence.portuguese,
+                    200
+                  )}</p>`;
+                }
+              });
+            }
+            break;
+
+          case "images":
+            if (element.images && Array.isArray(element.images)) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
+              element.images.forEach((imageItem: any) => {
+                if (imageItem.img) {
+                  content += `<img src="${imageItem.img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
+                }
+                if (imageItem.english) {
+                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
+                    imageItem.english,
+                    100
+                  )}</p>`;
+                }
+                if (imageItem.portuguese) {
+                  content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
+                    imageItem.portuguese,
+                    100
+                  )}</p>`;
+                }
+              });
+            }
+            break;
+          case "singleimages":
+            if (element.images && Array.isArray(element.images)) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
+              element.images.forEach((img: any) => {
+                content += `<img src="${img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
+              });
+            }
+            break;
+          case "explanation":
+            if (element.explanation && Array.isArray(element.explanation)) {
+              element.explanation.forEach((explanationItem: any) => {
+                if (explanationItem.title) {
+                  content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
+                    explanationItem.title,
+                    100
+                  )}</h3>`;
+                }
+                if (
+                  explanationItem.list &&
+                  Array.isArray(explanationItem.list)
+                ) {
+                  explanationItem.list.forEach((listItem: string) => {
+                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">• ${sanitizeText(
+                      listItem,
+                      400
+                    )}</p>`;
+                  });
+                }
+              });
+            }
+            break;
+
+          case "vocabulary":
+            if (element.sentences && Array.isArray(element.sentences)) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Vocabulário:</h3>`;
+              element.sentences.forEach((vocab: any) => {
+                if (vocab.english && vocab.portuguese) {
+                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${sanitizeText(
+                    vocab.english,
+                    100
+                  )}</b> - <i style="color:#555">${sanitizeText(
+                    vocab.portuguese,
+                    100
+                  )}</i></p>`;
+                }
+              });
+            }
+            break;
+
+          case "dialogue":
+            if (element.dialogue && Array.isArray(element.dialogue)) {
+              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Diálogo:</h3>`;
+              element.dialogue.forEach((dialogueText: string, idx: number) => {
+                const speaker = idx % 2 === 0 ? "A" : "B";
+                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${speaker}:</b> ${sanitizeText(
+                  dialogueText,
+                  200
                 )}</p>`;
-              }
-              break;
+              });
+            }
+            break;
 
-            case "sentences":
-            case "nfsentences":
-              if (element.sentences && Array.isArray(element.sentences)) {
-                element.sentences.forEach((sentence: any) => {
-                  if (sentence.english) {
-                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;color:${partnerColor()};"><b>${sanitizeText(
-                      sentence.english,
-                      200
-                    )}</b></p>`;
-                  }
-                  if (sentence.portuguese) {
-                    content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-                      sentence.portuguese,
-                      200
-                    )}</p>`;
-                  }
-                });
-              }
-              break;
+          default:
+            break;
+        }
 
-            case "exercise":
-              if (element.items && Array.isArray(element.items)) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Exercícios:</h3>`;
-                element.items.forEach((item: any, idx: number) => {
-                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${
-                    idx + 1
-                  }. ${sanitizeText(item, 300)}</p>`;
-                });
-              }
-              break;
+        content += `<hr style="margin:1rem 0;border:none;border-top:1px solid #eee;" />`;
+      });
+    }
 
-            case "html":
-              if (element.text) {
-                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
-                  element.text
-                )}</p>`;
-              }
-              break;
+    return content;
+  };
 
-            case "audiosoundtrack":
-              if (element.text) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Conteúdo do Áudio:</h3>`;
-                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
-                  element.text
-                )}</p>`;
-              }
-              if (element.sentences && Array.isArray(element.sentences)) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Frases do Áudio:</h3>`;
-                element.sentences.forEach((sentence: any) => {
-                  if (sentence.english) {
-                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b style="color:${partnerColor()};">${sanitizeText(
-                      sentence.english,
-                      200
-                    )}</b></p>`;
-                  }
-                  if (sentence.portuguese) {
-                    content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-                      sentence.portuguese,
-                      200
-                    )}</p>`;
-                  }
-                });
-              }
-              break;
-
-            case "images":
-              if (element.images && Array.isArray(element.images)) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
-                element.images.forEach((imageItem: any) => {
-                  if (imageItem.img) {
-                    content += `<img src="${imageItem.img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
-                  }
-                  if (imageItem.english) {
-                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-                      imageItem.english,
-                      100
-                    )}</p>`;
-                  }
-                  if (imageItem.portuguese) {
-                    content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-                      imageItem.portuguese,
-                      100
-                    )}</p>`;
-                  }
-                });
-              }
-              break;
-            case "singleimages":
-              if (element.images && Array.isArray(element.images)) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
-                element.images.forEach((img: any) => {
-                  content += `<img src="${img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
-                });
-              }
-              break;
-            case "explanation":
-              if (element.explanation && Array.isArray(element.explanation)) {
-                element.explanation.forEach((explanationItem: any) => {
-                  if (explanationItem.title) {
-                    content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
-                      explanationItem.title,
-                      100
-                    )}</h3>`;
-                  }
-                  if (
-                    explanationItem.list &&
-                    Array.isArray(explanationItem.list)
-                  ) {
-                    explanationItem.list.forEach((listItem: string) => {
-                      content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">• ${sanitizeText(
-                        listItem,
-                        400
-                      )}</p>`;
-                    });
-                  }
-                });
-              }
-              break;
-
-            case "vocabulary":
-              if (element.sentences && Array.isArray(element.sentences)) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Vocabulário:</h3>`;
-                element.sentences.forEach((vocab: any) => {
-                  if (vocab.english && vocab.portuguese) {
-                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${sanitizeText(
-                      vocab.english,
-                      100
-                    )}</b> - <i style="color:#555">${sanitizeText(
-                      vocab.portuguese,
-                      100
-                    )}</i></p>`;
-                  }
-                });
-              }
-              break;
-
-            case "dialogue":
-              if (element.dialogue && Array.isArray(element.dialogue)) {
-                content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Diálogo:</h3>`;
-                element.dialogue.forEach(
-                  (dialogueText: string, idx: number) => {
-                    const speaker = idx % 2 === 0 ? "A" : "B";
-                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${speaker}:</b> ${sanitizeText(
-                      dialogueText,
-                      200
-                    )}</p>`;
-                  }
-                );
-              }
-              break;
-
-            default:
-              break;
-          }
-
-          content += `<hr style="margin:1rem 0;border:none;border-top:1px solid #eee;" />`;
-        });
-      }
-
-      return content;
-    };
-
+  useEffect(() => {
     if (!seeSlides && !editorContent && theclass && classTitle) {
       setEditorContent(generateInitialBoardContent());
     }
@@ -3913,27 +3945,22 @@ export default function EnglishClassCourse2({
             style={{
               display: "flex",
               alignItems: "center",
+              justifyContent: "space-between",
               paddingRight: "1rem",
             }}
           >
-            <Xp
-              style={{ margin: "1rem 2rem ", display: "block" }}
-              onClick={() => {
-                setSeeSlides(!seeSlides);
-              }}
-            >
-              x
-            </Xp>
             <span
               style={{
+                gap: "10px",
+                alignItems: "center",
                 display:
                   thePermissions === "superadmin" ||
                   thePermissions === "teacher"
-                    ? "block"
+                    ? "flex"
                     : "none",
               }}
             >
-              <select
+              {/* <select
                 onChange={(e) => handleStudentChange(e)}
                 value={studentID}
                 style={{
@@ -3960,16 +3987,96 @@ export default function EnglishClassCourse2({
                     {student.name + " " + student.lastname}
                   </option>
                 ))}
-              </select>
+              </select> */}
               <button
                 onClick={() => {
-                  // Save the student's whiteboard content
-                  console.log("oi");
+                  console.log(generateInitialBoardContent());
+                  setEditorKey(editorKey + 1);
+                  setNewHWDescription(generateInitialBoardContent());
+                  setEditorContent(generateInitialBoardContent());
+                  setConfirm(true);
+                }}
+                style={{
+                  backgroundColor: partnerColor(),
+                  color: textpartnerColorContrast(),
+                }}
+              >
+                Restaurar Lousa
+              </button>
+              <button
+                onClick={handleSaveBoard}
+                style={{
+                  display: !confirm ? "none" : "block",
+                  backgroundColor: "green",
+                  color: "white",
                 }}
               >
                 Salvar Lousa do Aluno
               </button>
+              {seeCheck && (
+                <i
+                  style={{
+                    backgroundColor: "green",
+                    padding: "5px",
+                    borderRadius: "50%",
+                    color: "white",
+                    marginLeft: "1rem",
+                  }}
+                  className="fa fa-check"
+                />
+              )}
             </span>
+
+            {seeConfirm ? (
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  alignItems: "center",
+                }}
+              >
+                <button
+                  style={{
+                    backgroundColor: "blue",
+                    color: "white",
+                  }}
+                  onClick={() => setSeeConfirm(false)}
+                >
+                  Cancelar
+                </button>
+                <button
+                  style={{
+                    backgroundColor: "red",
+                    color: "white",
+                  }}
+                  onClick={() => {
+                    setSeeConfirm(false);
+                    setSeeSlides(!seeSlides);
+                    setEditorContent(generateInitialBoardContent());
+                    setNewHWDescription(generateInitialBoardContent());
+                  }}
+                >
+                  X Fechar sem salvar
+                </button>
+              </div>
+            ) : (
+              <button
+                style={{
+                  backgroundColor: "red",
+                  color: "white",
+                }}
+                onClick={() => {
+                  console.log(confirm);
+                  if (confirm) {
+                    setSeeConfirm(true);
+                  } else {
+                    setSeeSlides(!seeSlides);
+                  }
+                }}
+              >
+                x
+              </button>
+            )}
           </div>
           <div
             style={{
@@ -3977,17 +4084,21 @@ export default function EnglishClassCourse2({
               gridTemplateColumns: hasAudioElement ? "1fr 0.4fr" : "1fr",
             }}
           >
-            <div
-              style={{
-                height: "95vh",
-              }}
-            >
-              <HTMLEditor
-                key={editorKey}
-                initialContent={editorContent}
-                onChange={handleHWDescriptionChange}
-              />
-            </div>
+            {!loadingBoard ? (
+              <div
+                style={{
+                  height: "95vh",
+                }}
+              >
+                <HTMLEditor
+                  key={editorKey}
+                  initialContent={editorContent}
+                  onChange={handleHWDescriptionChange}
+                />
+              </div>
+            ) : (
+              <CircularProgress style={{ color: partnerColor() }} />
+            )}
             {hasAudioElement && (
               <div
                 style={{
