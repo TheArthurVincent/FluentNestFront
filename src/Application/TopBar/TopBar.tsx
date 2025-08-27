@@ -118,7 +118,7 @@ export const TopBar: FC = () => {
     },
     {
       title: UniversalTexts.theCourses,
-      endpoint: "/english-courses",
+      endpoint: "/teaching-materials",
       icon: "address-book-o",
       display: "block",
       isLearning: true,

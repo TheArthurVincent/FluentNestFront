@@ -246,7 +246,7 @@ export const contentFaq = [
       <div>
         Acesse os cursos gravados através deste link:{" "}
         <a
-          href="/english-courses"
+          href="/teaching-materials"
           target="_blank"
         >
           Cursos Gravados

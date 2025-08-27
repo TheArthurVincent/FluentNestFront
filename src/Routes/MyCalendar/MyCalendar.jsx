@@ -667,6 +667,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           homework,
           googleDriveLink,
           dueDate,
+          theLesson: theLesson ? theLesson : null,
           duration,
           base64String,
           fileName,
@@ -774,7 +775,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
           time: timeOfTutoring,
           duration,
           link,
-          theLesson: theLesson ? theLesson : null,
         },
         {
           headers,

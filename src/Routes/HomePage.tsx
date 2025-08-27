@@ -193,6 +193,10 @@ export function HomePage({ headers }: HeadersProps) {
       component: <EnglishCourses headers={headers} />,
     },
     {
+      title: "Teaching Materials",
+      component: <EnglishCourses headers={headers} />,
+    },
+    {
       levelcard: true,
       title: "Listening",
       component: (

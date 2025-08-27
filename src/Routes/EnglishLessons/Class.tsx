@@ -2832,16 +2832,16 @@ export default function EnglishClassCourse2({
   };
 
   const backToCourses = () => {
-    window.location.assign(`/english-courses/${pathGenerator(courseTitle)}`);
+    window.location.assign(`/teaching-materials/${pathGenerator(courseTitle)}`);
   };
   const NXTClass = () => {
     window.location.assign(
-      `/english-courses/${pathGenerator(courseTitle)}/${nextClass}`
+      `/teaching-materials/${pathGenerator(courseTitle)}/${nextClass}`
     );
   };
   const PVSClass = () => {
     window.location.assign(
-      `/english-courses/${pathGenerator(courseTitle)}/${previousClass}`
+      `/teaching-materials/${pathGenerator(courseTitle)}/${previousClass}`
     );
   };
 
@@ -3240,7 +3240,7 @@ export default function EnglishClassCourse2({
                 fontSize: "10px",
                 color: "#000",
               }}
-              to="/english-courses"
+              to="/teaching-materials"
             >
               English Courses
             </Link>{" "}
