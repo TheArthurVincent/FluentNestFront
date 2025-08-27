@@ -174,6 +174,8 @@ export default function EnglishClassCourse2({
     if (user) {
       setId(id);
       setStudentID(id);
+    handleGetBoard(id);
+
     }
     try {
       const response = await axios.get(
@@ -3941,29 +3943,27 @@ export default function EnglishClassCourse2({
             backgroundColor: "white",
           }}
         >
-         {
-               (thePermissions === "superadmin" ||
-                  thePermissions === "teacher") ?
-         <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              paddingRight: "1rem",
-            }}
-          >
-            <span
+          {thePermissions === "superadmin" || thePermissions === "teacher" ? (
+            <div
               style={{
-                gap: "10px",
+                display: "flex",
                 alignItems: "center",
-                display:
-                  thePermissions === "superadmin" ||
-                  thePermissions === "teacher"
-                    ? "flex"
-                    : "none",
+                justifyContent: "space-between",
+                paddingRight: "1rem",
               }}
             >
-              {/* <select
+              <span
+                style={{
+                  gap: "10px",
+                  alignItems: "center",
+                  display:
+                    thePermissions === "superadmin" ||
+                    thePermissions === "teacher"
+                      ? "flex"
+                      : "none",
+                }}
+              >
+                {/* <select
                 onChange={(e) => handleStudentChange(e)}
                 value={studentID}
                 style={{
@@ -3991,114 +3991,114 @@ export default function EnglishClassCourse2({
                   </option>
                 ))}
               </select> */}
-              <button
-                onClick={() => {
-                  console.log(generateInitialBoardContent());
-                  setEditorKey(editorKey + 1);
-                  setNewHWDescription(generateInitialBoardContent());
-                  setEditorContent(generateInitialBoardContent());
-                  setConfirm(true);
-                }}
-                style={{
-                  backgroundColor: partnerColor(),
-                  color: textpartnerColorContrast(),
-                }}
-              >
-                Restaurar Lousa
-              </button>
-              <button
-                onClick={handleSaveBoard}
-                style={{
-                  display: !confirm ? "none" : "block",
-                  backgroundColor: "green",
-                  color: "white",
-                }}
-              >
-                Salvar Lousa do Aluno
-              </button>
-              {seeCheck && (
-                <i
-                  style={{
-                    backgroundColor: "green",
-                    padding: "5px",
-                    borderRadius: "50%",
-                    color: "white",
-                    marginLeft: "1rem",
-                  }}
-                  className="fa fa-check"
-                />
-              )}
-            </span>
-
-            {seeConfirm ? (
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  alignItems: "center",
-                }}
-              >
                 <button
+                  onClick={() => {
+                    console.log(generateInitialBoardContent());
+                    setEditorKey(editorKey + 1);
+                    setNewHWDescription(generateInitialBoardContent());
+                    setEditorContent(generateInitialBoardContent());
+                    setConfirm(true);
+                  }}
                   style={{
-                    backgroundColor: "blue",
+                    backgroundColor: partnerColor(),
+                    color: textpartnerColorContrast(),
+                  }}
+                >
+                  Restaurar Lousa
+                </button>
+                <button
+                  onClick={handleSaveBoard}
+                  style={{
+                    display: !confirm ? "none" : "block",
+                    backgroundColor: "green",
                     color: "white",
                   }}
-                  onClick={() => setSeeConfirm(false)}
                 >
-                  Cancelar
+                  Salvar Lousa do Aluno
                 </button>
+                {seeCheck && (
+                  <i
+                    style={{
+                      backgroundColor: "green",
+                      padding: "5px",
+                      borderRadius: "50%",
+                      color: "white",
+                      marginLeft: "1rem",
+                    }}
+                    className="fa fa-check"
+                  />
+                )}
+              </span>
+
+              {seeConfirm ? (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "1rem",
+                    alignItems: "center",
+                  }}
+                >
+                  <button
+                    style={{
+                      backgroundColor: "blue",
+                      color: "white",
+                    }}
+                    onClick={() => setSeeConfirm(false)}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    style={{
+                      backgroundColor: "red",
+                      color: "white",
+                    }}
+                    onClick={() => {
+                      setSeeConfirm(false);
+                      setSeeSlides(!seeSlides);
+                      setEditorContent(generateInitialBoardContent());
+                      setNewHWDescription(generateInitialBoardContent());
+                    }}
+                  >
+                    X Fechar sem salvar
+                  </button>
+                </div>
+              ) : (
                 <button
                   style={{
                     backgroundColor: "red",
                     color: "white",
                   }}
                   onClick={() => {
-                    setSeeConfirm(false);
-                    setSeeSlides(!seeSlides);
-                    setEditorContent(generateInitialBoardContent());
-                    setNewHWDescription(generateInitialBoardContent());
+                    console.log(confirm);
+                    if (confirm) {
+                      setSeeConfirm(true);
+                    } else {
+                      setSeeSlides(!seeSlides);
+                    }
                   }}
                 >
-                  X Fechar sem salvar
+                  x
                 </button>
-              </div>
-            ) : (
-              <button
-                style={{
-                  backgroundColor: "red",
-                  color: "white",
-                }}
-                onClick={() => {
-                  console.log(confirm);
-                  if (confirm) {
-                    setSeeConfirm(true);
-                  } else {
-                    setSeeSlides(!seeSlides);
-                  }
-                }}
-              >
-                x
-              </button>
-            )}
-          </div>
-        :
-          <button
-                style={{
-                  backgroundColor: "red",
-                  color: "white",
-                }}
-                onClick={() => {
-                    setSeeSlides(!seeSlides);
-                }}
-              >
-                x
-              </button>
-        }
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: hasAudioElement ? "1fr 0.4fr" : "1fr",
-          }}
+              )}
+            </div>
+          ) : (
+            <button
+              style={{
+                backgroundColor: "red",
+                color: "white",
+              }}
+              onClick={() => {
+                setSeeSlides(!seeSlides);
+              }}
+            >
+              x
+            </button>
+          )}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: hasAudioElement ? "1fr 0.4fr" : "1fr",
+            }}
           >
             {!loadingBoard ? (
               <div
