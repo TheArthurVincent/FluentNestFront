@@ -3260,7 +3260,7 @@ export default function EnglishClassCourse2({
             <button
               title="Ver Quadro"
               onClick={() => {
-                handleGetBoard(myId);
+                handleGetBoard(studentID || myId);
                 setTimeout(() => {
                   setSeeSlides(!seeSlides);
                 }, 500);
