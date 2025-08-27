@@ -84,8 +84,6 @@ export function HomePage({ headers }: HeadersProps) {
         const response2 = await axios.get(
           `${backDomain}/api/v1/uploadneeded/${id}`
         );
-
-        console.log(response2.data.uploadNeeded);
         if (response2.data.uploadNeeded) {
           window.location.reload();
         }
