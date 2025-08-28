@@ -1089,7 +1089,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     clearFile();
     setDueDate(new Date().toISOString().split("T")[0]);
     setFlashcards("");
-    loadGeneral(new Date(chosenDate ? chosenDate :new Date()));
+    loadGeneral(new Date(chosenDate ? chosenDate : new Date()));
   };
 
   const handleFileChange = async (event) => {

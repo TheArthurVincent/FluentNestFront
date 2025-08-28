@@ -666,7 +666,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                         </span>
                                         <span style={{ fontWeight: 500 }}>
                                           {formatDateBr(
-                                            homework.eventDetails.date
+                                            new Date(
+                                              homework.eventDetails.date
+                                            ).getTime() +
+                                              3.5 * 60 * 60 * 1000
                                           )}{" "}
                                           {homework.eventDetails.time &&
                                             UniversalTexts.at +
@@ -1754,7 +1757,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                 }}
                                               >
                                                 {formatDateBr(
-                                                  homework.eventDetails.date
+                                                  new Date(
+                                                    homework.eventDetails.date
+                                                  ).getTime() +
+                                                    3.5 * 60 * 60 * 1000
                                                 )}{" "}
                                                 {UniversalTexts.at}{" "}
                                                 {homework.eventDetails.time &&
@@ -1912,7 +1918,14 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                             src={getEmbedUrl(
                                               homework.eventDetails.video
                                             )}
-                                            title={`Aula - ${homework.eventDetails.date}`}
+                                            title={`Aula - ${formatDateBr(
+                                              new Date(
+                                                new Date(
+                                                  homework.eventDetails.date
+                                                ).getTime() +
+                                                  3.5 * 60 * 60 * 1000
+                                              )
+                                            )}`}
                                             style={{
                                               position: "absolute",
                                               top: 0,
