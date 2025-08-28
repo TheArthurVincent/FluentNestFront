@@ -2988,210 +2988,147 @@ export default function EnglishClassCourse2({
   }, [selectedVoice, changeNumber]);
 
   const [editorContent, setEditorContent] = useState<string>("");
-  const generateInitialBoardContent = () => {
-    const h1Size = 32;
-    const h2Size = 26;
-    const h3Size = 22;
-    const baseSize = 20;
+const generateInitialBoardContent = () => {
+  const px = 20;
 
-    let content = `<h1 style="font-size:${h1Size}px;text-align:center;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
-      classTitle || "Aula de Inglês",
-      100
-    )}</h1>`;
+  const p = (html: string) => `<p style="font-size:${px}px;">${html}</p><br/>`;
+  const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
+  const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
 
-    content += `<p style="margin-top:1rem;text-align:center;color:#888;font-size:${baseSize}px;margin-bottom:1rem;">Data: ${new Date().toLocaleDateString(
-      "pt-BR"
-    )}</p>`;
+  let content = "";
 
-    if (theclass.elements && Array.isArray(theclass.elements)) {
-      const sortedElements = theclass.elements.sort(
-        (a: any, b: any) => (a.order || 0) - (b.order || 0)
-      );
+  // Título da aula (como título -> negrito)
+  content += p(b(sanitizeText(classTitle || "Aula de Inglês", 100)));
 
-      sortedElements.forEach((element: any) => {
-        if (element.subtitle) {
-          content += `<h2 style="font-size:${h2Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
-            element.subtitle,
-            100
-          )}</h2>`;
-        }
+  // Data (apenas <p>)
+  content += p(`Data: ${new Date().toLocaleDateString("pt-BR")}`);
 
-        if (element.description) {
-          content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-            element.description,
-            300
-          )}</p>`;
-        }
+  if (theclass.elements && Array.isArray(theclass.elements)) {
+    const sortedElements = theclass.elements.sort(
+      (a: any, b: any) => (a.order || 0) - (b.order || 0)
+    );
 
-        switch (element.type) {
-          case "text":
-            if (element.text) {
-              content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-                element.text,
-                2000
-              )}</p>`;
-            }
-            break;
+    sortedElements.forEach((element: any) => {
+      // Subtítulo (título -> negrito)
+      if (element.subtitle) {
+        content += p(`<b>${sanitizeText(element.subtitle, 100)}</b></br>`);
+      }
 
-          case "sentences":
-          case "nfsentences":
-            if (element.sentences && Array.isArray(element.sentences)) {
-              element.sentences.forEach((sentence: any) => {
-                if (sentence.english) {
-                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;color:${partnerColor()};"><b>${sanitizeText(
-                    sentence.english,
-                    200
-                  )}</b></p>`;
-                }
-                if (sentence.portuguese) {
-                  content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-                    sentence.portuguese,
-                    200
-                  )}</p>`;
-                }
-              });
-            }
-            break;
+      // Descrição (apenas <p>)
+      if (element.description) {
+        content += p(sanitizeText(element.description, 300));
+      }
 
-          case "exercise":
-            if (element.items && Array.isArray(element.items)) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Exercícios:</h3>`;
-              element.items.forEach((item: any, idx: number) => {
-                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${
-                  idx + 1
-                }. ${sanitizeText(item, 300)}</p>`;
-              });
-            }
-            break;
+      switch (element.type) {
+        case "text":
+          if (element.text) {
+            content += p(sanitizeText(element.text, 2000));
+          }
+          break;
 
-          case "html":
-            if (element.text) {
-              content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
-                element.text
-              )}</p>`;
-            }
-            break;
+        case "sentences":
+        case "nfsentences":
+          if (Array.isArray(element.sentences)) {
+            element.sentences.forEach((s: any) => {
+              if (s.english) content += p(sanitizeText(s.english, 200));
+              if (s.portuguese) content += p(i(s.portuguese));
+            });
+          }
+          break;
 
-          case "audiosoundtrack":
-            if (element.text) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Conteúdo do Áudio:</h3>`;
-              content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${cleanHtml(
-                element.text
-              )}</p>`;
-            }
-            if (element.sentences && Array.isArray(element.sentences)) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🎵 Frases do Áudio:</h3>`;
-              element.sentences.forEach((sentence: any) => {
-                if (sentence.english) {
-                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b style="color:${partnerColor()};">${sanitizeText(
-                    sentence.english,
-                    200
-                  )}</b></p>`;
-                }
-                if (sentence.portuguese) {
-                  content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-                    sentence.portuguese,
-                    200
-                  )}</p>`;
-                }
-              });
-            }
-            break;
+        case "exercise":
+          if (Array.isArray(element.items)) {
+            content += p(b("Exercícios:"));
+            element.items.forEach((item: any, idx: number) => {
+              content += p(`${idx + 1}. ${sanitizeText(item, 300)}`);
+            });
+          }
+          break;
 
-          case "images":
-            if (element.images && Array.isArray(element.images)) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
-              element.images.forEach((imageItem: any) => {
-                if (imageItem.img) {
-                  content += `<img src="${imageItem.img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
-                }
-                if (imageItem.english) {
-                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">${sanitizeText(
-                    imageItem.english,
-                    100
-                  )}</p>`;
-                }
-                if (imageItem.portuguese) {
-                  content += `<p style="font-size:${baseSize}px;font-style:italic;color:#555;margin-bottom:1rem;">${sanitizeText(
-                    imageItem.portuguese,
-                    100
-                  )}</p>`;
-                }
-              });
-            }
-            break;
-          case "singleimages":
-            if (element.images && Array.isArray(element.images)) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">🖼️ Imagens da sessão:</h3>`;
-              element.images.forEach((img: any) => {
-                content += `<img src="${img}" alt="Imagem" style="max-width:100%;margin-bottom:1rem;border-radius:8px;" />`;
-              });
-            }
-            break;
-          case "explanation":
-            if (element.explanation && Array.isArray(element.explanation)) {
-              element.explanation.forEach((explanationItem: any) => {
-                if (explanationItem.title) {
-                  content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">${sanitizeText(
-                    explanationItem.title,
-                    100
-                  )}</h3>`;
-                }
-                if (
-                  explanationItem.list &&
-                  Array.isArray(explanationItem.list)
-                ) {
-                  explanationItem.list.forEach((listItem: string) => {
-                    content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;">• ${sanitizeText(
-                      listItem,
-                      400
-                    )}</p>`;
-                  });
-                }
-              });
-            }
-            break;
+        case "html":
+          // Mantém apenas texto plano para respeitar "somente <p>"
+          if (element.text) {
+            const plain = sanitizeText(element.text.replace(/<[^>]+>/g, " "), 2000);
+            content += p(plain);
+          }
+          break;
 
-          case "vocabulary":
-            if (element.sentences && Array.isArray(element.sentences)) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Vocabulário:</h3>`;
-              element.sentences.forEach((vocab: any) => {
-                if (vocab.english && vocab.portuguese) {
-                  content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${sanitizeText(
-                    vocab.english,
-                    100
-                  )}</b> - <i style="color:#555">${sanitizeText(
-                    vocab.portuguese,
-                    100
-                  )}</i></p>`;
-                }
-              });
-            }
-            break;
+        case "audiosoundtrack":
+          if (element.text) {
+            content += p(b("Conteúdo do Áudio:"));
+            const plain = sanitizeText(element.text.replace(/<[^>]+>/g, " "), 2000);
+            content += p(plain);
+          }
+          if (Array.isArray(element.sentences)) {
+            content += p(b("Frases do Áudio:"));
+            element.sentences.forEach((s: any) => {
+              if (s.english) content += p(sanitizeText(s.english, 200));
+              if (s.portuguese) content += p(i(s.portuguese));
+            });
+          }
+          break;
 
-          case "dialogue":
-            if (element.dialogue && Array.isArray(element.dialogue)) {
-              content += `<h3 style="font-size:${h3Size}px;color:${partnerColor()};margin-bottom:1rem;">Diálogo:</h3>`;
-              element.dialogue.forEach((dialogueText: string, idx: number) => {
-                const speaker = idx % 2 === 0 ? "A" : "B";
-                content += `<p style="font-size:${baseSize}px;margin-bottom:1rem;"><b>${speaker}:</b> ${sanitizeText(
-                  dialogueText,
-                  200
-                )}</p>`;
-              });
-            }
-            break;
+        case "images":
+        case "singleimages":
+          // Imagens omitidas para manter apenas <p>; se houver legendas, mostramos:
+          if (Array.isArray((element as any).images)) {
+            (element.images as any[]).forEach((imgItem: any) => {
+              if (imgItem?.english) content += p(sanitizeText(imgItem.english, 100));
+              if (imgItem?.portuguese) content += p(i(imgItem.portuguese));
+            });
+          }
+          break;
 
-          default:
-            break;
-        }
+        case "explanation":
+          if (Array.isArray(element.explanation)) {
+            element.explanation.forEach((ex: any) => {
+              if (ex.title) content += p(b(ex.title));
+              if (Array.isArray(ex.list)) {
+                ex.list.forEach((li: string) => {
+                  content += p(`• ${sanitizeText(li, 400)}`);
+                });
+              }
+            });
+          }
+          break;
 
-        content += `<hr style="margin:1rem 0;border:none;border-top:1px solid #eee;" />`;
-      });
-    }
+        case "vocabulary":
+          if (Array.isArray(element.sentences)) {
+            content += p(b("Vocabulário:"));
+            element.sentences.forEach((v: any) => {
+              if (v.english && v.portuguese) {
+                content += p(
+                  `${sanitizeText(v.english, 100)} - ${i(v.portuguese)}`
+                );
+              } else if (v.english) {
+                content += p(sanitizeText(v.english, 100));
+              } else if (v.portuguese) {
+                content += p(i(v.portuguese));
+              }
+            });
+          }
+          break;
 
-    return content;
-  };
+        case "dialogue":
+          if (Array.isArray(element.dialogue)) {
+            content += p(b("Diálogo:"));
+            element.dialogue.forEach((line: string, idx: number) => {
+              const speaker = idx % 2 === 0 ? "A" : "B";
+              content += p(`${speaker}: ${sanitizeText(line, 200)}`);
+            });
+          }
+          break;
+
+        default:
+          // Tipos desconhecidos: ignorar para manter simplicidade
+          break;
+      }
+    });
+  }
+
+  return content;
+};
+
 
   useEffect(() => {
     if (!seeSlides && !editorContent && theclass && classTitle) {
