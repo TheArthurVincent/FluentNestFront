@@ -1446,12 +1446,6 @@ export function FinancialResources({ headers, id }) {
                             }}
                           >
                             <button
-                              onClick={generatePDFReport}
-                              className="linguee-btn linguee-btn-outline"
-                            >
-                              Gerar PDF
-                            </button>
-                            <button
                               onClick={() => setShowPDFModal(false)}
                               style={{
                                 background: "#eee",
@@ -1464,6 +1458,12 @@ export function FinancialResources({ headers, id }) {
                               }}
                             >
                               Cancelar
+                            </button>{" "}
+                            <button
+                              onClick={generatePDFReport}
+                              className="linguee-btn linguee-btn-outline"
+                            >
+                              Gerar PDF
                             </button>
                           </div>
                         </div>
