@@ -618,7 +618,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     const eTargetValue = e.target.value;
     setNewGroupId(eTargetValue);
     setNewStudentId("");
-    console.log("e.target.value: ", e.target.value, "newGroupId: ", newGroupId);
     setShowClasses(true);
     setSeeEditTutoring(false);
   };
@@ -672,7 +671,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao excluir evento");
-      console.log(error);
     }
   };
   const deleteOneMaterialInside = () => {
@@ -733,7 +731,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao criar evento");
-      console.log(error);
     }
   };
   const editInside = () => {
@@ -758,7 +755,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      console.log(error);
     }
   };
   const updateUnscheduled = async (id) => {
@@ -777,7 +773,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      console.log(error);
     }
   };
 
@@ -797,7 +792,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      console.log(error);
     }
   };
 
@@ -822,7 +816,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchOneSetOfTutorings(newStudentId);
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      console.log(error);
     }
   };
 
@@ -879,7 +872,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      console.log(error);
     }
   };
 
@@ -923,7 +915,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar evento");
-      console.log(error);
     }
   };
 
@@ -1353,7 +1344,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      console.log(error);
     }
   };
 
@@ -1366,7 +1356,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      console.log(error);
     }
   };
 
@@ -1402,7 +1391,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      console.log(error);
     }
   };
 
@@ -1415,7 +1403,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       fetchOneEvent(newEventId);
     } catch (error) {
       console.log(error, "Erro");
-      console.log(error);
     }
   };
 
@@ -1607,7 +1594,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     try {
       const user = JSON.parse(localStorage.getItem("loggedIn"));
       const { id } = user;
-      console.log("aq");
       const response = await axios.put(
         `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
         {
