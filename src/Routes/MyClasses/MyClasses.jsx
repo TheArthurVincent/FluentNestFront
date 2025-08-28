@@ -423,7 +423,12 @@ export function MyClasses({ headers }) {
                         }}
                       >
                         <span style={timeChipStyle}>
-                          {formatDateBr(classItem.date)}
+                          {formatDateBr(
+                            new Date(
+                              new Date(classItem.date).getTime() +
+                                3.5 * 60 * 60 * 1000
+                            )
+                          )}
                         </span>
                       </div>
 
@@ -637,7 +642,10 @@ export function MyClasses({ headers }) {
                               <iframe
                                 src={getEmbedUrl(classItem.videoUrl)}
                                 title={`Aula - ${formatDateBr(
-                                  new Date(classItem.date)
+                                  new Date(
+                                    new Date(classItem.date).getTime() +
+                                      3.5 * 60 * 60 * 1000
+                                  )
                                 )}`}
                                 style={{
                                   position: "absolute",
