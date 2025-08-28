@@ -4916,7 +4916,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           </div>
                         )}
-                        {!postNew && authorizeOrNot && (
+                        {/* {!postNew && authorizeOrNot && (
                           <div
                             style={{
                               backgroundColor: "#f8f9fa",
@@ -5006,7 +5006,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               ))}
                             </div>
                           </div>
-                        )}
+                        )} */}
                       </span>
                     )}
                   </div>
