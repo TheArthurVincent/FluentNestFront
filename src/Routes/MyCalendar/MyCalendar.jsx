@@ -381,7 +381,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         return;
       }
 
-      const raw = baseDate ? new Date(baseDate) : new Date();
+      const raw = baseDate ? new Date(baseDate) : new Date(); //somar 4 horas ao evento
+      raw.setHours(raw.getHours() + 4);
       const monday = getLastMonday(raw);
       setTheToday(monday);
 
@@ -439,7 +440,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
 
   useEffect(() => {
     loadGeneral(new Date());
-    // loadGeneral(new Date());
   }, [alternateBoolean]);
 
   const handleChangeWeek = async (sum) => {
@@ -648,7 +648,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setCategory("");
       setNewStudentId("");
       setDate("");
-      loadGeneral(new Date());
+      loadGeneral(new Date(date));
     } catch (error) {
       console.log(error, "Erro ao criar evento");
     }
@@ -729,7 +729,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response) {
         setIsVisible(false);
         setLoadingInfo(false);
-        loadGeneral(new Date());
+        loadGeneral(new Date(date));
       }
     } catch (error) {
       console.log(error, "Erro ao criar evento");
@@ -1045,7 +1045,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       if (response.status === 200 || response.status === 201) {
         notifyAlert("Aula criada com sucesso!", partnerColor());
         handleCloseNewClassForm();
-        loadGeneral(new Date());
+        loadGeneral(new Date(newClass.date));
       }
     } catch (error) {
       console.log("❌ Erro ao criar nova aula:", error);
@@ -1082,7 +1082,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setWeekDay("");
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModal = (chosenDate) => {
     setSeeReplenish(false);
     setIsVisible(false);
     setNewStudentId("");
@@ -1098,7 +1098,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     clearFile();
     setDueDate(new Date().toISOString().split("T")[0]);
     setFlashcards("");
-    loadGeneral(new Date());
+    loadGeneral(new Date(chosenDate ? chosenDate : null));
   };
 
   const handleFileChange = async (event) => {
@@ -1147,6 +1147,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setFileType("");
   };
 
+  const [dateOfTheWeek, setDateOfTheWeek] = useState(new Date());
   const handleSeeModalOfTutorings = () => {
     setNewStudentId("");
     setSeeReplenish(false);
@@ -1172,7 +1173,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
     setIsModalOfTutoringsVisible(false);
-    loadGeneral(new Date());
+    loadGeneral(new Date(dateOfTheWeek));
   };
 
   const handleStudentChange = (e) => {
@@ -1606,10 +1607,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     try {
       const user = JSON.parse(localStorage.getItem("loggedIn"));
       const { id } = user;
-
+      console.log("aq");
       const response = await axios.put(
         `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
-
         {
           description: editDescription,
           category: editCategory,
@@ -1622,7 +1622,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
-      loadGeneral(new Date());
+      loadGeneral(new Date(editDate));
     } catch (error) {
       console.error(error);
     }
@@ -1679,7 +1679,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  loadGeneral(new Date());
+                  loadGeneral(new Date(editDate));
                 }}
               >
                 <div
@@ -1696,7 +1696,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <button
                     onClick={() => {
-                      loadGeneral(new Date());
+                      loadGeneral(new Date(editDate));
                     }}
                     style={{
                       position: "absolute",
@@ -2278,7 +2278,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               text: "#333",
                               border: "#ddd",
                             };
-
                             return (
                               <div
                                 key={`${event._id}-${eventIndex}`}
@@ -2474,7 +2473,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
             )}
           </div>
           <>
-            {/*Modal de nosos/edição de eventos particulares */}
+            {/*Modal de nossos/edição de eventos particulares */}
             <div
               style={{
                 backgroundColor: transparentWhite(),
@@ -2487,9 +2486,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 zIndex: 99,
                 display: isVisible ? "block" : "none",
               }}
-              onClick={handleCloseModal}
+              onClick={() => handleCloseModal(date)}
             />
-
             <div
               className="modal box-shadow-white"
               style={{
@@ -2535,7 +2533,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                       {UniversalTexts.calendarModal.accessEvent}
                     </HTwo>
                     <Xp
-                      onClick={handleCloseModal}
+                      onClick={() => handleCloseModal(date)}
                       style={{
                         cursor: "pointer",
                         color: "#998",
