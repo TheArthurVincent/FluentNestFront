@@ -1098,7 +1098,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     clearFile();
     setDueDate(new Date().toISOString().split("T")[0]);
     setFlashcards("");
-    loadGeneral(new Date(chosenDate ? chosenDate : null));
+    loadGeneral(new Date(chosenDate ? chosenDate :new Date()));
   };
 
   const handleFileChange = async (event) => {
@@ -1679,7 +1679,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   justifyContent: "center",
                 }}
                 onClick={() => {
-                  loadGeneral(new Date(editDate));
+                  loadGeneral(new Date(task.date));
                 }}
               >
                 <div
@@ -1696,7 +1696,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 >
                   <button
                     onClick={() => {
-                      loadGeneral(new Date(editDate));
+                      loadGeneral(new Date(task.date));
                     }}
                     style={{
                       position: "absolute",
@@ -2483,7 +2483,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 left: "0",
                 position: "fixed",
                 borderRadius: "8px",
-                zIndex: 99,
+                zIndex: 98,
                 display: isVisible ? "block" : "none",
               }}
               onClick={() => handleCloseModal(date)}

@@ -101,7 +101,6 @@ function ToDoAddButton({ userId, onCreated }) {
   return (
     <>
       <button
-
         onClick={() => setOpen(true)}
         title="Novo ToDo"
       >
