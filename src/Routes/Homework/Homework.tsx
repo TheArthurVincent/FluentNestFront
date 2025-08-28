@@ -11,11 +11,7 @@ import {
 import axios from "axios";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import {
-  partnerColor,
-  alwaysWhite,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { partnerColor, alwaysWhite, textTitleFont } from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
@@ -672,8 +668,10 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           {formatDateBr(
                                             homework.eventDetails.date
                                           )}{" "}
-                                          {UniversalTexts.at}{" "}
-                                          {homework.eventDetails.time}
+                                          {homework.eventDetails.time &&
+                                            UniversalTexts.at +
+                                              " " +
+                                              homework.eventDetails.time}
                                         </span>
                                       </div>
                                     ) : (
@@ -1759,7 +1757,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                   homework.eventDetails.date
                                                 )}{" "}
                                                 {UniversalTexts.at}{" "}
-                                                {homework.eventDetails.time}
+                                                {homework.eventDetails.time &&
+                                                  homework.eventDetails.time}
                                               </span>
                                             </div>
                                           )}

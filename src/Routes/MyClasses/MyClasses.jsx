@@ -8,6 +8,7 @@ import {
   ResponsiveIframe,
   backDomain,
   formatDate,
+  formatDateBr,
   getVideoEmbedUrl,
   onLoggOut,
 } from "../../Resources/UniversalComponents";
@@ -334,388 +335,345 @@ export function MyClasses({ headers }) {
         )}
 
         {!loading ? (
-          <div>
-            <ClassesSideBar />
+     
+     
 
-            {/* Classes List */}
-            {currentClasses.map((classItem, index) => (
+
+<div>
+  <ClassesSideBar />
+
+  {/* Classes List */}
+  {currentClasses.map((classItem, index) => {
+    const isOpen = openIndex === index;
+    const isRealizada = classItem.status === "realizada";
+
+    const timeChipStyle = {
+      display: "inline-block",
+      padding: "4px 8px",
+      borderRadius: "8px",
+      border: isRealizada ? "1px solid #065f46" : "1px solid #a31111",
+      background: isRealizada ? "rgba(5,150,105,0.07)" : "rgba(163,17,17,0.08)",
+      color: isRealizada ? "#065f46" : "#a31111",
+      fontWeight: 600,
+    };
+
+    const cardStyle = {
+      display: "flex",
+      flexDirection: "column",
+      backgroundColor: "#fff",
+      border: "1px solid #e5e7eb",
+      borderRadius: "10px",
+      transition: "box-shadow 0.2s ease, transform 0.06s ease",
+      boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
+      overflow: "hidden",
+      marginBottom: "12px",
+    };
+
+    return (
+      <div key={classItem.id} style={cardStyle} className="box-shadow-white">
+        {/* Header */}
+        <div style={{ width: "100%" }}>
+          <div
+            onClick={() => toggleOpen(index)}
+            role="button"
+            aria-expanded={isOpen}
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                toggleOpen(index);
+              }
+            }}
+            style={{
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "10px 12px",
+              background: "#fff",
+              cursor: "pointer",
+              borderBottom: "1px solid #eef2f7",
+              outline: "none",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#fafafa")}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#fff")}
+            onFocus={(e) =>
+              (e.currentTarget.style.boxShadow = "0 0 0 3px rgba(2,132,199,0.2)")
+            }
+            onBlur={(e) => (e.currentTarget.style.boxShadow = "none")}
+          >
+            {/* Data + Hora */}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                fontSize: "14px",
+                fontWeight: 600,
+                color: "#0c4a6e",
+                minWidth: 0,
+                flexWrap: "wrap",
+              }}
+            >
+              <span
+                style={{
+                  display: "inline-block",
+                  padding: "4px 8px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(3,105,161,0.18)",
+                  background: "rgba(3,105,161,0.06)",
+                  color: "#075985",
+                  fontWeight: 600,
+                }}
+              >
+                {formatDateBr(classItem.date)}
+              </span>
+
+              {classItem.time && <span style={timeChipStyle}>{classItem.time}</span>}
+            </div>
+
+            {/* Chevron */}
+            <div
+              aria-hidden
+              style={{
+                transition: "transform 0.2s ease",
+                transform: isOpen ? "rotate(180deg)" : "rotate(0deg)",
+                fontSize: "14px",
+                color: "#6b7280",
+                lineHeight: 1,
+                marginLeft: "10px",
+              }}
+            >
+              ▾
+            </div>
+          </div>
+
+          {/* Conteúdo Expandido */}
+          {isOpen && (
+            <div style={{ padding: "10px 12px", display: "grid", gap: "12px" }}>
+              {/* Status Badge (menor e mais quadrado) */}
+             {classItem.status &&
+              <div>
+              <span
+                  style={{
+                    display: "inline-block",
+                    padding: "3px 8px",
+                    borderRadius: "10px",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    backgroundColor: isRealizada ? "#eaf7ef" : "#fff7e6",
+                    color: isRealizada ? "#1f6b1f" : "#7a5a00",
+                    border: isRealizada ? "1px solid #c7e8cf" : "1px solid #ffe3a3",
+                    letterSpacing: "0.3px",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {isRealizada ? "Realizada" : classItem.status}
+                </span>
+              </div>
+}
+              {/* Resumo da Aula */}
+              {classItem.title && (
               <div
-                key={classItem.id}
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  backgroundColor: "#f9f9f9",
-                  border: "1px solid #ddd",
-                  borderRadius: "4px",
-                  transition: "all 0.2s ease",
+                  gap: "6px",
+                  padding: "10px",
+                  backgroundColor: "#fff",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "8px",
                 }}
-                className="box-shadow-white"
               >
-                {/* Header with Date and Delete Button */}
+                  <>
+                    <strong style={{ color: "#374151", fontSize: "14px" }}>
+                      Resumo da Aula:
+                    </strong>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "13px",
+                        color: "#6b7280",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {classItem.title}
+                    </p>
+                  </>
+              </div>
+                )}
+
+              {/* Homework */}
+              {classItem.homework && (
                 <div
                   style={{
-                    gap: "10px",
-                    maxWidth: "95%",
+                    padding: "12px",
+                    backgroundColor: "#fffef7",
+                    border: "1px solid #fde68a",
+                    borderRadius: "8px",
                   }}
                 >
-                  <div
-                    onClick={() => toggleOpen(index)}
-                    role="button"
-                    aria-expanded={openIndex === index}
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        toggleOpen(index);
-                      }
-                    }}
+                  <strong
                     style={{
-                      width: "100%",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "8px 10px",
-                      background: "#fff",
-                      cursor: "pointer",
-                      borderBottom: "1px solid #e5e7eb",
+                      color: "#92400e",
+                      fontSize: "14px",
+                      display: "block",
+                      marginBottom: "8px",
                     }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#fafafa")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#fff")
-                    }
                   >
-                    <div
+                    📝 Homework:
+                  </strong>
+
+                  <div style={{ marginTop: "4px", marginBottom: "10px", fontSize: "12px", color: "#92400e" }}>
+                    {UniversalTexts.seeOnHomeworkPage}
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: "13px",
+                      color: "#78350f",
+                      lineHeight: 1.6,
+                      maxHeight: "300px",
+                      overflowY: "auto",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: classItem.homework }}
+                  />
+                </div>
+              )}
+
+              {/* Links */}
+              <div style={{ display: "grid", gap: "8px" }}>
+                {classItem.attachments && (
+                  <div
+                    style={{
+                      padding: "8px",
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Link
+                      to={classItem.attachments}
                       style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
+                        color: partnerColor(),
+                        textDecoration: "none",
                         fontSize: "14px",
                         fontWeight: 600,
-                        color: "#0c4a6e",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
                       }}
                     >
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "4px 8px",
-                          borderRadius: "8px",
-                          border: "1px solid rgba(3,105,161,0.18)",
-                          background: "rgba(3,105,161,0.06)",
-                          color: "#075985",
-                        }}
-                      >
-                        {formatDate(classItem.date)}
-                      </span>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "4px 8px",
-                          borderRadius: "8px",
-                          border:
-                            classItem.status == "realizada"
-                              ? "solid 1px #064b38ff"
-                              : "solid 1prgba(115, 12, 12, 1)ff",
-                          background:
-                            classItem.status == "realizada"
-                              ? "rgba(5,150,105,0.07)"
-                              : "#a3111133",
-                          color:
-                            classItem.status == "realizada"
-                              ? "#065f46"
-                              : "#a31111ff",
-                        }}
-                      >
-                        {classItem.time}
-                      </span>
-                    </div>
-
-                    <div
-                      aria-hidden
-                      style={{
-                        transition: "transform 0.2s ease",
-                        transform:
-                          openIndex === index
-                            ? "rotate(180deg)"
-                            : "rotate(0deg)",
-                        fontSize: "14px",
-                        color: "#6b7280",
-                        lineHeight: 1,
-                      }}
-                    >
-                      ▾
-                    </div>
+                      <i className="fa fa-file-o" />
+                      {classItem.fileName || "Class File"}
+                    </Link>
                   </div>
-                  {index === openIndex && (
-                    <>
-                      <div>
-                        {/* Status Badge */}
-                        <div
-                          style={{
-                            padding: "4px 8px",
-                            borderRadius: "12px",
-                            fontSize: "12px",
-                            fontWeight: "500",
-                            backgroundColor:
-                              classItem.status === "realizada"
-                                ? "#22c55e"
-                                : "#f59e0b",
-                            color: "white",
-                          }}
-                        >
-                          {classItem.status === "realizada"
-                            ? "Realizada"
-                            : classItem.status}
-                        </div>
-                      </div>
+                )}
 
-                      {/* Class Info Section */}
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "8px",
-                          padding: "8px",
-                          backgroundColor: "white",
-                          border: "1px solid #e2e8f0",
-                          borderRadius: "4px",
-                        }}
-                      >
-                        {/* Title */}
-                        {classItem.title && (
-                          <div>
-                            <strong
-                              style={{ color: "#374151", fontSize: "14px" }}
-                            >
-                              Resumo da Aula:
-                            </strong>
-                            <p
-                              style={{
-                                margin: "4px 0",
-                                fontSize: "13px",
-                                color: "#6b7280",
-                              }}
-                            >
-                              {classItem.title}
-                            </p>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Homework Section */}
-                      {classItem.homework && (
-                        <div
-                          style={{
-                            padding: "12px",
-                            backgroundColor: "#fef3c7",
-                            border: "1px solid #fbbf24",
-                            borderRadius: "4px",
-                          }}
-                        >
-                          <strong
-                            style={{
-                              color: "#92400e",
-                              fontSize: "14px",
-                              display: "block",
-                              marginBottom: "8px",
-                            }}
-                          >
-                            📝 Homework:
-                          </strong>
-
-                          <div
-                            style={{
-                              marginTop: "8px",
-                              marginBottom: "12px",
-                            }}
-                          >
-                            {/* <Link
-                          to="/my-homework-and-lessons"
-                          target="_blank"
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-
-                            marginBottom: "1rem",
-                            gap: "0.5rem",
-                            backgroundColor: partnerColor(),
-                            color: "white",
-                            textDecoration: "none",
-                            padding: "0.5rem 1rem",
-                            borderRadius: "6px",
-                            fontSize: "10px",
-                            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.transform = "translateY(-1px)";
-                            e.target.style.boxShadow =
-                              "0 4px 8px rgba(0, 0, 0, 0.15)";
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.transform = "translateY(0px)";
-                            e.target.style.boxShadow =
-                              "0 2px 4px rgba(0, 0, 0, 0.1)";
-                          }}
-                        >
-                          <i className="fa fa-external-link" /> */}
-                            {UniversalTexts.seeOnHomeworkPage}
-                            {/* </Link> */}
-                          </div>
-
-                          <div
-                            style={{
-                              fontSize: "13px",
-                              color: "#78350f",
-                              lineHeight: "1.5",
-                              maxHeight: "300px",
-                              overflowY: "auto",
-                            }}
-                            dangerouslySetInnerHTML={{
-                              __html: classItem.homework,
-                            }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Links Section */}
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: "8px",
-                        }}
-                      >
-                        {classItem.attachments && (
-                          <div
-                            style={{
-                              padding: "8px",
-                              backgroundColor: "white",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            <Link
-                              to={classItem.attachments}
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <i className="fa fa-file-o" />
-                              {classItem.fileName || "Class File"}
-                            </Link>
-                          </div>
-                        )}
-
-                        {classItem.importantLink && (
-                          <div
-                            style={{
-                              padding: "8px",
-                              backgroundColor: "white",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            <Link
-                              to={classItem.importantLink}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <i className="fa fa-external-link" />
-                              Material Importante
-                            </Link>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Video Section */}
-                      {classItem.videoUrl && (
-                        <div
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "12px",
-                          }}
-                        >
-                          {/* Responsive Video Container */}
-                          <div
-                            style={{
-                              position: "relative",
-                              width: "100%",
-                              paddingBottom: "56.25%", // 16:9 aspect ratio
-                              height: 0,
-                              overflow: "hidden",
-                              borderRadius: "8px",
-                              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                              backgroundColor: "#000",
-                            }}
-                          >
-                            <iframe
-                              src={getEmbedUrl(classItem.videoUrl)}
-                              title={`Aula - ${formatDate(classItem.date)}`}
-                              style={{
-                                position: "absolute",
-                                top: 0,
-                                left: 0,
-                                width: "100%",
-                                height: "100%",
-                                border: "none",
-                                borderRadius: "8px",
-                              }}
-                              allowFullScreen
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            />
-                          </div>
-
-                          {/* Video Link */}
-                          <div
-                            style={{
-                              padding: "8px",
-                              backgroundColor: "white",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            <Link
-                              to={classItem.videoUrl}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "8px",
-                              }}
-                            >
-                              <i className="fa fa-play-circle" />
-                              {classItem.videoUrlName ||
-                                "Abrir Vídeo no YouTube"}
-                            </Link>
-                          </div>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
+                {classItem.importantLink && (
+                  <div
+                    style={{
+                      padding: "8px",
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Link
+                      to={classItem.importantLink}
+                      target="_blank"
+                      style={{
+                        color: partnerColor(),
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <i className="fa fa-external-link" />
+                      Material Importante
+                    </Link>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
+
+              {/* Vídeo */}
+              {classItem.videoUrl && (
+                <div style={{ display: "grid", gap: "10px" }}>
+                  <div
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      paddingBottom: "56.25%",
+                      height: 0,
+                      overflow: "hidden",
+                      borderRadius: "10px",
+                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.08)",
+                      backgroundColor: "#000",
+                    }}
+                  >
+                    <iframe
+                      src={getEmbedUrl(classItem.videoUrl)}
+                      title={`Aula - ${formatDateBr(new Date(classItem.date))}`}
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        border: "none",
+                        borderRadius: "10px",
+                      }}
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    />
+                  </div>
+
+                  <div
+                    style={{
+                      padding: "8px",
+                      backgroundColor: "#fff",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <Link
+                      to={classItem.videoUrl}
+                      target="_blank"
+                      style={{
+                        color: partnerColor(),
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        fontWeight: 600,
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <i className="fa fa-play-circle" />
+                      {classItem.videoUrlName || "Abrir Vídeo no YouTube"}
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  })}
+</div>
+
+
+
+
+
+
+
+
+
         ) : (
           <div
             style={{
