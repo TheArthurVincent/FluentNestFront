@@ -271,6 +271,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [seeFinanceHistory, setSeeFinanceHistory] = useState(false);
   const [seeClassesHistory, setSeeClassesHistory] = useState(false);
+  const [seeGroupClassesHistory, setSeeGroupClassesHistory] = useState(false);
   const [eventsList, setEventsList] = useState([]);
   const [loadingEventsList, setLoadingEventsList] = useState(false);
   const [loadingPermissions, setLoadingPermissions] = useState(false);
@@ -291,8 +292,30 @@ export function FindStudent({ uploadStatus, headers, id }) {
         setLoadingEventsList(false);
       }, 100);
     } catch (error) {
-      notifyAlert("Erro ao buscar histórico de aulas");
+      notifyAlert("Erro ao buscar histórico de aulas Individuais");
       setSeeClassesHistory(!seeClassesHistory);
+      setLoadingEventsList(false);
+    }
+  };
+
+  const handleSeeGroupClassesHistory = async (id) => {
+    setLoadingEventsList(true);
+    setEventsList([]);
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/event-one-student-group/${id}`,
+        {
+          headers,
+        }
+      );
+
+      setEventsList(response.data.events);
+      setTimeout(() => {
+        setLoadingEventsList(false);
+      }, 100);
+    } catch (error) {
+      notifyAlert("Erro ao buscar histórico de aulas em grupo");
+      setSeeGroupClassesHistory(!seeGroupClassesHistory);
       setLoadingEventsList(false);
     }
   };
@@ -1761,7 +1784,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
               e.target.style.color = "#2c3e50";
             }}
           >
-            Histórico de Aulas - {selectedStudent.name}{" "}
+            Histórico de Aulas Individuais de {selectedStudent.name}{" "}
             {selectedStudent.lastname}
           </Typography>
 
@@ -2043,7 +2066,333 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       color: "#6c757d",
                     }}
                   >
-                    Não há histórico de aulas passadas para este aluno.
+                    Não há histórico de aulas Individuais para este
+                    aluno.
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+         {selectedStudent && (
+        <div
+          style={{
+            backgroundColor: "#ffffff",
+            margin: "auto",
+            marginTop: "16px",
+            borderRadius: "10px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            border: "1px solid #e8eaed",
+            maxWidth: "70rem",
+            padding: "20px",
+          }}
+        >
+          <Typography
+            style={{
+              color: "#2c3e50",
+              fontSize: "16px",
+              cursor: "pointer",
+              fontWeight: "600",
+              marginBottom: "16px",
+              borderBottom: "2px solid #e8eaed",
+              paddingBottom: "8px",
+            }}
+            onClick={() => {
+              setSeeGroupClassesHistory(!seeGroupClassesHistory);
+              handleSeeGroupClassesHistory(selectedStudent.id);
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = partnerColor();
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = "#2c3e50";
+            }}
+          >
+            Histórico de Aulas em Grupo de {selectedStudent.name}{" "}
+            {selectedStudent.lastname}
+          </Typography>
+
+          {seeGroupClassesHistory && (
+            <div
+              style={{
+                marginBottom: "16px",
+              }}
+            >
+              {eventsList.length > 0 ? (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "16px",
+                  }}
+                >
+                  {!loadingEventsList ? (
+                    <>
+                      {" "}
+                      {eventsList
+                        .sort((a, b) => {
+                          // Ordenar por data (mais recente primeiro)
+                          const dateA = new Date(a.date);
+                          const dateB = new Date(b.date);
+                          return dateB - dateA; // Ordem decrescente (mais recente primeiro)
+                        })
+                        .map((event, index) => (
+                          <div
+                            key={event.tutoringID || index}
+                            style={{
+                              backgroundColor: "#ffffff",
+                              border: "1px solid #e9ecef",
+                              borderRadius: "10px",
+                              padding: "20px",
+                              transition: "all 0.3s ease",
+                              borderLeft: `4px solid ${
+                                event.status === "realizada"
+                                  ? "#28a745"
+                                  : event.status === "desmarcado"
+                                  ? "#dc3545"
+                                  : event.status === "reagendado"
+                                  ? "#ffc107"
+                                  : "#6c757d"
+                              }`,
+                            }}
+                          >
+                            {/* Cabeçalho do evento */}
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginBottom: "16px",
+                                flexWrap: "wrap",
+                                gap: "8px",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "10px",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    backgroundColor:
+                                      event.status === "realizada"
+                                        ? "#d4edda"
+                                        : event.status === "desmarcado"
+                                        ? "#f8d7da"
+                                        : event.status === "reagendado"
+                                        ? "#fff3cd"
+                                        : "#e9ecef",
+                                    color:
+                                      event.status === "realizada"
+                                        ? "#155724"
+                                        : event.status === "desmarcado"
+                                        ? "#721c24"
+                                        : event.status === "reagendado"
+                                        ? "#856404"
+                                        : "#495057",
+                                    padding: "4px 10px",
+                                    borderRadius: "20px",
+                                    fontSize: "10px",
+
+                                    textTransform: "uppercase",
+                                  }}
+                                >
+                                  {event.status || "N/A"}
+                                </div>
+                                <div
+                                  style={{
+                                    backgroundColor: "#e9ecef",
+                                    color: "#495057",
+                                    padding: "4px 8px",
+                                    borderRadius: "6px",
+                                    fontSize: "10px",
+                                  }}
+                                >
+                                  {event.category || "Categoria N/A"}
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  fontSize: "14px",
+                                  color: "#6c757d",
+                                }}
+                              >
+                                🕒 {event.duration || 0} min
+                              </div>
+                            </div>
+
+                            {/* Informações principais */}
+                            <div
+                              style={{
+                                display: "grid",
+                                gridTemplateColumns:
+                                  "repeat(auto-fit, minmax(200px, 1fr))",
+                                gap: "16px",
+                                marginBottom: "16px",
+                              }}
+                            >
+                              <div>
+                                <div
+                                  style={{
+                                    fontSize: "10px",
+                                    color: "#6c757d",
+                                    marginBottom: "4px",
+                                  }}
+                                >
+                                  👤👤👤 GRUPO
+                                </div>
+                                <div
+                                  style={{
+                                    color: "#333",
+                                  }}
+                                >
+                                  {event.student || "N/A"}
+                                </div>
+                              </div>
+                              <div>
+                                <div
+                                  style={{
+                                    fontSize: "10px",
+                                    color: "#6c757d",
+                                    marginBottom: "4px",
+                                  }}
+                                >
+                                  📅 DATA & HORÁRIO
+                                </div>
+                                <div
+                                  style={{
+                                    color: "#333",
+                                  }}
+                                >
+                                  {event.date
+                                    ? new Date(event.date).toLocaleDateString(
+                                        "pt-BR"
+                                      )
+                                    : "N/A"}{" "}
+                                  às {event.time || "N/A"}
+                                </div>
+                              </div>
+                              {event.description && (
+                                <div style={{ gridColumn: "1 / -1" }}>
+                                  <div
+                                    style={{
+                                      fontSize: "10px",
+                                      color: "#6c757d",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    📝 DESCRIÇÃO
+                                  </div>
+                                  <div
+                                    style={{
+                                      color: "#333",
+                                      lineHeight: "1.4",
+                                    }}
+                                  >
+                                    {event.description}
+                                  </div>
+                                </div>
+                              )}{" "}
+                              {event.homework && (
+                                <div style={{ gridColumn: "1 / -1" }}>
+                                  <div
+                                    style={{
+                                      fontSize: "10px",
+                                      color: "#6c757d",
+                                      marginBottom: "4px",
+                                    }}
+                                  >
+                                    📝 HOMEWORK
+                                  </div>
+                                  <div
+                                    style={{
+                                      color: "#333",
+                                      lineHeight: "1.4",
+                                    }}
+                                    dangerouslySetInnerHTML={{
+                                      __html: event.homework,
+                                    }}
+                                  />
+                                </div>
+                              )}
+                              {event.theLesson &&
+                                event.theLesson.course &&
+                                event.theLesson.id && (
+                                  <div style={{ gridColumn: "1 / -1" }}>
+                                    <div
+                                      style={{
+                                        fontSize: "10px",
+                                        color: "#6c757d",
+                                        marginBottom: "4px",
+                                      }}
+                                    >
+                                      📝 LIÇÃO RELACIONADA
+                                    </div>
+                                    <a
+                                      target="_blank"
+                                      href={`/teaching-materials/${event.theLesson.course
+                                        .toLowerCase()
+                                        .replace(/\s+/g, "-")
+                                        .replace(/[^\w\-]+/g, "")}/${
+                                        event.theLesson.id
+                                      }`}
+                                      style={{
+                                        color: "#0ea5e9",
+                                        textDecoration: "none",
+                                        fontSize: "18px",
+                                        marginTop: "1rem",
+                                        fontWeight: "500",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "4px",
+                                        padding: "4px 8px",
+                                        backgroundColor: "white",
+                                        borderRadius: "4px",
+                                        border: "1px solid #0ea5e9",
+                                      }}
+                                    >
+                                      <span>
+                                        <strong>
+                                          {" "}
+                                          {event.theLesson.title} |{" "}
+                                          {event.theLesson.course}
+                                        </strong>
+                                      </span>
+                                    </a>
+                                  </div>
+                                )}
+                            </div>
+                          </div>
+                        ))}
+                    </>
+                  ) : (
+                    <CircularProgress style={{ color: partnerColor() }} />
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "40px 20px",
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: "10px",
+                    border: "2px dashed #dee2e6",
+                  }}
+                >
+                  <div style={{ fontSize: "48px", marginBottom: "16px" }}>
+                    📅
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      color: "#6c757d",
+                    }}
+                  >
+                    Não há histórico de aulas em grupo para este
+                    aluno.
                   </div>
                 </div>
               )}

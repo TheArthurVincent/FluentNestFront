@@ -57,6 +57,40 @@ import {
   updateButton,
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
 export default function MyCalendar({ headers, thePermissions, myId }) {
+  var categoryList = [
+    {
+      text: "Aula experimental",
+      value: "Test",
+    },
+    {
+      text: "Aula única",
+      value: "Standalone",
+    },
+    {
+      text: "Aula Geral",
+      value: "Group Class",
+    },
+    {
+      text: "Aula de um Grupo",
+      value: "Established Group Class",
+    },
+    {
+      text: "Aula de reposição",
+      value: "Rep",
+    },
+    {
+      text: "Aula de prêmio",
+      value: "Prize Class",
+    },
+    {
+      text: "Aula de tutoria",
+      value: "Tutoring",
+    },
+    {
+      text: "Horário vazio para reposição",
+      value: "Marcar Reposição",
+    },
+  ];
   const [seePlusButtons, setSeePlusButtons] = useState(false);
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -505,6 +539,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
+
+      setCategory(newCategory);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
       setHomeworkAdded(newHomeworkAdded);
@@ -512,17 +548,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
       setStatus(mappedStatus);
       setGroupName(newGroupName);
       setGroupId(newGroupId);
-      setCategory(newCategory);
       setNewStudentId(newStudentID);
       setNewEventId(newEventId);
       setLink(newLink);
       setTheLesson(newTheLesson);
-      console.log(
-        "setTheLesson(newTheLesson)",
-        newTheLesson.id,
-        newTheLesson.title,
-        newTheLesson.course
-      );
       setTheTime(newTime);
       setVideo(newVideo);
       setHomework(newHomework);
@@ -576,7 +605,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         }
       );
       const groups = response.data.tutorings;
-      console.log(groups);
       setLoadingTutoringDays(true);
       setTutoringsListOfOneStudentOrGroup(groups);
       setLoadingTutoringDays(false);
@@ -3594,36 +3622,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             <option value="category" hidden>
                                               Select category...
                                             </option>
-                                            {[
-                                              {
-                                                text: "Aula experimental",
-                                                value: "Test",
-                                              },
-                                              {
-                                                text: "Aula única",
-                                                value: "Standalone",
-                                              },
-                                              {
-                                                text: "teste",
-                                                value: "Group Class",
-                                              },
-                                              {
-                                                text: "Aula de reposição",
-                                                value: "Rep",
-                                              },
-                                              {
-                                                text: "Aula de prêmio",
-                                                value: "Prize Class",
-                                              },
-                                              {
-                                                text: "Aula de tutoria",
-                                                value: "Tutoring",
-                                              },
-                                              {
-                                                text: "Horário vazio para reposição",
-                                                value: "Marcar Reposição",
-                                              },
-                                            ].map((cat, index) => (
+                                            {categoryList.map((cat, index) => (
                                               <option
                                                 key={index}
                                                 value={cat.value}
@@ -6145,40 +6144,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         <option value="" hidden>
                           Selecione a categoria...
                         </option>
-                        {[
-                          {
-                            text: "Aula experimental",
-                            value: "Test",
-                          },
-                          {
-                            text: "Aula única",
-                            value: "Standalone",
-                          },
-                          {
-                            text: "Aula Geral",
-                            value: "Group Class",
-                          },
-                          {
-                            text: "Aula de um Grupo",
-                            value: "Established Group Class",
-                          },
-                          {
-                            text: "Aula de reposição",
-                            value: "Rep",
-                          },
-                          {
-                            text: "Aula de prêmio",
-                            value: "Prize Class",
-                          },
-                          {
-                            text: "Aula de tutoria",
-                            value: "Tutoring",
-                          },
-                          {
-                            text: "Horário vazio para reposição",
-                            value: "Marcar Reposição",
-                          },
-                        ].map((cat, index) => (
+                        {categoryList.map((cat, index) => (
                           <option key={index} value={cat.value}>
                             {cat.text}
                           </option>
