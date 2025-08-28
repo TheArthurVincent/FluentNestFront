@@ -14,6 +14,8 @@ import { io } from "socket.io-client";
 
 import { levels } from "../Routes/Ranking/RankingComponents/RankingLevelsList";
 import { notifyAlert } from "../Routes/EnglishLessons/Assets/Functions/FunctionLessons";
+import { frameSteps } from "framer-motion";
+import { PermIdentityRounded } from "@mui/icons-material";
 
 const items = levels();
 export var colorOfTheTShirt;
@@ -713,6 +715,11 @@ export function formatNumber(number) {
 }
 
 export function formatDate(dateString) {
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+    const [day, month, year] = dateString.split("/");
+    dateString = `${year}-${month}-${day}`;
+  }
+
   const options = {
     year: "numeric",
     month: "short",
@@ -725,6 +732,11 @@ export function formatDate(dateString) {
 }
 
 export function formatDateBrContract(dateString) {
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+    const [day, month, year] = dateString.split("/");
+    dateString = `${year}-${month}-${day}`;
+  }
+
   const [year, month, day] = dateString.split("-").map(Number);
   const date = new Date(year, month - 1, day);
 
@@ -737,6 +749,11 @@ export function formatDateBrContract(dateString) {
   return date.toLocaleDateString("pt-BR", options);
 }
 export function formatDateBr(dateString) {
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+    const [day, month, year] = dateString.split("/");
+    dateString = `${year}-${month}-${day}`;
+  }
+
   const options = {
     year: "numeric",
     month: "numeric",
@@ -746,6 +763,11 @@ export function formatDateBr(dateString) {
   return date.toLocaleDateString("pt-BR", options);
 }
 export function formatDateBrWithHour(dateString) {
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) {
+    const [day, month, year] = dateString.split("/");
+    dateString = `${year}-${month}-${day}`;
+  }
+
   const options = {
     year: "numeric",
     month: "numeric",

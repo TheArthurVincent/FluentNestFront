@@ -67,5 +67,5 @@ export const mediumGreyColor = (): string => "#555";
 export const lightGreyColor = (): string => "#e6e6e6";
 export const transparentWhite = (): string => "rgba(255, 255, 255, 0.7)";
 export const transparentBlack = (): string => "rgba(1, 1, 1, 0.7)";
-export const alwaysWhite = (): string => "#fefefe";
+export const alwaysWhite = (): string => "#fff";
 export const alwaysBlack = (): string => "#111";

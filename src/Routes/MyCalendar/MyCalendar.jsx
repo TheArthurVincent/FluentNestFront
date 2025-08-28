@@ -96,6 +96,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
+  const [dateModal, setDateModal] = useState(new Date());
   const [seeEditTutoring, setSeeEditTutoring] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false);
@@ -4916,7 +4917,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           </div>
                         )}
-                        {!postNew && authorizeOrNot && (
+                        {/* {!postNew && authorizeOrNot && (
                           <div
                             style={{
                               backgroundColor: "#f8f9fa",
@@ -5006,7 +5007,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                               ))}
                             </div>
                           </div>
-                        )}
+                        )} */}
                       </span>
                     )}
                   </div>
