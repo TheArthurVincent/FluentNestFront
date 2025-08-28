@@ -2821,11 +2821,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     textAlign: "center",
                                     padding: "2rem",
+                                    color: partnerColor(),
+                                    fontWeight: "800",
+                                    fontStyle: "italic",
                                   }}
                                 >
                                   <CircularProgress
                                     style={{ color: partnerColor() }}
                                   />
+                                  <br />
+                                  <br />
                                   {alternateText}
                                 </div>
                               ) : (
