@@ -297,6 +297,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
       }, 100);
     } catch (error) {
       notifyAlert("Erro ao buscar histórico de aulas Individuais");
+      console.log(error, "Erro ao buscar histórico de aulas Individuais");
       setSeeClassesHistory(!seeClassesHistory);
       setLoadingEventsList(false);
     }
