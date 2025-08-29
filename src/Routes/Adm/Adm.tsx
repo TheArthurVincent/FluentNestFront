@@ -40,19 +40,6 @@ export function Adm({ headers }: HeadersProps) {
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
       component: <Groups id={id} headers={headers} />,
     },
-    // {
-    //   title: "Homework",
-    //   displayArthur: "block",
-    //   value: "3",
-    //   tooltip:
-    //     "Crie e atribua tarefas de casa (homework) para os alunos. Defina a data de entrega, escreva as instruções e acompanhe o progresso das atividades enviadas.",
-    //   component: (
-    //     <>
-    //       <PendingHomeworkAssignment id={id} headers={headers} />
-    //       <NewHomeworkAssignment id={id} headers={headers} />
-    //     </>
-    //   ),
-    // },
     {
       title: "Financeiro",
       displayArthur: "block",

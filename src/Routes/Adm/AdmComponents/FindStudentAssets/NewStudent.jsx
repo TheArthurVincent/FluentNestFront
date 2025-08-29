@@ -125,7 +125,12 @@ export function AllStudents({ headers, id }) {
 
   return (
     <>
-      <FindStudent id={id} uploadStatus={upload} headers={headers} />
+      <FindStudent
+        isResponsble={false}
+        id={id}
+        uploadStatus={upload}
+        headers={headers}
+      />
       <div
         style={{
           maxWidth: "90%",

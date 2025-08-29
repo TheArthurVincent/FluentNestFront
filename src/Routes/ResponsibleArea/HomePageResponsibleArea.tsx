@@ -22,11 +22,12 @@ import TopBarResponsible from "./TopBarResponsible";
 
 export function HomePageResponsibleArea({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
-
+const [id,setId] = useState<string>("")
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
     if (user) {
       var theUserJson = JSON.parse(user);
+      setId(theUserJson.id);
     } else {
       onLoggOut();
       return;
@@ -49,7 +50,7 @@ export function HomePageResponsibleArea({ headers }: HeadersProps) {
       title: "Blog",
       path: "/",
       levelcard: true,
-      component: <SeeMyStudents headers={headers} />,
+      component: <SeeMyStudents id={id} headers={headers} />,
     },
   ];
 

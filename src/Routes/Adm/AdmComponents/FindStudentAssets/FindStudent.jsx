@@ -51,7 +51,7 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 import { isArthurVincent } from "../../../../App";
 
-export function FindStudent({ uploadStatus, headers, id }) {
+export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
@@ -82,6 +82,10 @@ export function FindStudent({ uploadStatus, headers, id }) {
   const [feeUpToDate, setFeeUpToDate] = useState(false);
   const [tutoree, setTutoree] = useState(false);
   const [isAdm, setIsAdm] = useState(false);
+
+  useEffect(() => {
+    console.log("isResponsible", isResponsible);
+  }, [isResponsible]);
 
   const handleChangeEdit = (event, newValue) => {
     setValue(newValue);
@@ -625,54 +629,56 @@ export function FindStudent({ uploadStatus, headers, id }) {
                 </Typography>
               </div>
             </div>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => {
-                setID(selectedStudent.id);
-                setTutoree(selectedStudent.tutoree);
-                setFeeUpToDate(selectedStudent.feeUpToDate);
-                setNewName(selectedStudent.name);
-                setNewLastName(selectedStudent.lastname);
-                setNewCpf(selectedStudent.doc);
-                setNewEmail(selectedStudent.email);
-                setNewPhone(selectedStudent.phoneNumber);
-                setNewAddress(selectedStudent.address);
-                setWeeklyClasses(selectedStudent.weeklyClasses);
-                setNewDateOfBirth(
-                  selectedStudent.dateOfBirth
-                    ? selectedStudent.dateOfBirth.split("T")[0]
-                    : ""
-                );
-                setGoogleDriveLink(selectedStudent.googleDriveLink);
-                setPermissions(selectedStudent.permissions);
-                setFeeUpToDate(selectedStudent.feeUpToDate);
-                setOnHold(selectedStudent.onHold);
-                setReplenish(selectedStudent.replenish);
-                setTutoree(selectedStudent.tutoree);
-                setFee(selectedStudent.fee || 0);
-                setTotalScore(selectedStudent.totalScore || 0);
-                setMonthlyScore(selectedStudent.monthlyScore || 0);
-                setHomeworkAssignmentsDone(
-                  selectedStudent.homeworkAssignmentsDone || 0
-                );
-                setFlashcards25Reviews(
-                  selectedStudent.flashcards25Reviews || 0
-                );
-                handleSeeModal();
-              }}
-              style={{
-                minWidth: "auto",
-                padding: "8px 10px",
-                borderRadius: "8px",
-                color: partnerColor(),
-                borderColor: partnerColor(),
-                fontSize: "10px",
-                fontWeight: "500",
-              }}
-            >
-              ✏️ Editar
-            </Button>
+            {!isResponsible && (
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => {
+                  setID(selectedStudent.id);
+                  setTutoree(selectedStudent.tutoree);
+                  setFeeUpToDate(selectedStudent.feeUpToDate);
+                  setNewName(selectedStudent.name);
+                  setNewLastName(selectedStudent.lastname);
+                  setNewCpf(selectedStudent.doc);
+                  setNewEmail(selectedStudent.email);
+                  setNewPhone(selectedStudent.phoneNumber);
+                  setNewAddress(selectedStudent.address);
+                  setWeeklyClasses(selectedStudent.weeklyClasses);
+                  setNewDateOfBirth(
+                    selectedStudent.dateOfBirth
+                      ? selectedStudent.dateOfBirth.split("T")[0]
+                      : ""
+                  );
+                  setGoogleDriveLink(selectedStudent.googleDriveLink);
+                  setPermissions(selectedStudent.permissions);
+                  setFeeUpToDate(selectedStudent.feeUpToDate);
+                  setOnHold(selectedStudent.onHold);
+                  setReplenish(selectedStudent.replenish);
+                  setTutoree(selectedStudent.tutoree);
+                  setFee(selectedStudent.fee || 0);
+                  setTotalScore(selectedStudent.totalScore || 0);
+                  setMonthlyScore(selectedStudent.monthlyScore || 0);
+                  setHomeworkAssignmentsDone(
+                    selectedStudent.homeworkAssignmentsDone || 0
+                  );
+                  setFlashcards25Reviews(
+                    selectedStudent.flashcards25Reviews || 0
+                  );
+                  handleSeeModal();
+                }}
+                style={{
+                  minWidth: "auto",
+                  padding: "8px 10px",
+                  borderRadius: "8px",
+                  color: partnerColor(),
+                  borderColor: partnerColor(),
+                  fontSize: "10px",
+                  fontWeight: "500",
+                }}
+              >
+                ✏️ Editar
+              </Button>
+            )}
             <Button
               variant="outlined"
               size="small"
@@ -1015,64 +1021,69 @@ export function FindStudent({ uploadStatus, headers, id }) {
               </div>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={3}>
-              <div style={{ marginBottom: "16px" }}>
-                <Typography
-                  style={{
-                    color: "#6c757d",
-                    fontSize: "11px",
-                    marginBottom: "4px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                  }}
-                >
-                  Permissões
-                </Typography>
-                <div
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    padding: "4px 8px",
-                    borderRadius: "10px",
-                    fontSize: "10px",
-                    fontWeight: "500",
-                    backgroundColor:
-                      selectedStudent.permissions === "superadmin"
-                        ? "#e3f2fd"
-                        : selectedStudent.permissions === "teacher"
-                        ? "#f3e5f5"
-                        : "#e8f5e8",
-                    color:
-                      selectedStudent.permissions === "superadmin"
-                        ? "#1976d2"
-                        : selectedStudent.permissions === "teacher"
-                        ? "#7b1fa2"
-                        : "#388e3c",
-                  }}
-                >
-                  {selectedStudent.permissions === "superadmin" && (
-                    <i
-                      className="fa fa-shield"
-                      style={{ marginRight: "4px" }}
-                    />
-                  )}
-                  {selectedStudent.permissions === "teacher" && (
-                    <i
-                      className="fa fa-graduation-cap"
-                      style={{ marginRight: "4px" }}
-                    />
-                  )}
-                  {selectedStudent.permissions === "student" && (
-                    <i className="fa fa-user" style={{ marginRight: "4px" }} />
-                  )}
-                  {selectedStudent.permissions === "superadmin"
-                    ? "Admin"
-                    : selectedStudent.permissions === "teacher"
-                    ? "Professor"
-                    : "Aluno"}
+            {!isResponsible && (
+              <Grid item xs={12} sm={6} md={3}>
+                <div style={{ marginBottom: "16px" }}>
+                  <Typography
+                    style={{
+                      color: "#6c757d",
+                      fontSize: "11px",
+                      marginBottom: "4px",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.5px",
+                    }}
+                  >
+                    Permissões
+                  </Typography>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "4px 8px",
+                      borderRadius: "10px",
+                      fontSize: "10px",
+                      fontWeight: "500",
+                      backgroundColor:
+                        selectedStudent.permissions === "superadmin"
+                          ? "#e3f2fd"
+                          : selectedStudent.permissions === "teacher"
+                          ? "#f3e5f5"
+                          : "#e8f5e8",
+                      color:
+                        selectedStudent.permissions === "superadmin"
+                          ? "#1976d2"
+                          : selectedStudent.permissions === "teacher"
+                          ? "#7b1fa2"
+                          : "#388e3c",
+                    }}
+                  >
+                    {selectedStudent.permissions === "superadmin" && (
+                      <i
+                        className="fa fa-shield"
+                        style={{ marginRight: "4px" }}
+                      />
+                    )}
+                    {selectedStudent.permissions === "teacher" && (
+                      <i
+                        className="fa fa-graduation-cap"
+                        style={{ marginRight: "4px" }}
+                      />
+                    )}
+                    {selectedStudent.permissions === "student" && (
+                      <i
+                        className="fa fa-user"
+                        style={{ marginRight: "4px" }}
+                      />
+                    )}
+                    {selectedStudent.permissions === "superadmin"
+                      ? "Admin"
+                      : selectedStudent.permissions === "teacher"
+                      ? "Professor"
+                      : "Aluno"}
+                  </div>
                 </div>
-              </div>
-            </Grid>
+              </Grid>
+            )}
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
@@ -2066,8 +2077,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       color: "#6c757d",
                     }}
                   >
-                    Não há histórico de aulas Individuais para este
-                    aluno.
+                    Não há histórico de aulas Individuais para este aluno.
                   </div>
                 </div>
               )}
@@ -2075,7 +2085,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
           )}
         </div>
       )}
-         {selectedStudent && (
+      {selectedStudent && (
         <div
           style={{
             backgroundColor: "#ffffff",
@@ -2391,8 +2401,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
                       color: "#6c757d",
                     }}
                   >
-                    Não há histórico de aulas em grupo para este
-                    aluno.
+                    Não há histórico de aulas em grupo para este aluno.
                   </div>
                 </div>
               )}
@@ -2400,7 +2409,7 @@ export function FindStudent({ uploadStatus, headers, id }) {
           )}
         </div>
       )}
-      {selectedStudent && (
+      {selectedStudent && !isResponsible && (
         <div
           style={{
             backgroundColor: "#ffffff",
