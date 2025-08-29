@@ -275,7 +275,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
   const [loadingDescription, setLoadingDescription] = useState(false);
 
   const handleClassSummary = async () => {
-setLoadingDescription(true);
+    setLoadingDescription(true);
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
         const response = await axios.put(
@@ -284,13 +284,10 @@ setLoadingDescription(true);
           { headers }
         );
         const adapted = response.data.adapted;
-
-        console.log(adapted);
         setDescription(adapted);
-setLoadingDescription(false);
-
+        setLoadingDescription(false);
       } catch (error) {
-setLoadingDescription(false);
+        setLoadingDescription(false);
 
         console.log(error, "Erro ao encontrar alunos");
       }
@@ -2915,66 +2912,81 @@ setLoadingDescription(false);
                                                 .classDescription
                                             }
                                           </label>
-                                        {loadingDescription ? <CircularProgress style={{
-                                        color:partnerColor(),
-                                        fontSize: "0.5rem",
-                                        }} />
-                                        
-                                        : <div
-                                            style={{
-                                              display: "flex",
-                                              justifyContent: "space-between",
-                                              alignItems: "center",
-                                            }}
-                                          >
-                                            <input
-                                              type="text"
-                                              value={description}
-                                              onChange={(e) =>
-                                                setDescription(e.target.value)
-                                              }
-                                              placeholder={
-                                                UniversalTexts.calendarModal
-                                                  .classDescriptionPlaceholder
-                                              }
+                                          {loadingDescription ? (
+                                            <CircularProgress
                                               style={{
-                                                width: "90%",
-                                                padding: "0.75rem",
-                                                borderRadius: "6px",
-                                                border: "1px solid #d1d5db",
-                                                fontSize: "0.875rem",
-                                                lineHeight: "1.5",
-                                                backgroundColor: "#ffffff",
-                                                transition:
-                                                  "border-color 0.2s ease",
+                                                color: partnerColor(),
+                                                fontSize: "0.5rem",
                                               }}
-                                              onFocus={(e) => {
-                                                e.target.style.borderColor =
-                                                  partnerColor();
-                                                e.target.style.outline = "none";
-                                                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                              }}
-                                              onBlur={(e) => {
-                                                e.target.style.borderColor =
-                                                  "#d1d5db";
-                                                e.target.style.boxShadow =
-                                                  "none";
-                                              }}
-                                              required
                                             />
-                                            <span
+                                          ) : (
+                                            <div
                                               style={{
-                                                fontSize: "1rem",
-                                                cursor: loadingDescription || description.length < 10 ? "not-allowed" : "pointer",
-                                                opacity: loadingDescription || description.length < 10 ? 0.5 : 1,
-
+                                                display: "flex",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
                                               }}
-                                              disabled={loadingDescription || description.length < 10}
-                                              onClick={handleClassSummary}
                                             >
-                                              ✨
-                                            </span>
-                                          </div>}
+                                              <input
+                                                type="text"
+                                                value={description}
+                                                onChange={(e) =>
+                                                  setDescription(e.target.value)
+                                                }
+                                                placeholder={
+                                                  UniversalTexts.calendarModal
+                                                    .classDescriptionPlaceholder
+                                                }
+                                                style={{
+                                                  width: "90%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "6px",
+                                                  border: "1px solid #d1d5db",
+                                                  fontSize: "0.875rem",
+                                                  lineHeight: "1.5",
+                                                  backgroundColor: "#ffffff",
+                                                  transition:
+                                                    "border-color 0.2s ease",
+                                                }}
+                                                onFocus={(e) => {
+                                                  e.target.style.borderColor =
+                                                    partnerColor();
+                                                  e.target.style.outline =
+                                                    "none";
+                                                  e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                }}
+                                                onBlur={(e) => {
+                                                  e.target.style.borderColor =
+                                                    "#d1d5db";
+                                                  e.target.style.boxShadow =
+                                                    "none";
+                                                }}
+                                                required
+                                              />
+                                              <span
+                                                style={{
+                                                  fontSize: "1rem",
+                                                  cursor:
+                                                    loadingDescription ||
+                                                    description.length < 10
+                                                      ? "not-allowed"
+                                                      : "pointer",
+                                                  opacity:
+                                                    loadingDescription ||
+                                                    description.length < 10
+                                                      ? 0.5
+                                                      : 1,
+                                                }}
+                                                disabled={
+                                                  loadingDescription ||
+                                                  description.length < 10
+                                                }
+                                                onClick={handleClassSummary}
+                                              >
+                                                ✨
+                                              </span>
+                                            </div>
+                                          )}
                                         </div>
 
                                         <div
