@@ -56,6 +56,7 @@ import {
   styleLiChecked,
   updateButton,
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
+import { fontSize } from "@mui/system";
 export default function MyCalendar({ headers, thePermissions, myId }) {
   var categoryList = [
     {
@@ -271,22 +272,26 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     setShowFlashcards(false);
     setLoading(false);
   };
+  const [loadingDescription, setLoadingDescription] = useState(false);
 
   const handleClassSummary = async () => {
-    setDescription("loading");
-
+setLoadingDescription(true);
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
         const response = await axios.put(
           `${backDomain}/api/v1/ai-description/${myId}`,
-          { description },
+          { description, classTitle: theLesson.title },
           { headers }
         );
         const adapted = response.data.adapted;
 
         console.log(adapted);
         setDescription(adapted);
+setLoadingDescription(false);
+
       } catch (error) {
+setLoadingDescription(false);
+
         console.log(error, "Erro ao encontrar alunos");
       }
     }
@@ -2910,7 +2915,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 .classDescription
                                             }
                                           </label>
-                                          <div
+                                        {loadingDescription ? <CircularProgress style={{
+                                        color:partnerColor(),
+                                        fontSize: "0.5rem",
+                                        }} />
+                                        
+                                        : <div
                                             style={{
                                               display: "flex",
                                               justifyContent: "space-between",
@@ -2955,13 +2965,16 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             <span
                                               style={{
                                                 fontSize: "1rem",
-                                                cursor: "pointer",
+                                                cursor: loadingDescription || description.length < 10 ? "not-allowed" : "pointer",
+                                                opacity: loadingDescription || description.length < 10 ? 0.5 : 1,
+
                                               }}
+                                              disabled={loadingDescription || description.length < 10}
                                               onClick={handleClassSummary}
                                             >
                                               ✨
                                             </span>
-                                          </div>
+                                          </div>}
                                         </div>
 
                                         <div
