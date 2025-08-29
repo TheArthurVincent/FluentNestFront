@@ -1705,10 +1705,10 @@ export const updateInfo = async (id, headers) => {
     const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {
       headers,
     });
-    const userInfo = response.data.formattedStudentData;
-    const wl = response.data.whiteLabel;
-    let loggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};
-    let whiteLabel = JSON.parse(localStorage.getItem("whiteLabel")) || {};
+    var userInfo = response.data.formattedStudentData;
+    var wl = response.data.whiteLabel;
+    var loggedIn = JSON.parse(localStorage.getItem("loggedIn")) || {};
+    var whiteLabel = JSON.parse(localStorage.getItem("whiteLabel")) || {};
 
     loggedIn = Object.assign(loggedIn, userInfo);
     whiteLabel = Object.assign(whiteLabel, wl);
@@ -1717,18 +1717,19 @@ export const updateInfo = async (id, headers) => {
   } catch (error) {
     console.log(error, "Erro ao atualizar dados");
   }
-
-  try {
-    const response = await axios.get(
-      `${backDomain}/api/v1/studentflashcardstoday/${id}`,
-      {
-        headers,
-      }
-    );
-    const userInfo = response.data.flashcardsToday;
-    localStorage.setItem("flashcardsToday", userInfo);
-  } catch (error) {
-    console.log(error, "Erro ao atualizar dados");
+  if (!loggedIn.isResponsible) {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/studentflashcardstoday/${id}`,
+        {
+          headers,
+        }
+      );
+      const userInfo = response.data.flashcardsToday;
+      localStorage.setItem("flashcardsToday", userInfo);
+    } catch (error) {
+      console.log(error, "Erro ao atualizar dados");
+    }
   }
 };
 
