@@ -2968,18 +2968,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   fontSize: "1rem",
                                                   cursor:
                                                     loadingDescription ||
-                                                    description.length < 10
+                                                    !description
                                                       ? "not-allowed"
                                                       : "pointer",
                                                   opacity:
                                                     loadingDescription ||
-                                                    description.length < 10
+                                                    !description
                                                       ? 0.5
                                                       : 1,
                                                 }}
                                                 disabled={
                                                   loadingDescription ||
-                                                  description.length < 10
+                                                  !description
                                                 }
                                                 onClick={handleClassSummary}
                                               >
