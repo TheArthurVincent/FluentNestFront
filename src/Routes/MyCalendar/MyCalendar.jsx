@@ -1847,7 +1847,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 600,
                               }}
                             >
-                              {UniversalTexts.delete}{" "}
+                              {UniversalTexts.delete}
                             </button>
 
                             <button
@@ -1861,7 +1861,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: 500,
                               }}
                             >
-                              {UniversalTexts.cancel}{" "}
+                              {UniversalTexts.cancel}
                             </button>
 
                             <button
@@ -2375,7 +2375,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                       letterSpacing: "0.3px",
                                     }}
                                   >
-                                    <i className="fa fa-clock-o" style={{}} />{" "}
+                                    <i className="fa fa-clock-o" style={{}} />
+
                                     {formatTimeRange(
                                       event.time,
                                       event.duration
@@ -2892,7 +2893,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               fontSize: "1rem",
                                             }}
                                           >
-                                            Conteúdo da Aula Realizada - Aluno:{" "}
+                                            Conteúdo da Aula Realizada - Aluno:
                                             <strong>{name}</strong>
                                           </h3>
                                         </div>
@@ -3182,15 +3183,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 {theLesson ? (
                                                   <>
                                                     <p>
-                                                      <strong>Título:</strong>{" "}
+                                                      <strong>Título:</strong>
+
                                                       {theLesson.title}
                                                     </p>
                                                     <p>
-                                                      <strong>Curso:</strong>{" "}
+                                                      <strong>Curso:</strong>
+
                                                       {theLesson.course}
                                                     </p>
                                                     <p>
-                                                      <strong>Módulo:</strong>{" "}
+                                                      <strong>Módulo:</strong>
+
                                                       {theLesson.module}
                                                     </p>
                                                   </>
@@ -3282,8 +3286,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     handleHomeworkChange
                                                   }
                                                   initialContent={"Type here"}
-                                                />{" "}
-                                              </div>{" "}
+                                                />
+                                              </div>
+
                                               {studentsInGroup.length > 0 && (
                                                 <div>
                                                   <label
@@ -3338,11 +3343,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 </div>
                                               )}
                                             </div>
-                                          )}{" "}
-                                          {/* Due Date */}{" "}
+                                          )}
+
+                                          {/* Due Date */}
+
                                           {!homeworkAdded && showHomework && (
                                             <div>
-                                              {" "}
                                               <label
                                                 style={{
                                                   display: "block",
@@ -3352,9 +3358,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   fontSize: "0.875rem",
                                                 }}
                                               >
-                                                {" "}
-                                                📅 Data de Entrega{" "}
-                                              </label>{" "}
+                                                📅 Data de Entrega
+                                              </label>
+
                                               <input
                                                 value={
                                                   dueDate
@@ -3389,10 +3395,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                   e.target.style.boxShadow =
                                                     "none";
                                                 }}
-                                              />{" "}
+                                              />
                                             </div>
-                                          )}{" "}
-                                          {/* File Upload */}{" "}
+                                          )}
+
+                                          {/* File Upload */}
+
                                           {!homeworkAdded &&
                                             showHomework &&
                                             category !== "Group Class" &&
@@ -3402,7 +3410,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             category !==
                                               "Horário vazio para reposição" && (
                                               <div>
-                                                {" "}
                                                 <label
                                                   style={{
                                                     display: "block",
@@ -3412,9 +3419,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     fontSize: "0.875rem",
                                                   }}
                                                 >
-                                                  {" "}
-                                                  📎 Anexar Arquivo{" "}
-                                                </label>{" "}
+                                                  📎 Anexar Arquivo
+                                                </label>
+
                                                 <input
                                                   type="file"
                                                   onChange={handleFileChange}
@@ -3428,7 +3435,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                     backgroundColor: "#ffffff",
                                                     cursor: "pointer",
                                                   }}
-                                                />{" "}
+                                                />
+
                                                 {uploading && (
                                                   <div
                                                     style={{
@@ -3438,10 +3446,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                       fontStyle: "italic",
                                                     }}
                                                   >
-                                                    {" "}
-                                                    Processando arquivo...{" "}
+                                                    Processando arquivo...
                                                   </div>
-                                                )}{" "}
+                                                )}
+
                                                 {selectedFile && !uploading && (
                                                   <div
                                                     style={{
@@ -3451,8 +3459,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                       fontStyle: "italic",
                                                     }}
                                                   >
-                                                    {" "}
-                                                    ✅ {selectedFile.name}{" "}
+                                                    ✅ {selectedFile.name}
                                                     <button
                                                       type="button"
                                                       onClick={clearFile}
@@ -3465,13 +3472,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                         fontSize: "0.8rem",
                                                       }}
                                                     >
-                                                      {" "}
-                                                      ❌ Remover{" "}
-                                                    </button>{" "}
+                                                      ❌ Remover
+                                                    </button>
                                                   </div>
-                                                )}{" "}
+                                                )}
                                               </div>
-                                            )}{" "}
+                                            )}
+
                                           {category !== "Group Class" &&
                                             category !== "Standalone" &&
                                             category !== "Aula experimental" &&
@@ -3479,7 +3486,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                             category !==
                                               "Horário vazio para reposição" && (
                                               <div>
-                                                {/* Flashcards */}{" "}
+                                                {/* Flashcards */}
+
                                                 {!flashcardsAdded && (
                                                   <button
                                                     type="button"
@@ -3523,26 +3531,25 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                         "#6c757d";
                                                     }}
                                                   >
-                                                    {" "}
                                                     <span
                                                       style={{
                                                         fontSize: "12px",
                                                       }}
                                                     >
-                                                      {" "}
                                                       {showFlashcards
                                                         ? "🃏"
-                                                        : "➕"}{" "}
-                                                    </span>{" "}
+                                                        : "➕"}
+                                                    </span>
+
                                                     {showFlashcards
                                                       ? "Hide Flashcards"
-                                                      : "Add Flashcards"}{" "}
+                                                      : "Add Flashcards"}
                                                   </button>
-                                                )}{" "}
+                                                )}
+
                                                 {!flashcardsAdded &&
                                                   showFlashcards && (
                                                     <div>
-                                                      {" "}
                                                       <label
                                                         style={{
                                                           display: "block",
@@ -3553,8 +3560,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                           fontSize: "0.875rem",
                                                         }}
                                                       >
-                                                        {" "}
-                                                        🃏{" "}
+                                                        🃏
                                                         {
                                                           UniversalTexts
                                                             .calendarModal
@@ -3652,7 +3658,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               fontSize: "0.9rem",
                                             }}
                                           >
-                                            📋{" "}
+                                            📋
                                             {
                                               UniversalTexts.calendarModal
                                                 .selectCategory
@@ -3697,7 +3703,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                                 fontSize: "0.9rem",
                                               }}
                                             >
-                                              👤{" "}
+                                              👤
                                               {
                                                 UniversalTexts.calendarModal
                                                   .selectStudent
@@ -3891,15 +3897,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               {theLesson ? (
                                                 <>
                                                   <p>
-                                                    <strong>Título:</strong>{" "}
+                                                    <strong>Título:</strong>
+
                                                     {theLesson.title}
                                                   </p>
                                                   <p>
-                                                    <strong>Curso:</strong>{" "}
+                                                    <strong>Curso:</strong>
+
                                                     {theLesson.course}
                                                   </p>
                                                   <p>
-                                                    <strong>Módulo:</strong>{" "}
+                                                    <strong>Módulo:</strong>
+
                                                     {theLesson.module}
                                                   </p>
                                                 </>
@@ -3962,7 +3971,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               fontSize: "0.9rem",
                                             }}
                                           >
-                                            🔗{" "}
+                                            🔗
                                             {UniversalTexts.calendarModal.link}
                                           </label>
                                           <input
@@ -3993,7 +4002,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               fontSize: "0.9rem",
                                             }}
                                           >
-                                            📝{" "}
+                                            📝
                                             {
                                               UniversalTexts.calendarModal
                                                 .classDescription
@@ -4095,7 +4104,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                           color: "#721c24",
                                         }}
                                       >
-                                        ⚠️{" "}
+                                        ⚠️
                                         {
                                           UniversalTexts.calendarModal
                                             .deleteConfirmation
@@ -4272,7 +4281,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 <span>Aula relacionada</span>
                                 <span>
                                   <strong>
-                                    {" "}
                                     {theLesson.title} | {theLesson.course}
                                   </strong>
                                 </span>
@@ -4308,7 +4316,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 fontWeight: "500",
                               }}
                             >
-                              Duração:{" "}
+                              Duração:
                               {duration < 60
                                 ? `${duration} min`
                                 : duration === 60
@@ -4772,7 +4780,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     color: "#6b7280",
                                   }}
                                 >
-                                  <strong>Data de Entrega:</strong>{" "}
+                                  <strong>Data de Entrega:</strong>
+
                                   {new Date(
                                     eventFull.homeworkDetails.dueDate
                                   ).toLocaleDateString("pt-BR")}
@@ -4798,7 +4807,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     color: "#6b7280",
                                   }}
                                 >
-                                  <strong>Categoria:</strong>{" "}
+                                  <strong>Categoria:</strong>
+
                                   {eventFull.homeworkDetails.category}
                                 </span>
                               </div>
@@ -4963,7 +4973,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 }
                               }}
                             >
-                              {fileName}{" "}
+                              {fileName}
+
                               {base64String && "👆 Clique para baixar"}
                             </div>
                           </div>
@@ -5414,7 +5425,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                           ).toLocaleDateString("pt-BR")})`
                                         : `${UniversalTexts.expired} ${new Date(
                                             item.endDate
-                                          ).toLocaleDateString("pt-BR")}`}{" "}
+                                          ).toLocaleDateString("pt-BR")}`}
                                       {UniversalTexts.tutoringExpiring}
                                     </div>
                                   )}
@@ -5462,7 +5473,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                               color: "#6c757d",
                                             }}
                                           >
-                                            (Ends on:{" "}
+                                            (Ends on:
                                             {moment(item.endDate).format(
                                               "DD/MM/YYYY"
                                             )}
@@ -6573,8 +6584,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   </div>
                 </div>
               )}
-            </div>{" "}
-          </>{" "}
+            </div>
+          </>
+
           <div
             style={{
               marginBottom: "1rem",
@@ -6585,7 +6597,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
               padding: "12px 16px",
             }}
           >
-            {" "}
             <div
               style={{
                 display: "flex",
@@ -6595,7 +6606,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                 gap: "8px",
               }}
             >
-              {" "}
               <div
                 style={{
                   display: "flex",
@@ -6606,7 +6616,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   padding: "2px",
                 }}
               >
-                {" "}
                 <button
                   disabled={!disabledAvoid}
                   style={{
@@ -6625,9 +6634,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                   onClick={() => handleChangeWeek(-7)}
                 >
-                  {" "}
-                  <i className="fa fa-chevron-left" />{" "}
-                </button>{" "}
+                  <i className="fa fa-chevron-left" />
+                </button>
+
                 <div
                   style={{
                     padding: "0 12px",
@@ -6638,12 +6647,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     textAlign: "center",
                   }}
                 >
-                  {" "}
                   {today.toLocaleDateString("pt-BR", {
                     month: "short",
                     year: "numeric",
-                  })}{" "}
-                </div>{" "}
+                  })}
+                </div>
+
                 <button
                   disabled={!disabledAvoid}
                   style={{
@@ -6662,11 +6671,12 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   }}
                   onClick={() => handleChangeWeek(7)}
                 >
-                  {" "}
-                  <i className="fa fa-chevron-right" />{" "}
-                </button>{" "}
-              </div>{" "}
-              {/* Seletor de Data - Minimalista */}{" "}
+                  <i className="fa fa-chevron-right" />
+                </button>
+              </div>
+
+              {/* Seletor de Data - Minimalista */}
+
               <div
                 style={{
                   position: "relative",
@@ -6676,7 +6686,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                   overflow: "hidden",
                 }}
               >
-                {" "}
                 <input
                   type="date"
                   onChange={handleDateChange}
@@ -6693,30 +6702,30 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                     cursor: loading ? "not-allowed" : "pointer",
                     opacity: loading ? 0.6 : 1,
                   }}
-                />{" "}
-              </div>{" "}
+                />
+              </div>
+
               <div style={{ display: "grid", gap: "5px" }}>
-                {" "}
-                {/* Ações rápidas - Compactas */}{" "}
+                {/* Ações rápidas - Compactas */}
+
                 <div
                   style={{ display: "flex", gap: "6px", alignItems: "center" }}
                 >
-                  {" "}
-                  {/* Botão Hoje */}{" "}
+                  {/* Botão Hoje */}
+
                   <button
                     disabled={!disabledAvoid}
                     onClick={() => {
                       loadGeneral(new Date());
                     }}
                   >
-                    {" "}
-                    <i
-                      className="fa fa-refresh"
-                      style={{ fontSize: "10px" }}
-                    />{" "}
-                    <span>{UniversalTexts.calendarModal.today}</span>{" "}
-                  </button>{" "}
-                  {/* Botão Recorrentes */}{" "}
+                    <i className="fa fa-refresh" style={{ fontSize: "10px" }} />
+
+                    <span>{UniversalTexts.calendarModal.today}</span>
+                  </button>
+
+                  {/* Botão Recorrentes */}
+
                   {authorizeOrNot && (
                     <button
                       disabled={!disabledAvoid}
@@ -6725,17 +6734,17 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         setSeePlusButtons(false);
                       }}
                     >
-                      {" "}
                       <i
                         className="fa fa-repeat"
                         style={{ fontSize: "10px" }}
-                      />{" "}
+                      />
+
                       <span>
-                        {" "}
-                        {UniversalTexts.calendarModal.recurringClasses}{" "}
-                      </span>{" "}
+                        {UniversalTexts.calendarModal.recurringClasses}
+                      </span>
                     </button>
-                  )}{" "}
+                  )}
+
                   {authorizeOrNot && (
                     <ToDoAddButton
                       userId={myId}
@@ -6743,8 +6752,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         setAlternateBoolean(!alternateBoolean);
                       }}
                     />
-                  )}{" "}
-                  {/* Botão Nova Aula */}{" "}
+                  )}
+
+                  {/* Botão Nova Aula */}
+
                   {authorizeOrNot && (
                     <button
                       onClick={() => {
@@ -6752,16 +6763,13 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                         setSeePlusButtons(false);
                       }}
                     >
-                      {" "}
-                      +<span>
-                        {UniversalTexts.calendarModal.singleClass}
-                      </span>{" "}
+                      +<span>{UniversalTexts.calendarModal.singleClass}</span>
                     </button>
-                  )}{" "}
-                </div>{" "}
-              </div>{" "}
-            </div>{" "}
-          </div>{" "}
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
         </RouteDiv>
       ) : (
         <RouteSizeControlBox>
