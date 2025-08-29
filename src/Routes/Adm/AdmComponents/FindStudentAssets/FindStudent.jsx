@@ -2786,7 +2786,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
       )}
 
       {/* SEÇÃO DE ESTATÍSTICAS GERAIS */}
-      {!loading && students.length > 0 && (
+      {!loading && students.length > 0 && !isResponsible && (
         <div
           style={{
             backgroundColor: "#fafbfc",
@@ -3848,7 +3848,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
         </DialogContent>
       </Dialog>
 
-      {isArthurVincent && (
+      {isArthurVincent && !isResponsible && (
         <Button
           variant="outlined"
           style={{
