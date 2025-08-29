@@ -340,6 +340,11 @@ export function MyClasses({ headers }) {
 
             {/* Classes List */}
             {currentClasses.map((classItem, index) => {
+              console.log(
+                classItem.date,
+
+                new Date(classItem.date)
+              );
               const isOpen = openIndex === index;
               const isRealizada = classItem.status === "realizada";
 
@@ -428,7 +433,14 @@ export function MyClasses({ headers }) {
                               new Date(classItem.date).getTime() +
                                 3.5 * 60 * 60 * 1000
                             )
-                          )}
+                          ) !== "Invalid Date"
+                            ? formatDateBr(
+                                new Date(
+                                  new Date(classItem.date).getTime() +
+                                    3.5 * 60 * 60 * 1000
+                                )
+                              )
+                            : classItem.date}
                         </span>
                       </div>
 
