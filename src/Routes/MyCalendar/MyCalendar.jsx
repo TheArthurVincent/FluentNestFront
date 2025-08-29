@@ -6765,11 +6765,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         </RouteDiv>
       ) : (
         <RouteSizeControlBox>
-          {" "}
-          {UniversalTexts.calendarModal.noLoggedUser}{" "}
+          {UniversalTexts.calendarModal.noLoggedUser}
         </RouteSizeControlBox>
-      )}{" "}
-      <Helmets text="Calendar" />{" "}
+      )}
+      <Helmets text="Calendar" />
     </>
   );
 }
