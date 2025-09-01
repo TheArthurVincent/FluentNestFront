@@ -161,7 +161,22 @@ export function AllStudents({ headers, id }) {
               <input
                 type={type}
                 value={formData[key]}
-                onChange={handleChange(key)}
+                onChange={(e) => {
+                  let value = e.target.value;
+                  if (key === "cpf") {
+                    value = value.replace(/\D/g, ""); // Remove tudo que não for número
+                  }
+                  handleChange(key)({ target: { value } });
+                }}
+                onPaste={(e) => {
+                  if (key === "cpf") {
+                    e.preventDefault();
+                    const pasted = e.clipboardData
+                      .getData("Text")
+                      .replace(/\D/g, "");
+                    handleChange(key)({ target: { value: pasted } });
+                  }
+                }}
                 style={{
                   ...inputStyle,
                   borderColor: formData[key] ? partnerColor() : "#ddd",
