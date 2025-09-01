@@ -16,16 +16,18 @@ export function EditResponsibleModal({
 }) {
   const [loading, setLoading] = useState(false);
   const [theName, setTheName] = useState(name);
+  const [theID, setTheID] = useState(id);
   const [theEmail, setTheEmail] = useState(email);
   const [theLastname, setTheLastname] = useState(lastname);
   const [seeModal, setSeeModal] = useState(false);
+  const [seeDelete, setSeeDelete] = useState(false);
   const [allStudents, setAllStudents] = useState([]);
   const [selectedStudentIds, setSelectedStudentIds] = useState(
     students ? students.map((s) => s._id) : []
   );
 
   useEffect(() => {
-    console.log(students, selectedStudentIds);
+    setSeeDelete(false);
     if (seeModal) {
       axios
         .get(`${backDomain}/api/v1/students/${myID}`, { headers })
@@ -61,6 +63,23 @@ export function EditResponsibleModal({
     } catch (err) {
       console.log(err);
       alert("Erro ao salvar");
+    }
+    setLoading(false);
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.delete(
+        `${backDomain}/api/v1/responsible/${theID}`,
+        { headers }
+      );
+      console.log(response);
+      setFlag((prev) => !prev);
+      setSeeModal(false);
+    } catch (err) {
+      console.log(err);
+      alert("Erro ao excluir");
     }
     setLoading(false);
   };
@@ -224,23 +243,68 @@ export function EditResponsibleModal({
                 )}
               </div>
             </div>
-            <button
-              onClick={handleSave}
-              disabled={loading}
-              style={{
-                background: partnerColor(),
-                color: "#fff",
-                border: "none",
-                borderRadius: "6px",
-                padding: "8px 24px",
-                fontWeight: 600,
-                fontSize: 16,
-                cursor: "pointer",
-                marginTop: 12,
-              }}
-            >
-              {loading ? "Salvando..." : "Salvar"}
-            </button>
+
+            {seeDelete ? (
+              <div>
+                {" "}
+                Excluir?
+                <button
+                  style={{
+                    color: "white",
+                    backgroundColor: partnerColor(),
+                  }}
+                  onClick={() => setSeeDelete(false)}
+                >
+                  Não
+                </button>
+                <button
+                  style={{
+                    color: "white",
+                    backgroundColor: "red",
+                  }}
+                  onClick={handleDelete}
+                >
+                  Sim
+                </button>{" "}
+              </div>
+            ) : (
+              <>
+                <button
+                  onClick={() => setSeeDelete(true)}
+                  disabled={loading}
+                  style={{
+                    background: "red",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "8px 24px",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    marginTop: 12,
+                  }}
+                >
+                  Excluir
+                </button>
+                <button
+                  onClick={handleSave}
+                  disabled={loading}
+                  style={{
+                    background: partnerColor(),
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: "6px",
+                    padding: "8px 24px",
+                    fontWeight: 600,
+                    fontSize: 16,
+                    cursor: "pointer",
+                    marginTop: 12,
+                  }}
+                >
+                  {loading ? "Salvando..." : "Salvar"}
+                </button>
+              </>
+            )}
           </div>
         </div>
       )}
