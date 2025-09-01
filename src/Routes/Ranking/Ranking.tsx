@@ -59,16 +59,6 @@ export default function Ranking({ headers }: HeadersProps) {
       value: "4",
       component: <RankingExplanation />,
     },
-    // {
-    //   title: "History",
-    //   value: "5",
-    //   component: (
-    //     <StudentsHistoryOfWinners
-    //       monthNow={monthInQuestion}
-    //       headers={headers}
-    //     />
-    //   ),
-    // },
   ];
   const handleChange = (event: any, newValue: string) => {
     event.preventDefault();
