@@ -377,7 +377,7 @@ export function Groups({ headers, id }) {
           {groups.map((group, index) => {
             return (
               <li
-                key={group.id}
+                key={group.id + index}
                 style={{
                   listStyle: "none",
                   marginBottom: 10,
@@ -428,14 +428,14 @@ export function Groups({ headers, id }) {
                     gap: "5px",
                   }}
                 >
-                  {group.studentIds.map((studentId) => {
+                  {group.studentIds.map((studentId, index2) => {
                     const sid = String(studentId?._id ?? studentId);
                     const student = students.find(
                       (s) => String(s._id ?? s.id) === sid
                     );
                     return (
                       <span
-                        key={sid}
+                        key={sid + index2}
                         style={{
                           color: textpartnerColorContrast(),
                           backgroundColor: partnerColor(),
@@ -662,9 +662,9 @@ export function Groups({ headers, id }) {
                 padding: "8px 6px",
               }}
             >
-              {students.map((student) => (
+              {students.map((student, indexST) => (
                 <label
-                  key={student.id}
+                  key={student.id + indexST}
                   style={{
                     display: "flex",
                     alignItems: "center",
@@ -708,7 +708,7 @@ export function Groups({ headers, id }) {
 
               return (
                 <div
-                  key={key}
+                  key={key + idx}
                   style={{ marginBottom: "1rem", ...styles.item(t.leftBorder) }}
                 >
                   {/* Cabeçalho */}

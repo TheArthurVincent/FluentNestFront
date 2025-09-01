@@ -83,10 +83,6 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
   const [tutoree, setTutoree] = useState(false);
   const [isAdm, setIsAdm] = useState(false);
 
-  useEffect(() => {
-    console.log("isResponsible", isResponsible);
-  }, [isResponsible]);
-
   const handleChangeEdit = (event, newValue) => {
     setValue(newValue);
   };
