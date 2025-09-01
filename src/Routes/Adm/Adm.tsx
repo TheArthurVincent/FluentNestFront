@@ -18,7 +18,7 @@ import { RouteDiv } from "../../Resources/Components/RouteBox";
 import FinancialResources from "./AdmComponents/FinancialResources/FinancialResources";
 import Groups from "./AdmComponents/Groups/Groups";
 import ArthurSection from "./AdmComponents/ArthurSection/ArthurSection";
-import NewResponsible from "./AdmComponents/NewResponsible/NewResponsible";
+import ResponsibleMainFile from "./AdmComponents/NewResponsible/ResponsibleMainFile";
 
 export function Adm({ headers }: HeadersProps) {
   const { id } = localStorageLoggedIn;
@@ -60,7 +60,7 @@ export function Adm({ headers }: HeadersProps) {
         "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
       component: (
         <>
-          <NewResponsible id={id} headers={headers} />
+          <ResponsibleMainFile id={id} headers={headers} />
         </>
       ),
     },

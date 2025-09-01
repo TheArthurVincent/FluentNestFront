@@ -3,13 +3,13 @@ import axios from "axios";
 import {
   backDomain,
   isValidCPF,
-} from "../../../../Resources/UniversalComponents";
+} from "../../../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
-import { partnerColor } from "../../../../Styles/Styles";
-import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { HOne } from "../../../../Resources/Components/RouteBox";
+import { partnerColor } from "../../../../../Styles/Styles";
+import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { HOne } from "../../../../../Resources/Components/RouteBox";
 
-export function NewResponsible({ headers, id }) {
+export function NewResponsible({ headers, id, flag, setFlag }) {
   const [formData, setFormData] = useState({
     name: "",
     lastname: "",
@@ -90,6 +90,7 @@ export function NewResponsible({ headers, id }) {
         `Usuário cadastrado com sucesso! ${response.data.message}`,
         "green"
       );
+      setFlag(!flag);
     } catch (error) {
       notifyAlert(
         `Erro ao cadastrar aluno ${formData.name}. ${error.response.data.message}`
