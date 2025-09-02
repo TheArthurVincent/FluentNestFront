@@ -81,21 +81,6 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       link: "/flash-cards",
     },
     {
-      id: "current-lesson",
-      title: NO
-        ? `${UniversalTexts.currentLesson}  - ${lesson}`
-        : "Begin your journey!",
-      description: UniversalTexts.retome,
-      display: !loadingLESSON ? "flex" : "none",
-      img: img,
-      link: NO
-        ? `/teaching-materials/${course
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w\-]+/g, "")}/${classId}`
-        : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b",
-    },
-    {
       id: "listening",
       title: UniversalTexts.listening,
       description: UniversalTexts.pratique,
@@ -110,6 +95,21 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mining.png?updatedAt=1742402051850",
       link: "/sentence-mining",
+    },
+    {
+      id: "current-lesson",
+      title: NO
+        ? `${UniversalTexts.currentLesson}  - ${lesson}`
+        : "Begin your journey!",
+      description: UniversalTexts.retome,
+      display: !loadingLESSON ? "flex" : "none",
+      img: img,
+      link: NO
+        ? `/teaching-materials/${course
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace(/[^\w\-]+/g, "")}/${classId}`
+        : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b",
     },
   ];
 
