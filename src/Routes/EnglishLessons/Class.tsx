@@ -150,7 +150,8 @@ export default function EnglishClassCourse2({
   const [thePicture, setPicture] = useState<string>("");
   const [seeSlides, setSeeSlides] = useState<boolean>(false);
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
-
+  const [chosenStudent, setChosenStudent] = useState<boolean>(false);
+  const [SeeMarginBoardStudent, setSeeMarginBoardStudent] = useState<boolean>(false);
   const [newHWDescription, setNewHWDescription] = useState("");
   const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
   const handleHWDescriptionChange = (htmlContent: any) => {
@@ -2807,6 +2808,8 @@ export default function EnglishClassCourse2({
   const [seeConfirm, setSeeConfirm] = useState(false);
   const [studentName, setStudentName] = useState("");
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setChosenStudent(true);
+    
     const theid = event.target.value;
     setStudentID(theid);
     handleGetBoard(theid);
@@ -3149,7 +3152,8 @@ export default function EnglishClassCourse2({
   useEffect(() => {
     if (theclass?.elements && Array.isArray(theclass.elements)) {
       const found = theclass.elements.some(
-        (el: any) => el && el.type === "audio" || el && el.type === "audiosoundtrack"
+        (el: any) =>
+          (el && el.type === "audio") || (el && el.type === "audiosoundtrack")
       );
       setHasAudioElement(found);
     } else {
@@ -3283,11 +3287,31 @@ export default function EnglishClassCourse2({
             <button
               title="Ver Quadro"
               onClick={() => {
+
+if(chosenStudent){
+
+
                 handleGetBoard(studentID);
                 setTimeout(() => {
                   setSeeSlides(!seeSlides);
                   setConfirm(false);
                 }, 500);
+}else{
+
+  notifyAlert("Escolha um aluno",partnerColor())
+
+setSeeMarginBoardStudent(true)
+setTimeout(() => {
+setSeeMarginBoardStudent(false)
+  
+}, 3000);
+
+
+}
+
+
+
+
               }}
               className="isMobileDisapear"
               style={{
@@ -3346,8 +3370,8 @@ export default function EnglishClassCourse2({
                   value={studentID}
                   style={{
                     borderRadius: "4px",
-                    border: "1px solid #e2e8f0",
-                    backgroundColor: "#f8fafc",
+                    border: SeeMarginBoardStudent ? `2px solid ${partnerColor()}`:"1px solid #e2e8f0",
+                    backgroundColor: SeeMarginBoardStudent ? "#bfc2c5ff":"#f8fafc",
                     fontSize: "11px",
                     fontWeight: "400",
                     color: "#64748b",
@@ -4217,42 +4241,40 @@ export default function EnglishClassCourse2({
                         }}
                       >
                         {element.type === "audio" ? (
-<div
-style={{
-  display:"grid",gap:"8px"
-  ,
-  padding:"5px 10px "
-}}
->
-  {element.subtitle && element.subtitle}
-<AudioFile
-                            element={element}
-                            selectedVoice={selectedVoice}
-                          />
-
-                          </div>  
+                          <div
+                            style={{
+                              display: "grid",
+                              gap: "8px",
+                              padding: "5px 10px ",
+                            }}
+                          >
+                            {element.subtitle && element.subtitle}
+                            <AudioFile
+                              element={element}
+                              selectedVoice={selectedVoice}
+                            />
+                          </div>
                         ) : element.type === "audiosoundtrack" ? (
                           <div
-style={{
-  display:"grid",gap:"8px"
-  ,
-  padding:"5px 10px "
-}}
->
-  {element.subtitle && element.subtitle}
-                          <AudioSoundTrack
-                            headers={headers}
-                            text={element.text}
-                            src={element.src}
-                            studentId={studentID}
-                            mainTag={theclass.mainTag}
-                            element={element}
-                            link={element.link}
-                            subtitle={element.subtitle}
-                            selectedVoice={selectedVoice}
-                          />
-                          </div>  
-
+                            style={{
+                              display: "grid",
+                              gap: "8px",
+                              padding: "5px 10px ",
+                            }}
+                          >
+                            {element.subtitle && element.subtitle}
+                            <AudioSoundTrack
+                              headers={headers}
+                              text={element.text}
+                              src={element.src}
+                              studentId={studentID}
+                              mainTag={theclass.mainTag}
+                              element={element}
+                              link={element.link}
+                              subtitle={element.subtitle}
+                              selectedVoice={selectedVoice}
+                            />
+                          </div>
                         ) : (
                           <></>
                         )}
