@@ -77,7 +77,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       title: "Flashcards",
       description: UniversalTexts.revise,
       display: "flex",
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcards.png?updatedAt=1742402052092",
+      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcardsssss?updatedAt=1756841095355",
       link: "/flash-cards",
     },
     {
@@ -85,7 +85,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       title: UniversalTexts.listening,
       description: UniversalTexts.pratique,
       display: "flex",
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/list.png?updatedAt=1742402052061",
+      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/listeningssss?updatedAt=1756841095374",
       link: "/listening",
     },
     {
@@ -93,7 +93,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       title: UniversalTexts.vocabulary,
       description: UniversalTexts.enriqueça,
       display: "flex",
-      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mining.png?updatedAt=1742402051850",
+      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mininggggg?updatedAt=1756841096059",
       link: "/sentence-mining",
     },
     {
