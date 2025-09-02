@@ -76,6 +76,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       id: "flash-cards",
       title: "Flashcards",
       description: UniversalTexts.revise,
+      
       display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/flashcardsssss?updatedAt=1756841095355",
       link: "/flash-cards",
