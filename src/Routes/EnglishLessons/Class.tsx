@@ -151,7 +151,8 @@ export default function EnglishClassCourse2({
   const [seeSlides, setSeeSlides] = useState<boolean>(false);
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
   const [chosenStudent, setChosenStudent] = useState<boolean>(false);
-  const [SeeMarginBoardStudent, setSeeMarginBoardStudent] = useState<boolean>(false);
+  const [SeeMarginBoardStudent, setSeeMarginBoardStudent] =
+    useState<boolean>(false);
   const [newHWDescription, setNewHWDescription] = useState("");
   const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
   const handleHWDescriptionChange = (htmlContent: any) => {
@@ -2809,7 +2810,7 @@ export default function EnglishClassCourse2({
   const [studentName, setStudentName] = useState("");
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setChosenStudent(true);
-    
+
     const theid = event.target.value;
     setStudentID(theid);
     handleGetBoard(theid);
@@ -3287,31 +3288,20 @@ export default function EnglishClassCourse2({
             <button
               title="Ver Quadro"
               onClick={() => {
+                if (chosenStudent) {
+                  handleGetBoard(studentID);
+                  setTimeout(() => {
+                    setSeeSlides(!seeSlides);
+                    setConfirm(false);
+                  }, 500);
+                } else {
+                  notifyAlert("Escolha um aluno", partnerColor());
 
-if(chosenStudent){
-
-
-                handleGetBoard(studentID);
-                setTimeout(() => {
-                  setSeeSlides(!seeSlides);
-                  setConfirm(false);
-                }, 500);
-}else{
-
-  notifyAlert("Escolha um aluno",partnerColor())
-
-setSeeMarginBoardStudent(true)
-setTimeout(() => {
-setSeeMarginBoardStudent(false)
-  
-}, 3000);
-
-
-}
-
-
-
-
+                  setSeeMarginBoardStudent(true);
+                  setTimeout(() => {
+                    setSeeMarginBoardStudent(false);
+                  }, 3000);
+                }
               }}
               className="isMobileDisapear"
               style={{
@@ -3370,8 +3360,12 @@ setSeeMarginBoardStudent(false)
                   value={studentID}
                   style={{
                     borderRadius: "4px",
-                    border: SeeMarginBoardStudent ? `2px solid ${partnerColor()}`:"1px solid #e2e8f0",
-                    backgroundColor: SeeMarginBoardStudent ? "#bfc2c5ff":"#f8fafc",
+                    border: SeeMarginBoardStudent
+                      ? `2px solid ${partnerColor()}`
+                      : "1px solid #e2e8f0",
+                    backgroundColor: SeeMarginBoardStudent
+                      ? "#bfc2c5ff"
+                      : "#f8fafc",
                     fontSize: "11px",
                     fontWeight: "400",
                     color: "#64748b",
