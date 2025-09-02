@@ -2988,147 +2988,154 @@ export default function EnglishClassCourse2({
   }, [selectedVoice, changeNumber]);
 
   const [editorContent, setEditorContent] = useState<string>("");
-const generateInitialBoardContent = () => {
-  const px = 20;
+  const generateInitialBoardContent = () => {
+    const px = 20;
 
-  const p = (html: string) => `<p style="font-size:${px}px;">${html}</p><br/>`;
-  const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
-  const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
+    const p = (html: string) =>
+      `<p style="font-size:${px}px;">${html}</p><br/>`;
+    const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
+    const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
 
-  let content = "";
+    let content = "";
 
-  // Título da aula (como título -> negrito)
-  content += p(b(sanitizeText(classTitle || "Aula de Inglês", 100)));
+    // Título da aula (como título -> negrito)
+    content += p(b(sanitizeText(classTitle || "Aula de Inglês", 100)));
 
-  // Data (apenas <p>)
-  content += p(`Data: ${new Date().toLocaleDateString("pt-BR")}`);
+    // Data (apenas <p>)
+    content += p(`Data: ${new Date().toLocaleDateString("pt-BR")}`);
 
-  if (theclass.elements && Array.isArray(theclass.elements)) {
-    const sortedElements = theclass.elements.sort(
-      (a: any, b: any) => (a.order || 0) - (b.order || 0)
-    );
+    if (theclass.elements && Array.isArray(theclass.elements)) {
+      const sortedElements = theclass.elements.sort(
+        (a: any, b: any) => (a.order || 0) - (b.order || 0)
+      );
 
-    sortedElements.forEach((element: any) => {
-      // Subtítulo (título -> negrito)
-      if (element.subtitle) {
-        content += p(`<b>${sanitizeText(element.subtitle, 100)}</b></br>`);
-      }
+      sortedElements.forEach((element: any) => {
+        // Subtítulo (título -> negrito)
+        if (element.subtitle) {
+          content += p(`<b>${sanitizeText(element.subtitle, 100)}</b></br>`);
+        }
 
-      // Descrição (apenas <p>)
-      if (element.description) {
-        content += p(sanitizeText(element.description, 300));
-      }
+        // Descrição (apenas <p>)
+        if (element.description) {
+          content += p(sanitizeText(element.description, 300));
+        }
 
-      switch (element.type) {
-        case "text":
-          if (element.text) {
-            content += p(sanitizeText(element.text, 2000));
-          }
-          break;
+        switch (element.type) {
+          case "text":
+            if (element.text) {
+              content += p(sanitizeText(element.text, 2000));
+            }
+            break;
 
-        case "sentences":
-        case "nfsentences":
-          if (Array.isArray(element.sentences)) {
-            element.sentences.forEach((s: any) => {
-              if (s.english) content += p(sanitizeText(s.english, 200));
-              if (s.portuguese) content += p(i(s.portuguese));
-            });
-          }
-          break;
+          case "sentences":
+          case "nfsentences":
+            if (Array.isArray(element.sentences)) {
+              element.sentences.forEach((s: any) => {
+                if (s.english) content += p(sanitizeText(s.english, 200));
+                if (s.portuguese) content += p(i(s.portuguese));
+              });
+            }
+            break;
 
-        case "exercise":
-          if (Array.isArray(element.items)) {
-            content += p(b("Exercícios:"));
-            element.items.forEach((item: any, idx: number) => {
-              content += p(`${idx + 1}. ${sanitizeText(item, 300)}`);
-            });
-          }
-          break;
+          case "exercise":
+            if (Array.isArray(element.items)) {
+              content += p(b("Exercícios:"));
+              element.items.forEach((item: any, idx: number) => {
+                content += p(`${idx + 1}. ${sanitizeText(item, 300)}`);
+              });
+            }
+            break;
 
-        case "html":
-          // Mantém apenas texto plano para respeitar "somente <p>"
-          if (element.text) {
-            const plain = sanitizeText(element.text.replace(/<[^>]+>/g, " "), 2000);
-            content += p(plain);
-          }
-          break;
+          case "html":
+            // Mantém apenas texto plano para respeitar "somente <p>"
+            if (element.text) {
+              const plain = sanitizeText(
+                element.text.replace(/<[^>]+>/g, " "),
+                2000
+              );
+              content += p(plain);
+            }
+            break;
 
-        case "audiosoundtrack":
-          if (element.text) {
-            content += p(b("Conteúdo do Áudio:"));
-            const plain = sanitizeText(element.text.replace(/<[^>]+>/g, " "), 2000);
-            content += p(plain);
-          }
-          if (Array.isArray(element.sentences)) {
-            content += p(b("Frases do Áudio:"));
-            element.sentences.forEach((s: any) => {
-              if (s.english) content += p(sanitizeText(s.english, 200));
-              if (s.portuguese) content += p(i(s.portuguese));
-            });
-          }
-          break;
+          case "audiosoundtrack":
+            if (element.text) {
+              content += p(b("Conteúdo do Áudio:"));
+              const plain = sanitizeText(
+                element.text.replace(/<[^>]+>/g, " "),
+                2000
+              );
+              content += p(plain);
+            }
+            if (Array.isArray(element.sentences)) {
+              content += p(b("Frases do Áudio:"));
+              element.sentences.forEach((s: any) => {
+                if (s.english) content += p(sanitizeText(s.english, 200));
+                if (s.portuguese) content += p(i(s.portuguese));
+              });
+            }
+            break;
 
-        case "images":
-        case "singleimages":
-          // Imagens omitidas para manter apenas <p>; se houver legendas, mostramos:
-          if (Array.isArray((element as any).images)) {
-            (element.images as any[]).forEach((imgItem: any) => {
-              if (imgItem?.english) content += p(sanitizeText(imgItem.english, 100));
-              if (imgItem?.portuguese) content += p(i(imgItem.portuguese));
-            });
-          }
-          break;
+          case "images":
+          case "singleimages":
+            // Imagens omitidas para manter apenas <p>; se houver legendas, mostramos:
+            if (Array.isArray((element as any).images)) {
+              (element.images as any[]).forEach((imgItem: any) => {
+                if (imgItem?.english)
+                  content += p(sanitizeText(imgItem.english, 100));
+                if (imgItem?.portuguese) content += p(i(imgItem.portuguese));
+              });
+            }
+            break;
 
-        case "explanation":
-          if (Array.isArray(element.explanation)) {
-            element.explanation.forEach((ex: any) => {
-              if (ex.title) content += p(b(ex.title));
-              if (Array.isArray(ex.list)) {
-                ex.list.forEach((li: string) => {
-                  content += p(`• ${sanitizeText(li, 400)}`);
-                });
-              }
-            });
-          }
-          break;
+          case "explanation":
+            if (Array.isArray(element.explanation)) {
+              element.explanation.forEach((ex: any) => {
+                if (ex.title) content += p(b(ex.title));
+                if (Array.isArray(ex.list)) {
+                  ex.list.forEach((li: string) => {
+                    content += p(`• ${sanitizeText(li, 400)}`);
+                  });
+                }
+              });
+            }
+            break;
 
-        case "vocabulary":
-          if (Array.isArray(element.sentences)) {
-            content += p(b("Vocabulário:"));
-            element.sentences.forEach((v: any) => {
-              if (v.english && v.portuguese) {
-                content += p(
-                  `${sanitizeText(v.english, 100)} - ${i(v.portuguese)}`
-                );
-              } else if (v.english) {
-                content += p(sanitizeText(v.english, 100));
-              } else if (v.portuguese) {
-                content += p(i(v.portuguese));
-              }
-            });
-          }
-          break;
+          case "vocabulary":
+            if (Array.isArray(element.sentences)) {
+              content += p(b("Vocabulário:"));
+              element.sentences.forEach((v: any) => {
+                if (v.english && v.portuguese) {
+                  content += p(
+                    `${sanitizeText(v.english, 100)} - ${i(v.portuguese)}`
+                  );
+                } else if (v.english) {
+                  content += p(sanitizeText(v.english, 100));
+                } else if (v.portuguese) {
+                  content += p(i(v.portuguese));
+                }
+              });
+            }
+            break;
 
-        case "dialogue":
-          if (Array.isArray(element.dialogue)) {
-            content += p(b("Diálogo:"));
-            element.dialogue.forEach((line: string, idx: number) => {
-              const speaker = idx % 2 === 0 ? "A" : "B";
-              content += p(`${speaker}: ${sanitizeText(line, 200)}`);
-            });
-          }
-          break;
+          case "dialogue":
+            if (Array.isArray(element.dialogue)) {
+              content += p(b("Diálogo:"));
+              element.dialogue.forEach((line: string, idx: number) => {
+                const speaker = idx % 2 === 0 ? "A" : "B";
+                content += p(`${speaker}: ${sanitizeText(line, 200)}`);
+              });
+            }
+            break;
 
-        default:
-          // Tipos desconhecidos: ignorar para manter simplicidade
-          break;
-      }
-    });
-  }
+          default:
+            // Tipos desconhecidos: ignorar para manter simplicidade
+            break;
+        }
+      });
+    }
 
-  return content;
-};
-
+    return content;
+  };
 
   useEffect(() => {
     if (!seeSlides && !editorContent && theclass && classTitle) {
@@ -3978,7 +3985,7 @@ const generateInitialBoardContent = () => {
               >
                 <span
                   style={{
-                    gap: "10px",
+                    gap: "8px",
                     alignItems: "center",
                     display:
                       thePermissions === "superadmin" ||
@@ -3996,30 +4003,43 @@ const generateInitialBoardContent = () => {
                       setConfirm(true);
                     }}
                     style={{
-                      backgroundColor: partnerColor(),
-                      color: textpartnerColorContrast(),
+                      border: "1px solid #ccc",
+                      background: "transparent",
+                      color: "#333",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      fontSize: "12px",
+                      cursor: "pointer",
                     }}
                   >
                     Restaurar Lousa
                   </button>
+
                   <button
                     onClick={handleSaveBoard}
                     style={{
                       display: !confirm ? "none" : "block",
-                      backgroundColor: "green",
-                      color: "white",
+                      border: "1px solid #ccc",
+                      background: "transparent",
+                      color: "#333",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      fontSize: "12px",
+                      cursor: "pointer",
                     }}
                   >
                     Salvar Lousa do Aluno {studentName}
                   </button>
+
                   {seeCheck && (
                     <i
                       style={{
-                        backgroundColor: "green",
-                        padding: "5px",
+                        padding: "4px",
                         borderRadius: "50%",
-                        color: "white",
-                        marginLeft: "1rem",
+                        backgroundColor: "white",
+                        color: "green",
+                        marginLeft: "0.5rem",
+                        fontSize: "10px",
                       }}
                       className="fa fa-check"
                     />
@@ -4028,38 +4048,37 @@ const generateInitialBoardContent = () => {
 
                 <button
                   style={{
-                    backgroundColor: "#c22210ff",
-                    color: "#fff",
-                    marginRight: "10px",
-                    borderRadius: "6px",
-                    padding: "6px 14px",
-                    fontWeight: 600,
-                    fontSize: "13px",
+                    background: "transparent",
                     border: "none",
                     cursor: "pointer",
+                    padding: "4px",
                   }}
                   onClick={downloadBoardPDF}
                 >
                   <img
                     src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
                     alt="PDF"
-                    style={{ width: "12px", height: "12px" }}
-                  />{" "}
-                  Baixar PDF da Lousa
+                    style={{ width: "16px", height: "16px" }}
+                  />
                 </button>
 
                 {seeConfirm ? (
                   <div
                     style={{
                       display: "flex",
-                      gap: "1rem",
+                      gap: "0.5rem",
                       alignItems: "center",
                     }}
                   >
                     <button
                       style={{
-                        backgroundColor: "blue",
-                        color: "white",
+                        border: "1px solid #ccc",
+                        background: "transparent",
+                        color: "#333",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        cursor: "pointer",
                       }}
                       onClick={() => setSeeConfirm(false)}
                     >
@@ -4067,8 +4086,13 @@ const generateInitialBoardContent = () => {
                     </button>
                     <button
                       style={{
-                        backgroundColor: "red",
-                        color: "white",
+                        border: "1px solid #ccc",
+                        background: "transparent",
+                        color: "red",
+                        padding: "4px 8px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        cursor: "pointer",
                       }}
                       onClick={() => {
                         setSeeConfirm(false);
@@ -4077,17 +4101,19 @@ const generateInitialBoardContent = () => {
                         setNewHWDescription(generateInitialBoardContent());
                       }}
                     >
-                      X Fechar sem salvar
+                      Fechar Sem Salvar
                     </button>
                   </div>
                 ) : (
                   <button
                     style={{
-                      backgroundColor: "red",
-                      color: "white",
+                      border: "none",
+                      background: "transparent",
+                      color: "red",
+                      fontSize: "16px",
+                      cursor: "pointer",
                     }}
                     onClick={() => {
-                      console.log(confirm);
                       if (confirm) {
                         setSeeConfirm(true);
                       } else {
@@ -4095,7 +4121,7 @@ const generateInitialBoardContent = () => {
                       }
                     }}
                   >
-                    x
+                    ✕
                   </button>
                 )}
               </div>
@@ -4105,19 +4131,21 @@ const generateInitialBoardContent = () => {
                   display: "flex",
                   justifyContent: "right",
                   alignItems: "center",
-                  gap: "1rem",
                 }}
               >
                 <button
                   style={{
-                    backgroundColor: "red",
-                    color: "white",
+                    border: "none",
+                    background: "transparent",
+                    color: "red",
+                    fontSize: "16px",
+                    cursor: "pointer",
                   }}
                   onClick={() => {
                     setSeeSlides(!seeSlides);
                   }}
                 >
-                  x
+                  ✕
                 </button>
               </span>
             )}
