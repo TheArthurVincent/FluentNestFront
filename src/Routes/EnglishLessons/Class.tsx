@@ -3149,13 +3149,14 @@ export default function EnglishClassCourse2({
   useEffect(() => {
     if (theclass?.elements && Array.isArray(theclass.elements)) {
       const found = theclass.elements.some(
-        (el: any) => el && el.type === "audio"
+        (el: any) => el && el.type === "audio" || el && el.type === "audiosoundtrack"
       );
       setHasAudioElement(found);
     } else {
       setHasAudioElement(false);
     }
   }, [theclass]);
+
   return (
     <div
       style={{
@@ -3262,8 +3263,6 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-
-          {/* Combined controls container - discrete */}
           <div
             style={{
               display: "flex",
@@ -3326,7 +3325,6 @@ export default function EnglishClassCourse2({
               />
               {seeSlides ? "Hide Board" : "See Board"}
             </button>
-            {/* Left side: Student select (if admin/teacher) */}
             <div
               style={{
                 display: "flex",
@@ -3954,17 +3952,16 @@ export default function EnglishClassCourse2({
             height: "100000000vw",
           }}
         />
-
         <div
           style={{
-            padding: "1rem",
+            padding: "1rem ",
             position: "fixed",
             display: seeSlides ? "block" : "none",
-            top: 5,
-            left: 10,
-            borderRadius: "6px",
-            width: "96vw",
-            height: "95vh",
+            top: 0,
+            right: 10,
+            left: 0,
+            width: "99vw",
+            height: "100vh",
             zIndex: 10000000000,
             backgroundColor: "white",
           }}
@@ -4220,11 +4217,29 @@ export default function EnglishClassCourse2({
                         }}
                       >
                         {element.type === "audio" ? (
-                          <AudioFile
+<div
+style={{
+  display:"grid",gap:"8px"
+  ,
+  padding:"5px 10px "
+}}
+>
+  {element.subtitle && element.subtitle}
+<AudioFile
                             element={element}
                             selectedVoice={selectedVoice}
                           />
+
+                          </div>  
                         ) : element.type === "audiosoundtrack" ? (
+                          <div
+style={{
+  display:"grid",gap:"8px"
+  ,
+  padding:"5px 10px "
+}}
+>
+  {element.subtitle && element.subtitle}
                           <AudioSoundTrack
                             headers={headers}
                             text={element.text}
@@ -4236,6 +4251,8 @@ export default function EnglishClassCourse2({
                             subtitle={element.subtitle}
                             selectedVoice={selectedVoice}
                           />
+                          </div>  
+
                         ) : (
                           <></>
                         )}
