@@ -2244,18 +2244,18 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                           })
                           .map((event, eventIndex) => {
                             const categoryColors = {
-                              "Group Class": { bg: "#ff6b35", text: "#fff" },
+                              "Group Class": { bg: "#614338ff", text: "#fff" },
                               "Established Group Class": {
-                                bg: "#2700a9ff",
+                                bg: "#003f7eff",
                                 text: "#fff",
                               },
                               Rep: { bg: "grey", text: "#fff" },
-                              Tutoring: { bg: "#111", text: "#fff" },
+                              Tutoring: { bg: "#1e007eff", text: "#fff" },
                               "Prize Class": { bg: "#27ae60", text: "#fff" },
-                              Standalone: { bg: "#8e44ad", text: "#fff" },
+                              Standalone: { bg: "#48145fff", text: "#fff" },
                               Test: { bg: "#34495e", text: "#fff" },
                               "Marcar Reposição": {
-                                bg: "#3498db",
+                                bg: "#2a7db4ff",
                                 text: "#fff",
                               },
                             };
