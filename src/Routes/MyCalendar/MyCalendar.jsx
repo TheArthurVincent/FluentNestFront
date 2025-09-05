@@ -57,7 +57,10 @@ import {
   updateButton,
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
 import { fontSize } from "@mui/system";
-export default function MyCalendar({ headers, thePermissions, myId }) {
+
+
+
+function MyCalendar({ headers, thePermissions, myId }) {
   var categoryList = [
     {
       text: "Aula experimental",
@@ -6846,3 +6849,5 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     </>
   );
 }
+
+export default MyCalendar

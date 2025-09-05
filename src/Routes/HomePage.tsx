@@ -13,7 +13,6 @@ import {
 import MyProfile from "./MyProfile/MyProfile";
 import Faq from "./Faq/Faq";
 import MyClasses from "./MyClasses/MyClasses";
-import MyCalendar from "./MyCalendar/MyCalendar";
 import Adm from "./Adm/Adm";
 import Blog from "./HomePage/HomePageContent";
 import { LevelCard } from "./LevelCard/LevelCard";
@@ -40,6 +39,7 @@ import {
   logoPartner,
   textTitleFont,
 } from "../Styles/Styles";
+import MyCalendar from "./MyCalendar/MyCalendar";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
