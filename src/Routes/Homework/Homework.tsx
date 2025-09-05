@@ -1036,16 +1036,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           {UniversalTexts?.teacherActions ||
                                             "Ações do Professor"}
                                         </h4>
-                                        <button
-                                          onClick={() =>
-                                            openEditModal(
-                                              homework._id,
-                                              homework.description
-                                            )
-                                          }
-                                        >
-                                          Editar Descrição
-                                        </button>
+
                                         <div
                                           style={{
                                             display: "flex",
@@ -1750,6 +1741,69 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           <i className="fa fa-file-text-o" />
                                           {UniversalTexts.homeworkDescription}
                                         </h4>
+                                        {isAllowed && (
+                                          <button
+                                            onClick={() =>
+                                              openEditModal(
+                                                homework._id,
+                                                homework.description
+                                              )
+                                            }
+                                            style={{
+                                              marginBottom: "10px",
+                                              backgroundColor: "transparent",
+                                              color: disabled ? "#999" : "#666",
+                                              border: "1px solid #ddd",
+                                              padding:
+                                                window.innerWidth <= 768
+                                                  ? "10px 14px"
+                                                  : "4px 8px",
+                                              borderRadius: "3px",
+                                              fontSize:
+                                                window.innerWidth <= 768
+                                                  ? "14px"
+                                                  : "11px",
+                                              fontWeight: "normal",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap:
+                                                window.innerWidth <= 768
+                                                  ? "6px"
+                                                  : "3px",
+                                              cursor: disabled
+                                                ? "not-allowed"
+                                                : "pointer",
+                                              opacity: disabled ? 0.6 : 1,
+                                              minHeight:
+                                                window.innerWidth <= 768
+                                                  ? "44px"
+                                                  : "auto",
+                                              justifyContent: "center",
+                                              flex:
+                                                window.innerWidth <= 768
+                                                  ? "1"
+                                                  : "none",
+                                            }}
+                                            onMouseOver={(e) => {
+                                              if (!disabled) {
+                                                e.currentTarget.style.backgroundColor =
+                                                  "#f5f5f5";
+                                                e.currentTarget.style.borderColor =
+                                                  "#bbb";
+                                              }
+                                            }}
+                                            onMouseOut={(e) => {
+                                              if (!disabled) {
+                                                e.currentTarget.style.backgroundColor =
+                                                  "transparent";
+                                                e.currentTarget.style.borderColor =
+                                                  "#ddd";
+                                              }
+                                            }}
+                                          >
+                                            Editar Descrição
+                                          </button>
+                                        )}
                                         <button
                                           onClick={() =>
                                             openSubmissionModal(
