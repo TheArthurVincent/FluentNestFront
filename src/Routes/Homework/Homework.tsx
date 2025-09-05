@@ -42,6 +42,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   const [uploading, setUploading] = useState<boolean>(false);
   const [update, setUpdate] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [selectedHomeworkId, setSelectedHomeworkId] = useState<string>("");
   const [selectedHomeworkContent, setSelectedHomeworkContent] =
     useState<string>("");
@@ -70,6 +71,41 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       };
       reader.onerror = (error) => reject(error);
     });
+  };
+
+  const saveEditedDescription = async (homeworkId?: string) => {
+    const targetId = homeworkId || selectedHomeworkId;
+    setUploading(true); // Add this line to indicate the upload process has started
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/edithomeworkdescription/${targetId}`,
+        {
+          description: homeworkAnswer,
+        },
+        {
+          headers: actualHeaders,
+        }
+      );
+
+      notifyAlert("Homework editado com sucesso!", "green");
+      setSelectedFile(null);
+      setHomeworkAnswer("");
+      setIsModalOpen(false);
+      setIsEditModalOpen(false);
+      setSelectedHomeworkId("");
+      setSelectedHomeworkContent("");
+      setSubmissionMode("file");
+      setTimeout(() => {
+        fetchHW(studentID);
+      }, 500);
+    } catch (error) {
+      notifyAlert(
+        UniversalTexts?.errorSubmittingHomework || "Erro ao enviar homework"
+      );
+      console.error(error);
+    } finally {
+      setUploading(false); // Ensure this is meaningful by setting `setUploading(true)` earlier
+    }
   };
 
   const submitHomework = async (homeworkId?: string) => {
@@ -182,8 +218,16 @@ export default function Homework({ headers, setChange, change }: HWProps) {
     setIsModalOpen(true);
   };
 
+  const openEditModal = (homeworkId: string, homeworkDescription?: string) => {
+    setSelectedHomeworkId(homeworkId);
+    setSelectedHomeworkContent(homeworkDescription || "");
+    setHomeworkAnswer(homeworkDescription || "");
+    setIsEditModalOpen(true);
+  };
+
   const closeSubmissionModal = () => {
     setIsModalOpen(false);
+    setIsEditModalOpen(false);
     setSelectedHomeworkId("");
     setSelectedHomeworkContent("");
     setSelectedFile(null);
@@ -992,6 +1036,16 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           {UniversalTexts?.teacherActions ||
                                             "Ações do Professor"}
                                         </h4>
+                                        <button
+                                          onClick={() =>
+                                            openEditModal(
+                                              homework._id,
+                                              homework.description
+                                            )
+                                          }
+                                        >
+                                          Editar Descrição
+                                        </button>
                                         <div
                                           style={{
                                             display: "flex",
@@ -2462,6 +2516,116 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                               "Enviar Resposta"}
                         </>
                       )}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isEditModalOpen && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems:
+                    window.innerWidth <= 768 ? "flex-start" : "center",
+                  zIndex: 1000,
+                  padding: window.innerWidth <= 768 ? "20px 8px" : "0",
+                }}
+                onClick={closeSubmissionModal}
+              >
+                <div
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: window.innerWidth <= 768 ? "8px" : "12px",
+                    padding: window.innerWidth <= 768 ? "16px" : "24px",
+                    maxWidth: window.innerWidth <= 768 ? "100%" : "500px",
+                    width: window.innerWidth <= 768 ? "100%" : "90%",
+                    maxHeight:
+                      window.innerWidth <= 768 ? "calc(100vh - 40px)" : "90vh",
+                    overflowY: "auto",
+                    boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                    marginTop: window.innerWidth <= 768 ? "20px" : "0",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {/* Modal Header */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection:
+                        window.innerWidth <= 768 ? "column" : "row",
+                      justifyContent: "space-between",
+                      alignItems:
+                        window.innerWidth <= 768 ? "flex-start" : "center",
+                      marginBottom: window.innerWidth <= 768 ? "16px" : "20px",
+                      borderBottom: "1px solid #e2e8f0",
+                      paddingBottom: "16px",
+                      gap: window.innerWidth <= 768 ? "12px" : "0",
+                    }}
+                  >
+                    <h2
+                      style={{
+                        margin: 0,
+                        fontSize: window.innerWidth <= 768 ? "18px" : "16px",
+                        fontWeight: "500",
+                        color: "#495057",
+                      }}
+                    >
+                      {"Editar Homework"}
+                    </h2>
+                    <button
+                      onClick={closeSubmissionModal}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        fontSize: window.innerWidth <= 768 ? "28px" : "24px",
+                        cursor: "pointer",
+                        color: "#6b7280",
+                        padding: "0",
+                        width: window.innerWidth <= 768 ? "36px" : "30px",
+                        height: window.innerWidth <= 768 ? "36px" : "30px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "50%",
+                        transition: "background-color 0.2s",
+                        alignSelf:
+                          window.innerWidth <= 768 ? "flex-end" : "auto",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = "#f3f4f6";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = "transparent";
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                  <div
+                    style={{
+                      border: "2px solid #e2e8f0",
+                      borderRadius: "8px",
+                      backgroundColor: "#ffffff",
+                      minHeight: "300px",
+                    }}
+                  >
+                    <HTMLEditor
+                      onChange={handleHomeworkAnswerChange}
+                      initialContent={selectedHomeworkContent}
+                    />
+                  </div>
+                  <div>
+                    <button onClick={closeSubmissionModal}>Cancelar</button>
+                    <button onClick={() => saveEditedDescription()}>
+                      Salvar
                     </button>
                   </div>
                 </div>
