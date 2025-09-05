@@ -2249,7 +2249,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                 bg: "#2700a9ff",
                                 text: "#fff",
                               },
-                              Rep: { bg: partnerColor(), text: "#fff" },
+                              Rep: { bg: "grey", text: "#fff" },
                               Tutoring: { bg: "#111", text: "#fff" },
                               "Prize Class": { bg: "#27ae60", text: "#fff" },
                               Standalone: { bg: "#8e44ad", text: "#fff" },
