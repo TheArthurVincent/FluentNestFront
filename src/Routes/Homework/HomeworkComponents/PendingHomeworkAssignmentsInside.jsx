@@ -8,6 +8,7 @@ import { partnerColor } from "../../../Styles/Styles";
 import { CircularProgress } from "@mui/material";
 import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
+import { isArthurVincent } from "../../../App";
 
 export function PendingHomeworkAssignments({ headers }) {
   var [pendingHomeworkList, setPendingHomeworkList] = useState([]);
@@ -271,24 +272,27 @@ export function PendingHomeworkAssignments({ headers }) {
                     <i className="fa fa-clock-o" />
                     Late ({pointsLateHW} pts)
                   </button>
-                  <button
-                    disabled={disabled}
-                    onClick={() => justStatus(homework._id, homework.studentID)}
-                    style={{
-                      backgroundColor: "#2196f3",
-                      color: "white",
-                      border: "none",
-                      padding: "8px 16px",
-                      borderRadius: "6px",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "6px",
-                    }}
-                  >
-                    <i className="fa fa-edit" />
-                    Just status
-                  </button>
-
+                  {isArthurVincent && (
+                    <button
+                      disabled={disabled}
+                      onClick={() =>
+                        justStatus(homework._id, homework.studentID)
+                      }
+                      style={{
+                        backgroundColor: "#2196f3",
+                        color: "white",
+                        border: "none",
+                        padding: "8px 16px",
+                        borderRadius: "6px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <i className="fa fa-edit" />
+                      Just status
+                    </button>
+                  )}
                   <button
                     disabled={disabled}
                     onDoubleClick={() => deleteHomework(homework._id)}

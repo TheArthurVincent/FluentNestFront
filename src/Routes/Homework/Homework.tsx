@@ -19,6 +19,7 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import NewHomeworkAssignmentHere from "./HomeworkComponents/NewHomeworkAssignmentInside";
 import PendingHomeworkAssignments from "./HomeworkComponents/PendingHomeworkAssignmentsInside";
 import MyClasses from "../MyClasses/MyClasses";
+import { isArthurVincent } from "../../App";
 
 interface HWProps {
   headers: MyHeadersType | null;
@@ -138,6 +139,29 @@ export default function Homework({ headers, setChange, change }: HWProps) {
       console.error(error);
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleReturnToPending = async (tutoringId: string) => {
+    setDisabled(true);
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/homework-return-pending/${studentID}`,
+        {
+          tutoringId,
+        },
+        {
+          headers: actualHeaders,
+        }
+      );
+      setChange(!change);
+      fetchHW(studentID);
+      setDisabled(false);
+    } catch (error) {
+      notifyAlert(
+        UniversalTexts?.errorFindingStudents || "Erro ao encontrar alunos"
+      );
+      setDisabled(false);
     }
   };
 
@@ -931,10 +955,8 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                     </h2>
 
                                     {/* Action Buttons Section */}
-                                    {((homework.status &&
-                                      isAllowed &&
-                                      homework?.status === "pending") ||
-                                      isAllowed) && (
+
+                                    {isAllowed && (
                                       <div
                                         style={{
                                           margin:
@@ -984,158 +1006,156 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                 : "row",
                                           }}
                                         >
-                                          {homework.status &&
-                                            isAllowed &&
-                                            homework?.status === "pending" && (
-                                              <>
-                                                <button
-                                                  disabled={disabled}
-                                                  onClick={() =>
-                                                    updateRealizedClass(
-                                                      homework._id,
-                                                      pointsMadeHW
-                                                    )
+                                          {homework.status === "pending" && (
+                                            <>
+                                              <button
+                                                disabled={disabled}
+                                                onClick={() =>
+                                                  updateRealizedClass(
+                                                    homework._id,
+                                                    pointsMadeHW
+                                                  )
+                                                }
+                                                style={{
+                                                  backgroundColor:
+                                                    "transparent",
+                                                  color: disabled
+                                                    ? "#999"
+                                                    : "#666",
+                                                  border: "1px solid #ddd",
+                                                  padding:
+                                                    window.innerWidth <= 768
+                                                      ? "10px 14px"
+                                                      : "4px 8px",
+                                                  borderRadius: "3px",
+                                                  fontSize:
+                                                    window.innerWidth <= 768
+                                                      ? "14px"
+                                                      : "11px",
+                                                  fontWeight: "normal",
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  gap:
+                                                    window.innerWidth <= 768
+                                                      ? "6px"
+                                                      : "3px",
+                                                  cursor: disabled
+                                                    ? "not-allowed"
+                                                    : "pointer",
+                                                  opacity: disabled ? 0.6 : 1,
+                                                  minHeight:
+                                                    window.innerWidth <= 768
+                                                      ? "44px"
+                                                      : "auto",
+                                                  justifyContent: "center",
+                                                  flex:
+                                                    window.innerWidth <= 768
+                                                      ? "1"
+                                                      : "none",
+                                                }}
+                                                onMouseOver={(e) => {
+                                                  if (!disabled) {
+                                                    e.currentTarget.style.backgroundColor =
+                                                      "#f5f5f5";
+                                                    e.currentTarget.style.borderColor =
+                                                      "#bbb";
                                                   }
+                                                }}
+                                                onMouseOut={(e) => {
+                                                  if (!disabled) {
+                                                    e.currentTarget.style.backgroundColor =
+                                                      "transparent";
+                                                    e.currentTarget.style.borderColor =
+                                                      "#ddd";
+                                                  }
+                                                }}
+                                              >
+                                                <i
+                                                  className="fa fa-check"
                                                   style={{
-                                                    backgroundColor:
-                                                      "transparent",
-                                                    color: disabled
-                                                      ? "#999"
-                                                      : "#666",
-                                                    border: "1px solid #ddd",
-                                                    padding:
-                                                      window.innerWidth <= 768
-                                                        ? "10px 14px"
-                                                        : "4px 8px",
-                                                    borderRadius: "3px",
                                                     fontSize:
                                                       window.innerWidth <= 768
-                                                        ? "14px"
-                                                        : "11px",
-                                                    fontWeight: "normal",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap:
-                                                      window.innerWidth <= 768
-                                                        ? "6px"
-                                                        : "3px",
-                                                    cursor: disabled
-                                                      ? "not-allowed"
-                                                      : "pointer",
-                                                    opacity: disabled ? 0.6 : 1,
-                                                    minHeight:
-                                                      window.innerWidth <= 768
-                                                        ? "44px"
-                                                        : "auto",
-                                                    justifyContent: "center",
-                                                    flex:
-                                                      window.innerWidth <= 768
-                                                        ? "1"
-                                                        : "none",
+                                                        ? "13px"
+                                                        : "10px",
                                                   }}
-                                                  onMouseOver={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "#f5f5f5";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#bbb";
-                                                    }
-                                                  }}
-                                                  onMouseOut={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "transparent";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#ddd";
-                                                    }
-                                                  }}
-                                                >
-                                                  <i
-                                                    className="fa fa-check"
-                                                    style={{
-                                                      fontSize:
-                                                        window.innerWidth <= 768
-                                                          ? "13px"
-                                                          : "10px",
-                                                    }}
-                                                  />
-                                                  {UniversalTexts?.upToDate ||
-                                                    "Up to date"}
-                                                </button>
-                                                <button
-                                                  disabled={disabled}
-                                                  onClick={() =>
-                                                    updateRealizedClass(
-                                                      homework._id,
-                                                      pointsLateHW
-                                                    )
+                                                />
+                                                {UniversalTexts?.upToDate ||
+                                                  "Up to date"}
+                                              </button>
+                                              <button
+                                                disabled={disabled}
+                                                onClick={() =>
+                                                  updateRealizedClass(
+                                                    homework._id,
+                                                    pointsLateHW
+                                                  )
+                                                }
+                                                style={{
+                                                  backgroundColor:
+                                                    "transparent",
+                                                  color: disabled
+                                                    ? "#999"
+                                                    : "#666",
+                                                  border: "1px solid #ddd",
+                                                  padding:
+                                                    window.innerWidth <= 768
+                                                      ? "10px 14px"
+                                                      : "4px 8px",
+                                                  borderRadius: "3px",
+                                                  fontSize:
+                                                    window.innerWidth <= 768
+                                                      ? "14px"
+                                                      : "11px",
+                                                  fontWeight: "normal",
+                                                  display: "flex",
+                                                  alignItems: "center",
+                                                  gap:
+                                                    window.innerWidth <= 768
+                                                      ? "6px"
+                                                      : "3px",
+                                                  cursor: disabled
+                                                    ? "not-allowed"
+                                                    : "pointer",
+                                                  opacity: disabled ? 0.6 : 1,
+                                                  minHeight:
+                                                    window.innerWidth <= 768
+                                                      ? "44px"
+                                                      : "auto",
+                                                  justifyContent: "center",
+                                                  flex:
+                                                    window.innerWidth <= 768
+                                                      ? "1"
+                                                      : "none",
+                                                }}
+                                                onMouseOver={(e) => {
+                                                  if (!disabled) {
+                                                    e.currentTarget.style.backgroundColor =
+                                                      "#f5f5f5";
+                                                    e.currentTarget.style.borderColor =
+                                                      "#bbb";
                                                   }
+                                                }}
+                                                onMouseOut={(e) => {
+                                                  if (!disabled) {
+                                                    e.currentTarget.style.backgroundColor =
+                                                      "transparent";
+                                                    e.currentTarget.style.borderColor =
+                                                      "#ddd";
+                                                  }
+                                                }}
+                                              >
+                                                <i
+                                                  className="fa fa-clock-o"
                                                   style={{
-                                                    backgroundColor:
-                                                      "transparent",
-                                                    color: disabled
-                                                      ? "#999"
-                                                      : "#666",
-                                                    border: "1px solid #ddd",
-                                                    padding:
-                                                      window.innerWidth <= 768
-                                                        ? "10px 14px"
-                                                        : "4px 8px",
-                                                    borderRadius: "3px",
                                                     fontSize:
                                                       window.innerWidth <= 768
-                                                        ? "14px"
-                                                        : "11px",
-                                                    fontWeight: "normal",
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    gap:
-                                                      window.innerWidth <= 768
-                                                        ? "6px"
-                                                        : "3px",
-                                                    cursor: disabled
-                                                      ? "not-allowed"
-                                                      : "pointer",
-                                                    opacity: disabled ? 0.6 : 1,
-                                                    minHeight:
-                                                      window.innerWidth <= 768
-                                                        ? "44px"
-                                                        : "auto",
-                                                    justifyContent: "center",
-                                                    flex:
-                                                      window.innerWidth <= 768
-                                                        ? "1"
-                                                        : "none",
+                                                        ? "13px"
+                                                        : "10px",
                                                   }}
-                                                  onMouseOver={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "#f5f5f5";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#bbb";
-                                                    }
-                                                  }}
-                                                  onMouseOut={(e) => {
-                                                    if (!disabled) {
-                                                      e.currentTarget.style.backgroundColor =
-                                                        "transparent";
-                                                      e.currentTarget.style.borderColor =
-                                                        "#ddd";
-                                                    }
-                                                  }}
-                                                >
-                                                  <i
-                                                    className="fa fa-clock-o"
-                                                    style={{
-                                                      fontSize:
-                                                        window.innerWidth <= 768
-                                                          ? "13px"
-                                                          : "10px",
-                                                    }}
-                                                  />
-                                                  {UniversalTexts?.late ||
-                                                    "Late"}
-                                                </button>
+                                                />
+                                                {UniversalTexts?.late || "Late"}
+                                              </button>
+                                              {isArthurVincent && (
                                                 <button
                                                   disabled={disabled}
                                                   onClick={() =>
@@ -1207,55 +1227,103 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                   {UniversalTexts?.justStatus ||
                                                     "Just status"}
                                                 </button>
-                                              </>
-                                            )}
-                                          {isAllowed && (
+                                              )}
+                                            </>
+                                          )}
+                                          {homework.status !== "pending" && (
                                             <button
-                                              onDoubleClick={() =>
-                                                deleteHomework(homework._id)
+                                              onClick={() =>
+                                                handleReturnToPending(
+                                                  homework._id
+                                                )
                                               }
                                               style={{
+                                                margin: "0 10px",
                                                 backgroundColor: "transparent",
-                                                color: "#999",
+                                                color: disabled
+                                                  ? "#999"
+                                                  : "#666",
                                                 border: "1px solid #ddd",
-                                                padding: "4px 8px",
+                                                padding:
+                                                  window.innerWidth <= 768
+                                                    ? "10px 14px"
+                                                    : "4px 8px",
                                                 borderRadius: "3px",
-                                                fontSize: "11px",
+                                                fontSize:
+                                                  window.innerWidth <= 768
+                                                    ? "14px"
+                                                    : "11px",
                                                 fontWeight: "normal",
                                                 display: "flex",
                                                 alignItems: "center",
-                                                gap: "3px",
-                                                cursor: "pointer",
-                                              }}
-                                              onMouseOver={(e) => {
-                                                e.currentTarget.style.backgroundColor =
-                                                  "#f5f5f5";
-                                                e.currentTarget.style.borderColor =
-                                                  "#bbb";
-                                                e.currentTarget.style.color =
-                                                  "#d32f2f";
-                                              }}
-                                              onMouseOut={(e) => {
-                                                e.currentTarget.style.backgroundColor =
-                                                  "transparent";
-                                                e.currentTarget.style.borderColor =
-                                                  "#ddd";
-                                                e.currentTarget.style.color =
-                                                  "#999";
+                                                gap:
+                                                  window.innerWidth <= 768
+                                                    ? "6px"
+                                                    : "3px",
+                                                cursor: disabled
+                                                  ? "not-allowed"
+                                                  : "pointer",
+                                                opacity: disabled ? 0.6 : 1,
+                                                minHeight:
+                                                  window.innerWidth <= 768
+                                                    ? "44px"
+                                                    : "auto",
+                                                justifyContent: "center",
+                                                flex:
+                                                  window.innerWidth <= 768
+                                                    ? "1"
+                                                    : "none",
                                               }}
                                             >
-                                              <i
-                                                className="fa fa-trash"
-                                                aria-hidden="true"
-                                                style={{ fontSize: "10px" }}
-                                              />
-                                              {UniversalTexts?.doubleClick ||
-                                                "Double Click"}
+                                              Retornar status para pendente
                                             </button>
                                           )}
+                                          <button
+                                            onDoubleClick={() =>
+                                              deleteHomework(homework._id)
+                                            }
+                                            style={{
+                                              backgroundColor: "transparent",
+                                              color: "#999",
+                                              border: "1px solid #ddd",
+                                              padding: "4px 8px",
+                                              borderRadius: "3px",
+                                              fontSize: "11px",
+                                              fontWeight: "normal",
+                                              display: "flex",
+                                              alignItems: "center",
+                                              gap: "3px",
+                                              cursor: "pointer",
+                                            }}
+                                            onMouseOver={(e) => {
+                                              e.currentTarget.style.backgroundColor =
+                                                "#f5f5f5";
+                                              e.currentTarget.style.borderColor =
+                                                "#bbb";
+                                              e.currentTarget.style.color =
+                                                "#d32f2f";
+                                            }}
+                                            onMouseOut={(e) => {
+                                              e.currentTarget.style.backgroundColor =
+                                                "transparent";
+                                              e.currentTarget.style.borderColor =
+                                                "#ddd";
+                                              e.currentTarget.style.color =
+                                                "#999";
+                                            }}
+                                          >
+                                            <i
+                                              className="fa fa-trash"
+                                              aria-hidden="true"
+                                              style={{ fontSize: "10px" }}
+                                            />
+                                            {UniversalTexts?.doubleClick ||
+                                              "Double Click"}
+                                          </button>
                                         </div>
                                       </div>
                                     )}
+
                                     <div
                                       style={{
                                         display: "flex",
