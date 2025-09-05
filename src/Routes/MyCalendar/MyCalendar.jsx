@@ -2408,7 +2408,6 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                     backgroundColor: statusColor.bg,
                                     color: statusColor.text,
                                     padding: "5px 5px",
-
                                     fontWeight: "600",
                                     textAlign: "center",
                                     textTransform: "uppercase",
