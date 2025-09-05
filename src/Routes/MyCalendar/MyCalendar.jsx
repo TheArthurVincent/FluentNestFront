@@ -4298,46 +4298,61 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           )}
                         </div>
-             {lastFew.length > 0 && (
-  <div style={{ 
-    display:"flex",
-      margin:"1rem 0",
-justifySelf:"center",flexDirection:"column",textAlign:"center"
-   }}>
-    <h4 style={{ 
-      color: "#0c4a6e" }}>
-      Últimos eventos passados
-    </h4>
-    <ul style={{ padding: 0,
-      maxWidth: "600px",
-      margin: 0 }}>
-      {lastFew.map((evt) => (
-        <li
-          key={evt._id || evt.id}
-          style={{
-            listStyle: "none",
-            backgroundColor: "#cfdefea1" ,
-            borderRadius: "6px",
-            padding: "8px 12px",
-            marginBottom: "6px",
-            fontSize: "14px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap:"1rem",
-          }}
-        >
-          <span style={{ fontWeight: 500 }}>
-            {formatDateBr(evt.date) || "Sem data"}
-          </span>
-          <span style={{ opacity: 0.9 }}>
-            {evt.description || "Sem descrição"}
-          </span>
-        </li>
-      ))}
-    </ul>
-  </div>
-)}
+                        {lastFew.length > 0 && (
+                          <div
+                            style={{
+                              display: "flex",
+                              margin: "1rem 0",
+                              justifySelf: "center",
+                              flexDirection: "column",
+                              textAlign: "center",
+                            }}
+                          >
+                            <span
+                              style={{
+                                fontSize: "0.85rem",
+                                color: "#6c757d",
+                                marginBottom: "10px",
+                                fontWeight: "500",
+                              }}
+                            >
+                              Últimos 3 eventos passados
+                            </span>
+                            <ul
+                              style={{
+                                padding: 0,
+                                maxWidth: "600px",
+                                margin: 0,
+                              }}
+                            >
+                              {lastFew.map((evt) => (
+                                <li
+                                  key={evt._id || evt.id}
+                                  style={{
+                                    listStyle: "none",
+                                    backgroundColor: "#cfdefea1",
+                                    borderRadius: "6px",
+                                    padding: "8px 12px",
+                                    marginBottom: "6px",
+                                    fontSize: "12px",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    gap: "5px",
+                                  }}
+                                >
+                                  <span style={{ fontWeight: 600 }}>
+                                    {formatDateBr(evt.date) || "Sem data"}
+                                  </span>
+                                  <span style={{ opacity: 0.9 }}>
+                                    {evt.description || "Sem descrição"}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
 
                         {duration && (
                           <div
