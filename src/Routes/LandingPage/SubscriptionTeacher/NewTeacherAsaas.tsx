@@ -235,12 +235,9 @@ export default function TeacherSubscription() {
       boxShadow: "0 10px 22px #ff510048",
     },
     img: {
-      width: 200,
-      height: 200,
+      width: 150,
+      height: 150,
       objectFit: "contain",
-      display: "block",
-      borderRadius: 6,
-      padding: 8,
     },
     price: {
       fontSize: 16,
