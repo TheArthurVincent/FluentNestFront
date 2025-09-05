@@ -504,6 +504,7 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
     });
   };
 
+  const [lastFew, setLastFew] = useState([]);
   const fetchOneEvent = async (id) => {
     setLoadingModalInfo(true);
 
@@ -515,6 +516,8 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
+      console.log(response.data.event);
+      setLastFew(response.data.event.recentUnmarkedEvents || []);
       var theStudentsFromEvent;
       if (response.data.event.listOfStudents) {
         theStudentsFromEvent = response.data.event.listOfStudents;
@@ -2422,7 +2425,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         className="fa fa-times-circle"
                                         style={{ marginRight: "2px" }}
                                       />
-                                      Canceled
+
+                                      {categoryList.find(
+                                        (cat) => cat.value === event.category
+                                      )?.text || event.category}
                                     </>
                                   )}
                                   {(event.status === "marcado" ||
@@ -2432,7 +2438,9 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         className="fa fa-calendar-check-o"
                                         style={{ marginRight: "2px" }}
                                       />
-                                      Scheduled
+                                      {categoryList.find(
+                                        (cat) => cat.value === event.category
+                                      )?.text || event.category}
                                     </>
                                   )}
                                   {(event.status === "realizada" ||
@@ -2442,7 +2450,10 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                                         className="fa fa-check-circle"
                                         style={{ marginRight: "2px" }}
                                       />
-                                      Completed
+
+                                      {categoryList.find(
+                                        (cat) => cat.value === event.category
+                                      )?.text || event.category}
                                     </>
                                   )}
                                 </div>
@@ -4287,6 +4298,47 @@ export default function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           )}
                         </div>
+             {lastFew.length > 0 && (
+  <div style={{ 
+    display:"flex",
+      margin:"1rem 0",
+justifySelf:"center",flexDirection:"column",textAlign:"center"
+   }}>
+    <h4 style={{ 
+      color: "#0c4a6e" }}>
+      Últimos eventos passados
+    </h4>
+    <ul style={{ padding: 0,
+      maxWidth: "600px",
+      margin: 0 }}>
+      {lastFew.map((evt) => (
+        <li
+          key={evt._id || evt.id}
+          style={{
+            listStyle: "none",
+            backgroundColor: "#cfdefea1" ,
+            borderRadius: "6px",
+            padding: "8px 12px",
+            marginBottom: "6px",
+            fontSize: "14px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap:"1rem",
+          }}
+        >
+          <span style={{ fontWeight: 500 }}>
+            {formatDateBr(evt.date) || "Sem data"}
+          </span>
+          <span style={{ opacity: 0.9 }}>
+            {evt.description || "Sem descrição"}
+          </span>
+        </li>
+      ))}
+    </ul>
+  </div>
+)}
+
                         {duration && (
                           <div
                             style={{
