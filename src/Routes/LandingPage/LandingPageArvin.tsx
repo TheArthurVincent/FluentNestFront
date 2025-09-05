@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./styles.lp.css";
 import { useMediaQuery } from "@mui/material";
+import TeacherSubscription from "./SubscriptionTeacher/NewTeacherAsaas";
 
 function LandingPageArvin() {
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -290,37 +291,7 @@ function LandingPageArvin() {
           </div>
         </section> */}
         <section id="subscription-section" className="thesection-1">
-          <div
-            style={{
-              padding: "3rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <button
-              onClick={() =>
-                window.location.assign("https://wa.me/5511972369299")
-              }
-              style={{
-                margin: "auto",
-                gap: "8px",
-                backgroundColor: "#25D366", // verde do WhatsApp
-                color: "white",
-                padding: "12px 18px",
-                border: "none",
-                borderRadius: "4px",
-                fontSize: "16px",
-                fontWeight: "bold",
-                cursor: "pointer",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
-              }}
-            >
-              Fale com nossa equipe por WhatsApp
-            </button>
-          </div>
-          {/* <Subscription /> */}
+          <TeacherSubscription />
         </section>
         <footer
           className="footer no-print"
