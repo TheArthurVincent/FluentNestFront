@@ -29,10 +29,27 @@ export function ArthurSection({ headers }) {
       notifyAlert(error, "rgba(255, 0, 0, 1)");
     }
   };
+  const handleLogoutAllUsers = async () => {
+    const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const userId = getLoggedUser.id;
+
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/logoutall/${userId}`,
+        { headers }
+      );
+      notifyAlert(response.data.message, "rgba(0, 140, 255, 1)");
+    } catch (error) {
+      console.error("Erro ao enviar resposta", error);
+      notifyAlert(error, "rgba(255, 0, 0, 1)");
+    }
+  };
 
   return (
     <div>
       <button onClick={handleResetUsers}>Reset Users</button>
+      <br />
+      <button onClick={handleLogoutAllUsers}>Logout All Users</button>
     </div>
   );
 }

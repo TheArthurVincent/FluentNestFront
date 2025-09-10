@@ -7,6 +7,7 @@ import {
   backDomain,
   onLoggOut,
   onLoggOutFee,
+  onLoggOutToken,
   pathGenerator,
   updateInfo,
 } from "../Resources/UniversalComponents";
@@ -86,6 +87,15 @@ export function HomePage({ headers }: HeadersProps) {
         );
         if (response2.data.uploadNeeded) {
           window.location.reload();
+        }
+        const response3 = await axios.get(
+          `${backDomain}/api/v1/logmeoutornot/${id}`
+        );
+        if (response3.data.logoutNeeded == true) {
+          console.log(response3.data.logoutNeeded, "ExpiredToken");
+          onLoggOutToken();
+        } else {
+          console.log(response3.data.logoutNeeded, "User still logged in");
         }
       }
     } catch (error) {

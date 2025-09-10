@@ -1745,6 +1745,18 @@ export const onLoggOut = () => {
   notifyAlert(`Faça login novamente`, partnerColor());
   window.location.assign("/login");
 };
+export const onLoggOutToken = () => {
+  const user = localStorage.getItem("loggedIn");
+  const auth = localStorage.getItem("authorization");
+  if (user) {
+    localStorage.removeItem("loggedIn");
+  }
+  if (auth) {
+    localStorage.removeItem("authorization");
+  }
+  notifyAlert(`Token expirado. Faça login novamente`, partnerColor());
+  window.location.assign("/login");
+};
 
 export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
