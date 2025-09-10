@@ -14,12 +14,9 @@ import jsPDF from "jspdf";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import {
   backDomain,
-  formatDateBr,
   formatDateBrWithHour,
   getVideoEmbedUrl,
-  onLoggOut,
   pathGenerator,
-  Xp,
 } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
@@ -30,7 +27,6 @@ import {
   textGeneralFont,
   logoPartner,
   transparentBlack,
-  textpartnerColorContrast,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
 import { ImgLesson } from "./Assets/Functions/EnglishActivities.Styled";
@@ -162,6 +158,7 @@ export default function EnglishClassCourse2({
   const [loading, setLoading] = useState<boolean>(false);
   const [theclass, setheClass] = useState<any>({});
   const [classTitle, setClassTitle] = useState<string>("");
+  const [classLanguage, setClassLanguage] = useState<string>("");
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [commentsTrigger, setCommentsTrigger] = useState<boolean>(false);
 
@@ -186,6 +183,8 @@ export default function EnglishClassCourse2({
       );
 
       var clss = response.data.classDetails;
+      console.log(response.data.classDetails);
+      setClassLanguage(response.data.classDetails.language);
       setClassTitle(response.data.classDetails.title);
       if (response.data.classDetails.studentsWhoCompletedIt.includes(id)) {
         setIsCompleted(true);
@@ -2854,26 +2853,26 @@ export default function EnglishClassCourse2({
   const [arrow, setArrow] = useState(false);
   const [myComments, setMyComments] = useState([]);
   const [comments, setComments] = useState([]);
-  const getComments = async () => {
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/comments/${classId}/${myId}`,
-        { headers: actualHeaders }
-      );
-      var com = [];
-      var myCom = [];
-      com = response.data.comments || [];
-      //@ts-ignore
+  // const getComments = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${backDomain}/api/v1/comments/${classId}/${myId}`,
+  //       { headers: actualHeaders }
+  //     );
+  //     var com = [];
+  //     var myCom = [];
+  //     com = response.data.comments || [];
+  //     //@ts-ignore
 
-      myCom = response.data.myComments | [];
-      setComments(com);
-      //@ts-ignore
+  //     myCom = response.data.myComments | [];
+  //     setComments(com);
+  //     //@ts-ignore
 
-      setMyComments(myCom);
-    } catch (error) {
-      console.error(error, "Erro ao buscar comentários");
-    }
-  };
+  //     setMyComments(myCom);
+  //   } catch (error) {
+  //     console.error(error, "Erro ao buscar comentários");
+  //   }
+  // };
   const [seeCheck, setSeeCheck] = useState(false);
   const [boardDate, setBoardDate] = useState<Date | any>(null);
 
@@ -2957,16 +2956,16 @@ export default function EnglishClassCourse2({
         partnerColor()
       );
       setComment("");
-      getComments();
+      // getComments();
     } catch (error) {
       console.error(error, "Erro ao comentar");
       notifyAlert("Erro ao comentar");
     }
   };
 
-  useEffect(() => {
-    getComments();
-  }, [commentsTrigger]);
+  // useEffect(() => {
+  //   getComments();
+  // }, [commentsTrigger]);
 
   const deleteComment = async (id: any) => {
     try {
@@ -2977,7 +2976,7 @@ export default function EnglishClassCourse2({
 
       notifyAlert("Comentário excluído!", partnerColor());
       setComment("");
-      getComments();
+      // getComments();
     } catch (error) {
       console.error(error, "Erro ao comentar");
     }
@@ -3394,10 +3393,9 @@ export default function EnglishClassCourse2({
                 maxW="120px"
                 changeB={changeNumber}
                 setChangeB={setChangeNumber}
+                chosenLanguage={classLanguage}
               />
             </div>
-
-            {/* Right side: Export buttons and completed checkbox */}
             <div
               style={{
                 display: "flex",
@@ -3820,138 +3818,132 @@ export default function EnglishClassCourse2({
             )}
           </div>
 
-          {isArthurVincent && (
-            <div>
-              <HTwo>{UniversalTexts.leaveAComment}</HTwo>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                {" "}
-                <img
-                  //@ts-ignore
-                  style={styles.userImage}
-                  src={thePicture}
-                  alt="User"
-                />
-                <textarea
-                  onChange={(e) => {
-                    setComment(e.target.value);
-                  }}
-                  //@ts-ignore
-                  type="text"
-                  className="comments2"
-                  placeholder="Type your comment here..."
-                  value={comment}
-                />
-              </div>
-              <div>
-                <button
-                  style={{
-                    display: "flex",
-                    marginLeft: "auto",
-                  }}
-                  onClick={sendComment}
-                >
-                  {UniversalTexts.leaveAComment}
-                </button>
-
-                <>
-                  {comments.length > 0 && (
-                    <div style={styles.container}>
-                      <HTwo>{UniversalTexts.comments}</HTwo>
-
-                      {/* @ts-ignore */}
-
-                      <div style={styles.commentList}>
-                        {comments.map((comment: any, index: number) => (
-                          //@ts-ignore
-
-                          <div key={index} style={styles.commentBox}>
-                            <img
-                              //@ts-ignore
-
-                              style={styles.userImage}
-                              src={comment.photo}
-                              alt="User"
-                            />
-                            {/* @ts-ignore */}
-
-                            <div style={styles.commentContent}>
-                              {/* @ts-ignore */}
-
-                              <p style={styles.commentText}>
-                                {comment.comment}
-                              </p>
-                              {comment.answer && (
-                                <p style={styles.answerText}>
-                                  <strong>Resposta:</strong> {comment.answer}
-                                </p>
-                              )}
-                              <span style={styles.commentDate}>
-                                {formatDateBr(new Date(comment.date))}
-                              </span>
-                            </div>
-                            {thePermissions == "superadmin" ||
-                              (thePermissions == "teacher" && (
-                                <span>
-                                  <button
-                                    onClick={() => deleteComment(comment.id)}
-                                    color="red"
-                                  >
-                                    <i
-                                      className="fa fa-trash"
-                                      aria-hidden="true"
-                                    />
-                                  </button>
-                                </span>
-                              ))}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                  {myComments.length > 0 && (
-                    <div style={styles.container}>
-                      <HTwo>{UniversalTexts.myPendingComments}</HTwo>
-                      {/* @ts-ignore */}
-
-                      <ul style={styles.commentList}>
-                        {myComments.map((comment: any, index: number) => (
-                          <li
-                            key={index}
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            {comment.comment}{" "}
-                            {thePermissions == "superadmin" ||
-                              (thePermissions == "teacher" && (
-                                <span>
-                                  <button
-                                    onClick={() => deleteComment(comment.id)}
-                                    color="red"
-                                  >
-                                    <i
-                                      className="fa fa-trash"
-                                      aria-hidden="true"
-                                    />
-                                  </button>
-                                </span>
-                              ))}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </>
-              </div>
-            </div>
-          )}
+          {
+            // isArthurVincent && (
+            //   <div>
+            //     <HTwo>{UniversalTexts.leaveAComment}</HTwo>
+            //     <div
+            //       style={{
+            //         display: "flex",
+            //         alignItems: "center",
+            //       }}
+            //     >
+            //       {" "}
+            //       <img
+            //         //@ts-ignore
+            //         style={styles.userImage}
+            //         src={thePicture}
+            //         alt="User"
+            //       />
+            //       <textarea
+            //         onChange={(e) => {
+            //           setComment(e.target.value);
+            //         }}
+            //         //@ts-ignore
+            //         type="text"
+            //         className="comments2"
+            //         placeholder="Type your comment here..."
+            //         value={comment}
+            //       />
+            //     </div>
+            //     <div>
+            //       <button
+            //         style={{
+            //           display: "flex",
+            //           marginLeft: "auto",
+            //         }}
+            //         onClick={sendComment}
+            //       >
+            //         {UniversalTexts.leaveAComment}
+            //       </button>
+            //       <>
+            //         {comments.length > 0 && (
+            //           <div style={styles.container}>
+            //             <HTwo>{UniversalTexts.comments}</HTwo>
+            //             {/* @ts-ignore */}
+            //             <div style={styles.commentList}>
+            //               {comments.map((comment: any, index: number) => (
+            //                 //@ts-ignore
+            //                 <div key={index} style={styles.commentBox}>
+            //                   <img
+            //                     //@ts-ignore
+            //                     style={styles.userImage}
+            //                     src={comment.photo}
+            //                     alt="User"
+            //                   />
+            //                   {/* @ts-ignore */}
+            //                   <div style={styles.commentContent}>
+            //                     {/* @ts-ignore */}
+            //                     <p style={styles.commentText}>
+            //                       {comment.comment}
+            //                     </p>
+            //                     {comment.answer && (
+            //                       <p style={styles.answerText}>
+            //                         <strong>Resposta:</strong> {comment.answer}
+            //                       </p>
+            //                     )}
+            //                     <span style={styles.commentDate}>
+            //                       {formatDateBr(new Date(comment.date))}
+            //                     </span>
+            //                   </div>
+            //                   {thePermissions == "superadmin" ||
+            //                     (thePermissions == "teacher" && (
+            //                       <span>
+            //                         <button
+            //                           onClick={() => deleteComment(comment.id)}
+            //                           color="red"
+            //                         >
+            //                           <i
+            //                             className="fa fa-trash"
+            //                             aria-hidden="true"
+            //                           />
+            //                         </button>
+            //                       </span>
+            //                     ))}
+            //                 </div>
+            //               ))}
+            //             </div>
+            //           </div>
+            //         )}
+            //         {myComments.length > 0 && (
+            //           <div style={styles.container}>
+            //             <HTwo>{UniversalTexts.myPendingComments}</HTwo>
+            //             {/* @ts-ignore */}
+            //             <ul style={styles.commentList}>
+            //               {myComments.map((comment: any, index: number) => (
+            //                 <li
+            //                   key={index}
+            //                   style={{
+            //                     display: "flex",
+            //                     justifyContent: "space-between",
+            //                     alignItems: "center",
+            //                   }}
+            //                 >
+            //                   {comment.comment}{" "}
+            //                   {thePermissions == "superadmin" ||
+            //                     (thePermissions == "teacher" && (
+            //                       <span>
+            //                         <button
+            //                           onClick={() => deleteComment(comment.id)}
+            //                           color="red"
+            //                         >
+            //                           <i
+            //                             className="fa fa-trash"
+            //                             aria-hidden="true"
+            //                           />
+            //                         </button>
+            //                       </span>
+            //                     ))}
+            //                 </li>
+            //               ))}
+            //             </ul>
+            //           </div>
+            //         )}
+            //       </>
+            //     </div>
+            //   </div>
+            // )
+          }
         </>
       )}
       <>

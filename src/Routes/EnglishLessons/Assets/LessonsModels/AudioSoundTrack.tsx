@@ -122,7 +122,7 @@ export default function AudioSoundTrack({
           <div dangerouslySetInnerHTML={{ __html: text }} />
         </div>
       )}
-      {element.sentences && (
+      {/* {element.sentences && (
         <UlSentences grid={element.grid}>
           {element.sentences &&
             element.sentences.map((sentence: any, i: number) => (
@@ -155,7 +155,7 @@ export default function AudioSoundTrack({
               </LiSentence>
             ))}
         </UlSentences>
-      )}
+      )} */}
     </>
   );
 }

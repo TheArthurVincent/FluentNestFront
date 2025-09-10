@@ -86,7 +86,6 @@ export default function VocabularyLesson({
               >
                 <i className="fa fa-volume-up" aria-hidden="true" />
               </button>
-
               <div
                 style={{
                   marginTop: "16px",
@@ -95,7 +94,6 @@ export default function VocabularyLesson({
               >
                 <div
                   style={{
-                    // fontSize: "14px",
                     fontWeight: "600",
                     color: "#111",
                     fontFamily: textTitleFont(),
@@ -105,7 +103,6 @@ export default function VocabularyLesson({
                 </div>
                 <div
                   style={{
-                    // fontSize: "12px",
                     color: "#6c757d",
                     fontStyle: "italic",
                   }}
