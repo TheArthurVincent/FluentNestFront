@@ -3,10 +3,8 @@ import axios from "axios";
 import React from "react";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import Helmets from "../../../Resources/Helmets";
 import { IFrameAsaas } from "../../HomePage/Blog.Styled";
 import { CircularProgress, Grid, TextField } from "@mui/material";
-// import { h3 } from "../../MyClasses/MyClasses.Styled";
 import silver from "./assets/teacherssilver.png";
 import gold from "./assets/goldteacher.png";
 import { HOne } from "../../../Resources/Components/RouteBox";
@@ -66,53 +64,53 @@ function formatCPF(value: string): string {
 }
 
 export default function TeacherSubscription() {
-  const [form, setForm] = useState({
-    name: "",
-    promoCode: "",
-    lastname: "",
-    username: "",
-    phoneNumber: "",
-    doc: "",
-    email: "",
-    dateOfBirth: "",
-    address: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    addressNumber: "",
-    zip: "",
-    password: "",
-    confirmPassword: "",
-    creditCardNumber: "",
-    creditCardHolderName: "",
-    creditCardExpiryMonth: "",
-    creditCardExpiryYear: "",
-    creditCardCcv: "",
-  });
-
   // const [form, setForm] = useState({
   //   name: "",
-  //   promoCode: "63",
-  //   lastname: "Doe",
+  //   promoCode: "",
+  //   lastname: "",
   //   username: "",
-  //   phoneNumber: "11930303030",
+  //   phoneNumber: "",
   //   doc: "",
-  //   email: "d@cristout.com",
-  //   dateOfBirth: "10/10/2025",
-  //   address: "Rua Nelia",
-  //   neighborhood: "Embu",
-  //   city: "Embu das Artes",
-  //   state: "SP",
-  //   addressNumber: "63",
-  //   zip: "06703794",
-  //   password: "63456789",
-  //   confirmPassword: "63456789",
-  //   creditCardNumber: "5397 2566 6440 3902",
-  //   creditCardHolderName: "John Doe",
-  //   creditCardExpiryMonth: "01",
-  //   creditCardExpiryYear: "2026",
-  //   creditCardCcv: "420",
+  //   email: "",
+  //   dateOfBirth: "",
+  //   address: "",
+  //   neighborhood: "",
+  //   city: "",
+  //   state: "",
+  //   addressNumber: "",
+  //   zip: "",
+  //   password: "",
+  //   confirmPassword: "",
+  //   creditCardNumber: "",
+  //   creditCardHolderName: "",
+  //   creditCardExpiryMonth: "",
+  //   creditCardExpiryYear: "",
+  //   creditCardCcv: "",
   // });
+
+  const [form, setForm] = useState({
+    name: "",
+    promoCode: "63",
+    lastname: "Doe",
+    username: "",
+    phoneNumber: "11930303030",
+    doc: "",
+    email: "d@cristout.com",
+    dateOfBirth: "10/10/2025",
+    address: "Rua Nelia",
+    neighborhood: "Embu",
+    city: "Embu das Artes",
+    state: "SP",
+    addressNumber: "63",
+    zip: "06703794",
+    password: "63456789",
+    confirmPassword: "63456789",
+    creditCardNumber: "5397 2566 6440 3902",
+    creditCardHolderName: "John Doe",
+    creditCardExpiryMonth: "01",
+    creditCardExpiryYear: "2026",
+    creditCardCcv: "420",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
@@ -184,15 +182,19 @@ export default function TeacherSubscription() {
     }
 
     try {
-      const response = await axios.post(`${backDomain}/api/v1/cadastro`, {
-        ...form,
-        planType: selectedPlan,
-        paymentMethod,
-        installments:
-          selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
-            ? installments
-            : 1,
-      });
+      const response = await axios.post(
+        `${backDomain}/api/v1/cadastro-teacher`,
+        {
+          ...form,
+          planType: selectedPlan,
+          paymentMethod,
+          planTier,
+          installments:
+            selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
+              ? installments
+              : 1,
+        }
+      );
 
       if (paymentMethod === "PIX") {
         window.location.assign("/feenotuptodate");
@@ -563,7 +565,7 @@ export default function TeacherSubscription() {
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
           <HOne>Cadastre-se</HOne>
-          {/* <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" /> */}
+          <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
           <h2>Plano</h2>
           <div
             style={styles.planContainer}
@@ -613,7 +615,7 @@ export default function TeacherSubscription() {
               <h3>{formatBRL(yearlyPrice)}/ano em até 6x</h3>
             </div>
           </div>
-          {/* <>
+          <>
             {selectedPlan === "yearly" && (
               <>
                 <h2>Método de Pagamento</h2>
@@ -1026,8 +1028,10 @@ export default function TeacherSubscription() {
                   alignContent: "center",
                 }}
               >
-                <button
-                  onClick={() => window.location.assign(getWhatsAppLink())}
+                <span
+                  onClick={() => {
+                    window.location.assign(getWhatsAppLink());
+                  }}
                   style={{
                     backgroundColor: "#25D366",
                     color: "white",
@@ -1042,7 +1046,7 @@ export default function TeacherSubscription() {
                 >
                   Para fazer o pagamento à vista, fale com nossa equipe por
                   WhatsApp!
-                </button>
+                </span>
               </div>
             )}
             {paymentMethod !== "PIX" && (
@@ -1054,8 +1058,8 @@ export default function TeacherSubscription() {
                 )}
               </button>
             )}
-          </> */}
-          <div
+          </>
+          {/* <div
             style={{
               padding: "3rem",
               display: "flex",
@@ -1080,7 +1084,7 @@ export default function TeacherSubscription() {
             >
               Fale com nossa equipe por WhatsApp!
             </button>
-          </div>
+          </div> */}
         </div>
 
         {error && <p style={styles.error}>{error}</p>}
