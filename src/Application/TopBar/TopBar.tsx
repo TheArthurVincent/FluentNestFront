@@ -650,7 +650,7 @@ export const TopBar: FC = () => {
         </div>
       </Modal>
       <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-        <form>
+        {/* <form>
           <select
             id="language"
             name="language"
@@ -660,7 +660,7 @@ export const TopBar: FC = () => {
             <option value="pt">PT-BR</option>
             <option value="en">EN-US</option>
           </select>
-        </form>
+        </form> */}
         <button
           onClick={onLoggOut}
           style={{
