@@ -1700,6 +1700,7 @@ export function isDev() {
 }
 
 export const backDomain = isDev();
+
 export const updateInfo = async (id, headers) => {
   try {
     const response = await axios.get(`${backDomain}/api/v1/student/${id}`, {

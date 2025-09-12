@@ -2,7 +2,11 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  onLoggOut,
+  updateInfo,
+} from "../../../Resources/UniversalComponents";
 import {
   notifyAlert,
   readText,
@@ -49,25 +53,22 @@ function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
-// Função para normalizar o texto
 const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
-    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "") // Remove pontuação
-    .replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
+    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "")
+    .replace(/\s+/g, " ")
     .trim();
 };
 
-// Função para limpar a string
 function cleanString(str: string): string {
   return str
     .toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/[^\x20-\x7E]/g, "") // Remove caracteres não imprimíveis
+    .replace(/[^\x20-\x7E]/g, "")
     .trim();
 }
 
-// Função de distância de Levenshtein
 function levenshteinDistance(str1: string, str2: string): number {
   const len1 = str1.length;
   const len2 = str2.length;
@@ -128,20 +129,18 @@ const ListeningExercise = ({
   const [transcript, setTranscript] = useState<string>("");
   const [transcriptHighLighted, setTranscriptHighLighted] =
     useState<string>("");
-  const [isShow, setIsShow] = useState<boolean>(false);
-
   const [listening, setListening] = useState<boolean>(false);
   var cardTextRef = useRef<string>("");
 
   const actualHeaders = headers || {};
 
   useEffect(() => {
-    var user = localStorage.getItem("loggedIn");
+    var user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
     // @ts-ignore
     var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
     setTimeout(() => {
-      updateInfo(myId, actualHeaders);
+      updateInfo(user.id, actualHeaders);
     }, 100);
     setTimeout(() => {
       if (user) {
@@ -189,7 +188,7 @@ const ListeningExercise = ({
       seeCardsToReview();
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
-      // onLoggOut();
+      onLoggOut();
     }
   };
   const isCorrectAnswer = (transcription: string | null) => {
@@ -236,8 +235,7 @@ const ListeningExercise = ({
 
     const userTranscript = normalizeText(cleanString(transcription || ""));
     const wordCountInCard = wordCount(
-      cards[0]?.front?.text.replace(/\s+/g, " ") || // Substitui múltiplos espaços por um espaço
-        ""
+      cards[0]?.front?.text.replace(/\s+/g, " ") || ""
     );
 
     if (userTranscript === "") {
@@ -258,11 +256,11 @@ const ListeningExercise = ({
 
     const simC = similarityPercentage(
       userTranscript,
-      cards[0]?.front?.text.replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
+      cards[0]?.front?.text.replace(/\s+/g, " ")
     );
     setSimilarity(simC);
     setWords(wordCountInCard);
-    // const points = simC > 40 ? wordCountInCard : 0;
+
     const points = score;
 
     if (simC > 98) {
@@ -299,25 +297,20 @@ const ListeningExercise = ({
         JSON.stringify(response.data.flashCardsReviewsToday)
       );
       setFlashcardsToday(theFlashcardsTodayNumber);
-
       setCards(response.data.dueFlashcards);
-
       const sl = response.data.dueFlashcards[0]?.front?.language;
-
       setSelectedLanguage(sl);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
 
       setCardsLength(thereAreCards);
       setLoading(false);
-      setIsShow(true);
       setTimeout(() => {
         setReadyToListen(true);
-        setEnableVoice(true); // Ativa só após cards estarem prontos
+        setEnableVoice(true);
       }, 300);
     } catch (error) {
       notifyAlert("Erro ao carregar cards");
     }
-    setIsShow(true);
   };
 
   const isIOS =
@@ -326,7 +319,6 @@ const ListeningExercise = ({
     navigator.userAgent.toLowerCase()
   );
 
-  // helper perto do topo
   const languageToLocale = (lang: string) => {
     switch ((lang || "").toLowerCase()) {
       case "en":
@@ -361,7 +353,7 @@ const ListeningExercise = ({
       recognitionRef.current = new SR();
       recognitionRef.current.interimResults = false;
       recognitionRef.current.maxAlternatives = 1;
-      recognitionRef.current.lang = languageToLocale(selectedLanguage); // <- usa a língua atual
+      recognitionRef.current.lang = languageToLocale(selectedLanguage);
 
       recognitionRef.current.onresult = (event: any) => {
         if (!cardTextRef.current) {
@@ -389,7 +381,7 @@ const ListeningExercise = ({
 
       (window as any).startSpeechRecognition = () => {
         setListening(true);
-        // garanta o lang correto no momento do start
+
         if (recognitionRef.current) {
           recognitionRef.current.lang = languageToLocale(selectedLanguage);
           recognitionRef.current.start();
@@ -402,7 +394,6 @@ const ListeningExercise = ({
     }
   }, []);
 
-  // sempre que a língua mudar, atualize o SR
   useEffect(() => {
     if (recognitionRef.current) {
       recognitionRef.current.lang = languageToLocale(selectedLanguage);
@@ -459,7 +450,7 @@ const ListeningExercise = ({
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const formData = new FormData();
         formData.append("audio", audioBlob, "audio.webm");
-        formData.append("language", selectedLanguage); // 👈 envia a língua escolhida
+        formData.append("language", selectedLanguage);
 
         setSeeProgress(true);
         try {
