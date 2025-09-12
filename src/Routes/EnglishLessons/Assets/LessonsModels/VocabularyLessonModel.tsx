@@ -34,17 +34,18 @@ export default function VocabularyLesson({
   const addNewCards = async (
     frontText: string,
     backText: string,
-    index: number
+    index: number,
+    languages: any | null
   ) => {
     const newCards = [
       {
         front: {
           text: frontText,
-          language: "en",
+          language: languages ? languages.language1 : "en",
         },
         back: {
           text: backText,
-          language: "pt",
+          language: languages ? languages.language2 : "pt",
         },
         tags: [mainTag ? mainTag : ""],
       },
@@ -211,7 +212,12 @@ export default function VocabularyLesson({
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          addNewCards(sentence.english, sentence.portuguese, i);
+                          addNewCards(
+                            sentence.english,
+                            sentence.portuguese,
+                            i,
+                            sentence.languages ? sentence.languages : null
+                          );
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.opacity = "1";

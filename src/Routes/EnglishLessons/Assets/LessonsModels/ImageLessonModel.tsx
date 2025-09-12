@@ -6,7 +6,7 @@ import {
   backDomain,
   onLoggOut,
 } from "../../../../Resources/UniversalComponents";
-import { CircularProgress, Tooltip } from "@mui/material";
+import { Tooltip } from "@mui/material";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 interface ImageLessonModelProps {
   headers: MyHeadersType | null;
@@ -30,17 +30,18 @@ export default function ImageLessonModel({
   const addNewCardsInverted = async (
     frontText: string,
     backText: string,
-    img: string
+    img: string,
+    languages: any | null
   ) => {
     const newCards = [
       {
         back: {
           text: frontText,
-          language: "en",
+          language: languages ? languages.language1 : "en",
         },
         front: {
           text: backText,
-          language: "pt",
+          language: languages ? languages.language2 : "pt",
         },
         img,
         tags: [mainTag ? mainTag : ""],
@@ -66,28 +67,8 @@ export default function ImageLessonModel({
       onLoggOut();
     }
   };
-  const [loa, SetLoa] = useState(false);
-  const handleAddImages = async () => {
-    SetLoa(true);
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/flashcard/add-images`,
-        { refs: element.images },
-        { headers: actualHeaders }
-      );
-      notifyAlert(
-        `Atualizados: ${response.data.updatedCount} flashcards`,
-        "green"
-      );
-      SetLoa(false);
-    } catch (e) {
-      notifyAlert("Erro ao atualizar imagens nos flashcards");
-      console.log(e, "Erro ao atualizar imagens nos flashcards");
-    }
-  };
-  return loa ? (
-    <CircularProgress />
-  ) : (
+
+  return (
     <div
       style={{
         padding: "8px",
@@ -163,7 +144,8 @@ export default function ImageLessonModel({
                         addNewCardsInverted(
                           image.english,
                           image.portuguese,
-                          image.img
+                          image.img,
+                          image.languages ? image.languages : null
                         );
                         setClickedButtons((prev) => new Set(prev).add(i));
                       }}

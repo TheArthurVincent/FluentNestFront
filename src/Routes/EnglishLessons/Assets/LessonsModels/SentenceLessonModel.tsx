@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import {
@@ -7,7 +7,11 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { Tooltip } from "@mui/material";
-import { partnerColor, textpartnerColorContrast, textTitleFont } from "../../../../Styles/Styles";
+import {
+  partnerColor,
+  textpartnerColorContrast,
+  textTitleFont,
+} from "../../../../Styles/Styles";
 
 interface SentenceLessonModelProps {
   headers: MyHeadersType | null;
@@ -30,17 +34,18 @@ export default function SentenceLessonModel({
   const addNewCards = async (
     frontText: string,
     backText: string,
-    index: number
+    index: number,
+    languages: any | null
   ) => {
     const newCards = [
       {
         front: {
           text: frontText,
-          language: "en",
+          language: languages ? languages.language1 : "en",
         },
         back: {
           text: backText,
-          language: "pt",
+          language: languages ? languages.language2 : "pt",
         },
         tags: [mainTag ? mainTag : ""],
       },
@@ -182,7 +187,12 @@ export default function SentenceLessonModel({
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          addNewCards(sentence.english, sentence.portuguese, i);
+                          addNewCards(
+                            sentence.english,
+                            sentence.portuguese,
+                            i,
+                            sentence.languages ? sentence.languages : null
+                          );
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.opacity = "1";

@@ -3745,6 +3745,7 @@ export default function EnglishClassCourse2({
                         <DialogueLessonModel
                           headers={headers}
                           element={element}
+                          language={classLanguage}
                         />
                       ) : element.type === "singleimages" ? (
                         <SingleImageLessonModel

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../Functions/FunctionLessons";
 import { textTitleFont, partnerColor } from "../../../../Styles/Styles";
@@ -8,25 +8,63 @@ import axios from "axios";
 interface DialogueLessonModelProps {
   headers: MyHeadersType | null;
   element: any;
-  selectedVoice?: any;
+  language: any;
+  selectedVoice?: {
+    value: string;
+    label: string;
+    lang: string;
+    gender?: "MALE" | "FEMALE";
+  } | null;
 }
 
-const readDialogueText = async (text: string, isPersonA: boolean, country: string = "US") => {
+// Mapeamento de locais por língua para montar languageCode e a UI
+const LOCALES: Record<any, { value: string; label: string; code: string }[]> = {
+  en: [
+    { value: "US", label: "🇺🇸 United States", code: "en-US" },
+    { value: "GB", label: "🇬🇧 United Kingdom", code: "en-GB" },
+    { value: "CA", label: "🇨🇦 Canada", code: "en-CA" },
+    { value: "AU", label: "🇦🇺 Australia", code: "en-AU" },
+    { value: "IN", label: "🇮🇳 India", code: "en-IN" },
+  ],
+  es: [
+    { value: "ES", label: "🇪🇸 España", code: "es-ES" },
+    { value: "MX", label: "🇲🇽 México", code: "es-MX" },
+    { value: "AR", label: "🇦🇷 Argentina", code: "es-AR" },
+    { value: "CO", label: "🇨🇴 Colombia", code: "es-CO" },
+  ],
+  fr: [
+    { value: "FR", label: "🇫🇷 France", code: "fr-FR" },
+    { value: "CA", label: "🇨🇦 Canada (fr)", code: "fr-CA" },
+  ],
+};
+
+// util para obter o languageCode final
+const getLanguageCode = (lang: "en" | "es" | "fr", country: string) => {
+  const list = LOCALES[lang];
+  const found = list.find((l) => l.value === country);
+  return found?.code ?? list[0].code; // fallback seguro
+};
+
+const readDialogueText = async (
+  text: string,
+  isPersonA: boolean,
+  lang: "en" | "es" | "fr",
+  country: string,
+  selectedVoice?: { lang: string; gender?: "MALE" | "FEMALE" } | null
+) => {
   if (window?.speechSynthesis) {
     window.speechSynthesis.cancel();
   }
 
   try {
-    // Pessoa A = voz masculina, Pessoa B = voz feminina
-    const gender = isPersonA ? "MALE" : "FEMALE";
-    
-    // Mapear país para languageCode
-    const languageCode = `en-${country}`;
+    const defaultGender = isPersonA ? "MALE" : "FEMALE";
+    const gender = selectedVoice?.gender ?? defaultGender;
+    const languageCode = getLanguageCode(lang, country);
 
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
       text,
-      languageCode: languageCode,
-      gender: gender,
+      languageCode,
+      gender,
       pitch: 0.7,
       speakingRate: 1.1,
     });
@@ -44,16 +82,17 @@ export default function DialogueLessonModel({
   element,
   headers,
   selectedVoice,
+  language,
 }: DialogueLessonModelProps) {
-  const [selectedCountry, setSelectedCountry] = useState<string>("US");
-  
-  const countryOptions = [
-    { value: "US", label: "🇺🇸 Estados Unidos" },
-    { value: "GB", label: "🇬🇧 Reino Unido" },
-    { value: "CA", label: "🇨🇦 Canadá" },
-    { value: "AU", label: "🇦🇺 Austrália" },
-    { value: "IN", label: "🇮🇳 Índia" },
-  ];
+  const countryOptions = useMemo(() => LOCALES[language], [language]);
+
+  const [selectedCountry, setSelectedCountry] = useState<string>(
+    countryOptions[0]?.value ?? ""
+  );
+
+  useEffect(() => {
+    setSelectedCountry(countryOptions[0]?.value ?? "");
+  }, [language, countryOptions]);
 
   function isEven(val: number) {
     return val % 2 === 0;
@@ -69,14 +108,29 @@ export default function DialogueLessonModel({
         border: "1px solid #e2e8f0",
       }}
     >
-      {/* Seletor de País */}
       <div
         style={{
           display: "flex",
           justifyContent: "center",
           marginBottom: "16px",
+          gap: 12,
+          alignItems: "center",
         }}
       >
+        <span
+          style={{
+            fontFamily: textTitleFont(),
+            fontSize: 14,
+            color: "#475569",
+          }}
+        >
+          {language === "en"
+            ? "English"
+            : language === "es"
+            ? "Español"
+            : "Français"}
+        </span>
+
         <select
           value={selectedCountry}
           onChange={(e) => setSelectedCountry(e.target.value)}
@@ -99,7 +153,7 @@ export default function DialogueLessonModel({
           ))}
         </select>
       </div>
-      
+
       {element.subtitle && (
         <div
           style={{
@@ -108,7 +162,6 @@ export default function DialogueLessonModel({
             position: "relative",
           }}
         >
-          {/* Ícone de conversa */}
           <div
             style={{
               display: "flex",
@@ -133,8 +186,6 @@ export default function DialogueLessonModel({
               💬
             </div>
           </div>
-
-          {/* Linha central do diálogo */}
           <div
             style={{
               position: "relative",
@@ -168,7 +219,6 @@ export default function DialogueLessonModel({
                       position: "relative",
                     }}
                   >
-                    {/* Avatar para pessoa A (esquerda) */}
                     {isLeft && (
                       <div
                         style={{
@@ -188,15 +238,21 @@ export default function DialogueLessonModel({
                         👨🏻
                       </div>
                     )}
-
-                    {/* Balão de conversa */}
                     <div
                       style={{
                         maxWidth: "70%",
                         position: "relative",
                         cursor: "pointer",
                       }}
-                      onClick={() => readDialogueText(text, isLeft, selectedCountry)}
+                      onClick={() =>
+                        readDialogueText(
+                          text,
+                          isLeft,
+                          language,
+                          selectedCountry,
+                          selectedVoice
+                        )
+                      }
                     >
                       <div
                         style={{
@@ -231,8 +287,6 @@ export default function DialogueLessonModel({
                         {text}
                       </div>
                     </div>
-
-                    {/* Avatar para pessoa B (direita) */}
                     {!isLeft && (
                       <div
                         style={{
