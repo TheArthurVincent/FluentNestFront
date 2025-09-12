@@ -11,37 +11,112 @@ interface VoiceTypes {
 type VoiceOption = {
   label: string;
   value: string;
-  lang: string;   // e.g. en-US, es-ES, fr-FR
+  lang: string; // e.g. en-US, es-ES, fr-FR
   gender: "MALE" | "FEMALE";
 };
 
-const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW, chosenLanguage }) => {
+const Voice: FC<VoiceTypes> = ({
+  changeB,
+  setChangeB,
+  maxW,
+  chosenLanguage,
+}) => {
   const [selectedOption, setSelectedOption] = useState<string>("male-us");
 
   const voiceOptions: VoiceOption[] = [
     // English
-    { label: "Female American", value: "female-us", lang: "en-US", gender: "FEMALE" },
+    {
+      label: "Female American",
+      value: "female-us",
+      lang: "en-US",
+      gender: "FEMALE",
+    },
     { label: "Male American", value: "male-us", lang: "en-US", gender: "MALE" },
-    { label: "Female Canadian", value: "female-ca", lang: "en-CA", gender: "FEMALE" },
+    {
+      label: "Female Canadian",
+      value: "female-ca",
+      lang: "en-CA",
+      gender: "FEMALE",
+    },
     { label: "Male Canadian", value: "male-ca", lang: "en-CA", gender: "MALE" },
-    { label: "Female British", value: "female-gb", lang: "en-GB", gender: "FEMALE" },
+    {
+      label: "Female British",
+      value: "female-gb",
+      lang: "en-GB",
+      gender: "FEMALE",
+    },
     { label: "Male British", value: "male-gb", lang: "en-GB", gender: "MALE" },
-    { label: "Female Australian", value: "female-au", lang: "en-AU", gender: "FEMALE" },
-    { label: "Male Australian", value: "male-au", lang: "en-AU", gender: "MALE" },
-    { label: "Female Indian", value: "female-in", lang: "en-IN", gender: "FEMALE" },
+    {
+      label: "Female Australian",
+      value: "female-au",
+      lang: "en-AU",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male Australian",
+      value: "male-au",
+      lang: "en-AU",
+      gender: "MALE",
+    },
+    {
+      label: "Female Indian",
+      value: "female-in",
+      lang: "en-IN",
+      gender: "FEMALE",
+    },
     { label: "Male Indian", value: "male-in", lang: "en-IN", gender: "MALE" },
 
     // Spanish
-    { label: "Female Spanish (Spain)", value: "female-es", lang: "es-ES", gender: "FEMALE" },
-    { label: "Male Spanish (Spain)", value: "male-es", lang: "es-ES", gender: "MALE" },
-    { label: "Female Spanish (Mexico)", value: "female-mx", lang: "es-MX", gender: "FEMALE" },
-    { label: "Male Spanish (Mexico)", value: "male-mx", lang: "es-MX", gender: "MALE" },
+    {
+      label: "Female Spanish (Spain)",
+      value: "female-es",
+      lang: "es-ES",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male Spanish (Spain)",
+      value: "male-es",
+      lang: "es-ES",
+      gender: "MALE",
+    },
+    {
+      label: "Female Spanish (Mexico)",
+      value: "female-mx",
+      lang: "es-MX",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male Spanish (Mexico)",
+      value: "male-mx",
+      lang: "es-MX",
+      gender: "MALE",
+    },
 
     // French
-    { label: "Female French (France)", value: "female-fr", lang: "fr-FR", gender: "FEMALE" },
-    { label: "Male French (France)", value: "male-fr", lang: "fr-FR", gender: "MALE" },
-    { label: "Female French (Canada)", value: "female-fr-ca", lang: "fr-CA", gender: "FEMALE" },
-    { label: "Male French (Canada)", value: "male-fr-ca", lang: "fr-CA", gender: "MALE" },
+    {
+      label: "Female French (France)",
+      value: "female-fr",
+      lang: "fr-FR",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male French (France)",
+      value: "male-fr",
+      lang: "fr-FR",
+      gender: "MALE",
+    },
+    {
+      label: "Female French (Canada)",
+      value: "female-fr-ca",
+      lang: "fr-CA",
+      gender: "FEMALE",
+    },
+    {
+      label: "Male French (Canada)",
+      value: "male-fr-ca",
+      lang: "fr-CA",
+      gender: "MALE",
+    },
   ];
 
   // Mapeia idioma -> valor padrão
@@ -73,11 +148,15 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW, chosenLanguage }) =>
 
   // Garante que a seleção atual exista na lista filtrada; se não, troca para o padrão do idioma
   useEffect(() => {
-    const existsInFiltered = filteredOptions.some((v) => v.value === selectedOption);
+    const existsInFiltered = filteredOptions.some(
+      (v) => v.value === selectedOption
+    );
     if (!existsInFiltered) {
       const langKey = (chosenLanguage || "").toLowerCase();
       const fallback = defaultByLang[langKey] || "male-us";
-      const existsFallback = filteredOptions.find((v) => v.value === fallback)?.value;
+      const existsFallback = filteredOptions.find(
+        (v) => v.value === fallback
+      )?.value;
       const next = existsFallback || filteredOptions[0]?.value || "male-us";
       setSelectedOption(next);
     }
@@ -136,7 +215,9 @@ const Voice: FC<VoiceTypes> = ({ changeB, setChangeB, maxW, chosenLanguage }) =>
           ))}
         </select>
         {(() => {
-          const currentVoice = voiceOptions.find((v) => v.value === selectedOption);
+          const currentVoice = voiceOptions.find(
+            (v) => v.value === selectedOption
+          );
           return currentVoice?.gender === "MALE" ? "🧏‍♂️" : "🧏‍♀️";
         })()}
       </div>

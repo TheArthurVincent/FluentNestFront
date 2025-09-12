@@ -94,8 +94,6 @@ export function HomePage({ headers }: HeadersProps) {
         if (response3.data.logoutNeeded == true) {
           console.log(response3.data.logoutNeeded, "ExpiredToken");
           onLoggOutToken();
-        } else {
-          console.log(response3.data.logoutNeeded, "User still logged in");
         }
       }
     } catch (error) {

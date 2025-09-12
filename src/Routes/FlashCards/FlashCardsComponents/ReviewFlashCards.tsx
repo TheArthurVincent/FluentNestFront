@@ -4,14 +4,8 @@ import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import {
   backDomain,
-  colorOfTheTShirt,
-  mascotStrong,
-  mascotSkinny,
-  mascotCelebrate,
-  mascotThinking,
   onLoggOut,
   updateInfo,
-  mascotWeak,
 } from "../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
@@ -44,7 +38,6 @@ const ReviewFlashCards = ({
   const [myId, setId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [theName, setName] = useState<string>("");
   const [cards, setCards] = useState<any[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [answer, setAnswer] = useState<boolean>(false);
@@ -55,20 +48,14 @@ const ReviewFlashCards = ({
   const [backCardVisible, setBackCardVisible] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("nofilter");
   const [textColor, setTextColor] = useState<string>("#000");
-  const [isArthurStudentBoolean, setIsArthurStudent] = useState<boolean>(false);
   const [timerCardCount, setTimerCardCount] = useState(19);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
-  const [lastReviewDay, setLastReviewDay] = useState<any>(null);
-  const [streak, setStreak] = useState<any>(0);
-  const [daysSinceLastReview, setDaysSinceLReview] = useState<any>(0);
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
-  const [MESSAGE, setMESSAGE] = useState<string>("How are you?");
-  const [mascot, setMascot] = useState<any>(null);
+  const [playCardAutomatically, setPlayCardAutomatically] =
+    useState<boolean>(true);
+  const [languageToUse, setLanguageToUse] = useState<string>("en");
   const [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
-  const [longest, setLongest] = useState<number>(0);
-  const [yourLongest, setYourLongest] = useState<number>(0);
-  const [studentLongest, setStudentLongest] = useState<string>("");
 
   const actualHeaders = headers || {};
 
@@ -92,19 +79,24 @@ const ReviewFlashCards = ({
       );
 
       const thereAreCards = response.data.dueFlashcards.length === 0;
+      var lg = response.data.dueFlashcards[0].front.language;
+      setLanguageToUse(lg ? lg : "en");
 
       if (
         response.data.dueFlashcards.length > 0 &&
         response.data.dueFlashcards[0].front.language &&
         response.data.dueFlashcards[0].front &&
+        playCardAutomatically &&
         response.data.dueFlashcards[0].front.language !== "pt"
       ) {
-        readText(
-          response.data.dueFlashcards[0].front?.text,
-          false,
-          response.data.dueFlashcards[0].front.language,
-          selectedVoice
-        );
+        setTimeout(() => {
+          readText(
+            response.data.dueFlashcards[0].front?.text,
+            false,
+            lg,
+            selectedVoice
+          );
+        }, 200);
       }
 
       setCards(response.data.dueFlashcards);
@@ -141,8 +133,6 @@ const ReviewFlashCards = ({
         },
         { headers: actualHeaders }
       );
-      setLastReviewDay(response.data.flashcardsStreakLastDay);
-      setStreak(response.data.streak);
       setCards(response.data.dueFlashcards);
       setAnswer(false);
       onChange(!change);
@@ -156,11 +146,9 @@ const ReviewFlashCards = ({
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     if (user) {
-      const { permissions, id, name, isArthurStudent } = JSON.parse(user);
-      setIsArthurStudent(isArthurStudent);
+      const { permissions, id } = JSON.parse(user);
       setId(id);
       setPermissions(permissions);
-      setName(name);
     }
     setAnswer(false);
     updateInfo(myId, actualHeaders);
@@ -243,17 +231,6 @@ const ReviewFlashCards = ({
     return () => timers.forEach(clearTimeout);
   };
 
-  const [streaksAll, setStreaksAll] = useState<any[]>([]);
-
-  const adjustStreak = async () => {
-    try {
-      const response = await axios.post(`${backDomain}/api/v1/adjuststreak`);
-
-      setStreaksAll(response.data.studentsWithQualifiedDays);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const getHistory = async (id: string) => {
     setLoading(true);
     try {
@@ -263,22 +240,7 @@ const ReviewFlashCards = ({
         { headers: actualHeaders }
       );
 
-      const {
-        streak: st,
-        daysSinceLastReview: lr,
-        lastDayFlashcardReview: mvlr,
-        longestStreakOfAll: lgst,
-        theStudentWithLongestStreak: studentLongest,
-        longestStreakME,
-      } = response.data;
-
-      setYourLongest(longestStreakME);
-      setStudentLongest(studentLongest);
-      setLongest(lgst);
       setFlashcardsToday(response.data.flashCardsReviewsToday);
-      setStreak(st);
-      setDaysSinceLReview(lr);
-      setLastReviewDay(mvlr);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -315,48 +277,6 @@ const ReviewFlashCards = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  useEffect(() => {
-    setMascot(mascotCelebrate(colorOfTheTShirt, size));
-  }, [size, colorOfTheTShirt]);
-
-  useEffect(() => {
-    if (flashcardsToday >= 25 && streak < 50) {
-      setMascot(mascotCelebrate(colorOfTheTShirt, size));
-      setMESSAGE(
-        `Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
-      );
-    } else if (flashcardsToday >= 25 && streak >= 50) {
-      setMascot(mascotCelebrate(colorOfTheTShirt, size));
-      setMESSAGE(
-        `I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
-      );
-    } else if (daysSinceLastReview !== null && daysSinceLastReview <= 3) {
-      setMascot(mascotThinking(colorOfTheTShirt, size));
-      setMESSAGE(
-        `Don't give up! Last time you studied was ${
-          daysSinceLastReview === 1
-            ? `yesterday`
-            : `${daysSinceLastReview} days ago`
-        }!`
-      );
-    } else if (daysSinceLastReview !== null && daysSinceLastReview > 3) {
-      setMascot(mascotWeak(colorOfTheTShirt, size));
-      setMESSAGE(
-        `I'm dying, you haven't studied in ${daysSinceLastReview} days`
-      );
-    } else if (streak >= 50) {
-      setMascot(mascotStrong(colorOfTheTShirt, size));
-      setMESSAGE(
-        `I'm so proud of you! You've been reviewing your flashcards for ${streak} days straight.`
-      );
-    } else if (streak < 50 && streak > daysSinceLastReview) {
-      setMascot(mascotSkinny(colorOfTheTShirt, size));
-      setMESSAGE(
-        `Keep on moving! You've been reviewing your flashcards for ${streak} days straight.`
-      );
-    }
-  }, [flashcardsToday, daysSinceLastReview, streak]);
-
   const cardRef = useRef<HTMLDivElement>(null);
   const [cardHeight, setCardHeight] = useState<number>(0);
 
@@ -364,6 +284,7 @@ const ReviewFlashCards = ({
     if (cardRef.current) {
       setCardHeight(cardRef.current.offsetHeight);
     }
+    console.log(cardHeight);
   }, [cards, answer, backCardVisible, loading, see]);
 
   return (
@@ -426,6 +347,7 @@ const ReviewFlashCards = ({
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              gap: "1rem",
               width: "100%",
             }}
           >
@@ -544,7 +466,6 @@ const ReviewFlashCards = ({
                                   : UniversalTexts?.reviews || "reviews"}
                               </span>
                               <br />
-                              <br />
                               <div
                                 style={{
                                   fontSize: "20px",
@@ -579,7 +500,7 @@ const ReviewFlashCards = ({
                                 cards[0]?.front?.language === "pt" && (
                                   <img
                                     style={{
-                                      width: "100%",
+                                      width: "50%",
                                       maxWidth: "8rem",
                                       aspectRatio: "1 / 1",
                                       objectFit: "cover",
@@ -709,7 +630,6 @@ const ReviewFlashCards = ({
                 )}
               </div>
             )}
-
             {/* Start/Refresh button */}
             <div
               style={{
@@ -732,7 +652,6 @@ const ReviewFlashCards = ({
                 )}
               </button>
             </div>
-
             {/* Controls */}
             <div
               style={{
@@ -749,7 +668,9 @@ const ReviewFlashCards = ({
                 maxW="auto"
                 changeB={changeNumber}
                 setChangeB={setChangeNumber}
+                chosenLanguage={languageToUse}
               />
+
               <select
                 id="category-select"
                 value={category}
@@ -869,10 +790,25 @@ const ReviewFlashCards = ({
                 </option>
               </select>
             </div>
+    <button
+  onClick={() => setPlayCardAutomatically(!playCardAutomatically)}
+  style={{
+    fontSize: "10px",
+    borderRadius: "12px",
+    border: "1px solid #ddd",
+    padding: "2px 8px",
+    cursor: "pointer",
+    backgroundColor: playCardAutomatically ? partnerColor(): "#f9fafb",
+    color: playCardAutomatically ? "#fff" : "#555",
+    transition: "all 0.2s ease",
+  }}
+>
+  {playCardAutomatically ? "🔊 Auto ON" : "🔇 Auto OFF"}
+</button>
+
           </div>
         </div>
       )}
-
       <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
         <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       </div>
