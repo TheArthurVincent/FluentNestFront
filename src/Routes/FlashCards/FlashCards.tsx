@@ -207,7 +207,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
           )}
         </div>
       )}
-
       <TabContext value={value}>
         <div
           style={{
