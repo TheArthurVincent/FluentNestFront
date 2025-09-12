@@ -140,6 +140,7 @@ const ListeningExercise = ({
 
   const fetchStudents = async (userId: string) => {
     setLoadingStudents(true);
+    setListening(false);
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/students/${userId}`,
@@ -259,7 +260,11 @@ const ListeningExercise = ({
   };
 
   const ponctuate = (transcription: string | null) => {
+    setListening(false);
     setLoading(true);
+    stopRecording();
+    setLiveTranscript("");
+    setTranscript(transcription || "");
     const raw = cards[0]?.front?.text;
     if (!raw) {
       notifyAlert("Erro: Card text está vazio.");
@@ -360,7 +365,7 @@ const ListeningExercise = ({
       case "en":
         return "en-US";
       case "es":
-        return "es-ES";
+        return "es-419"; // LatAm (melhor p/ BR); fallback abaixo
       case "pt":
         return "pt-BR";
       case "fr":
@@ -377,64 +382,83 @@ const ListeningExercise = ({
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
-    if (isIOS || isSafari) {
-      const SR =
-        (window as any).SpeechRecognition ||
-        (window as any).webkitSpeechRecognition;
-      if (!SR) {
-        notifyAlert("Reconhecimento de voz não suportado.");
-        return;
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
+    if (!SR) {
+      // Fallback to MediaRecorder if SpeechRecognition not supported
+      console.log(
+        "SpeechRecognition not supported; using MediaRecorder fallback"
+      );
+      return;
+    }
+
+    recognitionRef.current = new SR();
+    recognitionRef.current.interimResults = true; // Enable live transcription
+    recognitionRef.current.maxAlternatives = 1;
+    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+
+    recognitionRef.current.onresult = (event: any) => {
+      let finalTranscript = "";
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
       }
 
-      recognitionRef.current = new SR();
-      recognitionRef.current.interimResults = false;
-      recognitionRef.current.maxAlternatives = 1;
-      recognitionRef.current.lang = languageToLocale(selectedLanguage);
+      setLiveTranscript(finalTranscript + interimTranscript); // Update live transcript
 
-      recognitionRef.current.onresult = (event: any) => {
-        if (!cardTextRef.current) {
-          notifyAlert("Erro: Nenhuma frase carregada para comparar.");
-          return;
-        }
-        const speechToText = event.results[0][0].transcript.trim();
-        setTranscript(speechToText);
+      if (finalTranscript) {
+        // When final, process as before
+        setTranscript(finalTranscript.trim());
         setSeeProgress(true);
         setTimeout(() => {
-          isCorrectAnswer(speechToText);
+          isCorrectAnswer(finalTranscript.trim());
           setIsDisabled(false);
+          setListening(false);
           setSeeProgress(false);
         }, 2000);
         setEnableVoice(false);
-      };
+        setLiveTranscript(""); // Clear after final
+      }
+    };
 
-      recognitionRef.current.onerror = () => {
-        notifyAlert("Erro no reconhecimento de voz");
-        setEnableVoice(false);
-        setListening(false);
-      };
+    recognitionRef.current.onerror = (event: any) => {
+      console.error("SpeechRecognition error:", event.error);
+      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
+      setEnableVoice(false);
+      setListening(false);
+      setLiveTranscript("");
+    };
 
-      recognitionRef.current.onspeechend = () => recognitionRef.current?.stop();
+    recognitionRef.current.onspeechend = () => recognitionRef.current?.stop();
 
-      (window as any).startSpeechRecognition = () => {
-        setListening(true);
+    (window as any).startSpeechRecognition = () => {
+      setListening(true);
+      setLiveTranscript(""); // Clear on start
 
-        if (recognitionRef.current) {
-          recognitionRef.current.lang = languageToLocale(selectedLanguage);
-          recognitionRef.current.start();
-        }
-      };
-      (window as any).stopSpeechRecognition = () => {
-        setListening(false);
-        recognitionRef.current?.stop();
-      };
-    }
-  }, []);
+      if (recognitionRef.current) {
+        recognitionRef.current.lang = languageToLocale(selectedLanguage);
+        console.log(
+          `Starting SpeechRecognition with lang: ${recognitionRef.current.lang}`
+        );
+        recognitionRef.current.start();
+      }
+    };
 
-  useEffect(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.lang = languageToLocale(selectedLanguage);
-    }
-  }, [selectedLanguage]);
+    (window as any).stopSpeechRecognition = () => {
+      setListening(false);
+      recognitionRef.current?.stop();
+      setLiveTranscript("");
+    };
+  }, [selectedLanguage]); // Re-run if language changes
+
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
@@ -454,7 +478,21 @@ const ListeningExercise = ({
     }
   }, []);
 
+  // ...existing code...
+
+  // Update the startRecording function to use SpeechRecognition if available, else MediaRecorder
   const startRecording = async () => {
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
+    if (SR && recognitionRef.current) {
+      // Use SpeechRecognition for live transcription
+      (window as any).startSpeechRecognition();
+      return;
+    }
+
+    // Fallback to MediaRecorder (original logic)
     const isIOS =
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -468,13 +506,13 @@ const ListeningExercise = ({
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
       const mediaRecorder = new MediaRecorder(stream, {
         mimeType: "audio/webm",
       });
 
       mediaRecorderRef.current = mediaRecorder;
       audioChunks.length = 0;
+      const startTime = Date.now();
       mediaRecorder.start();
       setListening(true);
 
@@ -483,10 +521,28 @@ const ListeningExercise = ({
       };
 
       mediaRecorder.onstop = async () => {
+        const endTime = Date.now();
+        const duration = (endTime - startTime) / 1000;
+        console.log(`Recording duration: ${duration} seconds`);
+
+        if (duration < 1) {
+          notifyAlert(
+            "Gravação muito curta. Fale por pelo menos 1 segundo e tente novamente."
+          );
+          setSeeProgress(false);
+          setEnableVoice(false);
+          setListening(false);
+          return;
+        }
+
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        console.log(`Audio blob size: ${audioBlob.size} bytes`);
+
         const formData = new FormData();
-        formData.append("audio", audioBlob, "audio.webm");
-        formData.append("language", selectedLanguage);
+        formData.append("audio", audioBlob, "audio/webm");
+        const locale = languageToLocale(selectedLanguage);
+        formData.append("language", locale);
+        console.log(`Sending audio with language: ${locale}`);
 
         setSeeProgress(true);
         try {
@@ -496,11 +552,28 @@ const ListeningExercise = ({
           );
 
           const speechToText = response.data.transcript;
+          console.log(`Transcription result: ${speechToText}`);
+
+          if (!speechToText || speechToText.trim().length < 5) {
+            notifyAlert(
+              "Transcrição incompleta. Fale mais alto e mais perto do microfone."
+            );
+          }
+
           setTranscript(speechToText);
           isCorrectAnswer(speechToText);
           setIsDisabled(false);
-        } catch (error) {
-          notifyAlert("Erro ao transcrever áudio");
+        } catch (error: any) {
+          console.error(
+            "Backend transcription error:",
+            error.response?.data || error.message
+          );
+          notifyAlert(
+            `Erro ao transcrever áudio: ${
+              error.response?.data?.message ||
+              "Verifique o suporte ao idioma no backend"
+            }`
+          );
         } finally {
           setSeeProgress(false);
           setEnableVoice(false);
@@ -512,15 +585,87 @@ const ListeningExercise = ({
       console.log("Erro ao acessar microfone", error);
     }
   };
-
+  // ...existing code...
   const stopRecording = () => {
-    mediaRecorderRef.current?.stop();
     setListening(false);
+    mediaRecorderRef.current?.stop();
   };
 
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
+  const [liveTranscript, setLiveTranscript] = useState<string>(""); // Novo estado para transcrição em tempo real
 
+  // ...existing code...
+
+  useEffect(() => {
+    if (isIOS || isSafari) {
+      const SR =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
+      if (!SR) {
+        notifyAlert("Reconhecimento de voz não suportado.");
+        return;
+      }
+
+      recognitionRef.current = new SR();
+      recognitionRef.current.interimResults = true; // Habilitar resultados intermediários
+      recognitionRef.current.maxAlternatives = 1;
+      recognitionRef.current.lang = languageToLocale(selectedLanguage);
+
+      recognitionRef.current.onresult = (event: any) => {
+        let finalTranscript = "";
+        let interimTranscript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        setLiveTranscript(finalTranscript + interimTranscript); // Atualizar transcrição em tempo real
+
+        if (finalTranscript) {
+          // Quando final, processar como antes
+          setTranscript(finalTranscript.trim());
+          setSeeProgress(true);
+          setTimeout(() => {
+            isCorrectAnswer(finalTranscript.trim());
+            setIsDisabled(false);
+            setSeeProgress(false);
+          }, 2000);
+          setEnableVoice(false);
+          setLiveTranscript(""); // Limpar após final
+        }
+      };
+
+      recognitionRef.current.onerror = () => {
+        notifyAlert("Erro no reconhecimento de voz");
+        setEnableVoice(false);
+        setListening(false);
+        setLiveTranscript("");
+      };
+
+      recognitionRef.current.onspeechend = () => recognitionRef.current?.stop();
+
+      (window as any).startSpeechRecognition = () => {
+        setListening(true);
+        setLiveTranscript(""); // Limpar ao iniciar
+
+        if (recognitionRef.current) {
+          recognitionRef.current.lang = languageToLocale(selectedLanguage);
+          recognitionRef.current.start();
+        }
+      };
+      (window as any).stopSpeechRecognition = () => {
+        recognitionRef.current?.stop();
+        setListening(false);
+        setLiveTranscript("");
+      };
+    }
+  }, []);
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
     setSelectedVoice(storedVoice);
@@ -966,7 +1111,10 @@ const ListeningExercise = ({
                         </button>
                         <button
                           style={{
-                            display: !isDisabled ? "none" : "inline-block",
+                            display:
+                              isDisabled && !listening
+                                ? "inline-block"
+                                : "none", // Esconde o botão quando listening é true
                             cursor: enableVoice ? "pointer" : "not-allowed",
                             margin: "0 5px",
                           }}
@@ -978,18 +1126,7 @@ const ListeningExercise = ({
                               !cards[0]?.front?.text
                             )
                               return;
-                            if (isIOS || isSafari) {
-                              if (!listening) {
-                                cardTextRef.current =
-                                  cards[0]?.front?.text || "";
-
-                                (window as any).startSpeechRecognition();
-                                setListening(true);
-                                setTimeout(() => setListening(false), 4000);
-                              }
-                            } else {
-                              !listening ? startRecording() : stopRecording();
-                            }
+                            !listening ? startRecording() : stopRecording();
                           }}
                           color={
                             !enableVoice
@@ -1008,6 +1145,65 @@ const ListeningExercise = ({
                             aria-hidden="true"
                           />
                         </button>
+                        {listening && (
+                          <div
+                            style={{
+                              display: "block",
+                              marginTop: "1rem",
+                              padding: "10px",
+                              borderRadius: "6px",
+                              border: "1px solid #ccc",
+                              backgroundColor: "#f9f9f9",
+                            }}
+                          >
+                            <p style={{ fontStyle: "italic", color: "#666" }}>
+                              Transcrição em tempo real:{" "}
+                              {liveTranscript || "Fale agora..."}
+                            </p>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-around",
+                                marginTop: "10px",
+                              }}
+                            >
+                              {/* <button
+                              onClick={() => {
+                                ponctuate(liveTranscript);
+                                setListening(false);
+                                stopRecording();
+                              }}
+                              style={{
+                                padding: "8px 16px",
+                                backgroundColor: partnerColor(),
+                                color: "white",
+                                border: "none",
+                                borderRadius: "4px",
+                                cursor: "pointer",
+                              }}
+                            >
+                              Avançar
+                            </button> */}
+                              <button
+                                onClick={() => {
+                                  stopRecording();
+                                  setLiveTranscript("");
+                                  setEnableVoice(true); // Reabilitar o botão do microfone
+                                }}
+                                style={{
+                                  padding: "8px 16px",
+                                  backgroundColor: "#f44336",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
