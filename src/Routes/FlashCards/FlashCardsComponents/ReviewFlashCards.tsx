@@ -227,7 +227,6 @@ const ReviewFlashCards = ({
       timers.push(setTimeout(() => setTimerCardCount(i), delay));
     }
     //@ts-ignore
-
     return () => timers.forEach(clearTimeout);
   };
 
@@ -284,7 +283,6 @@ const ReviewFlashCards = ({
     if (cardRef.current) {
       setCardHeight(cardRef.current.offsetHeight);
     }
-    console.log(cardHeight);
   }, [cards, answer, backCardVisible, loading, see]);
 
   return (
@@ -790,22 +788,23 @@ const ReviewFlashCards = ({
                 </option>
               </select>
             </div>
-    <button
-  onClick={() => setPlayCardAutomatically(!playCardAutomatically)}
-  style={{
-    fontSize: "10px",
-    borderRadius: "12px",
-    border: "1px solid #ddd",
-    padding: "2px 8px",
-    cursor: "pointer",
-    backgroundColor: playCardAutomatically ? partnerColor(): "#f9fafb",
-    color: playCardAutomatically ? "#fff" : "#555",
-    transition: "all 0.2s ease",
-  }}
->
-  {playCardAutomatically ? "🔊 Auto ON" : "🔇 Auto OFF"}
-</button>
-
+            <button
+              onClick={() => setPlayCardAutomatically(!playCardAutomatically)}
+              style={{
+                fontSize: "10px",
+                borderRadius: "12px",
+                border: "1px solid #ddd",
+                padding: "2px 8px",
+                cursor: "pointer",
+                backgroundColor: playCardAutomatically
+                  ? partnerColor()
+                  : "#f9fafb",
+                color: playCardAutomatically ? "#fff" : "#555",
+                transition: "all 0.2s ease",
+              }}
+            >
+              {playCardAutomatically ? "🔊 Auto ON" : "🔇 Auto OFF"}
+            </button>
           </div>
         </div>
       )}

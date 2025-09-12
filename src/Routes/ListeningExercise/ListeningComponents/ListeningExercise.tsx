@@ -281,6 +281,8 @@ const ListeningExercise = ({
     onChange(!change);
   };
 
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+
   const seeCardsToReview = async () => {
     setReadyToListen(false);
     setLoading(true);
@@ -304,6 +306,10 @@ const ListeningExercise = ({
       setFlashcardsToday(theFlashcardsTodayNumber);
 
       setCards(response.data.dueFlashcards);
+
+      const sl = response.data.dueFlashcards[0]?.front?.language;
+
+      setSelectedLanguage(sl);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
 
       setCardsLength(thereAreCards);
@@ -325,110 +331,88 @@ const ListeningExercise = ({
     navigator.userAgent.toLowerCase()
   );
 
+  // helper perto do topo
+  const languageToLocale = (lang: string) => {
+    switch ((lang || "").toLowerCase()) {
+      case "en":
+        return "en-US";
+      case "es":
+        return "es-ES";
+      case "pt":
+        return "pt-BR";
+      case "fr":
+        return "fr-FR";
+      case "de":
+        return "de-DE";
+      case "it":
+        return "it-IT";
+      default:
+        return "en-US";
+    }
+  };
+
+  const recognitionRef = useRef<any>(null);
+
   useEffect(() => {
     if (isIOS || isSafari) {
-      // if (!isIOS && !isSafari) {
-      const SpeechRecognition =
+      const SR =
         (window as any).SpeechRecognition ||
         (window as any).webkitSpeechRecognition;
-
-      if (!SpeechRecognition) {
+      if (!SR) {
         notifyAlert("Reconhecimento de voz não suportado.");
         return;
       }
 
-      const recognition = new SpeechRecognition();
-      recognition.lang = "en-US";
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
+      recognitionRef.current = new SR();
+      recognitionRef.current.interimResults = false;
+      recognitionRef.current.maxAlternatives = 1;
+      recognitionRef.current.lang = languageToLocale(selectedLanguage); // <- usa a língua atual
 
-      recognition.onresult = (event: any) => {
+      recognitionRef.current.onresult = (event: any) => {
         if (!cardTextRef.current) {
           notifyAlert("Erro: Nenhuma frase carregada para comparar.");
           return;
         }
-
-        const speechToText = event.results[0][0].transcript;
-        const cleaned = speechToText.trim();
-        setTranscript(cleaned);
-
+        const speechToText = event.results[0][0].transcript.trim();
+        setTranscript(speechToText);
         setSeeProgress(true);
         setTimeout(() => {
-          isCorrectAnswer(cleaned); // 🔧 envia versão limpa
+          isCorrectAnswer(speechToText);
           setIsDisabled(false);
           setSeeProgress(false);
         }, 2000);
         setEnableVoice(false);
       };
 
-      recognition.onerror = () => {
+      recognitionRef.current.onerror = () => {
         notifyAlert("Erro no reconhecimento de voz");
         setEnableVoice(false);
         setListening(false);
       };
 
-      recognition.onspeechend = () => {
-        recognition.stop();
-      };
+      recognitionRef.current.onspeechend = () => recognitionRef.current?.stop();
 
-      // Ative ao clicar no botão
-      const startSpeechRecognition = () => {
+      (window as any).startSpeechRecognition = () => {
         setListening(true);
-        recognition.start();
+        // garanta o lang correto no momento do start
+        if (recognitionRef.current) {
+          recognitionRef.current.lang = languageToLocale(selectedLanguage);
+          recognitionRef.current.start();
+        }
       };
-
-      const stopSpeechRecognition = () => {
+      (window as any).stopSpeechRecognition = () => {
         setListening(false);
-        recognition.stop();
+        recognitionRef.current?.stop();
       };
-
-      // Torna acessível no escopo
-      (window as any).startSpeechRecognition = startSpeechRecognition;
-      (window as any).stopSpeechRecognition = stopSpeechRecognition;
     }
   }, []);
 
-  // // Controle do reconhecimento de fala
-  // const SpeechRecognition =
-  //   // @ts-ignore
-  //   window.SpeechRecognition || window.webkitSpeechRecognition;
-  // const recognition = new SpeechRecognition();
-  // recognition.lang = cards[0]?.front?.language == "en" ? "en-US" : "fr-FR";
-  // recognition.interimResults = false;
-  // recognition.maxAlternatives = 1;
-
-  // const startListening = () => {
-  //   setListening(true);
-  //   recognition.start();
-  // };
-
-  // const stopListening = () => {
-  //   setListening(false);
-  //   recognition.stop();
-  // };
-  // recognition.onresult = (event: any) => {
-  //   const speechToText = event.results[0][0].transcript;
-  //   setTranscript(cleanString(speechToText));
-  //   setSeeProgress(true);
-  //   setTimeout(() => {
-  //     isCorrectAnswer(speechToText);
-  //     setIsDisabled(false);
-  //     setSeeProgress(false);
-  //   }, 2000);
-  //   setEnableVoice(false);
-  // };
-
-  // recognition.onspeechend = () => {
-  //   setTimeout(() => {
-  //     stopListening();
-  //   }, 2000);
-  // };
-  // recognition.onerror = () => {
-  //   stopListening();
-  //   notifyAlert("Erro no reconhecimento de voz");
-  //   window.location.reload();
-  // };
-  // Reconhecimento com MediaRecorder + envio para backend Google Cloud
+  // sempre que a língua mudar, atualize o SR
+  useEffect(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.lang = languageToLocale(selectedLanguage);
+    }
+  }, [selectedLanguage]);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
@@ -447,6 +431,7 @@ const ListeningExercise = ({
       setISAPPLE(false);
     }
   }, []);
+
   const startRecording = async () => {
     const isIOS =
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
@@ -479,6 +464,7 @@ const ListeningExercise = ({
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const formData = new FormData();
         formData.append("audio", audioBlob, "audio.webm");
+        formData.append("language", selectedLanguage); // 👈 envia a língua escolhida
 
         setSeeProgress(true);
         try {
@@ -724,7 +710,12 @@ const ListeningExercise = ({
     </section>
   ) : (
     <section id="review">
-      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+      <Voice
+        changeB={changeNumber}
+        setChangeB={setChangeNumber}
+        maxW="400px"
+        chosenLanguage={selectedLanguage}
+      />{" "}
       {see && (
         <div>
           {loading ? (
@@ -863,7 +854,6 @@ const ListeningExercise = ({
                             setTimeout(() => {
                               setPlayingAudio(false);
                             }, 3000);
-
                             readText(
                               cards[0]?.front?.language == "en"
                                 ? `${cards[0]?.front?.text.replace(
@@ -875,6 +865,8 @@ const ListeningExercise = ({
                               cards[0]?.front?.language,
                               selectedVoice
                             );
+                            setSelectedLanguage(cards[0]?.front?.language);
+                            console.log(cards[0]?.front?.language);
                             const wordsInSentence =
                               cards[0]?.front?.text.split(" ").length || 0;
                             const estimatedTime = Math.min(

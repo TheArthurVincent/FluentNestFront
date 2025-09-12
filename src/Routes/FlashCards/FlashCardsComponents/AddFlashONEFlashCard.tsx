@@ -1,7 +1,7 @@
 import React from "react";
 import { partnerColor } from "../../../Styles/Styles";
 
-export const languages = ["en", "pt", "it", "fr", "de"];
+export const languages = ["en", "pt", "it", "fr", "de", "es"];
 
 interface AddOneFlashCardProps {
   index: number;
