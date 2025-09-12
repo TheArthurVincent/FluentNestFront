@@ -64,10 +64,11 @@ const normalizeText = (text: string): string => {
 
 function cleanString(str: string): string {
   return str
-    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos, preserva letras
     .replace(/\s+/g, " ")
-    .replace(/[^\x20-\x7E]/g, "")
-    .trim();
+    .trim()
+    .toLowerCase();
 }
 
 function levenshteinDistance(str1: string, str2: string): number {
@@ -135,6 +136,7 @@ const ListeningExercise = ({
   const [myPermissions, setPermissions] = useState<string>("");
   const [listening, setListening] = useState<boolean>(false);
   const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
+  const useSRFallbackRef = useRef(false);
 
   var cardTextRef = useRef<string>("");
 
@@ -359,13 +361,24 @@ const ListeningExercise = ({
   const isSafari = /^((?!chrome|android).)*safari/i.test(
     navigator.userAgent.toLowerCase()
   );
+  // Preferimos gravar e mandar pro backend (Google STT)
+  const canUseGoogleSTT = (): boolean => {
+    const MR: any = (window as any).MediaRecorder;
+    if (!MR) return false;
+    // Queremos webm/opus (Google STT: WEBM_OPUS)
+    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm;codecs=opus"))
+      return true;
+    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm")) return true;
+    return false; // Safari antigo/sem webm -> cai no fallback do navegador
+  };
 
+  // Modificar languageToLocale para suportar mais variações (ajuste conforme seu sotaque)
   const languageToLocale = (lang: string) => {
     switch ((lang || "").toLowerCase()) {
       case "en":
         return "en-US";
       case "es":
-        return "es-419"; // LatAm (melhor p/ BR); fallback abaixo
+        return "es-ES"; // Mude para "es-419" se for LatAm; "es-ES" para Europa
       case "pt":
         return "pt-BR";
       case "fr":
@@ -378,8 +391,48 @@ const ListeningExercise = ({
         return "en-US";
     }
   };
-
   const recognitionRef = useRef<any>(null);
+  const finalBufferRef = useRef<string>("");
+
+  const initBrowserSR = () => {
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SR) return false;
+
+    recognitionRef.current = new SR();
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.maxAlternatives = 1;
+    recognitionRef.current.continuous = true;
+    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+
+    recognitionRef.current.onresult = (event: any) => {
+      let interimTranscript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
+        } else {
+          interimTranscript += t;
+        }
+      }
+      setLiveTranscript(
+        (finalBufferRef.current + " " + interimTranscript).trim()
+      );
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.error("SpeechRecognition error:", event.error);
+      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
+      setEnableVoice(false);
+      setListening(false);
+      setLiveTranscript("");
+    };
+
+    // deixa rodar até clicar "Avançar"
+    recognitionRef.current.onspeechend = null;
+    return true;
+  };
 
   useEffect(() => {
     const SR =
@@ -446,8 +499,6 @@ const ListeningExercise = ({
     };
   }, [selectedLanguage]);
 
-  const finalBufferRef = useRef<string>("");
-
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
@@ -466,118 +517,148 @@ const ListeningExercise = ({
       setISAPPLE(false);
     }
   }, []);
+  const pickMime = () => {
+    const MR: any = (window as any).MediaRecorder;
+    if (!MR) return "";
+    if (MR.isTypeSupported?.("audio/webm;codecs=opus"))
+      return "audio/webm;codecs=opus";
+    if (MR.isTypeSupported?.("audio/webm")) return "audio/webm";
+    return "";
+  };
 
-  // ...existing code...
-
-  // Update the startRecording function to use SpeechRecognition if available, else MediaRecorder
+  // Modificar startRecording para priorizar SpeechRecognition (real-time)
   const startRecording = async () => {
+    console.log(
+      "[startRecording] enableVoice:",
+      enableVoice,
+      "ready:",
+      readyToListen
+    );
+
+    // Primeiro, tentar SpeechRecognition para real-time
     const SR =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
-
-    if (SR && recognitionRef.current) {
-      // Use SpeechRecognition for live transcription
-      (window as any).startSpeechRecognition();
-      return;
+    if (SR) {
+      console.log("Usando SpeechRecognition para transcrição em tempo real");
+      useSRFallbackRef.current = true;
+      try {
+        if (!recognitionRef.current) {
+          initBrowserSR();
+        }
+        setListening(true);
+        finalBufferRef.current = "";
+        setLiveTranscript("");
+        recognitionRef.current.lang = languageToLocale(selectedLanguage);
+        recognitionRef.current.start();
+        return;
+      } catch (err) {
+        console.error("Erro ao iniciar SpeechRecognition:", err);
+        notifyAlert(
+          "Erro ao iniciar reconhecimento de voz. Verifique permissões do microfone."
+        );
+        return;
+      }
     }
 
-    // Fallback to MediaRecorder (original logic)
-    const isIOS =
-      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-
-    if (isIOS || isSafari) {
-      notifyAlert(
-        "Seu dispositivo Apple ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
-      );
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: "audio/webm",
-      });
-
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunks.length = 0;
-      const startTime = Date.now();
-      mediaRecorder.start();
-      setListening(true);
-
-      mediaRecorder.ondataavailable = (event) => {
-        audioChunks.push(event.data);
-      };
-
-      mediaRecorder.onstop = async () => {
-        const endTime = Date.now();
-        const duration = (endTime - startTime) / 1000;
-        console.log(`Recording duration: ${duration} seconds`);
-
-        if (duration < 1) {
-          notifyAlert(
-            "Gravação muito curta. Fale por pelo menos 1 segundo e tente novamente."
-          );
-          setSeeProgress(false);
-          setEnableVoice(false);
-          setListening(false);
+    // Fallback: MediaRecorder + backend (não real-time)
+    if (canUseGoogleSTT()) {
+      useSRFallbackRef.current = false;
+      console.log("Fallback para MediaRecorder (sem real-time)");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const mime = pickMime();
+        if (!mime) {
+          notifyAlert("Formato de áudio não suportado. Tente outro navegador.");
           return;
         }
 
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        console.log(`Audio blob size: ${audioBlob.size} bytes`);
+        const mr = new MediaRecorder(stream, { mimeType: mime });
+        mediaRecorderRef.current = mr;
+        audioChunks.length = 0;
 
-        const formData = new FormData();
-        formData.append("audio", audioBlob, "audio/webm");
-        const locale = languageToLocale(selectedLanguage);
-        formData.append("language", locale);
-        console.log(`Sending audio with language: ${locale}`);
-
-        setSeeProgress(true);
-        try {
-          const response = await axios.post(
-            `${backDomain}/api/v1/speech-listening`,
-            formData
-          );
-
-          const speechToText = response.data.transcript;
-          console.log(`Transcription result: ${speechToText}`);
-
-          if (!speechToText || speechToText.trim().length < 5) {
-            notifyAlert(
-              "Transcrição incompleta. Fale mais alto e mais perto do microfone."
-            );
-          }
-
-          setTranscript(speechToText);
-          isCorrectAnswer(speechToText);
-          setIsDisabled(false);
-        } catch (error: any) {
-          console.error(
-            "Backend transcription error:",
-            error.response?.data || error.message
-          );
-          notifyAlert(
-            `Erro ao transcrever áudio: ${
-              error.response?.data?.message ||
-              "Verifique o suporte ao idioma no backend"
-            }`
-          );
-        } finally {
+        mr.onstart = () => {
+          console.log("[MediaRecorder] iniciado com", mime);
+          setListening(true);
           setSeeProgress(false);
-          setEnableVoice(false);
+          setLiveTranscript("🎙️ Gravando... (transcrição após parar)");
+        };
+
+        mr.ondataavailable = (e) => {
+          if (e.data && e.data.size) audioChunks.push(e.data);
+        };
+
+        mr.onerror = (e) => {
+          console.error("[MediaRecorder] erro:", e);
+          notifyAlert("Erro na gravação de áudio");
           setListening(false);
-        }
-      };
-    } catch (error: any) {
-      notifyAlert("Erro ao acessar microfone", error);
-      console.log("Erro ao acessar microfone", error);
+        };
+
+        mr.onstop = async () => {
+          console.log("[MediaRecorder] parado. Chunks:", audioChunks.length);
+          const blob = new Blob(audioChunks, { type: "audio/webm" });
+          const formData = new FormData();
+          formData.append("audio", blob, "audio.webm");
+          const locale = languageToLocale(selectedLanguage);
+          formData.append("language", locale);
+          formData.append("contentType", mime);
+
+          setSeeProgress(true);
+          setLiveTranscript("Processando transcrição...");
+          try {
+            const { data } = await axios.post(
+              `${backDomain}/api/v1/speech-listening`,
+              formData
+            );
+            const t = (data?.transcript || "").trim();
+            setTranscript(t);
+            isCorrectAnswer(t);
+            setIsDisabled(false);
+            setLiveTranscript(""); // Limpar após sucesso
+          } catch (err: any) {
+            console.error("[Transcription] erro:", err?.response?.data || err);
+            notifyAlert(
+              `Erro ao transcrever: ${
+                err?.response?.data?.message ||
+                err.message ||
+                "Verifique idioma/audio"
+              }`
+            );
+            setLiveTranscript("Erro na transcrição. Tente novamente.");
+          } finally {
+            setSeeProgress(false);
+            setEnableVoice(false);
+            setListening(false);
+          }
+        };
+
+        mr.start();
+        return;
+      } catch (err) {
+        console.error("[getUserMedia] erro:", err);
+        notifyAlert(
+          "Permissões do microfone negadas. Permita acesso no navegador."
+        );
+        return;
+      }
     }
+
+    notifyAlert("Nenhum método de reconhecimento de voz suportado.");
   };
-  // ...existing code...
   const stopRecording = () => {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
+      mediaRecorderRef.current.stop();
+    }
+    if (useSRFallbackRef.current) {
+      recognitionRef.current && (recognitionRef.current.onend = null);
+      recognitionRef.current?.stop();
+    }
     setListening(false);
-    mediaRecorderRef.current?.stop();
   };
 
   const [selectedVoice, setSelectedVoice] = useState<any>("");
@@ -639,19 +720,13 @@ const ListeningExercise = ({
     };
   }
 
-  const handleAdvanceClick = async () => {
-    // Se estiver ouvindo via SR, para manualmente
-    if (recognitionRef.current) {
-      recognitionRef.current.onend = null; // evita auto-restart
-      recognitionRef.current.stop();
-    } else {
-      // Fallback MediaRecorder
-      stopRecording();
-    }
+  const handleAdvanceClick = () => {
+    if (!useSRFallbackRef.current) return; // Evita uso no modo Google
 
-    // Usa o que acumulamos (final + parcial)
+    recognitionRef.current && (recognitionRef.current.onend = null);
+    recognitionRef.current?.stop();
+
     const text = (finalBufferRef.current || liveTranscript || "").trim();
-
     if (!text) {
       notifyAlert("Nenhum áudio capturado. Tente novamente.");
       setEnableVoice(true);
@@ -661,11 +736,9 @@ const ListeningExercise = ({
 
     setTranscript(text);
     setSeeProgress(true);
-
-    // Só aqui calculamos pontuação e liberamos o Next
     setTimeout(() => {
       isCorrectAnswer(text);
-      setIsDisabled(false); // habilita o botão Next
+      setIsDisabled(false);
       setSeeProgress(false);
       setListening(false);
       setEnableVoice(false);
@@ -1121,10 +1194,8 @@ const ListeningExercise = ({
                         )}
                         <button
                           style={{
-                            display:
-                              isDisabled && !listening
-                                ? "inline-block"
-                                : "none", // Esconde o botão quando listening é true
+                            display: isDisabled ? "inline-block" : "none",
+
                             cursor: enableVoice ? "pointer" : "not-allowed",
                             margin: "0 5px",
                           }}
@@ -1136,7 +1207,18 @@ const ListeningExercise = ({
                               !cards[0]?.front?.text
                             )
                               return;
-                            !listening ? startRecording() : stopRecording();
+
+                            if (!listening) {
+                              startRecording();
+                            } else {
+                              // Parar conforme o caminho atual
+                              if (useSRFallbackRef.current) {
+                                recognitionRef.current?.stop(); // SR encerra; texto vem do liveTranscript
+                                setListening(false);
+                              } else {
+                                stopRecording(); // MediaRecorder.onstop -> envia pro backend (Google)
+                              }
+                            }
                           }}
                           color={
                             !enableVoice
@@ -1155,7 +1237,7 @@ const ListeningExercise = ({
                             aria-hidden="true"
                           />
                         </button>
-                        {listening && (
+                        {listening && useSRFallbackRef.current && (
                           <div
                             style={{
                               display: "block",
@@ -1194,7 +1276,7 @@ const ListeningExercise = ({
                                 onClick={() => {
                                   setListening(false);
                                   setLiveTranscript("");
-                                  setEnableVoice(true); // Reabilitar o botão do microfone
+                                  setEnableVoice(true);
                                 }}
                                 style={{
                                   padding: "8px 16px",
@@ -1208,6 +1290,29 @@ const ListeningExercise = ({
                                 Cancelar
                               </button>
                             </div>
+                          </div>
+                        )}
+                        {listening && !useSRFallbackRef.current && (
+                          <div
+                            style={{
+                              marginTop: "1rem",
+                              fontSize: 12,
+                              color: "#666",
+                            }}
+                          >
+                            {liveTranscript}
+                          </div>
+                        )}
+
+                        {listening && !useSRFallbackRef.current && (
+                          <div
+                            style={{
+                              marginTop: "1rem",
+                              fontSize: 12,
+                              color: "#666",
+                            }}
+                          >
+                            🎙️ Gravando… {liveTranscript}
                           </div>
                         )}
                       </div>
