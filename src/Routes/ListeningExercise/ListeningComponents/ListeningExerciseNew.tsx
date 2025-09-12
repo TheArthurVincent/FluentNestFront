@@ -1,0 +1,1369 @@
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { CircularProgress } from "@mui/material";
+import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
+import {
+  backDomain,
+  onLoggOut,
+  updateInfo,
+} from "../../../Resources/UniversalComponents";
+import {
+  notifyAlert,
+  readText,
+} from "../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
+import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
+import Voice from "../../../Resources/Voice";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
+
+function highlightDifferences(
+  original: string,
+  userInput: string,
+  similarity: number
+): string {
+  const originalWords = normalizeText(original).split(" ");
+  const userWords = normalizeText(userInput).split(" ");
+
+  const output: string[] = [];
+  const len = Math.max(originalWords.length, userWords.length);
+
+  for (let i = 0; i < len; i++) {
+    const userWord = userWords[i];
+    const originalWord = originalWords[i];
+    if (!userWord && originalWord) {
+      if (similarity >= 40) {
+        output.push(`<span style="color: red;">-</span>`);
+      } else {
+        output.push("");
+      }
+    } else if (userWord === originalWord) {
+      output.push(`<span style="color: green;">${userWord}</span>`);
+    } else {
+      output.push(
+        `<span style="color: red; font-weight: 400;">${
+          userWord || "(extra)"
+        }</span>`
+      );
+    }
+  }
+
+  return output.join(" ");
+}
+
+function wordCount(str: string): number {
+  return normalizeText(str).split(" ").filter(Boolean).length;
+}
+
+const normalizeText = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+};
+
+function cleanString(str: string): string {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos, preserva letras
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+
+function levenshteinDistance(str1: string, str2: string): number {
+  const len1 = str1.length;
+  const len2 = str2.length;
+  const dp = Array.from(Array(len1 + 1), () => Array(len2 + 1).fill(0));
+
+  for (let i = 0; i <= len1; i++) dp[i][0] = i;
+  for (let j = 0; j <= len2; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]) + 1;
+      }
+    }
+  }
+
+  return dp[len1][len2];
+}
+function similarityPercentage(str1: string, str2: string): number {
+  const clean1 = normalizeText(str1);
+  const clean2 = normalizeText(str2);
+  const maxLen = Math.max(clean1.length, clean2.length);
+  if (maxLen === 0) return 100;
+  const distance = levenshteinDistance(clean1, clean2);
+  return Math.round(((maxLen - distance) / maxLen) * 100);
+}
+
+interface FlashCardsPropsRv {
+  headers: MyHeadersType | null;
+  onChange: any;
+  change: boolean;
+}
+
+const ListeningExerciseNew = ({
+  headers,
+  onChange,
+  change,
+}: FlashCardsPropsRv) => {
+  const { UniversalTexts } = useUserContext();
+
+  const [cards, setCards] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [cardsLength, setCardsLength] = useState<any>(true);
+  const [see, setSee] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [next, setNext] = useState<boolean>(false);
+  const [readyToListen, setReadyToListen] = useState(false);
+  const [seeProgress, setSeeProgress] = useState(false);
+  const [enableVoice, setEnableVoice] = useState(false);
+  const [similarity, setSimilarity] = useState<number>(0);
+  const [playingAudio, setPlayingAudio] = useState<boolean>(false);
+  const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
+  const [words, setWords] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [transcript, setTranscript] = useState<string>("");
+  const [myId, setId] = useState<string>("");
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [transcriptHighLighted, setTranscriptHighLighted] =
+    useState<string>("");
+  const [myPermissions, setPermissions] = useState<string>("");
+  const [listening, setListening] = useState<boolean>(false);
+  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
+  const useSRFallbackRef = useRef(false);
+
+  var cardTextRef = useRef<string>("");
+
+  const fetchStudents = async (userId: string) => {
+    setLoadingStudents(true);
+    setListening(false);
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${userId}`,
+        {
+          headers: actualHeaders,
+        }
+      );
+      const allUsers = response.data.listOfStudents;
+
+      setStudents(allUsers);
+      setLoadingStudents(false);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    } finally {
+      setLoadingStudents(false);
+    }
+  };
+  const actualHeaders = headers || {};
+  useEffect(() => {
+    var user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
+    // @ts-ignore
+    var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
+    setTimeout(() => {
+      updateInfo(user.id, actualHeaders);
+    }, 100);
+    var { id, permissions } = user;
+    if (user) {
+      setId(id);
+      setSelectedStudentId(id);
+      setPermissions(permissions);
+      setFlashcardsToday(flashcardsTodayNumber);
+      if (permissions === "superadmin" || permissions === "teacher") {
+        fetchStudents(id);
+      }
+    }
+  }, [change]);
+
+  const reviewListeningExerciseNew = async (score: number, percentage: number) => {
+    setNext(true);
+    try {
+      await axios.put(
+        `${backDomain}/api/v1/reviewflashcardlistening/${
+          selectedStudentId || myId
+        }`,
+        {
+          flashcardId: cards[0]?._id,
+          score,
+          percentage,
+          transcript,
+          dayToday: new Date(),
+        },
+        { headers: actualHeaders || {} }
+      );
+
+      onChange(!change);
+      setNext(false);
+      setTranscript("");
+      setLoading(false);
+
+      var user = localStorage.getItem("loggedIn");
+      var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
+      // @ts-ignore
+      var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
+      setTimeout(() => {
+        updateInfo(myId, actualHeaders);
+      }, 100);
+      setTimeout(() => {
+        if (user) {
+          const { id } = JSON.parse(user);
+          setId(id);
+          setFlashcardsToday(flashcardsTodayNumber);
+        }
+      }, 250);
+      seeCardsToReview();
+    } catch (error) {
+      notifyAlert("Erro ao enviar cards");
+      onLoggOut();
+    }
+  };
+
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const studentId = event.target.value;
+    setSelectedStudentId(studentId);
+  };
+
+  const isCorrectAnswer = (transcription: string | null) => {
+    const cardTextRaw = cardTextRef.current;
+
+    if (!cardTextRaw) {
+      notifyAlert("Erro: Card text está vazio ou indefinido.");
+      return;
+    }
+
+    const correct = normalizeText(cardTextRaw);
+    const user = normalizeText(transcription || "");
+
+    const wc = wordCount(correct);
+    const sim = similarityPercentage(user, correct);
+
+    setTranscriptHighLighted(highlightDifferences(correct, user, sim));
+    setSimilarity(sim);
+    setWords(wc);
+
+    if (!user) {
+      setScore(0);
+      return;
+    }
+
+    if (user === correct || sim >= 98) {
+      setScore(wc * 3);
+    } else if (sim >= 40) {
+      setScore(wc * 2);
+    } else {
+      setScore(0);
+    }
+  };
+
+  const ponctuate = (transcription: string | null) => {
+    setListening(false);
+    setLoading(true);
+    stopRecording();
+    setLiveTranscript("");
+    setTranscript(transcription || "");
+    const raw = cards[0]?.front?.text;
+    if (!raw) {
+      notifyAlert("Erro: Card text está vazio.");
+      return;
+    }
+
+    const cardText = normalizeText(cleanString(raw.replace(/\s+/g, " ")));
+
+    const userTranscript = normalizeText(cleanString(transcription || ""));
+    const wordCountInCard = wordCount(
+      cards[0]?.front?.text.replace(/\s+/g, " ") || ""
+    );
+
+    if (userTranscript === "") {
+      setSimilarity(0);
+      setScore(0);
+      setWords(wordCountInCard);
+      reviewListeningExerciseNew(0, 0);
+      return;
+    }
+
+    if (cleanString(cardText) === cleanString(userTranscript)) {
+      setSimilarity(100);
+      setScore(wordCountInCard * 3);
+      setWords(wordCountInCard);
+      reviewListeningExerciseNew(wordCountInCard * 3, 100);
+      return;
+    }
+
+    const simC = similarityPercentage(
+      userTranscript,
+      cards[0]?.front?.text.replace(/\s+/g, " ")
+    );
+    setSimilarity(simC);
+    setWords(wordCountInCard);
+
+    const points = score;
+
+    if (simC > 98) {
+      setSimilarity(100);
+      reviewListeningExerciseNew(wordCountInCard * 3, 100);
+    } else {
+      setScore(points);
+      reviewListeningExerciseNew(points, simC);
+    }
+    onChange(!change);
+  };
+
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+
+  const seeCardsToReview = async () => {
+    setReadyToListen(false);
+    setLoading(true);
+    setTranscript("");
+    setIsDisabled(true);
+    setSee(true);
+    setSimilarity(0);
+    setScore(0);
+    setWords(0);
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
+        { headers: actualHeaders || {} }
+      );
+      const thereAreCards = response.data.dueFlashcards[0];
+      setCardsLength(thereAreCards);
+      const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
+
+      localStorage.setItem(
+        "flashcardsToday",
+        JSON.stringify(response.data.flashCardsReviewsToday)
+      );
+      setFlashcardsToday(theFlashcardsTodayNumber);
+      setCards(response.data.dueFlashcards);
+
+      const sl = response.data.dueFlashcards[0]?.front?.language;
+      setSelectedLanguage(sl);
+      cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
+      setLoading(false);
+
+      setTimeout(() => {
+        setReadyToListen(true);
+        setEnableVoice(true);
+      }, 300);
+    } catch (error) {
+      notifyAlert("Erro ao carregar cards");
+    }
+  };
+
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(
+    navigator.userAgent.toLowerCase()
+  );
+  // Preferimos gravar e mandar pro backend (Google STT)
+  const canUseGoogleSTT = (): boolean => {
+    const MR: any = (window as any).MediaRecorder;
+    if (!MR) return false;
+    // Queremos webm/opus (Google STT: WEBM_OPUS)
+    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm;codecs=opus"))
+      return true;
+    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm")) return true;
+    return false; // Safari antigo/sem webm -> cai no fallback do navegador
+  };
+
+  // Modificar languageToLocale para suportar mais variações (ajuste conforme seu sotaque)
+  const languageToLocale = (lang: string) => {
+    switch ((lang || "").toLowerCase()) {
+      case "en":
+        return "en-US";
+      case "es":
+        return "es-ES"; // Mude para "es-419" se for LatAm; "es-ES" para Europa
+      case "pt":
+        return "pt-BR";
+      case "fr":
+        return "fr-FR";
+      case "de":
+        return "de-DE";
+      case "it":
+        return "it-IT";
+      default:
+        return "en-US";
+    }
+  };
+  const recognitionRef = useRef<any>(null);
+  const finalBufferRef = useRef<string>("");
+
+  const initBrowserSR = () => {
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SR) return false;
+
+    recognitionRef.current = new SR();
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.maxAlternatives = 1;
+    recognitionRef.current.continuous = true;
+    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+
+    recognitionRef.current.onresult = (event: any) => {
+      let interimTranscript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
+        } else {
+          interimTranscript += t;
+        }
+      }
+      setLiveTranscript(
+        (finalBufferRef.current + " " + interimTranscript).trim()
+      );
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.error("SpeechRecognition error:", event.error);
+      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
+      setEnableVoice(false);
+      setListening(false);
+      setLiveTranscript("");
+    };
+
+    // deixa rodar até clicar "Avançar"
+    recognitionRef.current.onspeechend = null;
+    return true;
+  };
+
+  useEffect(() => {
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      console.log(
+        "SpeechRecognition not supported; using MediaRecorder fallback"
+      );
+      return;
+    }
+
+    recognitionRef.current = new SR();
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.maxAlternatives = 1;
+    recognitionRef.current.continuous = true; // <-- mantém ouvindo, mesmo após pausas
+    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+
+    recognitionRef.current.onresult = (event: any) => {
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
+        } else {
+          interimTranscript += t;
+        }
+      }
+
+      // Mostra ao vivo, mas NÃO pontua automaticamente
+      setLiveTranscript(
+        (finalBufferRef.current + " " + interimTranscript).trim()
+      );
+    };
+
+    recognitionRef.current.onerror = (event: any) => {
+      console.error("SpeechRecognition error:", event.error);
+      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
+      setEnableVoice(false);
+      setListening(false);
+      setLiveTranscript("");
+    };
+
+    // NÃO pare automaticamente ao silêncio
+    recognitionRef.current.onspeechend = null;
+
+    (window as any).startSpeechRecognition = () => {
+      setListening(true);
+      finalBufferRef.current = ""; // zera buffer final
+      setLiveTranscript(""); // zera ao iniciar
+      if (recognitionRef.current) {
+        recognitionRef.current.lang = languageToLocale(selectedLanguage);
+        console.log(
+          `Starting SpeechRecognition with lang: ${recognitionRef.current.lang}`
+        );
+        recognitionRef.current.start();
+      }
+    };
+
+    (window as any).stopSpeechRecognition = () => {
+      setListening(false);
+      recognitionRef.current?.stop();
+    };
+  }, [selectedLanguage]);
+
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunks: BlobPart[] = [];
+
+  const [isAPPLE, setISAPPLE] = useState<boolean>(false);
+
+  useEffect(() => {
+    const isIOSs =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+    const isSafaris = /^((?!chrome|android).)*safari/i.test(
+      navigator.userAgent
+    );
+
+    if (isIOSs || isSafaris) {
+      setISAPPLE(true);
+    } else {
+      setISAPPLE(false);
+    }
+  }, []);
+  const pickMime = () => {
+    const MR: any = (window as any).MediaRecorder;
+    if (!MR) return "";
+    if (MR.isTypeSupported?.("audio/webm;codecs=opus"))
+      return "audio/webm;codecs=opus";
+    if (MR.isTypeSupported?.("audio/webm")) return "audio/webm";
+    return "";
+  };
+
+  // Modificar startRecording para priorizar SpeechRecognition (real-time)
+  const startRecording = async () => {
+    console.log(
+      "[startRecording] enableVoice:",
+      enableVoice,
+      "ready:",
+      readyToListen
+    );
+
+    // Primeiro, tentar SpeechRecognition para real-time
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (SR) {
+      console.log("Usando SpeechRecognition para transcrição em tempo real");
+      useSRFallbackRef.current = true;
+      try {
+        if (!recognitionRef.current) {
+          initBrowserSR();
+        }
+        setListening(true);
+        finalBufferRef.current = "";
+        setLiveTranscript("");
+        recognitionRef.current.lang = languageToLocale(selectedLanguage);
+        recognitionRef.current.start();
+        return;
+      } catch (err) {
+        console.error("Erro ao iniciar SpeechRecognition:", err);
+        notifyAlert(
+          "Erro ao iniciar reconhecimento de voz. Verifique permissões do microfone."
+        );
+        return;
+      }
+    }
+
+    // Fallback: MediaRecorder + backend (não real-time)
+    if (canUseGoogleSTT()) {
+      useSRFallbackRef.current = false;
+      console.log("Fallback para MediaRecorder (sem real-time)");
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: true,
+        });
+        const mime = pickMime();
+        if (!mime) {
+          notifyAlert("Formato de áudio não suportado. Tente outro navegador.");
+          return;
+        }
+
+        const mr = new MediaRecorder(stream, { mimeType: mime });
+        mediaRecorderRef.current = mr;
+        audioChunks.length = 0;
+
+        mr.onstart = () => {
+          console.log("[MediaRecorder] iniciado com", mime);
+          setListening(true);
+          setSeeProgress(false);
+          setLiveTranscript("🎙️ Gravando... (transcrição após parar)");
+        };
+
+        mr.ondataavailable = (e) => {
+          if (e.data && e.data.size) audioChunks.push(e.data);
+        };
+
+        mr.onerror = (e) => {
+          console.error("[MediaRecorder] erro:", e);
+          notifyAlert("Erro na gravação de áudio");
+          setListening(false);
+        };
+
+        mr.onstop = async () => {
+          console.log("[MediaRecorder] parado. Chunks:", audioChunks.length);
+          const blob = new Blob(audioChunks, { type: "audio/webm" });
+          const formData = new FormData();
+          formData.append("audio", blob, "audio.webm");
+          const locale = languageToLocale(selectedLanguage);
+          formData.append("language", locale);
+          formData.append("contentType", mime);
+
+          setSeeProgress(true);
+          setLiveTranscript("Processando transcrição...");
+          try {
+            const { data } = await axios.post(
+              `${backDomain}/api/v1/speech-listening`,
+              formData
+            );
+            const t = (data?.transcript || "").trim();
+            setTranscript(t);
+            isCorrectAnswer(t);
+            setIsDisabled(false);
+            setLiveTranscript(""); // Limpar após sucesso
+          } catch (err: any) {
+            console.error("[Transcription] erro:", err?.response?.data || err);
+            notifyAlert(
+              `Erro ao transcrever: ${
+                err?.response?.data?.message ||
+                err.message ||
+                "Verifique idioma/audio"
+              }`
+            );
+            setLiveTranscript("Erro na transcrição. Tente novamente.");
+          } finally {
+            setSeeProgress(false);
+            setEnableVoice(false);
+            setListening(false);
+          }
+        };
+
+        mr.start();
+        return;
+      } catch (err) {
+        console.error("[getUserMedia] erro:", err);
+        notifyAlert(
+          "Permissões do microfone negadas. Permita acesso no navegador."
+        );
+        return;
+      }
+    }
+
+    notifyAlert("Nenhum método de reconhecimento de voz suportado.");
+  };
+  const stopRecording = () => {
+    if (
+      mediaRecorderRef.current &&
+      mediaRecorderRef.current.state !== "inactive"
+    ) {
+      mediaRecorderRef.current.stop();
+    }
+    if (useSRFallbackRef.current) {
+      recognitionRef.current && (recognitionRef.current.onend = null);
+      recognitionRef.current?.stop();
+    }
+    setListening(false);
+  };
+
+  const [selectedVoice, setSelectedVoice] = useState<any>("");
+  const [changeNumber, setChangeNumber] = useState<boolean>(true);
+  const [liveTranscript, setLiveTranscript] = useState<string>(""); // Novo estado para transcrição em tempo real
+
+  // ...existing code...
+
+  if (isIOS || isSafari) {
+    const SR =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SR) {
+      notifyAlert("Reconhecimento de voz não suportado.");
+      return;
+    }
+
+    recognitionRef.current = new SR();
+    recognitionRef.current.interimResults = true;
+    recognitionRef.current.maxAlternatives = 1;
+    recognitionRef.current.continuous = true;
+    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+
+    recognitionRef.current.onresult = (event: any) => {
+      let interimTranscript = "";
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const t = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
+        } else {
+          interimTranscript += t;
+        }
+      }
+      setLiveTranscript(
+        (finalBufferRef.current + " " + interimTranscript).trim()
+      );
+    };
+
+    recognitionRef.current.onerror = () => {
+      notifyAlert("Erro no reconhecimento de voz");
+      setEnableVoice(false);
+      setListening(false);
+      setLiveTranscript("");
+    };
+
+    recognitionRef.current.onspeechend = null;
+
+    (window as any).startSpeechRecognition = () => {
+      setListening(true);
+      finalBufferRef.current = "";
+      setLiveTranscript("");
+      recognitionRef.current!.lang = languageToLocale(selectedLanguage);
+      recognitionRef.current!.start();
+    };
+    (window as any).stopSpeechRecognition = () => {
+      recognitionRef.current?.stop();
+      setListening(false);
+      setLiveTranscript("");
+    };
+  }
+
+  const handleAdvanceClick = () => {
+    if (!useSRFallbackRef.current) return; // Evita uso no modo Google
+
+    recognitionRef.current && (recognitionRef.current.onend = null);
+    recognitionRef.current?.stop();
+
+    const text = (finalBufferRef.current || liveTranscript || "").trim();
+    if (!text) {
+      notifyAlert("Nenhum áudio capturado. Tente novamente.");
+      setEnableVoice(true);
+      setListening(false);
+      return;
+    }
+
+    setTranscript(text);
+    setSeeProgress(true);
+    setTimeout(() => {
+      isCorrectAnswer(text);
+      setIsDisabled(false);
+      setSeeProgress(false);
+      setListening(false);
+      setEnableVoice(false);
+      setLiveTranscript("");
+    }, 120);
+  };
+
+  useEffect(() => {
+    const storedVoice = localStorage.getItem("chosenVoice");
+    setSelectedVoice(storedVoice);
+  }, [selectedVoice, changeNumber]);
+
+  return isAPPLE ? (
+    <section
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "60vh",
+        padding: "2rem",
+        textAlign: "center",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "500px",
+          padding: "2rem",
+          borderRadius: "16px",
+          backgroundColor: "#fff",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+          border: "1px solid #e0e0e0",
+        }}
+      >
+        {/* Icon */}
+        <div
+          style={{
+            fontSize: "3rem",
+            marginBottom: "1.5rem",
+            color: "#ff6b6b",
+          }}
+        >
+          🚫
+        </div>
+
+        {/* Title */}
+        <h2
+          style={{
+            fontSize: "1.5rem",
+            fontWeight: "600",
+            color: "#333",
+            marginBottom: "1rem",
+            lineHeight: "1.4",
+          }}
+        >
+          Audio Recording Not Supported
+        </h2>
+
+        {/* Subtitle */}
+        <h3
+          style={{
+            fontSize: "1.1rem",
+            fontWeight: "500",
+            color: "#666",
+            marginBottom: "1.5rem",
+            lineHeight: "1.4",
+          }}
+        >
+          Gravação de áudio não suportada
+        </h3>
+
+        {/* Main message */}
+        <p
+          style={{
+            fontSize: "1rem",
+            color: "#555",
+            lineHeight: "1.6",
+            marginBottom: "1.5rem",
+          }}
+        >
+          Your Apple device or Safari browser doesn't support audio recording
+          features required for this exercise.
+        </p>
+
+        <p
+          style={{
+            fontSize: "0.95rem",
+            color: "#666",
+            lineHeight: "1.6",
+            marginBottom: "2rem",
+          }}
+        >
+          Seu dispositivo Apple ou navegador Safari não suporta os recursos de
+          gravação de áudio necessários para este exercício.
+        </p>
+        {/* Recommendations */}
+        <div
+          style={{
+            backgroundColor: "#f8f9fa",
+            padding: "1.5rem",
+            borderRadius: "12px",
+            marginBottom: "1.5rem",
+            border: "1px solid #e9ecef",
+          }}
+        >
+          <h4
+            style={{
+              fontSize: "1rem",
+              fontWeight: "600",
+              color: "#495057",
+              marginBottom: "1rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem",
+            }}
+          >
+            💡 Recommended Solutions
+          </h4>
+
+          <div
+            style={{
+              textAlign: "left",
+              fontSize: "0.9rem",
+              color: "#555",
+              lineHeight: "1.5",
+            }}
+          >
+            <div style={{ marginBottom: "0.8rem" }}>
+              <strong>🖥️ Desktop/Laptop:</strong>
+              <br />
+              Use Google Chrome or Firefox on your computer
+            </div>
+
+            <div style={{ marginBottom: "0.8rem" }}>
+              <strong>📱 Mobile Alternative:</strong>
+              <br />
+              Try Google Chrome mobile browser (on some Android devices)
+            </div>
+          </div>
+        </div>
+
+        {/* Action buttons */}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.8rem",
+            alignItems: "center",
+          }}
+        >
+          <a
+            href="/flash-cards"
+            style={{
+              display: "inline-block",
+              padding: "12px 24px",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              textDecoration: "none",
+              borderRadius: "8px",
+              fontSize: "0.95rem",
+              fontWeight: "500",
+              transition: "all 0.2s",
+              minWidth: "200px",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+          >
+            📚 Try Regular Flashcards
+          </a>
+
+          <a
+            href="/"
+            style={{
+              display: "inline-block",
+              padding: "10px 20px",
+              backgroundColor: "transparent",
+              color: "#666",
+              textDecoration: "none",
+              borderRadius: "8px",
+              fontSize: "0.9rem",
+              border: "1px solid #ddd",
+              transition: "all 0.2s",
+              minWidth: "200px",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f8f9fa";
+              e.currentTarget.style.borderColor = "#bbb";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.borderColor = "#ddd";
+            }}
+          >
+            🏠 Back to Home
+          </a>
+        </div>
+
+        {/* Footer note */}
+        <div
+          style={{
+            marginTop: "2rem",
+            paddingTop: "1rem",
+            borderTop: "1px solid #eee",
+            fontSize: "0.8rem",
+            color: "#999",
+            fontStyle: "italic",
+          }}
+        >
+          This limitation is due to browser security policies on iOS/Safari
+          devices
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section id="review">
+      <span
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <Voice
+          changeB={changeNumber}
+          setChangeB={setChangeNumber}
+          maxW="400px"
+          chosenLanguage={selectedLanguage}
+        />{" "}
+        {(myPermissions == "superadmin" || myPermissions == "teacher") && (
+          <span>
+            {loadingStudents ? (
+              <CircularProgress size={20} style={{ color: partnerColor() }} />
+            ) : (
+              <select
+                onChange={(e) => {
+                  setSee(false);
+                  handleStudentChange(e);
+                }}
+                value={selectedStudentId}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "13px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "6px 8px",
+                  minWidth: "200px",
+                  maxWidth: "300px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = partnerColor();
+                  e.target.style.backgroundColor = "#ffffff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e2e8f0";
+                  e.target.style.backgroundColor = "#f8fafc";
+                }}
+              >
+                <option value="">
+                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
+                </option>
+                {students.map((student) => (
+                  <option
+                    key={student.id || student.theId}
+                    value={student.id || student.theId}
+                  >
+                    {student.name} {student.lastname}
+                  </option>
+                ))}
+              </select>
+            )}
+          </span>
+        )}
+      </span>
+      {see && (
+        <div>
+          {loading ? (
+            <CircularProgress style={{ color: partnerColor() }} />
+          ) : (
+            <div
+              style={{
+                maxWidth: "400px",
+                margin: "auto",
+                textAlign: "center",
+                padding: "20px",
+                borderRadius: "6px",
+              }}
+            >
+              {cardsLength ? (
+                <>
+                  <div>
+                    <div
+                      style={{
+                        display: isDisabled ? "none" : "grid",
+                        alignItems: "center",
+                        gap: "10px",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <p
+                        style={{
+                          padding: "10px",
+                          borderRadius: "6px",
+                          backgroundColor:
+                            similarity === 100
+                              ? "#4caf40"
+                              : similarity > 98
+                              ? "#2196f3"
+                              : similarity > 40
+                              ? "#ffeb3b"
+                              : "#f44336",
+                          color:
+                            similarity === 100
+                              ? "white"
+                              : similarity > 98
+                              ? "white"
+                              : similarity > 40
+                              ? "black"
+                              : "white",
+                          border: `solid 1px ${
+                            similarity === 100
+                              ? "white"
+                              : similarity > 98
+                              ? "white"
+                              : similarity > 40
+                              ? "black"
+                              : "white"
+                          }`,
+                          transition: "background-color 0.3s",
+                        }}
+                      >
+                        {similarity}% correct{" "}
+                        {similarity < 40 && (
+                          <span>(You need at least 40% to score)</span>
+                        )}
+                      </p>
+                      <div
+                        style={{
+                          display: "grid",
+                          border: "solid 1px #ccc",
+                          borderRadius: "6px",
+                          padding: "15px",
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <p
+                          style={{
+                            fontSize: "1rem",
+                            fontWeight: 400,
+                          }}
+                        >
+                          {cards[0]?.front?.text.replace(/\s+/g, " ")}
+                        </p>
+                        <p
+                          style={{
+                            fontFamily: textGeneralFont(),
+                            fontSize: "12px",
+                            fontWeight: 400,
+                            color: "#555",
+                          }}
+                        >
+                          {cards[0]?.back?.text}
+                        </p>
+                      </div>
+                      <div
+                        style={{
+                          display: "grid",
+                          border: "solid 1px #ccc",
+                          borderRadius: "6px",
+                          padding: "15px",
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <p
+                          style={{
+                            color: "grey",
+                            marginBottom: "10px",
+                            fontSize: "10px",
+                            fontStyle: "italic",
+                          }}
+                        >
+                          Your answer:
+                        </p>
+                        <div
+                          dangerouslySetInnerHTML={{
+                            __html: transcriptHighLighted,
+                          }}
+                        />
+                      </div>
+                      <p>
+                        This sentence has <b>{words}</b> words
+                      </p>
+                      <p>
+                        You scored <b>{score.toFixed()}</b> points
+                      </p>
+                    </div>
+                    {seeProgress ? (
+                      <CircularProgress style={{ color: partnerColor() }} />
+                    ) : (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-evenly",
+                        }}
+                      >
+                        {!listening && (
+                          <button
+                            disabled={playingAudio}
+                            onClick={() => {
+                              setPlayingAudio(true);
+                              setTimeout(() => {
+                                setPlayingAudio(false);
+                              }, 3000);
+                              readText(
+                                cards[0]?.front?.language == "en"
+                                  ? `${cards[0]?.front?.text.replace(
+                                      /\s+/g,
+                                      " "
+                                    )}`
+                                  : `${cards[0]?.front?.text}`,
+                                false,
+                                cards[0]?.front?.language,
+                                selectedVoice
+                              );
+                              setSelectedLanguage(cards[0]?.front?.language);
+                              const wordsInSentence =
+                                cards[0]?.front?.text.split(" ").length || 0;
+                              const estimatedTime = Math.min(
+                                6000,
+                                wordsInSentence * 350
+                              );
+
+                              setTimeout(() => {
+                                setEnableVoice(true);
+                              }, estimatedTime);
+                            }}
+                            color={!playingAudio ? "blue" : "grey"}
+                            style={{
+                              cursor: playingAudio ? "not-allowed" : "pointer",
+                              margin: "0 5px",
+                              marginTop: !isDisabled ? "1rem" : 0,
+                            }}
+                          >
+                            <i className="fa fa-volume-up" aria-hidden="true" />
+                          </button>
+                        )}
+                        <button
+                          style={{
+                            display: isDisabled ? "inline-block" : "none",
+
+                            cursor: enableVoice ? "pointer" : "not-allowed",
+                            margin: "0 5px",
+                          }}
+                          disabled={!enableVoice}
+                          onClick={() => {
+                            if (
+                              !enableVoice ||
+                              !readyToListen ||
+                              !cards[0]?.front?.text
+                            )
+                              return;
+
+                            if (!listening) {
+                              startRecording();
+                            } else {
+                              // Parar conforme o caminho atual
+                              if (useSRFallbackRef.current) {
+                                recognitionRef.current?.stop(); // SR encerra; texto vem do liveTranscript
+                                setListening(false);
+                              } else {
+                                stopRecording(); // MediaRecorder.onstop -> envia pro backend (Google)
+                              }
+                            }
+                          }}
+                          color={
+                            !enableVoice
+                              ? "lightgrey"
+                              : listening
+                              ? "red"
+                              : "green"
+                          }
+                        >
+                          <i
+                            className={
+                              isIOS || isSafari || !listening
+                                ? "fa fa-microphone"
+                                : "fa fa-stop"
+                            }
+                            aria-hidden="true"
+                          />
+                        </button>
+                        {listening && useSRFallbackRef.current && (
+                          <div
+                            style={{
+                              display: "block",
+                              marginTop: "1rem",
+                              padding: "10px",
+                              borderRadius: "6px",
+                              border: "1px solid #ccc",
+                              backgroundColor: "#f9f9f9",
+                            }}
+                          >
+                            <p style={{ fontStyle: "italic", color: "#666" }}>
+                              Transcrição em tempo real:{" "}
+                              {liveTranscript || "Fale agora..."}
+                            </p>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-around",
+                                marginTop: "10px",
+                              }}
+                            >
+                              <button
+                                onClick={handleAdvanceClick}
+                                style={{
+                                  padding: "8px 16px",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Avançar
+                              </button>
+                              <button
+                                onClick={() => {
+                                  setListening(false);
+                                  setLiveTranscript("");
+                                  setEnableVoice(true);
+                                }}
+                                style={{
+                                  padding: "8px 16px",
+                                  backgroundColor: "#f44336",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Cancelar
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        {listening && !useSRFallbackRef.current && (
+                          <div
+                            style={{
+                              marginTop: "1rem",
+                              fontSize: 12,
+                              color: "#666",
+                            }}
+                          >
+                            {liveTranscript}
+                          </div>
+                        )}
+
+                        {listening && !useSRFallbackRef.current && (
+                          <div
+                            style={{
+                              marginTop: "1rem",
+                              fontSize: 12,
+                              color: "#666",
+                            }}
+                          >
+                            🎙️ Gravando… {liveTranscript}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    style={{
+                      marginTop: "1rem",
+                      display: isDisabled ? "none" : "inline-block",
+                    }}
+                    disabled={next}
+                    color="green"
+                    onClick={() => ponctuate(transcript)}
+                  >
+                    Next
+                  </button>
+                  <textarea
+                    style={{
+                      display: !isDisabled ? "none" : "inline-block",
+                      marginTop: "1rem",
+                      width: "85%",
+                      padding: "10px",
+                      borderRadius: "6px",
+                      border: "1px solid #ccc",
+                    }}
+                    placeholder="Use this area for reference if you need to transcribe what you hear"
+                    name=""
+                    id=""
+                  />
+                </>
+              ) : (
+                <p>No flashcards</p>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+      <div
+        style={{
+          display: !isDisabled ? "none" : "flex",
+          justifyContent: "center",
+          marginTop: "20px",
+        }}
+      >
+        <button onClick={seeCardsToReview} style={{ margin: "0 5px" }}>
+          {!see ? "Start" : <i className="fa fa-refresh" />}
+        </button>
+      </div>
+      <ProgressCounter flashcardsToday={flashcardsToday} />
+    </section>
+  );
+};
+
+export default ListeningExerciseNew;

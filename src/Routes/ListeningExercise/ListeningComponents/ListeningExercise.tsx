@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  onLoggOut,
-  updateInfo,
-} from "../../../Resources/UniversalComponents";
+import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import {
   notifyAlert,
   readText,
@@ -14,7 +10,6 @@ import {
 import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
-import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 function highlightDifferences(
   original: string,
@@ -44,6 +39,11 @@ function highlightDifferences(
           userWord || "(extra)"
         }</span>`
       );
+      console.log(
+        `<span style="color: red; font-weight: 400;">${
+          userWord || "(extra)"
+        }</span>`
+      );
     }
   }
 
@@ -54,23 +54,25 @@ function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
+// Função para normalizar o texto
 const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
-    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "") // Remove pontuação
+    .replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
     .trim();
 };
 
+// Função para limpar a string
 function cleanString(str: string): string {
   return str
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos, preserva letras
+    .toLowerCase()
     .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
+    .replace(/[^\x20-\x7E]/g, "") // Remove caracteres não imprimíveis
+    .trim();
 }
 
+// Função de distância de Levenshtein
 function levenshteinDistance(str1: string, str2: string): number {
   const len1 = str1.length;
   const len2 = str2.length;
@@ -94,8 +96,10 @@ function levenshteinDistance(str1: string, str2: string): number {
 function similarityPercentage(str1: string, str2: string): number {
   const clean1 = normalizeText(str1);
   const clean2 = normalizeText(str2);
+
   const maxLen = Math.max(clean1.length, clean2.length);
   if (maxLen === 0) return 100;
+
   const distance = levenshteinDistance(clean1, clean2);
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
@@ -111,12 +115,10 @@ const ListeningExercise = ({
   onChange,
   change,
 }: FlashCardsPropsRv) => {
-  const { UniversalTexts } = useUserContext();
-
+  const [myId, setId] = useState<string>("");
   const [cards, setCards] = useState<any[]>([]);
-  const [students, setStudents] = useState<any[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [cardsLength, setCardsLength] = useState<any>(true);
+  const [cardsLength, setCardsLength] = useState<boolean>(true);
   const [see, setSee] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
@@ -129,65 +131,37 @@ const ListeningExercise = ({
   const [words, setWords] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [transcript, setTranscript] = useState<string>("");
-  const [myId, setId] = useState<string>("");
-  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [transcriptHighLighted, setTranscriptHighLighted] =
     useState<string>("");
-  const [myPermissions, setPermissions] = useState<string>("");
-  const [listening, setListening] = useState<boolean>(false);
-  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
-  const useSRFallbackRef = useRef(false);
+  const [isShow, setIsShow] = useState<boolean>(false);
 
+  const [listening, setListening] = useState<boolean>(false);
   var cardTextRef = useRef<string>("");
 
-  const fetchStudents = async (userId: string) => {
-    setLoadingStudents(true);
-    setListening(false);
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/students/${userId}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-      const allUsers = response.data.listOfStudents;
-
-      setStudents(allUsers);
-      setLoadingStudents(false);
-    } catch (error) {
-      console.error("Error fetching students:", error);
-    } finally {
-      setLoadingStudents(false);
-    }
-  };
   const actualHeaders = headers || {};
+
   useEffect(() => {
-    var user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    var user = localStorage.getItem("loggedIn");
     var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
     // @ts-ignore
     var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
     setTimeout(() => {
-      updateInfo(user.id, actualHeaders);
+      updateInfo(myId, actualHeaders);
     }, 100);
-    var { id, permissions } = user;
-    if (user) {
-      setId(id);
-      setSelectedStudentId(id);
-      setPermissions(permissions);
-      setFlashcardsToday(flashcardsTodayNumber);
-      if (permissions === "superadmin" || permissions === "teacher") {
-        fetchStudents(id);
+    setTimeout(() => {
+      if (user) {
+        const { id } = JSON.parse(user);
+        setId(id);
+        setFlashcardsToday(flashcardsTodayNumber);
       }
-    }
+    }, 250);
   }, [change]);
 
   const reviewListeningExercise = async (score: number, percentage: number) => {
     setNext(true);
     try {
       await axios.put(
-        `${backDomain}/api/v1/reviewflashcardlistening/${
-          selectedStudentId || myId
-        }`,
+        `${backDomain}/api/v1/reviewflashcardlistening/${myId}`,
         {
           flashcardId: cards[0]?._id,
           score,
@@ -220,15 +194,9 @@ const ListeningExercise = ({
       seeCardsToReview();
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
-      onLoggOut();
+      // onLoggOut();
     }
   };
-
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const studentId = event.target.value;
-    setSelectedStudentId(studentId);
-  };
-
   const isCorrectAnswer = (transcription: string | null) => {
     const cardTextRaw = cardTextRef.current;
 
@@ -262,11 +230,7 @@ const ListeningExercise = ({
   };
 
   const ponctuate = (transcription: string | null) => {
-    setListening(false);
     setLoading(true);
-    stopRecording();
-    setLiveTranscript("");
-    setTranscript(transcription || "");
     const raw = cards[0]?.front?.text;
     if (!raw) {
       notifyAlert("Erro: Card text está vazio.");
@@ -277,7 +241,8 @@ const ListeningExercise = ({
 
     const userTranscript = normalizeText(cleanString(transcription || ""));
     const wordCountInCard = wordCount(
-      cards[0]?.front?.text.replace(/\s+/g, " ") || ""
+      cards[0]?.front?.text.replace(/\s+/g, " ") || // Substitui múltiplos espaços por um espaço
+        ""
     );
 
     if (userTranscript === "") {
@@ -298,11 +263,11 @@ const ListeningExercise = ({
 
     const simC = similarityPercentage(
       userTranscript,
-      cards[0]?.front?.text.replace(/\s+/g, " ")
+      cards[0]?.front?.text.replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
     );
     setSimilarity(simC);
     setWords(wordCountInCard);
-
+    // const points = simC > 40 ? wordCountInCard : 0;
     const points = score;
 
     if (simC > 98) {
@@ -312,10 +277,9 @@ const ListeningExercise = ({
       setScore(points);
       reviewListeningExercise(points, simC);
     }
+
     onChange(!change);
   };
-
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
 
   const seeCardsToReview = async () => {
     setReadyToListen(false);
@@ -328,32 +292,31 @@ const ListeningExercise = ({
     setWords(0);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
+        `${backDomain}/api/v1/flashcardslistening/${myId}`,
         { headers: actualHeaders || {} }
       );
-      const thereAreCards = response.data.dueFlashcards[0];
-      setCardsLength(thereAreCards);
+      const thereAreCards = response.data.dueFlashcards.length === 0;
       const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
-
       localStorage.setItem(
         "flashcardsToday",
         JSON.stringify(response.data.flashCardsReviewsToday)
       );
       setFlashcardsToday(theFlashcardsTodayNumber);
+
       setCards(response.data.dueFlashcards);
-
-      const sl = response.data.dueFlashcards[0]?.front?.language;
-      setSelectedLanguage(sl);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
-      setLoading(false);
 
+      setCardsLength(thereAreCards);
+      setLoading(false);
+      setIsShow(true);
       setTimeout(() => {
         setReadyToListen(true);
-        setEnableVoice(true);
+        setEnableVoice(true); // Ativa só após cards estarem prontos
       }, 300);
     } catch (error) {
       notifyAlert("Erro ao carregar cards");
     }
+    setIsShow(true);
   };
 
   const isIOS =
@@ -361,144 +324,111 @@ const ListeningExercise = ({
   const isSafari = /^((?!chrome|android).)*safari/i.test(
     navigator.userAgent.toLowerCase()
   );
-  // Preferimos gravar e mandar pro backend (Google STT)
-  const canUseGoogleSTT = (): boolean => {
-    const MR: any = (window as any).MediaRecorder;
-    if (!MR) return false;
-    // Queremos webm/opus (Google STT: WEBM_OPUS)
-    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm;codecs=opus"))
-      return true;
-    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm")) return true;
-    return false; // Safari antigo/sem webm -> cai no fallback do navegador
-  };
-
-  // Modificar languageToLocale para suportar mais variações (ajuste conforme seu sotaque)
-  const languageToLocale = (lang: string) => {
-    switch ((lang || "").toLowerCase()) {
-      case "en":
-        return "en-US";
-      case "es":
-        return "es-ES"; // Mude para "es-419" se for LatAm; "es-ES" para Europa
-      case "pt":
-        return "pt-BR";
-      case "fr":
-        return "fr-FR";
-      case "de":
-        return "de-DE";
-      case "it":
-        return "it-IT";
-      default:
-        return "en-US";
-    }
-  };
-  const recognitionRef = useRef<any>(null);
-  const finalBufferRef = useRef<string>("");
-
-  const initBrowserSR = () => {
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) return false;
-
-    recognitionRef.current = new SR();
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.maxAlternatives = 1;
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.lang = languageToLocale(selectedLanguage);
-
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
-        } else {
-          interimTranscript += t;
-        }
-      }
-      setLiveTranscript(
-        (finalBufferRef.current + " " + interimTranscript).trim()
-      );
-    };
-
-    recognitionRef.current.onerror = (event: any) => {
-      console.error("SpeechRecognition error:", event.error);
-      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
-      setEnableVoice(false);
-      setListening(false);
-      setLiveTranscript("");
-    };
-
-    // deixa rodar até clicar "Avançar"
-    recognitionRef.current.onspeechend = null;
-    return true;
-  };
 
   useEffect(() => {
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      console.log(
-        "SpeechRecognition not supported; using MediaRecorder fallback"
-      );
-      return;
-    }
+    if (isIOS || isSafari) {
+      // if (!isIOS && !isSafari) {
+      const SpeechRecognition =
+        (window as any).SpeechRecognition ||
+        (window as any).webkitSpeechRecognition;
 
-    recognitionRef.current = new SR();
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.maxAlternatives = 1;
-    recognitionRef.current.continuous = true; // <-- mantém ouvindo, mesmo após pausas
-    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+      if (!SpeechRecognition) {
+        notifyAlert("Reconhecimento de voz não suportado.");
+        return;
+      }
 
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = "";
+      const recognition = new SpeechRecognition();
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
 
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
-        } else {
-          interimTranscript += t;
+      recognition.onresult = (event: any) => {
+        if (!cardTextRef.current) {
+          notifyAlert("Erro: Nenhuma frase carregada para comparar.");
+          return;
         }
-      }
 
-      // Mostra ao vivo, mas NÃO pontua automaticamente
-      setLiveTranscript(
-        (finalBufferRef.current + " " + interimTranscript).trim()
-      );
-    };
+        const speechToText = event.results[0][0].transcript;
+        const cleaned = speechToText.trim();
+        setTranscript(cleaned);
 
-    recognitionRef.current.onerror = (event: any) => {
-      console.error("SpeechRecognition error:", event.error);
-      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
-      setEnableVoice(false);
-      setListening(false);
-      setLiveTranscript("");
-    };
+        setSeeProgress(true);
+        setTimeout(() => {
+          isCorrectAnswer(cleaned); // 🔧 envia versão limpa
+          setIsDisabled(false);
+          setSeeProgress(false);
+        }, 2000);
+        setEnableVoice(false);
+      };
 
-    // NÃO pare automaticamente ao silêncio
-    recognitionRef.current.onspeechend = null;
+      recognition.onerror = () => {
+        notifyAlert("Erro no reconhecimento de voz");
+        setEnableVoice(false);
+        setListening(false);
+      };
 
-    (window as any).startSpeechRecognition = () => {
-      setListening(true);
-      finalBufferRef.current = ""; // zera buffer final
-      setLiveTranscript(""); // zera ao iniciar
-      if (recognitionRef.current) {
-        recognitionRef.current.lang = languageToLocale(selectedLanguage);
-        console.log(
-          `Starting SpeechRecognition with lang: ${recognitionRef.current.lang}`
-        );
-        recognitionRef.current.start();
-      }
-    };
+      recognition.onspeechend = () => {
+        recognition.stop();
+      };
 
-    (window as any).stopSpeechRecognition = () => {
-      setListening(false);
-      recognitionRef.current?.stop();
-    };
-  }, [selectedLanguage]);
+      // Ative ao clicar no botão
+      const startSpeechRecognition = () => {
+        setListening(true);
+        recognition.start();
+      };
 
+      const stopSpeechRecognition = () => {
+        setListening(false);
+        recognition.stop();
+      };
+
+      // Torna acessível no escopo
+      (window as any).startSpeechRecognition = startSpeechRecognition;
+      (window as any).stopSpeechRecognition = stopSpeechRecognition;
+    }
+  }, []);
+
+  // // Controle do reconhecimento de fala
+  // const SpeechRecognition =
+  //   // @ts-ignore
+  //   window.SpeechRecognition || window.webkitSpeechRecognition;
+  // const recognition = new SpeechRecognition();
+  // recognition.lang = cards[0]?.front?.language == "en" ? "en-US" : "fr-FR";
+  // recognition.interimResults = false;
+  // recognition.maxAlternatives = 1;
+
+  // const startListening = () => {
+  //   setListening(true);
+  //   recognition.start();
+  // };
+
+  // const stopListening = () => {
+  //   setListening(false);
+  //   recognition.stop();
+  // };
+  // recognition.onresult = (event: any) => {
+  //   const speechToText = event.results[0][0].transcript;
+  //   setTranscript(cleanString(speechToText));
+  //   setSeeProgress(true);
+  //   setTimeout(() => {
+  //     isCorrectAnswer(speechToText);
+  //     setIsDisabled(false);
+  //     setSeeProgress(false);
+  //   }, 2000);
+  //   setEnableVoice(false);
+  // };
+
+  // recognition.onspeechend = () => {
+  //   setTimeout(() => {
+  //     stopListening();
+  //   }, 2000);
+  // };
+  // recognition.onerror = () => {
+  //   stopListening();
+  //   notifyAlert("Erro no reconhecimento de voz");
+  //   window.location.reload();
+  // };
+  // Reconhecimento com MediaRecorder + envio para backend Google Cloud
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
@@ -517,234 +447,72 @@ const ListeningExercise = ({
       setISAPPLE(false);
     }
   }, []);
-  const pickMime = () => {
-    const MR: any = (window as any).MediaRecorder;
-    if (!MR) return "";
-    if (MR.isTypeSupported?.("audio/webm;codecs=opus"))
-      return "audio/webm;codecs=opus";
-    if (MR.isTypeSupported?.("audio/webm")) return "audio/webm";
-    return "";
-  };
-
-  // Modificar startRecording para priorizar SpeechRecognition (real-time)
   const startRecording = async () => {
-    console.log(
-      "[startRecording] enableVoice:",
-      enableVoice,
-      "ready:",
-      readyToListen
-    );
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
-    // Primeiro, tentar SpeechRecognition para real-time
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (SR) {
-      console.log("Usando SpeechRecognition para transcrição em tempo real");
-      useSRFallbackRef.current = true;
-      try {
-        if (!recognitionRef.current) {
-          initBrowserSR();
-        }
-        setListening(true);
-        finalBufferRef.current = "";
-        setLiveTranscript("");
-        recognitionRef.current.lang = languageToLocale(selectedLanguage);
-        recognitionRef.current.start();
-        return;
-      } catch (err) {
-        console.error("Erro ao iniciar SpeechRecognition:", err);
-        notifyAlert(
-          "Erro ao iniciar reconhecimento de voz. Verifique permissões do microfone."
-        );
-        return;
-      }
+    if (isIOS || isSafari) {
+      notifyAlert(
+        "Seu dispositivo Apple ou navegador não suporta gravação de áudio. Tente usar o Chrome no computador."
+      );
+      return;
     }
 
-    // Fallback: MediaRecorder + backend (não real-time)
-    if (canUseGoogleSTT()) {
-      useSRFallbackRef.current = false;
-      console.log("Fallback para MediaRecorder (sem real-time)");
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        const mime = pickMime();
-        if (!mime) {
-          notifyAlert("Formato de áudio não suportado. Tente outro navegador.");
-          return;
-        }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
-        const mr = new MediaRecorder(stream, { mimeType: mime });
-        mediaRecorderRef.current = mr;
-        audioChunks.length = 0;
+      const mediaRecorder = new MediaRecorder(stream, {
+        mimeType: "audio/webm",
+      });
 
-        mr.onstart = () => {
-          console.log("[MediaRecorder] iniciado com", mime);
-          setListening(true);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunks.length = 0;
+      mediaRecorder.start();
+      setListening(true);
+
+      mediaRecorder.ondataavailable = (event) => {
+        audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        const formData = new FormData();
+        formData.append("audio", audioBlob, "audio.webm");
+
+        setSeeProgress(true);
+        try {
+          const response = await axios.post(
+            `${backDomain}/api/v1/speech-listening`,
+            formData
+          );
+
+          const speechToText = response.data.transcript;
+          setTranscript(speechToText);
+          isCorrectAnswer(speechToText);
+          setIsDisabled(false);
+        } catch (error) {
+          notifyAlert("Erro ao transcrever áudio");
+          console.log("Erro ao transcrever áudio", error);
+        } finally {
           setSeeProgress(false);
-          setLiveTranscript("🎙️ Gravando... (transcrição após parar)");
-        };
-
-        mr.ondataavailable = (e) => {
-          if (e.data && e.data.size) audioChunks.push(e.data);
-        };
-
-        mr.onerror = (e) => {
-          console.error("[MediaRecorder] erro:", e);
-          notifyAlert("Erro na gravação de áudio");
+          setEnableVoice(false);
           setListening(false);
-        };
-
-        mr.onstop = async () => {
-          console.log("[MediaRecorder] parado. Chunks:", audioChunks.length);
-          const blob = new Blob(audioChunks, { type: "audio/webm" });
-          const formData = new FormData();
-          formData.append("audio", blob, "audio.webm");
-          const locale = languageToLocale(selectedLanguage);
-          formData.append("language", locale);
-          formData.append("contentType", mime);
-
-          setSeeProgress(true);
-          setLiveTranscript("Processando transcrição...");
-          try {
-            const { data } = await axios.post(
-              `${backDomain}/api/v1/speech-listening`,
-              formData
-            );
-            const t = (data?.transcript || "").trim();
-            setTranscript(t);
-            isCorrectAnswer(t);
-            setIsDisabled(false);
-            setLiveTranscript(""); // Limpar após sucesso
-          } catch (err: any) {
-            console.error("[Transcription] erro:", err?.response?.data || err);
-            notifyAlert(
-              `Erro ao transcrever: ${
-                err?.response?.data?.message ||
-                err.message ||
-                "Verifique idioma/audio"
-              }`
-            );
-            setLiveTranscript("Erro na transcrição. Tente novamente.");
-          } finally {
-            setSeeProgress(false);
-            setEnableVoice(false);
-            setListening(false);
-          }
-        };
-
-        mr.start();
-        return;
-      } catch (err) {
-        console.error("[getUserMedia] erro:", err);
-        notifyAlert(
-          "Permissões do microfone negadas. Permita acesso no navegador."
-        );
-        return;
-      }
+        }
+      };
+    } catch (error: any) {
+      notifyAlert("Erro ao acessar microfone", error);
+      console.log("Erro ao acessar microfone", error);
     }
-
-    notifyAlert("Nenhum método de reconhecimento de voz suportado.");
   };
+
   const stopRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !== "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-    }
-    if (useSRFallbackRef.current) {
-      recognitionRef.current && (recognitionRef.current.onend = null);
-      recognitionRef.current?.stop();
-    }
+    mediaRecorderRef.current?.stop();
     setListening(false);
   };
 
   const [selectedVoice, setSelectedVoice] = useState<any>("");
   const [changeNumber, setChangeNumber] = useState<boolean>(true);
-  const [liveTranscript, setLiveTranscript] = useState<string>(""); // Novo estado para transcrição em tempo real
-
-  // ...existing code...
-
-  if (isIOS || isSafari) {
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      notifyAlert("Reconhecimento de voz não suportado.");
-      return;
-    }
-
-    recognitionRef.current = new SR();
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.maxAlternatives = 1;
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.lang = languageToLocale(selectedLanguage);
-
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
-        } else {
-          interimTranscript += t;
-        }
-      }
-      setLiveTranscript(
-        (finalBufferRef.current + " " + interimTranscript).trim()
-      );
-    };
-
-    recognitionRef.current.onerror = () => {
-      notifyAlert("Erro no reconhecimento de voz");
-      setEnableVoice(false);
-      setListening(false);
-      setLiveTranscript("");
-    };
-
-    recognitionRef.current.onspeechend = null;
-
-    (window as any).startSpeechRecognition = () => {
-      setListening(true);
-      finalBufferRef.current = "";
-      setLiveTranscript("");
-      recognitionRef.current!.lang = languageToLocale(selectedLanguage);
-      recognitionRef.current!.start();
-    };
-    (window as any).stopSpeechRecognition = () => {
-      recognitionRef.current?.stop();
-      setListening(false);
-      setLiveTranscript("");
-    };
-  }
-
-  const handleAdvanceClick = () => {
-    if (!useSRFallbackRef.current) return; // Evita uso no modo Google
-
-    recognitionRef.current && (recognitionRef.current.onend = null);
-    recognitionRef.current?.stop();
-
-    const text = (finalBufferRef.current || liveTranscript || "").trim();
-    if (!text) {
-      notifyAlert("Nenhum áudio capturado. Tente novamente.");
-      setEnableVoice(true);
-      setListening(false);
-      return;
-    }
-
-    setTranscript(text);
-    setSeeProgress(true);
-    setTimeout(() => {
-      isCorrectAnswer(text);
-      setIsDisabled(false);
-      setSeeProgress(false);
-      setListening(false);
-      setEnableVoice(false);
-      setLiveTranscript("");
-    }, 120);
-  };
 
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
@@ -834,6 +602,7 @@ const ListeningExercise = ({
           Seu dispositivo Apple ou navegador Safari não suporta os recursos de
           gravação de áudio necessários para este exercício.
         </p>
+
         {/* Recommendations */}
         <div
           style={{
@@ -955,71 +724,7 @@ const ListeningExercise = ({
     </section>
   ) : (
     <section id="review">
-      <span
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        <Voice
-          changeB={changeNumber}
-          setChangeB={setChangeNumber}
-          maxW="400px"
-          chosenLanguage={selectedLanguage}
-        />{" "}
-        {(myPermissions == "superadmin" || myPermissions == "teacher") && (
-          <span>
-            {loadingStudents ? (
-              <CircularProgress size={20} style={{ color: partnerColor() }} />
-            ) : (
-              <select
-                onChange={(e) => {
-                  setSee(false);
-                  handleStudentChange(e);
-                }}
-                value={selectedStudentId}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "13px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "6px 8px",
-                  minWidth: "200px",
-                  maxWidth: "300px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = partnerColor();
-                  e.target.style.backgroundColor = "#ffffff";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#e2e8f0";
-                  e.target.style.backgroundColor = "#f8fafc";
-                }}
-              >
-                <option value="">
-                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-                </option>
-                {students.map((student) => (
-                  <option
-                    key={student.id || student.theId}
-                    value={student.id || student.theId}
-                  >
-                    {student.name} {student.lastname}
-                  </option>
-                ))}
-              </select>
-            )}
-          </span>
-        )}
-      </span>
+      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
       {see && (
         <div>
           {loading ? (
@@ -1034,7 +739,7 @@ const ListeningExercise = ({
                 borderRadius: "6px",
               }}
             >
-              {cardsLength ? (
+              {!cardsLength ? (
                 <>
                   <div>
                     <div
@@ -1151,51 +856,48 @@ const ListeningExercise = ({
                           justifyContent: "space-evenly",
                         }}
                       >
-                        {!listening && (
-                          <button
-                            disabled={playingAudio}
-                            onClick={() => {
-                              setPlayingAudio(true);
-                              setTimeout(() => {
-                                setPlayingAudio(false);
-                              }, 3000);
-                              readText(
-                                cards[0]?.front?.language == "en"
-                                  ? `${cards[0]?.front?.text.replace(
-                                      /\s+/g,
-                                      " "
-                                    )}`
-                                  : `${cards[0]?.front?.text}`,
-                                false,
-                                cards[0]?.front?.language,
-                                selectedVoice
-                              );
-                              setSelectedLanguage(cards[0]?.front?.language);
-                              const wordsInSentence =
-                                cards[0]?.front?.text.split(" ").length || 0;
-                              const estimatedTime = Math.min(
-                                6000,
-                                wordsInSentence * 350
-                              );
+                        <button
+                          disabled={playingAudio}
+                          onClick={() => {
+                            setPlayingAudio(true);
+                            setTimeout(() => {
+                              setPlayingAudio(false);
+                            }, 3000);
 
-                              setTimeout(() => {
-                                setEnableVoice(true);
-                              }, estimatedTime);
-                            }}
-                            color={!playingAudio ? "blue" : "grey"}
-                            style={{
-                              cursor: playingAudio ? "not-allowed" : "pointer",
-                              margin: "0 5px",
-                              marginTop: !isDisabled ? "1rem" : 0,
-                            }}
-                          >
-                            <i className="fa fa-volume-up" aria-hidden="true" />
-                          </button>
-                        )}
+                            readText(
+                              cards[0]?.front?.language == "en"
+                                ? `${cards[0]?.front?.text.replace(
+                                    /\s+/g,
+                                    " "
+                                  )}`
+                                : `${cards[0]?.front?.text}`,
+                              false,
+                              cards[0]?.front?.language,
+                              selectedVoice
+                            );
+                            const wordsInSentence =
+                              cards[0]?.front?.text.split(" ").length || 0;
+                            const estimatedTime = Math.min(
+                              6000,
+                              wordsInSentence * 350
+                            );
+
+                            setTimeout(() => {
+                              setEnableVoice(true);
+                            }, estimatedTime);
+                          }}
+                          color={!playingAudio ? "blue" : "grey"}
+                          style={{
+                            cursor: playingAudio ? "not-allowed" : "pointer",
+                            margin: "0 5px",
+                            marginTop: !isDisabled ? "1rem" : 0,
+                          }}
+                        >
+                          <i className="fa fa-volume-up" aria-hidden="true" />
+                        </button>
                         <button
                           style={{
-                            display: isDisabled ? "inline-block" : "none",
-
+                            display: !isDisabled ? "none" : "inline-block",
                             cursor: enableVoice ? "pointer" : "not-allowed",
                             margin: "0 5px",
                           }}
@@ -1207,17 +909,17 @@ const ListeningExercise = ({
                               !cards[0]?.front?.text
                             )
                               return;
+                            if (isIOS || isSafari) {
+                              if (!listening) {
+                                cardTextRef.current =
+                                  cards[0]?.front?.text || "";
 
-                            if (!listening) {
-                              startRecording();
-                            } else {
-                              // Parar conforme o caminho atual
-                              if (useSRFallbackRef.current) {
-                                recognitionRef.current?.stop(); // SR encerra; texto vem do liveTranscript
-                                setListening(false);
-                              } else {
-                                stopRecording(); // MediaRecorder.onstop -> envia pro backend (Google)
+                                (window as any).startSpeechRecognition();
+                                setListening(true);
+                                setTimeout(() => setListening(false), 4000);
                               }
+                            } else {
+                              !listening ? startRecording() : stopRecording();
                             }
                           }}
                           color={
@@ -1237,84 +939,6 @@ const ListeningExercise = ({
                             aria-hidden="true"
                           />
                         </button>
-                        {listening && useSRFallbackRef.current && (
-                          <div
-                            style={{
-                              display: "block",
-                              marginTop: "1rem",
-                              padding: "10px",
-                              borderRadius: "6px",
-                              border: "1px solid #ccc",
-                              backgroundColor: "#f9f9f9",
-                            }}
-                          >
-                            <p style={{ fontStyle: "italic", color: "#666" }}>
-                              Transcrição em tempo real:{" "}
-                              {liveTranscript || "Fale agora..."}
-                            </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-around",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <button
-                                onClick={handleAdvanceClick}
-                                style={{
-                                  padding: "8px 16px",
-                                  backgroundColor: partnerColor(),
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Avançar
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setListening(false);
-                                  setLiveTranscript("");
-                                  setEnableVoice(true);
-                                }}
-                                style={{
-                                  padding: "8px 16px",
-                                  backgroundColor: "#f44336",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Cancelar
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {listening && !useSRFallbackRef.current && (
-                          <div
-                            style={{
-                              marginTop: "1rem",
-                              fontSize: 12,
-                              color: "#666",
-                            }}
-                          >
-                            {liveTranscript}
-                          </div>
-                        )}
-
-                        {listening && !useSRFallbackRef.current && (
-                          <div
-                            style={{
-                              marginTop: "1rem",
-                              fontSize: 12,
-                              color: "#666",
-                            }}
-                          >
-                            🎙️ Gravando… {liveTranscript}
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>

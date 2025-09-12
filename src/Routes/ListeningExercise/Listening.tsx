@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import ListeningExercise from "./ListeningComponents/ListeningExercise";
+import ListeningExercise from "./ListeningComponents/ListeningExerciseNew";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import ListeningExerciseNew from "./ListeningComponents/ListeningExerciseNew";
 
 interface ListeningProps {
   headers: MyHeadersType | null;
@@ -34,6 +35,15 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
       <Helmets text="Listening Exercise" />
       <HOne>Listening Exercise</HOne>
       <ListeningExercise
+        onChange={onChange}
+        change={change}
+        headers={headers}
+      />
+      <br />
+      <br />
+      <br />
+      <br />
+      <ListeningExerciseNew
         onChange={onChange}
         change={change}
         headers={headers}
