@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import ListeningExercise from "./ListeningComponents/ListeningExerciseNew";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+
+import ListeningExercise from "./ListeningComponents/ListeningExercise";
 import ListeningExerciseNew from "./ListeningComponents/ListeningExerciseNew";
 
 interface ListeningProps {
@@ -13,22 +13,6 @@ interface ListeningProps {
 }
 const Listening = ({ headers, onChange, change }: ListeningProps) => {
   useState<number>(0);
-  const { UniversalTexts } = useUserContext();
-
-  const componentsToRender = [
-    {
-      title: UniversalTexts.listening,
-      value: "1",
-      adm: false,
-      component: (
-        <ListeningExercise
-          onChange={onChange}
-          change={change}
-          headers={headers}
-        />
-      ),
-    },
-  ];
 
   return (
     <RouteDiv>
@@ -41,13 +25,12 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
       />
       <br />
       <br />
-      <br />
-      <br />
       <ListeningExerciseNew
         onChange={onChange}
         change={change}
         headers={headers}
       />
+
     </RouteDiv>
   );
 };

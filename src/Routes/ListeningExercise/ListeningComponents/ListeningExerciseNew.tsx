@@ -2,11 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  onLoggOut,
-  updateInfo,
-} from "../../../Resources/UniversalComponents";
+import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
 import {
   notifyAlert,
   readText,
@@ -14,7 +10,6 @@ import {
 import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
-import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 function highlightDifferences(
   original: string,
@@ -54,6 +49,7 @@ function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
+// Normaliza texto
 const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
@@ -62,15 +58,18 @@ const normalizeText = (text: string): string => {
     .trim();
 };
 
+// Limpa string
 function cleanString(str: string): string {
   return str
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // remove diacríticos, preserva letras
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
     .replace(/\s+/g, " ")
-    .trim()
-    .toLowerCase();
+    .replace(/[^\x20-\x7E]/g, "")
+    .trim();
 }
 
+// Levenshtein
 function levenshteinDistance(str1: string, str2: string): number {
   const len1 = str1.length;
   const len2 = str2.length;
@@ -94,8 +93,10 @@ function levenshteinDistance(str1: string, str2: string): number {
 function similarityPercentage(str1: string, str2: string): number {
   const clean1 = normalizeText(str1);
   const clean2 = normalizeText(str2);
+
   const maxLen = Math.max(clean1.length, clean2.length);
   if (maxLen === 0) return 100;
+
   const distance = levenshteinDistance(clean1, clean2);
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
@@ -106,17 +107,15 @@ interface FlashCardsPropsRv {
   change: boolean;
 }
 
-const ListeningExerciseNew = ({
+const ListeningExercise = ({
   headers,
   onChange,
   change,
 }: FlashCardsPropsRv) => {
-  const { UniversalTexts } = useUserContext();
-
+  const [myId, setId] = useState<string>("");
   const [cards, setCards] = useState<any[]>([]);
-  const [students, setStudents] = useState<any[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [cardsLength, setCardsLength] = useState<any>(true);
+  const [cardsLength, setCardsLength] = useState<boolean>(true);
   const [see, setSee] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
@@ -129,68 +128,79 @@ const ListeningExerciseNew = ({
   const [words, setWords] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [transcript, setTranscript] = useState<string>("");
-  const [myId, setId] = useState<string>("");
-  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [transcriptHighLighted, setTranscriptHighLighted] =
     useState<string>("");
-  const [myPermissions, setPermissions] = useState<string>("");
+  const [isShow, setIsShow] = useState<boolean>(false);
   const [listening, setListening] = useState<boolean>(false);
-  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
-  const useSRFallbackRef = useRef(false);
+  const [isAPPLE, setISAPPLE] = useState<boolean>(false);
 
-  var cardTextRef = useRef<string>("");
+  const [selectedVoice, setSelectedVoice] = useState<any>("");
+  const [changeNumber, setChangeNumber] = useState<boolean>(true);
 
-  const fetchStudents = async (userId: string) => {
-    setLoadingStudents(true);
-    setListening(false);
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/students/${userId}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-      const allUsers = response.data.listOfStudents;
+  // Idioma da fala (derivado do card)
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
 
-      setStudents(allUsers);
-      setLoadingStudents(false);
-    } catch (error) {
-      console.error("Error fetching students:", error);
-    } finally {
-      setLoadingStudents(false);
+  // Refs & infra de SR
+  const recognitionRef = useRef<any>(null);
+  const finalBufferRef = useRef<string>("");
+  const shouldRestartRef = useRef<boolean>(false);
+  const useSRFallbackRef = useRef<boolean>(false);
+
+  // Fallback via MediaRecorder
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunks: BlobPart[] = [];
+
+  // Texto correto do card
+  const cardTextRef = useRef<string>("");
+
+  const actualHeaders = headers || {};
+
+  const languageToLocale = (lang: string) => {
+    switch ((lang || "").toLowerCase()) {
+      case "en":
+        return "en-US";
+      case "es":
+        return "es-419"; // LatAm
+      case "pt":
+        return "pt-BR";
+      case "fr":
+        return "fr-FR";
+      case "de":
+        return "de-DE";
+      case "it":
+        return "it-IT";
+      default:
+        return "en-US";
     }
   };
-  const actualHeaders = headers || {};
-  useEffect(() => {
-    var user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-    var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
-    // @ts-ignore
-    var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
-    setTimeout(() => {
-      updateInfo(user.id, actualHeaders);
-    }, 100);
-    var { id, permissions } = user;
-    if (user) {
-      setId(id);
-      setSelectedStudentId(id);
-      setPermissions(permissions);
-      setFlashcardsToday(flashcardsTodayNumber);
-      if (permissions === "superadmin" || permissions === "teacher") {
-        fetchStudents(id);
-      }
-    }
-  }, [change]);
 
-  const reviewListeningExerciseNew = async (score: number, percentage: number) => {
+  // Bootstrap usuário e contagem
+  useEffect(() => {
+    const userStr = localStorage.getItem("loggedIn");
+    const flashcardsTodayLS = localStorage.getItem("flashcardsToday") || "0";
+    const flashcardsTodayNumber = parseFloat(flashcardsTodayLS as any);
+
+    setTimeout(() => {
+      updateInfo(myId, actualHeaders);
+    }, 100);
+
+    setTimeout(() => {
+      if (userStr) {
+        const { id } = JSON.parse(userStr);
+        setId(id);
+        setFlashcardsToday(flashcardsTodayNumber);
+      }
+    }, 250);
+  }, [change]); // mantém esqueleto
+
+  const reviewListeningExercise = async (scoreVal: number, percentage: number) => {
     setNext(true);
     try {
       await axios.put(
-        `${backDomain}/api/v1/reviewflashcardlistening/${
-          selectedStudentId || myId
-        }`,
+        `${backDomain}/api/v1/reviewflashcardlistening/${myId}`,
         {
           flashcardId: cards[0]?._id,
-          score,
+          score: scoreVal,
           percentage,
           transcript,
           dayToday: new Date(),
@@ -203,16 +213,16 @@ const ListeningExerciseNew = ({
       setTranscript("");
       setLoading(false);
 
-      var user = localStorage.getItem("loggedIn");
-      var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
-      // @ts-ignore
-      var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
+      const userStr = localStorage.getItem("loggedIn");
+      const flashcardsTodayLS = localStorage.getItem("flashcardsToday") || "0";
+      const flashcardsTodayNumber = parseFloat(flashcardsTodayLS as any);
+
       setTimeout(() => {
         updateInfo(myId, actualHeaders);
       }, 100);
       setTimeout(() => {
-        if (user) {
-          const { id } = JSON.parse(user);
+        if (userStr) {
+          const { id } = JSON.parse(userStr);
           setId(id);
           setFlashcardsToday(flashcardsTodayNumber);
         }
@@ -220,13 +230,7 @@ const ListeningExerciseNew = ({
       seeCardsToReview();
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
-      onLoggOut();
     }
-  };
-
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const studentId = event.target.value;
-    setSelectedStudentId(studentId);
   };
 
   const isCorrectAnswer = (transcription: string | null) => {
@@ -261,61 +265,45 @@ const ListeningExerciseNew = ({
     }
   };
 
+  // Pontuação estável (sem depender do estado antigo)
   const ponctuate = (transcription: string | null) => {
-    setListening(false);
     setLoading(true);
-    stopRecording();
-    setLiveTranscript("");
-    setTranscript(transcription || "");
     const raw = cards[0]?.front?.text;
     if (!raw) {
       notifyAlert("Erro: Card text está vazio.");
       return;
     }
 
-    const cardText = normalizeText(cleanString(raw.replace(/\s+/g, " ")));
-
+    const cardRaw = raw.replace(/\s+/g, " ");
+    const wc = wordCount(cardRaw);
     const userTranscript = normalizeText(cleanString(transcription || ""));
-    const wordCountInCard = wordCount(
-      cards[0]?.front?.text.replace(/\s+/g, " ") || ""
-    );
+    const cardText = normalizeText(cleanString(cardRaw));
 
     if (userTranscript === "") {
       setSimilarity(0);
       setScore(0);
-      setWords(wordCountInCard);
-      reviewListeningExerciseNew(0, 0);
+      setWords(wc);
+      reviewListeningExercise(0, 0);
       return;
     }
 
-    if (cleanString(cardText) === cleanString(userTranscript)) {
-      setSimilarity(100);
-      setScore(wordCountInCard * 3);
-      setWords(wordCountInCard);
-      reviewListeningExerciseNew(wordCountInCard * 3, 100);
-      return;
+    let simC = similarityPercentage(userTranscript, cardRaw);
+    let pointsLocal = 0;
+
+    if (cleanString(cardText) === cleanString(userTranscript) || simC >= 98) {
+      simC = 100;
+      pointsLocal = wc * 3;
+    } else if (simC >= 40) {
+      pointsLocal = wc * 2;
     }
 
-    const simC = similarityPercentage(
-      userTranscript,
-      cards[0]?.front?.text.replace(/\s+/g, " ")
-    );
     setSimilarity(simC);
-    setWords(wordCountInCard);
+    setWords(wc);
+    setScore(pointsLocal);
+    reviewListeningExercise(pointsLocal, simC);
 
-    const points = score;
-
-    if (simC > 98) {
-      setSimilarity(100);
-      reviewListeningExerciseNew(wordCountInCard * 3, 100);
-    } else {
-      setScore(points);
-      reviewListeningExerciseNew(points, simC);
-    }
     onChange(!change);
   };
-
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
 
   const seeCardsToReview = async () => {
     setReadyToListen(false);
@@ -328,11 +316,10 @@ const ListeningExerciseNew = ({
     setWords(0);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
+        `${backDomain}/api/v1/flashcardslistening/${myId}`,
         { headers: actualHeaders || {} }
       );
-      const thereAreCards = response.data.dueFlashcards[0];
-      setCardsLength(thereAreCards);
+      const thereAreCards = response.data.dueFlashcards.length === 0;
       const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
 
       localStorage.setItem(
@@ -340,13 +327,15 @@ const ListeningExerciseNew = ({
         JSON.stringify(response.data.flashCardsReviewsToday)
       );
       setFlashcardsToday(theFlashcardsTodayNumber);
+
       setCards(response.data.dueFlashcards);
+      const first = response.data.dueFlashcards[0];
+      cardTextRef.current = first?.front?.text || "";
+      setSelectedLanguage(first?.front?.language || "en");
 
-      const sl = response.data.dueFlashcards[0]?.front?.language;
-      setSelectedLanguage(sl);
-      cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
+      setCardsLength(thereAreCards);
       setLoading(false);
-
+      setIsShow(true);
       setTimeout(() => {
         setReadyToListen(true);
         setEnableVoice(true);
@@ -354,402 +343,218 @@ const ListeningExerciseNew = ({
     } catch (error) {
       notifyAlert("Erro ao carregar cards");
     }
+    setIsShow(true);
   };
 
-  const isIOS =
-    /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-  const isSafari = /^((?!chrome|android).)*safari/i.test(
-    navigator.userAgent.toLowerCase()
-  );
-  // Preferimos gravar e mandar pro backend (Google STT)
-  const canUseGoogleSTT = (): boolean => {
-    const MR: any = (window as any).MediaRecorder;
-    if (!MR) return false;
-    // Queremos webm/opus (Google STT: WEBM_OPUS)
-    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm;codecs=opus"))
-      return true;
-    if (MR.isTypeSupported && MR.isTypeSupported("audio/webm")) return true;
-    return false; // Safari antigo/sem webm -> cai no fallback do navegador
-  };
-
-  // Modificar languageToLocale para suportar mais variações (ajuste conforme seu sotaque)
-  const languageToLocale = (lang: string) => {
-    switch ((lang || "").toLowerCase()) {
-      case "en":
-        return "en-US";
-      case "es":
-        return "es-ES"; // Mude para "es-419" se for LatAm; "es-ES" para Europa
-      case "pt":
-        return "pt-BR";
-      case "fr":
-        return "fr-FR";
-      case "de":
-        return "de-DE";
-      case "it":
-        return "it-IT";
-      default:
-        return "en-US";
-    }
-  };
-  const recognitionRef = useRef<any>(null);
-  const finalBufferRef = useRef<string>("");
-
-  const initBrowserSR = () => {
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) return false;
-
-    recognitionRef.current = new SR();
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.maxAlternatives = 1;
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.lang = languageToLocale(selectedLanguage);
-
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
-        } else {
-          interimTranscript += t;
-        }
-      }
-      setLiveTranscript(
-        (finalBufferRef.current + " " + interimTranscript).trim()
-      );
-    };
-
-    recognitionRef.current.onerror = (event: any) => {
-      console.error("SpeechRecognition error:", event.error);
-      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
-      setEnableVoice(false);
-      setListening(false);
-      setLiveTranscript("");
-    };
-
-    // deixa rodar até clicar "Avançar"
-    recognitionRef.current.onspeechend = null;
-    return true;
-  };
-
+  // Detecta suporte e decide quando bloquear UI (apenas se nem SR nem MediaRecorder estiverem disponíveis)
   useEffect(() => {
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (!SR) {
-      console.log(
-        "SpeechRecognition not supported; using MediaRecorder fallback"
-      );
-      return;
-    }
-
-    recognitionRef.current = new SR();
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.maxAlternatives = 1;
-    recognitionRef.current.continuous = true; // <-- mantém ouvindo, mesmo após pausas
-    recognitionRef.current.lang = languageToLocale(selectedLanguage);
-
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = "";
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const t = event.results[i][0].transcript;
-        if (event.results[i].isFinal) {
-          finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
-        } else {
-          interimTranscript += t;
-        }
-      }
-
-      // Mostra ao vivo, mas NÃO pontua automaticamente
-      setLiveTranscript(
-        (finalBufferRef.current + " " + interimTranscript).trim()
-      );
-    };
-
-    recognitionRef.current.onerror = (event: any) => {
-      console.error("SpeechRecognition error:", event.error);
-      notifyAlert(`Erro no reconhecimento de voz: ${event.error}`);
-      setEnableVoice(false);
-      setListening(false);
-      setLiveTranscript("");
-    };
-
-    // NÃO pare automaticamente ao silêncio
-    recognitionRef.current.onspeechend = null;
-
-    (window as any).startSpeechRecognition = () => {
-      setListening(true);
-      finalBufferRef.current = ""; // zera buffer final
-      setLiveTranscript(""); // zera ao iniciar
-      if (recognitionRef.current) {
-        recognitionRef.current.lang = languageToLocale(selectedLanguage);
-        console.log(
-          `Starting SpeechRecognition with lang: ${recognitionRef.current.lang}`
-        );
-        recognitionRef.current.start();
-      }
-    };
-
-    (window as any).stopSpeechRecognition = () => {
-      setListening(false);
-      recognitionRef.current?.stop();
-    };
-  }, [selectedLanguage]);
-
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunks: BlobPart[] = [];
-
-  const [isAPPLE, setISAPPLE] = useState<boolean>(false);
-
-  useEffect(() => {
-    const isIOSs =
+    const isIOSUA =
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
-    const isSafaris = /^((?!chrome|android).)*safari/i.test(
+    const isSafariUA = /^((?!chrome|android).)*safari/i.test(
       navigator.userAgent
     );
 
-    if (isIOSs || isSafaris) {
+    const SR =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const MR: any = (window as any).MediaRecorder;
+
+    const supportsAnyAudioInput =
+      !!SR || (MR && MR.isTypeSupported && (MR.isTypeSupported("audio/webm;codecs=opus") || MR.isTypeSupported("audio/webm")));
+
+    // Só mostra tela de "não suportado" se for Apple/Safari e NÃO tiver SR
+    if ((isIOSUA || isSafariUA) && !SR) {
       setISAPPLE(true);
     } else {
-      setISAPPLE(false);
+      setISAPPLE(!supportsAnyAudioInput); // bloqueia se nada for suportado
     }
   }, []);
-  const pickMime = () => {
-    const MR: any = (window as any).MediaRecorder;
-    if (!MR) return "";
-    if (MR.isTypeSupported?.("audio/webm;codecs=opus"))
-      return "audio/webm;codecs=opus";
-    if (MR.isTypeSupported?.("audio/webm")) return "audio/webm";
-    return "";
-  };
 
-  // Modificar startRecording para priorizar SpeechRecognition (real-time)
-  const startRecording = async () => {
-    console.log(
-      "[startRecording] enableVoice:",
-      enableVoice,
-      "ready:",
-      readyToListen
-    );
-
-    // Primeiro, tentar SpeechRecognition para real-time
+  // ÚNICO setup do SpeechRecognition (centralizado) + auto-restart + window.start/stop
+  useEffect(() => {
     const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
-    if (SR) {
-      console.log("Usando SpeechRecognition para transcrição em tempo real");
-      useSRFallbackRef.current = true;
-      try {
-        if (!recognitionRef.current) {
-          initBrowserSR();
-        }
-        setListening(true);
-        finalBufferRef.current = "";
-        setLiveTranscript("");
-        recognitionRef.current.lang = languageToLocale(selectedLanguage);
-        recognitionRef.current.start();
-        return;
-      } catch (err) {
-        console.error("Erro ao iniciar SpeechRecognition:", err);
-        notifyAlert(
-          "Erro ao iniciar reconhecimento de voz. Verifique permissões do microfone."
-        );
-        return;
-      }
-    }
-
-    // Fallback: MediaRecorder + backend (não real-time)
-    if (canUseGoogleSTT()) {
-      useSRFallbackRef.current = false;
-      console.log("Fallback para MediaRecorder (sem real-time)");
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        const mime = pickMime();
-        if (!mime) {
-          notifyAlert("Formato de áudio não suportado. Tente outro navegador.");
-          return;
-        }
-
-        const mr = new MediaRecorder(stream, { mimeType: mime });
-        mediaRecorderRef.current = mr;
-        audioChunks.length = 0;
-
-        mr.onstart = () => {
-          console.log("[MediaRecorder] iniciado com", mime);
-          setListening(true);
-          setSeeProgress(false);
-          setLiveTranscript("🎙️ Gravando... (transcrição após parar)");
-        };
-
-        mr.ondataavailable = (e) => {
-          if (e.data && e.data.size) audioChunks.push(e.data);
-        };
-
-        mr.onerror = (e) => {
-          console.error("[MediaRecorder] erro:", e);
-          notifyAlert("Erro na gravação de áudio");
-          setListening(false);
-        };
-
-        mr.onstop = async () => {
-          console.log("[MediaRecorder] parado. Chunks:", audioChunks.length);
-          const blob = new Blob(audioChunks, { type: "audio/webm" });
-          const formData = new FormData();
-          formData.append("audio", blob, "audio.webm");
-          const locale = languageToLocale(selectedLanguage);
-          formData.append("language", locale);
-          formData.append("contentType", mime);
-
-          setSeeProgress(true);
-          setLiveTranscript("Processando transcrição...");
-          try {
-            const { data } = await axios.post(
-              `${backDomain}/api/v1/speech-listening`,
-              formData
-            );
-            const t = (data?.transcript || "").trim();
-            setTranscript(t);
-            isCorrectAnswer(t);
-            setIsDisabled(false);
-            setLiveTranscript(""); // Limpar após sucesso
-          } catch (err: any) {
-            console.error("[Transcription] erro:", err?.response?.data || err);
-            notifyAlert(
-              `Erro ao transcrever: ${
-                err?.response?.data?.message ||
-                err.message ||
-                "Verifique idioma/audio"
-              }`
-            );
-            setLiveTranscript("Erro na transcrição. Tente novamente.");
-          } finally {
-            setSeeProgress(false);
-            setEnableVoice(false);
-            setListening(false);
-          }
-        };
-
-        mr.start();
-        return;
-      } catch (err) {
-        console.error("[getUserMedia] erro:", err);
-        notifyAlert(
-          "Permissões do microfone negadas. Permita acesso no navegador."
-        );
-        return;
-      }
-    }
-
-    notifyAlert("Nenhum método de reconhecimento de voz suportado.");
-  };
-  const stopRecording = () => {
-    if (
-      mediaRecorderRef.current &&
-      mediaRecorderRef.current.state !== "inactive"
-    ) {
-      mediaRecorderRef.current.stop();
-    }
-    if (useSRFallbackRef.current) {
-      recognitionRef.current && (recognitionRef.current.onend = null);
-      recognitionRef.current?.stop();
-    }
-    setListening(false);
-  };
-
-  const [selectedVoice, setSelectedVoice] = useState<any>("");
-  const [changeNumber, setChangeNumber] = useState<boolean>(true);
-  const [liveTranscript, setLiveTranscript] = useState<string>(""); // Novo estado para transcrição em tempo real
-
-  // ...existing code...
-
-  if (isIOS || isSafari) {
-    const SR =
-      (window as any).SpeechRecognition ||
-      (window as any).webkitSpeechRecognition;
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) {
-      notifyAlert("Reconhecimento de voz não suportado.");
+      recognitionRef.current = null;
       return;
     }
 
-    recognitionRef.current = new SR();
-    recognitionRef.current.interimResults = true;
-    recognitionRef.current.maxAlternatives = 1;
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.lang = languageToLocale(selectedLanguage);
+    // encerra instância anterior
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.onend = null;
+        recognitionRef.current.stop();
+      } catch {}
+      recognitionRef.current = null;
+    }
 
-    recognitionRef.current.onresult = (event: any) => {
-      let interimTranscript = "";
+    const rec = new SR();
+    recognitionRef.current = rec;
+    rec.interimResults = true;
+    rec.maxAlternatives = 1;
+    rec.continuous = true;
+    rec.lang = languageToLocale(selectedLanguage);
+
+    rec.onresult = (event: any) => {
+      let interim = "";
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const t = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
           finalBufferRef.current = (finalBufferRef.current + " " + t).trim();
         } else {
-          interimTranscript += t;
+          interim += t;
         }
       }
-      setLiveTranscript(
-        (finalBufferRef.current + " " + interimTranscript).trim()
-      );
+
+      const combined = (finalBufferRef.current + " " + interim).trim();
+      setTranscript(combined);
+
+      // Não pontua em tempo real; libera o "Next" após captar algo
+      if (combined.length > 0) {
+        isCorrectAnswer(combined);
+        setIsDisabled(false);
+      }
     };
 
-    recognitionRef.current.onerror = () => {
-      notifyAlert("Erro no reconhecimento de voz");
+    rec.onerror = (e: any) => {
+      // no-speech e aborted são comuns; reabra se estamos gravando
+      if (shouldRestartRef.current && (e?.error === "no-speech" || e?.error === "aborted")) {
+        try { rec.start(); } catch {}
+        return;
+      }
+      notifyAlert(`Erro no reconhecimento de voz: ${e?.error || "desconhecido"}`);
       setEnableVoice(false);
       setListening(false);
-      setLiveTranscript("");
     };
 
-    recognitionRef.current.onspeechend = null;
+    rec.onend = () => {
+      if (shouldRestartRef.current) {
+        try { rec.start(); } catch {}
+      }
+    };
 
+    // Exponho funções globais porque seu UI chama window.*
     (window as any).startSpeechRecognition = () => {
+      if (!readyToListen) {
+        notifyAlert("Aguarde carregar o card antes de gravar.");
+        return;
+      }
+      if (!recognitionRef.current) return;
+      shouldRestartRef.current = true;
       setListening(true);
       finalBufferRef.current = "";
-      setLiveTranscript("");
-      recognitionRef.current!.lang = languageToLocale(selectedLanguage);
-      recognitionRef.current!.start();
+      setTranscript("");
+      recognitionRef.current.lang = languageToLocale(selectedLanguage);
+      try { recognitionRef.current.start(); } catch {}
     };
+
     (window as any).stopSpeechRecognition = () => {
-      recognitionRef.current?.stop();
+      shouldRestartRef.current = false;
       setListening(false);
-      setLiveTranscript("");
+      try {
+        if (recognitionRef.current) {
+          recognitionRef.current.onend = null; // evita auto-restart
+          recognitionRef.current.stop();
+        }
+      } catch {}
     };
-  }
 
-  const handleAdvanceClick = () => {
-    if (!useSRFallbackRef.current) return; // Evita uso no modo Google
+    return () => {
+      try {
+        rec.onend = null;
+        rec.stop();
+      } catch {}
+    };
+  }, [selectedLanguage, readyToListen]);
 
-    recognitionRef.current && (recognitionRef.current.onend = null);
-    recognitionRef.current?.stop();
-
-    const text = (finalBufferRef.current || liveTranscript || "").trim();
-    if (!text) {
-      notifyAlert("Nenhum áudio capturado. Tente novamente.");
-      setEnableVoice(true);
-      setListening(false);
+  // Gravação fallback (não real-time) via MediaRecorder + backend
+  const startRecording = async () => {
+    // Se SR existir, usa SR (mesmo fora do iOS) — mantém compatibilidade com seu botão
+    const SR =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (SR && recognitionRef.current) {
+      (window as any).startSpeechRecognition?.();
+      useSRFallbackRef.current = true;
       return;
     }
 
-    setTranscript(text);
-    setSeeProgress(true);
-    setTimeout(() => {
-      isCorrectAnswer(text);
-      setIsDisabled(false);
-      setSeeProgress(false);
-      setListening(false);
-      setEnableVoice(false);
-      setLiveTranscript("");
-    }, 120);
+    // Fallback MediaRecorder
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const MR: any = (window as any).MediaRecorder;
+      let mime = "audio/webm;codecs=opus";
+      if (!(MR?.isTypeSupported?.(mime))) {
+        mime = MR?.isTypeSupported?.("audio/webm") ? "audio/webm" : "";
+      }
+      if (!mime) {
+        notifyAlert("Formato de áudio não suportado pelo navegador.");
+        return;
+      }
+
+      const mediaRecorder = new MediaRecorder(stream, { mimeType: mime });
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunks.length = 0;
+
+      mediaRecorder.onstart = () => {
+        setListening(true);
+        setSeeProgress(true);
+      };
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data && event.data.size) audioChunks.push(event.data);
+      };
+
+      mediaRecorder.onstop = async () => {
+        try {
+          const audioBlob = new Blob(audioChunks, { type: mime });
+          const formData = new FormData();
+          formData.append("audio", audioBlob, "audio.webm");
+          // Se seu backend aceitar idioma, envie:
+          // formData.append("language", languageToLocale(selectedLanguage));
+          // formData.append("contentType", mime);
+
+          const response = await axios.post(
+            `${backDomain}/api/v1/speech-listening`,
+            formData
+          );
+
+          const speechToText = (response.data?.transcript || "").trim();
+          setTranscript(speechToText);
+          isCorrectAnswer(speechToText);
+          setIsDisabled(false);
+        } catch (error) {
+          notifyAlert("Erro ao transcrever áudio");
+          console.error("Erro ao transcrever áudio", error);
+        } finally {
+          setSeeProgress(false);
+          setEnableVoice(false);
+          setListening(false);
+        }
+      };
+
+      mediaRecorder.start();
+    } catch (error: any) {
+      notifyAlert("Erro ao acessar microfone");
+      console.error("Erro ao acessar microfone", error);
+    }
   };
 
+  const stopRecording = () => {
+    // encerra fallback
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
+      try { mediaRecorderRef.current.stop(); } catch {}
+    }
+    // encerra SR
+    (window as any).stopSpeechRecognition?.();
+    setListening(false);
+  };
+
+  // Voice escolhida (sem loop)
   useEffect(() => {
     const storedVoice = localStorage.getItem("chosenVoice");
-    setSelectedVoice(storedVoice);
-  }, [selectedVoice, changeNumber]);
+    if (storedVoice) setSelectedVoice(storedVoice);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [changeNumber]);
 
   return isAPPLE ? (
     <section
@@ -773,68 +578,18 @@ const ListeningExerciseNew = ({
           border: "1px solid #e0e0e0",
         }}
       >
-        {/* Icon */}
-        <div
-          style={{
-            fontSize: "3rem",
-            marginBottom: "1.5rem",
-            color: "#ff6b6b",
-          }}
-        >
+        <div style={{ fontSize: "3rem", marginBottom: "1.5rem", color: "#ff6b6b" }}>
           🚫
         </div>
-
-        {/* Title */}
-        <h2
-          style={{
-            fontSize: "1.5rem",
-            fontWeight: "600",
-            color: "#333",
-            marginBottom: "1rem",
-            lineHeight: "1.4",
-          }}
-        >
+        <h2 style={{ fontSize: "1.5rem", fontWeight: 600, color: "#333", marginBottom: "1rem" }}>
           Audio Recording Not Supported
         </h2>
-
-        {/* Subtitle */}
-        <h3
-          style={{
-            fontSize: "1.1rem",
-            fontWeight: "500",
-            color: "#666",
-            marginBottom: "1.5rem",
-            lineHeight: "1.4",
-          }}
-        >
+        <h3 style={{ fontSize: "1.1rem", fontWeight: 500, color: "#666", marginBottom: "1.5rem" }}>
           Gravação de áudio não suportada
         </h3>
-
-        {/* Main message */}
-        <p
-          style={{
-            fontSize: "1rem",
-            color: "#555",
-            lineHeight: "1.6",
-            marginBottom: "1.5rem",
-          }}
-        >
-          Your Apple device or Safari browser doesn't support audio recording
-          features required for this exercise.
+        <p style={{ fontSize: "1rem", color: "#555", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+          Your device or browser doesn't support the audio features required for this exercise.
         </p>
-
-        <p
-          style={{
-            fontSize: "0.95rem",
-            color: "#666",
-            lineHeight: "1.6",
-            marginBottom: "2rem",
-          }}
-        >
-          Seu dispositivo Apple ou navegador Safari não suporta os recursos de
-          gravação de áudio necessários para este exercício.
-        </p>
-        {/* Recommendations */}
         <div
           style={{
             backgroundColor: "#f8f9fa",
@@ -842,54 +597,27 @@ const ListeningExerciseNew = ({
             borderRadius: "12px",
             marginBottom: "1.5rem",
             border: "1px solid #e9ecef",
+            textAlign: "left",
+            fontSize: "0.9rem",
+            color: "#555",
+            lineHeight: 1.5,
           }}
         >
-          <h4
-            style={{
-              fontSize: "1rem",
-              fontWeight: "600",
-              color: "#495057",
-              marginBottom: "1rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "0.5rem",
-            }}
-          >
+          <h4 style={{ fontSize: "1rem", fontWeight: 600, color: "#495057", marginBottom: "1rem", textAlign: "center" }}>
             💡 Recommended Solutions
           </h4>
-
-          <div
-            style={{
-              textAlign: "left",
-              fontSize: "0.9rem",
-              color: "#555",
-              lineHeight: "1.5",
-            }}
-          >
-            <div style={{ marginBottom: "0.8rem" }}>
-              <strong>🖥️ Desktop/Laptop:</strong>
-              <br />
-              Use Google Chrome or Firefox on your computer
-            </div>
-
-            <div style={{ marginBottom: "0.8rem" }}>
-              <strong>📱 Mobile Alternative:</strong>
-              <br />
-              Try Google Chrome mobile browser (on some Android devices)
-            </div>
+          <div style={{ marginBottom: "0.8rem" }}>
+            <strong>🖥️ Desktop/Laptop:</strong>
+            <br />
+            Use Google Chrome or Firefox on your computer
+          </div>
+          <div style={{ marginBottom: "0.8rem" }}>
+            <strong>📱 Mobile Alternative:</strong>
+            <br />
+            Try Google Chrome mobile browser (on Android devices)
           </div>
         </div>
-
-        {/* Action buttons */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.8rem",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.8rem", alignItems: "center" }}>
           <a
             href="/flash-cards"
             style={{
@@ -900,16 +628,12 @@ const ListeningExerciseNew = ({
               textDecoration: "none",
               borderRadius: "8px",
               fontSize: "0.95rem",
-              fontWeight: "500",
-              transition: "all 0.2s",
+              fontWeight: 500,
               minWidth: "200px",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-            onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
           >
             📚 Try Regular Flashcards
           </a>
-
           <a
             href="/"
             style={{
@@ -921,23 +645,12 @@ const ListeningExerciseNew = ({
               borderRadius: "8px",
               fontSize: "0.9rem",
               border: "1px solid #ddd",
-              transition: "all 0.2s",
               minWidth: "200px",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f8f9fa";
-              e.currentTarget.style.borderColor = "#bbb";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "#ddd";
             }}
           >
             🏠 Back to Home
           </a>
         </div>
-
-        {/* Footer note */}
         <div
           style={{
             marginTop: "2rem",
@@ -948,78 +661,13 @@ const ListeningExerciseNew = ({
             fontStyle: "italic",
           }}
         >
-          This limitation is due to browser security policies on iOS/Safari
-          devices
+          This limitation is due to browser capabilities.
         </div>
       </div>
     </section>
   ) : (
     <section id="review">
-      <span
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: "10px",
-          marginBottom: "10px",
-        }}
-      >
-        <Voice
-          changeB={changeNumber}
-          setChangeB={setChangeNumber}
-          maxW="400px"
-          chosenLanguage={selectedLanguage}
-        />{" "}
-        {(myPermissions == "superadmin" || myPermissions == "teacher") && (
-          <span>
-            {loadingStudents ? (
-              <CircularProgress size={20} style={{ color: partnerColor() }} />
-            ) : (
-              <select
-                onChange={(e) => {
-                  setSee(false);
-                  handleStudentChange(e);
-                }}
-                value={selectedStudentId}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "13px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "6px 8px",
-                  minWidth: "200px",
-                  maxWidth: "300px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = partnerColor();
-                  e.target.style.backgroundColor = "#ffffff";
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = "#e2e8f0";
-                  e.target.style.backgroundColor = "#f8fafc";
-                }}
-              >
-                <option value="">
-                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-                </option>
-                {students.map((student) => (
-                  <option
-                    key={student.id || student.theId}
-                    value={student.id || student.theId}
-                  >
-                    {student.name} {student.lastname}
-                  </option>
-                ))}
-              </select>
-            )}
-          </span>
-        )}
-      </span>
+      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
       {see && (
         <div>
           {loading ? (
@@ -1034,7 +682,7 @@ const ListeningExerciseNew = ({
                 borderRadius: "6px",
               }}
             >
-              {cardsLength ? (
+              {!cardsLength ? (
                 <>
                   <div>
                     <div
@@ -1151,170 +799,82 @@ const ListeningExerciseNew = ({
                           justifyContent: "space-evenly",
                         }}
                       >
-                        {!listening && (
-                          <button
-                            disabled={playingAudio}
-                            onClick={() => {
-                              setPlayingAudio(true);
-                              setTimeout(() => {
-                                setPlayingAudio(false);
-                              }, 3000);
-                              readText(
-                                cards[0]?.front?.language == "en"
-                                  ? `${cards[0]?.front?.text.replace(
-                                      /\s+/g,
-                                      " "
-                                    )}`
-                                  : `${cards[0]?.front?.text}`,
-                                false,
-                                cards[0]?.front?.language,
-                                selectedVoice
-                              );
-                              setSelectedLanguage(cards[0]?.front?.language);
-                              const wordsInSentence =
-                                cards[0]?.front?.text.split(" ").length || 0;
-                              const estimatedTime = Math.min(
-                                6000,
-                                wordsInSentence * 350
-                              );
+                        <button
+                          disabled={playingAudio}
+                          onClick={() => {
+                            setPlayingAudio(true);
+                            setTimeout(() => {
+                              setPlayingAudio(false);
+                            }, 3000);
 
-                              setTimeout(() => {
-                                setEnableVoice(true);
-                              }, estimatedTime);
-                            }}
-                            color={!playingAudio ? "blue" : "grey"}
-                            style={{
-                              cursor: playingAudio ? "not-allowed" : "pointer",
-                              margin: "0 5px",
-                              marginTop: !isDisabled ? "1rem" : 0,
-                            }}
-                          >
-                            <i className="fa fa-volume-up" aria-hidden="true" />
-                          </button>
-                        )}
+                            readText(
+                              cards[0]?.front?.language == "en"
+                                ? `${cards[0]?.front?.text.replace(/\s+/g, " ")}`
+                                : `${cards[0]?.front?.text}`,
+                              false,
+                              cards[0]?.front?.language,
+                              selectedVoice
+                            );
+                            const wordsInSentence =
+                              cards[0]?.front?.text.split(" ").length || 0;
+                            const estimatedTime = Math.min(
+                              6000,
+                              wordsInSentence * 350
+                            );
+
+                            setTimeout(() => {
+                              setEnableVoice(true);
+                            }, estimatedTime);
+                          }}
+                          color={!playingAudio ? "blue" : "grey"}
+                          style={{
+                            cursor: playingAudio ? "not-allowed" : "pointer",
+                            margin: "0 5px",
+                            marginTop: !isDisabled ? "1rem" : 0,
+                          }}
+                        >
+                          <i className="fa fa-volume-up" aria-hidden="true" />
+                        </button>
                         <button
                           style={{
-                            display: isDisabled ? "inline-block" : "none",
-
+                            display: !isDisabled ? "none" : "inline-block",
                             cursor: enableVoice ? "pointer" : "not-allowed",
                             margin: "0 5px",
                           }}
                           disabled={!enableVoice}
                           onClick={() => {
-                            if (
-                              !enableVoice ||
-                              !readyToListen ||
-                              !cards[0]?.front?.text
-                            )
-                              return;
+                            if (!enableVoice || !readyToListen || !cards[0]?.front?.text) return;
+                            // Mantém esqueleto: iOS/Safari usa window.startSpeechRecognition; demais, toggle
+                            const isIOS =
+                              /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+                              !("MSStream" in window);
+                            const isSafari = /^((?!chrome|android).)*safari/i.test(
+                              navigator.userAgent.toLowerCase()
+                            );
 
-                            if (!listening) {
-                              startRecording();
-                            } else {
-                              // Parar conforme o caminho atual
-                              if (useSRFallbackRef.current) {
-                                recognitionRef.current?.stop(); // SR encerra; texto vem do liveTranscript
-                                setListening(false);
+                            if (isIOS || isSafari) {
+                              if (!listening) {
+                                cardTextRef.current = cards[0]?.front?.text || "";
+                                (window as any).startSpeechRecognition?.();
                               } else {
-                                stopRecording(); // MediaRecorder.onstop -> envia pro backend (Google)
+                                (window as any).stopSpeechRecognition?.();
                               }
+                              setListening((prev) => !prev);
+                            } else {
+                              !listening ? startRecording() : stopRecording();
                             }
                           }}
                           color={
-                            !enableVoice
-                              ? "lightgrey"
-                              : listening
-                              ? "red"
-                              : "green"
+                            !enableVoice ? "lightgrey" : listening ? "red" : "green"
                           }
                         >
                           <i
                             className={
-                              isIOS || isSafari || !listening
-                                ? "fa fa-microphone"
-                                : "fa fa-stop"
+                              !listening ? "fa fa-microphone" : "fa fa-stop"
                             }
                             aria-hidden="true"
                           />
                         </button>
-                        {listening && useSRFallbackRef.current && (
-                          <div
-                            style={{
-                              display: "block",
-                              marginTop: "1rem",
-                              padding: "10px",
-                              borderRadius: "6px",
-                              border: "1px solid #ccc",
-                              backgroundColor: "#f9f9f9",
-                            }}
-                          >
-                            <p style={{ fontStyle: "italic", color: "#666" }}>
-                              Transcrição em tempo real:{" "}
-                              {liveTranscript || "Fale agora..."}
-                            </p>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-around",
-                                marginTop: "10px",
-                              }}
-                            >
-                              <button
-                                onClick={handleAdvanceClick}
-                                style={{
-                                  padding: "8px 16px",
-                                  backgroundColor: partnerColor(),
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Avançar
-                              </button>
-                              <button
-                                onClick={() => {
-                                  setListening(false);
-                                  setLiveTranscript("");
-                                  setEnableVoice(true);
-                                }}
-                                style={{
-                                  padding: "8px 16px",
-                                  backgroundColor: "#f44336",
-                                  color: "white",
-                                  border: "none",
-                                  borderRadius: "4px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Cancelar
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                        {listening && !useSRFallbackRef.current && (
-                          <div
-                            style={{
-                              marginTop: "1rem",
-                              fontSize: 12,
-                              color: "#666",
-                            }}
-                          >
-                            {liveTranscript}
-                          </div>
-                        )}
-
-                        {listening && !useSRFallbackRef.current && (
-                          <div
-                            style={{
-                              marginTop: "1rem",
-                              fontSize: 12,
-                              color: "#666",
-                            }}
-                          >
-                            🎙️ Gravando… {liveTranscript}
-                          </div>
-                        )}
                       </div>
                     )}
                   </div>
@@ -1366,4 +926,4 @@ const ListeningExerciseNew = ({
   );
 };
 
-export default ListeningExerciseNew;
+export default ListeningExercise;
