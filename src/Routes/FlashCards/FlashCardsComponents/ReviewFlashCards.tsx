@@ -8,12 +8,10 @@ import {
   updateInfo,
 } from "../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
-
 import {
   notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-
 import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
@@ -55,7 +53,6 @@ const ReviewFlashCards = ({
   const [playCardAutomatically, setPlayCardAutomatically] =
     useState<boolean>(true);
   const [languageToUse, setLanguageToUse] = useState<string>("en");
-  const [size, setSize] = useState<number>(window.innerWidth <= 600 ? 2 : 4);
 
   const actualHeaders = headers || {};
 
@@ -124,7 +121,7 @@ const ReviewFlashCards = ({
       setLoading(false);
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
-      // onLoggOut();
+      onLoggOut();
     }
   };
 
@@ -149,7 +146,7 @@ const ReviewFlashCards = ({
       seeCardsToReview();
       timerDisabled();
     } catch (error) {
-      // onLoggOut();
+      onLoggOut();
     }
   };
 
@@ -170,7 +167,6 @@ const ReviewFlashCards = ({
     }, 1000);
   }, [change]);
 
-  // Category colors effect
   useEffect(() => {
     const categoryColors: { [key: string]: string } = {
       vocabulary: "#D0F5D0",
@@ -262,13 +258,12 @@ const ReviewFlashCards = ({
     }
   }, [selectedStudentId]);
 
-  // Reset review state when selectedStudentId changes
   useEffect(() => {
     setSee(false);
     setCards([]);
     setAnswer(false);
     setBackCardVisible(false);
-    setIsDisabled(true); // Reset to show the start button
+    setIsDisabled(true);
   }, [selectedStudentId]);
 
   useEffect(() => {
@@ -276,23 +271,7 @@ const ReviewFlashCards = ({
     setSelectedVoice(storedVoice);
   }, [selectedVoice, changeNumber]);
 
-  useEffect(() => {
-    const handleResize = () => {
-      setSize(window.innerWidth <= 600 ? 2 : 4);
-    };
-    window.addEventListener("resize", handleResize);
-    handleResize();
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const cardRef = useRef<HTMLDivElement>(null);
-  const [cardHeight, setCardHeight] = useState<number>(0);
-
-  useEffect(() => {
-    if (cardRef.current) {
-      setCardHeight(cardRef.current.offsetHeight);
-    }
-  }, [cards, answer, backCardVisible, loading, see]);
 
   return (
     <section
@@ -452,8 +431,6 @@ const ReviewFlashCards = ({
                             </div>
                           </div>
                         )}
-
-                        {/* Flashcard */}
                         <div
                           style={{ margin: "auto" }}
                           className={`flashcard ${answer ? "flip" : ""}`}
@@ -637,7 +614,6 @@ const ReviewFlashCards = ({
                 )}
               </div>
             )}
-            {/* Start/Refresh button */}
             <div
               style={{
                 display: !isDisabled ? "none" : "flex",
@@ -677,7 +653,6 @@ const ReviewFlashCards = ({
                 setChangeB={setChangeNumber}
                 chosenLanguage={languageToUse}
               />
-
               <select
                 id="category-select"
                 value={category}

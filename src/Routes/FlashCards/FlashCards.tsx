@@ -24,15 +24,12 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
   const [value, setValue] = useState<string>("1");
   const { UniversalTexts } = useUserContext();
 
-  // Student management states
   const [students, setStudents] = useState<any[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
 
   const actualHeaders = headers || {};
-
-  // Get current student ID (either selected student or logged in user)
   const getCurrentStudentId = () => {
     if (
       (myPermissions === "superadmin" || myPermissions === "teacher") &&
@@ -42,8 +39,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
     }
     return myId;
   };
-
-  // Handle student selection
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const studentId = event.target.value;
     setSelectedStudentId(studentId);
@@ -57,7 +52,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
 
       setPermissions(permissions);
       setMyId(id);
-      setSelectedStudentId(id); 
+      setSelectedStudentId(id);
       if (permissions === "superadmin" || permissions === "teacher") {
         setLoadingStudents(true);
         try {
@@ -67,14 +62,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
               headers: actualHeaders,
             }
           );
-
           const allUsers = response.data.listOfStudents || response.data;
-
-          const studentUsers = allUsers.filter(
-            (user: any) =>
-              user.permissions === "student" || user.permissions === "admin"
-          );
-
           setStudents(allUsers);
         } catch (error) {
           console.error("Error fetching students:", error);
@@ -168,16 +156,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             gap: "0.5rem",
           }}
         >
-          <span
-            style={{
-              fontSize: "14px",
-              fontWeight: "500",
-              color: "#64748b",
-            }}
-            onClick={fetchData}
-          >
-            {/* {UniversalTexts.selectStudent}: */}
-          </span>
           {loadingStudents ? (
             <CircularProgress size={20} style={{ color: partnerColor() }} />
           ) : (
