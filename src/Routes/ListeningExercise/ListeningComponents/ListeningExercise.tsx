@@ -609,7 +609,6 @@ const ListeningExercise = ({
           Seu dispositivo Apple ou navegador Safari não suporta os recursos de
           gravação de áudio necessários para este exercício.
         </p>
-
         {/* Recommendations */}
         <div
           style={{
