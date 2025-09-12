@@ -110,7 +110,7 @@ export function HomePage({ headers }: HeadersProps) {
   useEffect(() => {
     setInterval(() => {
       seeFee();
-    }, 30000);
+    }, 100000);
   }, []);
 
   useEffect(() => {

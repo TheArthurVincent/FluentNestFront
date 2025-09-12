@@ -51,20 +51,14 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
 
   const fetchData = async () => {
     const user = localStorage.getItem("loggedIn");
-    console.log("User from localStorage:", user);
 
     if (user) {
       const { permissions, id } = JSON.parse(user);
-      console.log("User permissions:", permissions, "User ID:", id);
 
       setPermissions(permissions);
       setMyId(id);
-      setSelectedStudentId(id); // Initially select the logged in user
-
-      // Fetch students if user is admin/teacher
+      setSelectedStudentId(id); 
       if (permissions === "superadmin" || permissions === "teacher") {
-        console.log("User is admin/teacher, fetching students...");
-
         setLoadingStudents(true);
         try {
           const response = await axios.get(
@@ -74,25 +68,19 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             }
           );
 
-          console.log("All users response:", response.data);
-
-          // Check if data comes in listOfStudents property
           const allUsers = response.data.listOfStudents || response.data;
-          console.log("All users array:", allUsers);
 
           const studentUsers = allUsers.filter(
             (user: any) =>
               user.permissions === "student" || user.permissions === "admin"
           );
 
-          setStudents(studentUsers);
+          setStudents(allUsers);
         } catch (error) {
           console.error("Error fetching students:", error);
         } finally {
           setLoadingStudents(false);
         }
-      } else {
-        console.log("User is not admin/teacher, skipping student fetch");
       }
     } else {
       console.log("No user found in localStorage, logging out");

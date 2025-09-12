@@ -39,11 +39,6 @@ function highlightDifferences(
           userWord || "(extra)"
         }</span>`
       );
-      console.log(
-        `<span style="color: red; font-weight: 400;">${
-          userWord || "(extra)"
-        }</span>`
-      );
     }
   }
 
@@ -479,7 +474,6 @@ const ListeningExercise = ({
           setIsDisabled(false);
         } catch (error) {
           notifyAlert("Erro ao transcrever áudio");
-          console.log("Erro ao transcrever áudio", error);
         } finally {
           setSeeProgress(false);
           setEnableVoice(false);
@@ -866,7 +860,6 @@ const ListeningExercise = ({
                               selectedVoice
                             );
                             setSelectedLanguage(cards[0]?.front?.language);
-                            console.log(cards[0]?.front?.language);
                             const wordsInSentence =
                               cards[0]?.front?.text.split(" ").length || 0;
                             const estimatedTime = Math.min(

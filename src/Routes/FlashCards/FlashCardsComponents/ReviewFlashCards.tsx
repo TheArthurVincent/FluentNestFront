@@ -78,10 +78,13 @@ const ReviewFlashCards = ({
         }
       );
 
-      const thereAreCards = response.data.dueFlashcards.length === 0;
-      var lg = response.data.dueFlashcards[0].front.language;
-      setLanguageToUse(lg ? lg : "en");
+      const thereAreCards = response.data.dueFlashcards.length > 0;
+      setCardsLength(thereAreCards);
 
+      if (thereAreCards) {
+        var lg = response.data.dueFlashcards?.[0].front?.language;
+        setLanguageToUse(lg ? lg : "en");
+      }
       if (
         response.data.dueFlashcards.length > 0 &&
         response.data.dueFlashcards[0].front.language &&
@@ -98,23 +101,30 @@ const ReviewFlashCards = ({
           );
         }, 200);
       }
+      if (response.data.dueFlashcards.length > 0) {
+        localStorage.setItem(
+          "lastFlashcardReviewed",
+          JSON.stringify(response.data.dueFlashcards[0])
+        );
+        setCards(response.data.dueFlashcards);
+        setFlashcardsToday(response.data.flashcardsToday);
 
-      setCards(response.data.dueFlashcards);
-      setCardsLength(thereAreCards);
-      setFlashcardsToday(response.data.flashcardsToday);
+        localStorage.setItem(
+          "flashcardsToday",
+          JSON.stringify(response.data.flashcardsToday)
+        );
 
-      localStorage.setItem(
-        "flashcardsToday",
-        JSON.stringify(response.data.flashcardsToday)
-      );
+        setBackCardVisible(true);
+        timerDisabled();
+        timerCard();
+      } else {
+        setCards([]);
+      }
 
-      setBackCardVisible(true);
-      timerDisabled();
-      timerCard();
       setLoading(false);
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
-      onLoggOut();
+      // onLoggOut();
     }
   };
 
@@ -139,7 +149,7 @@ const ReviewFlashCards = ({
       seeCardsToReview();
       timerDisabled();
     } catch (error) {
-      onLoggOut();
+      // onLoggOut();
     }
   };
 
@@ -238,7 +248,6 @@ const ReviewFlashCards = ({
         { dateToday: new Date().toISOString() },
         { headers: actualHeaders }
       );
-
       setFlashcardsToday(response.data.flashCardsReviewsToday);
       setLoading(false);
     } catch (error) {
@@ -381,7 +390,7 @@ const ReviewFlashCards = ({
                       color: "black",
                     }}
                   >
-                    {!cardsLength ? (
+                    {cardsLength ? (
                       <>
                         <button
                           disabled={isDisabled}
