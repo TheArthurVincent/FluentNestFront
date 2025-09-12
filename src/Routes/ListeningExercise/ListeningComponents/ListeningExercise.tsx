@@ -11,9 +11,14 @@ import {
   notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
+import {
+  alwaysWhite,
+  partnerColor,
+  textGeneralFont,
+} from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 function highlightDifferences(
   original: string,
@@ -92,10 +97,8 @@ function levenshteinDistance(str1: string, str2: string): number {
 function similarityPercentage(str1: string, str2: string): number {
   const clean1 = normalizeText(str1);
   const clean2 = normalizeText(str2);
-
   const maxLen = Math.max(clean1.length, clean2.length);
   if (maxLen === 0) return 100;
-
   const distance = levenshteinDistance(clean1, clean2);
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
@@ -111,10 +114,12 @@ const ListeningExercise = ({
   onChange,
   change,
 }: FlashCardsPropsRv) => {
-  const [myId, setId] = useState<string>("");
+  const { UniversalTexts } = useUserContext();
+
   const [cards, setCards] = useState<any[]>([]);
+  const [students, setStudents] = useState<any[]>([]);
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [cardsLength, setCardsLength] = useState<boolean>(true);
+  const [cardsLength, setCardsLength] = useState<any>(true);
   const [see, setSee] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [next, setNext] = useState<boolean>(false);
@@ -127,13 +132,36 @@ const ListeningExercise = ({
   const [words, setWords] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [transcript, setTranscript] = useState<string>("");
+  const [myId, setId] = useState<string>("");
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
   const [transcriptHighLighted, setTranscriptHighLighted] =
     useState<string>("");
+  const [myPermissions, setPermissions] = useState<string>("");
   const [listening, setListening] = useState<boolean>(false);
+  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
+
   var cardTextRef = useRef<string>("");
 
-  const actualHeaders = headers || {};
+  const fetchStudents = async (userId: string) => {
+    setLoadingStudents(true);
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${userId}`,
+        {
+          headers: actualHeaders,
+        }
+      );
+      const allUsers = response.data.listOfStudents;
 
+      setStudents(allUsers);
+      setLoadingStudents(false);
+    } catch (error) {
+      console.error("Error fetching students:", error);
+    } finally {
+      setLoadingStudents(false);
+    }
+  };
+  const actualHeaders = headers || {};
   useEffect(() => {
     var user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
@@ -142,20 +170,25 @@ const ListeningExercise = ({
     setTimeout(() => {
       updateInfo(user.id, actualHeaders);
     }, 100);
-    setTimeout(() => {
-      if (user) {
-        const { id } = JSON.parse(user);
-        setId(id);
-        setFlashcardsToday(flashcardsTodayNumber);
+    var { id, permissions } = user;
+    if (user) {
+      setId(id);
+      setSelectedStudentId(id);
+      setPermissions(permissions);
+      setFlashcardsToday(flashcardsTodayNumber);
+      if (permissions === "superadmin" || permissions === "teacher") {
+        fetchStudents(id);
       }
-    }, 250);
+    }
   }, [change]);
 
   const reviewListeningExercise = async (score: number, percentage: number) => {
     setNext(true);
     try {
       await axios.put(
-        `${backDomain}/api/v1/reviewflashcardlistening/${myId}`,
+        `${backDomain}/api/v1/reviewflashcardlistening/${
+          selectedStudentId || myId
+        }`,
         {
           flashcardId: cards[0]?._id,
           score,
@@ -191,6 +224,12 @@ const ListeningExercise = ({
       onLoggOut();
     }
   };
+
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const studentId = event.target.value;
+    setSelectedStudentId(studentId);
+  };
+
   const isCorrectAnswer = (transcription: string | null) => {
     const cardTextRaw = cardTextRef.current;
 
@@ -287,23 +326,25 @@ const ListeningExercise = ({
     setWords(0);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcardslistening/${myId}`,
+        `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
         { headers: actualHeaders || {} }
       );
-      const thereAreCards = response.data.dueFlashcards.length === 0;
+      const thereAreCards = response.data.dueFlashcards[0];
+      setCardsLength(thereAreCards);
       const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
+
       localStorage.setItem(
         "flashcardsToday",
         JSON.stringify(response.data.flashCardsReviewsToday)
       );
       setFlashcardsToday(theFlashcardsTodayNumber);
       setCards(response.data.dueFlashcards);
+
       const sl = response.data.dueFlashcards[0]?.front?.language;
       setSelectedLanguage(sl);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
-
-      setCardsLength(thereAreCards);
       setLoading(false);
+
       setTimeout(() => {
         setReadyToListen(true);
         setEnableVoice(true);
@@ -695,12 +736,70 @@ const ListeningExercise = ({
     </section>
   ) : (
     <section id="review">
-      <Voice
-        changeB={changeNumber}
-        setChangeB={setChangeNumber}
-        maxW="400px"
-        chosenLanguage={selectedLanguage}
-      />{" "}
+      <span
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: "10px",
+          marginBottom: "10px",
+        }}
+      >
+        <Voice
+          changeB={changeNumber}
+          setChangeB={setChangeNumber}
+          maxW="400px"
+          chosenLanguage={selectedLanguage}
+        />{" "}
+        {(myPermissions == "superadmin" || myPermissions == "teacher") && (
+          <span>
+            {loadingStudents ? (
+              <CircularProgress size={20} style={{ color: partnerColor() }} />
+            ) : (
+              <select
+                onChange={(e) => {
+                  setSee(false);
+                  handleStudentChange(e);
+                }}
+                value={selectedStudentId}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "13px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "6px 8px",
+                  minWidth: "200px",
+                  maxWidth: "300px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = partnerColor();
+                  e.target.style.backgroundColor = "#ffffff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e2e8f0";
+                  e.target.style.backgroundColor = "#f8fafc";
+                }}
+              >
+                <option value="">
+                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
+                </option>
+                {students.map((student) => (
+                  <option
+                    key={student.id || student.theId}
+                    value={student.id || student.theId}
+                  >
+                    {student.name} {student.lastname}
+                  </option>
+                ))}
+              </select>
+            )}
+          </span>
+        )}
+      </span>
       {see && (
         <div>
           {loading ? (
@@ -715,7 +814,7 @@ const ListeningExercise = ({
                 borderRadius: "6px",
               }}
             >
-              {!cardsLength ? (
+              {cardsLength ? (
                 <>
                   <div>
                     <div
