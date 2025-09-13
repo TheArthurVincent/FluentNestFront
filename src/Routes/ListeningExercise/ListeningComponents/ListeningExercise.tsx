@@ -156,14 +156,14 @@ const ListeningExercise = ({
   const actualHeaders = headers || {};
 
   const languageMap: { [key: string]: string } = {
-  en: "en-US",
-  pt: "pt-BR",
-  es: "es-ES",
-  fr: "fr-FR",
-  de: "de-DE",
-  it: "it-IT",
-  // Adicione outros idiomas conforme necessário
-};
+    en: "en-US",
+    pt: "pt-BR",
+    es: "es-ES",
+    fr: "fr-FR",
+    de: "de-DE",
+    it: "it-IT",
+    // Adicione outros idiomas conforme necessário
+  };
 
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
@@ -191,6 +191,7 @@ const ListeningExercise = ({
 
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const studentId = event.target.value;
+    setSee(false);
     setSelectedStudentId(studentId);
   };
 
@@ -371,7 +372,6 @@ const ListeningExercise = ({
         `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
         { headers: actualHeaders || {} }
       );
-      const thereAreCards = response.data.dueFlashcards.length === 0;
       var lp = response.data.dueFlashcards[0]?.front?.language || "en";
       setLanguage(lp);
       const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
@@ -384,6 +384,7 @@ const ListeningExercise = ({
       setCards(response.data.dueFlashcards);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
 
+      const thereAreCards = response.data.dueFlashcards[0] !== null;
       setCardsLength(thereAreCards);
       setLoading(false);
       setIsShow(true);
@@ -839,7 +840,7 @@ const ListeningExercise = ({
                 borderRadius: "6px",
               }}
             >
-              {!cardsLength ? (
+              {cardsLength ? (
                 <>
                   <div>
                     <div
