@@ -2,14 +2,23 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { backDomain, updateInfo } from "../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  onLoggOut,
+  updateInfo,
+} from "../../../Resources/UniversalComponents";
 import {
   notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { partnerColor, textGeneralFont } from "../../../Styles/Styles";
+import {
+  alwaysWhite,
+  partnerColor,
+  textGeneralFont,
+} from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
+import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
 function highlightDifferences(
   original: string,
@@ -128,20 +137,37 @@ const ListeningExercise = ({
   const [similarity, setSimilarity] = useState<number>(0);
   const [playingAudio, setPlayingAudio] = useState<boolean>(false);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
+  const [language, setLanguage] = useState<string>("en");
   const [words, setWords] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
   const [transcript, setTranscript] = useState<string>("");
   const [transcriptHighLighted, setTranscriptHighLighted] =
     useState<string>("");
+  const [myPermissions, setMyPermissions] = useState<string>("");
   const [isShow, setIsShow] = useState<boolean>(false);
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [loadingStudents, setLoadingStudents] = useState<boolean>(false);
+  const [students, setStudents] = useState<any[]>([]);
 
   const [listening, setListening] = useState<boolean>(false);
   var cardTextRef = useRef<string>("");
+  const { UniversalTexts } = useUserContext();
 
   const actualHeaders = headers || {};
 
+  const languageMap: { [key: string]: string } = {
+  en: "en-US",
+  pt: "pt-BR",
+  es: "es-ES",
+  fr: "fr-FR",
+  de: "de-DE",
+  it: "it-IT",
+  // Adicione outros idiomas conforme necessário
+};
+
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
+
     var flashcardsToday = localStorage.getItem("flashcardsToday") || 0;
     // @ts-ignore
     var flashcardsTodayNumber: number = parseFloat(flashcardsToday);
@@ -157,11 +183,61 @@ const ListeningExercise = ({
     }, 250);
   }, [change]);
 
+  useEffect(() => {
+    if (myId) {
+      fetchData();
+    }
+  }, [myId]);
+
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const studentId = event.target.value;
+    setSelectedStudentId(studentId);
+  };
+
+  const fetchData = async () => {
+    const user = localStorage.getItem("loggedIn");
+
+    if (user) {
+      const { permissions, id } = user
+        ? JSON.parse(user)
+        : { permissions: "", id: "" };
+
+      setMyPermissions(permissions);
+      setSelectedStudentId(id);
+      if (permissions === "superadmin" || permissions === "teacher") {
+        setLoadingStudents(true);
+        try {
+          const response = await axios.get(
+            `${backDomain}/api/v1/students/${myId}`,
+            {
+              headers: actualHeaders,
+            }
+          );
+          const allUsers = response.data.listOfStudents || response.data;
+          setStudents(allUsers);
+        } catch (error) {
+          console.error("Error fetching students:", error);
+        } finally {
+          setLoadingStudents(false);
+        }
+      }
+    } else {
+      console.log("No user found in localStorage, logging out");
+      onLoggOut();
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const reviewListeningExercise = async (score: number, percentage: number) => {
     setNext(true);
     try {
       await axios.put(
-        `${backDomain}/api/v1/reviewflashcardlistening/${myId}`,
+        `${backDomain}/api/v1/reviewflashcardlistening/${
+          selectedStudentId || myId
+        }`,
         {
           flashcardId: cards[0]?._id,
           score,
@@ -292,10 +368,12 @@ const ListeningExercise = ({
     setWords(0);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcardslistening/${myId}`,
+        `${backDomain}/api/v1/flashcardslistening/${selectedStudentId || myId}`,
         { headers: actualHeaders || {} }
       );
       const thereAreCards = response.data.dueFlashcards.length === 0;
+      var lp = response.data.dueFlashcards[0]?.front?.language || "en";
+      setLanguage(lp);
       const theFlashcardsTodayNumber = response.data.flashCardsReviewsToday;
       localStorage.setItem(
         "flashcardsToday",
@@ -388,47 +466,6 @@ const ListeningExercise = ({
     }
   }, []);
 
-  // // Controle do reconhecimento de fala
-  // const SpeechRecognition =
-  //   // @ts-ignore
-  //   window.SpeechRecognition || window.webkitSpeechRecognition;
-  // const recognition = new SpeechRecognition();
-  // recognition.lang = cards[0]?.front?.language == "en" ? "en-US" : "fr-FR";
-  // recognition.interimResults = false;
-  // recognition.maxAlternatives = 1;
-
-  // const startListening = () => {
-  //   setListening(true);
-  //   recognition.start();
-  // };
-
-  // const stopListening = () => {
-  //   setListening(false);
-  //   recognition.stop();
-  // };
-  // recognition.onresult = (event: any) => {
-  //   const speechToText = event.results[0][0].transcript;
-  //   setTranscript(cleanString(speechToText));
-  //   setSeeProgress(true);
-  //   setTimeout(() => {
-  //     isCorrectAnswer(speechToText);
-  //     setIsDisabled(false);
-  //     setSeeProgress(false);
-  //   }, 2000);
-  //   setEnableVoice(false);
-  // };
-
-  // recognition.onspeechend = () => {
-  //   setTimeout(() => {
-  //     stopListening();
-  //   }, 2000);
-  // };
-  // recognition.onerror = () => {
-  //   stopListening();
-  //   notifyAlert("Erro no reconhecimento de voz");
-  //   window.location.reload();
-  // };
-  // Reconhecimento com MediaRecorder + envio para backend Google Cloud
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
 
@@ -724,7 +761,70 @@ const ListeningExercise = ({
     </section>
   ) : (
     <section id="review">
-      <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
+      <Voice
+        changeB={changeNumber}
+        setChangeB={setChangeNumber}
+        maxW="400px"
+        chosenLanguage={language}
+      />
+      {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+        <div
+          style={{
+            padding: "1rem",
+            backgroundColor: alwaysWhite(),
+            borderBottom: "1px solid #e2e8f0",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "0.5rem",
+          }}
+        >
+          {loadingStudents ? (
+            <CircularProgress size={20} style={{ color: partnerColor() }} />
+          ) : (
+            <select
+              onChange={(e) => {
+                handleStudentChange(e);
+              }}
+              value={selectedStudentId}
+              style={{
+                borderRadius: "4px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#f8fafc",
+                fontSize: "13px",
+                fontWeight: "400",
+                color: "#64748b",
+                padding: "6px 8px",
+                minWidth: "200px",
+                maxWidth: "300px",
+                outline: "none",
+                cursor: "pointer",
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = partnerColor();
+                e.target.style.backgroundColor = "#ffffff";
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = "#e2e8f0";
+                e.target.style.backgroundColor = "#f8fafc";
+              }}
+            >
+              <option value="">
+                {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
+              </option>
+              {students.map((student) => (
+                <option
+                  key={student.id || student.theId}
+                  value={student.id || student.theId}
+                >
+                  {student.name} {student.lastname}
+                </option>
+              ))}
+            </select>
+          )}
+        </div>
+      )}
+
       {see && (
         <div>
           {loading ? (
