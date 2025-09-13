@@ -18,17 +18,16 @@ const Listening = ({ headers, onChange, change }: ListeningProps) => {
     <RouteDiv>
       <Helmets text="Listening Exercise" />
       <HOne>Listening Exercise</HOne>
-      <ListeningExercise
-        onChange={onChange}
-        change={change}
-        headers={headers}
-      />
-      {/* <ListeningExerciseNew
+      {/* <ListeningExercise
         onChange={onChange}
         change={change}
         headers={headers}
       /> */}
-
+      <ListeningExerciseNew
+        onChange={onChange}
+        change={change}
+        headers={headers}
+      />
     </RouteDiv>
   );
 };

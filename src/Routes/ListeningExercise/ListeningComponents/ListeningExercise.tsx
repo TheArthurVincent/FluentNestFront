@@ -417,7 +417,7 @@ const ListeningExercise = ({
       }
 
       const recognition = new SpeechRecognition();
-      recognition.lang = "en-US";
+      recognition.lang = languageMap[language] || "en-US"; // Use o mapeamento baseado no estado language
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
@@ -465,7 +465,7 @@ const ListeningExercise = ({
       (window as any).startSpeechRecognition = startSpeechRecognition;
       (window as any).stopSpeechRecognition = stopSpeechRecognition;
     }
-  }, []);
+  }, [language]);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunks: BlobPart[] = [];
@@ -486,6 +486,7 @@ const ListeningExercise = ({
     }
   }, []);
   const startRecording = async () => {
+    console.log("Start recording triggered", language);
     const isIOS =
       /iPad|iPhone|iPod/.test(navigator.userAgent) && !("MSStream" in window);
     const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -517,6 +518,7 @@ const ListeningExercise = ({
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const formData = new FormData();
         formData.append("audio", audioBlob, "audio.webm");
+        formData.append("language", languageMap[language] || "en-US"); // Envie o idioma para a API
 
         setSeeProgress(true);
         try {
