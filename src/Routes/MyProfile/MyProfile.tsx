@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { backDomain, formatDateBr, onLoggOut, updateInfo } from "../../Resources/UniversalComponents";
+import {
+  backDomain,
+  formatDateBr,
+  onLoggOut,
+  updateInfo,
+} from "../../Resources/UniversalComponents";
 import { partnerColor, textpartnerColorContrast } from "../../Styles/Styles";
 import { CircularProgress, TextField } from "@mui/material";
 import axios from "axios";
@@ -690,14 +695,10 @@ export function MyProfile({ headers }: HeadersProps) {
                   </div>
 
                   {new Date(user.limitCancelDate) > new Date() &&
-                    !user.subscriptionAsaas &&
-                    !user.tutoree ? (
+                  !user.subscriptionAsaas &&
+                  !user.tutoree ? (
                     <div style={styles.container}>
                       <div style={styles.card}>
-                        <Countdown
-                          text="Você ainda pode solicitar seu reembolso."
-                          targetDate={new Date(user.limitCancelDate)}
-                        />
                         <button
                           onClick={() =>
                             window.location.assign(
@@ -874,10 +875,6 @@ export function MyProfile({ headers }: HeadersProps) {
                 <div style={styles.modernSection}>
                   <div style={styles.container}>
                     <div style={styles.card}>
-                      <Countdown
-                        text="Você ainda pode usar a plataforma até."
-                        targetDate={new Date(user.limitDate)}
-                      />
                       <button
                         onClick={() =>
                           window.location.assign("https://wa.me/5511915857807")
