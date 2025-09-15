@@ -56,7 +56,7 @@ export const textpartnerColorContrast = (): string => "#fff";
 
 export const textTitleFont = (): string => {
   const wl = getWhiteLabel();
-  return wl.textTitleFont || "Roboto";
+  return wl.textTitleFont || "Teko";
 };
 
 // Cores fixas

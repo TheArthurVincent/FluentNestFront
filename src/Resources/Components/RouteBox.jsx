@@ -115,15 +115,15 @@ export const BlogPostTitle = styled.div`
 `;
 
 export const HOne = styled.h1`
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 500;
   color: ${partnerColor()};
   margin: 12px 0;
   font-family: ${textTitleFont()};
 `;
 
 export const HTwo = styled.h2`
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   font-family:${textTitleFont()},
   color: ${partnerColor()};
   font-weight: 500;

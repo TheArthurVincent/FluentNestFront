@@ -31,6 +31,21 @@ export const generateUsername = (
 
   return `${first}${day}${last}${year}${month}`;
 };
+
+function formatDate(value: string): string {
+  const cleaned = value.replace(/\D/g, "").slice(0, 8); // Remove non-digits and limit to 8 characters
+  const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})$/);
+  if (match) {
+    const day = match[1];
+    const month = match[2];
+    const year = match[3];
+    let formatted = day;
+    if (month) formatted += "/" + month;
+    if (year) formatted += "/" + year;
+    return formatted;
+  }
+  return cleaned;
+}
 function formatPhoneNumber(value: string): string {
   const cleaned = value.replace(/\D/g, "").slice(0, 11);
   const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
@@ -89,13 +104,13 @@ export default function TeacherSubscription() {
   // });
 
   const [form, setForm] = useState({
-    name: "",
+    name: "Jonathan",
+    lastname: "Michael Doe",
     promoCode: "63",
-    lastname: "Doe",
     username: "",
     phoneNumber: "11930303030",
-    doc: "",
-    email: "d@cristout.com",
+    doc: "729.157.020-47",
+    email: "nocidi4795@kwifa.com",
     dateOfBirth: "10/10/2025",
     address: "Rua Nelia",
     neighborhood: "Embu",
@@ -145,6 +160,9 @@ export default function TeacherSubscription() {
     } else if (name === "doc") {
       const formattedDoc = formatCPF(value);
       setForm((prev) => ({ ...prev, [name]: formattedDoc }));
+    } else if (name === "dateOfBirth") {
+      const formattedDate = formatDate(value);
+      setForm((prev) => ({ ...prev, [name]: formattedDate }));
     } else {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -178,6 +196,7 @@ export default function TeacherSubscription() {
     if (form.password !== form.confirmPassword) {
       setLoading(false);
       setError("As senhas não coincidem.");
+      notifyAlert("As senhas não coincidem.", "red");
       return;
     }
 
@@ -439,10 +458,10 @@ export default function TeacherSubscription() {
         value: "",
         status: "Sim",
       },
-      { title: "Mineração de sentenças (você e alunos)", value: "5 ao todo" },
       { title: "Limite de revisão de flashcards/dia", value: 25 },
       { title: "Área de responsáveis", value: "", status: "Não" },
-      { title: "Listening exercise", value: "", status: "Não" },
+      // { title: "Mineração de sentenças (você e alunos)", value: "5 ao todo" },
+      // { title: "Listening exercise", value: "", status: "Não" },
       { title: "Cadastro de subteachers", value: "", status: "Não" },
       { title: "Emissão de contratos", value: "", status: "Não" },
       { title: "Emissão de recibos", value: "", status: "Não" },
@@ -457,10 +476,10 @@ export default function TeacherSubscription() {
         value: "",
         status: "Sim",
       },
-      { title: "Mineração de sentenças (você e alunos)", value: "30/mês" },
       { title: "Limite de revisão de flashcards/dia", value: "Sem limites" },
       { title: "Área de responsáveis", value: "", status: "Sim" },
-      { title: "Listening exercise", value: "", status: "Sim" },
+      // { title: "Mineração de sentenças (você e alunos)", value: "30/mês" },
+      // { title: "Listening exercise", value: "", status: "Sim" },
       { title: "Cadastro de subteachers", value: "", status: "Sim" },
       { title: "Emissão de contratos", value: "", status: "Sim" },
       { title: "Emissão de recibos", value: "", status: "Sim" },
@@ -500,7 +519,7 @@ export default function TeacherSubscription() {
         }}
       >
         {selected && <span style={styles.badge}>Selecionado</span>}
-        <h3>{title}</h3>
+        <p>{title}</p>
         <img src={imgSrc} alt={`${title} Plan`} style={{ ...styles.img }} />
         <ul
           style={{
@@ -564,7 +583,7 @@ export default function TeacherSubscription() {
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
-          <HOne>Cadastre-se</HOne>
+          <h1>Cadastre-se</h1>
           <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
           <h2>Plano</h2>
           <div
@@ -605,14 +624,14 @@ export default function TeacherSubscription() {
                 setPaymentMethod("CREDIT_CARD"); // mantém sua lógica
               }}
             >
-              <h3>{formatBRL(monthlyPrice)}/mês</h3>
+              <p>{formatBRL(monthlyPrice)}/mês</p>
             </div>
 
             <div
               style={{ ...styles.planCard, ...isSelected("yearly") }}
               onClick={() => handlePlanSelect("yearly")}
             >
-              <h3>{formatBRL(yearlyPrice)}/ano em até 6x</h3>
+              <p>{formatBRL(yearlyPrice)}/ano em até 6x</p>
             </div>
           </div>
           <>
@@ -630,7 +649,7 @@ export default function TeacherSubscription() {
                     }}
                     onClick={() => setPaymentMethod("CREDIT_CARD")}
                   >
-                    <h3>Cartão (parcelável)</h3>
+                    <p>Cartão (parcelável)</p>
                   </div>
                   <div
                     //@ts-ignore
@@ -642,7 +661,7 @@ export default function TeacherSubscription() {
                     }}
                     onClick={() => setPaymentMethod("PIX")}
                   >
-                    <h3>Pix à vista</h3>
+                    <p>Pix à vista</p>
                   </div>
                 </div>
               </>
@@ -678,6 +697,154 @@ export default function TeacherSubscription() {
               <Grid container spacing={2}>
                 <Grid item xs={6}>
                   <TextField
+                    label="Nome"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
+                <Grid item xs={6}>
+                  <TextField
+                    label="Sobrenome"
+                    name="lastname"
+                    value={form.lastname}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
+                <Grid item xs={6}>
+                  <TextField
+                    label="E-mail"
+                    name="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                    inputProps={{ inputMode: "email" }}
+                  />
+                </Grid>{" "}
+                <Grid item xs={6}>
+                  <TextField
+                    label="Data de Nascimento (DD/MM/AAAA)"
+                    name="dateOfBirth"
+                    value={form.dateOfBirth}
+                    onChange={handleChange}
+                    fullWidth
+                    inputProps={{ maxLength: 10, inputMode: "numeric" }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
+                <Grid item xs={6}>
+                  <TextField
+                    label="CPF"
+                    name="doc"
+                    value={form.doc}
+                    onChange={handleChange}
+                    fullWidth
+                    inputProps={{ maxLength: 15, inputMode: "numeric" }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
+                <Grid item xs={6}>
+                  <TextField
                     label="Número do Cartão"
                     name="creditCardNumber"
                     value={form.creditCardNumber}
@@ -693,6 +860,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -706,7 +874,6 @@ export default function TeacherSubscription() {
                     inputProps={{ maxLength: 19, inputMode: "numeric" }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Nome Impresso no Cartão"
@@ -724,6 +891,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -736,7 +904,6 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Mês de Expiração (MM)"
@@ -754,6 +921,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -767,7 +935,6 @@ export default function TeacherSubscription() {
                     inputProps={{ maxLength: 2, inputMode: "numeric" }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Ano de Expiração (AAAA)"
@@ -785,6 +952,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -798,7 +966,6 @@ export default function TeacherSubscription() {
                     inputProps={{ maxLength: 4, inputMode: "numeric" }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="CVV"
@@ -816,6 +983,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -829,7 +997,6 @@ export default function TeacherSubscription() {
                     inputProps={{ maxLength: 4, inputMode: "numeric" }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="CEP"
@@ -852,6 +1019,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -865,7 +1033,6 @@ export default function TeacherSubscription() {
                     inputProps={{ maxLength: 8, inputMode: "numeric" }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Rua"
@@ -883,6 +1050,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -895,7 +1063,6 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Número"
@@ -913,6 +1080,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -925,7 +1093,6 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Bairro"
@@ -943,6 +1110,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -955,7 +1123,6 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Cidade"
@@ -973,6 +1140,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -985,7 +1153,6 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <TextField
                     label="Estado (UF)"
@@ -1003,6 +1170,7 @@ export default function TeacherSubscription() {
                           borderColor: "#ed5914", // ao passar o mouse
                         },
                         "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
                           borderColor: "#ed5914", // quando focado
                         },
                         "& label": {
@@ -1015,6 +1183,69 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>
+                <br />
+                <Grid item xs={6}>
+                  <TextField
+                    label="Senha (mínimo 8 caracteres)"
+                    name="password"
+                    value={form.password}
+                    onChange={handleChange}
+                    fullWidth
+                    type="password"
+                    inputProps={{ maxLength: 15 }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
+                <Grid item xs={6}>
+                  <TextField
+                    label="Confirme sua Senha (mínimo 8 caracteres)"
+                    name="confirmPassword"
+                    value={form.confirmPassword}
+                    onChange={handleChange}
+                    fullWidth
+                    type="password"
+                    inputProps={{ maxLength: 15 }}
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
               </Grid>
             )}
 

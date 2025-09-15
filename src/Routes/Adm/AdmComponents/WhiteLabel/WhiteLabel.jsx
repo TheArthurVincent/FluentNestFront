@@ -254,6 +254,7 @@ export default function WhiteLabelPreview({ headers }) {
   const titleFonts = [
     "Arial",
     "Athiti",
+    "Teko",
     "Comic Sans MS",
     "Courier New",
     "Georgia",

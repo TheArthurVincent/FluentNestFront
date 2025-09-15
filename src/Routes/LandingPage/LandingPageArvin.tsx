@@ -211,9 +211,8 @@ function LandingPageArvin() {
                 <br />
                 <b>Organize</b> a sua vida financeira;
                 <br />
-                <b>Ofereça</b> uma excelente plataforma para os seus alunos.
+                <b>Ofereça</b> uma excelente plataforma de estudos para os seus alunos.
               </p>
-
               <a
                 style={{ backgroundColor: "#ed5914" }}
                 href="#subscription-section"
@@ -226,7 +225,7 @@ function LandingPageArvin() {
         </section>
         {/* Benefícios */}
         <section className="benefits-section thesection-2">
-          <h2 className="section-title">Por que empreender conosco?</h2>
+          <h1>Por que empreender conosco?</h1>
           <div className="benefits-cards">
             {videos.map((video: any, index: any) => (
               <div
@@ -270,7 +269,7 @@ function LandingPageArvin() {
           </div>
         </section>
         {/* <section className="benefits-section thesection-1">
-          <h2 className="section-title">💬 Veja o que dizem os professores</h2>
+          <h1 className="session-title">💬 Veja o que dizem os professores</h1>
           <div className="testimonial-scroller">
             {[
               "https://www.youtube.com/embed/-eSmGb2CkPY",
@@ -321,13 +320,13 @@ function LandingPageArvin() {
           />
           <span
             style={{
-              fontFamily: "Athiti",
+              fontFamily: "Lato",
               fontSize: "12px",
               color: "#9ca3af",
             }}
           >
-            © 2025 ARVIN • This Platform is powered by ARVIN Corp. All rights
-            reserved
+            © 2025 ARVIN • This Platform is powered by DOXA TECH Serviços de
+            Software Ltda. All rights reserved
           </span>
         </footer>
       </div>

@@ -34,13 +34,12 @@ export default function AppFooter({ see }: AppFooterIn) {
       />
       <span
         style={{
-          fontFamily: "Athiti",
           fontSize: "12px",
           color: "#9ca3af",
         }}
       >
-        © 2025 ARVIN • This Platform is powered by ARVIN Corp. All rights
-        reserved
+        © 2025 ARVIN • This Platform is powered by DOXA TECH Serviços de
+        Software Ltda. All rights reserved
       </span>
     </footer>
   );

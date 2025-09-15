@@ -63,25 +63,22 @@ function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
-// Função para normalizar o texto
 const normalizeText = (text: string): string => {
   return text
     .toLowerCase()
-    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "") // Remove pontuação
-    .replace(/\s+/g, " ") // Substitui múltiplos espaços por um espaço
+    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "")
+    .replace(/\s+/g, " ")
     .trim();
 };
 
-// Função para limpar a string
 function cleanString(str: string): string {
   return str
     .toLowerCase()
     .replace(/\s+/g, " ")
-    .replace(/[^\x20-\x7E]/g, "") // Remove caracteres não imprimíveis
+    .replace(/[^\x20-\x7E]/g, "")
     .trim();
 }
 
-// Função de distância de Levenshtein
 function levenshteinDistance(str1: string, str2: string): number {
   const len1 = str1.length;
   const len2 = str2.length;
@@ -232,7 +229,10 @@ const ListeningExerciseNew = ({
     fetchData();
   }, []);
 
-  const reviewListeningExerciseNew = async (score: number, percentage: number) => {
+  const reviewListeningExerciseNew = async (
+    score: number,
+    percentage: number
+  ) => {
     setNext(true);
     try {
       await axios.put(
@@ -390,7 +390,7 @@ const ListeningExerciseNew = ({
       setIsShow(true);
       setTimeout(() => {
         setReadyToListen(true);
-        setEnableVoice(true); // Ativa só após cards estarem prontos
+        setEnableVoice(true);
       }, 300);
     } catch (error) {
       notifyAlert("Erro ao carregar cards");
@@ -433,7 +433,7 @@ const ListeningExerciseNew = ({
 
         setSeeProgress(true);
         setTimeout(() => {
-          isCorrectAnswer(cleaned); // 🔧 envia versão limpa
+          isCorrectAnswer(cleaned);
           setIsDisabled(false);
           setSeeProgress(false);
         }, 2000);
@@ -450,7 +450,6 @@ const ListeningExerciseNew = ({
         recognition.stop();
       };
 
-      // Ative ao clicar no botão
       const startSpeechRecognition = () => {
         setListening(true);
         recognition.start();
@@ -461,7 +460,6 @@ const ListeningExerciseNew = ({
         recognition.stop();
       };
 
-      // Torna acessível no escopo
       (window as any).startSpeechRecognition = startSpeechRecognition;
       (window as any).stopSpeechRecognition = stopSpeechRecognition;
     }
@@ -518,8 +516,7 @@ const ListeningExerciseNew = ({
         const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
         const formData = new FormData();
         formData.append("audio", audioBlob, "audio.webm");
-        formData.append("language", languageMap[language] || "en-US"); // Envie o idioma para a API
-
+        formData.append("language", languageMap[language] || "en-US");
         setSeeProgress(true);
         try {
           const response = await axios.post(
@@ -591,8 +588,6 @@ const ListeningExerciseNew = ({
         >
           🚫
         </div>
-
-        {/* Title */}
         <h2
           style={{
             fontSize: "1.5rem",
@@ -604,8 +599,6 @@ const ListeningExerciseNew = ({
         >
           Audio Recording Not Supported
         </h2>
-
-        {/* Subtitle */}
         <h3
           style={{
             fontSize: "1.1rem",
@@ -617,8 +610,6 @@ const ListeningExerciseNew = ({
         >
           Gravação de áudio não suportada
         </h3>
-
-        {/* Main message */}
         <p
           style={{
             fontSize: "1rem",
@@ -642,8 +633,6 @@ const ListeningExerciseNew = ({
           Seu dispositivo Apple ou navegador Safari não suporta os recursos de
           gravação de áudio necessários para este exercício.
         </p>
-
-        {/* Recommendations */}
         <div
           style={{
             backgroundColor: "#f8f9fa",
@@ -689,8 +678,6 @@ const ListeningExerciseNew = ({
             </div>
           </div>
         </div>
-
-        {/* Action buttons */}
         <div
           style={{
             display: "flex",
@@ -745,8 +732,6 @@ const ListeningExerciseNew = ({
             🏠 Back to Home
           </a>
         </div>
-
-        {/* Footer note */}
         <div
           style={{
             marginTop: "2rem",
