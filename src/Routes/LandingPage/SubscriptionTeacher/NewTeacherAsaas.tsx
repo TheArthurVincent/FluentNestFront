@@ -8,29 +8,7 @@ import { CircularProgress, Grid, TextField } from "@mui/material";
 import silver from "./assets/teacherssilver.png";
 import gold from "./assets/goldteacher.png";
 import { HOne } from "../../../Resources/Components/RouteBox";
-
-export const generateUsername = (
-  name: string,
-  lastname: string,
-  dateOfBirth: string
-) => {
-  const sanitize = (str: string) =>
-    str
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/[^a-z]/g, "");
-
-  const first = sanitize(name);
-  const last = sanitize(lastname).slice(0, 3);
-
-  const d = dateOfBirth ? new Date(dateOfBirth) : null;
-  const day = d ? String(d.getDate()).padStart(2, "0") : "";
-  const month = d ? String(d.getMonth() + 1).padStart(2, "0") : "";
-  const year = d ? d.getFullYear() : "";
-
-  return `${first}${day}${last}${year}${month}`;
-};
+import { fontSize, fontWeight } from "@mui/system";
 
 function formatDate(value: string): string {
   const cleaned = value.replace(/\D/g, "").slice(0, 8); // Remove non-digits and limit to 8 characters
@@ -83,7 +61,6 @@ export default function TeacherSubscription() {
   //   name: "",
   //   promoCode: "",
   //   lastname: "",
-  //   username: "",
   //   phoneNumber: "",
   //   doc: "",
   //   email: "",
@@ -107,7 +84,6 @@ export default function TeacherSubscription() {
     name: "Jonathan",
     lastname: "Michael Doe",
     promoCode: "63",
-    username: "",
     phoneNumber: "11930303030",
     doc: "729.157.020-47",
     email: "nocidi4795@kwifa.com",
@@ -168,26 +144,6 @@ export default function TeacherSubscription() {
     }
   };
 
-  const [usernameEdited, setUsernameEdited] = useState<string>("");
-
-  useEffect(() => {
-    if (
-      form.name &&
-      form.lastname &&
-      form.dateOfBirth &&
-      form.username.trim() === "" &&
-      usernameEdited.trim() === ""
-    ) {
-      const newUsername = generateUsername(
-        form.name,
-        form.lastname,
-        form.dateOfBirth
-      );
-      setUsernameEdited(newUsername);
-      setForm((prev) => ({ ...prev, username: newUsername }));
-    }
-  }, [form]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -225,7 +181,7 @@ export default function TeacherSubscription() {
         window.location.assign("/verify-email");
       }, 1000);
     } catch (err: any) {
-      setError("Erro ao cadastrar. Verifique os dados e tente novamente.");
+      setError(err.response?.data?.message);
       notifyAlert(err.response?.data?.message || "Tente novamente");
       console.log(err.response?.data?.message || "Tente novamente");
     } finally {
@@ -355,6 +311,8 @@ export default function TeacherSubscription() {
     },
     error: {
       color: "red",
+      fontSize: 20,
+      fontWeight: "600",
       marginTop: "10px",
     },
     responsiveGrid: {
@@ -450,7 +408,7 @@ export default function TeacherSubscription() {
     { title: string; value: string | number; status?: string | number }[]
   > = {
     silver: [
-      { title: "Limite de alunos", value: 50 },
+      { title: "Limite de alunos", value: 30 },
       { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
       { title: "Gerenciamento de alunos", value: "", status: "Sim" },
       {
@@ -462,10 +420,15 @@ export default function TeacherSubscription() {
       { title: "Área de responsáveis", value: "", status: "Não" },
       // { title: "Mineração de sentenças (você e alunos)", value: "5 ao todo" },
       // { title: "Listening exercise", value: "", status: "Não" },
-      { title: "Cadastro de subteachers", value: "", status: "Não" },
+      // { title: "Cadastro de subteachers", value: "", status: "Não" },
       { title: "Emissão de contratos", value: "", status: "Não" },
+      {
+        title: "Personalização Visual da Plataforma",
+        value: "",
+        status: "Não",
+      },
       { title: "Emissão de recibos", value: "", status: "Não" },
-      { title: "Assistente de IA", value: "10 tokens/mês" },
+      { title: "Assistente de IA", value: "20 tokens/mês" },
     ],
     gold: [
       { title: "Limite de alunos", value: "Sem limites" },
@@ -480,8 +443,13 @@ export default function TeacherSubscription() {
       { title: "Área de responsáveis", value: "", status: "Sim" },
       // { title: "Mineração de sentenças (você e alunos)", value: "30/mês" },
       // { title: "Listening exercise", value: "", status: "Sim" },
-      { title: "Cadastro de subteachers", value: "", status: "Sim" },
+      // { title: "Cadastro de subteachers", value: "", status: "Sim" },
       { title: "Emissão de contratos", value: "", status: "Sim" },
+      {
+        title: "Personalização Visual da Plataforma",
+        value: "",
+        status: "Sim",
+      },
       { title: "Emissão de recibos", value: "", status: "Sim" },
       { title: "Assistente de IA", value: "1.000 tokens/mês" },
     ],
@@ -583,9 +551,18 @@ export default function TeacherSubscription() {
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
-          <h1>Cadastre-se</h1>
-          <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
-          <h2>Plano</h2>
+          <h1
+            style={{
+              fontFamily: "Teko, sans-serif",
+              fontSize: "32px",
+              marginBottom: "20px",
+              color: "#111827",
+            }}
+          >
+            Cadastre-se
+          </h1>
+          {/* <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" /> */}
+          {/* <h2>Plano</h2> */}
           <div
             style={styles.planContainer}
             role="radiogroup"
@@ -1316,9 +1293,8 @@ export default function TeacherSubscription() {
               Fale com nossa equipe por WhatsApp!
             </button>
           </div> */}
+          {error && <p style={styles.error}>{error}</p>}
         </div>
-
-        {error && <p style={styles.error}>{error}</p>}
       </form>
     </div>
   );
