@@ -12,7 +12,7 @@ import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import Modules from "./Modules";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor } from "../../Styles/Styles";
+import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
@@ -312,7 +312,15 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     if (allowed.length === 0 && nonAllowed.length === 0) return null;
     return (
       <section style={{ marginTop: "1.25rem" }}>
-        <h2 style={{ margin: "0 0 10px 0", fontSize: "1.1rem" }}>{title}</h2>
+        <h2
+          style={{
+            margin: "0 0 10px 0",
+            fontSize: "1.1rem",
+            fontFamily: textTitleFont(),
+          }}
+        >
+          {title}
+        </h2>
         <ul style={gridStyle}>
           {allowed.map((route) => (
             <CourseCard key={`a-${route._id}`} course={route} />

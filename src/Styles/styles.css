@@ -163,7 +163,6 @@ h2,
 h3,
 h4 {
   margin: 0.6rem 0;
-  font-family: "Teko", sans-serif;
   font-weight: 500;
   font-size: 1.2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.031);
@@ -222,7 +221,6 @@ h4 {
 }
 
 .timeline-date {
-  font-family: "Teko", sans-serif;
   color: #888;
   min-width: 100px;
   text-align: right;
@@ -272,7 +270,6 @@ h4 {
 
 .type {
   margin: 0 0 5px;
-  font-family: "Teko", sans-serif;
   color: black;
 }
 
