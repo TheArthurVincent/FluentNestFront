@@ -7,6 +7,7 @@ import {
   backDomain,
   onLoggOut,
   onLoggOutFee,
+  onLoggOutLimitDate,
   onLoggOutToken,
   pathGenerator,
   updateInfo,
@@ -91,9 +92,17 @@ export function HomePage({ headers }: HeadersProps) {
         const response3 = await axios.get(
           `${backDomain}/api/v1/logmeoutornot/${id}`
         );
+        const response4 = await axios.get(
+          `${backDomain}/api/v1/limitdate/${id}`
+        );
+
         if (response3.data.logoutNeeded == true) {
           console.log(response3.data.logoutNeeded, "ExpiredToken");
           onLoggOutToken();
+        }
+        if (response4.data.logoutLimitDate == true) {
+          console.log(response4.data.logoutLimitDate, "Assinatura Expirada");
+          onLoggOutLimitDate();
         }
       }
     } catch (error) {

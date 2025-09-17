@@ -3,6 +3,7 @@ import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage"
 import {
   backDomain,
   formatDateBr,
+  formatDateBrWithHour,
   onLoggOut,
   updateInfo,
 } from "../../Resources/UniversalComponents";
@@ -255,11 +256,12 @@ export function MyProfile({ headers }: HeadersProps) {
     if (user.subscriptionAsaas) {
       try {
         await axios.delete(
-          `${backDomain}/api/v1/asaas/cancel-subscription/${user.id}`
+          `${backDomain}/api/v1/asaas-teacher/cancel-subscription/${user.id}`
         );
         notifyAlert("Assinatura cancelada com sucesso.");
         updateInfo(user.id, headers);
         setTimeout(() => {
+          updateInfo(user.id, headers);
           window.location.reload();
         }, 200);
         setShowModal(false);
@@ -822,7 +824,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       </div>
                     </div>
                   )}
-                  {user.tutoree && isArthurVincent && (
+                  {user.permissions == "teacher" && (
                     <div
                       style={{ ...styles.profileItem, borderBottom: "none" }}
                     >
@@ -877,12 +879,18 @@ export function MyProfile({ headers }: HeadersProps) {
                     <div style={styles.card}>
                       <button
                         onClick={() =>
-                          window.location.assign("https://wa.me/5511915857807")
+                          window.location.assign("https://wa.me/5511972369299")
                         }
                         style={styles.button}
                       >
                         Solicite a reativação do seu cadastro
                       </button>
+                      <Countdown
+                        targetDate={new Date(user.limitDate)}
+                        text={`Você e seus alunos podem continuar acessando o Arvin até ${formatDateBrWithHour(
+                          user.limitDate
+                        )}`}
+                      />
                     </div>
                   </div>
                 </div>

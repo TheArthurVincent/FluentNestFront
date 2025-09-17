@@ -9,6 +9,7 @@ export interface User {
   username: string;
   tutoree: boolean;
   googleDriveLink: string;
+  permissions: string;
   monthlyScore: number;
   totalScore: number;
   picture: string;

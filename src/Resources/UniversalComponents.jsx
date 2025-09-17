@@ -1769,6 +1769,7 @@ export const onLoggOut = () => {
   notifyAlert(`Faça login novamente`, partnerColor());
   window.location.assign("/login");
 };
+
 export const onLoggOutToken = () => {
   const user = localStorage.getItem("loggedIn");
   const auth = localStorage.getItem("authorization");
@@ -1780,6 +1781,29 @@ export const onLoggOutToken = () => {
   }
   notifyAlert(`Token expirado. Faça login novamente`, partnerColor());
   window.location.assign("/login");
+};
+
+export const onLoggOutLimitDate = () => {
+  const user = localStorage.getItem("loggedIn");
+  const auth = localStorage.getItem("authorization");
+  if (
+    JSON.parse(user).permissions === "teacher" &&
+    window.location.pathname !== "/subscription-expired"
+  ) {
+    window.location.assign("/subscription-expired");
+  } else if (JSON.parse(user).permissions === "student") {
+    if (user) {
+      localStorage.removeItem("loggedIn");
+    }
+    if (auth) {
+      localStorage.removeItem("authorization");
+    }
+    notifyAlert(`Sua assinatura expirou.`, partnerColor());
+
+    window.location.assign("/login");
+  } else {
+    null;
+  }
 };
 
 export const onLoggOutFee = () => {

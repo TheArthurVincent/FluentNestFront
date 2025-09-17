@@ -50,6 +50,7 @@ import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
 import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
+import SubscriptionExpired from "./Routes/SubscriptionExpired";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -290,6 +291,10 @@ function App() {
     {
       path: "/feenotuptodate",
       element: <FeeNotUpToDate />,
+    },
+    {
+      path: "/subscription-expired",
+      element: <SubscriptionExpired />,
     },
   ];
   var routesResponsible = [
