@@ -529,128 +529,128 @@ export const TopBar: FC = () => {
           setDropdownNotificationsVisible(!dropdownNotificationsVisible);
           handleSeeAll();
         }}
-        style={{ display: "flex", gap: "3rem", alignItems: "center" }}
+        style={{ display: "flex", gap: "2rem", alignItems: "center" }}
       >
-        <div
-          style={{
-            position: "relative",
-            cursor: "pointer",
-            display: "inline-block",
-          }}
-        >
-          <i className="fa fa-bell" style={{ fontSize: "1rem" }} />
-          {theNotifications > 0 && (
-            <span
-              style={{
-                position: "absolute",
-                top: "11px",
-                right: "-9px",
-                backgroundColor: "red",
-                color: "white",
-                fontSize: "8px",
-                fontWeight: "bold",
-                padding: "3px",
-                borderRadius: "50%",
-                minWidth: "5px",
-                minHeight: "5px",
-                textAlign: "center",
-              }}
-            >
-              {theNotifications > 99 ? "99+" : theNotifications}
-            </span>
-          )}
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+          <div
+            style={{
+              position: "relative",
+              cursor: "pointer",
+              display: "inline-block",
+            }}
+          >
+            <i className="fa fa-bell" style={{ fontSize: "1rem" }} />
+            {theNotifications > 0 && (
+              <span
+                style={{
+                  position: "absolute",
+                  top: "11px",
+                  right: "-9px",
+                  backgroundColor: "red",
+                  color: "white",
+                  fontSize: "8px",
+                  fontWeight: "bold",
+                  padding: "3px",
+                  borderRadius: "50%",
+                  minWidth: "5px",
+                  minHeight: "5px",
+                  textAlign: "center",
+                }}
+              >
+                {theNotifications > 99 ? "99+" : theNotifications}
+              </span>
+            )}
 
-          {dropdownNotificationsVisible && (
-            <div
-              style={{
-                position: "absolute",
-                top: "30px",
-                right: "-184px",
-                background: "white",
-                boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                borderRadius: "6px",
-                padding: "10px",
-                minWidth: "250px",
-                zIndex: 100000000,
-              }}
-            >
-              {myNotifications.length > 0 ? (
-                <ul
-                  style={{
-                    listStyle: "none",
-                    maxHeight: "300px",
-                    overflow: "auto",
-                    padding: "2px",
-                    margin: 0,
-                  }}
-                >
-                  {myNotifications.map((notification: any, index: number) => (
-                    <li
-                      key={index}
-                      onClick={() => {
-                        openModal(notification);
-                      }}
-                      style={{
-                        listStyle: "none",
-                        padding: "5px",
-                        borderBottom: "1px solid #ddd",
-                        backgroundColor: !notification.isViewed
-                          ? "#eee"
-                          : "#fff",
-                      }}
-                    >
-                      <p
+            {dropdownNotificationsVisible && (
+              <div
+                style={{
+                  position: "absolute",
+                  top: "30px",
+                  right: "-184px",
+                  background: "white",
+                  boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+                  borderRadius: "6px",
+                  padding: "10px",
+                  minWidth: "250px",
+                  zIndex: 100000000,
+                }}
+              >
+                {myNotifications.length > 0 ? (
+                  <ul
+                    style={{
+                      listStyle: "none",
+                      maxHeight: "300px",
+                      overflow: "auto",
+                      padding: "2px",
+                      margin: 0,
+                    }}
+                  >
+                    {myNotifications.map((notification: any, index: number) => (
+                      <li
+                        key={index}
+                        onClick={() => {
+                          openModal(notification);
+                        }}
                         style={{
-                          fontSize: "10px",
+                          listStyle: "none",
+                          padding: "5px",
+                          borderBottom: "1px solid #ddd",
+                          backgroundColor: !notification.isViewed
+                            ? "#eee"
+                            : "#fff",
                         }}
                       >
-                        {formatDateBr(notification.date)}
-                      </p>
-                      {notification.message}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p style={{ margin: 0, textAlign: "center" }}>
-                  No notifications
-                </p>
-              )}
-            </div>
-          )}
+                        <p
+                          style={{
+                            fontSize: "10px",
+                          }}
+                        >
+                          {formatDateBr(notification.date)}
+                        </p>
+                        {notification.message}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p style={{ margin: 0, textAlign: "center" }}>
+                    No notifications
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          <div
+            onClick={() => {
+              updateNumberOfNotifications(id);
+              setDropdownNotificationsVisible(!dropdownNotificationsVisible);
+            }}
+            style={{
+              display: dropdownNotificationsVisible ? "block" : "none",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "1000000000000px",
+              height: "10000000000px",
+              zIndex: 100000,
+            }}
+          />
         </div>
-        <div
-          onClick={() => {
-            updateNumberOfNotifications(id);
-            setDropdownNotificationsVisible(!dropdownNotificationsVisible);
-          }}
-          style={{
-            display: dropdownNotificationsVisible ? "block" : "none",
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "1000000000000px",
-            height: "10000000000px",
-            zIndex: 100000,
-          }}
-        />
-      </div>
-      <Modal sx={modalStyle} open={modalOpen} onClose={handleClose}>
-        <div
-          style={{
-            backgroundColor: "white",
-            display: "flex",
-            flexDirection: "column",
-            padding: "10px",
-          }}
-        >
-          <button onClick={handleClose}>x</button>
-          <Link target="_blank" to={selectedNotification.link}>
-            <HTwo>{selectedNotification.message}</HTwo>
-          </Link>
-          <HThree>{formatDateBr(selectedNotification.date)}</HThree>
-        </div>
-      </Modal>
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <Modal sx={modalStyle} open={modalOpen} onClose={handleClose}>
+          <div
+            style={{
+              backgroundColor: "white",
+              display: "flex",
+              flexDirection: "column",
+              padding: "10px",
+            }}
+          >
+            <button onClick={handleClose}>x</button>
+            <Link target="_blank" to={selectedNotification.link}>
+              <HTwo>{selectedNotification.message}</HTwo>
+            </Link>
+            <HThree>{formatDateBr(selectedNotification.date)}</HThree>
+          </div>
+        </Modal>
         {/* <form>
           <select
             id="language"
@@ -669,7 +669,6 @@ export const TopBar: FC = () => {
             color: textPrimaryColorContrast(),
           }}
         >
-          {" "}
           {UniversalTexts.leaveButton}
         </button>
       </div>

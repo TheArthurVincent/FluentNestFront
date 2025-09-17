@@ -21,7 +21,7 @@ import ArthurSection from "./AdmComponents/ArthurSection/ArthurSection";
 import ResponsibleMainFile from "./AdmComponents/NewResponsible/ResponsibleMainFile";
 
 export function Adm({ headers }: HeadersProps) {
-  const { id } = localStorageLoggedIn;
+  const { id , plan } = localStorageLoggedIn;
 
   const componentsToRender = [
     {
@@ -48,7 +48,7 @@ export function Adm({ headers }: HeadersProps) {
         "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
       component: (
         <>
-          <FinancialResources id={id} headers={headers} />
+          <FinancialResources id={id} headers={headers} plan={plan} />
         </>
       ),
     },
