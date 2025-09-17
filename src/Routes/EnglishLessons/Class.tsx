@@ -2661,13 +2661,9 @@ export default function EnglishClassCourse2({
                         );
                         checkPageBreak(englishLines.length * 4);
                         pdf.text(englishLines, margin, yPosition);
-
-                        // Hífen separador
                         pdf.setFont("helvetica", "normal");
                         pdf.setTextColor(r, g, b);
                         pdf.text("-", margin + 80, yPosition);
-
-                        // Palavra em português (em itálico)
                         pdf.setFont("helvetica", "italic");
                         pdf.setTextColor(80, 80, 80);
                         const portugueseLines = splitTextToSize(
@@ -2676,8 +2672,6 @@ export default function EnglishClassCourse2({
                           12
                         );
                         pdf.text(portugueseLines, margin + 100, yPosition);
-
-                        // Resetar fonte para normal
                         pdf.setFont("helvetica", "normal");
 
                         yPosition +=
@@ -2691,7 +2685,6 @@ export default function EnglishClassCourse2({
                     }
                   );
 
-                  // Espaço extra após vocabulário
                   yPosition += 8;
                 }
                 break;

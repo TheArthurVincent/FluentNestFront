@@ -456,11 +456,7 @@ export function FinancialResources({ headers, id, plan }) {
       );
       notifyAlert("Ítem excluído com sucesso!", "green");
       await seeReports(currentMonthYear);
-
-      // Fecha o modal
       handleFinancialReportModal();
-
-      // Resetar botão de confirmação
       setSeeButtonDeleteItem(false);
     } catch (error) {
       notifyAlert("Erro ao excluir ítem");

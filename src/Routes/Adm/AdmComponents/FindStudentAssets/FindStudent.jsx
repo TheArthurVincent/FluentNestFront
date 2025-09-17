@@ -271,9 +271,6 @@ export function FindStudent({
     }
   };
   const [searchTerm, setSearchTerm] = useState("");
-  const [hasReset, setHasReset] = useState(false);
-  const [resetVisible, setResetVisible] = useState(false);
-  const [isConfirmVisible, setIsConfirmVisible] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [seeFinanceHistory, setSeeFinanceHistory] = useState(false);
@@ -328,31 +325,6 @@ export function FindStudent({
     }
   };
 
-  const handleResetMonth = async () => {
-    const headersBack = {
-      authorization: headers.Authorization,
-    };
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/resetmonthscoresecurethepoints`,
-        null,
-        { headers: headersBack }
-      );
-      setResetVisible(true);
-      setTimeout(() => {
-        setHasReset(true);
-      }, 800);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-    } catch (error) {
-      notifyAlert("Erro ao resetar");
-    }
-  };
-
-  const handleShowResetMonth = () => {
-    setIsConfirmVisible(!isConfirmVisible);
-  };
   const cellTable = {
     whiteSpace: "nowrap",
     padding: "10px 16px",
@@ -2816,8 +2788,20 @@ export function FindStudent({
             Resumo
           </Typography>
 
-          <Grid container spacing={1}>
-            <Grid item xs={3}>
+          <Grid
+            style={{
+              display: "flex",
+            }}
+            container
+            spacing={1}
+          >
+            <Grid
+              item
+              xs={3}
+              style={{
+                display: "flex",
+              }}
+            >
               <div
                 style={{
                   textAlign: "center",
@@ -2850,7 +2834,13 @@ export function FindStudent({
               </div>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid
+              style={{
+                display: isArthurVincent ? "flex" : "none",
+              }}
+              item
+              xs={3}
+            >
               <div
                 style={{
                   textAlign: "center",
@@ -2883,7 +2873,13 @@ export function FindStudent({
               </div>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid
+              item
+              xs={3}
+              style={{
+                display: "flex",
+              }}
+            >
               <div
                 style={{
                   textAlign: "center",
@@ -2916,7 +2912,13 @@ export function FindStudent({
               </div>
             </Grid>
 
-            <Grid item xs={3}>
+            <Grid
+              style={{
+                display: isArthurVincent ? "flex" : "none",
+              }}
+              item
+              xs={3}
+            >
               <div
                 style={{
                   textAlign: "center",
@@ -3851,154 +3853,6 @@ export function FindStudent({
           </div>
         </DialogContent>
       </Dialog>
-
-      {isArthurVincent && !isResponsible && (
-        <Button
-          variant="outlined"
-          style={{
-            display: isConfirmVisible ? "none" : "block",
-            marginTop: "20px",
-            backgroundColor: "#ffffff",
-            borderColor: "#dc3545",
-            color: "#dc3545",
-            fontWeight: "500",
-            padding: "10px 24px",
-            borderRadius: "8px",
-            textTransform: "none",
-            fontSize: "14px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-            transition: "all 0.2s ease",
-            "&:hover": {
-              backgroundColor: "#dc3545",
-              color: "#ffffff",
-              transform: "translateY(-1px)",
-              boxShadow: "0 2px 6px rgba(220,53,69,0.2)",
-            },
-          }}
-          onDoubleClick={() => handleShowResetMonth()}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "#dc3545";
-            e.target.style.color = "#ffffff";
-            e.target.style.transform = "translateY(-1px)";
-            e.target.style.boxShadow = "0 2px 6px rgba(220,53,69,0.2)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = "#ffffff";
-            e.target.style.color = "#dc3545";
-            e.target.style.transform = "translateY(0)";
-            e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-          }}
-        >
-          🔄 Resetar pontuações do mês
-        </Button>
-      )}
-      <div style={{ display: hasReset ? "none" : "block" }}>
-        <div style={{ display: isConfirmVisible ? "block" : "none" }}>
-          <div
-            style={{
-              backgroundColor: "#ffffff",
-              padding: "24px",
-              borderRadius: "10px",
-              marginTop: "20px",
-              border: "1px solid #ffeaa7",
-              boxShadow: "0 2px 8px rgba(255,193,7,0.1)",
-              textAlign: "center",
-            }}
-          >
-            <Typography
-              variant="h6"
-              style={{
-                color: "#856404",
-                fontWeight: "600",
-                fontSize: "16px",
-                marginBottom: "16px",
-              }}
-            >
-              ⚠️ Confirmar Ação
-            </Typography>
-            <Typography
-              style={{
-                color: "#6c757d",
-                fontSize: "14px",
-                marginBottom: "24px",
-                lineHeight: "1.5",
-              }}
-            >
-              Tem certeza que deseja resetar pontuações do mês?
-              <br />
-              <small style={{ color: "#856404" }}>
-                Esta ação irá zerar todas as pontuações mensais dos alunos.
-              </small>
-            </Typography>
-
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "16px",
-                flexWrap: "wrap",
-              }}
-            >
-              <Button
-                variant="contained"
-                onDoubleClick={() => handleResetMonth()}
-                style={{
-                  backgroundColor: "#dc3545",
-                  color: "#ffffff",
-                  fontWeight: "500",
-                  padding: "10px 24px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  fontSize: "14px",
-                  boxShadow: "0 2px 4px rgba(220,53,69,0.2)",
-                  minWidth: "100px",
-                }}
-              >
-                Sim, Resetar
-              </Button>
-              <Button
-                variant="outlined"
-                onMouseOver={() => handleShowResetMonth()}
-                onClick={() => handleShowResetMonth()}
-                style={{
-                  borderColor: "#6c757d",
-                  color: "#6c757d",
-                  fontWeight: "500",
-                  padding: "10px 24px",
-                  borderRadius: "8px",
-                  textTransform: "none",
-                  fontSize: "14px",
-                  backgroundColor: "#ffffff",
-                  minWidth: "100px",
-                }}
-              >
-                Cancelar
-              </Button>
-            </div>
-
-            <div
-              style={{
-                display: resetVisible ? "block" : "none",
-                marginTop: "20px",
-                padding: "10px",
-                backgroundColor: "#d4edda",
-                borderRadius: "8px",
-                border: "1px solid #c3e6cb",
-              }}
-            >
-              <Typography
-                style={{
-                  color: "#155724",
-                  fontSize: "14px",
-                  fontWeight: "500",
-                }}
-              >
-                ✅ Pontuações do mês resetadas com sucesso!
-              </Typography>
-            </div>
-          </div>
-        </div>
-      </div>
     </>
   );
 }
