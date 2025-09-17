@@ -1715,8 +1715,6 @@ export function isDev() {
     window.location.hostname.includes("easypanel")
   ) {
     return "https://arvin-backstagin.9kwq6c.easypanel.host";
-  } else if (window.location.hostname.includes("arvinplatform")) {
-    return "https://arvin-backstagin.9kwq6c.easypanel.host";
   } else {
     return "https://arvin-backprod.9kwq6c.easypanel.host";
   }
