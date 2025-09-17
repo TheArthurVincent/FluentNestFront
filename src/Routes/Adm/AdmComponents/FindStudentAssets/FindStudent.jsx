@@ -51,7 +51,13 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 import { isArthurVincent } from "../../../../App";
 
-export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
+export function FindStudent({
+  uploadStatus,
+  headers,
+  id,
+  isResponsible,
+  plan,
+}) {
   const { UniversalTexts } = useUserContext();
   const [newName, setNewName] = useState("");
   const [newLastName, setNewLastName] = useState("");
@@ -68,6 +74,7 @@ export function FindStudent({ uploadStatus, headers, id, isResponsible }) {
   const [picture, setPicture] = useState("");
   const [fee, setFee] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const [goldVisible, setGoldVisible] = useState(false);
   const [seeConfirmDelete, setSeeConfirmDelete] = useState(false);
   const [seePermissionsOrNot, setSeePermissionsOrNot] = useState(false);
   const [ID, setID] = useState("");

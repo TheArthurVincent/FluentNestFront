@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   backDomain,
   isValidCPF,
+  UpgradeGoldButton,
 } from "../../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
 import FindStudent from "./FindStudent";
@@ -10,7 +11,7 @@ import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 
-export function AllStudents({ headers, id }) {
+export function AllStudents({ headers, id, plan }) {
   const [formData, setFormData] = useState({
     name: "",
     lastname: "",
@@ -23,6 +24,7 @@ export function AllStudents({ headers, id }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [upload, setUpload] = useState(true);
+  const [goldVisible, setGoldVisible] = useState(false);
 
   const handleChange = (field) => (event) => {
     setFormData({ ...formData, [field]: event.target.value });
@@ -91,8 +93,10 @@ export function AllStudents({ headers, id }) {
       );
     } catch (error) {
       notifyAlert(
-        `Erro ao cadastrar aluno ${formData.name}. ${error.response.data.message}`
+        `Erro ao cadastrar aluno ${formData.name}. ${error.response.data.message}`,
+        partnerColor()
       );
+      setGoldVisible(true);
     } finally {
       setIsLoading(false);
     }
@@ -126,6 +130,7 @@ export function AllStudents({ headers, id }) {
   return (
     <>
       <FindStudent
+        plan={plan}
         isResponsble={false}
         id={id}
         uploadStatus={upload}
@@ -221,6 +226,7 @@ export function AllStudents({ headers, id }) {
             )}
           </button>
         </form>
+        {goldVisible && <UpgradeGoldButton />}
       </div>
     </>
   );

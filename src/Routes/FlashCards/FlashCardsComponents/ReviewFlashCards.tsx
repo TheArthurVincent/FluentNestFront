@@ -604,10 +604,18 @@ const ReviewFlashCards = ({
                           {UniversalTexts?.noFlashcardsToReview ||
                             "No flashcards to review!"}
                         </div>
-                        <div style={{ fontSize: "12px", color: "#888" }}>
-                          {UniversalTexts?.noFlashcardsFound ||
-                            "Nenhum flashcard para revisar"}
-                        </div>
+                        <a
+                          style={{
+                            fontSize: "12px",
+                            color: "#666",
+                            textDecoration: "none",
+                            marginBottom: "1rem",
+                          }}
+                          href="/sentence-mining"
+                        >
+                          {UniversalTexts?.addWordsToFlashcards ||
+                            "Adicione palavras em seus flashcards"}
+                        </a>
                       </div>
                     )}
                   </div>
