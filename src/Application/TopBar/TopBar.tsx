@@ -131,14 +131,14 @@ export const TopBar: FC = () => {
       isLearning: true,
     },
     {
-      title: "Listening",
+      title: UniversalTexts.listening,
       endpoint: "/listening",
       icon: "assistive-listening-systems",
       display: isArvin ? "none" : "block",
       isLearning: true,
     },
     {
-      title: "Sentence Mining",
+      title: UniversalTexts.vocabulary,
       endpoint: "/sentence-mining",
       icon: "search",
       display: "block",
@@ -409,9 +409,10 @@ export const TopBar: FC = () => {
                       background: "white",
                       boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
                       borderRadius: "6px",
-                      padding: "10px",
+                      padding: "8px",
+                      width: "180px",
                       top: "100%",
-                      left: "0",
+                      left: "-70%",
                     }}
                   >
                     {allLinksForUser

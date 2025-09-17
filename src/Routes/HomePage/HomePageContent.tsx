@@ -10,6 +10,7 @@ import {
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import BlogPosts from "./BlogPosts";
+import { isArthurVincent } from "../../App";
 
 interface BlogProps {
   headers: MyHeadersType | null;
@@ -84,7 +85,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       id: "listening",
       title: UniversalTexts.listening,
       description: UniversalTexts.pratique,
-      display: "flex",
+      display: isArthurVincent ? "flex" : "none",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/listeningssss?updatedAt=1756841095374",
       link: "/listening",
     },
