@@ -3,6 +3,7 @@ import axios from "axios";
 import {
   backDomain,
   isValidCPF,
+  UpgradeGoldButton,
 } from "../../../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
 import { partnerColor } from "../../../../../Styles/Styles";
@@ -22,6 +23,7 @@ export function NewResponsible({ headers, id, flag, setFlag }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [upload, setUpload] = useState(true);
+  const [goldVisible, setGoldVisible] = useState(false);
 
   const handleChange = (field) => (event) => {
     setFormData({ ...formData, [field]: event.target.value });
@@ -92,9 +94,8 @@ export function NewResponsible({ headers, id, flag, setFlag }) {
       );
       setFlag(!flag);
     } catch (error) {
-      notifyAlert(
-        `Erro ao cadastrar aluno ${formData.name}. ${error.response.data.message}`
-      );
+      notifyAlert(error.response?.data?.message, partnerColor());
+      setGoldVisible(true);
     } finally {
       setIsLoading(false);
     }
@@ -218,6 +219,7 @@ export function NewResponsible({ headers, id, flag, setFlag }) {
             )}
           </button>
         </form>
+        {goldVisible && <UpgradeGoldButton />}
       </div>
     </>
   );

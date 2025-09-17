@@ -106,83 +106,89 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
             <CircularProgress style={{ color: partnerColor() }} />
           </div>
         )}
-        {filteredResponsibles.map((resp) => (
-          <div
-            key={resp._id}
-            style={{
-              marginBottom: "18px",
-              paddingBottom: "12px",
-              borderBottom: `1px solid ${partnerColor()}20`,
-            }}
-          >
-            <HTwo
-              style={{ color: partnerColor(), fontWeight: 600, fontSize: 18 }}
+        {filteredResponsibles.length > 0 ? (
+          filteredResponsibles.map((resp) => (
+            <div
+              key={resp._id}
+              style={{
+                marginBottom: "18px",
+                paddingBottom: "12px",
+                borderBottom: `1px solid ${partnerColor()}20`,
+              }}
             >
-              {resp.name} {resp.lastname}
-            </HTwo>
+              <HTwo
+                style={{ color: partnerColor(), fontWeight: 600, fontSize: 18 }}
+              >
+                {resp.name} {resp.lastname}
+              </HTwo>
 
-            <span
-              style={{
-                color: "#555",
-                fontSize: 14,
-                marginLeft: 4,
-                background: `${partnerColor()}10`,
-                padding: "2px 8px",
-                borderRadius: "6px",
-              }}
-            >
-              {resp.email}
-            </span>
-            <div style={{ marginTop: 8 }}>
-              <span style={{ color: partnerColor(), fontWeight: 500 }}>
-                Alunos:
+              <span
+                style={{
+                  color: "#555",
+                  fontSize: 14,
+                  marginLeft: 4,
+                  background: `${partnerColor()}10`,
+                  padding: "2px 8px",
+                  borderRadius: "6px",
+                }}
+              >
+                {resp.email}
               </span>
-              <ul style={{ marginTop: 4, paddingLeft: 18 }}>
-                {resp.students && resp.students.length > 0 ? (
-                  resp.students.map((student) => (
-                    <li
-                      key={student._id}
-                      style={{
-                        marginBottom: 4,
-                        fontSize: 15,
-                        color: "#222",
-                      }}
-                    >
-                      <span style={{ color: partnerColor(), fontWeight: 500 }}>
-                        {student.name} {student.lastname}
-                      </span>
-                      <span style={{ color: "#666", marginLeft: 6 }}>
-                        - {student.email}
-                      </span>
+              <div style={{ marginTop: 8 }}>
+                <span style={{ color: partnerColor(), fontWeight: 500 }}>
+                  Alunos:
+                </span>
+                <ul style={{ marginTop: 4, paddingLeft: 18 }}>
+                  {resp.students && resp.students.length > 0 ? (
+                    resp.students.map((student) => (
+                      <li
+                        key={student._id}
+                        style={{
+                          marginBottom: 4,
+                          fontSize: 15,
+                          color: "#222",
+                        }}
+                      >
+                        <span
+                          style={{ color: partnerColor(), fontWeight: 500 }}
+                        >
+                          {student.name} {student.lastname}
+                        </span>
+                        <span style={{ color: "#666", marginLeft: 6 }}>
+                          - {student.email}
+                        </span>
+                      </li>
+                    ))
+                  ) : (
+                    <li style={{ color: "#888", fontStyle: "italic" }}>
+                      Nenhum aluno
                     </li>
-                  ))
-                ) : (
-                  <li style={{ color: "#888", fontStyle: "italic" }}>
-                    Nenhum aluno
-                  </li>
-                )}
-              </ul>
+                  )}
+                </ul>
+              </div>
+              <span
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                }}
+              >
+                <EditResponsibleModal
+                  headers={headers}
+                  id={resp._id}
+                  myID={id}
+                  flag={flag}
+                  setFlag={setFlag}
+                  email={resp.email}
+                  name={resp.name}
+                  lastname={resp.lastname}
+                  students={resp.students}
+                />
+              </span>
             </div>
-            <span
-              style={{
-                display: "flex",
-                justifyContent: "right",
-              }}
-            >
-              <EditResponsibleModal
-                headers={headers}
-                id={resp._id}
-                myID={id}
-                flag={flag}
-                setFlag={setFlag}
-                email={resp.email}
-                name={resp.name}
-                lastname={resp.lastname}
-                students={resp.students}
-              />
-            </span>
-          </div>
-        ))}
+          ))
+        ) : (
+          <span>Você não possui responsáveis cadastrados.</span>
+        )}
       </div>
     </div>
   );

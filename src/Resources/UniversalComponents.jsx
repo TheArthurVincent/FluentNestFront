@@ -710,6 +710,29 @@ export const BackToHomePage = () => {
   );
 };
 
+export const UpgradeGoldButton = () => {
+  return (
+    <button
+      style={{
+        background: "linear-gradient(to right, gold, darkorange)",
+        color: "white",
+        textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+        padding: "0.4rem",
+        borderRadius: "6px",
+        fontSize: "12px",
+        textDecoration: "none",
+        margin: "1rem auto",
+        display: "block",
+        border: "none",
+        cursor: "pointer",
+      }}
+      onClick={() => (window.location.href = "/upgrade-gold")}
+    >
+      Faça o upgrade para o plano Gold!
+    </button>
+  );
+};
+
 export function formatNumber(number) {
   return number.toLocaleString("pt-BR");
 }

@@ -20,6 +20,7 @@ import {
   backDomain,
   SpanHover,
   updateInfo,
+  UpgradeGoldButton,
 } from "../../../../Resources/UniversalComponents";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import AppFooter from "../../../../Application/Footer/Footer";
@@ -33,6 +34,7 @@ export default function WhiteLabelPreview({ headers }) {
   const [previewLogo, setPreviewLogo] = useState(logoPartner());
   const [previewBackground, setPreviewBackground] = useState(backgroundImage());
   const [tabValue, setTabValue] = useState("1");
+  const [goldVisible, setGoldVisible] = useState(false);
   const [formData, setFormData] = useState({
     backgroundType: "color", // "image" ou "color"
     backgroundImage: backgroundImage(),
@@ -328,7 +330,11 @@ export default function WhiteLabelPreview({ headers }) {
       }, 1000);
     } catch (error) {
       console.error(error);
-      notifyAlert("Erro ao salvar o tema.");
+      notifyAlert(
+        error.response?.data?.message || "Erro ao salvar tema.",
+        partnerColor()
+      );
+      setGoldVisible(true);
       setLoading(false);
     }
   };
@@ -401,7 +407,7 @@ export default function WhiteLabelPreview({ headers }) {
   return (
     <div className="page-wrapper" style={{ padding: "40px" }}>
       <HOne>🎨 Personalizar Tema</HOne>
-
+      {goldVisible && <UpgradeGoldButton />}
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
@@ -482,7 +488,6 @@ export default function WhiteLabelPreview({ headers }) {
                 />
               </div>
             </div>
-
             <div
               style={{
                 display: "flex",
@@ -636,18 +641,22 @@ export default function WhiteLabelPreview({ headers }) {
                 </select>
               </div>
             </div>
-            <button
-              type="submit"
-              style={{
-                backgroundColor: partnerColor(),
-                color: textpartnerColorContrast(),
-                marginLeft: "auto",
-                display: "flex",
-              }}
-              color={partnerColor()}
-            >
-              Salvar Tema
-            </button>
+            {goldVisible ? (
+              <UpgradeGoldButton />
+            ) : (
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: partnerColor(),
+                  color: textpartnerColorContrast(),
+                  marginLeft: "auto",
+                  display: "flex",
+                }}
+                color={partnerColor()}
+              >
+                Salvar Tema
+              </button>
+            )}
           </form>
           {/* 🔎 Visualização do tema */}
           <div className="sample" style={sampleStyles}>
