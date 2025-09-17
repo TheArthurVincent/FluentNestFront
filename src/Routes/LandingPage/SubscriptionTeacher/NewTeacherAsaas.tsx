@@ -728,6 +728,36 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>{" "}
+                     <Grid item xs={6}>
+                  <TextField
+                    label="Telefone (com DDD)"
+                    name="phoneNumber"
+                    type="tel"
+                    value={form.phoneNumber}
+                    onChange={handleChange}
+                    fullWidth
+                    sx={{
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": {
+                          borderColor: "#ed5914", // cor normal
+                        },
+                        "&:hover fieldset": {
+                          borderColor: "#ed5914", // ao passar o mouse
+                        },
+                        "&.Mui-focused fieldset": {
+                          color: "#ed5914", // quando focado
+                          borderColor: "#ed5914", // quando focado
+                        },
+                        "& label": {
+                          color: "#ed5914", // cor padrão do label
+                        },
+                        "& label.Mui-focused": {
+                          color: "#ed5914", // cor quando o label está flutuando
+                        },
+                      },
+                    }}
+                  />
+                </Grid>{" "}
                 <Grid item xs={6}>
                   <TextField
                     label="E-mail"
