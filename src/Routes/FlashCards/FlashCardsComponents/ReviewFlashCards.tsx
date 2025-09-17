@@ -37,6 +37,9 @@ const ReviewFlashCards = ({
   const [myPermissions, setPermissions] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [cards, setCards] = useState<any[]>([]);
+  const [messageBack, setMessageBack] = useState<string>(
+    "Nenhum flashcard para revisar! Adicione palavras em seus flashcards."
+  );
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [answer, setAnswer] = useState<boolean>(false);
   const [cardsLength, setCardsLength] = useState<boolean>(true);
@@ -77,6 +80,7 @@ const ReviewFlashCards = ({
 
       const thereAreCards = response.data.dueFlashcards.length > 0;
       setCardsLength(thereAreCards);
+      setMessageBack(response.data.message || "");
 
       if (thereAreCards) {
         var lg = response.data.dueFlashcards?.[0].front?.language;
@@ -117,8 +121,8 @@ const ReviewFlashCards = ({
       } else {
         setCards([]);
       }
-
       setLoading(false);
+      setFlashcardsToday(response.data.flashcardsToday);
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
       onLoggOut();
@@ -452,9 +456,9 @@ const ReviewFlashCards = ({
                               <br />
                               <div
                                 style={{
-                                  fontSize: "20px",
-                                  marginBottom: "15px",
-                                  fontStyle: "italic",
+                                  fontSize: "15px",
+                                  margin: "10px",
+                                  fontWeight: "600",
                                 }}
                               >
                                 {cards[0]?.front?.text}
@@ -518,8 +522,8 @@ const ReviewFlashCards = ({
                               </div>
                               <div
                                 style={{
-                                  fontSize: "20px",
-                                  marginBottom: "15px",
+                                  fontSize: "15px",
+                                  margin: "10px",
                                   fontStyle: "italic",
                                 }}
                               >
@@ -591,18 +595,12 @@ const ReviewFlashCards = ({
                         }}
                       >
                         <div
-                          style={{ fontSize: "24px", marginBottom: "0.5rem" }}
-                        >
-                          🎉
-                        </div>
-                        <div
                           style={{
                             fontWeight: "500",
                             marginBottom: "0.25rem",
                           }}
                         >
-                          {UniversalTexts?.noFlashcardsToReview ||
-                            "No flashcards to review!"}
+                          {messageBack}
                         </div>
                         <a
                           style={{
