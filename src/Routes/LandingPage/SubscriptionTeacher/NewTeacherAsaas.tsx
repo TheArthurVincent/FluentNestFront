@@ -408,6 +408,11 @@ export default function TeacherSubscription() {
     silver: [
       { title: "Limite de alunos", value: 30 },
       { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
+      {
+        title: "Materiais disponíveis para os alunos",
+        value: "",
+        status: "Sim",
+      },
       { title: "Gerenciamento de alunos", value: "", status: "Sim" },
       {
         title: "Curso para professores particulares",
@@ -425,12 +430,20 @@ export default function TeacherSubscription() {
         value: "",
         status: "Não",
       },
-      { title: "Emissão de recibos", value: "", status: "Não" },
+      { title: "Emissão de recibos", value: "", status: "Sim" },
       { title: "Assistente de IA", value: "20 tokens/mês" },
     ],
     gold: [
-      { title: "Limite de alunos", value: "Sem limites" },
+      {
+        title: "Limite de alunos",
+        value: "100 (com a possibilidade de adquirir mais)",
+      },
       { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
+      {
+        title: "Materiais disponíveis para os alunos",
+        value: "",
+        status: "Sim",
+      },
       { title: "Gerenciamento de alunos", value: "", status: "Sim" },
       {
         title: "Curso para professores particulares",
@@ -728,7 +741,7 @@ export default function TeacherSubscription() {
                     }}
                   />
                 </Grid>{" "}
-                     <Grid item xs={6}>
+                <Grid item xs={6}>
                   <TextField
                     label="Telefone (com DDD)"
                     name="phoneNumber"
