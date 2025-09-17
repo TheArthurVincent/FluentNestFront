@@ -37,9 +37,7 @@ const ReviewFlashCards = ({
   const [myPermissions, setPermissions] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [cards, setCards] = useState<any[]>([]);
-  const [messageBack, setMessageBack] = useState<string>(
-    "Nenhum flashcard para revisar! Adicione palavras em seus flashcards."
-  );
+  const [messageBack, setMessageBack] = useState<string>("Nenhum flashcard para revisar! Adicione palavras em seus flashcards.");
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [answer, setAnswer] = useState<boolean>(false);
   const [cardsLength, setCardsLength] = useState<boolean>(true);
@@ -457,8 +455,7 @@ const ReviewFlashCards = ({
                               <div
                                 style={{
                                   fontSize: "15px",
-                                  margin: "10px",
-                                  fontWeight: "600",
+                                  margin: "10px",fontWeight: "600",
                                 }}
                               >
                                 {cards[0]?.front?.text}
@@ -594,13 +591,15 @@ const ReviewFlashCards = ({
                           margin: "1rem 0",
                         }}
                       >
+                  
+                  
                         <div
                           style={{
                             fontWeight: "500",
                             marginBottom: "0.25rem",
                           }}
                         >
-                          {messageBack}
+                  {messageBack}
                         </div>
                         <a
                           style={{

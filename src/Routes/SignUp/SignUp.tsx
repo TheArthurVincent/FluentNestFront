@@ -157,14 +157,14 @@ export default function SignUp() {
       flexDirection: "column",
       background: "#f9f9f9",
       padding: "20px",
-      borderRadius: "10px",
+      borderRadius: "6px",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
     },
     input: {
       marginBottom: "10px",
       padding: "10px",
       fontSize: "16px",
-      borderRadius: "5px",
+      borderRadius: "6px",
       border: "1px solid #ccc",
     },
     button: {

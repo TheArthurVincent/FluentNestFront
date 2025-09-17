@@ -21,7 +21,7 @@
 //     place: "🥈 2nd",
 //     img: "https://ik.imagekit.io/vjz75qw96/assets/icons/11.png",
 //     backgroundColor: "linear-gradient(135deg, silver, lightgray)",
-//     borderRadius: "2rem",
+//     borderRadius: "6px",
 //   },
 //   {
 //     place: "🥉 3rd",

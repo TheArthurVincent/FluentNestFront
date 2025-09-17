@@ -407,7 +407,7 @@ const SentenceMining = ({
                       style={{
                         padding: "5px",
                         marginBottom: "15px",
-                        borderRadius: "5px",
+                        borderRadius: "6px",
                         color: textPrimaryColorContrast(),
                         backgroundColor: partnerColor(),
                         fontSize: "18px",

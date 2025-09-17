@@ -39,7 +39,7 @@ export default function EmailCheck() {
         justifyContent: "center",
         alignItems: "center",
         padding: "20px",
-        borderRadius: "10px",
+        borderRadius: "6px",
         boxSizing: "border-box",
         textAlign: "center",
       }}
@@ -73,7 +73,7 @@ export default function EmailCheck() {
           color: "#fff",
           border: "none",
           cursor: "pointer",
-          borderRadius: "5px",
+          borderRadius: "6px",
           marginTop: "20px",
           textDecoration: "none",
         }}

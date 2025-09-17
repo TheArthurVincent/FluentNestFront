@@ -88,7 +88,7 @@ const WordOfTheDayList = () => {
               backgroundColor: "#777",
               color: "#fff",
               padding: "10px",
-              borderRadius: "5px",
+              borderRadius: "6px",
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",

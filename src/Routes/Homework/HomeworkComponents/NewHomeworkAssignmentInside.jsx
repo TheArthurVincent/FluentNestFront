@@ -73,7 +73,7 @@ export function NewHomeworkAssignmentHere({
             width: "100%",
             background: "#fff",
             padding: "2.5rem 2rem 2rem 2rem",
-            borderRadius: "18px",
+            borderRadius: "6px",
             boxShadow: "0 8px 32px rgba(30,41,59,0.18)",
             position: "relative",
             display: "flex",

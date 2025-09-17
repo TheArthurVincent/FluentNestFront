@@ -62,7 +62,7 @@ export default function TextAreaLesson() {
           border: isFocused
             ? `2px solid ${partnerColor()}`
             : "2px solid #e1e8ed",
-          borderRadius: "10px",
+          borderRadius: "6px",
           background: "#ffffff",
           color: "#2c3e50",
           resize: "vertical",

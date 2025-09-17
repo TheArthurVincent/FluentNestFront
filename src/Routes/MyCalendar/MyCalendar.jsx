@@ -1699,7 +1699,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     background: "#fff",
-                    borderRadius: "16px",
+                    borderRadius: "6px",
                     boxShadow: "0 8px 32px #0002",
                     minWidth: "340px",
                     maxWidth: "95vw",
@@ -2627,7 +2627,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                   backgroundColor: partnerColor(),
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "10px",
+                                  borderRadius: "6px",
                                   cursor: "pointer",
                                   transition: "all 0.3s ease",
                                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -3175,7 +3175,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                               <div
                                                 style={{
                                                   border: "1px solid #e0e0e0",
-                                                  borderRadius: "10px",
+                                                  borderRadius: "6px",
                                                   padding: "1rem",
                                                   backgroundColor: "#f9fafb",
                                                   marginTop: "1rem",
@@ -3889,7 +3889,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                             <div
                                               style={{
                                                 border: "1px solid #e0e0e0",
-                                                borderRadius: "10px",
+                                                borderRadius: "6px",
                                                 padding: "1rem",
                                                 backgroundColor: "#f9fafb",
                                                 marginTop: "1rem",
@@ -4194,7 +4194,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                 padding: "0.75rem 1.5rem",
                                 backgroundColor: "white",
                                 border: `2px solid ${partnerColor()}`,
-                                borderRadius: "10px",
+                                borderRadius: "6px",
                                 textAlign: "center",
                                 transition: "all 0.3s ease",
                                 minWidth: "100%",
@@ -4237,7 +4237,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                 backgroundColor: "white",
                                 marginTop: "2rem",
                                 padding: "10px",
-                                borderRadius: "10px",
+                                borderRadius: "6px",
                                 border: "1px solid #dee2e6",
                                 borderLeft: `4px solid ${partnerColor()}`,
                                 boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
@@ -4278,7 +4278,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                   fontSize: "0.95rem",
                                   padding: "10px",
-                                  borderRadius: "10px",
+                                  borderRadius: "6px",
                                   backgroundColor: textpartnerColorContrast(),
                                   fontFamily: "Arial, sans-serif",
                                 }}

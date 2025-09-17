@@ -104,7 +104,7 @@ export default function DialogueLessonModel({
         padding: "20px",
         margin: "20px 0",
         backgroundColor: "#f8fafc",
-        borderRadius: "16px",
+        borderRadius: "6px",
         border: "1px solid #e2e8f0",
       }}
     >

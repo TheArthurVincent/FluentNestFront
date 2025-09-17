@@ -71,7 +71,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           padding: "12px 18px",
           marginBottom: "18px",
           border: `2px solid ${partnerColor()}`,
-          borderRadius: "10px",
+          borderRadius: "6px",
           fontSize: "15px",
           outline: "none",
           transition: "all 0.2s ease",

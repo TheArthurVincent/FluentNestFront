@@ -263,7 +263,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                     fontSize: "0.8rem",
                     padding: "1rem",
                     backgroundColor: "#ffffff",
-                    borderRadius: "10px",
+                    borderRadius: "6px",
                     maxWidth: "800px",
                     lineHeight: "1",
                     color: "#222",

@@ -829,7 +829,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           window.innerWidth <= 768
                                             ? "4px 8px"
                                             : "3px 8px",
-                                        borderRadius: "10px", // mais quadrado, mas não retão
+                                        borderRadius: "6px", // mais quadrado, mas não retão
                                         backgroundColor:
                                           homework?.status === "done"
                                             ? "#eef9ef"

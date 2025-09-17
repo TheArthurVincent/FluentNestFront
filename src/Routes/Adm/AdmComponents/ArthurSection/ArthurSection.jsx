@@ -90,7 +90,7 @@ export function ArthurSection({ headers }) {
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "10px",
+              borderRadius: "6px",
               marginTop: "20px",
               border: "1px solid #ffeaa7",
               boxShadow: "0 2px 8px rgba(255,193,7,0.1)",

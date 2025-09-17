@@ -38,7 +38,7 @@ body {
   min-width: 300px;
   max-width: 320px;
   height: 570px;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -141,7 +141,7 @@ body {
   padding: 12px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 6px;
 }
 
 .signup-form button {
@@ -150,7 +150,7 @@ body {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -180,7 +180,7 @@ body {
 .image-container img {
   max-width: 300px;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -261,7 +261,7 @@ h4 {
 
 .benefit-card {
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 20px;
   max-width: 280px;
   flex: 1 1 260px;
@@ -285,7 +285,7 @@ h4 {
 .modal-content {
   background-color: white;
   padding: 1rem;
-  border-radius: 8px;
+  border-radius: 6px;
   max-width: 90%;
   max-height: 80%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -332,7 +332,7 @@ h4 {
   padding: 12px 20px;
   color: white;
   font-weight: bold;
-  border-radius: 8px;
+  border-radius: 6px;
   text-decoration: none;
   margin-top: 1.5rem;
 }

@@ -189,7 +189,7 @@ export function PendingHomeworkAssignments({ headers }) {
                       backgroundColor: "#ff9800",
                       color: "white",
                       padding: "6px 12px",
-                      borderRadius: "20px",
+                      borderRadius: "6px",
                       fontSize: "14px",
                       fontWeight: "bold",
                     }}

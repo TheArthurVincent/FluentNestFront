@@ -177,7 +177,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                   margin: "auto",
                   maxWidth: "600px",
                   backgroundColor: "#fff",
-                  borderRadius: "10px",
+                  borderRadius: "6px",
                   padding: "1rem",
                   marginBottom: "1rem",
                   boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",

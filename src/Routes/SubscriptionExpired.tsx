@@ -99,7 +99,7 @@ export function SubscriptionExpired() {
         justifyContent: "center",
         alignItems: "center",
         padding: "20px",
-        borderRadius: "20px",
+        borderRadius: "6px",
         boxSizing: "border-box",
         textAlign: "center",
       }}

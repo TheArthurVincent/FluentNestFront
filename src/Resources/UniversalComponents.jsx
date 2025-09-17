@@ -377,7 +377,7 @@ export const ContainerClass = styled.div`
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
   height: 0;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 6px;
   background-color: #000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
@@ -388,7 +388,7 @@ export const ContainerClass = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
   }
 `;
 
@@ -396,7 +396,7 @@ export const IFrameVideoClass = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
@@ -404,7 +404,7 @@ export const IFrameVideoClass2 = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
@@ -480,7 +480,7 @@ export const EnhancedIframeContainer = styled.div`
   padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 6px;
   background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
     linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
@@ -496,7 +496,7 @@ export const EnhancedIframeContainer = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     transition: opacity 0.3s ease;
 
     &:hover {

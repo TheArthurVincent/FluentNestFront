@@ -205,7 +205,7 @@ export default function Subscription() {
     planCard: {
       flex: 1,
       padding: "20px",
-      borderRadius: "10px",
+      borderRadius: "6px",
       textAlign: "center",
       cursor: "pointer",
       transition: "all 0.3s ease",
@@ -238,14 +238,14 @@ export default function Subscription() {
       flexDirection: "column",
       background: "#f9f9f9",
       padding: "20px",
-      borderRadius: "10px",
+      borderRadius: "6px",
       boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
     },
     input: {
       marginBottom: "10px",
       padding: "10px",
       fontSize: "16px",
-      borderRadius: "5px",
+      borderRadius: "6px",
       border: "1px solid #ccc",
     },
     button: {
@@ -256,7 +256,7 @@ export default function Subscription() {
       color: "#fff",
       border: "none",
       cursor: "pointer",
-      borderRadius: "5px",
+      borderRadius: "6px",
       marginTop: "20px",
       textDecoration: "none",
     },
@@ -312,7 +312,7 @@ export default function Subscription() {
   const planCardBase = {
     flex: 1,
     padding: "20px",
-    borderRadius: "10px",
+    borderRadius: "6px",
     textAlign: "center",
     cursor: "pointer",
     transition: "all 0.3s ease",

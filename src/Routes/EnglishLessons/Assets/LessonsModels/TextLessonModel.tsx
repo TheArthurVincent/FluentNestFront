@@ -13,7 +13,7 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
     <div
       style={{
         background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-        borderRadius: "16px",
+        borderRadius: "6px",
         border: `2px solid ${partnerColor()}20`,
         position: "relative",
         overflow: "hidden",

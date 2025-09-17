@@ -33,7 +33,7 @@ export const containerPlus = {
   display: "flex",
   gap: "2px",
   padding: "5px",
-  borderRadius: "5px",
+  borderRadius: "6px",
 };
 
 export const seePlusButtonsStyles = {

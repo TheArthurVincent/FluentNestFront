@@ -18,7 +18,7 @@ export function FeeNotUpToDate() {
         justifyContent: "center",
         alignItems: "center",
         padding: "20px",
-        borderRadius: "20px",
+        borderRadius: "6px",
         boxSizing: "border-box",
         textAlign: "center",
       }}

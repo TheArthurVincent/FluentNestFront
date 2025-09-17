@@ -360,7 +360,7 @@ body {
 .grid-item {
   position: relative;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 6px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-decoration: none;
   display: flex;
@@ -734,7 +734,7 @@ body {
 .pulse-button {
   /* color: #b7be00; */
   padding: 5px 10px;
-  border-radius: 25px;
+  border-radius: 6px;
   font-size: 10px;
   border: solid 2px #fbff78;
   cursor: pointer;
@@ -1256,7 +1256,7 @@ EXEMPLOS DE USO:
   width: 44px;
   height: 24px;
   background-color: #ddd;
-  border-radius: 12px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }

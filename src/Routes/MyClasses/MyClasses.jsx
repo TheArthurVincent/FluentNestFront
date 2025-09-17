@@ -365,7 +365,7 @@ export function MyClasses({ headers }) {
                 flexDirection: "column",
                 backgroundColor: "#fff",
                 border: "1px solid #e5e7eb",
-                borderRadius: "10px",
+                borderRadius: "6px",
                 transition: "box-shadow 0.2s ease, transform 0.06s ease",
                 boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
                 overflow: "hidden",
@@ -476,7 +476,7 @@ export function MyClasses({ headers }) {
                               style={{
                                 display: "inline-block",
                                 padding: "3px 8px",
-                                borderRadius: "10px",
+                                borderRadius: "6px",
                                 fontSize: "11px",
                                 fontWeight: 700,
                                 backgroundColor: isRealizada
@@ -646,7 +646,7 @@ export function MyClasses({ headers }) {
                                 paddingBottom: "56.25%",
                                 height: 0,
                                 overflow: "hidden",
-                                borderRadius: "10px",
+                                borderRadius: "6px",
                                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.08)",
                                 backgroundColor: "#000",
                               }}
@@ -666,7 +666,7 @@ export function MyClasses({ headers }) {
                                   width: "100%",
                                   height: "100%",
                                   border: "none",
-                                  borderRadius: "10px",
+                                  borderRadius: "6px",
                                 }}
                                 allowFullScreen
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
