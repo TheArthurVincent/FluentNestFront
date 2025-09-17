@@ -26,7 +26,7 @@ export default function TextAreaLesson() {
     <div
       style={{
         background: "rgba(255, 255, 255, 0.8)",
-        borderRadius: "12px",
+        borderRadius: "6px",
         padding: "16px",
         border: `1px solid ${partnerColor()}30`,
       }}

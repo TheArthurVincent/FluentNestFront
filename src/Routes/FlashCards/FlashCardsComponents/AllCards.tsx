@@ -272,7 +272,7 @@ var AllCards = ({
                   key={index}
                   style={{
                     marginBottom: "0.75rem",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     overflow: "hidden",
                     boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
                     border: "1px solid #f1f5f9",

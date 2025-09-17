@@ -353,7 +353,7 @@ export default function WhiteLabelPreview({ headers }) {
     overflowY: "auto",
     fontFamily: formData.textGeneralFont,
     color: formData.contrastColor,
-    borderRadius: "12px",
+    borderRadius: "6px",
     marginTop: "40px",
     border: `2px solid black`,
     width: "100%",

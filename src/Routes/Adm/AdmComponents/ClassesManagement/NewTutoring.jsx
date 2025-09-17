@@ -182,7 +182,7 @@ export function NewTutoring({ headers, id }) {
             <div
               style={{
                 cursor: "pointer",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 backgroundColor: partnerColor(),
                 color: "#fff",
                 padding: "0.6rem 1.2rem",

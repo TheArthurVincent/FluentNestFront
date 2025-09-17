@@ -68,7 +68,7 @@ export function NewPost({ headers }) {
         style={{
           backgroundColor: "#ffffff",
           border: "1px solid #e2e8f0",
-          borderRadius: "8px",
+          borderRadius: "6px",
           padding: "2rem",
           boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
         }}

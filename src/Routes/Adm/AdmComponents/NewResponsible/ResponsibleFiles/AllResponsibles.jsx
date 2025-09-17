@@ -56,7 +56,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: "12px",
+        borderRadius: "6px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
         padding: "24px",
         margin: "16px 0",
@@ -96,7 +96,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           maxHeight: "340px",
           overflowY: "auto",
           border: `1px solid ${partnerColor()}40`,
-          borderRadius: "8px",
+          borderRadius: "6px",
           background: "#fafbfc",
           padding: "12px",
         }}

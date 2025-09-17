@@ -139,7 +139,7 @@ export function ArthurSection({ headers }) {
                   color: "#ffffff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "14px",
                   boxShadow: "0 2px 4px rgba(220,53,69,0.2)",
@@ -157,7 +157,7 @@ export function ArthurSection({ headers }) {
                   color: "#6c757d",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   textTransform: "none",
                   fontSize: "14px",
                   backgroundColor: "#ffffff",
@@ -174,7 +174,7 @@ export function ArthurSection({ headers }) {
                 marginTop: "20px",
                 padding: "10px",
                 backgroundColor: "#d4edda",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: "1px solid #c3e6cb",
               }}
             >

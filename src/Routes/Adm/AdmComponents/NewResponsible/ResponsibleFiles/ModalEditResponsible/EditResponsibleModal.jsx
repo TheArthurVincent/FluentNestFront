@@ -119,7 +119,7 @@ export function EditResponsibleModal({
           <div
             style={{
               background: "#fff",
-              borderRadius: "12px",
+              borderRadius: "6px",
               boxShadow: "0 2px 16px rgba(0,0,0,0.12)",
               padding: "32px",
               minWidth: "340px",

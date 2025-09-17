@@ -33,7 +33,7 @@ export default function VocabularyLesson({
               style={{
                 backgroundColor: "#ffffff",
                 // border: "2px solid #e9ecef",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 padding: "5px",
                 transition: "all 0.3s ease",
                 position: "relative",

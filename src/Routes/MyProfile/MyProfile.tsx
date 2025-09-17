@@ -31,7 +31,7 @@ const styles = {
     gap: "16px",
     padding: "32px",
     backgroundColor: "#ffffff",
-    borderRadius: "12px",
+    borderRadius: "6px",
     boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
     border: "1px solid #e8eaed",
     maxWidth: "480px",
@@ -44,14 +44,14 @@ const styles = {
     backgroundColor: partnerColor(),
     color: "#fff",
     border: "none",
-    borderRadius: "8px",
+    borderRadius: "6px",
     cursor: "pointer",
     transition: "all 0.2s ease",
     textDecoration: "none",
   },
   modernSection: {
     backgroundColor: "#ffffff",
-    borderRadius: "12px",
+    borderRadius: "6px",
     boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
     border: "1px solid #e8eaed",
     padding: "24px",
@@ -306,7 +306,7 @@ export function MyProfile({ headers }: HeadersProps) {
             style={{
               background: "#fff",
               padding: "32px 24px",
-              borderRadius: "12px",
+              borderRadius: "6px",
               width: "90%",
               maxWidth: "400px",
               boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
@@ -365,7 +365,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     backgroundColor: "#6c757d",
                     color: "#fff",
                     border: "none",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     cursor: "pointer",
                   }}
                 >
@@ -380,7 +380,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     backgroundColor: partnerColor(),
                     color: "#fff",
                     border: "none",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     cursor: "pointer",
                   }}
                 >
@@ -444,7 +444,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         style={{
                           background: "#fff",
                           padding: "32px 24px",
-                          borderRadius: "12px",
+                          borderRadius: "6px",
                           width: "90%",
                           maxWidth: "400px",
                           boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
@@ -526,7 +526,7 @@ export function MyProfile({ headers }: HeadersProps) {
                                 backgroundColor: "#6c757d",
                                 color: "#fff",
                                 border: "none",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                                 cursor: "pointer",
                               }}
                             >
@@ -541,7 +541,7 @@ export function MyProfile({ headers }: HeadersProps) {
                                 backgroundColor: partnerColor(),
                                 color: "#fff",
                                 border: "none",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                                 cursor: "pointer",
                               }}
                             >
@@ -575,7 +575,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       backgroundColor: partnerColor(),
                       color: "#fff",
                       border: "none",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       cursor: "pointer",
                       fontSize: "14px",
                       fontWeight: "500",
@@ -616,7 +616,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     style={{
                       backgroundColor: "#f8f9fa",
                       padding: "16px",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       border: "1px solid #e9ecef",
                       marginBottom: "20px",
                     }}
@@ -686,7 +686,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       style={{
                         ...styles.profileValue,
                         padding: "4px 8px",
-                        borderRadius: "12px",
+                        borderRadius: "6px",
                         fontSize: "12px",
                         backgroundColor: user.tutoree ? "#e8f5e8" : "#f1f3f5",
                         color: user.tutoree ? "#388e3c" : "#6c757d",
@@ -698,7 +698,8 @@ export function MyProfile({ headers }: HeadersProps) {
 
                   {new Date(user.limitCancelDate) > new Date() &&
                   !user.subscriptionAsaas &&
-                  !user.tutoree ? (
+                  !user.tutoree &&
+                  isArthurVincent ? (
                     <div style={styles.container}>
                       <div style={styles.card}>
                         <button
@@ -735,7 +736,7 @@ export function MyProfile({ headers }: HeadersProps) {
                               backgroundColor: "#dc3545",
                               color: "#fff",
                               border: "none",
-                              borderRadius: "8px",
+                              borderRadius: "6px",
                               cursor: "pointer",
                               transition: "all 0.2s ease",
                             }}
@@ -766,7 +767,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         style={{
                           background: "#fff",
                           padding: "32px",
-                          borderRadius: "12px",
+                          borderRadius: "6px",
                           width: "90%",
                           maxWidth: "400px",
                           textAlign: "center",
@@ -799,7 +800,7 @@ export function MyProfile({ headers }: HeadersProps) {
                               backgroundColor: "#28a745",
                               color: "#fff",
                               border: "none",
-                              borderRadius: "8px",
+                              borderRadius: "6px",
                               cursor: "pointer",
                             }}
                           >
@@ -814,7 +815,7 @@ export function MyProfile({ headers }: HeadersProps) {
                               backgroundColor: "#dc3545",
                               color: "#fff",
                               border: "none",
-                              borderRadius: "8px",
+                              borderRadius: "6px",
                               cursor: "pointer",
                             }}
                           >

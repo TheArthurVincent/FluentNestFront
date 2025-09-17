@@ -382,7 +382,7 @@ export function Groups({ headers, id }) {
                   listStyle: "none",
                   marginBottom: 10,
                   padding: "10px",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   borderBottom: "1px solid #f2f2f2",
                   background:
                     group._id === selectedGroupId ? "#f6f6f6ff" : "#fcfcfcff",
@@ -441,7 +441,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: partnerColor(),
                           fontSize: 12,
                           padding: "3px 6px",
-                          borderRadius: "12px",
+                          borderRadius: "6px",
                           marginRight: 10,
                         }}
                       >

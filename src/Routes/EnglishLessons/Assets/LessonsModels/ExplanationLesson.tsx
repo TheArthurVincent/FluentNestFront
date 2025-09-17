@@ -50,7 +50,7 @@ export default function ExplanationLesson({
                   background:
                     "linear-gradient(135deg, #ffffff 0%, #f8fafb 100%)",
                   border: "1px solid #e2e8f0",
-                  borderRadius: "8px",
+                  borderRadius: "6px",
                   padding: "10px",
                   transition: "all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)",
                   position: "relative",
@@ -92,7 +92,7 @@ export default function ExplanationLesson({
                       width: "80px",
                       height: "1px",
                       background: `linear-gradient(90deg, ${partnerColor()} 0%, ${partnerColor()}60 100%)`,
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                     }}
                   />
                 </div>
@@ -112,7 +112,7 @@ export default function ExplanationLesson({
                       style={{
                         maxWidth: "100%",
                         height: "auto",
-                        borderRadius: "8px",
+                        borderRadius: "6px",
                         boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
                       }}
                     />
@@ -134,7 +134,7 @@ export default function ExplanationLesson({
                         key={listIndex}
                         style={{
                           backgroundColor: "#ffffff",
-                          borderRadius: "8px",
+                          borderRadius: "6px",
                           border: "1px solid #f1f5f9",
                           borderLeft: `5px solid ${partnerColor()}`,
                           transition:

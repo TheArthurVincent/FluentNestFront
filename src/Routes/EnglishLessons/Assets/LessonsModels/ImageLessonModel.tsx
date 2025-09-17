@@ -87,7 +87,7 @@ export default function ImageLessonModel({
               key={i}
               style={{
                 backgroundColor: "#ffffff",
-                borderRadius: "12px",
+                borderRadius: "6px",
                 padding: "16px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                 border: "1px solid #f0f0f0",
@@ -216,7 +216,7 @@ export default function ImageLessonModel({
                     aspectRatio: "1 / 1",
                     objectFit: "cover",
                     objectPosition: "center",
-                    borderRadius: "12px",
+                    borderRadius: "6px",
                     boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                   }}
                 />

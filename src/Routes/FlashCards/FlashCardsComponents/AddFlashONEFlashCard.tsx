@@ -64,7 +64,7 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
     <div
       style={{
         padding: "1rem",
-        borderRadius: "8px",
+        borderRadius: "6px",
         border: "1px solid #e2e8f0",
         margin: "1rem 0",
         backgroundColor: "#ffffff",

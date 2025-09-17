@@ -49,7 +49,7 @@ export function FeeNotUpToDate() {
           padding: "12px 20px",
           backgroundColor: partnerColor(),
           color: "#fff",
-          borderRadius: "8px",
+          borderRadius: "6px",
           textDecoration: "none",
           fontSize: "18px",
         }}

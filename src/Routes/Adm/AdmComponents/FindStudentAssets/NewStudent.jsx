@@ -141,7 +141,7 @@ export function AllStudents({ headers, id, plan }) {
           maxWidth: "90%",
           margin: "1rem auto",
           padding: "1rem",
-          borderRadius: "8px",
+          borderRadius: "6px",
         }}
       >
         <HOne> Novo Aluno</HOne>

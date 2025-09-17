@@ -127,7 +127,7 @@ function ToDoAddButton({ userId, onCreated }) {
             style={{
               background: "#fff",
               padding: "2rem",
-              borderRadius: "12px",
+              borderRadius: "6px",
               width: "320px",
               boxShadow: "0 2px 16px #0002",
             }}

@@ -134,7 +134,7 @@ export function NewResponsible({ headers, id, flag, setFlag }) {
           maxWidth: "90%",
           margin: "1rem auto",
           padding: "1rem",
-          borderRadius: "8px",
+          borderRadius: "6px",
         }}
       >
         <HOne> Novo pai ou responsável</HOne>

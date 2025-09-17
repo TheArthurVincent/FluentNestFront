@@ -351,7 +351,7 @@ export function MyClasses({ headers }) {
               const timeChipStyle = {
                 display: "inline-block",
                 padding: "4px 8px",
-                borderRadius: "8px",
+                borderRadius: "6px",
                 border: isRealizada ? "1px solid #065f46" : "1px solid #a31111",
                 background: isRealizada
                   ? "rgba(5,150,105,0.07)"
@@ -508,7 +508,7 @@ export function MyClasses({ headers }) {
                               padding: "10px",
                               backgroundColor: "#fff",
                               border: "1px solid #e5e7eb",
-                              borderRadius: "8px",
+                              borderRadius: "6px",
                             }}
                           >
                             <>
@@ -538,7 +538,7 @@ export function MyClasses({ headers }) {
                               padding: "12px",
                               backgroundColor: "#fffef7",
                               border: "1px solid #fde68a",
-                              borderRadius: "8px",
+                              borderRadius: "6px",
                             }}
                           >
                             <strong
@@ -586,7 +586,7 @@ export function MyClasses({ headers }) {
                                 padding: "8px",
                                 backgroundColor: "#fff",
                                 border: "1px solid #e5e7eb",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                               }}
                             >
                               <Link
@@ -613,7 +613,7 @@ export function MyClasses({ headers }) {
                                 padding: "8px",
                                 backgroundColor: "#fff",
                                 border: "1px solid #e5e7eb",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                               }}
                             >
                               <Link
@@ -678,7 +678,7 @@ export function MyClasses({ headers }) {
                                 padding: "8px",
                                 backgroundColor: "#fff",
                                 border: "1px solid #e5e7eb",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                               }}
                             >
                               <Link

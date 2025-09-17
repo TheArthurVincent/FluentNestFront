@@ -3545,7 +3545,7 @@ export default function EnglishClassCourse2({
               margin: "0 auto",
               padding: "0 20px",
               background: "#ffffff",
-              borderRadius: "8px",
+              borderRadius: "6px",
               boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
               border: "1px solid #f1f5f9",
               position: "relative",

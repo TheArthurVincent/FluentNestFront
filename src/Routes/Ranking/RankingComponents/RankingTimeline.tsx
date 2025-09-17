@@ -151,7 +151,7 @@ export default function RankingTimeline({
       <div
         style={{
           backgroundColor: lightGreyColor(),
-          borderRadius: "8px",
+          borderRadius: "6px",
           overflow: "auto",
           border: `2px solid ${lightGreyColor()}`,
           maxHeight: "28rem",

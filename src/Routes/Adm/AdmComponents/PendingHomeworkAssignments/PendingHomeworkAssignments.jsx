@@ -151,7 +151,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                   gap: "16px",
                   listStyle: "none",
                   padding: "1.5rem",
-                  borderRadius: "12px",
+                  borderRadius: "6px",
                   border: "2px solid #ff980020",
                   backgroundColor: "#fafafa",
                   transition: "all 0.3s ease",
@@ -336,7 +336,7 @@ export function PendingHomeworkAssignments({ id, headers }) {
                     style={{
                       backgroundColor: "#eff0daff",
                       border: "1px solid #e0e0e0",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       padding: "1.2rem",
                       fontFamily: "cursive",
                       lineHeight: "1.6",

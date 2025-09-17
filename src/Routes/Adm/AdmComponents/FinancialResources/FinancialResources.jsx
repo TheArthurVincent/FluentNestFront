@@ -1250,7 +1250,7 @@ export function FinancialResources({ headers, id, plan }) {
           style={{
             padding: "12px 16px",
             border: "1px solid #d1d5db",
-            borderRadius: "8px",
+            borderRadius: "6px",
             fontSize: "14px",
             fontFamily: textGeneralFont(),
             color: "#374151",
@@ -1335,7 +1335,7 @@ export function FinancialResources({ headers, id, plan }) {
                               style={{
                                 backgroundColor: "#e8f4fd",
                                 border: "1px solid #bee5eb",
-                                borderRadius: "8px",
+                                borderRadius: "6px",
                                 padding: "16px",
                                 margin: "16px 0",
                                 display: "grid",
@@ -1420,7 +1420,7 @@ export function FinancialResources({ headers, id, plan }) {
                           style={{
                             background: "#fff",
                             padding: "24px",
-                            borderRadius: "8px",
+                            borderRadius: "6px",
                             maxWidth: "350px",
                             margin: "80px auto",
                             boxShadow: "0 2px 8px #0002",
@@ -1649,7 +1649,7 @@ export function FinancialResources({ headers, id, plan }) {
                                   <div
                                     style={{
                                       textAlign: "center",
-                                      borderRadius: "12px",
+                                      borderRadius: "6px",
                                       color: report.paidFor
                                         ? "#2e7d32"
                                         : report.paidSoFar &&
@@ -1811,7 +1811,7 @@ export function FinancialResources({ headers, id, plan }) {
                                   <div
                                     style={{
                                       textAlign: "center",
-                                      borderRadius: "12px",
+                                      borderRadius: "6px",
                                       color: "#9ca3af",
                                       fontFamily: textGeneralFont(),
                                     }}
@@ -1875,7 +1875,7 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontWeight: "500",
                                         textAlign: "center",
                                         padding: "3px 8px",
-                                        borderRadius: "12px",
+                                        borderRadius: "6px",
                                         backgroundColor: "#f3f4f6",
                                         color: "#6b7280",
                                         fontFamily: textGeneralFont(),
@@ -1972,7 +1972,7 @@ export function FinancialResources({ headers, id, plan }) {
                                   <div
                                     style={{
                                       textAlign: "center",
-                                      borderRadius: "12px",
+                                      borderRadius: "6px",
                                       color: report.paidFor
                                         ? "#2e7d32"
                                         : report.paidSoFar &&
@@ -2133,7 +2133,7 @@ export function FinancialResources({ headers, id, plan }) {
                                   <div
                                     style={{
                                       textAlign: "center",
-                                      borderRadius: "12px",
+                                      borderRadius: "6px",
                                       color: "#9ca3af",
                                       fontFamily: textGeneralFont(),
                                     }}
@@ -2197,7 +2197,7 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontWeight: "500",
                                         textAlign: "center",
                                         padding: "3px 8px",
-                                        borderRadius: "12px",
+                                        borderRadius: "6px",
                                         backgroundColor: "#f3f4f6",
                                         color: "#6b7280",
                                         fontFamily: textGeneralFont(),
@@ -2799,7 +2799,7 @@ export function FinancialResources({ headers, id, plan }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "12px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -2943,7 +2943,7 @@ export function FinancialResources({ headers, id, plan }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "12px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -3269,7 +3269,7 @@ export function FinancialResources({ headers, id, plan }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "12px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -3482,7 +3482,7 @@ export function FinancialResources({ headers, id, plan }) {
                       style={{
                         backgroundColor: "#f8f9fa",
                         border: "1px solid #e9ecef",
-                        borderRadius: "8px",
+                        borderRadius: "6px",
                         padding: "16px",
                         margin: "16px 0",
                         fontSize: "16px",
@@ -3774,7 +3774,7 @@ export function FinancialResources({ headers, id, plan }) {
             maxWidth="sm"
             PaperProps={{
               style: {
-                borderRadius: "12px",
+                borderRadius: "6px",
                 padding: "8px",
               },
             }}
@@ -3952,7 +3952,7 @@ export function FinancialResources({ headers, id, plan }) {
                   style={{
                     backgroundColor: "#f8f9fa",
                     border: "1px solid #e9ecef",
-                    borderRadius: "8px",
+                    borderRadius: "6px",
                     padding: "16px",
                     margin: "16px 0",
                     fontSize: "16px",

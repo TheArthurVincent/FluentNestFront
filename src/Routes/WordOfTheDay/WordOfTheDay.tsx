@@ -193,7 +193,7 @@ const WordOfTheDay = ({ headers, onChange, change }: WordOfTheDayRv) => {
                         alignItems: "center",
                         textAlign: "center",
                         padding: "10px 14px",
-                        borderRadius: "12px",
+                        borderRadius: "6px",
                         maxWidth: "400px",
                         marginInline: "auto",
                       }}

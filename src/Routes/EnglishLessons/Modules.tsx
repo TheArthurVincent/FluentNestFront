@@ -107,7 +107,7 @@ export default function Modules({
       style={{
         backgroundColor: "white",
         padding: "10px",
-        borderRadius: "8px",
+        borderRadius: "6px",
         boxShadow: "0 2px 4px rgba(0, 0, 0, 0.59)",
       }}
     >

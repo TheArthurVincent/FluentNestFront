@@ -268,7 +268,7 @@ const AddFlashCards = ({
                       listStyle: "none",
                       padding: "1rem",
                       border: "1px solid #ccc",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       backgroundColor: "#f9f9f9",
                       boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
                     }}

@@ -17,7 +17,7 @@ function ToDoModal() {
         backgroundColor: partnerColor,
         color: textpartnerColorContrast,
         padding: "20px",
-        borderRadius: "8px",
+        borderRadius: "6px",
         boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
         zIndex: 1000,
       }}

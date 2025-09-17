@@ -648,7 +648,7 @@ const ListeningExercise = ({
           style={{
             backgroundColor: "#f8f9fa",
             padding: "1.5rem",
-            borderRadius: "12px",
+            borderRadius: "6px",
             marginBottom: "1.5rem",
             border: "1px solid #e9ecef",
           }}
@@ -707,7 +707,7 @@ const ListeningExercise = ({
               backgroundColor: partnerColor(),
               color: "#fff",
               textDecoration: "none",
-              borderRadius: "8px",
+              borderRadius: "6px",
               fontSize: "0.95rem",
               fontWeight: "500",
               transition: "all 0.2s",
@@ -727,7 +727,7 @@ const ListeningExercise = ({
               backgroundColor: "transparent",
               color: "#666",
               textDecoration: "none",
-              borderRadius: "8px",
+              borderRadius: "6px",
               fontSize: "0.9rem",
               border: "1px solid #ddd",
               transition: "all 0.2s",

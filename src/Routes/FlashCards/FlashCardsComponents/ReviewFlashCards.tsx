@@ -586,7 +586,7 @@ const ReviewFlashCards = ({
                           color: "#666",
                           fontSize: "14px",
                           backgroundColor: "#f8f9fa",
-                          borderRadius: "8px",
+                          borderRadius: "6px",
                           margin: "1rem 0",
                         }}
                       >
@@ -784,7 +784,7 @@ const ReviewFlashCards = ({
               onClick={() => setPlayCardAutomatically(!playCardAutomatically)}
               style={{
                 fontSize: "10px",
-                borderRadius: "12px",
+                borderRadius: "6px",
                 border: "1px solid #ddd",
                 padding: "2px 8px",
                 cursor: "pointer",

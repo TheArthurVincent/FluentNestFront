@@ -716,7 +716,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           style={{
                                             display: "inline-block",
                                             padding: "2px 6px",
-                                            borderRadius: "8px",
+                                            borderRadius: "6px",
                                             border:
                                               "1px solid rgba(3,105,161,0.18)",
                                             background: "rgba(3,105,161,0.06)",
@@ -760,7 +760,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           style={{
                                             display: "inline-block",
                                             padding: "2px 6px",
-                                            borderRadius: "8px",
+                                            borderRadius: "6px",
                                             border:
                                               "1px solid rgba(3,105,161,0.18)",
                                             background: "rgba(3,105,161,0.06)",
@@ -792,7 +792,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                         style={{
                                           display: "inline-block",
                                           padding: "2px 6px",
-                                          borderRadius: "8px",
+                                          borderRadius: "6px",
                                           border:
                                             "1px solid rgba(5,150,105,0.18)",
                                           background: "rgba(5,150,105,0.07)",
@@ -1013,7 +1013,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                               : "1rem",
                                           backgroundColor: "#ffffff",
                                           border: "1px solid #e2e8f0",
-                                          borderRadius: "8px",
+                                          borderRadius: "6px",
                                           boxShadow:
                                             "0 1px 3px rgba(0, 0, 0, 0.05)",
                                         }}
@@ -1395,7 +1395,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                 : "1.5rem",
                                             backgroundColor: "#f8fafc",
                                             border: "1px solid #e2e8f0",
-                                            borderRadius: "8px",
+                                            borderRadius: "6px",
                                             boxShadow:
                                               "0 2px 4px rgba(0, 0, 0, 0.05)",
                                             flex:
@@ -1568,7 +1568,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                 : "1.5rem",
                                             backgroundColor: "#f8fafc",
                                             border: "1px solid #e2e8f0",
-                                            borderRadius: "8px",
+                                            borderRadius: "6px",
                                             boxShadow:
                                               "0 2px 4px rgba(0, 0, 0, 0.05)",
                                             flex:
@@ -1714,7 +1714,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                         padding: "1rem",
                                         backgroundColor: "#ffffff",
                                         border: "1px solid #e2e8f0",
-                                        borderRadius: "8px",
+                                        borderRadius: "6px",
                                         boxShadow:
                                           "0 1px 3px rgba(0, 0, 0, 0.05)",
                                       }}
@@ -1889,7 +1889,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                           padding: "1rem",
                                           backgroundColor: "#f0f9ff",
                                           border: "1px solid #0ea5e9",
-                                          borderRadius: "8px",
+                                          borderRadius: "6px",
                                           boxShadow:
                                             "0 1px 3px rgba(0, 0, 0, 0.05)",
                                         }}
@@ -2084,7 +2084,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                             paddingBottom: "56.25%", // 16:9 aspect ratio
                                             height: 0,
                                             overflow: "hidden",
-                                            borderRadius: "8px",
+                                            borderRadius: "6px",
                                             boxShadow:
                                               "0 4px 8px rgba(0, 0, 0, 0.1)",
                                             backgroundColor: "#000",
@@ -2109,7 +2109,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                               width: "100%",
                                               height: "100%",
                                               border: "none",
-                                              borderRadius: "8px",
+                                              borderRadius: "6px",
                                             }}
                                             allowFullScreen
                                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -2358,7 +2358,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                           width: "100%",
                           padding: window.innerWidth <= 768 ? "16px" : "12px",
                           border: "2px dashed #e2e8f0",
-                          borderRadius: "8px",
+                          borderRadius: "6px",
                           backgroundColor: "#f8fafc",
                           cursor: "pointer",
                           fontSize: window.innerWidth <= 768 ? "16px" : "14px",
@@ -2382,7 +2382,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                             padding: "12px",
                             backgroundColor: "#f0f9ff",
                             border: "1px solid #0ea5e9",
-                            borderRadius: "8px",
+                            borderRadius: "6px",
                             display: "flex",
                             alignItems: "center",
                             gap: "8px",
@@ -2436,7 +2436,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                       <div
                         style={{
                           border: "2px solid #e2e8f0",
-                          borderRadius: "8px",
+                          borderRadius: "6px",
                           backgroundColor: "#ffffff",
                           minHeight: "300px",
                         }}
@@ -2666,7 +2666,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                   <div
                     style={{
                       border: "2px solid #e2e8f0",
-                      borderRadius: "8px",
+                      borderRadius: "6px",
                       backgroundColor: "#ffffff",
                       minHeight: "300px",
                     }}
