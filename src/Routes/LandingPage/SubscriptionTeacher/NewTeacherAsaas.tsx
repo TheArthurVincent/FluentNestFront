@@ -7,8 +7,6 @@ import { IFrameAsaas } from "../../HomePage/Blog.Styled";
 import { CircularProgress, Grid, TextField } from "@mui/material";
 import silver from "./assets/teacherssilver.png";
 import gold from "./assets/goldteacher.png";
-import { HOne } from "../../../Resources/Components/RouteBox";
-import { fontSize, fontWeight } from "@mui/system";
 
 function formatDate(value: string): string {
   const cleaned = value.replace(/\D/g, "").slice(0, 8); // Remove non-digits and limit to 8 characters
@@ -109,7 +107,7 @@ export default function TeacherSubscription() {
   );
 
   // novos estados
-  const [planTier, setPlanTier] = useState<"silver" | "gold">("silver");
+  const [planTier, setPlanTier] = useState<"silver" | "gold">("gold");
 
   // preços centralizados
   const PRICES = {
