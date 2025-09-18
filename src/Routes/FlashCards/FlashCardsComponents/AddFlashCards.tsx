@@ -3,12 +3,7 @@ import axios from "axios";
 import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import AddOneFlashCard from "./AddFlashONEFlashCard";
-import {
-  DialogActions,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
+import { Dialog } from "@mui/material";
 import { partnerColor, textpartnerColorContrast } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
