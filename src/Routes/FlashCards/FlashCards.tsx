@@ -87,7 +87,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
 
   const componentsToRender = [
     {
-      title: UniversalTexts.sentences,
+      title: UniversalTexts.reviewFlashcards,
       value: "1",
       adm: false,
       component: (
