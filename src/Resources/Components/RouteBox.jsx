@@ -115,7 +115,7 @@ export const BlogPostTitle = styled.div`
 `;
 
 export const HOne = styled.h1`
-  font-size: 32px;
+  font-size: 18px;
   font-weight: 500;
   color: ${partnerColor()};
   margin: 12px 0;
