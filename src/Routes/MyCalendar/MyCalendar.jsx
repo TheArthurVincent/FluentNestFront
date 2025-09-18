@@ -58,8 +58,6 @@ import {
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
 import { fontSize } from "@mui/system";
 
-
-
 function MyCalendar({ headers, thePermissions, myId }) {
   var categoryList = [
     {
@@ -519,8 +517,15 @@ function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
-      console.log(response.data.event);
+      console.log(
+        response.data.event.recentUnmarkedEvents[0].theLesson,
+        "THE LESSON"
+      );
       setLastFew(response.data.event.recentUnmarkedEvents || []);
+      setTheLessonLast(
+        response.data.event.recentUnmarkedEvents[0].theLesson || []
+      );
+
       var theStudentsFromEvent;
       if (response.data.event.listOfStudents) {
         theStudentsFromEvent = response.data.event.listOfStudents;
@@ -1216,6 +1221,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
   };
   const [lessonsList, setLessonsList] = useState([]);
   const [theLesson, setTheLesson] = useState(null);
+  const [theLessonLast, setTheLessonLast] = useState(null);
 
   const getClasses = async () => {
     if (thePermissions === "superadmin" || thePermissions === "teacher") {
@@ -3207,7 +3213,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                                     </p>
                                                     <p>
                                                       <strong>Módulo:</strong>
-
                                                       {theLesson.module}
                                                     </p>
                                                   </>
@@ -4273,10 +4278,9 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                   flexDirection: "column",
                                   alignItems: "center",
                                   justifyContent: "center",
-                                  color: partnerColor(), // tom semelhante ao linguee/google
+                                  color: partnerColor(),
                                   textDecoration: "none",
                                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                                  fontSize: "0.95rem",
                                   padding: "10px",
                                   borderRadius: "6px",
                                   backgroundColor: textpartnerColorContrast(),
@@ -4315,11 +4319,11 @@ function MyCalendar({ headers, thePermissions, myId }) {
                               style={{
                                 fontSize: "0.85rem",
                                 color: "#6c757d",
-                                marginBottom: "10px",
+                                marginBottom: "0 10px",
                                 fontWeight: "500",
                               }}
                             >
-                              Últimos 3 eventos passados
+                              Último evento
                             </span>
                             <ul
                               style={{
@@ -4351,6 +4355,59 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                   <span style={{ opacity: 0.9 }}>
                                     {evt.description || "Sem descrição"}
                                   </span>
+                                  {theLessonLast &&
+                                    theLessonLast.course &&
+                                    theLessonLast.id && (
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "center",
+                                          marginTop: "0.75rem",
+                                        }}
+                                      >
+                                        <a
+                                          target="_blank"
+                                          href={`/teaching-materials/${theLessonLast.course
+                                            .toLowerCase()
+                                            .replace(/\s+/g, "-")
+                                            .replace(/[^\w\-]+/g, "")}/${
+                                            theLessonLast.id
+                                          }`}
+                                          style={{
+                                            gap: "5px",
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            color: partnerColor(),
+                                            textDecoration: "none",
+                                            boxShadow:
+                                              "0 2px 4px rgba(0,0,0,0.1)",
+                                            padding: "10px",
+                                            borderRadius: "6px",
+                                            backgroundColor:
+                                              textpartnerColorContrast(),
+                                            fontFamily: "Arial, sans-serif",
+                                          }}
+                                          onMouseOver={(e) =>
+                                            (e.currentTarget.style.textDecoration =
+                                              "underline")
+                                          }
+                                          onMouseOut={(e) =>
+                                            (e.currentTarget.style.textDecoration =
+                                              "none")
+                                          }
+                                        >
+                                          <span>Aula relacionada</span>
+                                          <span>
+                                            <strong>
+                                              {theLessonLast.title} |{" "}
+                                              {theLessonLast.course}
+                                            </strong>
+                                          </span>
+                                        </a>
+                                      </div>
+                                    )}
                                 </li>
                               ))}
                             </ul>
@@ -6850,4 +6907,4 @@ function MyCalendar({ headers, thePermissions, myId }) {
   );
 }
 
-export default MyCalendar
+export default MyCalendar;
