@@ -444,6 +444,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
       setShowFlashcards(false);
       setShowNewClassForm(false);
       setSeePlusButtons(false);
+      setShowLastFew(false);
       setModalEditTodo(false);
     } catch (error) {
       if (error?.response?.data?.error) {
@@ -506,6 +507,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
   };
 
   const [lastFew, setLastFew] = useState([]);
+  const [showLastFew, setShowLastFew] = useState(false);
   const fetchOneEvent = async (id) => {
     setLoadingModalInfo(true);
 
@@ -517,10 +519,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
-      console.log(
-        response.data.event.recentUnmarkedEvents[0].theLesson,
-        "THE LESSON"
-      );
+      console.log(response.data.event);
       setLastFew(response.data.event.recentUnmarkedEvents || []);
       setTheLessonLast(
         response.data.event.recentUnmarkedEvents[0].theLesson || []
@@ -4305,6 +4304,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           )}
                         </div>
+
                         {lastFew.length > 0 && (
                           <div
                             style={{
@@ -4313,104 +4313,210 @@ function MyCalendar({ headers, thePermissions, myId }) {
                               justifySelf: "center",
                               flexDirection: "column",
                               textAlign: "center",
+                              display: "block",
+                              width: "100%",
                             }}
                           >
                             <span
                               style={{
                                 fontSize: "0.85rem",
                                 color: "#6c757d",
-                                marginBottom: "0 10px",
+                                margin: " 10px 0",
                                 fontWeight: "500",
+                                cursor: "pointer",
+                                display: "block",
+                                width: "100%",
+                                borderRadius: "6px",
                               }}
+                              onMouseOver={(e) =>
+                                (e.currentTarget.style.backgroundColor = "#fff")
+                              }
+                              onMouseOut={(e) =>
+                                (e.currentTarget.style.backgroundColor =
+                                  "transparent")
+                              }
+                              onClick={() => setShowLastFew(!showLastFew)}
                             >
                               Último evento
                             </span>
-                            <ul
-                              style={{
-                                padding: 0,
-                                maxWidth: "600px",
-                                margin: 0,
-                              }}
-                            >
-                              {lastFew.map((evt) => (
-                                <li
-                                  key={evt._id || evt.id}
-                                  style={{
-                                    listStyle: "none",
-                                    backgroundColor: "#cfdefea1",
-                                    borderRadius: "6px",
-                                    padding: "8px 12px",
-                                    marginBottom: "6px",
-                                    fontSize: "12px",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    gap: "5px",
-                                  }}
-                                >
-                                  <span style={{ fontWeight: 600 }}>
-                                    {formatDateBr(evt.date) || "Sem data"}
-                                  </span>
-                                  <span style={{ opacity: 0.9 }}>
-                                    {evt.description || "Sem descrição"}
-                                  </span>
-                                  {theLessonLast &&
-                                    theLessonLast.course &&
-                                    theLessonLast.id && (
+
+                            {showLastFew && (
+                              <ul
+                                style={{
+                                  padding: 0,
+                                  margin: "8px 0",
+                                  maxWidth: "600px",
+                                  listStyle: "none",
+                                }}
+                              >
+                                {lastFew.map((evt) => (
+                                  <li
+                                    key={evt._id || evt.id}
+                                    style={{
+                                      backgroundColor: "#fff",
+                                      border: "1px solid #e5e7eb",
+                                      borderLeft: `3px solid ${
+                                        partnerColor?.() || "#829ad1"
+                                      }`,
+                                      borderRadius: "6px",
+                                      padding: "8px 12px",
+                                      marginBottom: "8px",
+                                      fontSize: "12px",
+                                      display: "grid",
+                                      gridTemplateColumns: "1fr",
+                                      gap: "6px",
+                                      alignItems: "start",
+                                      textAlign: "left",
+                                      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                                      transition:
+                                        "box-shadow 120ms ease, border-color 120ms ease",
+                                    }}
+                                    onMouseEnter={(e) =>
+                                      (e.currentTarget.style.boxShadow =
+                                        "0 2px 6px rgba(0,0,0,0.08)")
+                                    }
+                                    onMouseLeave={(e) =>
+                                      (e.currentTarget.style.boxShadow =
+                                        "0 1px 2px rgba(0,0,0,0.04)")
+                                    }
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: 600,
+                                        alignSelf: "start",
+                                        display: "inline-block",
+                                        justifyContent: "space-between",
+                                        padding: "2px 6px",
+                                        display: "flex",
+                                        borderRadius: "4px",
+                                        backgroundColor: "#f3f4f6",
+                                        color: "#111827",
+                                        border: "1px solid #e5e7eb",
+                                      }}
+                                    >
+                                      <span>
+                                        {formatDateBr(evt.date) || "Sem data"}
+                                      </span>
+                                      <span
+                                        style={{
+                                          cursor: "pointer",
+                                        }}
+                                        onMouseOver={(e) =>
+                                          (e.currentTarget.style.color =
+                                            partnerColor())
+                                        }
+                                        onMouseDown={(e) =>
+                                          (e.currentTarget.style.color =
+                                            "black")
+                                        }
+                                        onClick={() => setShowLastFew(false)}
+                                      >
+                                        x
+                                      </span>
+                                    </span>
+
+                                    <span
+                                      style={{
+                                        opacity: 0.95,
+                                        lineHeight: 1.5,
+                                        color: "#374151",
+                                      }}
+                                    >
+                                      {evt.description || "Sem descrição"}
+                                    </span>
+
+                                    <span
+                                      style={{
+                                        display: "block",
+                                        opacity: 0.95,
+                                        color: "#374151",
+                                      }}
+                                    >
+                                      <strong style={{ fontWeight: 600 }}>
+                                        Homework:
+                                      </strong>
                                       <div
                                         style={{
-                                          display: "flex",
-                                          justifyContent: "center",
-                                          marginTop: "0.75rem",
+                                          marginTop: "6px",
+                                          backgroundColor: "#ffffff",
+                                          padding: "0.75rem",
+                                          borderRadius: "6px",
+                                          border: "1px solid #e5e7eb",
+                                          fontSize: "0.85rem",
+                                          color: "#374151",
+                                          lineHeight: 1.5,
+                                          maxHeight: "150px",
+                                          overflowY: "auto",
+                                          whiteSpace: "pre-wrap",
                                         }}
-                                      >
-                                        <a
-                                          target="_blank"
-                                          href={`/teaching-materials/${theLessonLast.course
-                                            .toLowerCase()
-                                            .replace(/\s+/g, "-")
-                                            .replace(/[^\w\-]+/g, "")}/${
-                                            theLessonLast.id
-                                          }`}
+                                        dangerouslySetInnerHTML={{
+                                          __html: evt.homework,
+                                        }}
+                                      />
+                                    </span>
+
+                                    {theLessonLast &&
+                                      theLessonLast.course &&
+                                      theLessonLast.id && (
+                                        <div
                                           style={{
-                                            gap: "5px",
                                             display: "flex",
-                                            flexDirection: "column",
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            color: partnerColor(),
-                                            textDecoration: "none",
-                                            boxShadow:
-                                              "0 2px 4px rgba(0,0,0,0.1)",
-                                            padding: "10px",
-                                            borderRadius: "6px",
-                                            backgroundColor:
-                                              textpartnerColorContrast(),
-                                            fontFamily: "Arial, sans-serif",
+                                            justifyContent: "flex-start",
+                                            marginTop: "4px",
                                           }}
-                                          onMouseOver={(e) =>
-                                            (e.currentTarget.style.textDecoration =
-                                              "underline")
-                                          }
-                                          onMouseOut={(e) =>
-                                            (e.currentTarget.style.textDecoration =
-                                              "none")
-                                          }
                                         >
-                                          <span>Aula relacionada</span>
-                                          <span>
-                                            <strong>
-                                              {theLessonLast.title} |{" "}
-                                              {theLessonLast.course}
-                                            </strong>
-                                          </span>
-                                        </a>
-                                      </div>
-                                    )}
-                                </li>
-                              ))}
-                            </ul>
+                                          <a
+                                            target="_blank"
+                                            href={`/teaching-materials/${theLessonLast.course
+                                              .toLowerCase()
+                                              .replace(/\s+/g, "-")
+                                              .replace(/[^\w\-]+/g, "")}/${
+                                              theLessonLast.id
+                                            }`}
+                                            style={{
+                                              display: "inline-flex",
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                              gap: "6px",
+                                              color: partnerColor(),
+                                              textDecoration: "none",
+                                              padding: "8px 10px",
+                                              borderRadius: "6px",
+                                              border: `1px solid ${
+                                                partnerColor?.() || "#829ad1"
+                                              }`,
+                                              backgroundColor:
+                                                textpartnerColorContrast(),
+                                              boxShadow:
+                                                "0 1px 2px rgba(0,0,0,0.04)",
+                                              transition:
+                                                "box-shadow 120ms ease, text-decoration-color 120ms ease",
+                                            }}
+                                            onMouseOver={(e) =>
+                                              (e.currentTarget.style.textDecoration =
+                                                "underline")
+                                            }
+                                            onMouseOut={(e) =>
+                                              (e.currentTarget.style.textDecoration =
+                                                "none")
+                                            }
+                                          >
+                                            <span style={{ fontWeight: 500 }}>
+                                              Aula relacionada
+                                            </span>
+                                            <span>
+                                              <strong>
+                                                {theLessonLast.title} |{" "}
+                                                {theLessonLast.course}
+                                              </strong>
+                                            </span>
+                                          </a>
+                                        </div>
+                                      )}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
                           </div>
                         )}
 
