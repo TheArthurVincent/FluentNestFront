@@ -411,7 +411,7 @@ export default function TeacherSubscription() {
       {
         title: "Materiais disponíveis para os alunos",
         value: "",
-        status: "Sim",
+        status: "Não",
       },
       { title: "Gerenciamento de alunos", value: "", status: "Sim" },
       {
@@ -419,9 +419,10 @@ export default function TeacherSubscription() {
         value: "",
         status: "Sim",
       },
+      { title: "Gestão Financeira", value: "Sim" },
+
       { title: "Limite de revisão de flashcards/dia", value: 25 },
       { title: "Área de responsáveis", value: "", status: "Não" },
-      // { title: "Mineração de sentenças (você e alunos)", value: "5 ao todo" },
       // { title: "Listening exercise", value: "", status: "Não" },
       // { title: "Cadastro de subteachers", value: "", status: "Não" },
       { title: "Emissão de contratos", value: "", status: "Não" },
@@ -450,9 +451,9 @@ export default function TeacherSubscription() {
         value: "",
         status: "Sim",
       },
+      { title: "Gestão Financeira", value: "Sim" },
       { title: "Limite de revisão de flashcards/dia", value: "Sem limites" },
       { title: "Área de responsáveis", value: "", status: "Sim" },
-      // { title: "Mineração de sentenças (você e alunos)", value: "30/mês" },
       // { title: "Listening exercise", value: "", status: "Sim" },
       // { title: "Cadastro de subteachers", value: "", status: "Sim" },
       { title: "Emissão de contratos", value: "", status: "Sim" },
