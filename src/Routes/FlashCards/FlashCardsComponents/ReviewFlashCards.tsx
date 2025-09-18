@@ -292,7 +292,6 @@ const ReviewFlashCards = ({
           padding: "0 1rem",
         }}
       >
-        <HOne>{UniversalTexts?.reviewFlashcards || "Review Flashcards"}</HOne>
         <a
           style={{
             fontSize: "12px",

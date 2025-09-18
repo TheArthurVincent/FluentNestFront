@@ -136,8 +136,6 @@ const FlashcardsHistory = ({
           <option value={2000}>Tudo</option>
         </select>
       </div>
-
-      <HOne>Flashcard Reviews</HOne>
       {flashcardHistory.length > 0 ? (
         <div
           className="flashcard-history-list"
