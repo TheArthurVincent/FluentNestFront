@@ -2512,7 +2512,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                 zIndex: 98,
                 display: isVisible ? "block" : "none",
               }}
-              onClick={() => handleCloseModal(date)}
             />
             <div
               className="modal box-shadow-white"
@@ -2521,8 +2520,8 @@ function MyCalendar({ headers, thePermissions, myId }) {
                 display: isVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width: "80vw",
-                height: "80vh",
+                width: "90vw",
+                height: "90vh",
                 overflowY: "auto",
                 top: "50%",
                 left: "50%",
@@ -2558,7 +2557,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                     >
                       {UniversalTexts.calendarModal.accessEvent}
                     </HTwo>
-                    <Xp
+              {!loadingInfo     && <Xp
                       onClick={() => handleCloseModal(date)}
                       style={{
                         cursor: "pointer",
@@ -2571,7 +2570,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                       onMouseLeave={(e) => (e.target.style.color = "#998")}
                     >
                       ×
-                    </Xp>
+                    </Xp>}
                   </div>
                 </div>
               )}
