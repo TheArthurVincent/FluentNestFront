@@ -2557,20 +2557,22 @@ function MyCalendar({ headers, thePermissions, myId }) {
                     >
                       {UniversalTexts.calendarModal.accessEvent}
                     </HTwo>
-              {!loadingInfo     && <Xp
-                      onClick={() => handleCloseModal(date)}
-                      style={{
-                        cursor: "pointer",
-                        color: "#998",
-                        transition: "color 0.2s",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.target.style.color = partnerColor())
-                      }
-                      onMouseLeave={(e) => (e.target.style.color = "#998")}
-                    >
-                      ×
-                    </Xp>}
+                    {!loadingInfo && (
+                      <Xp
+                        onClick={() => handleCloseModal(date)}
+                        style={{
+                          cursor: "pointer",
+                          color: "#998",
+                          transition: "color 0.2s",
+                        }}
+                        onMouseEnter={(e) =>
+                          (e.target.style.color = partnerColor())
+                        }
+                        onMouseLeave={(e) => (e.target.style.color = "#998")}
+                      >
+                        ×
+                      </Xp>
+                    )}
                   </div>
                 </div>
               )}

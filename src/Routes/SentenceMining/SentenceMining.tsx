@@ -26,6 +26,7 @@ import {
   UlSentences,
 } from "../EnglishLessons/Assets/Functions/EnglishActivities.Styled";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import { lang } from "moment";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -70,7 +71,15 @@ const SentenceMining = ({
     setSelectedStudentId(studentId);
   };
 
-  const youglishBaseUrl = `https://youglish.com/pronounce/${theAdaptedWord}/english/us`;
+  const youglishBaseUrl = `https://youglish.com/pronounce/${theAdaptedWord}/${
+    language === "pt"
+      ? "portuguese"
+      : language === "en"
+      ? "english"
+      : language === "fr"
+      ? "french"
+      : "spanish"
+  }`;
 
   const [examples, setExamples] = useState<
     { sentence: string; translation: string; added: boolean }[]
