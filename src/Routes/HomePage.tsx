@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
@@ -33,15 +34,13 @@ import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
-import axios from "axios";
-
+import MyCalendar from "./MyCalendar/MyCalendar";
 import {
   partnerColor,
   textPrimaryColorContrast,
   logoPartner,
   textTitleFont,
 } from "../Styles/Styles";
-import MyCalendar from "./MyCalendar/MyCalendar";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
@@ -66,7 +65,6 @@ export function HomePage({ headers }: HeadersProps) {
       onLoggOut();
       return;
     }
-
     updateInfo(id, headers);
   }, []);
 
@@ -151,11 +149,7 @@ export function HomePage({ headers }: HeadersProps) {
     {
       path: "/dispose",
       title: "My Classes",
-      component: (
-        <>
-          <MyClasses headers={headers} />
-        </>
-      ),
+      component: <MyClasses headers={headers} />,
     },
     {
       title: "Words of The Day",

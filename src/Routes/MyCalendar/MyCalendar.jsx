@@ -4306,220 +4306,232 @@ function MyCalendar({ headers, thePermissions, myId }) {
                           )}
                         </div>
 
-                        {lastFew.length > 0 && (
-                          <div
-                            style={{
-                              display: "flex",
-                              margin: "1rem 0",
-                              justifySelf: "center",
-                              flexDirection: "column",
-                              textAlign: "center",
-                              display: "block",
-                              width: "100%",
-                            }}
-                          >
-                            <span
+                        {lastFew.length > 0 &&
+                          category !== "Test Class" &&
+                          category !== "Standalone" &&
+                          category !== "Group Class" &&
+                          category !== "Marcar Reposição" && (
+                            <div
                               style={{
-                                fontSize: "0.85rem",
-                                color: "#6c757d",
-                                margin: " 10px 0",
-                                fontWeight: "500",
-                                cursor: "pointer",
+                                display: "flex",
+                                margin: "1rem 0",
+                                justifySelf: "center",
+                                flexDirection: "column",
+                                textAlign: "center",
                                 display: "block",
                                 width: "100%",
-                                borderRadius: "6px",
                               }}
-                              onMouseOver={(e) =>
-                                (e.currentTarget.style.backgroundColor = "#fff")
-                              }
-                              onMouseOut={(e) =>
-                                (e.currentTarget.style.backgroundColor =
-                                  "transparent")
-                              }
-                              onClick={() => setShowLastFew(!showLastFew)}
                             >
-                              Último evento
-                            </span>
-
-                            {showLastFew && (
-                              <ul
+                              <span
                                 style={{
-                                  padding: 0,
-                                  margin: "8px 0",
-                                  maxWidth: "600px",
-                                  listStyle: "none",
+                                  fontSize: "0.85rem",
+                                  color: "#6c757d",
+                                  margin: " 10px 0",
+                                  fontWeight: "500",
+                                  cursor: "pointer",
+                                  display: "block",
+                                  width: "100%",
+                                  borderRadius: "6px",
+                                  fontWeight: 600,
+                                  padding: "8px",
+                                  border: `1px solid ${partnerColor()}`,
+                                  backgroundColor: "transparent",
+                                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                                  transition:
+                                    "background-color 120ms ease, box-shadow 120ms ease",
                                 }}
+                                onMouseOver={(e) =>
+                                  (e.currentTarget.style.backgroundColor =
+                                    "#fff")
+                                }
+                                onMouseOut={(e) =>
+                                  (e.currentTarget.style.backgroundColor =
+                                    "transparent")
+                                }
+                                onClick={() => setShowLastFew(!showLastFew)}
                               >
-                                {lastFew.map((evt) => (
-                                  <li
-                                    key={evt._id || evt.id}
-                                    style={{
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #e5e7eb",
-                                      borderLeft: `3px solid ${
-                                        partnerColor?.() || "#829ad1"
-                                      }`,
-                                      borderRadius: "6px",
-                                      padding: "8px 12px",
-                                      marginBottom: "8px",
-                                      fontSize: "12px",
-                                      display: "grid",
-                                      gridTemplateColumns: "1fr",
-                                      gap: "6px",
-                                      alignItems: "start",
-                                      textAlign: "left",
-                                      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                                      transition:
-                                        "box-shadow 120ms ease, border-color 120ms ease",
-                                    }}
-                                    onMouseEnter={(e) =>
-                                      (e.currentTarget.style.boxShadow =
-                                        "0 2px 6px rgba(0,0,0,0.08)")
-                                    }
-                                    onMouseLeave={(e) =>
-                                      (e.currentTarget.style.boxShadow =
-                                        "0 1px 2px rgba(0,0,0,0.04)")
-                                    }
-                                  >
-                                    <span
+                                Ver últimos 3 eventos
+                              </span>
+
+                              {showLastFew && (
+                                <ul
+                                  style={{
+                                    padding: 0,
+                                    margin: "8px 0",
+                                    // maxWidth: "600px",
+                                    listStyle: "none",
+                                  }}
+                                >
+                                  {lastFew.map((evt) => (
+                                    <li
+                                      key={evt._id || evt.id}
                                       style={{
-                                        fontWeight: 600,
-                                        alignSelf: "start",
-                                        display: "inline-block",
-                                        justifyContent: "space-between",
-                                        padding: "2px 6px",
-                                        display: "flex",
-                                        borderRadius: "4px",
-                                        backgroundColor: "#f3f4f6",
-                                        color: "#111827",
+                                        backgroundColor: "#fff",
                                         border: "1px solid #e5e7eb",
+                                        borderLeft: `3px solid ${
+                                          partnerColor?.() || "#829ad1"
+                                        }`,
+                                        borderRadius: "6px",
+                                        padding: "8px 12px",
+                                        marginBottom: "8px",
+                                        fontSize: "12px",
+                                        display: "grid",
+                                        gridTemplateColumns: "1fr",
+                                        gap: "6px",
+                                        alignItems: "start",
+                                        textAlign: "left",
+                                        boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                                        transition:
+                                          "box-shadow 120ms ease, border-color 120ms ease",
                                       }}
+                                      onMouseEnter={(e) =>
+                                        (e.currentTarget.style.boxShadow =
+                                          "0 2px 6px rgba(0,0,0,0.08)")
+                                      }
+                                      onMouseLeave={(e) =>
+                                        (e.currentTarget.style.boxShadow =
+                                          "0 1px 2px rgba(0,0,0,0.04)")
+                                      }
                                     >
-                                      <span>
-                                        {formatDateBr(evt.date) || "Sem data"}
-                                      </span>
                                       <span
                                         style={{
-                                          cursor: "pointer",
-                                        }}
-                                        onMouseOver={(e) =>
-                                          (e.currentTarget.style.color =
-                                            partnerColor())
-                                        }
-                                        onMouseDown={(e) =>
-                                          (e.currentTarget.style.color =
-                                            "black")
-                                        }
-                                        onClick={() => setShowLastFew(false)}
-                                      >
-                                        x
-                                      </span>
-                                    </span>
-
-                                    <span
-                                      style={{
-                                        opacity: 0.95,
-                                        lineHeight: 1.5,
-                                        color: "#374151",
-                                      }}
-                                    >
-                                      {evt.description || "Sem descrição"}
-                                    </span>
-
-                                    <span
-                                      style={{
-                                        display: "block",
-                                        opacity: 0.95,
-                                        color: "#374151",
-                                      }}
-                                    >
-                                      <strong style={{ fontWeight: 600 }}>
-                                        Homework:
-                                      </strong>
-                                      <div
-                                        style={{
-                                          marginTop: "6px",
-                                          backgroundColor: "#ffffff",
-                                          padding: "0.75rem",
-                                          borderRadius: "6px",
+                                          fontWeight: 600,
+                                          alignSelf: "start",
+                                          display: "inline-block",
+                                          justifyContent: "space-between",
+                                          padding: "2px 6px",
+                                          display: "flex",
+                                          borderRadius: "4px",
+                                          backgroundColor: "#f3f4f6",
+                                          color: "#111827",
                                           border: "1px solid #e5e7eb",
-                                          fontSize: "0.85rem",
-                                          color: "#374151",
-                                          lineHeight: 1.5,
-                                          maxHeight: "150px",
-                                          overflowY: "auto",
-                                          whiteSpace: "pre-wrap",
                                         }}
-                                        dangerouslySetInnerHTML={{
-                                          __html: evt.homework,
-                                        }}
-                                      />
-                                    </span>
+                                      >
+                                        <span>
+                                          {formatDateBr(evt.date) || "Sem data"}
+                                        </span>
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                          }}
+                                          onMouseOver={(e) =>
+                                            (e.currentTarget.style.color =
+                                              partnerColor())
+                                          }
+                                          onMouseDown={(e) =>
+                                            (e.currentTarget.style.color =
+                                              "black")
+                                          }
+                                          onClick={() => setShowLastFew(false)}
+                                        >
+                                          x
+                                        </span>
+                                      </span>
 
-                                    {theLessonLast &&
-                                      theLessonLast.course &&
-                                      theLessonLast.id && (
+                                      <span
+                                        style={{
+                                          opacity: 0.95,
+                                          lineHeight: 1.5,
+                                          color: "#374151",
+                                        }}
+                                      >
+                                        {evt.description || "Sem descrição"}
+                                      </span>
+
+                                      <span
+                                        style={{
+                                          display: "block",
+                                          opacity: 0.95,
+                                          color: "#374151",
+                                        }}
+                                      >
+                                        <strong style={{ fontWeight: 600 }}>
+                                          Homework:
+                                        </strong>
                                         <div
                                           style={{
-                                            display: "flex",
-                                            justifyContent: "flex-start",
-                                            marginTop: "4px",
+                                            marginTop: "6px",
+                                            backgroundColor: "#ffffff",
+                                            padding: "0.75rem",
+                                            borderRadius: "6px",
+                                            border: "1px solid #e5e7eb",
+                                            fontSize: "0.85rem",
+                                            color: "#374151",
+                                            lineHeight: 1.5,
+                                            maxHeight: "150px",
+                                            overflowY: "auto",
+                                            whiteSpace: "pre-wrap",
                                           }}
-                                        >
-                                          <a
-                                            target="_blank"
-                                            href={`/teaching-materials/${theLessonLast.course
-                                              .toLowerCase()
-                                              .replace(/\s+/g, "-")
-                                              .replace(/[^\w\-]+/g, "")}/${
-                                              theLessonLast.id
-                                            }`}
+                                          dangerouslySetInnerHTML={{
+                                            __html: evt.homework,
+                                          }}
+                                        />
+                                      </span>
+
+                                      {theLessonLast &&
+                                        theLessonLast.course &&
+                                        theLessonLast.id && (
+                                          <div
                                             style={{
-                                              display: "inline-flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                              gap: "6px",
-                                              color: partnerColor(),
-                                              textDecoration: "none",
-                                              padding: "8px 10px",
-                                              borderRadius: "6px",
-                                              border: `1px solid ${
-                                                partnerColor?.() || "#829ad1"
-                                              }`,
-                                              backgroundColor:
-                                                textpartnerColorContrast(),
-                                              boxShadow:
-                                                "0 1px 2px rgba(0,0,0,0.04)",
-                                              transition:
-                                                "box-shadow 120ms ease, text-decoration-color 120ms ease",
+                                              display: "flex",
+                                              justifyContent: "flex-start",
+                                              marginTop: "4px",
                                             }}
-                                            onMouseOver={(e) =>
-                                              (e.currentTarget.style.textDecoration =
-                                                "underline")
-                                            }
-                                            onMouseOut={(e) =>
-                                              (e.currentTarget.style.textDecoration =
-                                                "none")
-                                            }
                                           >
-                                            <span style={{ fontWeight: 500 }}>
-                                              Aula relacionada
-                                            </span>
-                                            <span>
-                                              <strong>
-                                                {theLessonLast.title} |{" "}
-                                                {theLessonLast.course}
-                                              </strong>
-                                            </span>
-                                          </a>
-                                        </div>
-                                      )}
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        )}
+                                            <a
+                                              target="_blank"
+                                              href={`/teaching-materials/${theLessonLast.course
+                                                .toLowerCase()
+                                                .replace(/\s+/g, "-")
+                                                .replace(/[^\w\-]+/g, "")}/${
+                                                theLessonLast.id
+                                              }`}
+                                              style={{
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                gap: "6px",
+                                                color: partnerColor(),
+                                                textDecoration: "none",
+                                                padding: "8px 10px",
+                                                borderRadius: "6px",
+                                                border: `1px solid ${
+                                                  partnerColor?.() || "#829ad1"
+                                                }`,
+                                                backgroundColor:
+                                                  textpartnerColorContrast(),
+                                                boxShadow:
+                                                  "0 1px 2px rgba(0,0,0,0.04)",
+                                                transition:
+                                                  "box-shadow 120ms ease, text-decoration-color 120ms ease",
+                                              }}
+                                              onMouseOver={(e) =>
+                                                (e.currentTarget.style.textDecoration =
+                                                  "underline")
+                                              }
+                                              onMouseOut={(e) =>
+                                                (e.currentTarget.style.textDecoration =
+                                                  "none")
+                                              }
+                                            >
+                                              <span style={{ fontWeight: 500 }}>
+                                                Aula relacionada
+                                              </span>
+                                              <span>
+                                                <strong>
+                                                  {theLessonLast.title} |{" "}
+                                                  {theLessonLast.course}
+                                                </strong>
+                                              </span>
+                                            </a>
+                                          </div>
+                                        )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          )}
 
                         {duration && (
                           <div
