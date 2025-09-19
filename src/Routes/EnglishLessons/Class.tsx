@@ -3295,7 +3295,6 @@ export default function EnglishClassCourse2({
                   }, 3000);
                 }
               }}
-              className="isMobileDisapear"
               style={{
                 padding: "6px 12px",
                 fontSize: "11px",
