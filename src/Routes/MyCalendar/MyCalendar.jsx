@@ -2498,8 +2498,8 @@ function MyCalendar({ headers, thePermissions, myId }) {
               </div>
             )}
           </div>
-          <>
             {/*Modal de nossos/edição de eventos particulares */}
+          <div>
             <div
               style={{
                 backgroundColor: transparentWhite(),
@@ -2535,7 +2535,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                   style={{
                     padding: "1.5rem",
                     maxHeight: "40rem",
-                    overflow: "auto",
                     display: "flex",
                     flexDirection: "column",
                     gap: "1.5rem",
@@ -2545,24 +2544,30 @@ function MyCalendar({ headers, thePermissions, myId }) {
                   <div
                     style={{
                       display: "flex",
+                      height: "10px",
                       justifyContent: "space-between",
                       alignItems: "center",
                     }}
                   >
-                    <HTwo
-                      style={{
-                        margin: 0,
-                        color: partnerColor(),
-                      }}
-                    >
-                      {UniversalTexts.calendarModal.accessEvent}
-                    </HTwo>
+                    {name && (
+                      <HOne
+                        style={{
+                          fontWeight: "700",
+                          fontSize: "1.5rem",
+                          }}
+                      >
+                        {name}
+                        {theTime && ` - ${theTime}`}
+                      </HOne>
+                    )}
                     {!loadingInfo && (
-                      <Xp
+                      <span
                         onClick={() => handleCloseModal(date)}
                         style={{
                           cursor: "pointer",
                           color: "#998",
+                          fontSize: "1.5rem",
+                          fontWeight: "800",
                           transition: "color 0.2s",
                         }}
                         onMouseEnter={(e) =>
@@ -2571,7 +2576,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                         onMouseLeave={(e) => (e.target.style.color = "#998")}
                       >
                         ×
-                      </Xp>
+                      </span>
                     )}
                   </div>
                 </div>
@@ -2582,7 +2587,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                   backgroundColor: "#f8f9fa",
                   padding: "1.2rem",
                   borderRadius: "6px",
-                  border: "1px solid #e9ecef",
                   fontSize: "12px",
                   display: "flex",
                   flexDirection: "column",
@@ -2609,19 +2613,13 @@ function MyCalendar({ headers, thePermissions, myId }) {
                           }}
                         >
                           {!postNew && !showEditForm && (
-                            <div style={{ textAlign: "center" }}>
-                              {name && (
-                                <p
-                                  style={{
-                                    fontWeight: "600",
-                                    fontSize: "1rem",
-                                    color: "#6c757d",
-                                    margin: "1rem",
-                                  }}
-                                >
-                                  {name} - {theTime}
-                                </p>
-                              )}
+                            <div
+                              style={{
+                                margin: "1rem",
+
+                                textAlign: "center",
+                              }}
+                            >
                               <button
                                 onClick={() => {
                                   setShowEditForm(true);
@@ -4162,7 +4160,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                             border: "none",
                                             borderRadius: "6px",
                                             cursor: "pointer",
-
                                             fontWeight: "500",
                                           }}
                                         >
@@ -4225,7 +4222,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                           </div>
                         )}
                         {/* Descrição */}
-
                         <div
                           style={{
                             display: "grid",
@@ -5393,7 +5389,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                 </div>
               )}
             </div>
-          </>
+          </div>
           <>
             <div
               style={{
@@ -5700,7 +5696,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                           marginTop: "2px",
                                         }}
                                       >
-                                        {item.day} - {item.time} -
+                                        {item.day} - {item.time}
                                         <Link
                                           target="_blank"
                                           to={item.link}
