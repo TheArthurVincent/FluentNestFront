@@ -51,6 +51,7 @@ import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
 import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 import SubscriptionExpired from "./Routes/SubscriptionExpired";
+import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTeacherAsaas";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -207,6 +208,12 @@ function App() {
       path: "/lp",
       element: (() => {
         return <LandingPageArvin />;
+      })(),
+    },
+        {
+      path: "/lp/arvin",
+      element: (() => {
+        return <TeacherSubscription />;
       })(),
     },
     {

@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
 
 body {
@@ -65,7 +65,6 @@ body {
 
 .thesection-2 {
   background-color: #222;
-
 }
 
 .thesection-3 {
@@ -76,10 +75,12 @@ body {
   color: #222;
 }
 
-.thesection-2 h1 {
-  color: #eee;
+.thesection-2 h1,
+.thesection-1 h1 {
+  color: #df5312;
   font-size: 2rem;
   font-weight: 500;
+  font-family: "Teko", sans-serif;
 }
 
 .thesection-3 h2 {
@@ -110,7 +111,6 @@ body {
   align-items: center;
   gap: 40px;
 }
-
 
 @media (min-width: 768px) {
   .hero-content {
@@ -184,7 +184,6 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-
 @import url("https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
@@ -242,11 +241,9 @@ h4 {
   background-attachment: fixed;
   background-position: center;
   background-image: url("https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769");
-
 }
 
 .section-title {
-  font-family: "Teko", sans-serif;
   font-size: 32px;
   margin-bottom: 40px;
   color: #333;
@@ -326,7 +323,6 @@ h4 {
   gap: 2rem;
 }
 
-
 .cta-button {
   display: inline-block;
   padding: 12px 20px;
@@ -336,7 +332,6 @@ h4 {
   text-decoration: none;
   margin-top: 1.5rem;
 }
-
 
 .hero-image img {
   display: none;
@@ -349,7 +344,6 @@ h4 {
     justify-content: space-between;
     align-items: center;
     text-align: left;
-
   }
 
   .hero-text {

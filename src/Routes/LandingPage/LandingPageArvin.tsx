@@ -200,7 +200,6 @@ function LandingPageArvin() {
                     fontSize: "1.5rem",
                   }}
                 >
-                  {" "}
                   <b>Não existe</b> outra plataforma tão completa para
                   professores!
                 </span>
@@ -211,12 +210,14 @@ function LandingPageArvin() {
                 <br />
                 <b>Organize</b> a sua vida financeira;
                 <br />
-                <b>Ofereça</b> uma excelente plataforma de estudos para os seus alunos.
+                <b>Ofereça</b> uma excelente plataforma de estudos para os seus
+                alunos.
               </p>
               <a
                 style={{ backgroundColor: "#ed5914" }}
-                href="#subscription-section"
+                href="/lp/arvin"
                 className="cta-button"
+                target="_blank"
               >
                 Inscreva-se
               </a>
@@ -268,29 +269,71 @@ function LandingPageArvin() {
             )}
           </div>
         </section>
-        {/* <section className="benefits-section thesection-1">
-          <h1 className="session-title">💬 Veja o que dizem os professores</h1>
-          <div className="testimonial-scroller">
-            {[
-              "https://www.youtube.com/embed/-eSmGb2CkPY",
-              "https://www.youtube.com/embed/X0T1y17ycN8",
-              "https://www.youtube.com/embed/hPnj2UgXZUU",
-              "https://www.youtube.com/embed/uLl_ak4AMOk",
-              "https://youtube.com/embed/rA9JWtcCDBc",
-            ].map((url, index) => (
-              <div className="testimonial-video" key={index}>
-                <iframe
-                  src={url}
-                  title={`Depoimento ${index + 1}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-            ))}
-          </div>
-        </section> */}
-        <section id="subscription-section" className="thesection-1">
-          <TeacherSubscription />
+        <section className="benefits-section thesection-1">
+          <h1>👨‍🏫 Gestão de Alunos</h1>
+          <p>
+            Mantenha o controle total sobre seus alunos com nossas ferramentas
+            de gestão.
+          </p>
+        </section>
+        <section className="benefits-section thesection-2">
+          <h1>📚 Materiais de Aula</h1>
+          <p>
+            Acesse uma biblioteca completa de materiais didáticos para
+            enriquecer suas aulas.
+          </p>
+        </section>
+        <section className="benefits-section thesection-1">
+          <h1>🚀 Curso de Gestão para Professores</h1>
+          <p>
+            Aprenda a gerenciar sua sala de aula de forma eficiente e produtiva.
+          </p>
+        </section>{" "}
+        <section className="benefits-section thesection-2">
+          <h1>🌍 3 Idiomas para Ensinar</h1>
+          <p>
+            Acesse uma biblioteca completa de materiais didáticos para
+            enriquecer suas aulas.
+          </p>
+        </section>
+        <section className="benefits-section thesection-1">
+          <h1>🎧 Ferramentas para Alunos</h1>
+          <p>
+            Acesse uma variedade de ferramentas projetadas para facilitar o
+            aprendizado dos seus alunos.
+          </p>
+        </section>
+        <section className="benefits-section thesection-2">
+          <h1>🎨 Personalização da Plataforma</h1>
+          <p>
+            Acesse uma variedade de ferramentas projetadas para facilitar o
+            aprendizado dos seus alunos.
+          </p>
+        </section>
+        <section className="benefits-section thesection-1">
+          <h1>💰 Gestão Financeira</h1>
+          <p>
+            Acesse uma variedade de ferramentas projetadas para facilitar o
+            gerenciamento financeiro da sua instituição.
+          </p>
+        </section>
+        <section
+          style={{
+            backgroundColor: "#000",
+            padding: "1rem",
+            display: "flex",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
+        >
+          <a
+            style={{ backgroundColor: "#ed5914", margin: 0 }}
+            href="/lp/arvin"
+            className="cta-button"
+            target="_blank"
+          >
+            Inscreva-se
+          </a>
         </section>
         <footer
           className="footer no-print"
@@ -335,3 +378,26 @@ function LandingPageArvin() {
 }
 
 export default LandingPageArvin;
+{
+  /* <section className="benefits-section thesection-1">
+          <h1 className="session-title">💬 Veja o que dizem os professores</h1>
+          <div className="testimonial-scroller">
+            {[
+              "https://www.youtube.com/embed/-eSmGb2CkPY",
+              "https://www.youtube.com/embed/X0T1y17ycN8",
+              "https://www.youtube.com/embed/hPnj2UgXZUU",
+              "https://www.youtube.com/embed/uLl_ak4AMOk",
+              "https://youtube.com/embed/rA9JWtcCDBc",
+            ].map((url, index) => (
+              <div className="testimonial-video" key={index}>
+                <iframe
+                  src={url}
+                  title={`Depoimento ${index + 1}`}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+            ))}
+          </div>
+        </section> */
+}
