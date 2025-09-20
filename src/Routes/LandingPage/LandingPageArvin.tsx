@@ -1,52 +1,58 @@
 import React, { useEffect, useState } from "react";
 import "./styles.lp.css";
 import { useMediaQuery } from "@mui/material";
-import TeacherSubscription from "./SubscriptionTeacher/NewTeacherAsaas";
 
 function LandingPageArvin() {
   const isMobile = useMediaQuery("(max-width:768px)");
-  const videos = [
+  const itemsOfPage = [
     {
       title: "👨‍🏫 Gestão de Alunos",
       description:
         "📊 Organize turmas, acompanhe o desempenho e facilite o controle dos seus alunos.",
       url: "https://www.youtube.com/embed/bobVcB0crX4",
+      href: "gestao-alunos",
     },
     {
       title: "📚 Materiais de Aula",
       description:
         "🔑 Tenha acesso a materiais prontos e organizados, do nível básico ao avançado, para usar em suas aulas de gramática, vocabulário, leitura, escuta e conversação.",
       url: "https://www.youtube.com/embed/4wFkC5XOytI",
+      href: "materiais-aula",
     },
     {
       title: "🚀 Curso de Gestão para Professores",
       description:
         "🌟 Aprenda passo a passo como se tornar um professor particular de sucesso e expandir seu negócio.",
       url: "https://www.youtube.com/embed/a3IOJN_n5VI",
+      href: "curso-gestao",
     },
     {
       title: "🌍 3 Idiomas para Ensinar",
       description:
         "🗣️ Conte com materiais de inglês, espanhol e francês para oferecer mais opções aos seus alunos.",
       url: "https://www.youtube.com/embed/Bz7c-kT6tyE",
+      href: "3-idiomas",
     },
     {
       title: "🎧 Ferramentas para Alunos",
       description:
         "✨ Forneça flashcards e exercícios de escuta e pronúncia para potencializar o aprendizado dos seus alunos.",
       url: "https://www.youtube.com/embed/g4YGm9G9SUw",
+      href: "ferramentas-alunos",
     },
     {
       title: "🎨 Personalização da Plataforma",
       description:
         "⚙️ Adapte a plataforma ao seu estilo de ensino e ofereça uma experiência única aos seus alunos.",
       url: "https://www.youtube.com/embed/a3IOJN_n5VI",
+      href: "personalizacao",
     },
     {
       title: "💰 Gestão Financeira",
       description:
         "📈 Controle pagamentos, organize suas finanças e mantenha a sustentabilidade do seu negócio de aulas particulares.",
       url: "https://www.youtube.com/embed/a3IOJN_n5VI",
+      href: "gestao-financeira",
     },
   ];
 
@@ -101,22 +107,13 @@ function LandingPageArvin() {
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          padding: "12px", // dá altura sem forçar
+          padding: "12px",
           gap: "8px",
           zIndex: 1000,
           boxSizing: "border-box",
         }}
       >
-        <span
-          style={
-            {
-              // marginRight: "1rem",
-            }
-          }
-        >
-          {" "}
-          Entrar como:{" "}
-        </span>
+        <span> Entrar como: </span>
         <a
           style={{
             padding: "4px 6px",
@@ -143,7 +140,7 @@ function LandingPageArvin() {
             borderRadius: "4px",
             textDecoration: "none",
             display: "inline-block",
-            lineHeight: 1, // evita crescer por line-height
+            lineHeight: 1,
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com/login"
@@ -160,7 +157,7 @@ function LandingPageArvin() {
             borderRadius: "4px",
             textDecoration: "none",
             display: "inline-block",
-            lineHeight: 1, // evita crescer por line-height
+            lineHeight: 1,
             whiteSpace: "nowrap",
           }}
           href="https://portal.arvinplatform.com/login"
@@ -169,8 +166,6 @@ function LandingPageArvin() {
           Professor
         </a>{" "}
       </div>
-
-      {/* ESPAÇADOR para não ficar por baixo do header fixo */}
       <div style={{ height: "2.95rem" }} aria-hidden />
       <div className="container">
         <section className="hero-section thesection-1">
@@ -224,117 +219,35 @@ function LandingPageArvin() {
             </div>
           </div>
         </section>
-        {/* Benefícios */}
         <section className="benefits-section thesection-2">
           <h1>Por que empreender conosco?</h1>
           <div className="benefits-cards">
-            {videos.map((video: any, index: any) => (
-              <div
+            {itemsOfPage.map((item: any, index: any) => (
+              <a
                 key={index}
                 className="benefit-card"
-                // onClick={() => setSelectedVideo(video)}
-                style={{ cursor: "auto" }}
+                href={`#${item.href}`}
+                style={{ cursor: "pointer", textDecoration: "none" }}
               >
-                <h3>{video.title}</h3>
-                <p>{video.description}</p>
-              </div>
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </a>
             ))}
-
-            {selectedVideo && (
-              <div
-                className="modal-overlay"
-                onClick={() => setSelectedVideo(null)}
-              >
-                <div
-                  className="modal-content"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <iframe
-                    width="100%"
-                    height="315"
-                    src={selectedVideo.url}
-                    title="YouTube video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                  <button
-                    className="close-button"
-                    onClick={() => setSelectedVideo(null)}
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
         </section>
-        <section className="benefits-section thesection-1">
-          <h1>👨‍🏫 Gestão de Alunos</h1>
-          <p>
-            Mantenha o controle total sobre seus alunos com nossas ferramentas
-            de gestão.
-          </p>
-        </section>
-        <section className="benefits-section thesection-2">
-          <h1>📚 Materiais de Aula</h1>
-          <p>
-            Acesse uma biblioteca completa de materiais didáticos para
-            enriquecer suas aulas.
-          </p>
-        </section>
-        <section className="benefits-section thesection-1">
-          <h1>🚀 Curso de Gestão para Professores</h1>
-          <p>
-            Aprenda a gerenciar sua sala de aula de forma eficiente e produtiva.
-          </p>
-        </section>{" "}
-        <section className="benefits-section thesection-2">
-          <h1>🌍 3 Idiomas para Ensinar</h1>
-          <p>
-            Acesse uma biblioteca completa de materiais didáticos para
-            enriquecer suas aulas.
-          </p>
-        </section>
-        <section className="benefits-section thesection-1">
-          <h1>🎧 Ferramentas para Alunos</h1>
-          <p>
-            Acesse uma variedade de ferramentas projetadas para facilitar o
-            aprendizado dos seus alunos.
-          </p>
-        </section>
-        <section className="benefits-section thesection-2">
-          <h1>🎨 Personalização da Plataforma</h1>
-          <p>
-            Acesse uma variedade de ferramentas projetadas para facilitar o
-            aprendizado dos seus alunos.
-          </p>
-        </section>
-        <section className="benefits-section thesection-1">
-          <h1>💰 Gestão Financeira</h1>
-          <p>
-            Acesse uma variedade de ferramentas projetadas para facilitar o
-            gerenciamento financeiro da sua instituição.
-          </p>
-        </section>
-        <section
-          style={{
-            backgroundColor: "#000",
-            padding: "1rem",
-            display: "flex",
-            justifyContent: "center",
-            alignContent: "center",
-          }}
-        >
-          <a
-            style={{ backgroundColor: "#ed5914", margin: 0 }}
-            href="/lp/arvin"
-            className="cta-button"
-            target="_blank"
+
+        {itemsOfPage.map((section: any, index: any) => (
+          <section
+            key={section.id}
+            id={section.href}
+            className={`benefits-section ${
+              index % 2 === 0 ? "thesection-1" : "thesection-2"
+            }`}
           >
-            Inscreva-se
-          </a>
-        </section>
+            <h1>{section.title}</h1>
+            <p>{section.description}</p>
+          </section>
+        ))}
         <footer
           className="footer no-print"
           style={{
@@ -378,26 +291,3 @@ function LandingPageArvin() {
 }
 
 export default LandingPageArvin;
-{
-  /* <section className="benefits-section thesection-1">
-          <h1 className="session-title">💬 Veja o que dizem os professores</h1>
-          <div className="testimonial-scroller">
-            {[
-              "https://www.youtube.com/embed/-eSmGb2CkPY",
-              "https://www.youtube.com/embed/X0T1y17ycN8",
-              "https://www.youtube.com/embed/hPnj2UgXZUU",
-              "https://www.youtube.com/embed/uLl_ak4AMOk",
-              "https://youtube.com/embed/rA9JWtcCDBc",
-            ].map((url, index) => (
-              <div className="testimonial-video" key={index}>
-                <iframe
-                  src={url}
-                  title={`Depoimento ${index + 1}`}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-            ))}
-          </div>
-        </section> */
-}
