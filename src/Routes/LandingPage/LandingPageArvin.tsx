@@ -8,55 +8,60 @@ function LandingPageArvin() {
     {
       title: "👨‍🏫 Gestão de Alunos",
       description:
-        "📊 Organize turmas, acompanhe o desempenho e facilite o controle dos seus alunos.",
+        "Organize turmas, acompanhe o desempenho e facilite o controle dos seus alunos.",
       url: "https://www.youtube.com/embed/bobVcB0crX4",
       href: "gestao-alunos",
     },
     {
       title: "📚 Materiais de Aula",
       description:
-        "🔑 Tenha acesso a materiais prontos e organizados, do nível básico ao avançado, para usar em suas aulas de gramática, vocabulário, leitura, escuta e conversação.",
+        "Tenha acesso a materiais prontos e organizados, do nível básico ao avançado, para usar em suas aulas de gramática, vocabulário, leitura, escuta e conversação.",
       url: "https://www.youtube.com/embed/4wFkC5XOytI",
       href: "materiais-aula",
     },
     {
       title: "🚀 Curso de Gestão para Professores",
       description:
-        "🌟 Aprenda passo a passo como se tornar um professor particular de sucesso e expandir seu negócio.",
+        "Aprenda passo a passo como se tornar um professor particular de sucesso e expandir seu negócio.",
       url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "curso-gestao",
     },
     {
       title: "🌍 3 Idiomas para Ensinar",
       description:
-        "🗣️ Conte com materiais de inglês, espanhol e francês para oferecer mais opções aos seus alunos.",
+        "Conte com materiais de inglês, espanhol e francês para oferecer mais opções aos seus alunos.",
       url: "https://www.youtube.com/embed/Bz7c-kT6tyE",
       href: "3-idiomas",
     },
     {
       title: "🎧 Ferramentas para Alunos",
       description:
-        "✨ Forneça flashcards e exercícios de escuta e pronúncia para potencializar o aprendizado dos seus alunos.",
+        "Forneça flashcards e exercícios de escuta e pronúncia para potencializar o aprendizado dos seus alunos.",
       url: "https://www.youtube.com/embed/g4YGm9G9SUw",
       href: "ferramentas-alunos",
     },
     {
       title: "🎨 Personalização da Plataforma",
       description:
-        "⚙️ Adapte a plataforma ao seu estilo de ensino e ofereça uma experiência única aos seus alunos.",
+        "Adapte a plataforma ao seu estilo de ensino e ofereça uma experiência única aos seus alunos.",
       url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "personalizacao",
     },
     {
       title: "💰 Gestão Financeira",
       description:
-        "📈 Controle pagamentos, organize suas finanças e mantenha a sustentabilidade do seu negócio de aulas particulares.",
+        "Controle pagamentos, organize suas finanças e mantenha a sustentabilidade do seu negócio de aulas particulares.",
       url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "gestao-financeira",
     },
+    {
+      title: "✨ Assistente de IA",
+      description:
+        "Gerencie seu negócio e conteúdo educacional de forma automatizada e personalizada.",
+      url: "https://www.youtube.com/embed/a3IOJN_n5VI",
+      href: "assistente-ia",
+    },
   ];
-
-  const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
