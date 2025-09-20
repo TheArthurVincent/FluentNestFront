@@ -4310,16 +4310,18 @@ function MyCalendar({ headers, thePermissions, myId }) {
                           category !== "Test Class" &&
                           category !== "Standalone" &&
                           category !== "Group Class" &&
+                          category !== "Established Group Class" &&
                           category !== "Marcar Reposição" && (
                             <div
                               style={{
                                 display: "flex",
-                                margin: "1rem 0",
+                                margin: "1rem",
+                                marginTop: "2rem",
                                 justifySelf: "center",
                                 flexDirection: "column",
                                 textAlign: "center",
                                 display: "block",
-                                width: "100%",
+                                width: "90%",
                               }}
                             >
                               <span
@@ -4358,7 +4360,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     padding: 0,
                                     margin: "8px 0",
-                                    // maxWidth: "600px",
                                     listStyle: "none",
                                   }}
                                 >
