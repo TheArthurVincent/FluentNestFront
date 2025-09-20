@@ -3,7 +3,6 @@ import axios from "axios";
 import React from "react";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import { IFrameAsaas } from "../../HomePage/Blog.Styled";
 import { CircularProgress, Grid, TextField } from "@mui/material";
 import silver from "./assets/teacherssilver.png";
 import gold from "./assets/goldteacher.png";
@@ -554,7 +553,7 @@ export default function TeacherSubscription() {
     );
   }
 
-  const getWhatsAppLink = () => {
+    const getWhatsAppLink = () => {
     const message = `Olá, gostaria de fazer o pagamento da plataforma Arvin no plano ${selectedPlan} Gold à vista via PIX.`;
     return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
   };
@@ -1309,32 +1308,6 @@ export default function TeacherSubscription() {
               </button>
             )}
           </>
-          {/* <div
-            style={{
-              padding: "3rem",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              alignContent: "center",
-            }}
-          >
-            <button
-              onClick={() => window.location.assign(getWhatsAppLink())}
-              style={{
-                backgroundColor: "#25D366",
-                color: "white",
-                padding: "12px 18px",
-                border: "none",
-                borderRadius: "4px",
-                fontSize: "16px",
-                fontWeight: "bold",
-                cursor: "pointer",
-                boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
-              }}
-            >
-              Fale com nossa equipe por WhatsApp!
-            </button>
-          </div> */}
           {error && <p style={styles.error}>{error}</p>}
         </div>
       </form>

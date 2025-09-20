@@ -521,9 +521,11 @@ function MyCalendar({ headers, thePermissions, myId }) {
       setEventFull(response.data.event);
       console.log(response.data.event);
       setLastFew(response.data.event.recentUnmarkedEvents || []);
-      setTheLessonLast(
-        response.data.event.recentUnmarkedEvents[0].theLesson || []
-      );
+      if (response?.data?.event?.recentUnmarkedEvents?.[0]?.theLesson) {
+        setTheLessonLast(
+          response.data.event.recentUnmarkedEvents[0].theLesson || []
+        );
+      }
 
       var theStudentsFromEvent;
       if (response.data.event.listOfStudents) {

@@ -62,6 +62,10 @@ function LandingPageArvin() {
       href: "assistente-ia",
     },
   ];
+  const getWhatsAppLink = () => {
+    const message = `Olá, gostaria de fazer saber mais sobre a plataforma ARVIN.`;
+    return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
+  };
 
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
@@ -253,6 +257,24 @@ function LandingPageArvin() {
             <p>{section.description}</p>
           </section>
         ))}
+        <div
+          style={{
+            padding: "3rem",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            alignContent: "center",
+          }}
+        >
+          <a
+            style={{ backgroundColor: "#ed5914" }}
+            href="/lp/arvin"
+            className="cta-button"
+            target="_blank"
+          >
+            Inscreva-se
+          </a>
+        </div>
         <footer
           className="footer no-print"
           style={{
@@ -279,6 +301,22 @@ function LandingPageArvin() {
               objectFit: "contain",
             }}
           />
+          <button
+            onClick={() => window.location.assign(getWhatsAppLink())}
+            style={{
+              backgroundColor: "#25D366",
+              color: "white",
+              padding: "5px 8px",
+              border: "none",
+              borderRadius: "4px",
+              fontSize: "12px",
+              fontWeight: "700",
+              cursor: "pointer",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+            }}
+          >
+            Fale com nossa equipe por WhatsApp!
+          </button>
           <span
             style={{
               fontFamily: "Lato",
