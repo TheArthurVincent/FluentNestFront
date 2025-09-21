@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./styles.lp.css";
 import { useMediaQuery } from "@mui/material";
+import { IFrameAsaas } from "../HomePage/Blog.Styled";
+import { getResponsiveEmbedUrl } from "../../Resources/UniversalComponents";
 
 function LandingPageArvin() {
   const isMobile = useMediaQuery("(max-width:768px)");
@@ -9,56 +11,59 @@ function LandingPageArvin() {
       title: "👨‍🏫 Gestão de Alunos",
       description:
         "Organize turmas, acompanhe o desempenho e facilite o controle dos seus alunos.",
-      url: "https://www.youtube.com/embed/bobVcB0crX4",
       href: "gestao-alunos",
+      video: "https://www.youtube.com/watch?v=esFGOKs5hPI",
     },
     {
       title: "📚 Materiais de Aula",
       description:
         "Tenha acesso a materiais prontos e organizados, do nível básico ao avançado, para usar em suas aulas de gramática, vocabulário, leitura, escuta e conversação.",
-      url: "https://www.youtube.com/embed/4wFkC5XOytI",
       href: "materiais-aula",
+      video: "https://www.youtube.com/watch?v=sm8xx9d6uRU",
     },
     {
       title: "🚀 Curso de Gestão para Professores",
       description:
         "Aprenda passo a passo como se tornar um professor particular de sucesso e expandir seu negócio.",
-      url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "curso-gestao",
     },
     {
-      title: "🌍 3 Idiomas para Ensinar",
+      title: "🌍 3 Idiomas Para Ensinar",
       description:
         "Conte com materiais de inglês, espanhol e francês para oferecer mais opções aos seus alunos.",
-      url: "https://www.youtube.com/embed/Bz7c-kT6tyE",
       href: "3-idiomas",
+      imgs: [
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/lang?updatedAt=1758412572630",
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/languages?updatedAt=1758410639180",
+      ],
     },
     {
-      title: "🎧 Ferramentas para Alunos",
+      title: "🎧 Ferramentas De Estudos Para Alunos",
       description:
         "Forneça flashcards e exercícios de escuta e pronúncia para potencializar o aprendizado dos seus alunos.",
-      url: "https://www.youtube.com/embed/g4YGm9G9SUw",
       href: "ferramentas-alunos",
+      video: "https://www.youtube.com/watch?v=pUjIuJ4SPfI",
     },
     {
       title: "🎨 Personalização da Plataforma",
       description:
         "Adapte a plataforma ao seu estilo de ensino e ofereça uma experiência única aos seus alunos.",
-      url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "personalizacao",
     },
     {
       title: "💰 Gestão Financeira",
       description:
         "Controle pagamentos, organize suas finanças e mantenha a sustentabilidade do seu negócio de aulas particulares.",
-      url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "gestao-financeira",
+      imgs: [
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/financ?updatedAt=1758412532112",
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/fic?updatedAt=1758412532107",
+      ],
     },
     {
       title: "✨ Assistente de IA",
       description:
         "Gerencie seu negócio e conteúdo educacional de forma automatizada e personalizada.",
-      url: "https://www.youtube.com/embed/a3IOJN_n5VI",
       href: "assistente-ia",
     },
   ];
@@ -255,9 +260,44 @@ function LandingPageArvin() {
           >
             <h1>{section.title}</h1>
             <p>{section.description}</p>
+            {section.video && (
+              <IFrameAsaas src={getResponsiveEmbedUrl(section.video)} />
+            )}
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                position: "relative",
+                gap: "1rem",
+              }}
+            >
+              {section.imgs &&
+                section.imgs.map((img: string, idx: number) => (
+                  <img
+                    key={idx}
+                    src={img}
+                    alt={section.title}
+                    style={{
+                      maxWidth: "32vw",
+                      height: "auto", // 🔒 garante que não mude a proporção
+                      borderRadius: "12px",
+                      marginTop: "3rem",
+                      boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
+                      transform: `rotate(${
+                        idx % 2 === 0 ? -3 : 3
+                      }deg) translateX(${idx * -30}px)`,
+                      zIndex: section.imgs.length - idx,
+                      position: "relative",
+                      transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                      objectFit: "contain", // extra segurança contra distorções
+                    }}
+                  />
+                ))}
+            </div>
           </section>
         ))}
-        <div
+        <section
           style={{
             padding: "3rem",
             display: "flex",
@@ -265,6 +305,7 @@ function LandingPageArvin() {
             alignItems: "center",
             alignContent: "center",
           }}
+          className="thesection-2"
         >
           <a
             style={{ backgroundColor: "#ed5914" }}
@@ -274,7 +315,7 @@ function LandingPageArvin() {
           >
             Inscreva-se
           </a>
-        </div>
+        </section>
         <footer
           className="footer no-print"
           style={{
