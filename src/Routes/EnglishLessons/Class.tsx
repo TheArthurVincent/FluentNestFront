@@ -54,6 +54,7 @@ import VocabularyLesson from "./Assets/LessonsModels/VocabularyLessonModel";
 import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
 import AudioFile from "./Assets/LessonsModels/AudioSoundTrackGD";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
+import ExerciseRunner from "./Exercises/Exercises";
 const styles = {
   container: {
     maxWidth: "90vw",
@@ -3761,7 +3762,14 @@ export default function EnglishClassCourse2({
                   ))}
             </div>
           </div>
-
+          <ExerciseRunner
+            elements={theclass.elements}
+            count={5}
+            dictationItems={5}
+            studentId={studentID}
+            headers={headers}
+            selectedVoice={selectedVoice}
+          />
           <div
             style={{
               display: "flex",
