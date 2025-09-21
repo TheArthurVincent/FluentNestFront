@@ -305,7 +305,7 @@ function LandingPageArvin() {
             alignItems: "center",
             alignContent: "center",
           }}
-          className="thesection-2"
+          className="thesection-1"
         >
           <a
             style={{ backgroundColor: "#ed5914" }}
