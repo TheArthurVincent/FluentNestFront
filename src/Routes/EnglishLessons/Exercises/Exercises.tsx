@@ -572,16 +572,18 @@ export default function ExerciseRunner({
   return (
     <div
       style={{
+        top: 10,
+        left: "50%",
+        width: "99vw",
+        height: "97vh",
+        transform: "translateX(-50%)",
         position: "fixed",
         display: theDisplay,
         backgroundColor: "white",
-        width: "90vw",
-        top: 25,
         borderRadius: "6px",
         zIndex: 100,
         padding: "1rem",
         boxShadow: "2px 2px 10px 5px #ddd",
-        maxHeight: "90vh",
         boxSizing: "border-box",
         overflow: "auto",
       }}
