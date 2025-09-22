@@ -1,12 +1,13 @@
-import axios from "axios";
-import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
-import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { backDomain } from "../../../../Resources/UniversalComponents";
-
-
+import {
+  Card,
+  defaultLabels,
+  exerciseScore,
+  HeaderBar,
+  shuffle,
+} from "../Exercises";
+import React, { useEffect, useMemo, useState } from "react";
 
 function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
@@ -89,7 +90,9 @@ function hasTTS(): boolean {
 export function DictationExercise({
   sentences,
   itemsCount,
+  headers,
   labels,
+  studentId,
   selectedVoice,
   language,
 }: {
@@ -135,13 +138,14 @@ export function DictationExercise({
   const wordsExpected = wordCount(target);
   const wordsTyped = wordCount(answer);
   const similarity = similarityPercentage(target, answer);
+  //arredondar para baixo para nota de 0 a 10 * numero de palavras
+  const roundedSimilarity =
+    similarity >= 50 ? Math.floor(similarity / 20) * wordsExpected : 0;
   const { matches, total, perWordCorrect, gtTokens, atTokens } =
     countPositionMatches(target, answer);
 
-  const progressPct = Math.round(((index + 1) / pool.length) * 100);
+  const progressPct = Math.round(((index ) / pool.length) * 100);
 
-
-  
   return (
     <div
       style={{
@@ -197,7 +201,7 @@ export function DictationExercise({
               marginBottom: 8,
             }}
           >
-            {labels.yourAnswer}
+            {labels.yourAnswer}:
           </label>
 
           <textarea
@@ -337,94 +341,12 @@ export function DictationExercise({
             >
               📊 Similaridade (Levenshtein): <strong>{similarity}%</strong>
             </span>
+            <span>🏆 Sua nota:{roundedSimilarity}</span>
           </div>
 
-          {/* Barras de progresso */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-              gap: 12,
-              fontSize: 12,
-            }}
-          >
-            {/* <div>
-              <div style={{ marginBottom: 6, color: "#6B7280" }}>
-                Palavras Digitadas
-              </div>
-              <div
-                style={{
-                  height: 8,
-                  borderRadius: 999,
-                  background: "#FFFFFF",
-                  border: "1px solid #E5E7EB",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    height: 8,
-                    width: `${Math.min(
-                      100,
-                      (wordsTyped / Math.max(1, wordsExpected)) * 100
-                    )}%`,
-                    background: "#111827",
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div style={{ marginBottom: 6, color: "#6B7280" }}>
-                Corretas por Posição
-              </div>
-              <div
-                style={{
-                  height: 8,
-                  borderRadius: 999,
-                  background: "#FFFFFF",
-                  border: "1px solid #E5E7EB",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    height: 8,
-                    width: `${total ? (matches / total) * 100 : 0}%`,
-                    background: "#059669",
-                  }}
-                />
-              </div>
-            </div>
-
-            <div>
-              <div style={{ marginBottom: 6, color: "#6B7280" }}>
-                Similaridade
-              </div>
-              <div
-                style={{
-                  height: 8,
-                  borderRadius: 999,
-                  background: "#FFFFFF",
-                  border: "1px solid #E5E7EB",
-                  overflow: "hidden",
-                }}
-              >
-                <div
-                  style={{
-                    height: 8,
-                    width: `${similarity}%`,
-                    background: "#4F46E5",
-                  }}
-                />
-              </div>
-            </div> */}
-          </div>
-
-          {/* Destaque por posição */}
           <div style={{ marginTop: 16, display: "grid", gap: 8 }}>
             <div style={{ fontSize: 12, color: "#6B7280" }}>
-              Sua resposta (por posição):
+              Sua resposta
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {atTokens.map((w, i) => (
@@ -503,22 +425,18 @@ export function DictationExercise({
         {index < pool.length - 1 ? (
           <button
             onClick={() => {
+              exerciseScore(
+                roundedSimilarity,
+                studentId,
+                headers,
+                `Ditado: ${target} / Resposta: ${answer}`
+              );
               setIndex((i) => i + 1);
               setAnswer("");
               setChecked(false);
               setShowKey(false);
               if (hasTTS()) window.speechSynthesis.cancel();
             }}
-            // style={{
-            //   padding: "10px 16px",
-            //   borderRadius: 6,
-            //   color: "#FFFFFF",
-            //   background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-            //   border: "1px solid #0B1220",
-            //   cursor: "pointer",
-            //   boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
-            //   fontWeight: 700,
-            // }}
           >
             {defaultLabels.next} ▶︎
           </button>

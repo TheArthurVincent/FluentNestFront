@@ -12,7 +12,7 @@ export type ImageItem = {
 export type Labels = typeof defaultLabels;
 
 export const defaultLabels = {
-  imageToWordTitle: "🖼️ Que imagem é essa?",
+  imageToWordTitle: "Que imagem é essa?",
   of: "de",
   next: "Próximo",
   noImages: "Não há imagens disponíveis nesta aula.",
@@ -205,6 +205,7 @@ export default function ImageToWordExercise({
             width: "100%",
             maxWidth: 448,
             height: 224,
+            border: "1px solid #eee",
             objectFit: "cover",
             borderRadius: 6,
           }}

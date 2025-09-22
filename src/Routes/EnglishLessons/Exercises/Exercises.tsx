@@ -1,12 +1,13 @@
-import React, { useMemo, useState } from "react";
-import { DictationExercise } from "./Exercises/DictationExercise";
-import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { HOne } from "../../../Resources/Components/RouteBox";
-import WordToImageExercise from "./Exercises/WordToImageExercise";
-import ImageToWordExercise from "./Exercises/ImageToWordExercise";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { notifyAlert } from "../Assets/Functions/FunctionLessons";
+import React, { useMemo, useState } from "react";
+import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
+import { HOne } from "../../../Resources/Components/RouteBox";
+import { DictationExercise } from "./Exercises/DictationExercise";
+import WordToImageExercise from "./Exercises/WordToImageExercise";
+import ImageToWordExercise from "./Exercises/ImageToWordExercise";
+import { partnerColor } from "../../../Styles/Styles";
 
 export const exerciseScore = async (
   score: number,
@@ -14,18 +15,19 @@ export const exerciseScore = async (
   headers: any,
   description: string
 ) => {
+  console.log("Score:", score, studentId, description);
   try {
-    await axios.put(
-      `${backDomain}/api/v1/exercisereview/${studentId}`,
+    var response = await axios.put(
+      `${backDomain}/api/v1/exercise-score/${studentId}`,
       {
         score,
         description,
-        dayToday: new Date(),
       },
       { headers: headers || undefined }
     );
+    notifyAlert(response.data.message || "Sucesso", partnerColor());
   } catch (error) {
-    notifyAlert("Erro ao enviar cards");
+    notifyAlert("Erro ao pontuar");
   }
 };
 
@@ -85,7 +87,6 @@ type ElementItem =
 
 type ExerciseRunnerProps = {
   elements?: ElementItem[];
-  /** não é mais usado para fluxo linear, mas mantido por compatibilidade */
   count?: number;
   display?: boolean;
   setDisplay?: (v: boolean) => void;
@@ -97,7 +98,6 @@ type ExerciseRunnerProps = {
   language?: string;
 };
 
-/* ================ Labels ================ */
 export const defaultLabels = {
   exercise: "Exercício",
   of: "de",
@@ -106,7 +106,8 @@ export const defaultLabels = {
   doneAll: "Você concluiu todos os exercícios! 🎉",
   play: "Ouvir",
   retry: "Ouvir de novo",
-  yourAnswer: "Sua resposta",
+  yourAnswer:
+    "Sua resposta (Para pontuar, você precisa acertar pelo menos 50% do texto.)",
   check: "Conferir",
   correctWords: "Palavras corretas",
   accuracy: "Precisão",
@@ -120,7 +121,6 @@ export const defaultLabels = {
   continue: "Continuar",
 };
 
-/* ================ Utils ================= */
 export function shuffle<T>(arr: T[]): T[] {
   const a = (arr || []).slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -156,7 +156,6 @@ function getFirstImagesBlock(elements?: ElementItem[]): ImageItem[] {
   return block?.images?.length ? block.images : [];
 }
 
-/* ================ UI base ================ */
 export function Card({
   children,
 }: {
@@ -212,7 +211,6 @@ export function HeaderBar({
   );
 }
 
-/* ================ Catálogo ================= */
 type CatalogCtx = {
   elements?: ElementItem[];
   labels: typeof defaultLabels;
@@ -228,7 +226,6 @@ type ExerciseEntry = {
   render: (ctx: CatalogCtx) => React.ReactNode | null;
 };
 
-/* =============== Runner =============== */
 export default function ExerciseRunner({
   elements = [],
   dictationItems = 10000,
@@ -254,6 +251,8 @@ export default function ExerciseRunner({
         if (!sentences.length) return null;
         return (
           <DictationExercise
+            headers={headers}
+            studentId={studentId}
             selectedVoice={selectedVoice}
             language={language}
             sentences={sentences}
@@ -299,9 +298,7 @@ export default function ExerciseRunner({
     [sentences.length, imgs.length]
   );
 
-  // modo selecionado (primeiro elegível por padrão)
   const [activeKey, setActiveKey] = useState<string>(available[0]?.key ?? "");
-  // contador para "reiniciar" o exercício (remonta o componente)
   const [restartTick, setRestartTick] = useState(0);
 
   const activeEntry = useMemo(
@@ -311,7 +308,6 @@ export default function ExerciseRunner({
 
   const theDisplay = display ? "flex" : "none";
 
-  // Sem nada elegível
   if (!available.length) {
     return (
       <Card>
@@ -384,7 +380,6 @@ export default function ExerciseRunner({
           X
         </span>
 
-        {/* Seletor de modo */}
         <div style={{ width: "100%" }}>
           <HeaderBar title="Escolha o tipo de exercício" />
           <div
@@ -403,7 +398,7 @@ export default function ExerciseRunner({
                   key={entry.key}
                   onClick={() => {
                     setActiveKey(entry.key);
-                    setRestartTick((t) => t + 1); // reinicia ao trocar de modo
+                    setRestartTick((t) => t + 1);
                   }}
                   style={{
                     padding: "8px 12px",
@@ -461,7 +456,7 @@ export default function ExerciseRunner({
             gap: 8,
           }}
         >
-          {/* <button
+          <button
             onClick={() => setRestartTick((t) => t + 1)}
             style={{
               padding: "10px 16px",
@@ -475,7 +470,7 @@ export default function ExerciseRunner({
             title="Reiniciar o exercício atual"
           >
             Reiniciar
-          </button> */}
+          </button>
         </div>
       </div>
     </div>
