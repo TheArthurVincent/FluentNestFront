@@ -4,8 +4,31 @@ import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
+import axios from "axios";
+import { backDomain } from "../../../Resources/UniversalComponents";
+import { notifyAlert } from "../Assets/Functions/FunctionLessons";
 
-/* ================= Tipos ================= */
+export const exerciseScore = async (
+  score: number,
+  studentId: string | undefined,
+  headers: any,
+  description: string
+) => {
+  try {
+    await axios.put(
+      `${backDomain}/api/v1/exercisereview/${studentId}`,
+      {
+        score,
+        description,
+        dayToday: new Date(),
+      },
+      { headers: headers || undefined }
+    );
+  } catch (error) {
+    notifyAlert("Erro ao enviar cards");
+  }
+};
+
 type SentenceItem = { portuguese: string; english?: string };
 type ImageItem = {
   img: string;
@@ -136,7 +159,6 @@ function getFirstImagesBlock(elements?: ElementItem[]): ImageItem[] {
 /* ================ UI base ================ */
 export function Card({
   children,
-  className = "",
 }: {
   children: React.ReactNode;
   className?: string;
@@ -228,19 +250,10 @@ export default function ExerciseRunner({
     {
       key: "dictation_from_sentences",
       title: "Ditado",
-      render: ({
-        elements,
-        labels,
-        dictationItems,
-        studentId,
-        headers,
-        selectedVoice,
-      }) => {
+      render: ({ labels, dictationItems, selectedVoice }) => {
         if (!sentences.length) return null;
         return (
           <DictationExercise
-            studentId={studentId}
-            headers={headers}
             selectedVoice={selectedVoice}
             language={language}
             sentences={sentences}
@@ -253,7 +266,7 @@ export default function ExerciseRunner({
     {
       key: "images_to_word",
       title: "Que imagem é essa?",
-      render: ({ elements, labels }) => {
+      render: ({ labels }) => {
         if (!imgs.length) return null;
         return (
           <ImageToWordExercise
@@ -268,14 +281,13 @@ export default function ExerciseRunner({
     {
       key: "word_to_images",
       title: "Qual é a imagem correta?",
-      render: ({ elements, labels }) => {
+      render: ({ labels }) => {
         if (!imgs.length) return null;
         return <WordToImageExercise images={imgs} labels={labels} />;
       },
     },
   ];
 
-  // filtra catálogos elegíveis pelo conteúdo disponível
   const available = useMemo(
     () =>
       exerciseCatalog.filter((e) => {

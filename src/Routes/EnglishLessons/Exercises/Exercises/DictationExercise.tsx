@@ -1,8 +1,12 @@
+import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+
+
 
 function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
@@ -86,8 +90,6 @@ export function DictationExercise({
   sentences,
   itemsCount,
   labels,
-  studentId,
-  headers,
   selectedVoice,
   language,
 }: {
@@ -95,7 +97,7 @@ export function DictationExercise({
   itemsCount: number;
   labels: typeof defaultLabels;
   studentId?: string;
-  headers?: MyHeadersType | null;
+  headers?: any;
   selectedVoice?: string;
   language?: string;
 }) {
@@ -138,6 +140,8 @@ export function DictationExercise({
 
   const progressPct = Math.round(((index + 1) / pool.length) * 100);
 
+
+  
   return (
     <div
       style={{

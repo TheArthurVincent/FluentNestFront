@@ -3268,103 +3268,102 @@ export default function EnglishClassCourse2({
               justifyContent: "space-between",
               margin: "0.5rem 0",
               padding: "4px 8px",
-              background: "rgba(255,255,255)", // evita transparência por trás
-              position: "sticky", // cola no topo ao chegar
-              top: "3.6rem", // mesma altura da topbar/espacador
-              zIndex: 5, // fica acima do conteúdo
+              background: "rgba(255,255,255)",
+              position: "sticky",
+              top: "3.6rem",
+              zIndex: 5,
               flexWrap: "wrap",
               gap: "8px",
-              backdropFilter: "saturate(1.1) blur(2px)", // opcional
-              boxShadow: "0 1px 8px rgba(0,0,0,0.06)", // opcional
+              backdropFilter: "saturate(1.1) blur(2px)",
+              boxShadow: "0 1px 8px rgba(0,0,0,0.06)",
             }}
           >
             <span
-            style={{
-              display:"flex",gap:"5px"
-            }}
-            >
-            <button
-              title="Ver Quadro"
-              onClick={() => {
-                if (chosenStudent) {
-                  handleGetBoard(studentID);
-                  setTimeout(() => {
-                    setSeeSlides(!seeSlides);
-                    setConfirm(false);
-                  }, 500);
-                } else {
-                  notifyAlert("Escolha um aluno", partnerColor());
-
-                  setSeeMarginBoardStudent(true);
-                  setTimeout(() => {
-                    setSeeMarginBoardStudent(false);
-                  }, 3000);
-                }
-              }}
               style={{
-                padding: "6px 12px",
-                fontSize: "11px",
-                fontWeight: "500",
-                borderRadius: "4px",
-                height: "28px",
-                gap: "6px",
-                border: "1px solid #e2e8f0",
-                background: seeSlides ? partnerColor() : "#f8fafc",
-                color: seeSlides ? "white" : "#64748b",
-                boxShadow: "none",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-                fontFamily: textGeneralFont(),
-              }}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                if (!seeSlides) {
-                  target.style.background = "#f1f5f9";
-                }
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                if (!seeSlides) {
-                  target.style.background = "#f8fafc";
-                }
+                display: "flex",
+                gap: "5px",
               }}
             >
-              Lousa
-            </button>
-            <button
-              style={{
-                padding: "6px 12px",
-                fontSize: "11px",
-                fontWeight: "500",
-                borderRadius: "4px",
-                height: "28px",
-                gap: "6px",
-                border: "1px solid #e2e8f0",
-                background: seeSlides ? partnerColor() : "#f8fafc",
-                color: seeSlides ? "white" : "#64748b",
-                boxShadow: "none",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-                fontFamily: textGeneralFont(),
-              }}
-              onMouseEnter={(e) => {
-                const target = e.target as HTMLElement;
-                if (!seeSlides) {
-                  target.style.background = "#f1f5f9";
-                }
-              }}
-              onMouseLeave={(e) => {
-                const target = e.target as HTMLElement;
-                if (!seeSlides) {
-                  target.style.background = "#f8fafc";
-                }
-              }}
-              onClick={() => setDisplay(true)}
-            >
-              Exercícios
-            </button>
+              <button
+                title="Ver Quadro"
+                onClick={() => {
+                  if (chosenStudent) {
+                    handleGetBoard(studentID);
+                    setTimeout(() => {
+                      setSeeSlides(!seeSlides);
+                      setConfirm(false);
+                    }, 500);
+                  } else {
+                    notifyAlert("Escolha um aluno", partnerColor());
 
-
+                    setSeeMarginBoardStudent(true);
+                    setTimeout(() => {
+                      setSeeMarginBoardStudent(false);
+                    }, 3000);
+                  }
+                }}
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "11px",
+                  fontWeight: "500",
+                  borderRadius: "4px",
+                  height: "28px",
+                  gap: "6px",
+                  border: "1px solid #e2e8f0",
+                  background: seeSlides ? partnerColor() : "#f8fafc",
+                  color: seeSlides ? "white" : "#64748b",
+                  boxShadow: "none",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                  fontFamily: textGeneralFont(),
+                }}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (!seeSlides) {
+                    target.style.background = "#f1f5f9";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (!seeSlides) {
+                    target.style.background = "#f8fafc";
+                  }
+                }}
+              >
+                Lousa
+              </button>
+              <button
+                style={{
+                  padding: "6px 12px",
+                  fontSize: "11px",
+                  fontWeight: "500",
+                  borderRadius: "4px",
+                  height: "28px",
+                  gap: "6px",
+                  border: "1px solid #e2e8f0",
+                  background: seeSlides ? partnerColor() : "#f8fafc",
+                  color: seeSlides ? "white" : "#64748b",
+                  boxShadow: "none",
+                  transition: "all 0.2s ease",
+                  cursor: "pointer",
+                  fontFamily: textGeneralFont(),
+                }}
+                onMouseEnter={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (!seeSlides) {
+                    target.style.background = "#f1f5f9";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (!seeSlides) {
+                    target.style.background = "#f8fafc";
+                  }
+                }}
+                onClick={() => setDisplay(true)}
+              >
+                Exercícios
+              </button>
             </span>
             <div
               style={{
