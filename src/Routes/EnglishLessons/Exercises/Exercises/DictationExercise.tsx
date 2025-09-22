@@ -154,10 +154,6 @@ export function DictationExercise({
           right: -40,
           width: 160,
           height: 160,
-          borderRadius: "50%",
-          background:
-            "radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 70%)",
-          filter: "blur(24px)",
         }}
       />
       <HeaderBar
