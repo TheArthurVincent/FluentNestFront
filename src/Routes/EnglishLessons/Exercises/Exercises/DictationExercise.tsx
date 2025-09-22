@@ -145,7 +145,6 @@ export function DictationExercise({
         overflow: "hidden",
       }}
     >
-      {/* Top gradient decorativo */}
       <div
         style={{
           pointerEvents: "none",

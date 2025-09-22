@@ -148,7 +148,7 @@ export function Card({
         maxWidth: 672,
         marginLeft: "auto",
         marginRight: "auto",
-        borderRadius: 16,
+        borderRadius:6,
         border: "1px solid #E5E7EB",
         background: "#fff",
         boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
@@ -373,12 +373,13 @@ export default function ExerciseRunner({
         </span>
 
         {/* Seletor de modo */}
-        <div style={{ width: "100%", maxWidth: 672 }}>
+        <div style={{ width: "100%" }}>
           <HeaderBar title="Escolha o tipo de exercício" />
           <div
             style={{
-              display: "flex",
+              display: "grid",
               gap: 8,
+              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
               flexWrap: "wrap",
               marginBottom: 8,
             }}
@@ -394,7 +395,6 @@ export default function ExerciseRunner({
                   }}
                   style={{
                     padding: "8px 12px",
-                    borderRadius: 999,
                     fontSize: 13,
                     fontWeight: 700,
                     border: isActive
