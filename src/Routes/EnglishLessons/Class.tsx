@@ -3278,6 +3278,11 @@ export default function EnglishClassCourse2({
               boxShadow: "0 1px 8px rgba(0,0,0,0.06)", // opcional
             }}
           >
+            <span
+            style={{
+              display:"flex",gap:"5px"
+            }}
+            >
             <button
               title="Ver Quadro"
               onClick={() => {
@@ -3324,13 +3329,43 @@ export default function EnglishClassCourse2({
                 }
               }}
             >
-              <i
-                className={seeSlides ? "fa fa-eye-slash" : "fa fa-eye"}
-                aria-hidden="true"
-                style={{ fontSize: "10px" }}
-              />
-              {seeSlides ? "Hide Board" : "See Board"}
+              Lousa
             </button>
+            <button
+              style={{
+                padding: "6px 12px",
+                fontSize: "11px",
+                fontWeight: "500",
+                borderRadius: "4px",
+                height: "28px",
+                gap: "6px",
+                border: "1px solid #e2e8f0",
+                background: seeSlides ? partnerColor() : "#f8fafc",
+                color: seeSlides ? "white" : "#64748b",
+                boxShadow: "none",
+                transition: "all 0.2s ease",
+                cursor: "pointer",
+                fontFamily: textGeneralFont(),
+              }}
+              onMouseEnter={(e) => {
+                const target = e.target as HTMLElement;
+                if (!seeSlides) {
+                  target.style.background = "#f1f5f9";
+                }
+              }}
+              onMouseLeave={(e) => {
+                const target = e.target as HTMLElement;
+                if (!seeSlides) {
+                  target.style.background = "#f8fafc";
+                }
+              }}
+              onClick={() => setDisplay(true)}
+            >
+              Exercícios
+            </button>
+
+
+            </span>
             <div
               style={{
                 display: "flex",
@@ -3762,9 +3797,7 @@ export default function EnglishClassCourse2({
                   ))}
             </div>
           </div>
-          <button onClick={() => setDisplay(true)}>
-            Fazer exercícios desta lição
-          </button>
+
           <ExerciseRunner
             display={display}
             setDisplay={setDisplay}
