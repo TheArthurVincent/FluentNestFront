@@ -58,7 +58,7 @@ type ElementItem =
   | ElementAudio;
 
 type ExerciseRunnerProps = {
-  elements?: ElementItem[]; // <-- agora opcional
+  elements?: ElementItem[];
   count?: number;
   dictationItems?: number;
   labels?: Partial<typeof defaultLabels>;
@@ -139,7 +139,17 @@ export function Card({
 }) {
   return (
     <div
-      className={`w-full max-w-2xl mx-auto rounded-2xl border border-gray-200 bg-white shadow-sm p-5 ${className}`}
+      style={{
+        width: "100%",
+        maxWidth: 672,
+        marginLeft: "auto",
+        marginRight: "auto",
+        borderRadius: 16,
+        border: "1px solid #E5E7EB",
+        background: "#fff",
+        boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
+        boxSizing: "border-box",
+      }}
     >
       {children}
     </div>
@@ -153,8 +163,22 @@ export function HeaderBar({
   right?: React.ReactNode;
 }) {
   return (
-    <div className="flex items-center justify-between mb-4">
-      <h3 className="text-lg md:text-xl font-semibold tracking-tight">
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 16,
+      }}
+    >
+      <h3
+        style={{
+          fontSize: 20,
+          fontWeight: 700,
+          letterSpacing: "-0.01em",
+          margin: 0,
+        }}
+      >
         {title}
       </h3>
       <div>{right}</div>
@@ -170,9 +194,16 @@ export function Pill({
 }) {
   return (
     <span
-      className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-        active ? "bg-black text-white" : "bg-gray-100 text-gray-700"
-      }`}
+      style={{
+        display: "inline-flex",
+        padding: "6px 10px",
+        borderRadius: 999,
+        fontSize: 12,
+        fontWeight: 600,
+        background: active ? "#111827" : "#F3F4F6",
+        color: active ? "#FFFFFF" : "#374151",
+        border: active ? "1px solid #111827" : "1px solid #E5E7EB",
+      }}
     >
       {children}
     </span>
@@ -191,7 +222,7 @@ function ImageToWordExercise({
   if (!safeImgs.length)
     return (
       <Card>
-        <div className="text-sm text-gray-500">{labels.noImages}</div>
+        <div style={{ fontSize: 14, color: "#6B7280" }}>{labels.noImages}</div>
       </Card>
     );
 
@@ -215,33 +246,53 @@ function ImageToWordExercise({
           </Pill>
         }
       />
-      <div className="flex justify-center mb-4">
+      <div
+        style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}
+      >
         <img
           src={current.img}
           alt="quiz"
-          className="w-full max-w-md h-56 object-cover rounded-2xl border border-gray-200 shadow-sm"
           loading="lazy"
+          style={{
+            width: "100%",
+            maxWidth: 448,
+            height: 224,
+            objectFit: "cover",
+            borderRadius: 16,
+            border: "1px solid #E5E7EB",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+          }}
         />
       </div>
 
-      <div className="grid gap-3">
+      <div style={{ display: "grid", gap: 12 }}>
         {options.map((opt, i) => {
           const isChosen = answered === i;
           const isCorrect = opt === current;
-          const state =
-            answered === null
-              ? "bg-white hover:bg-gray-50"
-              : isChosen
-              ? isCorrect
-                ? "bg-emerald-100 border-emerald-400"
-                : "bg-rose-100 border-rose-400"
-              : "bg-white";
+          const baseStyle: React.CSSProperties = {
+            textAlign: "left",
+            padding: "12px 16px",
+            borderRadius: 12,
+            border: "1px solid #E5E7EB",
+            cursor: answered === null ? "pointer" : "default",
+            background: "#FFFFFF",
+            transition: "background 160ms ease, border-color 160ms ease",
+          };
+          if (answered === null) {
+            baseStyle.background = "#FFFFFF";
+          } else if (isChosen && isCorrect) {
+            baseStyle.background = "#D1FAE5";
+            baseStyle.border = "1px solid #34D399";
+          } else if (isChosen && !isCorrect) {
+            baseStyle.background = "#FEE2E2";
+            baseStyle.border = "1px solid #FCA5A5";
+          }
           return (
             <button
               key={i}
               onClick={() => setAnswered(i)}
               disabled={answered !== null}
-              className={`text-left px-4 py-3 rounded-xl border ${state}`}
+              style={baseStyle}
             >
               {optionLabel(opt)}
             </button>
@@ -250,13 +301,22 @@ function ImageToWordExercise({
       </div>
 
       {answered !== null && (
-        <div className="mt-5 flex justify-end">
+        <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
           <button
             onClick={() => {
               setAnswered(null);
               setIndex((i) => (i + 1) % pool.length);
             }}
-            className="px-4 py-2 rounded-xl bg-black text-white"
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              color: "#FFFFFF",
+              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+              border: "1px solid #0B1220",
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
+              fontWeight: 700,
+            }}
           >
             {labels.next} ▶︎
           </button>
@@ -266,7 +326,6 @@ function ImageToWordExercise({
   );
 }
 
-/* ===== Exercício 3 – Palavra → Imagem ===== */
 function WordToImageExercise({
   images,
   labels,
@@ -278,7 +337,7 @@ function WordToImageExercise({
   if (!safeImgs.length)
     return (
       <Card>
-        <div className="text-sm text-gray-500">{labels.noImages}</div>
+        <div style={{ fontSize: 14, color: "#6B7280" }}>{labels.noImages}</div>
       </Card>
     );
 
@@ -302,35 +361,55 @@ function WordToImageExercise({
           </Pill>
         }
       />
-      <p className="text-center text-xl font-medium mb-4">
+      <p
+        style={{
+          textAlign: "center",
+          fontSize: 18,
+          fontWeight: 600,
+          marginBottom: 16,
+        }}
+      >
         {optionLabel(current)}
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+          gap: 16,
+        }}
+      >
         {options.map((opt, i) => {
           const isChosen = answered === i;
           const isCorrect = opt === current;
-          const border =
-            answered === null
-              ? "border-gray-300 hover:border-black"
-              : isChosen
-              ? isCorrect
-                ? "border-emerald-500"
-                : "border-rose-500"
-              : "border-gray-300";
-
+          let borderColor = "#D1D5DB";
+          if (answered !== null && isChosen) {
+            borderColor = isCorrect ? "#10B981" : "#EF4444";
+          }
           return (
             <button
               key={i}
               onClick={() => setAnswered(i)}
               disabled={answered !== null}
-              className={`rounded-2xl overflow-hidden border ${border} transition-colors`}
+              style={{
+                borderRadius: 16,
+                overflow: "hidden",
+                border: `2px solid ${borderColor}`,
+                transition: "border-color 160ms ease",
+                cursor: answered === null ? "pointer" : "default",
+                background: "#FFFFFF",
+              }}
             >
               <img
                 src={opt.img}
                 alt="quiz"
-                className="w-full h-40 object-cover"
                 loading="lazy"
+                style={{
+                  width: "100%",
+                  height: 160,
+                  objectFit: "cover",
+                  display: "block",
+                }}
               />
             </button>
           );
@@ -338,13 +417,22 @@ function WordToImageExercise({
       </div>
 
       {answered !== null && (
-        <div className="mt-5 flex justify-end">
+        <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
           <button
             onClick={() => {
               setAnswered(null);
               setIndex((i) => (i + 1) % pool.length);
             }}
-            className="px-4 py-2 rounded-xl bg-black text-white"
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              color: "#FFFFFF",
+              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+              border: "1px solid #0B1220",
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
+              fontWeight: 700,
+            }}
           >
             {labels.next} ▶︎
           </button>
@@ -367,7 +455,7 @@ type ExerciseEntry = {
 
 /* =============== Runner =============== */
 export default function ExerciseRunner({
-  elements = [], // <-- fallback seguro
+  elements = [],
   count = 3,
   dictationItems = 5,
   labels: labelsProp,
@@ -393,22 +481,22 @@ export default function ExerciseRunner({
         );
       },
     },
-    {
-      key: "images_to_word",
-      render: ({ elements, labels }) => {
-        const imgs = getFirstImagesBlock(elements);
-        if (!imgs.length) return null;
-        return <ImageToWordExercise images={imgs} labels={labels} />;
-      },
-    },
-    {
-      key: "word_to_images",
-      render: ({ elements, labels }) => {
-        const imgs = getFirstImagesBlock(elements);
-        if (!imgs.length) return null;
-        return <WordToImageExercise images={imgs} labels={labels} />;
-      },
-    },
+    // {
+    //   key: "images_to_word",
+    //   render: ({ elements, labels }) => {
+    //     const imgs = getFirstImagesBlock(elements);
+    //     if (!imgs.length) return null;
+    //     return <ImageToWordExercise images={imgs} labels={labels} />;
+    //   },
+    // },
+    // {
+    //   key: "word_to_images",
+    //   render: ({ elements, labels }) => {
+    //     const imgs = getFirstImagesBlock(elements);
+    //     if (!imgs.length) return null;
+    //     return <WordToImageExercise images={imgs} labels={labels} />;
+    //   },
+    // },
   ];
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
@@ -433,7 +521,7 @@ export default function ExerciseRunner({
     const needed = Math.max(0, count - base.length);
     const shuffledOthers = shuffle(others).map((e) => e.key);
     return [...base, ...shuffledOthers.slice(0, needed)];
-  }, [count, eligible.length, sentencesCount, imagesCount]); // deps seguras
+  }, [count, eligible.length, sentencesCount, imagesCount]);
 
   const rendered = useMemo(
     () =>
@@ -449,11 +537,19 @@ export default function ExerciseRunner({
     return (
       <Card>
         <HeaderBar title="Sem exercícios disponíveis" />
-        <p className="text-gray-600">
+        <p style={{ color: "#4B5563", marginTop: 0 }}>
           Esta aula não possui conteúdo suficiente para gerar exercícios
           automáticos.
         </p>
-        <ul className="mt-3 list-disc list-inside text-sm text-gray-600">
+        <ul
+          style={{
+            marginTop: 12,
+            paddingLeft: 18,
+            color: "#4B5563",
+            fontSize: 14,
+            listStyleType: "disc",
+          }}
+        >
           <li>
             Adicione pelo menos um bloco <code>sentences</code> para habilitar o
             ditado.
@@ -468,33 +564,79 @@ export default function ExerciseRunner({
   }
 
   return (
-    <div className="w-full flex flex-col items-center gap-6">
-      <div className="w-full max-w-2xl">
-        <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 24,
+      }}
+    >
+      <div style={{ width: "100%", maxWidth: 672 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            fontSize: 14,
+            color: "#4B5563",
+            marginBottom: 8,
+          }}
+        >
           <span>
             {labels.exercise} {index + 1} {labels.of} {rendered.length}
           </span>
-          <span className="hidden sm:inline">
+          <span style={{ display: "inline" }}>
             {(rendered[index]?.key || "").replace(/_/g, " ")}
           </span>
         </div>
-        <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+        <div
+          style={{
+            width: "100%",
+            height: 8,
+            background: "#F3F4F6",
+            borderRadius: 999,
+            overflow: "hidden",
+          }}
+        >
           <div
-            className="h-2 bg-black transition-all"
-            style={{ width: `${((index + 1) / rendered.length) * 100}%` }}
+            style={{
+              height: 8,
+              width: `${((index + 1) / rendered.length) * 100}%`,
+              background: "#111827",
+              transition: "width 240ms ease",
+            }}
           />
         </div>
       </div>
 
-      <div className="w-full">
+      <div style={{ width: "100%" }}>
         {rendered[index]?.render({ elements: safeEls, labels, dictationItems })}
       </div>
 
-      <div className="w-full max-w-2xl flex items-center justify-between">
+      <div
+        style={{
+          width: "100%",
+          maxWidth: 672,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        {/* Botão Voltar (opcional) */}
         {/* <button
           disabled={index === 0}
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
-          className={`px-4 py-2 rounded-xl ${index === 0 ? "bg-gray-100 text-gray-400" : "bg-gray-200 hover:bg-gray-300"}`}
+          style={{
+            padding: "10px 16px",
+            borderRadius: 12,
+            color: index === 0 ? "#9CA3AF" : "#111827",
+            background: index === 0 ? "#F3F4F6" : "#E5E7EB",
+            cursor: index === 0 ? "not-allowed" : "pointer",
+            border: "1px solid #E5E7EB",
+            fontWeight: 600,
+          }}
         >
           ◀︎ {defaultLabels.back}
         </button> */}
@@ -504,12 +646,31 @@ export default function ExerciseRunner({
             onClick={() =>
               setIndex((i) => Math.min(rendered.length - 1, i + 1))
             }
-            className="px-4 py-2 rounded-xl bg-black text-white"
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              color: "#FFFFFF",
+              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+              border: "1px solid #0B1220",
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
+              fontWeight: 700,
+              marginLeft: "auto",
+            }}
           >
             {labels.next} ▶︎
           </button>
         ) : (
-          <span className="text-sm text-emerald-700">{labels.doneAll}</span>
+          <span
+            style={{
+              fontSize: 14,
+              color: "#065F46",
+              fontWeight: 600,
+              marginLeft: "auto",
+            }}
+          >
+            {labels.doneAll}
+          </span>
         )}
       </div>
     </div>

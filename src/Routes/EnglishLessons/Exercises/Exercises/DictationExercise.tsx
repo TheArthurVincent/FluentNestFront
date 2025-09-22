@@ -16,14 +16,6 @@ const normalizeText = (text: string): string => {
     .trim();
 };
 
-function cleanString(str: string): string {
-  return (str || "")
-    .toLowerCase()
-    .replace(/\s+/g, " ")
-    .replace(/[^\x20-\x7E]/g, "")
-    .trim();
-}
-
 function levenshteinDistance(str1: string, str2: string): number {
   const s1 = str1 || "";
   const s2 = str2 || "";
@@ -92,7 +84,6 @@ function hasTTS(): boolean {
   );
 }
 
-/* ====== COMPONENTE ====== */
 export function DictationExercise({
   sentences,
   itemsCount,
@@ -109,6 +100,7 @@ export function DictationExercise({
   selectedVoice?: string;
 }) {
   const [seed, setSeed] = useState(0);
+
   const pool = useMemo(
     () => shuffle(sentences).slice(0, Math.min(itemsCount, sentences.length)),
     [sentences, itemsCount, seed]
@@ -118,7 +110,6 @@ export function DictationExercise({
   const [answer, setAnswer] = useState("");
   const [checked, setChecked] = useState(false);
   const [showKey, setShowKey] = useState(false);
-  const [rate, setRate] = useState<0.8 | 1 | 1.1>(0.95 as any); // suavemente lento/normal/rápido (usando 0.95 como “normalzinho”)
 
   const current = pool[index];
   const target = current?.english || ""; // ditado em INGLÊS
@@ -128,20 +119,6 @@ export function DictationExercise({
       if (hasTTS()) window.speechSynthesis.cancel();
     };
   }, []);
-
-  function speak(text: string) {
-    if (!hasTTS() || !text) return;
-    try {
-      window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(text);
-      u.rate = rate; // usa o seletor
-      u.pitch = 1;
-      u.lang = "en-US";
-      window.speechSynthesis.speak(u);
-    } catch {
-      /* noop */
-    }
-  }
 
   if (!pool.length || !target) {
     return (
@@ -162,9 +139,32 @@ export function DictationExercise({
   const progressPct = Math.round(((index + 1) / pool.length) * 100);
 
   return (
-    <Card className="relative overflow-hidden">
+    <div
+      style={{
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 20,
+        background: "#ffffff",
+        boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
+        padding: 20,
+      }}
+    >
       {/* Top gradient decorativo */}
-      <div className="pointer-events-none absolute -top-10 -right-10 w-40 h-40 rounded-full bg-gradient-to-br from-black/5 to-black/0 blur-2xl" />
+      <div
+        style={{
+          pointerEvents: "none",
+          position: "absolute",
+          top: -40,
+          right: -40,
+          width: 160,
+          height: 160,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(ellipse at center, rgba(0,0,0,0.06) 0%, rgba(0,0,0,0) 70%)",
+          filter: "blur(24px)",
+        }}
+      />
+
       <HeaderBar
         title={labels.dictationTitle}
         right={
@@ -175,34 +175,73 @@ export function DictationExercise({
       />
 
       {/* Progresso linear */}
-      <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-4">
+      <div
+        style={{
+          width: "100%",
+          height: 8,
+          background: "#F2F4F7",
+          borderRadius: 999,
+          overflow: "hidden",
+          marginBottom: 16,
+        }}
+      >
         <div
-          className="h-2 bg-black transition-all"
-          style={{ width: `${progressPct}%` }}
+          style={{
+            height: 8,
+            width: `${progressPct}%`,
+            background: "#111827",
+            transition: "width 240ms ease",
+          }}
         />
       </div>
 
       {/* Controles de áudio + seed */}
-      <div className="flex flex-wrap items-center gap-2 mb-4">
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 8,
+          marginBottom: 16,
+        }}
+      >
         <button
           onClick={() => {
             readText(target, true, "en", selectedVoice);
           }}
           disabled={!target}
-          className={`px-4 py-2 rounded-xl ${
-            target
-              ? "bg-black text-white hover:opacity-90"
-              : "bg-gray-200 text-gray-500 cursor-not-allowed"
-          }`}
           aria-label={labels.play}
           title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
+          style={{
+            padding: "10px 16px",
+            borderRadius: 12,
+            border: "1px solid transparent",
+            cursor: target ? "pointer" : "not-allowed",
+            opacity: target ? 1 : 0.6,
+            color: target ? "#FFFFFF" : "#9CA3AF",
+            background: target
+              ? "linear-gradient(180deg, #111827 0%, #0B1220 100%)"
+              : "#E5E7EB",
+            boxShadow: target ? "0 4px 12px rgba(17,24,39,0.18)" : "none",
+            fontWeight: 600,
+          }}
         >
           🔊 {labels.play}
         </button>
       </div>
-      <label className="block text-sm font-medium mb-2">
+
+      <label
+        style={{
+          display: "block",
+          fontSize: 13,
+          fontWeight: 600,
+          color: "#111827",
+          marginBottom: 8,
+        }}
+      >
         {labels.yourAnswer}
       </label>
+
       <textarea
         value={answer}
         onChange={(e) => {
@@ -216,30 +255,88 @@ export function DictationExercise({
           }
         }}
         rows={4}
-        className="w-full rounded-xl border border-gray-300 p-3 outline-none focus:ring-2 focus:ring-black/15"
         placeholder="Digite exatamente o que ouviu…"
+        style={{
+          width: "100%",
+          borderRadius: 14,
+          border: "1px solid #D1D5DB",
+          padding: 12,
+          outline: "none",
+          boxSizing: "border-box",
+          fontSize: 14,
+          lineHeight: 1.5,
+        }}
       />
-      <div className="mt-1 text-xs text-gray-500">
+
+      <div
+        style={{
+          marginTop: 6,
+          fontSize: 12,
+          color: "#6B7280",
+        }}
+      >
         Dica: pressione{" "}
-        <kbd className="px-1 py-0.5 rounded border bg-gray-50">Ctrl</kbd> +{" "}
-        <kbd className="px-1 py-0.5 rounded border bg-gray-50">Enter</kbd> para
-        conferir.
+        <kbd
+          style={{
+            padding: "2px 6px",
+            borderRadius: 6,
+            border: "1px solid #E5E7EB",
+            background: "#F9FAFB",
+          }}
+        >
+          Ctrl
+        </kbd>{" "}
+        +{" "}
+        <kbd
+          style={{
+            padding: "2px 6px",
+            borderRadius: 6,
+            border: "1px solid #E5E7EB",
+            background: "#F9FAFB",
+          }}
+        >
+          Enter
+        </kbd>{" "}
+        para conferir.
       </div>
 
       {/* Ações */}
-      <div className="flex flex-wrap items-center gap-3 mt-4">
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          gap: 12,
+          marginTop: 16,
+        }}
+      >
         <button
           onClick={() => setChecked(true)}
-          className="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:opacity-95"
+          style={{
+            padding: "10px 16px",
+            borderRadius: 12,
+            color: "#FFFFFF",
+            background: "linear-gradient(180deg, #059669 0%, #047857 100%)",
+            border: "1px solid #047857",
+            fontWeight: 700,
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(4,120,87,0.25)",
+          }}
         >
           ✅ {labels.check}
         </button>
 
-        {/* Mostrar gabarito SÓ depois do check */}
         {checked && (
           <button
             onClick={() => setShowKey((s) => !s)}
-            className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200"
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              background: "#F3F4F6",
+              border: "1px solid #E5E7EB",
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
           >
             {showKey ? "🙈 Ocultar gabarito" : "👀 Mostrar gabarito"}
           </button>
@@ -248,93 +345,196 @@ export function DictationExercise({
 
       {/* Resultados */}
       {checked && (
-        <div className="mt-5 rounded-2xl border border-gray-200 p-4 bg-gray-50">
-          <div className="flex flex-wrap items-center gap-2 text-sm mb-3">
-            <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white border">
+        <div
+          style={{
+            marginTop: 20,
+            borderRadius: 16,
+            border: "1px solid #E5E7EB",
+            padding: 16,
+            background: "#F9FAFB",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 8,
+              fontSize: 13,
+              marginBottom: 12,
+            }}
+          >
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+              }}
+            >
               🧮 Palavras:{" "}
               <strong>
                 {wordsTyped}/{wordsExpected}
               </strong>
             </span>
-            <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white border">
+
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+              }}
+            >
               🎯 Corretas por posição:{" "}
               <strong>
                 {matches}/{total}
               </strong>
             </span>
-            <span className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-white border">
+
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+              }}
+            >
               📊 Similaridade (Levenshtein): <strong>{similarity}%</strong>
             </span>
           </div>
 
           {/* Barras de progresso */}
-          <div className="grid sm:grid-cols-3 gap-3 text-xs">
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+              gap: 12,
+              fontSize: 12,
+            }}
+          >
             <div>
-              <div className="mb-1 text-gray-600">Palavras Digitadas</div>
-              <div className="h-2 rounded-full bg-white border overflow-hidden">
+              <div style={{ marginBottom: 6, color: "#6B7280" }}>
+                Palavras Digitadas
+              </div>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  border: "1px solid #E5E7EB",
+                  overflow: "hidden",
+                }}
+              >
                 <div
-                  className="h-2 bg-black"
                   style={{
+                    height: 8,
                     width: `${Math.min(
                       100,
                       (wordsTyped / Math.max(1, wordsExpected)) * 100
                     )}%`,
+                    background: "#111827",
                   }}
                 />
               </div>
             </div>
+
             <div>
-              <div className="mb-1 text-gray-600">Corretas por Posição</div>
-              <div className="h-2 rounded-full bg-white border overflow-hidden">
+              <div style={{ marginBottom: 6, color: "#6B7280" }}>
+                Corretas por Posição
+              </div>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  border: "1px solid #E5E7EB",
+                  overflow: "hidden",
+                }}
+              >
                 <div
-                  className="h-2 bg-emerald-600"
-                  style={{ width: `${total ? (matches / total) * 100 : 0}%` }}
+                  style={{
+                    height: 8,
+                    width: `${total ? (matches / total) * 100 : 0}%`,
+                    background: "#059669",
+                  }}
                 />
               </div>
             </div>
+
             <div>
-              <div className="mb-1 text-gray-600">Similaridade</div>
-              <div className="h-2 rounded-full bg-white border overflow-hidden">
+              <div style={{ marginBottom: 6, color: "#6B7280" }}>
+                Similaridade
+              </div>
+              <div
+                style={{
+                  height: 8,
+                  borderRadius: 999,
+                  background: "#FFFFFF",
+                  border: "1px solid #E5E7EB",
+                  overflow: "hidden",
+                }}
+              >
                 <div
-                  className="h-2 bg-indigo-600"
-                  style={{ width: `${similarity}%` }}
+                  style={{
+                    height: 8,
+                    width: `${similarity}%`,
+                    background: "#4F46E5",
+                  }}
                 />
               </div>
             </div>
           </div>
 
           {/* Destaque por posição */}
-          <div className="mt-4 grid gap-2">
-            <div className="text-xs text-gray-500">
+          <div style={{ marginTop: 16, display: "grid", gap: 8 }}>
+            <div style={{ fontSize: 12, color: "#6B7280" }}>
               Sua resposta (por posição):
             </div>
-            <div className="flex flex-wrap gap-2">
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {atTokens.map((w, i) => (
                 <span
                   key={`at-${i}-${w}-${index}`}
-                  className={`px-2 py-1 rounded-lg border ${
-                    perWordCorrect[i]
-                      ? "bg-emerald-100 border-emerald-300"
-                      : "bg-rose-100 border-rose-300"
-                  }`}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 10,
+                    border: `1px solid ${
+                      perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
+                    }`,
+                    background: perWordCorrect[i] ? "#D1FAE5" : "#FEE2E2",
+                  }}
                 >
                   {w}
                 </span>
               ))}
             </div>
 
-            <div className="text-xs text-gray-500 mt-3">
+            <div style={{ fontSize: 12, color: "#6B7280", marginTop: 12 }}>
               Gabarito (por posição):
             </div>
-            <div className="flex flex-wrap gap-2">
+
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {gtTokens.map((w, i) => (
                 <span
                   key={`gt-${i}-${w}-${index}`}
-                  className={`px-2 py-1 rounded-lg border ${
-                    perWordCorrect[i]
-                      ? "bg-emerald-100 border-emerald-300"
-                      : "bg-gray-100 border-gray-300"
-                  }`}
+                  style={{
+                    padding: "6px 10px",
+                    borderRadius: 10,
+                    border: `1px solid ${
+                      perWordCorrect[i] ? "#A7F3D0" : "#E5E7EB"
+                    }`,
+                    background: perWordCorrect[i] ? "#D1FAE5" : "#F3F4F6",
+                  }}
                 >
                   {w}
                 </span>
@@ -346,16 +546,35 @@ export function DictationExercise({
 
       {/* Gabarito literal (só após check) */}
       {checked && showKey && (
-        <div className="mt-4 p-3 rounded-xl bg-yellow-50 border border-yellow-200 text-sm">
+        <div
+          style={{
+            marginTop: 16,
+            padding: 12,
+            borderRadius: 12,
+            background: "#FFFBEB",
+            border: "1px solid #FDE68A",
+            fontSize: 14,
+            color: "#1F2937",
+          }}
+        >
           <strong>Gabarito:</strong> {target}
           {current.portuguese && (
-            <div className="text-gray-600 mt-1">{current.portuguese}</div>
+            <div style={{ color: "#6B7280", marginTop: 6 }}>
+              {current.portuguese}
+            </div>
           )}
         </div>
       )}
 
       {/* Navegação básica */}
-      <div className="mt-6 flex justify-end items-center">
+      <div
+        style={{
+          marginTop: 24,
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+        }}
+      >
         {index < pool.length - 1 ? (
           <button
             onClick={() => {
@@ -365,16 +584,31 @@ export function DictationExercise({
               setShowKey(false);
               if (hasTTS()) window.speechSynthesis.cancel();
             }}
-            className="px-4 py-2 rounded-xl bg-black text-white"
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              color: "#FFFFFF",
+              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+              border: "1px solid #0B1220",
+              cursor: "pointer",
+              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
+              fontWeight: 700,
+            }}
           >
             {defaultLabels.next} ▶︎
           </button>
         ) : (
-          <span className="text-sm text-emerald-700">
+          <span
+            style={{
+              fontSize: 14,
+              color: "#065F46",
+              fontWeight: 600,
+            }}
+          >
             {defaultLabels.continue}
           </span>
         )}
       </div>
-    </Card>
+    </div>
   );
 }
