@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { readText } from "../../Assets/Functions/FunctionLessons";
+import { HOne } from "../../../../Resources/Components/RouteBox";
 
 export type ImageItem = {
   img: string;
@@ -11,7 +12,7 @@ export type ImageItem = {
 export type Labels = typeof defaultLabels;
 
 export const defaultLabels = {
-  imageToWordTitle: "🖼️ Imagem → Tradução",
+  imageToWordTitle: "🖼️ Que imagem é essa?",
   of: "de",
   next: "Próximo",
   noImages: "Não há imagens disponíveis nesta aula.",
@@ -63,7 +64,7 @@ function HeaderBar({
         marginBottom: 16,
       }}
     >
-      <h2
+      <HOne
         style={{
           fontSize: 20,
           fontWeight: 700,
@@ -72,7 +73,7 @@ function HeaderBar({
         }}
       >
         {title}
-      </h2>
+      </HOne>
       <div>{right}</div>
     </div>
   );

@@ -91,9 +91,9 @@ export const defaultLabels = {
   hideAnswer: "Ocultar gabarito",
   loadingSentences: "Não há frases disponíveis nesta aula.",
   noImages: "Não há imagens disponíveis nesta aula.",
-  dictationTitle: "✍️ Ditado",
-  imageToWordTitle: "🖼️ Imagem → Tradução",
-  wordToImageTitle: "🔤 Palavra → Imagem",
+  dictationTitle: "Ditado",
+  imageToWordTitle: "Que imagem é essa?",
+  wordToImageTitle: "Qual é a imagem correta?",
   continue: "Continuar",
 };
 
@@ -148,7 +148,7 @@ export function Card({
         maxWidth: 672,
         marginLeft: "auto",
         marginRight: "auto",
-        borderRadius:6,
+        borderRadius: 6,
         border: "1px solid #E5E7EB",
         background: "#fff",
         boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
@@ -227,7 +227,7 @@ export default function ExerciseRunner({
   const exerciseCatalog: ExerciseEntry[] = [
     {
       key: "dictation_from_sentences",
-      title: "Ditado (de frases)",
+      title: "Ditado",
       render: ({
         elements,
         labels,
@@ -252,7 +252,7 @@ export default function ExerciseRunner({
     },
     {
       key: "images_to_word",
-      title: "Imagem → Tradução",
+      title: "Que imagem é essa?",
       render: ({ elements, labels }) => {
         if (!imgs.length) return null;
         return (
@@ -267,7 +267,7 @@ export default function ExerciseRunner({
     },
     {
       key: "word_to_images",
-      title: "Palavra → Imagens",
+      title: "Qual é a imagem correta?",
       render: ({ elements, labels }) => {
         if (!imgs.length) return null;
         return <WordToImageExercise images={imgs} labels={labels} />;
