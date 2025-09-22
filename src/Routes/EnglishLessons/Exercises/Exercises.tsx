@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
-import { transparentBlack } from "../../../Styles/Styles";
+import { HOne } from "../../../Resources/Components/RouteBox";
+import WordToImageExercise from "./Exercises/WordToImageExercise";
+import ImageToWordExercise from "./Exercises/ImageToWordExercise";
 
 /* ================= Tipos ================= */
 type SentenceItem = { portuguese: string; english?: string };
@@ -174,7 +176,7 @@ export function HeaderBar({
         marginBottom: 16,
       }}
     >
-      <h3
+      <HOne
         style={{
           fontSize: 20,
           fontWeight: 700,
@@ -183,7 +185,7 @@ export function HeaderBar({
         }}
       >
         {title}
-      </h3>
+      </HOne>
       <div>{right}</div>
     </div>
   );
@@ -213,238 +215,6 @@ export function Pill({
   );
 }
 
-/* ===== Exercício 2 – Imagem → Tradução ===== */
-function ImageToWordExercise({
-  images,
-  labels,
-}: {
-  images: ImageItem[];
-  labels: typeof defaultLabels;
-}) {
-  const safeImgs = Array.isArray(images) ? images.filter((i) => i?.img) : [];
-  if (!safeImgs.length)
-    return (
-      <Card>
-        <div style={{ fontSize: 14, color: "#6B7280" }}>{labels.noImages}</div>
-      </Card>
-    );
-
-  const pool = useMemo(() => shuffle(safeImgs), [safeImgs]);
-  const [index, setIndex] = useState(0);
-  const [answered, setAnswered] = useState<number | null>(null);
-  const current = pool[index];
-
-  const options = useMemo(() => {
-    const others = shuffle(pool.filter((img) => img !== current)).slice(0, 2);
-    return shuffle([current, ...others]);
-  }, [current, pool]);
-
-  return (
-    <Card>
-      <HeaderBar
-        title={labels.imageToWordTitle}
-        right={
-          <Pill>
-            {index + 1} {labels.of} {pool.length}
-          </Pill>
-        }
-      />
-      <div
-        style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}
-      >
-        <img
-          src={current.img}
-          alt="quiz"
-          loading="lazy"
-          style={{
-            width: "100%",
-            maxWidth: 448,
-            height: 224,
-            objectFit: "cover",
-            borderRadius: 16,
-            border: "1px solid #E5E7EB",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
-          }}
-        />
-      </div>
-
-      <div style={{ display: "grid", gap: 12 }}>
-        {options.map((opt, i) => {
-          const isChosen = answered === i;
-          const isCorrect = opt === current;
-          const baseStyle: React.CSSProperties = {
-            textAlign: "left",
-            padding: "12px 16px",
-            borderRadius: 12,
-            border: "1px solid #E5E7EB",
-            cursor: answered === null ? "pointer" : "default",
-            background: "#FFFFFF",
-            transition: "background 160ms ease, border-color 160ms ease",
-          };
-          if (answered === null) {
-            baseStyle.background = "#FFFFFF";
-          } else if (isChosen && isCorrect) {
-            baseStyle.background = "#D1FAE5";
-            baseStyle.border = "1px solid #34D399";
-          } else if (isChosen && !isCorrect) {
-            baseStyle.background = "#FEE2E2";
-            baseStyle.border = "1px solid #FCA5A5";
-          }
-          return (
-            <button
-              key={i}
-              onClick={() => setAnswered(i)}
-              disabled={answered !== null}
-              style={baseStyle}
-            >
-              {optionLabel(opt)}
-            </button>
-          );
-        })}
-      </div>
-
-      {answered !== null && (
-        <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
-          <button
-            onClick={() => {
-              setAnswered(null);
-              setIndex((i) => (i + 1) % pool.length);
-            }}
-            style={{
-              padding: "10px 16px",
-              borderRadius: 12,
-              color: "#FFFFFF",
-              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-              border: "1px solid #0B1220",
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
-              fontWeight: 700,
-            }}
-          >
-            {labels.next} ▶︎
-          </button>
-        </div>
-      )}
-    </Card>
-  );
-}
-
-function WordToImageExercise({
-  images,
-  labels,
-}: {
-  images: ImageItem[];
-  labels: typeof defaultLabels;
-}) {
-  const safeImgs = Array.isArray(images) ? images.filter((i) => i?.img) : [];
-  if (!safeImgs.length)
-    return (
-      <Card>
-        <div style={{ fontSize: 14, color: "#6B7280" }}>{labels.noImages}</div>
-      </Card>
-    );
-
-  const pool = useMemo(() => shuffle(safeImgs), [safeImgs]);
-  const [index, setIndex] = useState(0);
-  const [answered, setAnswered] = useState<number | null>(null);
-  const current = pool[index];
-
-  const options = useMemo(() => {
-    const others = shuffle(pool.filter((img) => img !== current)).slice(0, 2);
-    return shuffle([current, ...others]);
-  }, [current, pool]);
-
-  return (
-    <Card>
-      <HeaderBar
-        title={labels.wordToImageTitle}
-        right={
-          <Pill>
-            {index + 1} {labels.of} {pool.length}
-          </Pill>
-        }
-      />
-      <p
-        style={{
-          textAlign: "center",
-          fontSize: 18,
-          fontWeight: 600,
-          marginBottom: 16,
-        }}
-      >
-        {optionLabel(current)}
-      </p>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: 16,
-        }}
-      >
-        {options.map((opt, i) => {
-          const isChosen = answered === i;
-          const isCorrect = opt === current;
-          let borderColor = "#D1D5DB";
-          if (answered !== null && isChosen) {
-            borderColor = isCorrect ? "#10B981" : "#EF4444";
-          }
-          return (
-            <button
-              key={i}
-              onClick={() => setAnswered(i)}
-              disabled={answered !== null}
-              style={{
-                borderRadius: 16,
-                overflow: "hidden",
-                border: `2px solid ${borderColor}`,
-                transition: "border-color 160ms ease",
-                cursor: answered === null ? "pointer" : "default",
-                background: "#FFFFFF",
-              }}
-            >
-              <img
-                src={opt.img}
-                alt="quiz"
-                loading="lazy"
-                style={{
-                  width: "100%",
-                  height: 160,
-                  objectFit: "cover",
-                  display: "block",
-                }}
-              />
-            </button>
-          );
-        })}
-      </div>
-
-      {answered !== null && (
-        <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
-          <button
-            onClick={() => {
-              setAnswered(null);
-              setIndex((i) => (i + 1) % pool.length);
-            }}
-            style={{
-              padding: "10px 16px",
-              borderRadius: 12,
-              color: "#FFFFFF",
-              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-              border: "1px solid #0B1220",
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
-              fontWeight: 700,
-            }}
-          >
-            {labels.next} ▶︎
-          </button>
-        </div>
-      )}
-    </Card>
-  );
-}
-
 /* ================ Catálogo ================= */
 type CatalogCtx = {
   elements?: ElementItem[];
@@ -469,23 +239,23 @@ export default function ExerciseRunner({
   selectedVoice,
 }: ExerciseRunnerProps) {
   const exerciseCatalog: ExerciseEntry[] = [
-    {
-      key: "dictation_from_sentences",
-      render: ({ elements, labels, dictationItems }) => {
-        const sentences = getAllSentences(elements);
-        if (!sentences.length) return null;
-        return (
-          <DictationExercise
-            studentId={studentId}
-            headers={headers}
-            selectedVoice={selectedVoice}
-            sentences={sentences}
-            itemsCount={dictationItems}
-            labels={labels}
-          />
-        );
-      },
-    },
+    // {
+    //   key: "dictation_from_sentences",
+    //   render: ({ elements, labels, dictationItems }) => {
+    //     const sentences = getAllSentences(elements);
+    //     if (!sentences.length) return null;
+    //     return (
+    //       <DictationExercise
+    //         studentId={studentId}
+    //         headers={headers}
+    //         selectedVoice={selectedVoice}
+    //         sentences={sentences}
+    //         itemsCount={dictationItems}
+    //         labels={labels}
+    //       />
+    //     );
+    //   },
+    // },
     // {
     //   key: "images_to_word",
     //   render: ({ elements, labels }) => {
@@ -494,14 +264,14 @@ export default function ExerciseRunner({
     //     return <ImageToWordExercise images={imgs} labels={labels} />;
     //   },
     // },
-    // {
-    //   key: "word_to_images",
-    //   render: ({ elements, labels }) => {
-    //     const imgs = getFirstImagesBlock(elements);
-    //     if (!imgs.length) return null;
-    //     return <WordToImageExercise images={imgs} labels={labels} />;
-    //   },
-    // },
+    {
+      key: "word_to_images",
+      render: ({ elements, labels }) => {
+        const imgs = getFirstImagesBlock(elements);
+        if (!imgs.length) return null;
+        return <WordToImageExercise images={imgs} labels={labels} />;
+      },
+    },
   ];
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
@@ -707,7 +477,7 @@ export default function ExerciseRunner({
                 marginLeft: "auto",
               }}
             >
-              {labels.doneAll}
+              {/* {labels.doneAll} */}
             </span>
           )}
         </div>

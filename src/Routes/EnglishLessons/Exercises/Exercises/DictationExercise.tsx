@@ -144,7 +144,7 @@ export function DictationExercise({
       style={{
         position: "relative",
         overflow: "hidden",
-        borderRadius: 20,
+        borderRadius: 6,
         background: "#ffffff",
         boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
         padding: 20,
@@ -165,7 +165,6 @@ export function DictationExercise({
           filter: "blur(24px)",
         }}
       />
-
       <HeaderBar
         title={labels.dictationTitle}
         right={
@@ -174,8 +173,6 @@ export function DictationExercise({
           </Pill>
         }
       />
-
-      {/* Progresso linear */}
       <div
         style={{
           width: "100%",
@@ -194,41 +191,6 @@ export function DictationExercise({
             transition: "width 240ms ease",
           }}
         />
-      </div>
-
-      {/* Controles de áudio + seed */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 8,
-          marginBottom: 16,
-        }}
-      >
-        <button
-          onClick={() => {
-            readText(target, true, "en", selectedVoice);
-          }}
-          disabled={!target}
-          aria-label={labels.play}
-          title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
-          style={{
-            padding: "10px 16px",
-            borderRadius: 12,
-            border: "1px solid transparent",
-            cursor: target ? "pointer" : "not-allowed",
-            opacity: target ? 1 : 0.6,
-            color: target ? "#FFFFFF" : "#9CA3AF",
-            background: target
-              ? "linear-gradient(180deg, #111827 0%, #0B1220 100%)"
-              : "#E5E7EB",
-            boxShadow: target ? "0 4px 12px rgba(17,24,39,0.18)" : "none",
-            fontWeight: 600,
-          }}
-        >
-          🔊 {labels.play}
-        </button>
       </div>
       {!checked && (
         <>
@@ -281,7 +243,7 @@ export function DictationExercise({
             placeholder="Digite exatamente o que ouviu…"
             style={{
               width: "100%",
-              borderRadius: 14,
+              borderRadius: 6,
               border: "1px solid #D1D5DB",
               padding: 12,
               outline: "none",
@@ -300,20 +262,16 @@ export function DictationExercise({
             }}
           >
             <button
-              onClick={() => setChecked(true)}
-              style={{
-                padding: "10px 16px",
-                borderRadius: 12,
-                color: "#FFFFFF",
-                background: "linear-gradient(180deg, #059669 0%, #047857 100%)",
-                border: "1px solid #047857",
-                fontWeight: 700,
-                cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(4,120,87,0.25)",
+              onClick={() => {
+                readText(target, true, "en", selectedVoice);
               }}
+              disabled={!target}
+              aria-label={labels.play}
+              title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
             >
-              ✅ {labels.check}
+              🔊 {labels.play}
             </button>
+            <button onClick={() => setChecked(true)}>✅ {labels.check}</button>
           </div>
         </>
       )}
@@ -322,7 +280,7 @@ export function DictationExercise({
         <div
           style={{
             marginTop: 20,
-            borderRadius: 16,
+            borderRadius: 6,
             border: "1px solid #E5E7EB",
             padding: 16,
             background: "#F9FAFB",
@@ -338,13 +296,12 @@ export function DictationExercise({
               marginBottom: 12,
             }}
           >
-            <span
+            <span 
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 padding: "6px 10px",
-                borderRadius: 999,
                 background: "#FFFFFF",
                 border: "1px solid #E5E7EB",
               }}
@@ -396,7 +353,7 @@ export function DictationExercise({
               fontSize: 12,
             }}
           >
-            <div>
+            {/* <div>
               <div style={{ marginBottom: 6, color: "#6B7280" }}>
                 Palavras Digitadas
               </div>
@@ -466,7 +423,7 @@ export function DictationExercise({
                   }}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Destaque por posição */}
@@ -480,7 +437,7 @@ export function DictationExercise({
                   key={`at-${i}-${w}-${index}`}
                   style={{
                     padding: "6px 10px",
-                    borderRadius: 10,
+                    borderRadius: 6,
                     border: `1px solid ${
                       perWordCorrect[i] ? "#A7F3D0" : "#FCA5A5"
                     }`,
@@ -502,7 +459,7 @@ export function DictationExercise({
                   key={`gt-${i}-${w}-${index}`}
                   style={{
                     padding: "6px 10px",
-                    borderRadius: 10,
+                    borderRadius: 6,
                     border: `1px solid ${
                       perWordCorrect[i] ? "#A7F3D0" : "#E5E7EB"
                     }`,
@@ -523,7 +480,7 @@ export function DictationExercise({
           style={{
             marginTop: 16,
             padding: 12,
-            borderRadius: 12,
+            borderRadius: 6,
             background: "#FFFBEB",
             border: "1px solid #FDE68A",
             fontSize: 14,
@@ -557,16 +514,16 @@ export function DictationExercise({
               setShowKey(false);
               if (hasTTS()) window.speechSynthesis.cancel();
             }}
-            style={{
-              padding: "10px 16px",
-              borderRadius: 12,
-              color: "#FFFFFF",
-              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-              border: "1px solid #0B1220",
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
-              fontWeight: 700,
-            }}
+            // style={{
+            //   padding: "10px 16px",
+            //   borderRadius: 6,
+            //   color: "#FFFFFF",
+            //   background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+            //   border: "1px solid #0B1220",
+            //   cursor: "pointer",
+            //   boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
+            //   fontWeight: 700,
+            // }}
           >
             {defaultLabels.next} ▶︎
           </button>
