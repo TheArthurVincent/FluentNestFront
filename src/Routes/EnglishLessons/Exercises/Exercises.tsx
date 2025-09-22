@@ -62,14 +62,16 @@ type ElementItem =
 
 type ExerciseRunnerProps = {
   elements?: ElementItem[];
+  /** não é mais usado para fluxo linear, mas mantido por compatibilidade */
   count?: number;
   display?: boolean;
-  setDisplay?: any;
+  setDisplay?: (v: boolean) => void;
   dictationItems?: number;
   labels?: Partial<typeof defaultLabels>;
   studentId?: string;
   headers?: MyHeadersType | null;
   selectedVoice?: string;
+  language?: string;
 };
 
 /* ================ Labels ================ */
@@ -89,7 +91,7 @@ export const defaultLabels = {
   hideAnswer: "Ocultar gabarito",
   loadingSentences: "Não há frases disponíveis nesta aula.",
   noImages: "Não há imagens disponíveis nesta aula.",
-  dictationTitle: "✍️ Ditado – escreva exatamente o que ouvir",
+  dictationTitle: "✍️ Ditado",
   imageToWordTitle: "🖼️ Imagem → Tradução",
   wordToImageTitle: "🔤 Palavra → Imagem",
   continue: "Continuar",
@@ -129,9 +131,6 @@ function getFirstImagesBlock(elements?: ElementItem[]): ImageItem[] {
     | ElementImages
     | undefined;
   return block?.images?.length ? block.images : [];
-}
-function optionLabel(img: ImageItem) {
-  return img?.english || img?.english || img?.text || "";
 }
 
 /* ================ UI base ================ */
@@ -190,126 +189,118 @@ export function HeaderBar({
     </div>
   );
 }
-export function Pill({
-  children,
-  active = false,
-}: {
-  children: React.ReactNode;
-  active?: boolean;
-}) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        padding: "6px 10px",
-        borderRadius: 999,
-        fontSize: 12,
-        fontWeight: 600,
-        background: active ? "#111827" : "#F3F4F6",
-        color: active ? "#FFFFFF" : "#374151",
-        border: active ? "1px solid #111827" : "1px solid #E5E7EB",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
 
 /* ================ Catálogo ================= */
 type CatalogCtx = {
   elements?: ElementItem[];
   labels: typeof defaultLabels;
   dictationItems: number;
+  studentId?: string;
+  headers?: MyHeadersType | null;
+  selectedVoice?: string;
 };
 type ExerciseEntry = {
   key: string;
+
+  title: string;
   render: (ctx: CatalogCtx) => React.ReactNode | null;
 };
 
 /* =============== Runner =============== */
 export default function ExerciseRunner({
   elements = [],
-  count = 3,
-  dictationItems = 5,
+  dictationItems = 10000,
   labels: labelsProp,
   studentId,
-  display,
-  setDisplay,
+  display = true,
+  setDisplay = () => {},
   headers,
   selectedVoice,
+  language,
 }: ExerciseRunnerProps) {
+  const labels = { ...defaultLabels, ...(labelsProp || {}) };
+  const safeEls = safeElements(elements);
+
+  const sentences = useMemo(() => getAllSentences(safeEls), [safeEls]);
+  const imgs = useMemo(() => getFirstImagesBlock(safeEls), [safeEls]);
+
   const exerciseCatalog: ExerciseEntry[] = [
-    // {
-    //   key: "dictation_from_sentences",
-    //   render: ({ elements, labels, dictationItems }) => {
-    //     const sentences = getAllSentences(elements);
-    //     if (!sentences.length) return null;
-    //     return (
-    //       <DictationExercise
-    //         studentId={studentId}
-    //         headers={headers}
-    //         selectedVoice={selectedVoice}
-    //         sentences={sentences}
-    //         itemsCount={dictationItems}
-    //         labels={labels}
-    //       />
-    //     );
-    //   },
-    // },
-    // {
-    //   key: "images_to_word",
-    //   render: ({ elements, labels }) => {
-    //     const imgs = getFirstImagesBlock(elements);
-    //     if (!imgs.length) return null;
-    //     return <ImageToWordExercise images={imgs} labels={labels} />;
-    //   },
-    // },
+    {
+      key: "dictation_from_sentences",
+      title: "Ditado (de frases)",
+      render: ({
+        elements,
+        labels,
+        dictationItems,
+        studentId,
+        headers,
+        selectedVoice,
+      }) => {
+        if (!sentences.length) return null;
+        return (
+          <DictationExercise
+            studentId={studentId}
+            headers={headers}
+            selectedVoice={selectedVoice}
+            language={language}
+            sentences={sentences}
+            itemsCount={dictationItems}
+            labels={labels}
+          />
+        );
+      },
+    },
+    {
+      key: "images_to_word",
+      title: "Imagem → Tradução",
+      render: ({ elements, labels }) => {
+        if (!imgs.length) return null;
+        return (
+          <ImageToWordExercise
+            images={imgs}
+            labels={labels}
+            selectedVoice={selectedVoice}
+            language={language}
+          />
+        );
+      },
+    },
     {
       key: "word_to_images",
+      title: "Palavra → Imagens",
       render: ({ elements, labels }) => {
-        const imgs = getFirstImagesBlock(elements);
         if (!imgs.length) return null;
         return <WordToImageExercise images={imgs} labels={labels} />;
       },
     },
   ];
-  const labels = { ...defaultLabels, ...(labelsProp || {}) };
-  const safeEls = safeElements(elements);
 
-  const sentencesCount = getAllSentences(safeEls).length;
-  const imagesCount = getFirstImagesBlock(safeEls).length;
-
-  const eligible = exerciseCatalog.filter((e) => {
-    if (e.key === "dictation_from_sentences") return sentencesCount > 0;
-    if (e.key === "images_to_word" || e.key === "word_to_images")
-      return imagesCount > 0;
-    return true;
-  });
-
-  const forcedKey = sentencesCount > 0 ? "dictation_from_sentences" : null;
-  const others = eligible.filter((e) => e.key !== forcedKey);
-
-  const chosenKeys = useMemo(() => {
-    if (!eligible.length) return [] as string[];
-    const base: string[] = [];
-    if (forcedKey) base.push(forcedKey);
-    const needed = Math.max(0, count - base.length);
-    const shuffledOthers = shuffle(others).map((e) => e.key);
-    return [...base, ...shuffledOthers.slice(0, needed)];
-  }, [count, eligible.length, sentencesCount, imagesCount]);
-
-  const rendered = useMemo(
+  // filtra catálogos elegíveis pelo conteúdo disponível
+  const available = useMemo(
     () =>
-      chosenKeys
-        .map((k) => exerciseCatalog.find((e) => e.key === k))
-        .filter(Boolean) as ExerciseEntry[],
-    [chosenKeys]
+      exerciseCatalog.filter((e) => {
+        if (e.key === "dictation_from_sentences") return sentences.length > 0;
+        if (e.key === "images_to_word" || e.key === "word_to_images")
+          return imgs.length > 0;
+        return true;
+      }),
+    [sentences.length, imgs.length]
   );
 
-  const [index, setIndex] = useState(0);
-  var theDisplay = display ? "flex" : "none";
+  // modo selecionado (primeiro elegível por padrão)
+  const [activeKey, setActiveKey] = useState<string>(available[0]?.key ?? "");
+  // contador para "reiniciar" o exercício (remonta o componente)
+  const [restartTick, setRestartTick] = useState(0);
 
-  if (!rendered.length) {
+  const activeEntry = useMemo(
+    () => available.find((e) => e.key === activeKey) || null,
+    [available, activeKey]
+  );
+
+  const theDisplay = display ? "flex" : "none";
+
+  // Sem nada elegível
+  if (!available.length) {
     return (
       <Card>
         <HeaderBar title="Sem exercícios disponíveis" />
@@ -375,111 +366,104 @@ export default function ExerciseRunner({
             cursor: "pointer",
           }}
           onClick={() => setDisplay(false)}
+          aria-label="Fechar"
+          role="button"
         >
           X
         </span>
+
+        {/* Seletor de modo */}
         <div style={{ width: "100%", maxWidth: 672 }}>
+          <HeaderBar title="Escolha o tipo de exercício" />
           <div
             style={{
               display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              fontSize: 14,
-              color: "#4B5563",
+              gap: 8,
+              flexWrap: "wrap",
               marginBottom: 8,
             }}
           >
-            <span>
-              {labels.exercise} {index + 1} {labels.of} {rendered.length}
-            </span>
-            <span style={{ display: "inline" }}>
-              {(rendered[index]?.key || "").replace(/_/g, " ")}
-            </span>
-          </div>
-          <div
-            style={{
-              width: "100%",
-              height: 8,
-              background: "#F3F4F6",
-              borderRadius: 999,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                height: 8,
-                width: `${((index + 1) / rendered.length) * 100}%`,
-                background: "#111827",
-                transition: "width 240ms ease",
-              }}
-            />
+            {available.map((entry) => {
+              const isActive = entry.key === activeKey;
+              return (
+                <button
+                  key={entry.key}
+                  onClick={() => {
+                    setActiveKey(entry.key);
+                    setRestartTick((t) => t + 1); // reinicia ao trocar de modo
+                  }}
+                  style={{
+                    padding: "8px 12px",
+                    borderRadius: 999,
+                    fontSize: 13,
+                    fontWeight: 700,
+                    border: isActive
+                      ? "1px solid #111827"
+                      : "1px solid #E5E7EB",
+                    color: isActive ? "#FFFFFF" : "#111827",
+                    background: isActive
+                      ? "linear-gradient(180deg, #111827 0%, #0B1220 100%)"
+                      : "#FFFFFF",
+                    cursor: "pointer",
+                  }}
+                  title={entry.title}
+                >
+                  {entry.title}
+                </button>
+              );
+            })}
           </div>
         </div>
 
+        {/* Render do exercício ativo */}
         <div style={{ width: "100%" }}>
-          {rendered[index]?.render({
-            elements: safeEls,
-            labels,
-            dictationItems,
-          })}
+          {activeEntry ? (
+            <div key={activeKey + "_" + restartTick}>
+              {activeEntry.render({
+                elements: safeEls,
+                labels,
+                dictationItems,
+                studentId,
+                headers,
+                selectedVoice,
+              })}
+            </div>
+          ) : (
+            <Card>
+              <HeaderBar title="Sem modo válido selecionado" />
+              <p style={{ color: "#4B5563", marginTop: 0 }}>
+                Selecione um dos modos de exercício acima.
+              </p>
+            </Card>
+          )}
         </div>
 
+        {/* Rodapé – Reiniciar */}
         <div
           style={{
             width: "100%",
             maxWidth: 672,
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
+            gap: 8,
           }}
         >
-          {/* Botão Voltar (opcional) */}
           {/* <button
-          disabled={index === 0}
-          onClick={() => setIndex((i) => Math.max(0, i - 1))}
-          style={{
-            padding: "10px 16px",
-            borderRadius: 12,
-            color: index === 0 ? "#9CA3AF" : "#111827",
-            background: index === 0 ? "#F3F4F6" : "#E5E7EB",
-            cursor: index === 0 ? "not-allowed" : "pointer",
-            border: "1px solid #E5E7EB",
-            fontWeight: 600,
-          }}
-        >
-          ◀︎ {defaultLabels.back}
-        </button> */}
-          {index < rendered.length - 1 ? (
-            <button
-              onClick={() =>
-                setIndex((i) => Math.min(rendered.length - 1, i + 1))
-              }
-              style={{
-                padding: "10px 16px",
-                borderRadius: 12,
-                color: "#FFFFFF",
-                background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-                border: "1px solid #0B1220",
-                cursor: "pointer",
-                boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
-                fontWeight: 700,
-                marginLeft: "auto",
-              }}
-            >
-              {labels.next} ▶︎
-            </button>
-          ) : (
-            <span
-              style={{
-                fontSize: 14,
-                color: "#065F46",
-                fontWeight: 600,
-                marginLeft: "auto",
-              }}
-            >
-              {/* {labels.doneAll} */}
-            </span>
-          )}
+            onClick={() => setRestartTick((t) => t + 1)}
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              color: "#111827",
+              background: "#E5E7EB",
+              border: "1px solid #D1D5DB",
+              cursor: "pointer",
+              fontWeight: 700,
+            }}
+            title="Reiniciar o exercício atual"
+          >
+            Reiniciar
+          </button> */}
         </div>
       </div>
     </div>

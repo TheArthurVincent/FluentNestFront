@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
+import { HTwo } from "../../../../Resources/Components/RouteBox";
 
-/* ================= Tipos ================= */
 export type ImageItem = {
   img: string;
   text?: string;
@@ -9,8 +9,6 @@ export type ImageItem = {
 };
 
 export type Labels = typeof defaultLabels;
-
-/* ================ Labels ================ */
 export const defaultLabels = {
   wordToImageTitle: "🔤 Palavra → Imagem",
   of: "de",
@@ -19,7 +17,6 @@ export const defaultLabels = {
   plusPoints: "+3 pontos",
 };
 
-/* ================ Utils ================= */
 function shuffle<T>(arr: T[]): T[] {
   const a = (arr || []).slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -41,12 +38,9 @@ function Card({ children }: { children: React.ReactNode }) {
         width: "100%",
         maxWidth: 672,
         margin: "0 auto",
-        borderRadius: 16,
-        border: "1px solid #E5E7EB",
+        borderRadius: 6,
         background: "#fff",
-        boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
         boxSizing: "border-box",
-        padding: 16,
       }}
     >
       {children}
@@ -70,7 +64,7 @@ function HeaderBar({
         marginBottom: 16,
       }}
     >
-      <h2
+      <HTwo
         style={{
           fontSize: 20,
           fontWeight: 700,
@@ -79,7 +73,7 @@ function HeaderBar({
         }}
       >
         {title}
-      </h2>
+      </HTwo>
       <div>{right}</div>
     </div>
   );
@@ -91,7 +85,7 @@ function Pill({ children }: { children: React.ReactNode }) {
       style={{
         display: "inline-flex",
         padding: "6px 10px",
-        borderRadius: 999,
+        borderRadius: 6,
         fontSize: 12,
         fontWeight: 600,
         background: "#F3F4F6",
@@ -103,8 +97,6 @@ function Pill({ children }: { children: React.ReactNode }) {
     </span>
   );
 }
-
-/* ===== Exercício – Palavra → Imagem ===== */
 export default function WordToImageExercise({
   images,
   labels,
@@ -127,16 +119,22 @@ export default function WordToImageExercise({
     );
   }
 
-  const pool = useMemo(() => shuffle(safeImgs.slice()), [safeImgs]);
-
+  const [seed, setSeed] = useState(0);
   const [index, setIndex] = useState(0);
   const [answeredIndex, setAnsweredIndex] = useState<number | null>(null);
   const [earnedPoints, setEarnedPoints] = useState(0);
 
+  const pool = useMemo(() => shuffle(safeImgs.slice()), [safeImgs, seed]);
   const current = pool[index];
+  function resetExercise() {
+    setIndex(0);
+    setAnsweredIndex(null);
+    setEarnedPoints(0);
+    setSeed((v) => v + 1); // força reembaralhar o pool
+  }
 
   const options = useMemo(() => {
-    const others = shuffle(pool.filter((_, idx) => idx !== index)).slice(0, 2);
+    const others = shuffle(pool.filter((_, idx) => idx !== index)).slice(0, 3);
     return shuffle([current, ...others]);
   }, [index, pool]);
 
@@ -168,12 +166,27 @@ export default function WordToImageExercise({
       <HeaderBar
         title={merged.wordToImageTitle}
         right={
-          <Pill>
+          <span>
             {index + 1} {merged.of} {pool.length}
-          </Pill>
+          </span>
         }
       />
-
+      {index + 1 == pool.length && (
+        <button
+          onClick={resetExercise}
+          style={{
+            padding: "6px 10px",
+            borderRadius: 6,
+            background: "#FFFFFF",
+            border: "1px solid #D1D5DB",
+            cursor: "pointer",
+            fontWeight: 600,
+          }}
+          title="Reiniciar exercício"
+        >
+          Reiniciar
+        </button>
+      )}
       <p
         style={{
           textAlign: "center",
@@ -188,22 +201,22 @@ export default function WordToImageExercise({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
-          gap: 16,
+          gridTemplateColumns: `repeat(${4}, minmax(0, 1fr))`,
+          gap: 10,
         }}
       >
         {options.map((opt, i) => {
-          let borderColor = "#D1D5DB";
+          let borderColor = "#eee";
           let ring: React.CSSProperties = {};
 
           if (hasAnswered) {
             if (i === correctIdx) {
               borderColor = "#10B981"; // verde
-              ring = { boxShadow: "0 0 0 2px rgba(16,185,129,0.35)" };
+              ring = { boxShadow: "0 0 0 2px rgba(16, 185, 129, 0.78)" };
             }
             if (i === answeredIndex && i !== correctIdx) {
               borderColor = "#EF4444"; // vermelho
-              ring = { boxShadow: "0 0 0 2px rgba(239,68,68,0.35)" };
+              ring = { boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.77)" };
             }
           }
 
@@ -213,10 +226,8 @@ export default function WordToImageExercise({
               onClick={() => handleChoose(i)}
               disabled={hasAnswered}
               style={{
-                borderRadius: 16,
                 overflow: "hidden",
-                border: `2px solid ${borderColor}`,
-                transition: "border-color 160ms ease, box-shadow 160ms ease",
+                border: `3px solid ${borderColor}`,
                 cursor: hasAnswered ? "default" : "pointer",
                 background: "#FFFFFF",
                 ...ring,
@@ -227,8 +238,8 @@ export default function WordToImageExercise({
                 alt="quiz"
                 loading="lazy"
                 style={{
-                  width: "100%",
-                  height: 160,
+                  width: "15vw",
+                  height: "15vw",
                   objectFit: "cover",
                   display: "block",
                 }}
@@ -237,8 +248,6 @@ export default function WordToImageExercise({
           );
         })}
       </div>
-
-      {/* Indicador de pontos somente ao acertar */}
       {hasAnswered && isCorrect && (
         <div
           style={{
@@ -255,31 +264,12 @@ export default function WordToImageExercise({
         </div>
       )}
       {hasAnswered && (
-        <div
-          role="status"
-          aria-live="polite"
-          style={{
-            marginTop: 12,
-            padding: "10px 12px",
-            borderRadius: 12,
-            background: "#F9FAFB",
-            border: "1px solid #E5E7EB",
-            fontSize: 14,
-            color: "#111827",
-          }}
-        >
-          <strong>Resposta certa: </strong>
-          {optionLabel(current)}
-        </div>
-      )}
-
-      {hasAnswered && (
         <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
           <button
             onClick={goNext}
             style={{
               padding: "10px 16px",
-              borderRadius: 12,
+              borderRadius: 6,
               color: "#FFFFFF",
               background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
               border: "1px solid #0B1220",

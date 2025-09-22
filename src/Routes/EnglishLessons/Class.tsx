@@ -3767,13 +3767,14 @@ export default function EnglishClassCourse2({
           </button>
           <ExerciseRunner
             display={display}
-            setDisplay={setDisplay} 
+            setDisplay={setDisplay}
             elements={theclass.elements}
-            count={10}
-            dictationItems={10}
+            count={1000000}
+            dictationItems={10000000}
             studentId={studentID}
             headers={headers}
             selectedVoice={selectedVoice}
+            language={classLanguage}
           />
           <div
             style={{

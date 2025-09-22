@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
+import { readText } from "../../Assets/Functions/FunctionLessons";
 
-/* ================= Tipos ================= */
 export type ImageItem = {
   img: string;
   text?: string;
@@ -10,7 +10,6 @@ export type ImageItem = {
 
 export type Labels = typeof defaultLabels;
 
-/* ================ Labels ================ */
 export const defaultLabels = {
   imageToWordTitle: "🖼️ Imagem → Tradução",
   of: "de",
@@ -19,7 +18,6 @@ export const defaultLabels = {
   plusPoints: "+3 pontos",
 };
 
-/* ================ Utils ================= */
 function shuffle<T>(arr: T[]): T[] {
   const a = (arr || []).slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -32,8 +30,6 @@ function shuffle<T>(arr: T[]): T[] {
 function optionLabel(img: ImageItem) {
   return (img?.english || img?.portuguese || img?.text || "").trim();
 }
-
-/* ================ UI base mínima ================ */
 function Card({ children }: { children: React.ReactNode }) {
   return (
     <div
@@ -41,12 +37,9 @@ function Card({ children }: { children: React.ReactNode }) {
         width: "100%",
         maxWidth: 672,
         margin: "0 auto",
-        borderRadius: 16,
-        border: "1px solid #E5E7EB",
+        borderRadius: 6,
         background: "#fff",
-        boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
         boxSizing: "border-box",
-        padding: 16,
       }}
     >
       {children}
@@ -91,31 +84,34 @@ function Pill({ children }: { children: React.ReactNode }) {
       style={{
         display: "inline-flex",
         padding: "6px 10px",
-        borderRadius: 999,
         fontSize: 12,
         fontWeight: 600,
         background: "#F3F4F6",
         color: "#374151",
-        border: "1px solid #E5E7EB",
       }}
     >
       {children}
     </span>
   );
 }
-
-/* ===== Exercício – Imagem → Tradução ===== */
 export default function ImageToWordExercise({
   images,
   labels,
   onNext,
+  selectedVoice,
+  language,
 }: {
   images: ImageItem[];
   labels?: Partial<Labels>;
   onNext?: () => void;
+  language?: string;
+  selectedVoice?: string;
 }) {
   const merged = { ...defaultLabels, ...(labels || {}) };
-  const safeImgs = Array.isArray(images) ? images.filter((i) => i?.img) : [];
+  const safeImgs = useMemo(
+    () => (Array.isArray(images) ? images.filter((i) => i?.img) : []),
+    [images]
+  );
 
   if (!safeImgs.length) {
     return (
@@ -125,19 +121,26 @@ export default function ImageToWordExercise({
     );
   }
 
-  // embaralha apenas uma vez por sessão do componente
-  const pool = useMemo(() => shuffle(safeImgs), [safeImgs]);
+  const [seed, setSeed] = useState(0);
+  const pool = useMemo(() => shuffle(safeImgs.slice()), [safeImgs, seed]);
 
   const [index, setIndex] = useState(0);
   const [answeredIndex, setAnsweredIndex] = useState<number | null>(null);
-  const [earnedPoints, setEarnedPoints] = useState(0); // opcional (acumula)
-  const current = pool[index];
 
-  // opções fixas para a questão atual (não mudam após responder)
+  const [earnedPoints, setEarnedPoints] = useState(0); // opcional (acumula)
+
+  const current = pool[index];
+  function resetExercise() {
+    setIndex(0);
+    setAnsweredIndex(null);
+    setEarnedPoints(0);
+    setSeed((v) => v + 1); // força reembaralhar
+  }
+
   const options = useMemo(() => {
-    const others = shuffle(pool.filter((img) => img !== current)).slice(0, 2);
+    const others = shuffle(pool.filter((_, idx) => idx !== index)).slice(0, 2);
     return shuffle([current, ...others]);
-  }, [current, pool]);
+  }, [index, pool]);
 
   const correctIdx = useMemo(
     () => options.findIndex((o) => o === current),
@@ -147,19 +150,13 @@ export default function ImageToWordExercise({
   const hasAnswered = answeredIndex !== null;
   const isCorrect = hasAnswered && answeredIndex === correctIdx;
 
-  function handleChoose(i: number) {
-    // Evita trocar de pergunta automaticamente: apenas marca a resposta e mostra feedback
+  function handleChoose(i: number, language?: string) {
     if (hasAnswered) return;
     setAnsweredIndex(i);
-
-    // Marca pontos apenas se acertar
+    readText(optionLabel(options[i]), true, "en", selectedVoice);
     if (i === correctIdx) {
       setEarnedPoints((p) => p + 3);
     }
-
-    // Se você quiser avançar imediatamente ao clicar numa alternativa CORRETA,
-    // descomente abaixo:
-    // if (i === correctIdx) goNext();
   }
 
   function goNext() {
@@ -173,9 +170,26 @@ export default function ImageToWordExercise({
       <HeaderBar
         title={merged.imageToWordTitle}
         right={
-          <Pill>
-            {index + 1} {merged.of} {pool.length}
-          </Pill>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span>
+              {index + 1} {merged.of} {pool.length}
+            </span>
+            {index + 1 == pool.length && (
+              <button
+                onClick={resetExercise}
+                style={{
+                  padding: "6px 10px",
+                  borderRadius: 6,
+                  background: "#FFFFFF",
+                  cursor: "pointer",
+                  fontWeight: 600,
+                }}
+                title="Reiniciar exercício"
+              >
+                Reiniciar
+              </button>
+            )}
+          </div>
         }
       />
 
@@ -191,23 +205,19 @@ export default function ImageToWordExercise({
             maxWidth: 448,
             height: 224,
             objectFit: "cover",
-            borderRadius: 16,
-            border: "1px solid #E5E7EB",
-            boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+            borderRadius: 6,
           }}
         />
       </div>
 
-      <div style={{ display: "grid", gap: 12 }}>
+      <div
+        style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}
+      >
         {options.map((opt, i) => {
-          // estilos de feedback:
-          // - sempre destacar a CORRETA em verde quando já respondeu
-          // - se clicada e errada, a clicada em vermelho
           let style: React.CSSProperties = {
             textAlign: "left",
             padding: "12px 16px",
-            borderRadius: 12,
-            border: "1px solid #E5E7EB",
+            borderRadius: 6,
             cursor: hasAnswered ? "default" : "pointer",
             background: "#FFFFFF",
             transition: "background 160ms ease, border-color 160ms ease",
@@ -218,14 +228,14 @@ export default function ImageToWordExercise({
               style = {
                 ...style,
                 background: "#D1FAE5",
-                border: "1px solid #34D399",
+                border: "2px solid #2dffb2ff",
               };
             }
             if (i === answeredIndex && i !== correctIdx) {
               style = {
                 ...style,
                 background: "#FEE2E2",
-                border: "1px solid #FCA5A5",
+                border: "2px solid #ff6969ff",
               };
             }
           }
@@ -233,7 +243,7 @@ export default function ImageToWordExercise({
           return (
             <button
               key={i}
-              onClick={() => handleChoose(i)}
+              onClick={() => handleChoose(i, language)}
               disabled={hasAnswered}
               style={style}
             >
@@ -242,8 +252,6 @@ export default function ImageToWordExercise({
           );
         })}
       </div>
-
-      {/* Indicador de pontos somente quando ACERTA */}
       {hasAnswered && isCorrect && (
         <div
           style={{
@@ -266,12 +274,11 @@ export default function ImageToWordExercise({
             onClick={goNext}
             style={{
               padding: "10px 16px",
-              borderRadius: 12,
+              borderRadius: 6,
               color: "#FFFFFF",
               background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
               border: "1px solid #0B1220",
               cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
               fontWeight: 700,
             }}
           >

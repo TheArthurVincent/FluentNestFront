@@ -1,10 +1,9 @@
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
-import { Card, defaultLabels, HeaderBar, Pill, shuffle } from "../Exercises";
-import React, { useEffect, useMemo, useState } from "react";
+import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
-/* ===== Utils do seu app (mantidos aqui para isolamento) ===== */
 function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
@@ -48,13 +47,11 @@ function similarityPercentage(str1: string, str2: string): number {
   return Math.round(((maxLen - distance) / maxLen) * 100);
 }
 
-/* ===== Helpers locais (tokenização baseada no seu normalizeText) ===== */
 function tokenize(t: string) {
   const norm = normalizeText(t);
   return norm ? norm.split(" ") : [];
 }
 
-/** conta “palavras corretas por posição” usando sua normalização */
 function countPositionMatches(target: string, attempt: string) {
   const gt = tokenize(target);
   const at = tokenize(attempt);
@@ -92,6 +89,7 @@ export function DictationExercise({
   studentId,
   headers,
   selectedVoice,
+  language,
 }: {
   sentences: SentenceItem[];
   itemsCount: number;
@@ -99,6 +97,7 @@ export function DictationExercise({
   studentId?: string;
   headers?: MyHeadersType | null;
   selectedVoice?: string;
+  language?: string;
 }) {
   const [seed, setSeed] = useState(0);
 
@@ -144,10 +143,6 @@ export function DictationExercise({
       style={{
         position: "relative",
         overflow: "hidden",
-        borderRadius: 6,
-        background: "#ffffff",
-        boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
-        padding: 20,
       }}
     >
       {/* Top gradient decorativo */}
@@ -168,9 +163,9 @@ export function DictationExercise({
       <HeaderBar
         title={labels.dictationTitle}
         right={
-          <Pill>
+          <span>
             {index + 1} {labels.of} {pool.length}
-          </Pill>
+          </span>
         }
       />
       <div
@@ -263,7 +258,7 @@ export function DictationExercise({
           >
             <button
               onClick={() => {
-                readText(target, true, "en", selectedVoice);
+                readText(target, true, language, selectedVoice);
               }}
               disabled={!target}
               aria-label={labels.play}
@@ -296,12 +291,13 @@ export function DictationExercise({
               marginBottom: 12,
             }}
           >
-            <span 
+            <span
               style={{
                 display: "inline-flex",
                 alignItems: "center",
                 gap: 8,
                 padding: "6px 10px",
+                borderRadius: 999,
                 background: "#FFFFFF",
                 border: "1px solid #E5E7EB",
               }}
