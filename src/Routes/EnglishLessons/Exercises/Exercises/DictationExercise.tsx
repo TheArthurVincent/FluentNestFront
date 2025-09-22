@@ -325,22 +325,6 @@ export function DictationExercise({
         >
           ✅ {labels.check}
         </button>
-
-        {checked && (
-          <button
-            onClick={() => setShowKey((s) => !s)}
-            style={{
-              padding: "10px 16px",
-              borderRadius: 12,
-              background: "#F3F4F6",
-              border: "1px solid #E5E7EB",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
-          >
-            {showKey ? "🙈 Ocultar gabarito" : "👀 Mostrar gabarito"}
-          </button>
-        )}
       </div>
 
       {/* Resultados */}

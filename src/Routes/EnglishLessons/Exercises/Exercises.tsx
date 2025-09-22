@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
+import { transparentBlack } from "../../../Styles/Styles";
 
 /* ================= Tipos ================= */
 type SentenceItem = { portuguese: string; english?: string };
@@ -60,6 +61,8 @@ type ElementItem =
 type ExerciseRunnerProps = {
   elements?: ElementItem[];
   count?: number;
+  display?: boolean;
+  setDisplay?: any;
   dictationItems?: number;
   labels?: Partial<typeof defaultLabels>;
   studentId?: string;
@@ -460,6 +463,8 @@ export default function ExerciseRunner({
   dictationItems = 5,
   labels: labelsProp,
   studentId,
+  display,
+  setDisplay,
   headers,
   selectedVoice,
 }: ExerciseRunnerProps) {
@@ -532,6 +537,7 @@ export default function ExerciseRunner({
   );
 
   const [index, setIndex] = useState(0);
+  var theDisplay = display ? "flex" : "none";
 
   if (!rendered.length) {
     return (
@@ -566,66 +572,97 @@ export default function ExerciseRunner({
   return (
     <div
       style={{
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 24,
+        position: "fixed",
+        display: theDisplay,
+        backgroundColor: "white",
+        width: "90vw",
+        top: 25,
+        borderRadius: "6px",
+        zIndex: 100,
+        padding: "1rem",
+        boxShadow: "2px 2px 10px 5px #ddd",
+        maxHeight: "90vh",
+        boxSizing: "border-box",
+        overflow: "auto",
       }}
     >
-      <div style={{ width: "100%", maxWidth: 672 }}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            fontSize: 14,
-            color: "#4B5563",
-            marginBottom: 8,
-          }}
-        >
-          <span>
-            {labels.exercise} {index + 1} {labels.of} {rendered.length}
-          </span>
-          <span style={{ display: "inline" }}>
-            {(rendered[index]?.key || "").replace(/_/g, " ")}
-          </span>
-        </div>
-        <div
-          style={{
-            width: "100%",
-            height: 8,
-            background: "#F3F4F6",
-            borderRadius: 999,
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              height: 8,
-              width: `${((index + 1) / rendered.length) * 100}%`,
-              background: "#111827",
-              transition: "width 240ms ease",
-            }}
-          />
-        </div>
-      </div>
-
-      <div style={{ width: "100%" }}>
-        {rendered[index]?.render({ elements: safeEls, labels, dictationItems })}
-      </div>
-
       <div
         style={{
           width: "100%",
-          maxWidth: 672,
-          display: "flex",
+          display: theDisplay,
+          flexDirection: "column",
           alignItems: "center",
-          justifyContent: "space-between",
+          gap: 24,
         }}
       >
-        {/* Botão Voltar (opcional) */}
-        {/* <button
+        <span
+          style={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            cursor: "pointer",
+          }}
+          onClick={() => setDisplay(false)}
+        >
+          X
+        </span>
+        <div style={{ width: "100%", maxWidth: 672 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              fontSize: 14,
+              color: "#4B5563",
+              marginBottom: 8,
+            }}
+          >
+            <span>
+              {labels.exercise} {index + 1} {labels.of} {rendered.length}
+            </span>
+            <span style={{ display: "inline" }}>
+              {(rendered[index]?.key || "").replace(/_/g, " ")}
+            </span>
+          </div>
+          <div
+            style={{
+              width: "100%",
+              height: 8,
+              background: "#F3F4F6",
+              borderRadius: 999,
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                height: 8,
+                width: `${((index + 1) / rendered.length) * 100}%`,
+                background: "#111827",
+                transition: "width 240ms ease",
+              }}
+            />
+          </div>
+        </div>
+
+        <div style={{ width: "100%" }}>
+          {rendered[index]?.render({
+            elements: safeEls,
+            labels,
+            dictationItems,
+          })}
+        </div>
+
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 672,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          {/* Botão Voltar (opcional) */}
+          {/* <button
           disabled={index === 0}
           onClick={() => setIndex((i) => Math.max(0, i - 1))}
           style={{
@@ -641,37 +678,38 @@ export default function ExerciseRunner({
           ◀︎ {defaultLabels.back}
         </button> */}
 
-        {index < rendered.length - 1 ? (
-          <button
-            onClick={() =>
-              setIndex((i) => Math.min(rendered.length - 1, i + 1))
-            }
-            style={{
-              padding: "10px 16px",
-              borderRadius: 12,
-              color: "#FFFFFF",
-              background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
-              border: "1px solid #0B1220",
-              cursor: "pointer",
-              boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
-              fontWeight: 700,
-              marginLeft: "auto",
-            }}
-          >
-            {labels.next} ▶︎
-          </button>
-        ) : (
-          <span
-            style={{
-              fontSize: 14,
-              color: "#065F46",
-              fontWeight: 600,
-              marginLeft: "auto",
-            }}
-          >
-            {labels.doneAll}
-          </span>
-        )}
+          {index < rendered.length - 1 ? (
+            <button
+              onClick={() =>
+                setIndex((i) => Math.min(rendered.length - 1, i + 1))
+              }
+              style={{
+                padding: "10px 16px",
+                borderRadius: 12,
+                color: "#FFFFFF",
+                background: "linear-gradient(180deg, #111827 0%, #0B1220 100%)",
+                border: "1px solid #0B1220",
+                cursor: "pointer",
+                boxShadow: "0 6px 16px rgba(17,24,39,0.25)",
+                fontWeight: 700,
+                marginLeft: "auto",
+              }}
+            >
+              {labels.next} ▶︎
+            </button>
+          ) : (
+            <span
+              style={{
+                fontSize: 14,
+                color: "#065F46",
+                fontWeight: 600,
+                marginLeft: "auto",
+              }}
+            >
+              {labels.doneAll}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

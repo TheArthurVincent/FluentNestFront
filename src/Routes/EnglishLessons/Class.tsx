@@ -162,7 +162,7 @@ export default function EnglishClassCourse2({
   const [classLanguage, setClassLanguage] = useState<string>("");
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [commentsTrigger, setCommentsTrigger] = useState<boolean>(false);
-
+  const [display, setDisplay] = useState<boolean>(false);
   const actualHeaders = headers || {};
 
   const getClass = async () => {
@@ -3762,39 +3762,19 @@ export default function EnglishClassCourse2({
                   ))}
             </div>
           </div>
-          <button>Fazer exercícios desta lição</button>
-          <div
-            style={{
-              position: "fixed",
-              zIndex: 100,
-              backgroundColor: transparentBlack(),
-              width: "100000vw",
-              height: "100000vw",
-              top: 0,
-              left: 0,
-            }}
+          <button onClick={() => setDisplay(true)}>
+            Fazer exercícios desta lição
+          </button>
+          <ExerciseRunner
+            display={display}
+            setDisplay={setDisplay} 
+            elements={theclass.elements}
+            count={5}
+            dictationItems={5}
+            studentId={studentID}
+            headers={headers}
+            selectedVoice={selectedVoice}
           />
-          <div
-            style={{
-              position: "fixed",
-              backgroundColor: "white",
-              width: "90vw",
-              top: 25,
-              borderRadius: "6px",
-              zIndex: 100000000000,
-              padding: "1rem",
-              boxShadow: "2px 2px 10px 5px #ddd",
-            }}
-          >
-            <ExerciseRunner
-              elements={theclass.elements}
-              count={5}
-              dictationItems={5}
-              studentId={studentID}
-              headers={headers}
-              selectedVoice={selectedVoice}
-            />
-          </div>
           <div
             style={{
               display: "flex",
