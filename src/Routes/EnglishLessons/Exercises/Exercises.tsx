@@ -677,7 +677,6 @@ export default function ExerciseRunner({
         >
           ◀︎ {defaultLabels.back}
         </button> */}
-
           {index < rendered.length - 1 ? (
             <button
               onClick={() =>

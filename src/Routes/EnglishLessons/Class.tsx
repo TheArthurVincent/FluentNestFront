@@ -3769,8 +3769,8 @@ export default function EnglishClassCourse2({
             display={display}
             setDisplay={setDisplay} 
             elements={theclass.elements}
-            count={5}
-            dictationItems={5}
+            count={10}
+            dictationItems={10}
             studentId={studentID}
             headers={headers}
             selectedVoice={selectedVoice}

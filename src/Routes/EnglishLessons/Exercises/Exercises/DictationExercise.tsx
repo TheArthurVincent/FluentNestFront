@@ -1,5 +1,6 @@
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { readText } from "../../Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
+import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { Card, defaultLabels, HeaderBar, Pill, shuffle } from "../Exercises";
 import React, { useEffect, useMemo, useState } from "react";
 
@@ -229,104 +230,93 @@ export function DictationExercise({
           🔊 {labels.play}
         </button>
       </div>
+      {!checked && (
+        <>
+          <label
+            style={{
+              display: "block",
+              fontSize: 13,
+              fontWeight: 600,
+              color: "#111827",
+              marginBottom: 8,
+            }}
+          >
+            {labels.yourAnswer}
+          </label>
 
-      <label
-        style={{
-          display: "block",
-          fontSize: 13,
-          fontWeight: 600,
-          color: "#111827",
-          marginBottom: 8,
-        }}
-      >
-        {labels.yourAnswer}
-      </label>
-
-      <textarea
-        value={answer}
-        onChange={(e) => {
-          setAnswer(e.target.value);
-          setChecked(false);
-          setShowKey(false);
-        }}
-        onKeyDown={(e) => {
-          if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
-            setChecked(true);
-          }
-        }}
-        rows={4}
-        placeholder="Digite exatamente o que ouviu…"
-        style={{
-          width: "100%",
-          borderRadius: 14,
-          border: "1px solid #D1D5DB",
-          padding: 12,
-          outline: "none",
-          boxSizing: "border-box",
-          fontSize: 14,
-          lineHeight: 1.5,
-        }}
-      />
-
-      <div
-        style={{
-          marginTop: 6,
-          fontSize: 12,
-          color: "#6B7280",
-        }}
-      >
-        Dica: pressione{" "}
-        <kbd
-          style={{
-            padding: "2px 6px",
-            borderRadius: 6,
-            border: "1px solid #E5E7EB",
-            background: "#F9FAFB",
-          }}
-        >
-          Ctrl
-        </kbd>{" "}
-        +{" "}
-        <kbd
-          style={{
-            padding: "2px 6px",
-            borderRadius: 6,
-            border: "1px solid #E5E7EB",
-            background: "#F9FAFB",
-          }}
-        >
-          Enter
-        </kbd>{" "}
-        para conferir.
-      </div>
-
-      {/* Ações */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "center",
-          gap: 12,
-          marginTop: 16,
-        }}
-      >
-        <button
-          onClick={() => setChecked(true)}
-          style={{
-            padding: "10px 16px",
-            borderRadius: 12,
-            color: "#FFFFFF",
-            background: "linear-gradient(180deg, #059669 0%, #047857 100%)",
-            border: "1px solid #047857",
-            fontWeight: 700,
-            cursor: "pointer",
-            boxShadow: "0 4px 12px rgba(4,120,87,0.25)",
-          }}
-        >
-          ✅ {labels.check}
-        </button>
-      </div>
-
+          <textarea
+            value={answer}
+            onChange={(e) => {
+              setAnswer(e.target.value);
+              setChecked(false);
+              setShowKey(false);
+            }}
+            onKeyDown={(e) => {
+              if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+                setChecked(true);
+                return;
+              }
+              const isPasteCombo =
+                ((e.ctrlKey || e.metaKey) &&
+                  (e.key === "v" || e.key === "V")) ||
+                (e.shiftKey && e.key === "Insert");
+              if (isPasteCombo) {
+                e.preventDefault();
+                notifyAlert(
+                  "Colar texto não é permitido aqui.",
+                  partnerColor()
+                );
+              }
+            }}
+            onPaste={(e) => {
+              e.preventDefault();
+            }}
+            onDrop={(e) => {
+              e.preventDefault();
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+            }}
+            rows={4}
+            placeholder="Digite exatamente o que ouviu…"
+            style={{
+              width: "100%",
+              borderRadius: 14,
+              border: "1px solid #D1D5DB",
+              padding: 12,
+              outline: "none",
+              boxSizing: "border-box",
+              fontSize: 14,
+              lineHeight: 1.5,
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              alignItems: "center",
+              gap: 12,
+              marginTop: 16,
+            }}
+          >
+            <button
+              onClick={() => setChecked(true)}
+              style={{
+                padding: "10px 16px",
+                borderRadius: 12,
+                color: "#FFFFFF",
+                background: "linear-gradient(180deg, #059669 0%, #047857 100%)",
+                border: "1px solid #047857",
+                fontWeight: 700,
+                cursor: "pointer",
+                boxShadow: "0 4px 12px rgba(4,120,87,0.25)",
+              }}
+            >
+              ✅ {labels.check}
+            </button>
+          </div>
+        </>
+      )}
       {/* Resultados */}
       {checked && (
         <div
@@ -484,7 +474,6 @@ export function DictationExercise({
             <div style={{ fontSize: 12, color: "#6B7280" }}>
               Sua resposta (por posição):
             </div>
-
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {atTokens.map((w, i) => (
                 <span
