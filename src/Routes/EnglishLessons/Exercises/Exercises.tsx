@@ -149,11 +149,21 @@ function getAllSentences(elements?: ElementItem[]): SentenceItem[] {
   return list;
 }
 function getFirstImagesBlock(elements?: ElementItem[]): ImageItem[] {
+  const list: ImageItem[] = [];
   const els = safeElements(elements);
-  const block = els.find((e) => (e as any)?.type === "images") as
-    | ElementImages
-    | undefined;
-  return block?.images?.length ? block.images : [];
+
+  for (const el of els) {
+    const t = (el as any)?.type;
+    if (
+      (t === "images" || t === "singleimages") &&
+      Array.isArray((el as ElementImages).images)
+    ) {
+      for (const item of (el as ElementImages).images) {
+        if (item?.img?.trim()) list.push(item);
+      }
+    }
+  }
+  return list;
 }
 
 export function Card({
@@ -269,6 +279,8 @@ export default function ExerciseRunner({
         if (!imgs.length) return null;
         return (
           <ImageToWordExercise
+            headers={headers}
+            studentId={studentId}
             images={imgs}
             labels={labels}
             selectedVoice={selectedVoice}
@@ -379,9 +391,11 @@ export default function ExerciseRunner({
         >
           X
         </span>
-
         <div style={{ width: "100%" }}>
           <HeaderBar title="Escolha o tipo de exercício" />
+          {studentId}
+          <br />
+          <br />
           <div
             style={{
               display: "grid",
@@ -443,34 +457,6 @@ export default function ExerciseRunner({
               </p>
             </Card>
           )}
-        </div>
-
-        {/* Rodapé – Reiniciar */}
-        <div
-          style={{
-            width: "100%",
-            maxWidth: 672,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            gap: 8,
-          }}
-        >
-          <button
-            onClick={() => setRestartTick((t) => t + 1)}
-            style={{
-              padding: "10px 16px",
-              borderRadius: 12,
-              color: "#111827",
-              background: "#E5E7EB",
-              border: "1px solid #D1D5DB",
-              cursor: "pointer",
-              fontWeight: 700,
-            }}
-            title="Reiniciar o exercício atual"
-          >
-            Reiniciar
-          </button>
         </div>
       </div>
     </div>

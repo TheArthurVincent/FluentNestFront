@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { readText } from "../../Assets/Functions/FunctionLessons";
 import { HOne } from "../../../../Resources/Components/RouteBox";
+import { exerciseScore } from "../Exercises";
 
 export type ImageItem = {
   img: string;
@@ -100,6 +101,8 @@ export default function ImageToWordExercise({
   labels,
   onNext,
   selectedVoice,
+  studentId,
+  headers,
   language,
 }: {
   images: ImageItem[];
@@ -107,6 +110,8 @@ export default function ImageToWordExercise({
   onNext?: () => void;
   language?: string;
   selectedVoice?: string;
+  studentId: string | undefined;
+  headers: any;
 }) {
   const merged = { ...defaultLabels, ...(labels || {}) };
   const safeImgs = useMemo(
@@ -153,11 +158,16 @@ export default function ImageToWordExercise({
 
   function handleChoose(i: number, language?: string) {
     if (hasAnswered) return;
+    const correct = i === correctIdx;
     setAnsweredIndex(i);
-    readText(optionLabel(options[i]), true, "en", selectedVoice);
-    if (i === correctIdx) {
-      setEarnedPoints((p) => p + 3);
-    }
+    readText(optionLabel(options[i]), true, language, selectedVoice);
+    if (correct) setEarnedPoints((p) => p + 3);
+    exerciseScore(
+      correct ? 3 : 0,
+      studentId,
+      headers,
+      "Image to Word Exercise"
+    );
   }
 
   function goNext() {
@@ -193,7 +203,6 @@ export default function ImageToWordExercise({
           </div>
         }
       />
-
       <div
         style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}
       >
@@ -202,9 +211,8 @@ export default function ImageToWordExercise({
           alt="quiz"
           loading="lazy"
           style={{
-            width: "100%",
-            maxWidth: 448,
-            height: 224,
+            width: "25vw",
+            height: "25vw",
             border: "1px solid #eee",
             objectFit: "cover",
             borderRadius: 6,
@@ -243,14 +251,36 @@ export default function ImageToWordExercise({
           }
 
           return (
-            <button
-              key={i}
-              onClick={() => handleChoose(i, language)}
-              disabled={hasAnswered}
-              style={style}
-            >
-              {optionLabel(opt)}
-            </button>
+            <>
+              {index + 1 !== pool.length && (
+                <div
+                  key={i}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      readText(optionLabel(opt), true, language, selectedVoice)
+                    }
+                  >
+                    <i className="fa fa-volume-up" aria-hidden="true" />{" "}
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleChoose(i, language);
+                    }}
+                    disabled={hasAnswered}
+                    style={style}
+                  >
+                    {!hasAnswered && i + 1} {hasAnswered && optionLabel(opt)}
+                  </button>
+                </div>
+              )}
+            </>
           );
         })}
       </div>

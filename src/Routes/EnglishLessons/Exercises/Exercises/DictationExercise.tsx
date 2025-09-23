@@ -90,9 +90,9 @@ function hasTTS(): boolean {
 export function DictationExercise({
   sentences,
   itemsCount,
+  studentId,
   headers,
   labels,
-  studentId,
   selectedVoice,
   language,
 }: {
@@ -144,7 +144,7 @@ export function DictationExercise({
   const { matches, total, perWordCorrect, gtTokens, atTokens } =
     countPositionMatches(target, answer);
 
-  const progressPct = Math.round(((index ) / pool.length) * 100);
+  const progressPct = Math.round((index / pool.length) * 100);
 
   return (
     <div
@@ -345,9 +345,7 @@ export function DictationExercise({
           </div>
 
           <div style={{ marginTop: 16, display: "grid", gap: 8 }}>
-            <div style={{ fontSize: 12, color: "#6B7280" }}>
-              Sua resposta
-            </div>
+            <div style={{ fontSize: 12, color: "#6B7280" }}>Sua resposta</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {atTokens.map((w, i) => (
                 <span
