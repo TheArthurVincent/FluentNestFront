@@ -2801,14 +2801,14 @@ export default function EnglishClassCourse2({
   const [confirm, setConfirm] = useState(false);
   const [seeConfirm, setSeeConfirm] = useState(false);
   const [studentName, setStudentName] = useState("");
-  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStudentChange = (event: any) => {
+    var theid;
     setChosenStudent(true);
-
-    const theid = event.target.value;
+    theid = event.target.value;
     setStudentID(theid);
     handleGetBoard(theid);
     const selectedStudent = studentsList.find(
-      (student: any) => student.id === theid
+      (student: any) => student.id === event.target.value
     );
     if (selectedStudent) {
       setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
