@@ -1,35 +1,9 @@
-import axios from "axios";
-import { backDomain } from "../../../Resources/UniversalComponents";
-import { notifyAlert } from "../Assets/Functions/FunctionLessons";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
-import { partnerColor } from "../../../Styles/Styles";
-
-export const exerciseScore = async (
-  score: number,
-  studentId: string | undefined,
-  headers: any,
-  description: string
-) => {
-  console.log("Score:", score, studentId, description);
-  try {
-    var response = await axios.put(
-      `${backDomain}/api/v1/exercise-score/${studentId}`,
-      {
-        score,
-        description,
-      },
-      { headers: headers || undefined }
-    );
-    notifyAlert(response.data.message || "Sucesso", partnerColor());
-  } catch (error) {
-    notifyAlert("Erro ao pontuar");
-  }
-};
 
 type SentenceItem = { portuguese: string; english?: string };
 type ImageItem = {
@@ -89,6 +63,8 @@ type ExerciseRunnerProps = {
   elements?: ElementItem[];
   count?: number;
   display?: boolean;
+  exerciseScore?: any;
+  flag?: boolean;
   setDisplay?: (v: boolean) => void;
   dictationItems?: number;
   labels?: Partial<typeof defaultLabels>;
@@ -241,6 +217,7 @@ export default function ExerciseRunner({
   dictationItems = 10000,
   labels: labelsProp,
   studentId,
+  exerciseScore = () => {},
   display = true,
   setDisplay = () => {},
   headers,
@@ -249,7 +226,6 @@ export default function ExerciseRunner({
 }: ExerciseRunnerProps) {
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
-
   const sentences = useMemo(() => getAllSentences(safeEls), [safeEls]);
   const imgs = useMemo(() => getFirstImagesBlock(safeEls), [safeEls]);
 
@@ -261,8 +237,8 @@ export default function ExerciseRunner({
         if (!sentences.length) return null;
         return (
           <DictationExercise
-            headers={headers}
-            studentId={studentId}
+            exerciseScore={exerciseScore}
+            studentId={studentId || ""}
             selectedVoice={selectedVoice}
             language={language}
             sentences={sentences}
@@ -279,8 +255,8 @@ export default function ExerciseRunner({
         if (!imgs.length) return null;
         return (
           <ImageToWordExercise
-            headers={headers}
-            studentId={studentId}
+            exerciseScore={exerciseScore}
+            studentId={studentId || ""}
             images={imgs}
             labels={labels}
             selectedVoice={selectedVoice}
@@ -353,18 +329,11 @@ export default function ExerciseRunner({
   return (
     <div
       style={{
-        top: 10,
-        left: "50%",
-        width: "99vw",
-        height: "97vh",
-        transform: "translateX(-50%)",
-        position: "fixed",
-        display: theDisplay,
+        display: "flex",
         backgroundColor: "white",
         borderRadius: "6px",
         zIndex: 100,
         padding: "1rem",
-        boxShadow: "2px 2px 10px 5px #ddd",
         boxSizing: "border-box",
         overflow: "auto",
       }}

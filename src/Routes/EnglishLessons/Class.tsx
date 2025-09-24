@@ -55,69 +55,7 @@ import ExplanationLesson from "./Assets/LessonsModels/ExplanationLesson";
 import AudioFile from "./Assets/LessonsModels/AudioSoundTrackGD";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import ExerciseRunner from "./Exercises/Exercises";
-const styles = {
-  container: {
-    maxWidth: "90vw",
-    margin: "20px auto",
-    padding: "10px",
-    borderRadius: "6px",
-  },
-  title: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "10px",
-    textAlign: "center",
-  },
-  commentList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-  },
-  commentBox: {
-    display: "flex",
-    alignItems: "flex-start",
-    padding: "10px",
-    border: "1px solid #ddd",
-    borderRadius: "6px",
-    backgroundColor: "#fff",
-  },
-  userImage: {
-    width: "40px",
-    height: "40px",
-    borderRadius: "50%",
-    objectFit: "cover",
-    marginRight: "10px",
-    border: "2px solid #ccc",
-  },
-  commentContent: {
-    display: "flex",
-    flexDirection: "column",
-    padding: "5px",
-    flex: 1,
-    wordWrap: "break-word",
-    overflowWrap: "break-word",
-  },
-  commentText: {
-    wordWrap: "break-word",
-    overflowWrap: "break-word",
-    fontSize: "14px",
-    color: "#333",
-    marginBottom: "5px",
-  },
-  answerText: {
-    fontSize: "13px",
-    color: "#555",
-    backgroundColor: "#e9e9e9",
-    padding: "5px",
-    borderRadius: "4px",
-    marginTop: "5px",
-  },
-  commentDate: {
-    fontSize: "12px",
-    color: "#777",
-    marginTop: "5px",
-  },
-};
+
 interface EnglishClassCourse2ModelProps {
   headers: MyHeadersType | null;
   classId: any;
@@ -138,8 +76,6 @@ export default function EnglishClassCourse2({
   order,
   courseTitle,
 }: EnglishClassCourse2ModelProps) {
-  const { UniversalTexts } = useUserContext();
-
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
   const [myId, setId] = useState<string>("");
@@ -159,11 +95,54 @@ export default function EnglishClassCourse2({
   const [loading, setLoading] = useState<boolean>(false);
   const [theclass, setheClass] = useState<any>({});
   const [classTitle, setClassTitle] = useState<string>("");
+  const [theStudentsWhoCompletedIt, setStudentsWhoCompletedIt] = useState<any>(
+    []
+  );
   const [classLanguage, setClassLanguage] = useState<string>("");
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [commentsTrigger, setCommentsTrigger] = useState<boolean>(false);
   const [display, setDisplay] = useState<boolean>(false);
+  const [exercise, setExercise] = useState<boolean>(false);
   const actualHeaders = headers || {};
+
+  const handleStudentChange = (event: any) => {
+    setChosenStudent(true);
+    setFlag(!flag);
+    var theid = event.target.value;
+    const selectedStudent = studentsList.find(
+      (student: any) => student.id === theid
+    );
+    console.log(event.target.value, theid);
+    setStudentID(theid);
+    handleGetBoard(theid);
+    // if (theStudentsWhoCompletedIt.includes(event.target.value)) {
+    //   setIsCompleted(true);
+    //   console.log("true");
+    // } else {
+    //   setIsCompleted(false);
+    //   console.log("false");
+    // }
+    if (selectedStudent) {
+      setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
+    }
+  };
+
+  var exerciseScore = async (score: number, description: string) => {
+    console.log("Score:", score, studentID, description);
+    // try {
+    //   var response = await axios.put(
+    //     `${backDomain}/api/v1/exercise-score/${studentID}`,
+    //     {
+    //       score,
+    //       description,
+    //     },
+    //     { headers: actualHeaders || undefined }
+    //   );
+    //   notifyAlert(response.data.message || "Sucesso", partnerColor());
+    // } catch (error) {
+    //   notifyAlert("Erro ao pontuar");
+    // }
+  };
 
   const getClass = async () => {
     setLoading(true);
@@ -184,9 +163,11 @@ export default function EnglishClassCourse2({
       );
 
       var clss = response.data.classDetails;
-      console.log(response.data.classDetails);
       setClassLanguage(response.data.classDetails.language);
       setClassTitle(response.data.classDetails.title);
+      setStudentsWhoCompletedIt(
+        response.data.classDetails.studentsWhoCompletedIt
+      );
       if (response.data.classDetails.studentsWhoCompletedIt.includes(id)) {
         setIsCompleted(true);
       } else {
@@ -281,7 +262,6 @@ export default function EnglishClassCourse2({
       );
 
       var clss = response.data.classDetails;
-      setClassTitle(response.data.classDetails.title);
       if (response.data.classDetails.studentsWhoCompletedIt.includes(id)) {
         setIsCompleted(true);
       } else {
@@ -293,7 +273,7 @@ export default function EnglishClassCourse2({
     }
   };
 
-  const handleToggle = async (event: any) => {
+  const handleToggle = async () => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/course/${classId}`,
@@ -2800,20 +2780,9 @@ export default function EnglishClassCourse2({
 
   const [confirm, setConfirm] = useState(false);
   const [seeConfirm, setSeeConfirm] = useState(false);
+  const [flag, setFlag] = useState(false);
   const [studentName, setStudentName] = useState("");
-  const handleStudentChange = (event: any) => {
-    var theid;
-    setChosenStudent(true);
-    theid = event.target.value;
-    setStudentID(theid);
-    handleGetBoard(theid);
-    const selectedStudent = studentsList.find(
-      (student: any) => student.id === event.target.value
-    );
-    if (selectedStudent) {
-      setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
-    }
-  };
+
   const fetchStudents = async () => {
     try {
       const response = await axios.get(
@@ -3360,9 +3329,11 @@ export default function EnglishClassCourse2({
                     target.style.background = "#f8fafc";
                   }
                 }}
-                onClick={() => setDisplay(true)}
+                onClick={() => {
+                  setExercise(!exercise);
+                }}
               >
-                Exercícios
+                {exercise ? "Aula ":"Exercícios"}
               </button>
             </span>
             <div
@@ -3573,7 +3544,7 @@ export default function EnglishClassCourse2({
               </label>
             </div>
           </div>
-          <div
+            {!exercise ?  <div
             style={{
               maxWidth: "1200px",
               margin: "0 auto",
@@ -3795,10 +3766,10 @@ export default function EnglishClassCourse2({
                     </div>
                   ))}
             </div>
-          </div>
-
-          <ExerciseRunner
+          </div>:
+       <ExerciseRunner
             display={display}
+            exerciseScore={exerciseScore}
             setDisplay={setDisplay}
             elements={theclass.elements}
             count={1000000}
@@ -3807,7 +3778,7 @@ export default function EnglishClassCourse2({
             headers={headers}
             selectedVoice={selectedVoice}
             language={classLanguage}
-          />
+          />}
           <div
             style={{
               display: "flex",

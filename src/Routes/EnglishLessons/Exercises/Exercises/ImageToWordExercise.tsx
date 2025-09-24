@@ -1,8 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { readText } from "../../Assets/Functions/FunctionLessons";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { exerciseScore } from "../Exercises";
-
 export type ImageItem = {
   img: string;
   text?: string;
@@ -80,38 +78,22 @@ function HeaderBar({
   );
 }
 
-function Pill({ children }: { children: React.ReactNode }) {
-  return (
-    <span
-      style={{
-        display: "inline-flex",
-        padding: "6px 10px",
-        fontSize: 12,
-        fontWeight: 600,
-        background: "#F3F4F6",
-        color: "#374151",
-      }}
-    >
-      {children}
-    </span>
-  );
-}
 export default function ImageToWordExercise({
   images,
   labels,
   onNext,
-  selectedVoice,
   studentId,
-  headers,
+  selectedVoice,
+  exerciseScore,
   language,
 }: {
   images: ImageItem[];
   labels?: Partial<Labels>;
   onNext?: () => void;
   language?: string;
+  studentId?: string;
   selectedVoice?: string;
-  studentId: string | undefined;
-  headers: any;
+  exerciseScore: any;
 }) {
   const merged = { ...defaultLabels, ...(labels || {}) };
   const safeImgs = useMemo(
@@ -164,9 +146,7 @@ export default function ImageToWordExercise({
     if (correct) setEarnedPoints((p) => p + 3);
     exerciseScore(
       correct ? 3 : 0,
-      studentId,
-      headers,
-      "Image to Word Exercise"
+      `Image to Word Exercise - ${optionLabel(current)}`
     );
   }
 

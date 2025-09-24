@@ -1,12 +1,6 @@
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
-import {
-  Card,
-  defaultLabels,
-  exerciseScore,
-  HeaderBar,
-  shuffle,
-} from "../Exercises";
+import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
 import React, { useEffect, useMemo, useState } from "react";
 
 function wordCount(str: string): number {
@@ -90,25 +84,23 @@ function hasTTS(): boolean {
 export function DictationExercise({
   sentences,
   itemsCount,
-  studentId,
-  headers,
+  exerciseScore,
   labels,
+  studentId,
   selectedVoice,
   language,
 }: {
   sentences: SentenceItem[];
   itemsCount: number;
-  labels: typeof defaultLabels;
   studentId?: string;
-  headers?: any;
+  labels: typeof defaultLabels;
+  exerciseScore?: any;
   selectedVoice?: string;
   language?: string;
 }) {
-  const [seed, setSeed] = useState(0);
-
   const pool = useMemo(
     () => shuffle(sentences).slice(0, Math.min(itemsCount, sentences.length)),
-    [sentences, itemsCount, seed]
+    [sentences, itemsCount]
   );
 
   const [index, setIndex] = useState(0);
@@ -410,8 +402,6 @@ export function DictationExercise({
           )}
         </div>
       )}
-
-      {/* Navegação básica */}
       <div
         style={{
           marginTop: 24,
@@ -425,8 +415,6 @@ export function DictationExercise({
             onClick={() => {
               exerciseScore(
                 roundedSimilarity,
-                studentId,
-                headers,
                 `Ditado: ${target} / Resposta: ${answer}`
               );
               setIndex((i) => i + 1);
