@@ -113,11 +113,8 @@ export default function EnglishClassCourse2({
     );
     setStudentID(theid);
     handleGetBoard(theid);
-    if (theStudentsWhoCompletedIt.includes(event.target.value)) {
-      setIsCompleted(true);
-    } else {
-      setIsCompleted(false);
-    }
+    setIsCompleted(theStudentsWhoCompletedIt.includes(event.target.value));
+
     if (selectedStudent) {
       setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
     }
@@ -276,7 +273,10 @@ export default function EnglishClassCourse2({
         { studentID },
         { headers: actualHeaders }
       );
-      getClassNoLoading();
+      console.log(response.data.message);
+      var studentsWhoCompletedItUpdated = response.data.studentsWhoCompletedIt;
+      setStudentsWhoCompletedIt(studentsWhoCompletedItUpdated);
+      setIsCompleted(response.data.studentsWhoCompletedIt.includes(studentID));
     } catch (error) {
       console.error("Erro ao atualizar o status:", error);
     }
