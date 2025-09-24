@@ -121,7 +121,6 @@ export default function EnglishClassCourse2({
   };
 
   var exerciseScore = async (score: number, description: string) => {
-    console.log("Score:", score, studentID, description);
     try {
       var response = await axios.put(
         `${backDomain}/api/v1/exercise-score/${studentID}`,
@@ -273,7 +272,6 @@ export default function EnglishClassCourse2({
         { studentID },
         { headers: actualHeaders }
       );
-      console.log(response.data.message);
       var studentsWhoCompletedItUpdated = response.data.studentsWhoCompletedIt;
       setStudentsWhoCompletedIt(studentsWhoCompletedItUpdated);
       setIsCompleted(response.data.studentsWhoCompletedIt.includes(studentID));
