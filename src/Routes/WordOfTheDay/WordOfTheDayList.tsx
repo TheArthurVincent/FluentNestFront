@@ -2,50 +2,33 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 
-import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
 import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
-import {
-  partnerColor,
-  textGeneralFont,
-  transparentBlack,
-} from "../../Styles/Styles";
-import { Modal, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import { partnerColor, textGeneralFont } from "../../Styles/Styles";
+
+type WordItem = {
+  _id: string;
+  word: string;
+  translatedWord: string;
+  date: string;
+  sentence: string;
+  translatedSentence: string;
+  studentsWhoDidIt?: { fullName: string; photo: string }[];
+};
 
 const WordOfTheDayList = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedWord, setSelectedWord] = useState<any>(null);
-
-  const handleOpen = (word: any) => {
-    setSelectedWord(word);
-    setOpen(true);
-  };
-
-  const handleClose = () => setOpen(false);
-
-  const [thePermissions, setPermissions] = useState<string>("");
-  const [myId, setId] = useState<string>("");
-  const [words, setWords] = useState<any>([]);
+  const [words, setWords] = useState<WordItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const user = localStorage.getItem("loggedIn");
-    if (user) {
-      const { permissions, id } = JSON.parse(user);
-      setPermissions(permissions);
-      setId(id);
-    }
-  }, []);
 
   const fetchWords = async () => {
     setLoading(true);
     try {
       const response = await axios.get(`${backDomain}/api/v1/wordoftheday`);
-      setWords(response.data.words);
+      setWords(response.data.words || []);
+      console.log(response.data.words || []);
     } catch (error: any) {
-      console.log(error.response?.data?.error || "Error.");
+      console.log(error?.response?.data?.error || "Error.");
     } finally {
       setLoading(false);
     }
@@ -56,167 +39,194 @@ const WordOfTheDayList = () => {
   }, []);
 
   if (loading) {
-    return <CircularProgress style={{ color: partnerColor() }} />;
+    return (
+      <div
+        style={{ display: "flex", justifyContent: "center", padding: "2rem" }}
+      >
+        <CircularProgress style={{ color: partnerColor() }} />
+      </div>
+    );
   }
 
   return (
-    <RouteDiv
-      style={{
-        maxWidth: "800px",
-      }}
-    >
+    <RouteDiv style={{ maxWidth: "70vw", overflowX: "auto" }}>
       <HOne>Word of the Day</HOne>
-      {words.map((wordItem: any) => (
-        <div
-          key={wordItem._id}
-          style={{
-            margin: "20px",
-            border: "1px #eee solid",
-            padding: "1rem",
-          }}
-        >
-          <HTwo
-            style={{
-              margin: "20px",
-            }}
-          >
-            <strong>{wordItem.word}</strong> | {wordItem.translatedWord} (
-            {formatDateBr(wordItem.date)})
-          </HTwo>
+      {words.map((w) => (
+        <div key={w._id}>
           <div
             style={{
-              backgroundColor: "#777",
-              color: "#fff",
+              width: "60vw",
+              height: "60vw",
+              maxWidth: 300,
+              maxHeight: 300,
+              margin: "auto",
+              marginBottom: 24,
+              aspectRatio: "1 / 1",
+              border: "1px solid #ddd",
+              borderRadius: 6,
               padding: "10px",
-              borderRadius: "6px",
+              boxSizing: "border-box",
               display: "flex",
-              alignItems: "center",
+              flexDirection: "column",
               justifyContent: "space-between",
-              marginBottom: "10px",
-            }}
-          >
-            <div>
-              <p>
-                <strong>{wordItem.sentence}</strong>
-              </p>
-              <p>{wordItem.translatedSentence}</p>
-            </div>
-
-            <button onClick={() => readText(wordItem.sentence, false, "en")}>
-              <i className="fa fa-volume-up" aria-hidden="true" />
-            </button>
-          </div>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-around",
               alignItems: "center",
-              margin: "10px",
+              background: "#fff",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.08)",
+              overflow: "hidden",
+              textAlign: "center",
             }}
           >
-            <a
-              href={`https://youglish.com/pronounce/${wordItem.word}/english/us`}
-              target="_blank"
-              rel="noopener noreferrer"
+            {/* HEADER */}
+            <div
+              style={{
+                borderRadius: 6,
+                padding: "10px 12px",
+                boxSizing: "border-box",
+                background: `linear-gradient(135deg, ${partnerColor()}20 0%, ${partnerColor()}08 100%)`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+              }}
             >
-              <i className="fa fa-volume-up" aria-hidden="true" /> Hear YouGlish
-            </a>{" "}
-            <a
-              href={`https://www.linguee.com/english-portuguese/search?source=auto&query=${wordItem.word}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className="fa fa-volume-up" aria-hidden="true" /> Hear Linguee
-            </a>
-          </div>
-          <button onClick={() => handleOpen(wordItem)}>Ver no Card</button>
-          <Modal
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: { xs: "90%", sm: 400 },
-              backdropFilter: "blur(10px)",
-              borderRadius: 4,
-              boxShadow: transparentBlack(),
-              p: 4,
-              color: "#333",
-            }}
-            open={open}
-            onClose={handleClose}
-          >
-            <div style={{ backgroundColor: "#fff" }}>
-              <IconButton
-                onClick={handleClose}
-                sx={{ position: "absolute", top: 8, right: 8, color: "#444" }}
-              >
-                ✕
-              </IconButton>
-
-              {selectedWord && (
-                <div
+              <div style={{ minWidth: 0, textAlign: "center" }}>
+                <h3
                   style={{
-                    fontSize: "1.5rem",
-                    display: "flex",
-                    textAlign: "center",
-                    alignItems: "center",
-                    flexDirection: "column",
-                    padding: "2rem",
-                    justifyContent: "center",
-                    gap: "10px",
+                    margin: 0,
+                    fontSize: 14,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}
                 >
-                  <HOne>
-                    {selectedWord.word} - {selectedWord.translatedWord}
-                  </HOne>
-
-                  <div
-                    style={{
-                      textAlign: "center",
-                      fontFamily: textGeneralFont(),
-                    }}
-                  >
-                    <p
-                      style={{
-                        fontWeight: "800",
-                      }}
-                    >
-                      {selectedWord.sentence}
-                    </p>
-                    <p>{selectedWord.translatedSentence}</p>
-                  </div>
-                </div>
-              )}
+                  <span style={{ color: "#222", fontWeight: 800 }}>
+                    {w.word}
+                  </span>{" "}
+                  <span style={{ color: "#666", fontWeight: 600 }}>
+                    | {w.translatedWord}
+                  </span>
+                </h3>
+                <span
+                  style={{
+                    display: "inline-block",
+                    marginTop: 4,
+                    fontSize: 10,
+                    color: "#555",
+                    background: "#f5f5f7",
+                    border: "1px solid #eaeaea",
+                    padding: "2px 6px",
+                    borderRadius: 6,
+                  }}
+                >
+                  {formatDateBr(w.date)}
+                </span>
+              </div>
             </div>
-          </Modal>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              gap: "10px",
-              margin: "10px",
-            }}
-          >
-            {wordItem.studentsWhoDidIt.map((word: any, index: number) => {
-              return (
-                <Tooltip title={word.fullName}>
-                  <img
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      objectFit: "cover",
-                    }}
-                    src={word.photo}
-                    alt={word.photo}
-                  />
-                </Tooltip>
-              );
-            })}
-          </div>{" "}
+
+            {/* FRASE */}
+            <div
+              style={{
+                width: "100%",
+                alignItems: "center",
+                boxSizing: "border-box",
+                padding: "10px 10px 10px 12px",
+                marginTop: 8,
+                borderRadius: 6,
+                background: "#fcfcfd",
+                border: "1px solid #eee",
+                position: "relative",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: 4,
+                  background: partnerColor(),
+                  opacity: 0.9,
+                }}
+              />
+              <div style={{ fontFamily: textGeneralFont(), lineHeight: 1.35 }}>
+                <p
+                  style={{
+                    fontSize: 12,
+                    margin: 0,
+                    fontWeight: 800,
+                    color: "#1d1d1f",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                  title={w.sentence}
+                >
+                  {w.sentence}
+                </p>
+                <p
+                  style={{
+                    fontSize: 11,
+                    margin: "6px 0 0 0",
+                    color: "#5f6368",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                  }}
+                  title={w.translatedSentence}
+                >
+                  {w.translatedSentence}
+                </p>
+              </div>
+            </div>
+
+            {/* BOTÃO AUDIO */}
+            <button
+              aria-label="Ouvir frase"
+              title="Ouvir frase"
+              style={{
+                border: "none",
+                background: "#f5f5f5",
+                borderRadius: 6,
+                marginTop: 8,
+                width: 36,
+                height: 36,
+                cursor: "pointer",
+              }}
+              onClick={() => readText(w.sentence, false, "en")}
+            >
+              <i className="fa fa-volume-up" aria-hidden="true" />
+            </button>
+
+            {/* ALUNOS */}
+            {(w.studentsWhoDidIt?.length ?? 0) > 0 && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexWrap: "wrap",
+                  marginTop: 8,
+                }}
+              >
+                {w.studentsWhoDidIt!.map((s, idx) => (
+                  <div key={`${w._id}-${idx}`} title={s.fullName}>
+                    <img
+                      style={{
+                        borderRadius: "50%",
+                        width: 24,
+                        height: 24,
+                        objectFit: "cover",
+                        marginRight: 4,
+                      }}
+                      src={s.photo}
+                      alt={s.fullName}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       ))}
     </RouteDiv>
