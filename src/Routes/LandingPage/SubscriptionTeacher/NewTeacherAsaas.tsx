@@ -6,6 +6,7 @@ import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLesso
 import { CircularProgress, Grid, TextField } from "@mui/material";
 import silver from "./assets/teacherssilver.png";
 import gold from "./assets/goldteacher.png";
+import TermsAndConditions from "./assets/TermsAndConditions/TermsAndConditions";
 
 function formatDate(value: string): string {
   const cleaned = value.replace(/\D/g, "").slice(0, 8); // Remove non-digits and limit to 8 characters
@@ -54,6 +55,28 @@ function formatCPF(value: string): string {
 }
 
 export default function TeacherSubscription() {
+  // const [form, setForm] = useState({
+  //   name: "Jonathan",
+  //   lastname: "Michael Doe",
+  //   promoCode: "63",
+  //   phoneNumber: "11930303030",
+  //   doc: "729.157.020-47",
+  //   email: "nocidi4795@kwifa.com",
+  //   dateOfBirth: "10/10/2025",
+  //   address: "Rua Nelia",
+  //   neighborhood: "Embu",
+  //   city: "Embu das Artes",
+  //   state: "SP",
+  //   addressNumber: "63",
+  //   zip: "06703794",
+  //   password: "63456789",
+  //   confirmPassword: "63456789",
+  //   creditCardNumber: "5397 2566 6440 3902",
+  //   creditCardHolderName: "John Doe",
+  //   creditCardExpiryMonth: "01",
+  //   creditCardExpiryYear: "2026",
+  //   creditCardCcv: "420",
+  // });
   const [form, setForm] = useState({
     name: "",
     promoCode: "",
@@ -77,36 +100,18 @@ export default function TeacherSubscription() {
     creditCardCcv: "",
   });
 
-  // const [form, setForm] = useState({
-  //   name: "Jonathan",
-  //   lastname: "Michael Doe",
-  //   promoCode: "63",
-  //   phoneNumber: "11930303030",
-  //   doc: "729.157.020-47",
-  //   email: "nocidi4795@kwifa.com",
-  //   dateOfBirth: "10/10/2025",
-  //   address: "Rua Nelia",
-  //   neighborhood: "Embu",
-  //   city: "Embu das Artes",
-  //   state: "SP",
-  //   addressNumber: "63",
-  //   zip: "06703794",
-  //   password: "63456789",
-  //   confirmPassword: "63456789",
-  //   creditCardNumber: "5397 2566 6440 3902",
-  //   creditCardHolderName: "John Doe",
-  //   creditCardExpiryMonth: "01",
-  //   creditCardExpiryYear: "2026",
-  //   creditCardCcv: "420",
-  // });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
     "CREDIT_CARD"
   );
+  const [planTier, setPlanTier] = useState<"silver" | "gold">("gold");
+
+  const [installments, setInstallments] = useState(1);
+  const [termsValid, setTermsValid] = useState(false);
+  const [termsPayload, setTermsPayload] = useState<any>(null);
 
   // novos estados
-  const [planTier, setPlanTier] = useState<"silver" | "gold">("gold");
 
   // preços centralizados
   const PRICES = {
@@ -123,7 +128,6 @@ export default function TeacherSubscription() {
       v
     );
 
-  const [installments, setInstallments] = useState(1);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -140,47 +144,122 @@ export default function TeacherSubscription() {
       setForm((prev) => ({ ...prev, [name]: value }));
     }
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
     setError("");
 
-    if (form.password !== form.confirmPassword) {
+    // ===== Helpers =====
+    const onlyDigits = (s: string) => (s || "").replace(/\D+/g, "");
+    const normalizeDOB = (s: string) => {
+      // "DD/MM/AAAA" -> "AAAA-MM-DD"
+      const m = (s || "").match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+      return m ? `${m[3]}-${m[2]}-${m[1]}` : s;
+    };
+    const isEmail = (s: string) =>
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || "").trim());
+
+    // ===== Client-side validations =====
+    if (!termsValid) {
+      const msg =
+        "Você precisa ler e aceitar os Termos e Condições para continuar.";
+      setError(msg);
+      notifyAlert(msg, "red");
       setLoading(false);
-      setError("As senhas não coincidem.");
-      notifyAlert("As senhas não coincidem.", "red");
       return;
     }
+
+    if (!form?.name || !form?.lastname) {
+      const msg = "Informe nome e sobrenome.";
+      setError(msg);
+      notifyAlert(msg, "red");
+      setLoading(false);
+      return;
+    }
+
+    if (!isEmail(form.email || "")) {
+      const msg = "Informe um e-mail válido.";
+      setError(msg);
+      notifyAlert(msg, "red");
+      setLoading(false);
+      return;
+    }
+
+    if ((form.password || "").length < 8) {
+      const msg = "A senha deve ter pelo menos 8 caracteres.";
+      setError(msg);
+      notifyAlert(msg, "red");
+      setLoading(false);
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      const msg = "As senhas não coincidem.";
+      setError(msg);
+      notifyAlert(msg, "red");
+      setLoading(false);
+      return;
+    }
+
+    // Limites das parcelas (se aplicável)
+    const safeInstallments =
+      selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
+        ? Math.min(Math.max(Number(installments || 1), 1), 6)
+        : 1;
+
+    // ===== Normalize fields before send =====
+    const payload = {
+      ...form,
+      // normalizações comuns no BR
+      doc: onlyDigits(form.doc || ""), // CPF só com dígitos
+      phoneNumber: onlyDigits(form.phoneNumber || ""), // telefone só dígitos
+      zip: onlyDigits(form.zip || ""), // CEP só dígitos
+      dateOfBirth: normalizeDOB(form.dateOfBirth || ""),
+      planType: selectedPlan, // "monthly" | "yearly"
+      paymentMethod, // "CREDIT_CARD" | "PIX"
+      planTier, // "silver" | "gold"
+      installments: safeInstallments,
+      // bloco de consentimento dos termos
+      consent: {
+        agreed: !!termsPayload?.agreed,
+        signedFullName: termsPayload?.signedFullName || "",
+        signedAtISO: termsPayload?.signedAtISO || null,
+        userAgent: termsPayload?.userAgent || "",
+        termsVersion: termsPayload?.termsVersion || "",
+        termsHash: termsPayload?.termsHash || "",
+        drawnSignatureDataURL: termsPayload?.drawnSignatureDataURL || null,
+      },
+    };
 
     try {
       const response = await axios.post(
         `${backDomain}/api/v1/cadastro-teacher`,
-        {
-          ...form,
-          planType: selectedPlan,
-          paymentMethod,
-          planTier,
-          installments:
-            selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
-              ? installments
-              : 1,
-        }
+        payload
       );
 
+      console.log(response.data);
+      // Fluxo PIX: seu UI já não mostra o botão de submit para PIX,
+      // mas se chegar aqui por algum motivo, seguimos a mesma regra.
       if (paymentMethod === "PIX") {
         window.location.assign("/feenotuptodate");
         return;
       }
 
-      notifyAlert(`Pagamento aprovado!`, "green");
+      // Cartão aprovado
+      notifyAlert("Pagamento aprovado!", "green");
       setTimeout(() => {
         window.location.assign("/verify-email");
       }, 1000);
     } catch (err: any) {
-      setError(err.response?.data?.message);
-      notifyAlert(err.response?.data?.message || "Tente novamente");
-      console.log(err.response?.data?.message || "Tente novamente");
+      const apiMessage =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Tente novamente";
+      setError(apiMessage);
+      notifyAlert(apiMessage, "red");
+      console.log(apiMessage);
     } finally {
       setLoading(false);
     }
@@ -553,7 +632,7 @@ export default function TeacherSubscription() {
     );
   }
 
-    const getWhatsAppLink = () => {
+  const getWhatsAppLink = () => {
     const message = `Olá, gostaria de fazer o pagamento da plataforma Arvin no plano ${selectedPlan} Gold à vista via PIX.`;
     return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
   };
@@ -654,7 +733,6 @@ export default function TeacherSubscription() {
                 </div>
               </>
             )}
-
             {selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD" && (
               <div style={{ marginBottom: "20px" }}>
                 <label htmlFor="installments">Parcelas:</label>
@@ -680,7 +758,6 @@ export default function TeacherSubscription() {
                 </p>
               </div>
             )}
-
             {paymentMethod === "CREDIT_CARD" && (
               <Grid container spacing={2}>
                 <Grid item xs={6}>
@@ -1266,7 +1343,6 @@ export default function TeacherSubscription() {
                 </Grid>{" "}
               </Grid>
             )}
-
             {paymentMethod === "PIX" && (
               <div
                 style={{
@@ -1298,8 +1374,19 @@ export default function TeacherSubscription() {
                 </span>
               </div>
             )}
+            <TermsAndConditions
+              fullName={`${form.name} ${form.lastname}`.trim()}
+              onValidityChange={(valid, data) => {
+                setTermsValid(valid);
+                setTermsPayload(data);
+              }}
+            />{" "}
             {paymentMethod !== "PIX" && (
-              <button type="submit" style={styles.button} disabled={loading}>
+              <button
+                type="submit"
+                style={styles.button}
+                disabled={loading || !termsValid}
+              >
                 {loading ? (
                   <CircularProgress style={{ color: "#ed5914" }} />
                 ) : (
