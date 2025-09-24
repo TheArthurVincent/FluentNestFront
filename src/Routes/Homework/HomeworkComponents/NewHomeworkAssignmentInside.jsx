@@ -48,7 +48,18 @@ export function NewHomeworkAssignmentHere({
   };
   return (
     <>
-      <button onClick={() => setIsModalOpen(true)}>+ Homework</button>
+      <button
+        style={{
+          display: "inline-block",
+          padding: "0.5rem 1rem",
+          borderRadius: "6px",
+          fontSize: "0.8rem",
+          textWrap: "nowrap",
+        }}
+        onClick={() => setIsModalOpen(true)}
+      >
+        + Homework
+      </button>
       <article
         onClick={() => setIsModalOpen(false)}
         style={{
