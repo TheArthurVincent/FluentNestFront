@@ -26,7 +26,6 @@ import {
   UlSentences,
 } from "../EnglishLessons/Assets/Functions/EnglishActivities.Styled";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { lang } from "moment";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -59,7 +58,6 @@ const SentenceMining = ({
   const [sentence2, setSentence2] = useState<string>("");
   const [transation2, setTransation2] = useState<string>("");
   const [selectedStudentId, setSelectedStudentId] = useState<string>("");
-  const [selectedStudent, setSelectedStudent] = useState<string>("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>(
     "Selecione um idioma"
   );
@@ -238,21 +236,12 @@ const SentenceMining = ({
             style={{
               padding: "1rem",
               backgroundColor: alwaysWhite(),
-              borderBottom: "1px solid #e2e8f0",
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
               gap: "0.5rem",
             }}
           >
-            <span
-              style={{
-                fontSize: "14px",
-                fontWeight: "500",
-                color: "#64748b",
-              }}
-              onClick={fetchData}
-            ></span>
             {loadingStudents ? (
               <CircularProgress size={20} style={{ color: partnerColor() }} />
             ) : (
@@ -261,9 +250,6 @@ const SentenceMining = ({
                   handleStudentChange(e);
                   const studentSelected = students.find(
                     (student) => student.id === e.target.value
-                  );
-                  setSelectedStudent(
-                    studentSelected.name + " " + studentSelected.lastname
                   );
                 }}
                 value={selectedStudentId}
@@ -304,56 +290,47 @@ const SentenceMining = ({
             )}
           </div>
         )}
-
-        <a
-          style={{
-            fontSize: "13px",
-            color: "#999",
-            textDecoration: "none",
-          }}
-          href="/flash-cards"
-        >
-          Revise seus flashcards!
-        </a>
-        <select
-          onChange={(e) => {
-            setSelectedLanguage(e.target.value);
-          }}
-          value={selectedLanguage}
-          style={{
-            borderRadius: "4px",
-            border: "1px solid #e2e8f0",
-            backgroundColor: "#f8fafc",
-            fontSize: "13px",
-            fontWeight: "400",
-            color: "#64748b",
-            padding: "6px 8px",
-            minWidth: "200px",
-            maxWidth: "300px",
-            outline: "none",
-            cursor: "pointer",
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = partnerColor();
-            e.target.style.backgroundColor = "#ffffff";
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "#e2e8f0";
-            e.target.style.backgroundColor = "#f8fafc";
-          }}
-        >
-          {["Selecione um idioma", "Inglês", "Francês", "Espanhol"].map(
-            (language) => (
-              <option
-                hidden={language === "Selecione um idioma"}
-                key={language}
-                value={language}
-              >
-                {language}
-              </option>
-            )
-          )}
-        </select>
+        {!loading && (
+          <select
+            onChange={(e) => {
+              setSelectedLanguage(e.target.value);
+            }}
+            value={selectedLanguage}
+            style={{
+              borderRadius: "4px",
+              border: "1px solid #e2e8f0",
+              backgroundColor: "#f8fafc",
+              fontSize: "13px",
+              fontWeight: "400",
+              color: "#64748b",
+              padding: "6px 8px",
+              minWidth: "200px",
+              maxWidth: "300px",
+              outline: "none",
+              cursor: "pointer",
+            }}
+            onFocus={(e) => {
+              e.target.style.borderColor = partnerColor();
+              e.target.style.backgroundColor = "#ffffff";
+            }}
+            onBlur={(e) => {
+              e.target.style.borderColor = "#e2e8f0";
+              e.target.style.backgroundColor = "#f8fafc";
+            }}
+          >
+            {["Selecione um idioma", "Inglês", "Francês", "Espanhol"].map(
+              (language) => (
+                <option
+                  hidden={language === "Selecione um idioma"}
+                  key={language}
+                  value={language}
+                >
+                  {language}
+                </option>
+              )
+            )}
+          </select>
+        )}
       </div>
       {selectedLanguage !== "Selecione um idioma" && (
         <section
@@ -374,7 +351,6 @@ const SentenceMining = ({
               padding: "10px 14px",
               margin: "auto",
               backgroundColor: "#f9f9f9",
-              border: "1px solid #ddd",
               borderRadius: "4px",
             }}
           >
@@ -398,10 +374,8 @@ const SentenceMining = ({
               style={{
                 width: "95%",
                 padding: "6px 10px",
-
                 fontSize: "14px",
                 borderRadius: "4px",
-                border: "1px solid #ccc",
               }}
             />
             {!dis && (
@@ -451,7 +425,6 @@ const SentenceMining = ({
               </>
             )}
           </form>
-
           {see && (
             <>
               {loading ? (
@@ -628,6 +601,19 @@ const SentenceMining = ({
           )}
         </section>
       )}
+      <span style={{ display: "flex", justifyContent: "right" }}>
+        <a
+          style={{
+            fontSize: "13px",
+            marginTop: "15px",
+            color: "#999",
+            textDecoration: "none",
+          }}
+          href="/flash-cards"
+        >
+          Revise seus flashcards!
+        </a>
+      </span>
     </RouteDiv>
   );
 };
