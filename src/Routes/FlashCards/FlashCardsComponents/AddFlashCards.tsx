@@ -192,7 +192,8 @@ const AddFlashCards = ({
               <br />
               <span
                 style={{
-                  marginTop: "1rem",
+                  display: "flex",
+                  gap: "0.5rem",
                 }}
               >
                 {cards.length > 0 && (

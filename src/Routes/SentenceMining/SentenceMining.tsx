@@ -232,7 +232,7 @@ const SentenceMining = ({
           justifyContent: "center",
         }}
       >
-        <HOne>Sentence Mining</HOne>
+        <HOne>Mineração de Sentenças</HOne>
         {(myPermissions === "superadmin" || myPermissions === "teacher") && (
           <div
             style={{

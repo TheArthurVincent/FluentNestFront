@@ -219,7 +219,6 @@ var AllCards = ({
           }}
         >
           {/* Header Controls */}
-
           <button
             onClick={() => fetchMoreCards(true)}
             style={{
@@ -447,7 +446,6 @@ var AllCards = ({
                         />
                       </div>
                     )}
-
                     {/* Stats Section */}
                     <div
                       style={{
