@@ -101,7 +101,6 @@ export default function EnglishClassCourse2({
   const [classLanguage, setClassLanguage] = useState<string>("");
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const [commentsTrigger, setCommentsTrigger] = useState<boolean>(false);
-  const [display, setDisplay] = useState<boolean>(false);
   const [exercise, setExercise] = useState<boolean>(false);
   const actualHeaders = headers || {};
 
@@ -112,16 +111,13 @@ export default function EnglishClassCourse2({
     const selectedStudent = studentsList.find(
       (student: any) => student.id === theid
     );
-    console.log(event.target.value, theid);
     setStudentID(theid);
     handleGetBoard(theid);
-    // if (theStudentsWhoCompletedIt.includes(event.target.value)) {
-    //   setIsCompleted(true);
-    //   console.log("true");
-    // } else {
-    //   setIsCompleted(false);
-    //   console.log("false");
-    // }
+    if (theStudentsWhoCompletedIt.includes(event.target.value)) {
+      setIsCompleted(true);
+    } else {
+      setIsCompleted(false);
+    }
     if (selectedStudent) {
       setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
     }
@@ -129,19 +125,19 @@ export default function EnglishClassCourse2({
 
   var exerciseScore = async (score: number, description: string) => {
     console.log("Score:", score, studentID, description);
-    // try {
-    //   var response = await axios.put(
-    //     `${backDomain}/api/v1/exercise-score/${studentID}`,
-    //     {
-    //       score,
-    //       description,
-    //     },
-    //     { headers: actualHeaders || undefined }
-    //   );
-    //   notifyAlert(response.data.message || "Sucesso", partnerColor());
-    // } catch (error) {
-    //   notifyAlert("Erro ao pontuar");
-    // }
+    try {
+      var response = await axios.put(
+        `${backDomain}/api/v1/exercise-score/${studentID}`,
+        {
+          score,
+          description,
+        },
+        { headers: actualHeaders || undefined }
+      );
+      notifyAlert(response.data.message || "Sucesso", partnerColor());
+    } catch (error) {
+      notifyAlert("Erro ao pontuar");
+    }
   };
 
   const getClass = async () => {
@@ -3333,7 +3329,7 @@ export default function EnglishClassCourse2({
                   setExercise(!exercise);
                 }}
               >
-                {exercise ? "Aula ":"Exercícios"}
+                {exercise ? "Aula " : "Exercícios"}
               </button>
             </span>
             <div
@@ -3544,46 +3540,47 @@ export default function EnglishClassCourse2({
               </label>
             </div>
           </div>
-            {!exercise ?  <div
-            style={{
-              maxWidth: "1200px",
-              margin: "0 auto",
-              padding: "0 20px",
-              background: "#ffffff",
-              borderRadius: "6px",
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
-              border: "1px solid #f1f5f9",
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            {/* Subtle decorative element */}
+          {!exercise ? (
             <div
               style={{
-                width: "40px",
-                height: "40px",
-                background: `${partnerColor()}05`,
-                borderRadius: "50%",
-                zIndex: 0,
-                opacity: 0.3,
+                maxWidth: "1200px",
+                margin: "0 auto",
+                padding: "0 20px",
+                background: "#ffffff",
+                borderRadius: "6px",
+                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
+                border: "1px solid #f1f5f9",
+                position: "relative",
+                overflow: "hidden",
               }}
-            />
-
-            {theclass.image && (
-              <ImgLesson src={theclass.image} alt={theclass.subtitle} />
-            )}
-            {theclass.video && isArthurVincent && (
+            >
+              {/* Subtle decorative element */}
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  marginTop: "1rem",
+                  width: "40px",
+                  height: "40px",
+                  background: `${partnerColor()}05`,
+                  borderRadius: "50%",
+                  zIndex: 0,
+                  opacity: 0.3,
                 }}
-              >
-                <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
-              </div>
-            )}
-            {/* {theclass.description && (
+              />
+
+              {theclass.image && (
+                <ImgLesson src={theclass.image} alt={theclass.subtitle} />
+              )}
+              {theclass.video && isArthurVincent && (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "1rem",
+                  }}
+                >
+                  <IFrameVideoBlog src={getVideoEmbedUrl(theclass.video)} />
+                </div>
+              )}
+              {/* {theclass.description && (
             <p
               style={{
                 margin: "1rem 0",
@@ -3597,188 +3594,193 @@ export default function EnglishClassCourse2({
               {theclass.description}
             </p>
           )} */}
-            {/* Main lesson content */}
-            <div
-              style={{
-                position: "relative",
-                zIndex: 1,
-                paddingBottom: "40px",
-              }}
-            >
-              {theclass.elements &&
-                theclass.elements
-                  .sort((a: any, b: any) => a.order - b.order)
-                  .map((element: any, index: number) => (
-                    <div
-                      key={index}
-                      style={{
-                        margin: "24px 0",
-                        position: "relative",
-                      }}
-                    >
-                      {element.subtitle && (
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                          }}
-                        >
-                          <HTwo>{element.subtitle}</HTwo>
-                        </div>
-                      )}
-                      {element.image && element.subtitle && (
-                        <ImgLesson src={element.image} alt={element.subtitle} />
-                      )}
-                      {element.video && element.subtitle && isArthurVincent && (
-                        <VideoLessonModel element={element} />
-                      )}
-
-                      {element.comments && (
-                        <p
-                          style={{
-                            padding: "0.5rem",
-                            textAlign: "center",
-                            backgroundColor: "#f6f6f6",
-                            borderRadius: "6px",
-                            margin: "0.5rem 0",
-                            fontStyle: "italic",
-                          }}
-                        >
-                          {element.comments}
-                        </p>
-                      )}
-                      {element.type === "sentences" ? (
-                        <SentenceLessonModel
-                          mainTag={theclass.mainTag}
-                          element={element}
-                          studentId={studentID}
-                          headers={headers}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "vocabulary" ? (
-                        <VocabularyLesson
-                          mainTag={theclass.mainTag}
-                          element={element}
-                          studentId={studentID}
-                          headers={headers}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "nfsentences" ? (
-                        <NoFlashcardsSentenceLessonModel
-                          element={element}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "audio" ? (
-                        <AudioFile
-                          element={element}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "text" ? (
-                        <TextLessonModel
-                          headers={headers}
-                          text={element.text ? element.text : ""}
-                          image={element.image ? element.image : ""}
-                        />
-                      ) : element.type === "html" ? (
-                        <div
-                          style={{
-                            padding: "1rem",
-                            justifyContent: "center",
-                          }}
-                        >
+              {/* Main lesson content */}
+              <div
+                style={{
+                  position: "relative",
+                  zIndex: 1,
+                  paddingBottom: "40px",
+                }}
+              >
+                {theclass.elements &&
+                  theclass.elements
+                    .sort((a: any, b: any) => a.order - b.order)
+                    .map((element: any, index: number) => (
+                      <div
+                        key={index}
+                        style={{
+                          margin: "24px 0",
+                          position: "relative",
+                        }}
+                      >
+                        {element.subtitle && (
                           <div
-                            dangerouslySetInnerHTML={{ __html: element.text }}
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <HTwo>{element.subtitle}</HTwo>
+                          </div>
+                        )}
+                        {element.image && element.subtitle && (
+                          <ImgLesson
+                            src={element.image}
+                            alt={element.subtitle}
                           />
-                        </div>
-                      ) : element.type === "multipletexts" ? (
-                        <MultipleTextsLessonModel
-                          headers={headers}
-                          element={element}
-                        />
-                      ) : element.type === "selectexercise" ? (
-                        <SelectExercise
-                          headers={headers}
-                          element={element}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "images" ? (
-                        <ImageLessonModel
-                          studentId={studentID}
-                          mainTag={theclass.mainTag}
-                          id={myId}
-                          headers={headers}
-                          element={element}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "exercise" ? (
-                        <ExerciseLessonModel
-                          headers={headers}
-                          item={element.items}
-                        />
-                      ) : element.type === "explanation" ? (
-                        <ExplanationLesson
-                          headers={headers}
-                          element={element}
-                        />
-                      ) : element.type === "audiosoundtrack" ? (
-                        <AudioSoundTrack
-                          headers={headers}
-                          text={element.text}
-                          src={element.src}
-                          studentId={studentID}
-                          mainTag={theclass.mainTag}
-                          element={element}
-                          link={element.link}
-                          subtitle={element.subtitle}
-                          selectedVoice={selectedVoice}
-                        />
-                      ) : element.type === "personalqanda" ? (
-                        <QandALessonPersonalModel
-                          headers={headers}
-                          studentId={studentID}
-                          mainTag={theclass.mainTag}
-                          item={element}
-                        />
-                      ) : element.type === "dialogue" ? (
-                        <DialogueLessonModel
-                          headers={headers}
-                          element={element}
-                          language={classLanguage}
-                        />
-                      ) : element.type === "singleimages" ? (
-                        <SingleImageLessonModel
-                          headers={headers}
-                          element={element}
-                        />
-                      ) : element.type === "listenandtranslate" ? (
-                        <ListenAndTranslateLessonModel
-                          headers={headers}
-                          element={element}
-                        />
-                      ) : element.type === "listinenglish" ? (
-                        <TextsWithTranslateLessonModel
-                          headers={headers}
-                          element={element}
-                        />
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  ))}
+                        )}
+                        {element.video &&
+                          element.subtitle &&
+                          isArthurVincent && (
+                            <VideoLessonModel element={element} />
+                          )}
+
+                        {element.comments && (
+                          <p
+                            style={{
+                              padding: "0.5rem",
+                              textAlign: "center",
+                              backgroundColor: "#f6f6f6",
+                              borderRadius: "6px",
+                              margin: "0.5rem 0",
+                              fontStyle: "italic",
+                            }}
+                          >
+                            {element.comments}
+                          </p>
+                        )}
+                        {element.type === "sentences" ? (
+                          <SentenceLessonModel
+                            mainTag={theclass.mainTag}
+                            element={element}
+                            studentId={studentID}
+                            headers={headers}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "vocabulary" ? (
+                          <VocabularyLesson
+                            mainTag={theclass.mainTag}
+                            element={element}
+                            studentId={studentID}
+                            headers={headers}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "nfsentences" ? (
+                          <NoFlashcardsSentenceLessonModel
+                            element={element}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "audio" ? (
+                          <AudioFile
+                            element={element}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "text" ? (
+                          <TextLessonModel
+                            headers={headers}
+                            text={element.text ? element.text : ""}
+                            image={element.image ? element.image : ""}
+                          />
+                        ) : element.type === "html" ? (
+                          <div
+                            style={{
+                              padding: "1rem",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <div
+                              dangerouslySetInnerHTML={{ __html: element.text }}
+                            />
+                          </div>
+                        ) : element.type === "multipletexts" ? (
+                          <MultipleTextsLessonModel
+                            headers={headers}
+                            element={element}
+                          />
+                        ) : element.type === "selectexercise" ? (
+                          <SelectExercise
+                            headers={headers}
+                            element={element}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "images" ? (
+                          <ImageLessonModel
+                            studentId={studentID}
+                            mainTag={theclass.mainTag}
+                            id={myId}
+                            headers={headers}
+                            element={element}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "exercise" ? (
+                          <ExerciseLessonModel
+                            headers={headers}
+                            item={element.items}
+                          />
+                        ) : element.type === "explanation" ? (
+                          <ExplanationLesson
+                            headers={headers}
+                            element={element}
+                          />
+                        ) : element.type === "audiosoundtrack" ? (
+                          <AudioSoundTrack
+                            headers={headers}
+                            text={element.text}
+                            src={element.src}
+                            studentId={studentID}
+                            mainTag={theclass.mainTag}
+                            element={element}
+                            link={element.link}
+                            subtitle={element.subtitle}
+                            selectedVoice={selectedVoice}
+                          />
+                        ) : element.type === "personalqanda" ? (
+                          <QandALessonPersonalModel
+                            headers={headers}
+                            studentId={studentID}
+                            mainTag={theclass.mainTag}
+                            item={element}
+                          />
+                        ) : element.type === "dialogue" ? (
+                          <DialogueLessonModel
+                            headers={headers}
+                            element={element}
+                            language={classLanguage}
+                          />
+                        ) : element.type === "singleimages" ? (
+                          <SingleImageLessonModel
+                            headers={headers}
+                            element={element}
+                          />
+                        ) : element.type === "listenandtranslate" ? (
+                          <ListenAndTranslateLessonModel
+                            headers={headers}
+                            element={element}
+                          />
+                        ) : element.type === "listinenglish" ? (
+                          <TextsWithTranslateLessonModel
+                            headers={headers}
+                            element={element}
+                          />
+                        ) : (
+                          <></>
+                        )}
+                      </div>
+                    ))}
+              </div>
             </div>
-          </div>:
-       <ExerciseRunner
-            display={display}
-            exerciseScore={exerciseScore}
-            setDisplay={setDisplay}
-            elements={theclass.elements}
-            count={1000000}
-            dictationItems={10000000}
-            studentId={studentID}
-            headers={headers}
-            selectedVoice={selectedVoice}
-            language={classLanguage}
-          />}
+          ) : (
+            <ExerciseRunner
+              exerciseScore={exerciseScore}
+              elements={theclass.elements}
+              count={1000000}
+              dictationItems={10000000}
+              studentId={studentID}
+              headers={headers}
+              selectedVoice={selectedVoice}
+              language={classLanguage}
+            />
+          )}
           <div
             style={{
               display: "flex",

@@ -265,7 +265,6 @@ export function DictationExercise({
           </div>
         </>
       )}
-      {/* Resultados */}
       {checked && (
         <div
           style={{

@@ -62,10 +62,8 @@ type ElementItem =
 type ExerciseRunnerProps = {
   elements?: ElementItem[];
   count?: number;
-  display?: boolean;
   exerciseScore?: any;
   flag?: boolean;
-  setDisplay?: (v: boolean) => void;
   dictationItems?: number;
   labels?: Partial<typeof defaultLabels>;
   studentId?: string;
@@ -218,8 +216,6 @@ export default function ExerciseRunner({
   labels: labelsProp,
   studentId,
   exerciseScore = () => {},
-  display = true,
-  setDisplay = () => {},
   headers,
   selectedVoice,
   language,
@@ -275,16 +271,12 @@ export default function ExerciseRunner({
     },
   ];
 
-  const available = useMemo(
-    () =>
-      exerciseCatalog.filter((e) => {
-        if (e.key === "dictation_from_sentences") return sentences.length > 0;
-        if (e.key === "images_to_word" || e.key === "word_to_images")
-          return imgs.length > 0;
-        return true;
-      }),
-    [sentences.length, imgs.length]
-  );
+  const available = exerciseCatalog.filter((e) => {
+    if (e.key === "dictation_from_sentences") return sentences.length > 0;
+    if (e.key === "images_to_word" || e.key === "word_to_images")
+      return imgs.length > 0;
+    return true;
+  });
 
   const [activeKey, setActiveKey] = useState<string>(available[0]?.key ?? "");
   const [restartTick, setRestartTick] = useState(0);
@@ -293,8 +285,6 @@ export default function ExerciseRunner({
     () => available.find((e) => e.key === activeKey) || null,
     [available, activeKey]
   );
-
-  const theDisplay = display ? "flex" : "none";
 
   if (!available.length) {
     return (
@@ -341,30 +331,14 @@ export default function ExerciseRunner({
       <div
         style={{
           width: "100%",
-          display: theDisplay,
+          display: "flex",
           flexDirection: "column",
           alignItems: "center",
           gap: 24,
         }}
       >
-        <span
-          style={{
-            position: "absolute",
-            top: 16,
-            right: 16,
-            cursor: "pointer",
-          }}
-          onClick={() => setDisplay(false)}
-          aria-label="Fechar"
-          role="button"
-        >
-          X
-        </span>
         <div style={{ width: "100%" }}>
           <HeaderBar title="Escolha o tipo de exercício" />
-          {studentId}
-          <br />
-          <br />
           <div
             style={{
               display: "grid",
@@ -404,8 +378,6 @@ export default function ExerciseRunner({
             })}
           </div>
         </div>
-
-        {/* Render do exercício ativo */}
         <div style={{ width: "100%" }}>
           {activeEntry ? (
             <div key={activeKey + "_" + restartTick}>
