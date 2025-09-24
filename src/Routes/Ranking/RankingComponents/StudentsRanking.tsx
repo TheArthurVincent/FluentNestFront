@@ -254,7 +254,7 @@ export default function StudentsRanking({
   const fetchStudentsScore = async () => {
     if (!hasMore || loading) return;
     setLoading(true);
-    
+
     const { teacherID } = JSON.parse(localStorage.getItem("loggedIn") || "");
 
     try {
@@ -383,7 +383,7 @@ export default function StudentsRanking({
               fontSize: "1.5rem",
             }}
           >
-            x
+            ✕
           </Xp>
         </div>
 

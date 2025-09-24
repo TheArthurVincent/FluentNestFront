@@ -151,7 +151,7 @@ const WordOfTheDayList = () => {
                 onClick={handleClose}
                 sx={{ position: "absolute", top: 8, right: 8, color: "#444" }}
               >
-                <CloseIcon />
+                ✕
               </IconButton>
 
               {selectedWord && (

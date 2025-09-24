@@ -644,7 +644,7 @@ export const TopBar: FC = () => {
               padding: "10px",
             }}
           >
-            <button onClick={handleClose}>x</button>
+            <button onClick={handleClose}>✕</button>
             <Link target="_blank" to={selectedNotification.link}>
               <HTwo>{selectedNotification.message}</HTwo>
             </Link>

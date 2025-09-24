@@ -2500,7 +2500,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
               </div>
             )}
           </div>
-            {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
           <div>
             <div
               style={{
@@ -2556,7 +2556,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                         style={{
                           fontWeight: "700",
                           fontSize: "1.5rem",
-                          }}
+                        }}
                       >
                         {name}
                         {theTime && ` - ${theTime}`}
@@ -5450,7 +5450,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                   onMouseEnter={(e) => (e.target.style.color = partnerColor())}
                   onMouseLeave={(e) => (e.target.style.color = "#998")}
                 >
-                  ×
+                  ✕
                 </Xp>
               </div>
               {loadingModalTutoringsInfo ? (

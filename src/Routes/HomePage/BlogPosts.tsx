@@ -310,7 +310,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
           display: isVisible ? "block" : "none",
         }}
       >
-        <Xp onClick={() => handleSeeModal()}>X</Xp>
+        <Xp onClick={() => handleSeeModal()}>✕</Xp>
         <HOne>{UniversalTexts.editPost}</HOne>
         <InternDivModal>
           <input

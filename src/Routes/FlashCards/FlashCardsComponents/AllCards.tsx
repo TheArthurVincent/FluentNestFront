@@ -12,6 +12,7 @@ import { readText } from "../../EnglishLessons/Assets/Functions/FunctionLessons"
 import { partnerColor } from "../../../Styles/Styles";
 import Voice from "../../../Resources/Voice";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
+import { HOne } from "../../../Resources/Components/RouteBox";
 
 var AllCards = ({
   headers,
@@ -105,8 +106,10 @@ var AllCards = ({
     setLoading(false);
   };
 
+  const [loadingModal, setLoadingModal] = useState<boolean>(false);
   var handleSeeModal = async (cardId: string) => {
     setShowModal(true);
+    setLoadingModal(true);
     try {
       var response = await axios.get(
         `${backDomain}/api/v1/flashcardfindone/${selectedStudentId}`,
@@ -128,6 +131,7 @@ var AllCards = ({
       setNewLGFront(newlf);
       setNewLGBack(newlb);
       setCardIdToEdit(newIDcard);
+      setLoadingModal(false);
     } catch (error) {
       console.log(error, "Erro ao obter cards");
       onLoggOut();
@@ -219,7 +223,7 @@ var AllCards = ({
           <button
             onClick={() => fetchMoreCards(true)}
             style={{
-              borderRadius: "4px",
+              borderRadius: 4,
               fontSize: "11px",
               padding: "4px 8px",
               height: "28px",
@@ -228,10 +232,9 @@ var AllCards = ({
             <i className="fa fa-refresh" aria-hidden="true" />
           </button>
           <Voice changeB={changeNumber} setChangeB={setChangeNumber} />
-
           <input
             style={{
-              borderRadius: "4px",
+              borderRadius: 4,
               border: "1px solid #e2e8f0",
               backgroundColor: "#f8fafc",
               fontSize: "11px",
@@ -264,7 +267,7 @@ var AllCards = ({
               style={{
                 maxHeight: "60vh",
                 overflowY: "auto",
-                padding: "0.5rem",
+                padding: "8px",
               }}
             >
               {cards.map((card: any, index: number) => (
@@ -272,7 +275,7 @@ var AllCards = ({
                   key={index}
                   style={{
                     marginBottom: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: 4,
                     overflow: "hidden",
                     boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
                     border: "1px solid #f1f5f9",
@@ -375,7 +378,7 @@ var AllCards = ({
                               style={{
                                 background: "none",
                                 border: "1px solid #e2e8f0",
-                                borderRadius: "4px",
+                                borderRadius: 4,
                                 padding: "4px 6px",
                                 cursor: "pointer",
                                 fontSize: "12px",
@@ -402,7 +405,7 @@ var AllCards = ({
                             style={{
                               background: "none",
                               border: "1px solid #e2e8f0",
-                              borderRadius: "4px",
+                              borderRadius: 4,
                               padding: "4px 6px",
                               cursor: "pointer",
                               fontSize: "12px",
@@ -436,7 +439,7 @@ var AllCards = ({
                             aspectRatio: "1 / 1",
                             objectFit: "cover",
                             objectPosition: "center",
-                            borderRadius: "6px",
+                            borderRadius: 4,
                             boxShadow: "0 1px 4px rgba(0, 0, 0, 0.1)",
                           }}
                           src={card.img}
@@ -495,95 +498,180 @@ var AllCards = ({
             </div>
           </div>
         )}
-
-        {/* Modal Overlay */}
         <div
           style={{
-            backgroundColor: "rgba(0,0,0,0.8)",
+            backgroundColor: "rgba(0,0,0,0.5)",
             top: 0,
             left: 0,
             display: showModal ? "block" : "none",
-            width: "100%",
-            height: "100%",
+            width: "1000%",
+            height: "1000%",
             position: "fixed",
           }}
           onClick={handleHideModal}
         />
-
-        {/* Modal Content */}
         <div
           style={{
-            display: showModal ? "block" : "none",
-            backgroundColor: "white",
-            padding: "1rem",
+            display: showModal ? "flex" : "none",
+            flexDirection: "column",
+            gap: "1rem",
             position: "fixed",
-            top: "40%",
-            left: "40%",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -70%)",
+            backgroundColor: "#fff",
+            borderRadius: 4,
+            padding: "1rem",
+            width: "300px",
+            maxWidth: "90vw",
+            boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+            zIndex: 2000,
           }}
           id="modal"
-          className="box-shadow-white"
         >
-          <Xp onClick={handleHideModal}>X</Xp>
-          <article id="front">
-            <input
-              style={{ maxWidth: "120px" }}
-              value={newFront}
-              onChange={(e) => setNewFront(e.target.value)}
-              type="text"
-            />
-            <select
-              style={{ maxWidth: "120px" }}
-              value={newLGFront}
-              onChange={(e) => setNewLGFront(e.target.value)}
+          {/* Cabeçalho */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderBottom: "1px solid #eee",
+              paddingBottom: "0.5rem",
+              marginBottom: "1rem",
+            }}
+          >
+            <HOne
+              style={{
+                padding: "1px",
+                margin: "1px",
+              }}
             >
-              {languages.map((language, langIndex) => (
-                <option key={langIndex} value={language}>
-                  {language}
-                </option>
-              ))}
-            </select>
-          </article>
+              Editar Card
+            </HOne>
+            <Xp onClick={handleHideModal}>✕</Xp>
+          </div>
+          {!loadingModal ? (
+            <>
+              <article id="front" style={{ display: "flex", gap: "0.5rem" }}>
+                <input
+                  style={{
+                    flex: 1,
+                    padding: "8px",
+                    border: "1px solid #ddd",
+                    borderRadius: 4,
+                  }}
+                  value={newFront}
+                  onChange={(e) => setNewFront(e.target.value)}
+                  type="text"
+                  placeholder="Frente"
+                />
+                <select
+                  style={{
+                    flexBasis: "35%",
+                    padding: "8px",
+                    border: "1px solid #ddd",
+                    borderRadius: 4,
+                  }}
+                  value={newLGFront}
+                  onChange={(e) => setNewLGFront(e.target.value)}
+                >
+                  {languages.map((language, langIndex) => (
+                    <option key={langIndex} value={language}>
+                      {language}
+                    </option>
+                  ))}
+                </select>
+              </article>
+              <article
+                id="back"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "0.5rem",
+                }}
+              >
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <input
+                    style={{
+                      flex: 1,
+                      padding: "8px",
+                      border: "1px solid #ddd",
+                      borderRadius: 4,
+                    }}
+                    value={newBack}
+                    onChange={(e) => setNewBack(e.target.value)}
+                    type="text"
+                    placeholder="Verso"
+                  />
+                  <select
+                    style={{
+                      flexBasis: "35%",
+                      padding: "8px",
+                      border: "1px solid #ddd",
+                      borderRadius: 4,
+                    }}
+                    value={newLGBack}
+                    onChange={(e) => setNewLGBack(e.target.value)}
+                  >
+                    {languages.map((language, langIndex) => (
+                      <option key={langIndex} value={language}>
+                        {language}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-          <article id="back">
-            <input
-              style={{ maxWidth: "120px" }}
-              value={newBack}
-              onChange={(e) => setNewBack(e.target.value)}
-              type="text"
-            />
-            <select
-              style={{ maxWidth: "120px" }}
-              value={newLGBack}
-              onChange={(e) => setNewLGBack(e.target.value)}
-            >
-              {languages.map((language, langIndex) => (
-                <option key={langIndex} value={language}>
-                  {language}
-                </option>
-              ))}
-            </select>
-            <br />
-            <input
-              style={{ maxWidth: "120px" }}
-              value={newBackComments}
-              onChange={(e) => setNewBackComments(e.target.value)}
-              type="text"
-            />
-            <div>
-              <button
-                onClick={() => handleDeleteCard(cardIdToEdit)}
-                color="red"
-              >
-                <i className="fa fa-trash" aria-hidden="true" />
-              </button>
-              <button
-                onClick={() => handleEditCard(cardIdToEdit)}
-                color="green"
-              >
-                <i className="fa fa-folder" aria-hidden="true" />
-              </button>
-            </div>
-          </article>
+                <input
+                  style={{
+                    padding: "8px",
+                    border: "1px solid #ddd",
+                    borderRadius: 4,
+                  }}
+                  value={newBackComments}
+                  onChange={(e) => setNewBackComments(e.target.value)}
+                  type="text"
+                  placeholder="Comentários"
+                />
+
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    gap: "0.5rem",
+                  }}
+                >
+                  <button
+                    onClick={() => handleDeleteCard(cardIdToEdit)}
+                    style={{
+                      backgroundColor: "#f44336",
+                      color: "white",
+                      border: "none",
+                      borderRadius: 4,
+                      padding: "0.5rem 1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <i className="fa fa-trash" aria-hidden="true" /> Excluir
+                  </button>
+                  <button
+                    onClick={() => handleEditCard(cardIdToEdit)}
+                    style={{
+                      backgroundColor: "#4caf50",
+                      color: "white",
+                      border: "none",
+                      borderRadius: 4,
+                      padding: "0.5rem 1rem",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <i className="fa fa-save" aria-hidden="true" /> Salvar
+                  </button>
+                </div>
+              </article>
+            </>
+          ) : (
+            <CircularProgress style={{ color: partnerColor() }} />
+          )}
         </div>
       </div>
     </>
