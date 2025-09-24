@@ -259,9 +259,9 @@ export function DictationExercise({
               aria-label={labels.play}
               title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
             >
-              🔊 {labels.play}
+              🔊 Ouvir
             </button>
-            <button onClick={() => setChecked(true)}>✅ {labels.check}</button>
+            <button onClick={() => setChecked(true)}>✅ Conferir</button>
           </div>
         </>
       )}
@@ -410,21 +410,26 @@ export function DictationExercise({
         }}
       >
         {index < pool.length - 1 ? (
-          <button
-            onClick={() => {
-              exerciseScore(
-                roundedSimilarity,
-                `Ditado: ${target} / Resposta: ${answer}`
-              );
-              setIndex((i) => i + 1);
-              setAnswer("");
-              setChecked(false);
-              setShowKey(false);
-              if (hasTTS()) window.speechSynthesis.cancel();
-            }}
-          >
-            {defaultLabels.next} ▶︎
-          </button>
+          <>
+            {" "}
+            {checked && (
+              <button
+                onClick={() => {
+                  exerciseScore(
+                    roundedSimilarity,
+                    `Ditado: ${target} / Resposta: ${answer}`
+                  );
+                  setIndex((i) => i + 1);
+                  setAnswer("");
+                  setChecked(false);
+                  setShowKey(false);
+                  if (hasTTS()) window.speechSynthesis.cancel();
+                }}
+              >
+                {defaultLabels.next} ▶︎
+              </button>
+            )}
+          </>
         ) : (
           <span
             style={{
