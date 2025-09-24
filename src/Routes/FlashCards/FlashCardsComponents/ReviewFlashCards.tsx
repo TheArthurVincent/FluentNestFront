@@ -15,7 +15,6 @@ import {
 import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
-import { HOne } from "../../../Resources/Components/RouteBox";
 import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
 import { isArthurVincent } from "../../../App";
 
@@ -37,7 +36,9 @@ const ReviewFlashCards = ({
   const [myPermissions, setPermissions] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [cards, setCards] = useState<any[]>([]);
-  const [messageBack, setMessageBack] = useState<string>("Nenhum flashcard para revisar! Adicione palavras em seus flashcards.");
+  const [messageBack, setMessageBack] = useState<string>(
+    "Nenhum flashcard para revisar! Adicione palavras em seus flashcards."
+  );
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [answer, setAnswer] = useState<boolean>(false);
   const [cardsLength, setCardsLength] = useState<boolean>(true);
@@ -46,6 +47,7 @@ const ReviewFlashCards = ({
   const [count, setCount] = useState<number>(4);
   const [backCardVisible, setBackCardVisible] = useState<boolean>(false);
   const [category, setCategory] = useState<string>("nofilter");
+  const [lang, setLang] = useState<string>("en");
   const [textColor, setTextColor] = useState<string>("#000");
   const [timerCardCount, setTimerCardCount] = useState(19);
   const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
@@ -72,7 +74,7 @@ const ReviewFlashCards = ({
         `${backDomain}/api/v1/flashcards/${selectedStudentId}`,
         {
           headers: actualHeaders,
-          params: { category },
+          params: { category, lang },
         }
       );
 
@@ -454,7 +456,8 @@ const ReviewFlashCards = ({
                               <div
                                 style={{
                                   fontSize: "15px",
-                                  margin: "10px",fontWeight: "600",
+                                  margin: "10px",
+                                  fontWeight: "600",
                                 }}
                               >
                                 {cards[0]?.front?.text}
@@ -590,15 +593,13 @@ const ReviewFlashCards = ({
                           margin: "1rem 0",
                         }}
                       >
-                  
-                  
                         <div
                           style={{
                             fontWeight: "500",
                             marginBottom: "0.25rem",
                           }}
                         >
-                  {messageBack}
+                          {messageBack}
                         </div>
                         <a
                           style={{
@@ -657,7 +658,7 @@ const ReviewFlashCards = ({
                 setChangeB={setChangeNumber}
                 chosenLanguage={languageToUse}
               />
-              <select
+              {/* <select
                 id="category-select"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -774,6 +775,34 @@ const ReviewFlashCards = ({
                 <option value="professions">
                   {UniversalTexts?.professions || "Profissões"}
                 </option>
+              </select>
+               */}
+              <select
+                id="category-select"
+                value={lang}
+                onChange={(e) => setLang(e.target.value)}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "4px 6px",
+                  height: "28px",
+                  minWidth: "120px",
+                  maxWidth: "150px",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = partnerColor())
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+              >
+                <option value="en">{"English"}</option>
+                <option value="es">{"Espanõl"}</option>
+                <option value="fr">{"Français"}</option>
               </select>
             </div>
             <button
