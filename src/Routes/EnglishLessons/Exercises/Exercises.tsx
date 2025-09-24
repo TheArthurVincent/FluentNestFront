@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
@@ -266,7 +266,13 @@ export default function ExerciseRunner({
       title: "Qual é a imagem correta?",
       render: ({ labels }) => {
         if (!imgs.length) return null;
-        return <WordToImageExercise images={imgs} labels={labels} />;
+        return (
+          <WordToImageExercise
+            exerciseScore={exerciseScore}
+            images={imgs}
+            labels={labels}
+          />
+        );
       },
     },
   ];

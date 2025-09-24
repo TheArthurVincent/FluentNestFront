@@ -99,9 +99,11 @@ function Pill({ children }: { children: React.ReactNode }) {
 }
 export default function WordToImageExercise({
   images,
+  exerciseScore,
   labels,
   onNext,
 }: {
+  exerciseScore: any;
   images: ImageItem[];
   labels?: Partial<Labels>;
   onNext?: () => void;
@@ -130,7 +132,7 @@ export default function WordToImageExercise({
     setIndex(0);
     setAnsweredIndex(null);
     setEarnedPoints(0);
-    setSeed((v) => v + 1); // força reembaralhar o pool
+    setSeed((v) => v + 1);
   }
 
   const options = useMemo(() => {
@@ -147,7 +149,7 @@ export default function WordToImageExercise({
   const isCorrect = hasAnswered && answeredIndex === correctIdx;
 
   function handleChoose(i: number) {
-    if (hasAnswered) return; // não processa duplo clique
+    if (hasAnswered) return;
     setAnsweredIndex(i);
 
     if (i === correctIdx) {
@@ -211,11 +213,11 @@ export default function WordToImageExercise({
 
           if (hasAnswered) {
             if (i === correctIdx) {
-              borderColor = "#10B981"; // verde
+              borderColor = "#10B981";
               ring = { boxShadow: "0 0 0 2px rgba(16, 185, 129, 0.78)" };
             }
             if (i === answeredIndex && i !== correctIdx) {
-              borderColor = "#EF4444"; // vermelho
+              borderColor = "#EF4444";
               ring = { boxShadow: "0 0 0 2px rgba(239, 68, 68, 0.77)" };
             }
           }
@@ -223,7 +225,13 @@ export default function WordToImageExercise({
           return (
             <button
               key={i}
-              onClick={() => handleChoose(i)}
+              onClick={() => {
+                handleChoose(i);
+                exerciseScore(
+                  i === correctIdx ? 3 : 0,
+                  `Word to image - ${optionLabel(current)}`
+                );
+              }}
               disabled={hasAnswered}
               style={{
                 overflow: "hidden",
