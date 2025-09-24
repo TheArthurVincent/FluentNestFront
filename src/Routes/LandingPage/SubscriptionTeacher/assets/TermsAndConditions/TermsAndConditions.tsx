@@ -1,78 +1,57 @@
 // TermsAndConditions.tsx
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { HOne, HTwo } from "../../../../../Resources/Components/RouteBox";
-import termsData from "./terms.json"; // agora é um OBJETO JSON, não HTML string
+import { HOne } from "../../../../../Resources/Components/RouteBox";
+import termsData from "./terms.json";
 import { partnerColor } from "../../../../../Styles/Styles";
 
-// ===== Tipos =====
-type TermsSection = {
-  title: string;
-  items: string[];
-};
-
+type TermsSection = { title: string; items: string[] };
 type TermsObject = {
   version?: string;
-  lastUpdated?: string; // "YYYY-MM-DD" ou "DD/MM/YYYY", tanto faz para exibição
+  lastUpdated?: string;
   sections: TermsSection[];
 };
 
-type ConsentData = {
+type TermsValidityData = {
   agreed: boolean;
-  signedFullName: string;
+  scrolledToEnd: boolean;
   signedAtISO: string | null;
-  userAgent: string;
   termsVersion: string;
-  termsHash: string; // SHA-256 base64 do conteúdo canônico do JSON
-  drawnSignatureDataURL?: string | null; // opcional (canvas)
+  termsHash: string;
 };
 
 type Props = {
-  fullName: string; // Nome + Sobrenome do formulário
-  termsVersion?: string; // Ex.: "2025-09-24" (sobrescreve a do JSON se vier)
-  onValidityChange?: (valid: boolean, data: ConsentData) => void;
+  termsVersion?: string;
+  onValidityChange?: (valid: boolean, data: TermsValidityData) => void;
 };
 
 export default function TermsAndConditions({
-  fullName,
   termsVersion: propTermsVersion,
   onValidityChange,
 }: Props) {
   const terms: TermsObject = termsData as TermsObject;
-
   const effectiveVersion = propTermsVersion || terms.version || "N/D";
   const lastUpdated = terms.lastUpdated || "";
 
   const [scrolledToEnd, setScrolledToEnd] = useState(false);
   const [agreed, setAgreed] = useState(false);
-  const [typedName, setTypedName] = useState("");
   const [signedAtISO, setSignedAtISO] = useState<string | null>(null);
   const [termsHash, setTermsHash] = useState<string>("");
-  const [drawMode, setDrawMode] = useState(false);
-  const [drawnSignatureDataURL, setDrawnSignatureDataURL] = useState<
-    string | null
-  >(null);
 
   const boxRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const drawing = useRef(false);
-  const last = useRef<{ x: number; y: number } | null>(null);
 
-  // ======== Constrói texto canônico a partir do JSON para hash ========
   const canonicalText = useMemo(() => {
-    // Junta version, lastUpdated, títulos e itens em uma string estável
     const parts: string[] = [];
-    if (terms.version) parts.push(`version:${terms.version}`);
-    if (terms.lastUpdated) parts.push(`lastUpdated:${terms.lastUpdated}`);
+    if (effectiveVersion) parts.push(`version:${effectiveVersion}`);
+    if (lastUpdated) parts.push(`lastUpdated:${lastUpdated}`);
     (terms.sections || []).forEach((sec, i) => {
       parts.push(`section${i + 1}_title:${sec.title}`);
-      (sec.items || []).forEach((it, j) => {
-        parts.push(`section${i + 1}_item${j + 1}:${it}`);
-      });
+      (sec.items || []).forEach((it, j) =>
+        parts.push(`section${i + 1}_item${j + 1}:${it}`)
+      );
     });
     return parts.join("\n");
-  }, [terms]);
+  }, [effectiveVersion, lastUpdated, terms.sections]);
 
-  // ======== Hash (SHA-256) do JSON canônico ========
   useEffect(() => {
     (async () => {
       const enc = new TextEncoder().encode(canonicalText || "");
@@ -82,7 +61,6 @@ export default function TermsAndConditions({
     })();
   }, [canonicalText]);
 
-  // ======== Rolar até o fim para habilitar aceite ========
   useEffect(() => {
     const el = boxRef.current;
     if (!el) return;
@@ -94,96 +72,34 @@ export default function TermsAndConditions({
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  // ======== Validação geral ========
-  const nameMatches = useMemo(() => {
-    const normalize = (s: string) =>
-      (s || "").toLowerCase().replace(/\s+/g, " ").trim();
-    return (
-      normalize(typedName) !== "" &&
-      normalize(typedName) === normalize(fullName)
-    );
-  }, [typedName, fullName]);
-
-  const valid = agreed && scrolledToEnd && nameMatches && !!termsHash;
-
-  const consentData: ConsentData = useMemo(
-    () => ({
+  // >>>>> Notifica o pai sempre que algo relevante mudar
+  useEffect(() => {
+    const valid = scrolledToEnd && agreed && !!termsHash;
+    onValidityChange?.(valid, {
       agreed,
-      signedFullName: typedName,
-      signedAtISO: signedAtISO,
-      userAgent:
-        typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
+      scrolledToEnd,
+      signedAtISO,
       termsVersion: effectiveVersion,
       termsHash,
-      drawnSignatureDataURL,
-    }),
-    [
-      agreed,
-      typedName,
-      signedAtISO,
-      effectiveVersion,
-      termsHash,
-      drawnSignatureDataURL,
-    ]
-  );
+    });
+  }, [
+    scrolledToEnd,
+    agreed,
+    termsHash,
+    signedAtISO,
+    effectiveVersion,
+    onValidityChange,
+  ]);
 
-  useEffect(() => {
-    onValidityChange?.(valid, consentData);
-  }, [valid, consentData, onValidityChange]);
-
-  // ======== Canvas (assinatura desenhada – opcional) ========
-  const startDraw = (e: React.MouseEvent | React.TouchEvent) => {
-    drawing.current = true;
-    last.current = getPos(e);
-  };
-  const endDraw = () => {
-    drawing.current = false;
-    last.current = null;
-    if (canvasRef.current)
-      setDrawnSignatureDataURL(canvasRef.current.toDataURL("image/png"));
-  };
-  const draw = (e: React.MouseEvent | React.TouchEvent) => {
-    if (!drawing.current || !canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    const pos = getPos(e);
-    if (!ctx || !last.current || !pos) return;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#111827";
-    ctx.beginPath();
-    ctx.moveTo(last.current.x, last.current.y);
-    ctx.lineTo(pos.x, pos.y);
-    ctx.stroke();
-    last.current = pos;
-  };
-  const getPos = (e: any) => {
-    const canvas = canvasRef.current!;
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches?.[0]?.clientX ?? e.clientX;
-    const clientY = e.touches?.[0]?.clientY ?? e.clientY;
-    return { x: clientX - rect.left, y: clientY - rect.top };
-  };
-  const clearCanvas = () => {
-    if (!canvasRef.current) return;
-    const ctx = canvasRef.current.getContext("2d");
-    if (!ctx) return;
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-    setDrawnSignatureDataURL(null);
-  };
-
-  // ======== Estilos inline minimalistas ========
   const s = {
     wrap: {
       border: `1px solid ${partnerColor()}`,
       borderRadius: 4,
       marginTop: 10,
       padding: 16,
-      background: "#ffffff",
+      background: "#fff",
     },
-    title: {
-      margin: "0 0 8px 0",
-      fontSize: 16,
-    },
+    title: { margin: "0 0 8px 0", fontSize: 16 },
     box: {
       border: "1px solid #e5e7eb",
       borderRadius: 4,
@@ -201,15 +117,6 @@ export default function TermsAndConditions({
       color: scrolledToEnd ? "#10b981" : "#6b7280",
       marginBottom: 12,
     },
-    row: { display: "flex", alignItems: "center", gap: 8 },
-    nameInput: {
-      width: "100%",
-      padding: "10px 12px",
-      borderRadius: 4,
-      border: `1px solid ${nameMatches ? "#10b981" : "#e5e7eb"}`,
-      outline: "none",
-      fontSize: 10,
-    },
     badge: {
       display: "inline-block",
       background: "#f3f4f6",
@@ -219,15 +126,7 @@ export default function TermsAndConditions({
       borderRadius: 4,
       fontSize: 10,
     },
-    canvasWrap: {
-      border: "1px dashed #d1d5db",
-      borderRadius: 4,
-      padding: 8,
-      background: "#fafafa",
-      marginTop: 8,
-    },
-    tiny: { fontSize: 10, color: "#6b7280", marginTop: 8 },
-  };
+  } as const;
 
   return (
     <section aria-labelledby="terms-title" style={s.wrap}>
@@ -244,6 +143,7 @@ export default function TermsAndConditions({
         </HOne>
         <span style={s.badge}>Versão: {effectiveVersion}</span>
       </div>
+
       <div
         ref={boxRef}
         role="region"
@@ -253,7 +153,7 @@ export default function TermsAndConditions({
         {(terms.sections || []).map((sec, idx) => (
           <div key={idx} style={{ marginBottom: 4 }}>
             <div style={{ fontWeight: 700, marginBottom: 4 }}>
-              {idx + 1 + ". " + sec.title}
+              {idx + 1}. {sec.title}
             </div>
             <ul style={{ margin: 0, paddingLeft: 18 }}>
               {(sec.items || []).map((it, j) => (
@@ -270,18 +170,21 @@ export default function TermsAndConditions({
           </div>
         )}
       </div>
+
       <div style={s.hint}>
         {scrolledToEnd
           ? "✅ Você rolou até o fim."
           : "⬇️ Role o texto até o final para habilitar o aceite."}
       </div>
-      <label style={s.row}>
+
+      <label style={{ display: "flex", alignItems: "center", gap: 8 }}>
         <input
           type="checkbox"
           checked={agreed}
           onChange={(e) => {
-            setAgreed(e.target.checked);
-            setSignedAtISO(e.target.checked ? new Date().toISOString() : null);
+            const checked = e.target.checked;
+            setAgreed(checked);
+            setSignedAtISO(checked ? new Date().toISOString() : null);
           }}
           disabled={!scrolledToEnd}
           aria-disabled={!scrolledToEnd}
@@ -290,15 +193,10 @@ export default function TermsAndConditions({
           Li e concordo com os Termos e Condições.
         </span>
       </label>
+      {/* Hidden (útil se o form do pai for tradicional) */}
       <input type="hidden" name="termsVersion" value={effectiveVersion} />
       <input type="hidden" name="termsHash" value={termsHash} />
       <input type="hidden" name="signedAtISO" value={signedAtISO ?? ""} />
-      <input type="hidden" name="signedFullName" value={typedName} />
-      <input
-        type="hidden"
-        name="drawnSignatureDataURL"
-        value={drawnSignatureDataURL ?? ""}
-      />
     </section>
   );
 }

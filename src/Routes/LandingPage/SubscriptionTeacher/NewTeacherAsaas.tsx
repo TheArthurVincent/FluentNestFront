@@ -41,7 +41,6 @@ function formatPhoneNumber(value: string): string {
     )}-${cleaned.slice(7)}`;
   return value;
 }
-
 function formatCPF(value: string): string {
   const cleaned = value.replace(/\D/g, "").slice(0, 11);
   if (cleaned.length <= 3) return cleaned;
@@ -53,7 +52,6 @@ function formatCPF(value: string): string {
     9
   )}-${cleaned.slice(9)}`;
 }
-
 export default function TeacherSubscription() {
   // const [form, setForm] = useState({
   //   name: "Jonathan",
@@ -77,6 +75,16 @@ export default function TeacherSubscription() {
   //   creditCardExpiryYear: "2026",
   //   creditCardCcv: "420",
   // });
+
+  const [termsValid, setTermsValid] = useState(false);
+  const [termsMeta, setTermsMeta] = useState<{
+    agreed: boolean;
+    scrolledToEnd: boolean;
+    signedAtISO: string | null;
+    termsVersion: string;
+    termsHash: string;
+  } | null>(null);
+
   const [form, setForm] = useState({
     name: "",
     promoCode: "",
@@ -108,8 +116,6 @@ export default function TeacherSubscription() {
   const [planTier, setPlanTier] = useState<"silver" | "gold">("gold");
 
   const [installments, setInstallments] = useState(1);
-  const [termsValid, setTermsValid] = useState(false);
-  const [termsPayload, setTermsPayload] = useState<any>(null);
 
   // novos estados
 
@@ -147,10 +153,11 @@ export default function TeacherSubscription() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
+
     setLoading(true);
     setError("");
 
-    // ===== Helpers =====
+    // ===== Helpers locais =====
     const onlyDigits = (s: string) => (s || "").replace(/\D+/g, "");
     const normalizeDOB = (s: string) => {
       // "DD/MM/AAAA" -> "AAAA-MM-DD"
@@ -160,7 +167,9 @@ export default function TeacherSubscription() {
     const isEmail = (s: string) =>
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((s || "").trim());
 
-    // ===== Client-side validations =====
+    const nowYear = new Date().getFullYear();
+
+    // ===== Check Termos =====
     if (!termsValid) {
       const msg =
         "Você precisa ler e aceitar os Termos e Condições para continuar.";
@@ -170,6 +179,7 @@ export default function TeacherSubscription() {
       return;
     }
 
+    // ===== Validações comuns =====
     if (!form?.name || !form?.lastname) {
       const msg = "Informe nome e sobrenome.";
       setError(msg);
@@ -202,34 +212,90 @@ export default function TeacherSubscription() {
       return;
     }
 
-    // Limites das parcelas (se aplicável)
+    // ===== Validações específicas: Cartão =====
+    if (paymentMethod === "CREDIT_CARD") {
+      const ccNum = onlyDigits(form.creditCardNumber);
+      const ccHolder = (form.creditCardHolderName || "").trim();
+      const mm = (form.creditCardExpiryMonth || "").trim();
+      const yy = Number((form.creditCardExpiryYear || "").trim());
+      const cvv = onlyDigits(form.creditCardCcv);
+      const zip = onlyDigits(form.zip);
+
+      if (ccNum.length < 13 || ccNum.length > 19) {
+        const msg = "Número do cartão inválido.";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+      if (!ccHolder) {
+        const msg = "Informe o nome impresso no cartão.";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+      if (!/^(0[1-9]|1[0-2])$/.test(mm)) {
+        const msg = "Mês de expiração inválido (use MM).";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+      if (!Number.isInteger(yy) || yy < nowYear || yy > nowYear + 25) {
+        const msg = "Ano de expiração inválido.";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+      if (cvv.length < 3 || cvv.length > 4) {
+        const msg = "CVV inválido.";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+      if (zip.length !== 8) {
+        const msg = "CEP inválido (8 dígitos).";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+      if (
+        !form.address ||
+        !form.neighborhood ||
+        !form.city ||
+        !form.state ||
+        !form.addressNumber
+      ) {
+        const msg = "Endereço incompleto.";
+        setError(msg);
+        notifyAlert(msg, "red");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // ===== Parcelas seguras =====
     const safeInstallments =
       selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD"
         ? Math.min(Math.max(Number(installments || 1), 1), 6)
         : 1;
 
-    // ===== Normalize fields before send =====
+    // ===== Normalizações antes do envio =====
     const payload = {
       ...form,
-      // normalizações comuns no BR
-      doc: onlyDigits(form.doc || ""), // CPF só com dígitos
-      phoneNumber: onlyDigits(form.phoneNumber || ""), // telefone só dígitos
-      zip: onlyDigits(form.zip || ""), // CEP só dígitos
+      doc: onlyDigits(form.doc || ""), // CPF
+      phoneNumber: onlyDigits(form.phoneNumber || ""),
+      zip: onlyDigits(form.zip || ""),
       dateOfBirth: normalizeDOB(form.dateOfBirth || ""),
-      planType: selectedPlan, // "monthly" | "yearly"
+      planType: selectedPlan as "monthly" | "yearly",
       paymentMethod, // "CREDIT_CARD" | "PIX"
       planTier, // "silver" | "gold"
       installments: safeInstallments,
-      // bloco de consentimento dos termos
-      consent: {
-        agreed: !!termsPayload?.agreed,
-        signedFullName: termsPayload?.signedFullName || "",
-        signedAtISO: termsPayload?.signedAtISO || null,
-        userAgent: termsPayload?.userAgent || "",
-        termsVersion: termsPayload?.termsVersion || "",
-        termsHash: termsPayload?.termsHash || "",
-        drawnSignatureDataURL: termsPayload?.drawnSignatureDataURL || null,
-      },
+      termsConsent: termsMeta ?? undefined, // {agreed, scrolledToEnd, signedAtISO, termsVersion, termsHash}
     };
 
     try {
@@ -237,11 +303,10 @@ export default function TeacherSubscription() {
         `${backDomain}/api/v1/cadastro-teacher`,
         payload
       );
-
       console.log(response.data);
-      // Fluxo PIX: seu UI já não mostra o botão de submit para PIX,
-      // mas se chegar aqui por algum motivo, seguimos a mesma regra.
+
       if (paymentMethod === "PIX") {
+        // Via PIX (fluxo fora do submit na sua UI, mas deixamos seguro)
         window.location.assign("/feenotuptodate");
         return;
       }
@@ -259,7 +324,7 @@ export default function TeacherSubscription() {
         "Tente novamente";
       setError(apiMessage);
       notifyAlert(apiMessage, "red");
-      console.log(apiMessage);
+      console.error(apiMessage);
     } finally {
       setLoading(false);
     }
@@ -484,7 +549,7 @@ export default function TeacherSubscription() {
     { title: string; value: string | number; status?: string | number }[]
   > = {
     silver: [
-      { title: "Limite de alunos", value: 30 },
+      { title: "Limite de alunos particulares", value: 30 },
       { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
       {
         title: "Materiais disponíveis para os alunos",
@@ -497,7 +562,7 @@ export default function TeacherSubscription() {
         value: "",
         status: "Sim",
       },
-      { title: "Gestão Financeira", value: "Sim" },
+      { title: "Gestão Financeira", value: "", status: "Sim" },
 
       { title: "Limite de revisão de flashcards/dia", value: 25 },
       { title: "Área de responsáveis", value: "", status: "Não" },
@@ -510,11 +575,11 @@ export default function TeacherSubscription() {
         status: "Não",
       },
       { title: "Emissão de recibos", value: "", status: "Sim" },
-      { title: "Assistente de IA", value: "20 tokens/mês" },
+      { title: "Assistente de IA (Acumulativo)", value: "25 tokens/mês" },
     ],
     gold: [
       {
-        title: "Limite de alunos",
+        title: "Limite de alunos particulares",
         value: "100 (com a possibilidade de adquirir mais)",
       },
       { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
@@ -529,7 +594,7 @@ export default function TeacherSubscription() {
         value: "",
         status: "Sim",
       },
-      { title: "Gestão Financeira", value: "Sim" },
+      { title: "Gestão Financeira", value: "", status: "Sim" },
       { title: "Limite de revisão de flashcards/dia", value: "Sem limites" },
       { title: "Área de responsáveis", value: "", status: "Sim" },
       // { title: "Listening exercise", value: "", status: "Sim" },
@@ -541,7 +606,7 @@ export default function TeacherSubscription() {
         status: "Sim",
       },
       { title: "Emissão de recibos", value: "", status: "Sim" },
-      { title: "Assistente de IA", value: "1.000 tokens/mês" },
+      { title: "Assistente de IA (Acumulativo)", value: "1.200 tokens/mês" },
     ],
   };
 
@@ -651,8 +716,6 @@ export default function TeacherSubscription() {
           >
             Cadastre-se
           </h1>
-          {/* <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" /> */}
-          {/* <h2>Plano</h2> */}
           <div
             style={styles.planContainer}
             role="radiogroup"
@@ -1375,16 +1438,19 @@ export default function TeacherSubscription() {
               </div>
             )}
             <TermsAndConditions
-              fullName={`${form.name} ${form.lastname}`.trim()}
               onValidityChange={(valid, data) => {
                 setTermsValid(valid);
-                setTermsPayload(data);
+                setTermsMeta(data);
               }}
-            />{" "}
+            />
             {paymentMethod !== "PIX" && (
               <button
                 type="submit"
-                style={styles.button}
+                style={{
+                  ...styles.button,
+                  backgroundColor: loading || !termsValid ? "grey" : "#ed5914",
+                  cursor: loading || !termsValid ? "not-allowed" : "pointer",
+                }}
                 disabled={loading || !termsValid}
               >
                 {loading ? (
