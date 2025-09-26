@@ -93,7 +93,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       id: "sentence-mining",
       title: UniversalTexts.vocabulary,
       description: UniversalTexts.enriqueça,
-      display: "flex",
+      display: isArthurVincent ? "flex" : "none",
       img: "https://ik.imagekit.io/vjz75qw96/assets/icons/mininggggg?updatedAt=1756841096059",
       link: "/sentence-mining",
     },
