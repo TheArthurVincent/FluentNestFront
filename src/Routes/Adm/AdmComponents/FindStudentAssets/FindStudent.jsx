@@ -50,6 +50,7 @@ import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 import { isArthurVincent } from "../../../../App";
+import { formatCPF, formatPhoneNumber } from "../../../../Resources/Components/ItemsLibrary";
 
 export function FindStudent({
   uploadStatus,
@@ -718,7 +719,7 @@ export function FindStudent({
                     fontSize: "11px",
                   }}
                 >
-                  {selectedStudent.doc || "N/A"}
+                  {formatCPF(selectedStudent.doc) || "N/A"}
                 </Typography>
               </div>
             </Grid>
@@ -743,7 +744,7 @@ export function FindStudent({
                     fontSize: "11px",
                   }}
                 >
-                  {selectedStudent.phoneNumber || "N/A"}
+                  {formatPhoneNumber(selectedStudent.phoneNumber) || "N/A"}
                 </Typography>
               </div>
             </Grid>
