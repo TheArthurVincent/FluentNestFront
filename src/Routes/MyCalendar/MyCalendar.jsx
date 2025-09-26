@@ -4357,7 +4357,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                 }
                                 onClick={() => setShowLastFew(!showLastFew)}
                               >
-                                Ver últimos 3 eventos
+                                Histórico de aulas
                               </span>
 
                               {showLastFew && (
@@ -4368,6 +4368,23 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                     listStyle: "none",
                                   }}
                                 >
+                                  <span
+                                    style={{
+                                      cursor: "pointer",
+                                      float: "right",
+                                      marginBottom: "8px",
+                                    }}
+                                    onMouseOver={(e) =>
+                                      (e.currentTarget.style.color =
+                                        partnerColor())
+                                    }
+                                    onMouseDown={(e) =>
+                                      (e.currentTarget.style.color = "black")
+                                    }
+                                    onClick={() => setShowLastFew(false)}
+                                  >
+                                    x
+                                  </span>
                                   {lastFew.map((evt) => (
                                     <li
                                       key={evt._id || evt.id}
@@ -4416,24 +4433,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                         <span>
                                           {formatDateBr(evt.date) || "Sem data"}
                                         </span>
-                                        <span
-                                          style={{
-                                            cursor: "pointer",
-                                          }}
-                                          onMouseOver={(e) =>
-                                            (e.currentTarget.style.color =
-                                              partnerColor())
-                                          }
-                                          onMouseDown={(e) =>
-                                            (e.currentTarget.style.color =
-                                              "black")
-                                          }
-                                          onClick={() => setShowLastFew(false)}
-                                        >
-                                          x
-                                        </span>
                                       </span>
-
                                       <span
                                         style={{
                                           opacity: 0.95,
