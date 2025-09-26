@@ -2953,7 +2953,7 @@ export default function EnglishClassCourse2({
     const px = 20;
 
     const p = (html: string) =>
-      `<p style="font-size:${px}px;">${html}</p><br/>`;
+      `<p>${html}</p><br/>`;
     const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
     const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
 
@@ -3087,9 +3087,7 @@ export default function EnglishClassCourse2({
               });
             }
             break;
-
           default:
-            // Tipos desconhecidos: ignorar para manter simplicidade
             break;
         }
       });
@@ -3259,7 +3257,6 @@ export default function EnglishClassCourse2({
                     }, 500);
                   } else {
                     notifyAlert("Escolha um aluno", partnerColor());
-
                     setSeeMarginBoardStudent(true);
                     setTimeout(() => {
                       setSeeMarginBoardStudent(false);
