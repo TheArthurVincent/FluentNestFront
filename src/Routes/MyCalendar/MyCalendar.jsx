@@ -274,6 +274,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
     setLoading(false);
   };
   const [loadingDescription, setLoadingDescription] = useState(false);
+  const [loadingHWDescription, setLoadingHWDescription] = useState(false);
 
   const handleClassSummary = async () => {
     setLoadingDescription(true);
@@ -290,6 +291,26 @@ function MyCalendar({ headers, thePermissions, myId }) {
       } catch (error) {
         setLoadingDescription(false);
 
+        console.log(error, "Erro ao encontrar alunos");
+      }
+    }
+  };
+  const handleHWDescription = async () => {
+    setLoadingHWDescription(true);
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-description-hw/${myId}`,
+          { homework },
+          { headers }
+        );
+        const adapted = response.data.adapted;
+        console.log(adapted);
+        setShowAIGENERATED(true);
+        setHomework(adapted);
+        setLoadingHWDescription(false);
+      } catch (error) {
+        setLoadingHWDescription(false);
         console.log(error, "Erro ao encontrar alunos");
       }
     }
@@ -407,20 +428,18 @@ function MyCalendar({ headers, thePermissions, myId }) {
       raw.setHours(raw.getHours() + 4);
       const monday = getLastMonday(raw);
       setTheToday(monday);
-
+      setShowAIGENERATED(false);
       // Requisição
       const response = await axios.get(
         `${backDomain}/api/v1/eventsgeneral/${id}`,
         { headers, params: { today: monday } }
       );
-
       // Normalizadores
       const addOneDayAndFormat = (dt) => {
         const d = new Date(dt);
         d.setDate(d.getDate() + 1);
         return formattedDates(d);
       };
-
       const normalizeEvent = (ev) => ({
         ...ev,
         date: addOneDayAndFormat(ev.date),
@@ -1212,6 +1231,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
   const handleTheNewTimeChange = (e) => {
     setTheNewTimeOfTutoring(e.target.value);
   };
+  const [showAIGENERATED, setShowAIGENERATED] = useState(false);
 
   const handleHomeworkChange = (htmlContent) => {
     setHomework(htmlContent);
@@ -1241,8 +1261,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
 
   useEffect(() => {
     getClasses();
-    // se headers/myId podem mudar, adicione-os nas deps:
-    // }, [headers, myId, thePermissions]);
   }, []);
 
   const grouped = useMemo(() => {
@@ -1354,43 +1372,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
       null;
     }
     setDeleteVisible(false);
-  };
-
-  const handleCheckbox1Change = async () => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventchecklist1/${newEventId}`,
-        { headers }
-      );
-
-      fetchOneEvent(newEventId);
-    } catch (error) {
-      console.log(error, "Erro");
-    }
-  };
-
-  const handleCheckbox2Change = async () => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventchecklist2/${newEventId}`,
-        { headers }
-      );
-      fetchOneEvent(newEventId);
-    } catch (error) {
-      console.log(error, "Erro");
-    }
-  };
-
-  const handleCheckbox3Change = async () => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventchecklist3/${newEventId}`,
-        { headers }
-      );
-      fetchOneEvent(newEventId);
-    } catch (error) {
-      console.log(error, "Erro");
-    }
   };
 
   const hasEmptySlot = (() => {
@@ -1586,7 +1567,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
-
+      setShowAIGENERATED(false);
       loadGeneral(new Date());
       handleCloseModal();
     } catch (error) {
@@ -1604,6 +1585,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
           headers,
         }
       );
+      setShowAIGENERATED(false);
       fetchTodo(taskID);
     } catch (error) {
       console.error(error);
@@ -3003,7 +2985,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                                 }
                                                 onClick={handleClassSummary}
                                               >
-                                                ✨
+                                                ✨{/* varinha mágica*/}
                                               </span>
                                             </div>
                                           )}
@@ -3265,7 +3247,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                               }}
                                             >
                                               <span
-                                                style={{ fontSize: "12px" }}
+                                                style={{ fontSize: "10px" }}
                                               >
                                                 {showHomework ? "📝" : "➕"}
                                               </span>
@@ -3274,97 +3256,164 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                                 : "Add Homework"}
                                             </button>
                                           )}
-                                          {/* Homework */}
-                                          {!homeworkAdded && showHomework && (
-                                            <div>
-                                              <label
-                                                style={{
-                                                  display: "block",
-                                                  marginBottom: "0.5rem",
-                                                  fontWeight: "500",
-                                                  color: "#374151",
-                                                  fontSize: "0.875rem",
-                                                }}
-                                              >
-                                                {
-                                                  UniversalTexts.calendarModal
-                                                    .homework
-                                                }
-                                              </label>
-                                              <div
-                                                style={{
-                                                  backgroundColor: "white",
-                                                  borderRadius: "6px",
-                                                  border: "1px solid #ced4da",
-                                                  overflow: "hidden",
-                                                }}
-                                              >
-                                                <HTMLEditor
-                                                  onChange={
-                                                    handleHomeworkChange
+                                          {
+                                            // !homeworkAdded &&
+                                            showHomework && (
+                                              <div>
+                                                <label
+                                                  style={{
+                                                    display: "block",
+                                                    marginBottom: "0.5rem",
+                                                    fontWeight: "500",
+                                                    color: "#374151",
+                                                    fontSize: "0.875rem",
+                                                  }}
+                                                >
+                                                  {
+                                                    UniversalTexts.calendarModal
+                                                      .homework
                                                   }
-                                                  initialContent={"Type here"}
-                                                />
-                                              </div>
-
-                                              {studentsInGroup.length > 0 && (
-                                                <div>
-                                                  <label
-                                                    style={{
-                                                      display: "block",
-                                                      marginBottom: "0.5rem",
-                                                      fontWeight: "600",
-                                                      color: "#495057",
-                                                      fontSize: "0.9rem",
-                                                    }}
-                                                  >
-                                                    📝 Descrição individual para
-                                                    cada aluno.
-                                                  </label>
-
-                                                  {studentsInGroup.map(
-                                                    (student, index) => (
-                                                      <div
-                                                        key={
-                                                          student._id || index
-                                                        }
-                                                      >
-                                                        {student.name +
-                                                          " " +
-                                                          student.lastname}
-                                                        <input
-                                                          type="text"
-                                                          value={
-                                                            comments[index]
-                                                              ?.comment || ""
-                                                          }
-                                                          onChange={(e) =>
-                                                            handleStudentDescriptionChange(
-                                                              index,
-                                                              e.target.value
-                                                            )
-                                                          }
-                                                          placeholder="Comentário para o aluno"
-                                                          style={{
-                                                            width: "100%",
-                                                            padding: "0.75rem",
-                                                            borderRadius: "6px",
-                                                            border:
-                                                              "1px solid #ced4da",
-                                                            fontSize: "0.9rem",
-                                                            marginTop: "0.5rem",
+                                                </label>
+                                                {!loadingHWDescription ? (
+                                                  <>
+                                                    {" "}
+                                                    <div
+                                                      style={{
+                                                        backgroundColor:
+                                                          "white",
+                                                        borderRadius: "6px",
+                                                        border:
+                                                          "1px solid #ced4da",
+                                                        overflow: "hidden",
+                                                      }}
+                                                    >
+                                                      {!showAIGENERATED ? (
+                                                        <span>
+                                                          <HTMLEditor
+                                                            onChange={
+                                                              handleHomeworkChange
+                                                            }
+                                                            initialContent={
+                                                              "Type"
+                                                            }
+                                                          />
+                                                        </span>
+                                                      ) : (
+                                                        <div
+                                                          dangerouslySetInnerHTML={{
+                                                            __html: homework,
                                                           }}
                                                         />
-                                                      </div>
-                                                    )
-                                                  )}
-                                                </div>
-                                              )}
-                                            </div>
-                                          )}
-
+                                                      )}
+                                                    </div>
+                                                    <div
+                                                      style={{
+                                                        margin: "1rem",
+                                                      }}
+                                                    />
+                                                    {showAIGENERATED ? (
+                                                      <button
+                                                        style={{
+                                                          fontSize: "0.75rem",
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={(e) => {
+                                                          e.preventDefault();
+                                                          setShowAIGENERATED(
+                                                            false
+                                                          );
+                                                        }}
+                                                      >
+                                                        Voltar ao editor (isto
+                                                        excluirá a descrição
+                                                        gerada)
+                                                      </button>
+                                                    ) : (
+                                                      <button
+                                                        style={{
+                                                          fontSize: "0.75rem",
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={
+                                                          handleHWDescription
+                                                        }
+                                                      >
+                                                        ✨Ajude-me com a
+                                                        descrição do homework
+                                                      </button>
+                                                    )}
+                                                  </>
+                                                ) : (
+                                                  <CircularProgress
+                                                    style={{
+                                                      color: partnerColor(),
+                                                    }}
+                                                  />
+                                                )}
+                                                {studentsInGroup.length > 1 && (
+                                                  <div
+                                                    style={{
+                                                      marginTop: "1rem",
+                                                    }}
+                                                  >
+                                                    <label
+                                                      style={{
+                                                        display: "block",
+                                                        marginBottom: "0.5rem",
+                                                        fontWeight: "600",
+                                                        color: "#495057",
+                                                        fontSize: "0.9rem",
+                                                      }}
+                                                    >
+                                                      📝 Descrição individual
+                                                      para cada aluno.
+                                                    </label>
+                                                    {studentsInGroup.map(
+                                                      (student, index) => (
+                                                        <div
+                                                          key={
+                                                            student._id || index
+                                                          }
+                                                        >
+                                                          {student.name +
+                                                            " " +
+                                                            student.lastname}
+                                                          <input
+                                                            type="text"
+                                                            value={
+                                                              comments[index]
+                                                                ?.comment || ""
+                                                            }
+                                                            onChange={(e) =>
+                                                              handleStudentDescriptionChange(
+                                                                index,
+                                                                e.target.value
+                                                              )
+                                                            }
+                                                            placeholder="Comentário para o aluno"
+                                                            style={{
+                                                              width: "100%",
+                                                              padding:
+                                                                "0.75rem",
+                                                              borderRadius:
+                                                                "6px",
+                                                              border:
+                                                                "1px solid #ced4da",
+                                                              fontSize:
+                                                                "0.9rem",
+                                                              marginTop:
+                                                                "0.5rem",
+                                                            }}
+                                                          />
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            )
+                                          }
                                           {/* Due Date */}
-
                                           {!homeworkAdded && showHomework && (
                                             <div>
                                               <label
@@ -4623,7 +4672,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                     style={{
                                       backgroundColor: partnerColor(),
                                       color: "white",
-                                      padding: "0.2rem 0.6rem",
+                                      padding: "0.2rem 0.75rem",
                                       borderRadius: "6px",
                                       fontWeight: "500",
                                       fontSize: "0.75rem",
@@ -4826,7 +4875,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                   style={{
                                     backgroundColor: partnerColor(),
                                     color: "white",
-                                    padding: "0.2rem 0.6rem",
+                                    padding: "0.2rem 0.75rem",
                                     borderRadius: "6px",
                                     fontWeight: "500",
                                     fontSize: "0.75rem",
@@ -5223,97 +5272,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                             </div>
                           </div>
                         )}
-                        {/* {!postNew && authorizeOrNot && (
-                          <div
-                            style={{
-                              backgroundColor: "#f8f9fa",
-                              padding: "1.5rem",
-                              borderRadius: "6px",
-                              border: "1px solid #e9ecef",
-                            }}
-                          >
-                            <h4
-                              style={{
-                                margin: "0 0 1rem 0",
-                                color: partnerColor(),
-                              }}
-                            >
-                              {UniversalTexts.calendarModal.taskChecklist}
-                            </h4>
-                            <div style={{ display: "grid", gap: "5px" }}>
-                              {[
-                                {
-                                  key: "checkList1",
-                                  text: UniversalTexts.calendarModal
-                                    .realizedClass,
-                                  handler: handleCheckbox1Change,
-                                },
-                                {
-                                  key: "checkList2",
-                                  text: UniversalTexts.calendarModal
-                                    .uploadVideo,
-                                  handler: handleCheckbox2Change,
-                                },
-                                {
-                                  key: "checkList3",
-                                  text: UniversalTexts.calendarModal
-                                    .uploadClassesToPlatform,
-                                  handler: handleCheckbox3Change,
-                                },
-                                {
-                                  key: "checkList4",
-                                  text: UniversalTexts.calendarModal
-                                    .addHomeworkActivities,
-                                  handler: handleCheckbox4Change,
-                                },
-                                {
-                                  key: "checkList5",
-                                  text: UniversalTexts.calendarModal
-                                    .uploadFlashcards,
-                                  handler: handleCheckbox5Change,
-                                },
-                              ].map((item, index) => (
-                                <label
-                                  key={index}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "5px",
-                                    padding: "5px",
-                                    backgroundColor: eventFull[item.key]
-                                      ? "#d4edda"
-                                      : "white",
-                                    borderRadius: "6px",
-                                    border: "1px solid #dee2e6",
-                                    cursor: "pointer",
-                                    transition: "all 0.2s",
-                                  }}
-                                >
-                                  <input
-                                    checked={eventFull[item.key] || false}
-                                    type="checkbox"
-                                    onChange={item.handler}
-                                    style={{
-                                      width: "18px",
-                                      height: "18px",
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                  <span
-                                    style={{
-                                      color: "#495057",
-                                      textDecoration: eventFull[item.key]
-                                        ? "line-through"
-                                        : "none",
-                                    }}
-                                  >
-                                    {item.text}
-                                  </span>
-                                </label>
-                              ))}
-                            </div>
-                          </div>
-                        )} */}
                       </span>
                     )}
                   </div>

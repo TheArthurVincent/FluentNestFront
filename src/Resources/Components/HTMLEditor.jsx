@@ -88,7 +88,7 @@ function HTMLEditor({ onChange, initialContent }) {
         ref={editorRef}
         style={{
           marginTop: "1rem",
-          fontSize: "18px",
+          fontSize: "14px",
           width: "100%",
           direction: "ltr",
           textAlign: "left",

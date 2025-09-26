@@ -360,10 +360,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
     setPermissions(permissions);
   }, []);
 
-  useEffect(() => {
-    fetchStudents();
-  }, [ID]);
-
   const updateRealizedClass = async (tutoringId: string, score: number) => {
     setDisabled(true);
     try {
@@ -429,6 +425,11 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setTabValue(newValue);
   };
+
+  useEffect(() => {
+    fetchStudents();
+    fetchHW(studentID);
+  }, [ID]);
 
   const isAllowed = myPermissions == "superadmin" || myPermissions == "teacher";
   return (
