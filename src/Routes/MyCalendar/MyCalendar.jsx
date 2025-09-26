@@ -59,7 +59,7 @@ import {
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
 import { display, fontSize } from "@mui/system";
 
-function MyCalendar({ headers, thePermissions, myId }) {
+function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
   const [seePlusButtons, setSeePlusButtons] = useState(false);
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -255,10 +255,11 @@ function MyCalendar({ headers, thePermissions, myId }) {
         const adapted = response.data.adapted;
         setDescription(adapted);
         setLoadingDescription(false);
+        setChange(!change);
       } catch (error) {
         setLoadingDescription(false);
-
-        console.log(error, "Erro ao encontrar alunos");
+        notifyAlert(error?.response?.data?.message);
+console.log(error, "Erro");
       }
     }
   };
@@ -275,9 +276,11 @@ function MyCalendar({ headers, thePermissions, myId }) {
         setShowAIGENERATED(true);
         setHomework(adapted);
         setLoadingHWDescription(false);
+        setChange(!change);
       } catch (error) {
         setLoadingHWDescription(false);
-        console.log(error, "Erro ao encontrar alunos");
+console.log(error, "Erro");
+notifyAlert(error?.response?.data?.message);
       }
     }
   };
@@ -2922,9 +2925,13 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                                 }}
                                                 required
                                               />
-                                              <span
+                                              <button
+                                              title="-5"
                                                 style={{
                                                   fontSize: "1rem",
+                                                  border:"null",
+                                                  padding: "0",
+                                                  backgroundColor: "transparent",
                                                   cursor:
                                                     loadingDescription ||
                                                     !description
@@ -2942,8 +2949,8 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                                 }
                                                 onClick={handleClassSummary}
                                               >
-                                                ✨{/* varinha mágica*/}
-                                              </span>
+                                                ✨
+                                              </button>
                                             </div>
                                           )}
                                         </div>

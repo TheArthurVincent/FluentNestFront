@@ -38,6 +38,7 @@ const SentenceMining = ({
   headers,
   onChange,
   change,
+
   myPermissions,
 }: FlashCardsPropsRv) => {
   const { UniversalTexts } = useUserContext();
@@ -106,7 +107,7 @@ const SentenceMining = ({
         `${backDomain}/api/v1/flashcardsvocabulary/${selectedStudentId}`,
         {
           headers: actualHeaders,
-          params: { selectedLanguage, word, difficulty },
+          params: { selectedLanguage, word, difficulty, myId },
         }
       );
       setAdaptedWord(response.data.adaptedWord);
@@ -129,10 +130,15 @@ const SentenceMining = ({
       );
 
       setLoading(false);
+      onChange(!change);
       setDis(false);
     } catch (error: any) {
       console.error(error);
-      alert(error.response?.data?.error || "Error fetching flashcards.");
+      notifyAlert(
+        error.response?.data?.message || "Error fetching flashcards.",
+        partnerColor()
+      );
+      setLoading(false);
       setDis(false);
     }
   };
@@ -611,7 +617,7 @@ const SentenceMining = ({
           }}
           href="/flash-cards"
         >
-          Revise seus flashcards!
+          Veja os flashcards dos alunos
         </a>
       </span>
     </RouteDiv>

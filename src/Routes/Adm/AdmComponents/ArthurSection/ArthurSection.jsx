@@ -55,6 +55,21 @@ export function ArthurSection({ headers }) {
       notifyAlert(error, "rgba(255, 0, 0, 1)");
     }
   };
+    const handleResetTokens = async () => {
+    const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    const userId = getLoggedUser.id;
+
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/reset-tokens/${userId}`,
+        { headers }
+      );
+      notifyAlert(response.data.message, "rgba(0, 140, 255, 1)");
+    } catch (error) {
+      console.error("Erro ao enviar resposta", error);
+      notifyAlert(error, "rgba(255, 0, 0, 1)");
+    }
+  };
   const handleLogoutAllUsers = async () => {
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     const userId = getLoggedUser.id;
@@ -79,6 +94,7 @@ export function ArthurSection({ headers }) {
         flexWrap: "wrap",
       }}
     >
+      <button onDoubleClick={handleResetTokens}>Reset Tokens</button>
       <button onDoubleClick={handleResetUsers}>Reset Users</button>
       <button onDoubleClick={handleLogoutAllUsers}>Logout All Users</button>
       <button onDoubleClick={() => handleShowResetMonth()}>

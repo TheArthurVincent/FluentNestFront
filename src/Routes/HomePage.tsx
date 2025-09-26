@@ -42,6 +42,7 @@ import {
   textTitleFont,
 } from "../Styles/Styles";
 import Redirect from "../Redirect";
+import Tokens from "./Tokens";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
@@ -190,6 +191,8 @@ export function HomePage({ headers }: HeadersProps) {
       title: "My Calendar",
       component: (
         <MyCalendar
+          change={change}
+          setChange={setChange}
           myId={_StudentId}
           thePermissions={thePermissions}
           headers={headers}
@@ -318,6 +321,9 @@ export function HomePage({ headers }: HeadersProps) {
               );
             })}
           </Routes>
+          {(thePermissions == "superadmin" || thePermissions == "teacher") && (
+            <Tokens id={_StudentId} headers={headers} change={change} />
+          )}
           <AppFooter see={see} />
           <Outlet />
         </div>
