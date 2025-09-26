@@ -13,10 +13,8 @@ export function Tokens({ id, headers, change }) {
         headers,
       });
       setTokens(response.data?.tokens ?? 0);
-      console.log(response.data);
       setLoading(false);
     } catch (err) {
-      console.error("Failed to fetch tokens:", err);
       setTokens(0);
     } finally {
       setLoading(false);
