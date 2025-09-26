@@ -259,7 +259,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
       } catch (error) {
         setLoadingDescription(false);
         notifyAlert(error?.response?.data?.message);
-console.log(error, "Erro");
+        console.log(error, "Erro");
       }
     }
   };
@@ -279,8 +279,8 @@ console.log(error, "Erro");
         setChange(!change);
       } catch (error) {
         setLoadingHWDescription(false);
-console.log(error, "Erro");
-notifyAlert(error?.response?.data?.message);
+        console.log(error, "Erro");
+        notifyAlert(error?.response?.data?.message);
       }
     }
   };
@@ -2926,12 +2926,13 @@ notifyAlert(error?.response?.data?.message);
                                                 required
                                               />
                                               <button
-                                              title="-5"
+                                                title="-5"
                                                 style={{
                                                   fontSize: "1rem",
-                                                  border:"null",
+                                                  border: "null",
                                                   padding: "0",
-                                                  backgroundColor: "transparent",
+                                                  backgroundColor:
+                                                    "transparent",
                                                   cursor:
                                                     loadingDescription ||
                                                     !description
@@ -2949,7 +2950,7 @@ notifyAlert(error?.response?.data?.message);
                                                 }
                                                 onClick={handleClassSummary}
                                               >
-                                                ✨
+                                                ✨ (-5)
                                               </button>
                                             </div>
                                           )}
@@ -3294,6 +3295,7 @@ notifyAlert(error?.response?.data?.message);
                                                       </button>
                                                     ) : (
                                                       <button
+                                                        title="-15"
                                                         style={{
                                                           fontSize: "0.75rem",
                                                           cursor: "pointer",
@@ -3303,7 +3305,7 @@ notifyAlert(error?.response?.data?.message);
                                                         }
                                                       >
                                                         ✨Ajude-me com a
-                                                        descrição do homework
+                                                        descrição do homework (-15)
                                                       </button>
                                                     )}
                                                   </>

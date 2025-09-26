@@ -417,6 +417,7 @@ const SentenceMining = ({
                 <button
                   color={word == "" || dis ? "grey" : partnerColor()}
                   type="submit"
+                  title="-15"
                   style={{
                     cursor: word == "" || dis ? "not-allowed" : "pointer",
                     padding: "4px 12px",
@@ -426,7 +427,7 @@ const SentenceMining = ({
                   }}
                   disabled={word == "" || dis ? true : false}
                 >
-                  Mine word
+                  ✨ Minerar sentenças (-15)
                 </button>
               </>
             )}
