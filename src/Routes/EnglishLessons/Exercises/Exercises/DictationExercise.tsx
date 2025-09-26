@@ -204,7 +204,7 @@ export function DictationExercise({
             onClick={() => {
               readText(target, true, language, selectedVoice);
             }}
-            disabled={!answer || !target || !hasTTS()}
+            disabled={!target || !hasTTS()}
             aria-label={labels.play}
             title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
           >
