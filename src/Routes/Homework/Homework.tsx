@@ -933,7 +933,7 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                             >
                                               {homework?.status === "done"
                                                 ? "Lição Concluída"
-                                                : "´Lição Pendente"}
+                                                : "Lição Pendente"}
                                             </div>
                                           </div>
                                         )}
