@@ -83,7 +83,7 @@ export default function EnglishClassCourse2({
   const [thePicture, setPicture] = useState<string>("");
   const [seeSlides, setSeeSlides] = useState<boolean>(false);
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
-  const [chosenStudent, setChosenStudent] = useState<boolean>(false);
+  const [chosenStudent, setChosenStudent] = useState<boolean>(true);
   const [SeeMarginBoardStudent, setSeeMarginBoardStudent] =
     useState<boolean>(false);
   const [newHWDescription, setNewHWDescription] = useState("");
@@ -140,6 +140,7 @@ export default function EnglishClassCourse2({
     setLoading(true);
     const user = localStorage.getItem("loggedIn");
     const { id, permissions, picture } = JSON.parse(user || "");
+    setChosenStudent(permissions == "student");
     setPermissions(permissions);
     setPicture(picture);
 
