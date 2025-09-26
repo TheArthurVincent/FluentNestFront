@@ -57,7 +57,7 @@ import {
   styleLiChecked,
   updateButton,
 } from "./CalendarComponents/MyCalendarFuncions.Styles";
-import { fontSize } from "@mui/system";
+import { display, fontSize } from "@mui/system";
 
 function MyCalendar({ headers, thePermissions, myId }) {
   const [seePlusButtons, setSeePlusButtons] = useState(false);
@@ -495,7 +495,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
   const [showLastFew, setShowLastFew] = useState(false);
   const fetchOneEvent = async (id) => {
     setLoadingModalInfo(true);
-
     if (!id) {
       return;
     }
@@ -4329,37 +4328,38 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                 width: "90%",
                               }}
                             >
-                              <span
-                                style={{
-                                  fontSize: "0.85rem",
-                                  color: "#6c757d",
-                                  margin: " 10px 0",
-                                  fontWeight: "500",
-                                  cursor: "pointer",
-                                  display: "block",
-                                  width: "100%",
-                                  borderRadius: "6px",
-                                  fontWeight: 600,
-                                  padding: "8px",
-                                  border: `1px solid ${partnerColor()}`,
-                                  backgroundColor: "transparent",
-                                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                                  transition:
-                                    "background-color 120ms ease, box-shadow 120ms ease",
-                                }}
-                                onMouseOver={(e) =>
-                                  (e.currentTarget.style.backgroundColor =
-                                    "#fff")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.currentTarget.style.backgroundColor =
-                                    "transparent")
-                                }
-                                onClick={() => setShowLastFew(!showLastFew)}
-                              >
-                                Histórico de aulas
-                              </span>
-
+                              {!showLastFew && (
+                                <span
+                                  style={{
+                                    fontSize: "0.75rem",
+                                    color: "#6c757d",
+                                    margin: " 10px 0",
+                                    fontWeight: "500",
+                                    cursor: "pointer",
+                                    display: "block",
+                                    width: "100%",
+                                    borderRadius: "6px",
+                                    fontWeight: 600,
+                                    padding: "8px",
+                                    border: `1px solid ${partnerColor()}`,
+                                    backgroundColor: "transparent",
+                                    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                                    transition:
+                                      "background-color 120ms ease, box-shadow 120ms ease",
+                                  }}
+                                  onMouseOver={(e) =>
+                                    (e.currentTarget.style.backgroundColor =
+                                      "#fff")
+                                  }
+                                  onMouseOut={(e) =>
+                                    (e.currentTarget.style.backgroundColor =
+                                      "transparent")
+                                  }
+                                  onClick={() => setShowLastFew(!showLastFew)}
+                                >
+                                  Histórico de aulas dadas
+                                </span>
+                              )}
                               {showLastFew && (
                                 <ul
                                   style={{
@@ -4368,24 +4368,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                     listStyle: "none",
                                   }}
                                 >
-                                  <span
-                                    style={{
-                                      cursor: "pointer",
-                                      float: "right",
-                                      marginBottom: "8px",
-                                    }}
-                                    onMouseOver={(e) =>
-                                      (e.currentTarget.style.color =
-                                        partnerColor())
-                                    }
-                                    onMouseDown={(e) =>
-                                      (e.currentTarget.style.color = "black")
-                                    }
-                                    onClick={() => setShowLastFew(false)}
-                                  >
-                                    x
-                                  </span>
-                                  {lastFew.map((evt) => (
+                                  {lastFew.map((evt, idx) => (
                                     <li
                                       key={evt._id || evt.id}
                                       style={{
@@ -4396,6 +4379,7 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                         }`,
                                         borderRadius: "6px",
                                         padding: "8px 12px",
+                                        marginTop: "8px",
                                         marginBottom: "8px",
                                         fontSize: "12px",
                                         display: "grid",
@@ -4416,6 +4400,29 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                           "0 1px 2px rgba(0,0,0,0.04)")
                                       }
                                     >
+                                      {idx == 0 && (
+                                        <span
+                                          style={{
+                                            cursor: "pointer",
+                                            display: "flex",
+                                            flexDirection: "row-reverse",
+                                            marginBottom: "8px",
+                                            fontWeight: "600",
+                                            fontSize: "14px",
+                                          }}
+                                          onMouseOver={(e) =>
+                                            (e.currentTarget.style.color =
+                                              partnerColor())
+                                          }
+                                          onMouseDown={(e) =>
+                                            (e.currentTarget.style.color =
+                                              "black")
+                                          }
+                                          onClick={() => setShowLastFew(false)}
+                                        >
+                                          x
+                                        </span>
+                                      )}
                                       <span
                                         style={{
                                           fontWeight: 600,
