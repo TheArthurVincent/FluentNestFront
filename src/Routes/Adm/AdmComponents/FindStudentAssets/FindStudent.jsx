@@ -328,7 +328,7 @@ export function FindStudent({
   const cellTable = {
     whiteSpace: "nowrap",
     padding: "10px 16px",
-    fontSize: "14px",
+    fontSize: "11px",
     fontWeight: "400",
     color: "#2c3e50",
     borderBottom: "1px solid #ecf0f1",
@@ -598,7 +598,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.email}
@@ -648,7 +648,7 @@ export function FindStudent({
                   borderRadius: "6px",
                   color: partnerColor(),
                   borderColor: partnerColor(),
-                  fontSize: "10px",
+                  fontSize: "8px",
                   fontWeight: "500",
                 }}
               >
@@ -678,7 +678,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -690,7 +690,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.username || "N/A"}
@@ -703,7 +703,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -715,7 +715,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.doc || "N/A"}
@@ -728,7 +728,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -740,7 +740,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.phoneNumber || "N/A"}
@@ -753,7 +753,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -765,7 +765,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.dateOfBirth
@@ -784,7 +784,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -796,7 +796,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "600",
                     color: "#2c3e50",
-                    fontSize: "16px",
+                    fontSize: "12px",
                   }}
                 >
                   {selectedStudent.totalScore || "0"}
@@ -809,7 +809,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -821,7 +821,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "600",
                     color: "#34495e",
-                    fontSize: "16px",
+                    fontSize: "12px",
                   }}
                 >
                   {selectedStudent.monthlyScore || "0"}
@@ -834,7 +834,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -846,7 +846,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.weeklyClasses || "N/A"}
@@ -859,7 +859,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -875,7 +875,7 @@ export function FindStudent({
                     style={{
                       color: partnerColor(),
                       textDecoration: "none",
-                      fontSize: "14px",
+                      fontSize: "11px",
                       fontWeight: "500",
                     }}
                     onMouseEnter={(e) => {
@@ -892,7 +892,7 @@ export function FindStudent({
                     style={{
                       fontWeight: "500",
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     }}
                   >
                     N/A
@@ -906,7 +906,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -920,7 +920,7 @@ export function FindStudent({
                     alignItems: "center",
                     padding: "4px 8px",
                     borderRadius: "6px",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.feeUpToDate
                       ? "#d4f6d4"
@@ -954,7 +954,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -968,7 +968,7 @@ export function FindStudent({
                     alignItems: "center",
                     padding: "4px 8px",
                     borderRadius: "6px",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.onHold
                       ? "#fff3cd"
@@ -1003,7 +1003,7 @@ export function FindStudent({
                   <Typography
                     style={{
                       color: "#6c757d",
-                      fontSize: "11px",
+                      fontSize: "8px",
                       marginBottom: "4px",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -1017,7 +1017,7 @@ export function FindStudent({
                       alignItems: "center",
                       padding: "4px 8px",
                       borderRadius: "6px",
-                      fontSize: "10px",
+                      fontSize: "8px",
                       fontWeight: "500",
                       backgroundColor:
                         selectedStudent.permissions === "superadmin"
@@ -1066,7 +1066,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -1078,7 +1078,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.myFirstMonth
@@ -1094,7 +1094,7 @@ export function FindStudent({
                   <Typography
                     style={{
                       color: "#6c757d",
-                      fontSize: "11px",
+                      fontSize: "8px",
                       marginBottom: "4px",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -1108,7 +1108,7 @@ export function FindStudent({
                       alignItems: "center",
                       padding: "4px 8px",
                       borderRadius: "6px",
-                      fontSize: "10px",
+                      fontSize: "8px",
                       fontWeight: "500",
                       backgroundColor: "#e1f5fe",
                       color: "#0277bd",
@@ -1126,7 +1126,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -1138,7 +1138,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.homeworkAssignmentsDone || "0"}
@@ -1151,7 +1151,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "11px",
+                    fontSize: "8px",
                     marginBottom: "4px",
                     textTransform: "uppercase",
                     letterSpacing: "0.5px",
@@ -1163,7 +1163,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {selectedStudent.flashcards25Reviews || "0"}
@@ -1177,7 +1177,7 @@ export function FindStudent({
                   <Typography
                     style={{
                       color: "#6c757d",
-                      fontSize: "11px",
+                      fontSize: "8px",
                       marginBottom: "4px",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -1189,7 +1189,7 @@ export function FindStudent({
                     style={{
                       fontWeight: "600",
                       color: "#2e7d32",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     }}
                   >
                     R$ {formatNumber(selectedStudent.fee)}
@@ -1204,7 +1204,7 @@ export function FindStudent({
                   <Typography
                     style={{
                       color: "#6c757d",
-                      fontSize: "11px",
+                      fontSize: "8px",
                       marginBottom: "4px",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -1216,7 +1216,7 @@ export function FindStudent({
                     style={{
                       fontWeight: "500",
                       color: "#2c3e50",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     }}
                   >
                     {selectedStudent.address}
@@ -1248,7 +1248,7 @@ export function FindStudent({
             <Typography
               style={{
                 color: "#2c3e50",
-                fontSize: "16px",
+                fontSize: "12px",
                 cursor: "pointer",
                 fontWeight: "600",
                 marginBottom: "16px",
@@ -1322,7 +1322,7 @@ export function FindStudent({
                               style={{
                                 fontWeight: "600",
                                 color: "#2c3e50",
-                                fontSize: "14px",
+                                fontSize: "11px",
                               }}
                             >
                               {report.month
@@ -1334,7 +1334,7 @@ export function FindStudent({
                               style={{
                                 fontWeight: "500",
                                 color: "#6c757d",
-                                fontSize: "10px",
+                                fontSize: "8px",
                                 textTransform: "uppercase",
                                 letterSpacing: "0.5px",
                               }}
@@ -1350,7 +1350,7 @@ export function FindStudent({
                                 alignItems: "center",
                                 padding: "2px 6px",
                                 borderRadius: "6px",
-                                fontSize: "11px",
+                                fontSize: "8px",
                                 fontWeight: "500",
                                 backgroundColor: report.paidFor
                                   ? "#d4f6d4"
@@ -1370,7 +1370,7 @@ export function FindStudent({
                                     className="fa fa-check-circle"
                                     style={{
                                       marginRight: "3px",
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                     }}
                                   />
                                   Pago
@@ -1381,7 +1381,7 @@ export function FindStudent({
                                     className="fa fa-adjust"
                                     style={{
                                       marginRight: "3px",
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                     }}
                                   />
                                   Parcial
@@ -1392,7 +1392,7 @@ export function FindStudent({
                                     className="fa fa-exclamation-circle"
                                     style={{
                                       marginRight: "3px",
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                     }}
                                   />
                                   Pendente
@@ -1405,7 +1405,7 @@ export function FindStudent({
                             style={{
                               fontWeight: "600",
                               color: "#2e7d32",
-                              fontSize: "14px",
+                              fontSize: "11px",
                             }}
                           >
                             R$ {formatNumber(report.amount || 0)}
@@ -1430,7 +1430,7 @@ export function FindStudent({
                             {report.discount > 0 && (
                               <Typography
                                 style={{
-                                  fontSize: "10px",
+                                  fontSize: "8px",
                                   color: "#f59e0b",
                                   fontWeight: "500",
                                 }}
@@ -1442,7 +1442,7 @@ export function FindStudent({
                             {report.paidSoFar > 0 && (
                               <Typography
                                 style={{
-                                  fontSize: "10px",
+                                  fontSize: "8px",
                                   color: "#1976d2",
                                   fontWeight: "500",
                                 }}
@@ -1454,7 +1454,7 @@ export function FindStudent({
                             {!report.paidFor && (
                               <Typography
                                 style={{
-                                  fontSize: "10px",
+                                  fontSize: "8px",
                                   color: "#d32f2f",
                                   fontWeight: "500",
                                 }}
@@ -1470,7 +1470,7 @@ export function FindStudent({
                           {report.dueDate && (
                             <Typography
                               style={{
-                                fontSize: "10px",
+                                fontSize: "8px",
                                 color: "#6c757d",
                                 fontWeight: "400",
                               }}
@@ -1498,7 +1498,7 @@ export function FindStudent({
                   <Typography
                     style={{
                       color: "#6c757d",
-                      fontSize: "11px",
+                      fontSize: "8px",
                       marginBottom: "8px",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -1514,7 +1514,7 @@ export function FindStudent({
                     <div>
                       <Typography
                         style={{
-                          fontSize: "10px",
+                          fontSize: "8px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1523,7 +1523,7 @@ export function FindStudent({
                       </Typography>
                       <Typography
                         style={{
-                          fontSize: "14px",
+                          fontSize: "11px",
                           fontWeight: "600",
                           color: "#2c3e50",
                         }}
@@ -1535,7 +1535,7 @@ export function FindStudent({
                     <div>
                       <Typography
                         style={{
-                          fontSize: "10px",
+                          fontSize: "8px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1544,7 +1544,7 @@ export function FindStudent({
                       </Typography>
                       <Typography
                         style={{
-                          fontSize: "14px",
+                          fontSize: "11px",
                           fontWeight: "600",
                           color: "#2e7d32",
                         }}
@@ -1562,7 +1562,7 @@ export function FindStudent({
                     <div>
                       <Typography
                         style={{
-                          fontSize: "10px",
+                          fontSize: "8px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1571,7 +1571,7 @@ export function FindStudent({
                       </Typography>
                       <Typography
                         style={{
-                          fontSize: "14px",
+                          fontSize: "11px",
                           fontWeight: "600",
                           color: "#1976d2",
                         }}
@@ -1587,7 +1587,7 @@ export function FindStudent({
                     <div>
                       <Typography
                         style={{
-                          fontSize: "10px",
+                          fontSize: "8px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1596,7 +1596,7 @@ export function FindStudent({
                       </Typography>
                       <Typography
                         style={{
-                          fontSize: "14px",
+                          fontSize: "11px",
                           fontWeight: "600",
                           color: "#856404",
                         }}
@@ -1612,7 +1612,7 @@ export function FindStudent({
                     <div>
                       <Typography
                         style={{
-                          fontSize: "10px",
+                          fontSize: "8px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1621,7 +1621,7 @@ export function FindStudent({
                       </Typography>
                       <Typography
                         style={{
-                          fontSize: "14px",
+                          fontSize: "11px",
                           fontWeight: "600",
                           color: "#d32f2f",
                         }}
@@ -1639,7 +1639,7 @@ export function FindStudent({
                     <div>
                       <Typography
                         style={{
-                          fontSize: "10px",
+                          fontSize: "8px",
                           color: "#6c757d",
                           marginBottom: "2px",
                         }}
@@ -1648,7 +1648,7 @@ export function FindStudent({
                       </Typography>
                       <Typography
                         style={{
-                          fontSize: "14px",
+                          fontSize: "11px",
                           fontWeight: "600",
                           color: "#28a745",
                         }}
@@ -1677,7 +1677,7 @@ export function FindStudent({
                   <Typography
                     style={{
                       color: "#6c757d",
-                      fontSize: "10px",
+                      fontSize: "8px",
                       marginBottom: "6px",
                       textTransform: "uppercase",
                       letterSpacing: "0.5px",
@@ -1687,7 +1687,7 @@ export function FindStudent({
                     Status dos Meses
                   </Typography>
 
-                  <div style={{ fontSize: "10px", lineHeight: "1.4" }}>
+                  <div style={{ fontSize: "8px", lineHeight: "1.4" }}>
                     {selectedStudent.financialReports
                       .sort((a, b) => {
                         // Ordenar por mês (MM-YYYY) do mais recente para o mais antigo
@@ -1753,7 +1753,7 @@ export function FindStudent({
           <Typography
             style={{
               color: "#2c3e50",
-              fontSize: "16px",
+              fontSize: "12px",
               cursor: "pointer",
               fontWeight: "600",
               marginBottom: "16px",
@@ -1857,7 +1857,7 @@ export function FindStudent({
                                         : "#495057",
                                     padding: "4px 10px",
                                     borderRadius: "6px",
-                                    fontSize: "10px",
+                                    fontSize: "8px",
 
                                     textTransform: "uppercase",
                                   }}
@@ -1870,7 +1870,7 @@ export function FindStudent({
                                     color: "#495057",
                                     padding: "4px 8px",
                                     borderRadius: "6px",
-                                    fontSize: "10px",
+                                    fontSize: "8px",
                                   }}
                                 >
                                   {event.category || "Categoria N/A"}
@@ -1878,7 +1878,7 @@ export function FindStudent({
                               </div>
                               <div
                                 style={{
-                                  fontSize: "14px",
+                                  fontSize: "11px",
                                   color: "#6c757d",
                                 }}
                               >
@@ -1899,7 +1899,7 @@ export function FindStudent({
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "10px",
+                                    fontSize: "8px",
                                     color: "#6c757d",
                                     marginBottom: "4px",
                                   }}
@@ -1917,7 +1917,7 @@ export function FindStudent({
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "10px",
+                                    fontSize: "8px",
                                     color: "#6c757d",
                                     marginBottom: "4px",
                                   }}
@@ -1943,7 +1943,7 @@ export function FindStudent({
                                 <div style={{ gridColumn: "1 / -1" }}>
                                   <div
                                     style={{
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                       color: "#6c757d",
                                       marginBottom: "4px",
                                     }}
@@ -1974,7 +1974,7 @@ export function FindStudent({
                                 >
                                   <div
                                     style={{
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                       color: "#6c757d",
                                       marginBottom: "4px",
                                     }}
@@ -1998,7 +1998,7 @@ export function FindStudent({
                                   <div style={{ gridColumn: "1 / -1" }}>
                                     <div
                                       style={{
-                                        fontSize: "10px",
+                                        fontSize: "8px",
                                         color: "#6c757d",
                                         marginBottom: "4px",
                                       }}
@@ -2014,9 +2014,9 @@ export function FindStudent({
                                         event.theLesson.id
                                       }`}
                                       style={{
-                                        color: "#0ea5e9",
+                                        color: partnerColor(),
                                         textDecoration: "none",
-                                        fontSize: "18px",
+                                        fontSize: "14px",
                                         marginTop: "1rem",
                                         fontWeight: "500",
                                         display: "flex",
@@ -2025,7 +2025,7 @@ export function FindStudent({
                                         padding: "4px 8px",
                                         backgroundColor: "white",
                                         borderRadius: "4px",
-                                        border: "1px solid #0ea5e9",
+                                        border: `1px solid ${partnerColor()}`,
                                       }}
                                     >
                                       <span>
@@ -2089,7 +2089,7 @@ export function FindStudent({
           <Typography
             style={{
               color: "#2c3e50",
-              fontSize: "16px",
+              fontSize: "12px",
               cursor: "pointer",
               fontWeight: "600",
               marginBottom: "16px",
@@ -2193,7 +2193,7 @@ export function FindStudent({
                                         : "#495057",
                                     padding: "4px 10px",
                                     borderRadius: "6px",
-                                    fontSize: "10px",
+                                    fontSize: "8px",
 
                                     textTransform: "uppercase",
                                   }}
@@ -2206,7 +2206,7 @@ export function FindStudent({
                                     color: "#495057",
                                     padding: "4px 8px",
                                     borderRadius: "6px",
-                                    fontSize: "10px",
+                                    fontSize: "8px",
                                   }}
                                 >
                                   {event.category || "Categoria N/A"}
@@ -2214,7 +2214,7 @@ export function FindStudent({
                               </div>
                               <div
                                 style={{
-                                  fontSize: "14px",
+                                  fontSize: "11px",
                                   color: "#6c757d",
                                 }}
                               >
@@ -2235,7 +2235,7 @@ export function FindStudent({
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "10px",
+                                    fontSize: "8px",
                                     color: "#6c757d",
                                     marginBottom: "4px",
                                   }}
@@ -2253,7 +2253,7 @@ export function FindStudent({
                               <div>
                                 <div
                                   style={{
-                                    fontSize: "10px",
+                                    fontSize: "8px",
                                     color: "#6c757d",
                                     marginBottom: "4px",
                                   }}
@@ -2279,7 +2279,7 @@ export function FindStudent({
                                 <div style={{ gridColumn: "1 / -1" }}>
                                   <div
                                     style={{
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                       color: "#6c757d",
                                       marginBottom: "4px",
                                     }}
@@ -2300,7 +2300,7 @@ export function FindStudent({
                                 <div style={{ gridColumn: "1 / -1" }}>
                                   <div
                                     style={{
-                                      fontSize: "10px",
+                                      fontSize: "8px",
                                       color: "#6c757d",
                                       marginBottom: "4px",
                                     }}
@@ -2324,7 +2324,7 @@ export function FindStudent({
                                   <div style={{ gridColumn: "1 / -1" }}>
                                     <div
                                       style={{
-                                        fontSize: "10px",
+                                        fontSize: "8px",
                                         color: "#6c757d",
                                         marginBottom: "4px",
                                       }}
@@ -2415,7 +2415,7 @@ export function FindStudent({
           <Typography
             style={{
               color: "#2c3e50",
-              fontSize: "16px",
+              fontSize: "12px",
               cursor: "pointer",
               fontWeight: "600",
               marginBottom: "16px",
@@ -2471,7 +2471,7 @@ export function FindStudent({
                         }
                         label={
                           <Typography
-                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                            style={{ fontSize: "11px", color: "#2c3e50" }}
                           >
                             Mensalidade em dia
                             {feeUpToDate ? ": Sim" : ": Não"}
@@ -2504,7 +2504,7 @@ export function FindStudent({
                         }
                         label={
                           <Typography
-                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                            style={{ fontSize: "11px", color: "#2c3e50" }}
                           >
                             Matrícula trancada?
                             {onHold ? ": Não" : ": Sim"}
@@ -2537,7 +2537,7 @@ export function FindStudent({
                         }
                         label={
                           <Typography
-                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                            style={{ fontSize: "11px", color: "#2c3e50" }}
                           >
                             Permitir remarcar reposição
                             {replenish ? ": Sim" : ": Não"}
@@ -2566,7 +2566,7 @@ export function FindStudent({
                         }
                         label={
                           <Typography
-                            style={{ fontSize: "14px", color: "#2c3e50" }}
+                            style={{ fontSize: "11px", color: "#2c3e50" }}
                           >
                             Aluno particular
                             {tutoree ? ": Sim" : ": Não"}
@@ -2600,7 +2600,7 @@ export function FindStudent({
             margin: "10px",
             border: "1px solid #e8eaed",
             borderRadius: "6px",
-            fontSize: "14px",
+            fontSize: "11px",
             outline: "none",
             transition: "all 0.2s ease",
             backgroundColor: "#ffffff",
@@ -2735,7 +2735,7 @@ export function FindStudent({
                           style={{
                             padding: "4px 8px",
                             borderRadius: "6px",
-                            fontSize: "10px",
+                            fontSize: "8px",
                             fontWeight: "500",
                             backgroundColor:
                               student.permissions === "superadmin"
@@ -2794,7 +2794,7 @@ export function FindStudent({
               marginBottom: "8px",
               fontWeight: "500",
               color: "#6c757d",
-              fontSize: "11px",
+              fontSize: "8px",
               textTransform: "uppercase",
               letterSpacing: "0.5px",
             }}
@@ -2828,7 +2828,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     marginBottom: "2px",
                     textTransform: "uppercase",
                     letterSpacing: "0.3px",
@@ -2840,7 +2840,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "600",
                     color: "#2c3e50",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {students.length}
@@ -2867,7 +2867,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     marginBottom: "2px",
                     textTransform: "uppercase",
                     letterSpacing: "0.3px",
@@ -2879,7 +2879,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "600",
                     color: "#7b1fa2",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {students.filter((s) => s.permissions === "teacher").length}
@@ -2906,7 +2906,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     marginBottom: "2px",
                     textTransform: "uppercase",
                     letterSpacing: "0.3px",
@@ -2918,7 +2918,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "600",
                     color: "#388e3c",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {students.filter((s) => s.permissions === "student").length}
@@ -2945,7 +2945,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "10px",
+                    fontSize: "8px",
                     marginBottom: "2px",
                     textTransform: "uppercase",
                     letterSpacing: "0.3px",
@@ -2957,7 +2957,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "600",
                     color: "#1976d2",
-                    fontSize: "14px",
+                    fontSize: "11px",
                   }}
                 >
                   {
@@ -3048,7 +3048,7 @@ export function FindStudent({
                 marginBottom: "20px",
                 fontWeight: "600",
                 color: "#2c3e50",
-                fontSize: "16px",
+                fontSize: "12px",
               }}
             >
               Informações Básicas
@@ -3079,7 +3079,7 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                   }}
                 />
@@ -3108,7 +3108,7 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                   }}
                 />
@@ -3147,7 +3147,7 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                   }}
                 />
@@ -3170,7 +3170,7 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                   }}
                 />
@@ -3193,7 +3193,7 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                   }}
                 />
@@ -3216,7 +3216,7 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                   }}
                 />
@@ -3282,7 +3282,7 @@ export function FindStudent({
                   padding: "10px 24px",
                   borderRadius: "6px",
                   textTransform: "none",
-                  fontSize: "14px",
+                  fontSize: "11px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 }}
               >
@@ -3308,7 +3308,7 @@ export function FindStudent({
                 marginBottom: "20px",
                 fontWeight: "600",
                 color: "#2c3e50",
-                fontSize: "16px",
+                fontSize: "12px",
               }}
             >
               Permissões
@@ -3316,7 +3316,7 @@ export function FindStudent({
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth variant="outlined" size="small">
-                  <InputLabel style={{ color: "#6c757d", fontSize: "14px" }}>
+                  <InputLabel style={{ color: "#6c757d", fontSize: "11px" }}>
                     Permissões
                   </InputLabel>
                   <Select
@@ -3353,7 +3353,7 @@ export function FindStudent({
                     padding: "10px 24px",
                     borderRadius: "6px",
                     textTransform: "none",
-                    fontSize: "14px",
+                    fontSize: "11px",
                     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   }}
                 >
@@ -3380,7 +3380,7 @@ export function FindStudent({
                   marginBottom: "20px",
                   fontWeight: "600",
                   color: "#2c3e50",
-                  fontSize: "16px",
+                  fontSize: "12px",
                 }}
               >
                 Pontuação
@@ -3401,7 +3401,7 @@ export function FindStudent({
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "10px",
+                        fontSize: "8px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3433,7 +3433,7 @@ export function FindStudent({
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "10px",
+                        fontSize: "8px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3465,7 +3465,7 @@ export function FindStudent({
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "10px",
+                        fontSize: "8px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3497,7 +3497,7 @@ export function FindStudent({
                       variant="body2"
                       style={{
                         color: "#6c757d",
-                        fontSize: "10px",
+                        fontSize: "8px",
                         marginBottom: "8px",
                       }}
                     >
@@ -3530,7 +3530,7 @@ export function FindStudent({
                     key={index + item.color}
                     disabled={disabled}
                     style={{
-                      fontSize: "14px",
+                      fontSize: "11px",
                       padding: "8px 16px",
                       borderRadius: "6px",
                       textTransform: "none",
@@ -3577,10 +3577,10 @@ export function FindStudent({
                       },
                       "& .MuiInputLabel-root": {
                         color: "#6c757d",
-                        fontSize: "14px",
+                        fontSize: "11px",
                       },
                       "& .MuiInputBase-input": {
-                        fontSize: "14px",
+                        fontSize: "11px",
                         color: "#2c3e50",
                       },
                     }}
@@ -3609,10 +3609,10 @@ export function FindStudent({
                       },
                       "& .MuiInputLabel-root": {
                         color: "#6c757d",
-                        fontSize: "14px",
+                        fontSize: "11px",
                       },
                       "& .MuiInputBase-input": {
-                        fontSize: "14px",
+                        fontSize: "11px",
                         color: "#2c3e50",
                       },
                     }}
@@ -3638,7 +3638,7 @@ export function FindStudent({
                     padding: "10px 24px",
                     borderRadius: "6px",
                     textTransform: "none",
-                    fontSize: "14px",
+                    fontSize: "11px",
                     borderColor: partnerColor(),
                     color: partnerColor(),
                   }}
@@ -3666,7 +3666,7 @@ export function FindStudent({
                 marginBottom: "20px",
                 fontWeight: "600",
                 color: "#2c3e50",
-                fontSize: "16px",
+                fontSize: "12px",
               }}
             >
               Alterar Senha
@@ -3697,10 +3697,10 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                     "& .MuiInputBase-input": {
-                      fontSize: "14px",
+                      fontSize: "11px",
                       color: "#2c3e50",
                     },
                   }}
@@ -3730,10 +3730,10 @@ export function FindStudent({
                     },
                     "& .MuiInputLabel-root": {
                       color: "#6c757d",
-                      fontSize: "14px",
+                      fontSize: "11px",
                     },
                     "& .MuiInputBase-input": {
-                      fontSize: "14px",
+                      fontSize: "11px",
                       color: "#2c3e50",
                     },
                   }}
@@ -3759,7 +3759,7 @@ export function FindStudent({
                   padding: "10px 24px",
                   borderRadius: "6px",
                   textTransform: "none",
-                  fontSize: "14px",
+                  fontSize: "11px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                 }}
               >
@@ -3789,7 +3789,7 @@ export function FindStudent({
                     padding: "10px 20px",
                     borderRadius: "6px",
                     textTransform: "none",
-                    fontSize: "14px",
+                    fontSize: "11px",
                     borderColor: "#dc3545",
                     color: "#dc3545",
                   }}
@@ -3803,7 +3803,7 @@ export function FindStudent({
                   style={{
                     color: "#dc3545",
                     fontWeight: "600",
-                    fontSize: "16px",
+                    fontSize: "12px",
                     marginBottom: "10px",
                   }}
                 >
@@ -3812,7 +3812,7 @@ export function FindStudent({
                 <Typography
                   style={{
                     color: "#6c757d",
-                    fontSize: "14px",
+                    fontSize: "11px",
                     marginBottom: "20px",
                   }}
                 >
@@ -3839,7 +3839,7 @@ export function FindStudent({
                       padding: "10px 20px",
                       borderRadius: "6px",
                       textTransform: "none",
-                      fontSize: "14px",
+                      fontSize: "11px",
                       color: "#6c757d",
                     }}
                   >
@@ -3854,7 +3854,7 @@ export function FindStudent({
                       padding: "10px 20px",
                       borderRadius: "6px",
                       textTransform: "none",
-                      fontSize: "14px",
+                      fontSize: "11px",
                       backgroundColor: "#dc3545",
                       color: "#fff",
                     }}
