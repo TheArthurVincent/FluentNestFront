@@ -92,6 +92,9 @@ export const TopBar: FC = () => {
       localStorage.getItem("notifications") || "{}"
     );
     setPermissions(getLoggedUser.permissions);
+    console.log(getLoggedUser.permissions == "teacher");
+    console.log(getLoggedUser.permissions == "superadmin");
+    console.log(isArthurVincent);
     setNotifications(notifications);
     setid(getLoggedUser.id);
     setTimeout(() => {
@@ -142,8 +145,8 @@ export const TopBar: FC = () => {
       endpoint: "/sentence-mining",
       icon: "search",
       display:
-        permissions === "teacher" ||
-        permissions === "superadmin" ||
+        permissions == "teacher" ||
+        permissions == "superadmin" ||
         isArthurVincent
           ? "block"
           : "none",
