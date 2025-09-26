@@ -3779,55 +3779,56 @@ export default function EnglishClassCourse2({
               language={classLanguage}
             />
           )}
-          <div
-            style={{
-              display: "flex",
-              margin: "1rem auto",
-              padding: "0 1rem",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            {previousClass !== "123456" ? (
-              <span
-                style={{
-                  color: partnerColor(),
-                  cursor: "pointer",
-                }}
-                onClick={PVSClass}
-              >
-                <i className="fa fa-arrow-left" aria-hidden="true" />
-              </span>
-            ) : (
-              <span
-                style={{
-                  fontSize: "10px",
-                }}
-              >
-                No previous class
-              </span>
-            )}
-            {nextClass !== "123456" ? (
-              <span
-                style={{
-                  color: partnerColor(),
-                  cursor: "pointer",
-                }}
-                onClick={NXTClass}
-              >
-                <i className="fa fa-arrow-right" aria-hidden="true" />
-              </span>
-            ) : (
-              <span
-                style={{
-                  fontSize: "10px",
-                }}
-              >
-                No next class
-              </span>
-            )}
-          </div>
-
+          {!exercise && (
+            <div
+              style={{
+                display: "flex",
+                margin: "1rem auto",
+                padding: "0 1rem",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              {previousClass !== "123456" ? (
+                <span
+                  style={{
+                    color: partnerColor(),
+                    cursor: "pointer",
+                  }}
+                  onClick={PVSClass}
+                >
+                  <i className="fa fa-arrow-left" aria-hidden="true" />
+                </span>
+              ) : (
+                <span
+                  style={{
+                    fontSize: "10px",
+                  }}
+                >
+                  No previous class
+                </span>
+              )}
+              {nextClass !== "123456" ? (
+                <span
+                  style={{
+                    color: partnerColor(),
+                    cursor: "pointer",
+                  }}
+                  onClick={NXTClass}
+                >
+                  <i className="fa fa-arrow-right" aria-hidden="true" />
+                </span>
+              ) : (
+                <span
+                  style={{
+                    fontSize: "10px",
+                  }}
+                >
+                  No next class
+                </span>
+              )}
+            </div>
+          )}
           {
             // isArthurVincent && (
             //   <div>

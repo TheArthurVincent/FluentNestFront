@@ -7,12 +7,16 @@ function wordCount(str: string): number {
   return normalizeText(str).split(" ").filter(Boolean).length;
 }
 
+// mantém NÚMEROS; trata hífens, vírgula decimal e milhar;
 const normalizeText = (text: string): string => {
-  return (text || "")
-    .toLowerCase()
-    .replace(/[?.,/’'#!$%-^&*;:{}=\-_`~()]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  let t = (text || "").toLowerCase().normalize("NFKC");
+  t = t
+    .replace(/(?<=\d),(?=\d)/g, ".")
+    .replace(/(?<=\d)[.\u202F\u00A0 ](?=\d{3}\b)/g, "")
+    .replace(/(?<=\d)[\-–—](?=\d)/g, " ");
+  // mantém letras ASCII + acentuadas comuns e dígitos
+  t = t.replace(/[^0-9a-záàâãäéèêíïîóôõöúüûçñ\s]/gi, " ");
+  return t.replace(/\s+/g, " ").trim();
 };
 
 function levenshteinDistance(str1: string, str2: string): number {
@@ -195,7 +199,17 @@ export function DictationExercise({
           >
             {labels.yourAnswer}:
           </label>
-
+          <button
+            style={{ marginBottom: 8, marginRight: 8 }}
+            onClick={() => {
+              readText(target, true, language, selectedVoice);
+            }}
+            disabled={!answer || !target || !hasTTS()}
+            aria-label={labels.play}
+            title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
+          >
+            🔊 Ouvir
+          </button>
           <textarea
             value={answer}
             onChange={(e) => {
@@ -251,16 +265,6 @@ export function DictationExercise({
               marginTop: 16,
             }}
           >
-            <button
-              onClick={() => {
-                readText(target, true, language, selectedVoice);
-              }}
-              disabled={!target}
-              aria-label={labels.play}
-              title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
-            >
-              🔊 Ouvir
-            </button>
             <button onClick={() => setChecked(true)}>✅ Conferir</button>
           </div>
         </>
@@ -330,7 +334,7 @@ export function DictationExercise({
                 border: "1px solid #E5E7EB",
               }}
             >
-              📊 Similaridade (Levenshtein): <strong>{similarity}%</strong>
+              📊 Similaridade: <strong>{similarity}%</strong>
             </span>
             <span>🏆 Sua nota:{roundedSimilarity}</span>
           </div>
