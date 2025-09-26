@@ -362,6 +362,17 @@ export function DictationExercise({
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 12 }}>
               Gabarito (por posição):
             </div>
+            <button
+              style={{ marginBottom: 8, marginRight: 8 }}
+              onClick={() => {
+                readText(target, true, language, selectedVoice);
+              }}
+              disabled={!target || !hasTTS()}
+              aria-label={labels.play}
+              title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
+            >
+              🔊 Ouvir
+            </button>
 
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
               {gtTokens.map((w, i) => (
