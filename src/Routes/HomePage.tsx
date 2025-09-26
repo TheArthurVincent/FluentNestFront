@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
-import { verifyToken } from "../App";
+import { isArthurVincent, verifyToken } from "../App";
 import { Outlet, Route, Routes } from "react-router-dom";
 import {
   backDomain,
@@ -41,6 +41,7 @@ import {
   logoPartner,
   textTitleFont,
 } from "../Styles/Styles";
+import Redirect from "../Redirect";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
@@ -217,8 +218,10 @@ export function HomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Listening",
-      component: (
+      component: isArthurVincent ? (
         <Listening change={change} onChange={setChange} headers={headers} />
+      ) : (
+        <Redirect to="/" />
       ),
     },
     {

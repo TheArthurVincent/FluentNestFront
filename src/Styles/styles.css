@@ -1256,7 +1256,7 @@ EXEMPLOS DE USO:
   width: 44px;
   height: 24px;
   background-color: #ddd;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }

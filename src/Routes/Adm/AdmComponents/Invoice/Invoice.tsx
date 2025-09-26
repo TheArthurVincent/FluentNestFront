@@ -103,7 +103,7 @@ export function Invoice({ headers }: HeadersProps) {
         .toolbar input, .toolbar select { padding:.5rem .6rem; border:1px solid var(--line); border-radius:.5rem; font-size:.95rem; }
         .toolbar .btn-print { margin-left:.5rem; }
 
-        .invoice { max-width: 860px; margin: 2rem auto; background: var(--bg); color: var(--ink); border:1px solid var(--line); border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
+        .invoice { max-width: 860px; margin: 2rem auto; background: var(--bg); color: var(--ink); border:1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 30px rgba(0,0,0,.05); }
         .invoice__inner { padding: 2rem; }
         .invoice__head { display:flex; align-items:center; justify-content:space-between; gap:1rem; border-bottom:1px solid var(--line); padding-bottom:1rem; }
         .brand { display:grid; align-items:center; gap:1rem; }
@@ -114,7 +114,7 @@ export function Invoice({ headers }: HeadersProps) {
         .meta .value { font-size:1rem; }
 
         .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.25rem; }
-        .panel { border:1px solid var(--line); border-radius: 8px; padding:1rem; }
+        .panel { border:1px solid var(--line); border-radius: 6px; padding:1rem; }
         .panel h3 { margin:0 0 .5rem; font-size: .95rem; color: var(--muted); font-weight:600; letter-spacing:.02em; }
         .panel p { margin:.15rem 0; }
 
