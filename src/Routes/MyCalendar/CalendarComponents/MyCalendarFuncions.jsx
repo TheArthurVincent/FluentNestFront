@@ -192,3 +192,37 @@ export const formatTimeRange = (startTime, durationMinutes = 60) => {
 
   return `${startFormatted} - ${endFormatted}`;
 };
+export const categoryList = [
+  {
+    text: "Aula experimental",
+    value: "Test",
+  },
+  {
+    text: "Aula única",
+    value: "Standalone",
+  },
+  {
+    text: "Aula Geral",
+    value: "Group Class",
+  },
+  {
+    text: "Aula de um Grupo",
+    value: "Established Group Class",
+  },
+  {
+    text: "Aula de reposição",
+    value: "Rep",
+  },
+  {
+    text: "Aula de prêmio",
+    value: "Prize Class",
+  },
+  {
+    text: "Aula de tutoria",
+    value: "Tutoring",
+  },
+  {
+    text: "Horário vazio para reposição",
+    value: "Marcar Reposição",
+  },
+];

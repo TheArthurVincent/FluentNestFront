@@ -37,6 +37,7 @@ import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import {
+  categoryList,
   convertToBase64,
   formatTimeRange,
   getEmbedUrl,
@@ -59,40 +60,6 @@ import {
 import { fontSize } from "@mui/system";
 
 function MyCalendar({ headers, thePermissions, myId }) {
-  var categoryList = [
-    {
-      text: "Aula experimental",
-      value: "Test",
-    },
-    {
-      text: "Aula única",
-      value: "Standalone",
-    },
-    {
-      text: "Aula Geral",
-      value: "Group Class",
-    },
-    {
-      text: "Aula de um Grupo",
-      value: "Established Group Class",
-    },
-    {
-      text: "Aula de reposição",
-      value: "Rep",
-    },
-    {
-      text: "Aula de prêmio",
-      value: "Prize Class",
-    },
-    {
-      text: "Aula de tutoria",
-      value: "Tutoring",
-    },
-    {
-      text: "Horário vazio para reposição",
-      value: "Marcar Reposição",
-    },
-  ];
   const [seePlusButtons, setSeePlusButtons] = useState(false);
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -305,7 +272,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
           { headers }
         );
         const adapted = response.data.adapted;
-        console.log(adapted);
         setShowAIGENERATED(true);
         setHomework(adapted);
         setLoadingHWDescription(false);
@@ -538,7 +504,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
         headers,
       });
       setEventFull(response.data.event);
-      console.log(response.data.event);
       setLastFew(response.data.event.recentUnmarkedEvents || []);
       if (response?.data?.event?.recentUnmarkedEvents?.[0]?.theLesson) {
         setTheLessonLast(
@@ -621,7 +586,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
       setLoadingModalInfo(false);
     } catch (error) {
       console.log(error, "Erro ao encontrarssss alunos");
-      console.log(error);
       setLoadingModalInfo(false);
     }
   };
@@ -2417,7 +2381,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                                         className="fa fa-times-circle"
                                         style={{ marginRight: "2px" }}
                                       />
-
                                       {categoryList.find(
                                         (cat) => cat.value === event.category
                                       )?.text || event.category}
