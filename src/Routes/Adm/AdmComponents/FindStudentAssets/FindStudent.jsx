@@ -1930,9 +1930,11 @@ export function FindStudent({
                                   }}
                                 >
                                   {event.date
-                                    ? new Date(event.date).toLocaleDateString(
-                                        "pt-BR"
-                                      )
+                                    ? new Date(
+                                        new Date(event.date).setDate(
+                                          new Date(event.date).getDate() + 1
+                                        )
+                                      ).toLocaleDateString("pt-BR")
                                     : "N/A"}{" "}
                                   às {event.time || "N/A"}
                                 </div>
@@ -2254,9 +2256,11 @@ export function FindStudent({
                                   }}
                                 >
                                   {event.date
-                                    ? new Date(event.date).toLocaleDateString(
-                                        "pt-BR"
-                                      )
+                                    ? new Date(
+                                        new Date(event.date).setDate(
+                                          new Date(event.date).getDate() + 1
+                                        )
+                                      ).toLocaleDateString("pt-BR")
                                     : "N/A"}{" "}
                                   às {event.time || "N/A"}
                                 </div>
