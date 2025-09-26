@@ -1961,7 +1961,17 @@ export function FindStudent({
                                 </div>
                               )}{" "}
                               {event.homework && (
-                                <div style={{ gridColumn: "1 / -1" }}>
+                                <div
+                                  style={{
+                                    gridColumn: "1 / -1",
+
+                                    maxHeight: "200px",
+                                    overflowY: "auto",
+                                    padding: "8px",
+                                    border: "1px solid #e9ecef",
+                                    borderRadius: "4px",
+                                  }}
+                                >
                                   <div
                                     style={{
                                       fontSize: "10px",
