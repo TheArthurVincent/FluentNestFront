@@ -1481,13 +1481,10 @@ function MyCalendar({ headers, thePermissions, myId }) {
     ) {
       const container = calendarRef.current;
       const todayElement = todayRef.current;
-
       const containerWidth = container.offsetWidth;
       const todayWidth = todayElement.offsetWidth;
       const todayLeft = todayElement.offsetLeft;
-
       const scrollLeft = todayLeft - containerWidth / 2 + todayWidth / 2;
-
       container.scrollTo({
         left: scrollLeft,
         behavior: "smooth",
@@ -1610,7 +1607,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
       setSeeReplenish(false);
       setShowEditSection(false);
       setShowDeleteEventConfirmation(false);
-
       loadGeneral(new Date());
     } catch (error) {
       console.error(error);
@@ -2020,7 +2016,6 @@ function MyCalendar({ headers, thePermissions, myId }) {
                 </div>
               </div>
             )}
-
             <HOne>{UniversalTexts.calendar}</HOne>
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />
