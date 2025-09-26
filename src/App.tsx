@@ -62,6 +62,7 @@ export var isArthurVincent =
 export var isArvin = currentUrl.includes("arvinplatform");
 export var isPortal = currentUrl.includes("portal");
 export var isArvinLandingPage = isArvin && !isPortal;
+
 export var getWhiteLabel = (() => {
   try {
     const wl = localStorage.getItem("whiteLabel");
@@ -134,7 +135,6 @@ function App() {
   }
 
   const [isResponsible, setIsResponsible] = useState<boolean>(false);
-  useEffect(() => {}, []);
 
   useEffect(() => {
     try {
@@ -210,7 +210,7 @@ function App() {
         return <LandingPageArvin />;
       })(),
     },
-        {
+    {
       path: "/lp/arvin",
       element: (() => {
         return <TeacherSubscription />;

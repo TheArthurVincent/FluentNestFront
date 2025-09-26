@@ -227,14 +227,19 @@ export function HomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Sentence Mining",
-      component: (
-        <SentenceMining
-          myPermissions={thePermissions}
-          onChange={setChange}
-          change={change}
-          headers={headers}
-        />
-      ),
+      component:
+        thePermissions === "teacher" ||
+        thePermissions === "superadmin" ||
+        isArthurVincent ? (
+          <SentenceMining
+            myPermissions={thePermissions}
+            onChange={setChange}
+            change={change}
+            headers={headers}
+          />
+        ) : (
+          <Redirect to="/" />
+        ),
     },
     {
       title: "Live Classes",

@@ -26,7 +26,7 @@ import axios from "axios";
 import { Modal } from "@mui/material";
 import { HThree, HTwo } from "../../Resources/Components/RouteBox";
 import socket, { registerUser } from "./socket";
-import { isArvin } from "../../App";
+import { isArthurVincent, isArvin } from "../../App";
 
 export const TopBar: FC = () => {
   const [visible, setVisible] = useState<string>("none");
@@ -141,7 +141,12 @@ export const TopBar: FC = () => {
       title: UniversalTexts.vocabulary,
       endpoint: "/sentence-mining",
       icon: "search",
-      display: "block",
+      display:
+        permissions === "teacher" ||
+        permissions === "superadmin" ||
+        isArthurVincent
+          ? "block"
+          : "none",
       isLearning: true,
     },
     {

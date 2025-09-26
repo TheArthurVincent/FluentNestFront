@@ -50,7 +50,10 @@ import { HThree } from "../../../MyClasses/MyClasses.Styled";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { listOfButtons } from "../../../Ranking/RankingComponents/ListOfCriteria";
 import { isArthurVincent } from "../../../../App";
-import { formatCPF, formatPhoneNumber } from "../../../../Resources/Components/ItemsLibrary";
+import {
+  formatCPF,
+  formatPhoneNumber,
+} from "../../../../Resources/Components/ItemsLibrary";
 
 export function FindStudent({
   uploadStatus,

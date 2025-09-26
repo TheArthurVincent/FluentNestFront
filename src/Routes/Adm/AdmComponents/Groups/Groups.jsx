@@ -762,7 +762,11 @@ export function Groups({ headers, id }) {
                       <div style={styles.label}>📅 Data & Horário</div>
                       <div style={{ color: "#333" }}>
                         {event?.date
-                          ? new Date(event.date).toLocaleDateString("pt-BR")
+                          ? new Date(
+                              new Date(event.date).setDate(
+                                new Date(event.date).getDate() + 1
+                              )
+                            ).toLocaleDateString("pt-BR")
                           : "—"}
                         {time}
                       </div>
