@@ -119,7 +119,6 @@ export default function DialogueLessonModel({
       >
         <span
           style={{
-            fontFamily: textTitleFont(),
             fontSize: 14,
             color: "#475569",
           }}
@@ -140,8 +139,7 @@ export default function DialogueLessonModel({
             border: `1px solid ${partnerColor()}`,
             backgroundColor: "#ffffff",
             color: partnerColor(),
-            fontFamily: textTitleFont(),
-            fontSize: "14px",
+            fontSize: "18px",
             cursor: "pointer",
             outline: "none",
           }}
@@ -179,7 +177,7 @@ export default function DialogueLessonModel({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "20px",
+                fontSize: "28px",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
               }}
             >
@@ -266,8 +264,7 @@ export default function DialogueLessonModel({
                             ? "0 0px 12px rgba(0,0,0,0.1)"
                             : `0 0px 12px ${partnerColor()}40`,
                           border: isLeft ? "1px solid #e5e7eb" : "none",
-                          fontFamily: textTitleFont(),
-                          fontSize: "15px",
+                          fontSize: "18px",
                           lineHeight: "1.5",
                           transition: "all 0.2s ease",
                         }}
@@ -321,8 +318,7 @@ export default function DialogueLessonModel({
             backgroundColor: "#f1f5f9",
             borderRadius: "6px",
             border: "1px solid #e2e8f0",
-            fontFamily: textTitleFont(),
-            fontSize: "14px",
+            fontSize: "18px",
             color: "#64748b",
             fontStyle: "italic",
             textAlign: "center",

@@ -89,7 +89,7 @@ export default function VocabularyLesson({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
           gap: "10px",
         }}
       >
@@ -163,10 +163,9 @@ export default function VocabularyLesson({
                   <div style={{ marginLeft: 10 }}>
                     <div
                       style={{
-                        fontWeight: 600,
+                        fontWeight: 500,
                         color: "#222",
-                        fontFamily: textTitleFont(),
-                        fontSize: "15px",
+                        fontSize: "20px",
                         marginBottom: 2,
                         wordBreak: "break-word",
                       }}

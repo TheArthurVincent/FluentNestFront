@@ -9,6 +9,7 @@ import axios from "axios";
 import { Tooltip } from "@mui/material";
 import {
   partnerColor,
+  textGeneralFont,
   textpartnerColorContrast,
   textTitleFont,
 } from "../../../../Styles/Styles";
@@ -88,8 +89,8 @@ export default function SentenceLessonModel({
     >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(470px, 1fr))",
           gap: "10px",
         }}
       >
@@ -178,7 +179,6 @@ export default function SentenceLessonModel({
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
-                          fontWeight: "bold",
                           fontSize: "15px",
                           cursor: "pointer",
                           boxShadow: "0 1px 2px #e3e6ea",
@@ -210,10 +210,10 @@ export default function SentenceLessonModel({
               <div>
                 <div
                   style={{
-                    fontWeight: 600,
+                    fontWeight: 500,
                     color: "#222",
-                    fontSize: "15px",
-                    fontFamily: textTitleFont(),
+                    fontSize: "18px",
+                    fontFamily: textGeneralFont(),
                     marginBottom: 2,
                     wordBreak: "break-word",
                   }}

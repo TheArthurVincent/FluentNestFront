@@ -12,7 +12,6 @@ export default function VocabularyLesson({
   element,
   selectedVoice,
 }: VocabularyLessonProps) {
-
   return (
     <div
       style={{
@@ -32,7 +31,6 @@ export default function VocabularyLesson({
               key={i}
               style={{
                 backgroundColor: "#ffffff",
-                // border: "2px solid #e9ecef",
                 borderRadius: "6px",
                 padding: "5px",
                 transition: "all 0.3s ease",
@@ -58,7 +56,6 @@ export default function VocabularyLesson({
                   border: "1px solid #e9ecef",
                   color: partnerColor(),
                   cursor: "pointer",
-                  // fontSize: "14px",
                   padding: "6px",
                   borderRadius: "50%",
                   width: "28px",
@@ -96,7 +93,6 @@ export default function VocabularyLesson({
                   style={{
                     fontWeight: "600",
                     color: "#111",
-                    fontFamily: textTitleFont(),
                   }}
                 >
                   {sentence.english}
