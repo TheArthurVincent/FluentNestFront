@@ -165,7 +165,7 @@ export default function VocabularyLesson({
                       style={{
                         fontWeight: 500,
                         color: "#222",
-                        fontSize: "20px",
+                        fontSize: "14px",
                         marginBottom: 2,
                         wordBreak: "break-word",
                       }}

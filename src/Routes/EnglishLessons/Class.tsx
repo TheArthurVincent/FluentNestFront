@@ -2950,9 +2950,8 @@ export default function EnglishClassCourse2({
 
   const [editorContent, setEditorContent] = useState<string>("");
   const generateInitialBoardContent = () => {
-    const px = 20;
 
-    const p = (html: string) => `<p>${html}</p><br/>`;
+    const p = (html: string) => `<p>${html}</p>`;
     const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
     const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
 
