@@ -2952,8 +2952,7 @@ export default function EnglishClassCourse2({
   const generateInitialBoardContent = () => {
     const px = 20;
 
-    const p = (html: string) =>
-      `<p>${html}</p><br/>`;
+    const p = (html: string) => `<p>${html}</p><br/>`;
     const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
     const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
 
@@ -3201,8 +3200,14 @@ export default function EnglishClassCourse2({
                 No previous class
               </span>
             )}
-            <HOne>{`${order + 1}- ${theclass.title}`} </HOne>
-
+            <HOne
+              style={{
+                textAlign: "center",
+                fontSize: "22px",
+              }}
+            >
+              {`${order + 1}- ${theclass.title}`}{" "}
+            </HOne>
             {nextClass !== "123456" ? (
               <span
                 style={{
@@ -3428,7 +3433,6 @@ export default function EnglishClassCourse2({
                   style={{ width: "12px", height: "12px" }}
                 />
               </button>
-
               <button
                 title="Gerar Word"
                 style={{
@@ -3464,7 +3468,6 @@ export default function EnglishClassCourse2({
                   style={{ width: "12px", height: "12px" }}
                 />
               </button>
-
               <button
                 title="Gerar PDF"
                 style={{
@@ -3500,7 +3503,6 @@ export default function EnglishClassCourse2({
                   style={{ width: "12px", height: "12px" }}
                 />
               </button>
-
               <label
                 style={{
                   display: "flex",
@@ -3561,7 +3563,6 @@ export default function EnglishClassCourse2({
                   opacity: 0.3,
                 }}
               />
-
               {theclass.image && (
                 <ImgLesson src={theclass.image} alt={theclass.subtitle} />
               )}

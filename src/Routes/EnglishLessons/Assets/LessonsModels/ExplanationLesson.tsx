@@ -76,9 +76,10 @@ export default function ExplanationLesson({
                   style={{
                     position: "relative",
                     zIndex: 1,
-                    fontWeight: "800",
+                    fontWeight: "600",
                     marginBottom: "12px",
                     fontFamily: textTitleFont(),
+                    fontSize: 24,
                     letterSpacing: "-0.03em",
                     lineHeight: "1.2",
                   }}
