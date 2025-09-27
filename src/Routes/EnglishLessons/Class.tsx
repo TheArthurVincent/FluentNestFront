@@ -2950,7 +2950,6 @@ export default function EnglishClassCourse2({
 
   const [editorContent, setEditorContent] = useState<string>("");
   const generateInitialBoardContent = () => {
-
     const p = (html: string) => `<p>${html}</p>`;
     const b = (txt: string) => `<b>${sanitizeText(txt, 300)}</b>`;
     const i = (txt: string) => `<i>${sanitizeText(txt, 300)}</i>`;
@@ -2990,8 +2989,7 @@ export default function EnglishClassCourse2({
           case "nfsentences":
             if (Array.isArray(element.sentences)) {
               element.sentences.forEach((s: any) => {
-                if (s.english) content += p(sanitizeText(s.english, 200));
-                if (s.portuguese) content += p(i(s.portuguese));
+                if (s.english) content += p(sanitizeText(s.english, 200))
               });
             }
             break;
