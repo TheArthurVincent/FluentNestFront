@@ -45,11 +45,14 @@ export default function Modules({
 
   const fetchStudents = async () => {
     const user = localStorage.getItem("loggedIn");
+    const selectedStudentID = JSON.parse(
+      localStorage.getItem("selectedStudentID") || "null"
+    );
     const { id, permissions } = JSON.parse(user || "");
     if (permissions === "student") return;
     setPermissions(permissions);
     if (user) {
-      setStudentID(id);
+      setStudentID(selectedStudentID || id);
     }
 
     try {
@@ -75,6 +78,7 @@ export default function Modules({
   const handleStudentChange = (event: any) => {
     var theid = event.target.value;
     setStudentID(theid);
+    localStorage.setItem("selectedStudentID", JSON.stringify(theid));
   };
 
   const actualHeaders = headers || {};

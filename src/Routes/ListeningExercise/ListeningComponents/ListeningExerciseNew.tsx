@@ -189,6 +189,7 @@ const ListeningExerciseNew = ({
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const studentId = event.target.value;
     setSee(false);
+    localStorage.setItem("selectedStudentID", JSON.stringify(studentId));
     setSelectedStudentId(studentId);
   };
 
@@ -200,8 +201,11 @@ const ListeningExerciseNew = ({
         ? JSON.parse(user)
         : { permissions: "", id: "" };
 
+      const selectedStudentID = JSON.parse(
+        localStorage.getItem("selectedStudentID") || "null"
+      );
       setMyPermissions(permissions);
-      setSelectedStudentId(id);
+      setSelectedStudentId(selectedStudentID || id);
       if (permissions === "superadmin" || permissions === "teacher") {
         setLoadingStudents(true);
         try {
