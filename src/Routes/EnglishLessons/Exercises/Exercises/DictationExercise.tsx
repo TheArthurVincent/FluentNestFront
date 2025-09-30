@@ -113,7 +113,8 @@ export function DictationExercise({
   const [showKey, setShowKey] = useState(false);
 
   const current = pool[index];
-  const target = current?.english || ""; // ditado em INGLÊS
+  const target = current?.english || "";
+  const targetTr = current?.portuguese || "";
 
   useEffect(() => {
     return () => {
@@ -358,7 +359,6 @@ export function DictationExercise({
                 </span>
               ))}
             </div>
-
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 12 }}>
               Gabarito (por posição):
             </div>
@@ -373,24 +373,7 @@ export function DictationExercise({
             >
               🔊 Ouvir
             </button>
-
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {gtTokens.map((w, i) => (
-                <span
-                  key={`gt-${i}-${w}-${index}`}
-                  style={{
-                    padding: "6px 10px",
-                    borderRadius: 6,
-                    border: `1px solid ${
-                      perWordCorrect[i] ? "#A7F3D0" : "#E5E7EB"
-                    }`,
-                    background: perWordCorrect[i] ? "#D1FAE5" : "#F3F4F6",
-                  }}
-                >
-                  {w}
-                </span>
-              ))}
-            </div>
+            <b>{target && target}</b> <i>({targetTr})</i>
           </div>
         </div>
       )}
