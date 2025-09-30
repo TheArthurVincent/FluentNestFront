@@ -189,7 +189,7 @@ const ListeningExerciseNew = ({
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const studentId = event.target.value;
     setSee(false);
-    localStorage.setItem("selectedStudentID", JSON.stringify(studentId));
+    localStorage.setItem("selectedStudentID", studentId);
     setSelectedStudentId(studentId);
   };
 
@@ -200,10 +200,8 @@ const ListeningExerciseNew = ({
       const { permissions, id } = user
         ? JSON.parse(user)
         : { permissions: "", id: "" };
-
-      const selectedStudentID = JSON.parse(
-        localStorage.getItem("selectedStudentID") || "null"
-      );
+      console.log(permissions, id);
+      const selectedStudentID = localStorage.getItem("selectedStudentID") || "null";
       setMyPermissions(permissions);
       setSelectedStudentId(selectedStudentID || id);
       if (permissions === "superadmin" || permissions === "teacher") {
@@ -384,7 +382,6 @@ const ListeningExerciseNew = ({
         JSON.stringify(response.data.flashCardsReviewsToday)
       );
       setFlashcardsToday(theFlashcardsTodayNumber);
-
       setCards(response.data.dueFlashcards);
       cardTextRef.current = response.data.dueFlashcards[0]?.front?.text || "";
 

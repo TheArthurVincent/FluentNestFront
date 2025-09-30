@@ -55,6 +55,7 @@ export default function SignUp() {
       const { token, loggedIn, notifications } = response.data;
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
+      localStorage.removeItem("selectedStudentID");
 
       if (localStorage.getItem("authorization")) {
         localStorage.removeItem("authorization");
@@ -62,6 +63,7 @@ export default function SignUp() {
 
       if (localStorage.getItem("loggedIn")) {
         localStorage.removeItem("loggedIn");
+        localStorage.removeItem("selectedStudentID");
       }
 
       localStorage.setItem("authorization", `${token}`);

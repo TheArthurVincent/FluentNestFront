@@ -32,7 +32,7 @@ function LandingPage() {
 
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
-
+      localStorage.removeItem("selectedStudentID");
       localStorage.setItem("authorization", `${token}`);
       localStorage.setItem("notifications", JSON.stringify(notifications));
       localStorage.setItem("loggedIn", JSON.stringify(loggedIn));

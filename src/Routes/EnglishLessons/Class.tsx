@@ -113,7 +113,7 @@ export default function EnglishClassCourse2({
     );
     setStudentID(theid);
     handleGetBoard(theid);
-    localStorage.setItem("selectedStudentID", JSON.stringify(theid));
+    localStorage.setItem("selectedStudentID", theid);
     setIsCompleted(theStudentsWhoCompletedIt.includes(event.target.value));
 
     if (selectedStudent) {
@@ -144,10 +144,7 @@ export default function EnglishClassCourse2({
     setChosenStudent(permissions == "student");
     setPermissions(permissions);
     setPicture(picture);
-    const selectedStudentID = JSON.parse(
-      localStorage.getItem("selectedStudentID") || "null"
-    );
-
+    const selectedStudentID = localStorage.getItem("selectedStudentID") || null;
     if (user) {
       setId(id);
       setStudentID(selectedStudentID || id);

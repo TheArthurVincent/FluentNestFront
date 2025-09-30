@@ -43,7 +43,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const studentId = event.target.value;
     setSelectedStudentId(studentId);
-    localStorage.setItem("selectedStudentID", JSON.stringify(studentId));
+    localStorage.setItem("selectedStudentID", studentId);
   };
 
   const fetchData = async () => {
@@ -51,9 +51,8 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
 
     if (user) {
       const { permissions, id } = JSON.parse(user);
-      const selectedStudentID = JSON.parse(
-        localStorage.getItem("selectedStudentID") || "null"
-      );
+      const selectedStudentID =
+        localStorage.getItem("selectedStudentID") || "null";
 
       setPermissions(permissions);
       setMyId(id);

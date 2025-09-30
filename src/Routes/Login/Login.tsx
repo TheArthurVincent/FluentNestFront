@@ -34,6 +34,7 @@ export function Login() {
       const { token, loggedIn, notifications, whiteLabel } = response.data;
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
+      localStorage.removeItem("selectedStudentID");
 
       if (localStorage.getItem("authorization")) {
         localStorage.removeItem("authorization");
@@ -41,6 +42,7 @@ export function Login() {
 
       if (localStorage.getItem("loggedIn")) {
         localStorage.removeItem("loggedIn");
+        localStorage.removeItem("selectedStudentID");
       }
 
       localStorage.setItem("authorization", `${token}`);

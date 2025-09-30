@@ -1735,11 +1735,12 @@ export const updateInfo = async (id, headers) => {
     loggedIn = Object.assign(loggedIn, userInfo);
     whiteLabel = Object.assign(whiteLabel, wl);
     localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
+    localStorage.setItem("selectedStudentID", id);
     localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
   } catch (error) {
     console.log(error, "Erro ao atualizar dados");
   }
-  if (!loggedIn.isResponsible) {
+  if (!loggedIn.responsible) {
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/studentflashcardstoday/${id}`,
@@ -1773,6 +1774,7 @@ export const onLoggOutToken = () => {
   const auth = localStorage.getItem("authorization");
   if (user) {
     localStorage.removeItem("loggedIn");
+    localStorage.removeItem("selectedStudentID");
   }
   if (auth) {
     localStorage.removeItem("authorization");
@@ -1792,6 +1794,7 @@ export const onLoggOutLimitDate = () => {
   } else if (JSON.parse(user).permissions === "student") {
     if (user) {
       localStorage.removeItem("loggedIn");
+      localStorage.removeItem("selectedStudentID");
     }
     if (auth) {
       localStorage.removeItem("authorization");
@@ -1807,6 +1810,8 @@ export const onLoggOutLimitDate = () => {
 export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
   localStorage.removeItem("loggedIn");
+  localStorage.removeItem("selectedStudentID");
+
   localStorage.removeItem("flashcardsToday");
   localStorage.removeItem("notifications");
   localStorage.removeItem("voiceGender");

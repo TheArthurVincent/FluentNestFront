@@ -45,16 +45,15 @@ export default function Modules({
 
   const fetchStudents = async () => {
     const user = localStorage.getItem("loggedIn");
-    const selectedStudentID = JSON.parse(
-      localStorage.getItem("selectedStudentID") || "null"
-    );
+    const selectedStudentID =
+      localStorage.getItem("selectedStudentID") || "null";
     const { id, permissions } = JSON.parse(user || "");
-    if (permissions === "student") return;
-    setPermissions(permissions);
+
     if (user) {
       setStudentID(selectedStudentID || id);
     }
-
+    setPermissions(permissions);
+    if (permissions === "student") return;
     try {
       const response = await axios.get(`${backDomain}/api/v1/students/${id}`, {
         headers: actualHeaders,
@@ -68,6 +67,9 @@ export default function Modules({
   useEffect(() => {
     const user = localStorage.getItem("loggedIn");
     const { permissions } = JSON.parse(user || "");
+    const selectedStudentID =
+      localStorage.getItem("selectedStudentID") || "null";
+    setStudentID(selectedStudentID);
     if (permissions !== "student") {
       setTimeout(() => {
         fetchStudents();
@@ -78,7 +80,7 @@ export default function Modules({
   const handleStudentChange = (event: any) => {
     var theid = event.target.value;
     setStudentID(theid);
-    localStorage.setItem("selectedStudentID", JSON.stringify(theid));
+    localStorage.setItem("selectedStudentID", theid);
   };
 
   const actualHeaders = headers || {};

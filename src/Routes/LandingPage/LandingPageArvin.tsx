@@ -83,6 +83,7 @@ function LandingPageArvin() {
     const flashcardsToday = localStorage.getItem("flashcardsToday");
     if (user) {
       localStorage.removeItem("loggedIn");
+      localStorage.removeItem("selectedStudentID");
     }
     if (auth) {
       localStorage.removeItem("authorization");
