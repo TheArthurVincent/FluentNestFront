@@ -8,6 +8,7 @@ export const planCardBase = {
   borderRadius: "4px",
   textAlign: "center",
   transition: "all 0.3s ease",
+  cursor: "pointer",
 };
 
 export const selectedStyle = {
@@ -131,6 +132,7 @@ export const styles: any = {
   // outros que você já tinha
   planCard: {
     flex: 1,
+    cursor: "pointer",
     padding: "20px",
     borderRadius: "4px",
     textAlign: "center",

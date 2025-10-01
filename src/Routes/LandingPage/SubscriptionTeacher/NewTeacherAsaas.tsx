@@ -498,7 +498,6 @@ export default function TeacherSubscription() {
                 >
                   <p>{formatBRL(monthlyPrice(planTier))}/mês</p>
                 </div>
-
                 <div
                   style={{ ...styles.planCard, ...isSelected("yearly") }}
                   onClick={() => handlePlanSelect("yearly")}
