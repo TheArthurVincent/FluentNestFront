@@ -4,7 +4,6 @@ import React from "react";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress, Grid, TextField } from "@mui/material";
-
 import TermsAndConditions from "./assets/TermsAndConditions/TermsAndConditions";
 import {
   planCardBase,
@@ -14,7 +13,6 @@ import {
   formatDate,
   formatPhoneNumber,
   formatCPF,
-  PRICES,
   formatBRL,
   yearlyPrice,
   monthlyPrice,
@@ -27,7 +25,6 @@ import {
   FieldName,
   theTitle,
 } from "./styles";
-import { partnerColor } from "../../../Styles/Styles";
 
 export default function TeacherSubscription() {
   // const [form, setForm] = useState({
