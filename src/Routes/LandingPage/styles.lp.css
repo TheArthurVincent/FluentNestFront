@@ -38,7 +38,7 @@ body {
   min-width: 300px;
   max-width: 320px;
   height: 570px;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
@@ -148,7 +148,7 @@ body {
   padding: 12px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .signup-form button {
@@ -157,7 +157,7 @@ body {
   background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
 }
 
@@ -173,7 +173,7 @@ body {
   background-color: #ed5914;
   color: white;
   text-decoration: none;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .cta-button:hover {
@@ -187,7 +187,7 @@ body {
 .image-container img {
   max-width: 300px;
   width: 100%;
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
@@ -204,11 +204,11 @@ body {
 
 *::-webkit-scrollbar-track {
   background: #ddd;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb {
-  border-radius: 6px;
+  border-radius: 4px;
   background-color: grey;
 }
 
@@ -225,11 +225,11 @@ body {
 
   *::-webkit-scrollbar-track {
     background: black;
-    border-radius: 0px;
+    border-radius: 4px;
   }
 
   *::-webkit-scrollbar-thumb {
-    border-radius: 0px;
+    border-radius: 4px;
     background-color: white;
   }
 }
@@ -265,7 +265,7 @@ h4 {
 
 .benefit-card {
   background-color: #fff;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 20px;
   max-width: 280px;
   flex: 1 1 260px;
@@ -292,7 +292,7 @@ h4 {
 .modal-content {
   background-color: white;
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 4px;
   max-width: 90%;
   max-height: 80%;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
@@ -341,7 +341,7 @@ h4 {
   padding: 12px 20px;
   color: white;
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 4px;
   text-decoration: none;
   margin-top: 1.5rem;
 }

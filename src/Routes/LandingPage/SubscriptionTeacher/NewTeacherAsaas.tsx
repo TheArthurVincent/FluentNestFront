@@ -4,54 +4,31 @@ import React from "react";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress, Grid, TextField } from "@mui/material";
-import silver from "./assets/teacherssilver.png";
-import gold from "./assets/goldteacher.png";
-import TermsAndConditions from "./assets/TermsAndConditions/TermsAndConditions";
 
-function formatDate(value: string): string {
-  const cleaned = value.replace(/\D/g, "").slice(0, 8); // Remove non-digits and limit to 8 characters
-  const match = cleaned.match(/^(\d{0,2})(\d{0,2})(\d{0,4})$/);
-  if (match) {
-    const day = match[1];
-    const month = match[2];
-    const year = match[3];
-    let formatted = day;
-    if (month) formatted += "/" + month;
-    if (year) formatted += "/" + year;
-    return formatted;
-  }
-  return cleaned;
-}
-function formatPhoneNumber(value: string): string {
-  const cleaned = value.replace(/\D/g, "").slice(0, 11);
-  const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
-  if (match) {
-    return `(${match[1]}) ${match[2]}.${match[3]}-${match[4]}`;
-  }
-  if (cleaned.length <= 2) return cleaned;
-  if (cleaned.length <= 3) return `(${cleaned.slice(0, 2)}) ${cleaned[2]}`;
-  if (cleaned.length <= 7)
-    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)}.${cleaned.slice(
-      3
-    )}`;
-  if (cleaned.length <= 11)
-    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)}.${cleaned.slice(
-      3,
-      7
-    )}-${cleaned.slice(7)}`;
-  return value;
-}
-function formatCPF(value: string): string {
-  const cleaned = value.replace(/\D/g, "").slice(0, 11);
-  if (cleaned.length <= 3) return cleaned;
-  if (cleaned.length <= 6) return `${cleaned.slice(0, 3)}.${cleaned.slice(3)}`;
-  if (cleaned.length <= 9)
-    return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(6)}`;
-  return `${cleaned.slice(0, 3)}.${cleaned.slice(3, 6)}.${cleaned.slice(
-    6,
-    9
-  )}-${cleaned.slice(9)}`;
-}
+import TermsAndConditions from "./assets/TermsAndConditions/TermsAndConditions";
+import {
+  planCardBase,
+  selectedStyle,
+  styles,
+  unselectedStyle,
+  formatDate,
+  formatPhoneNumber,
+  formatCPF,
+  PRICES,
+  formatBRL,
+  yearlyPrice,
+  monthlyPrice,
+  inputStyle,
+  inputFields,
+  requiredIfCC,
+  getWhatsAppLink,
+  TIER_META,
+  FEATURES,
+  FieldName,
+  theTitle,
+} from "./styles";
+import { partnerColor } from "../../../Styles/Styles";
+
 export default function TeacherSubscription() {
   // const [form, setForm] = useState({
   //   name: "Jonathan",
@@ -84,7 +61,6 @@ export default function TeacherSubscription() {
     termsVersion: string;
     termsHash: string;
   } | null>(null);
-
   const [form, setForm] = useState({
     name: "",
     promoCode: "",
@@ -107,32 +83,13 @@ export default function TeacherSubscription() {
     creditCardExpiryYear: "",
     creditCardCcv: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
     "CREDIT_CARD"
   );
   const [planTier, setPlanTier] = useState<"silver" | "gold">("gold");
-
   const [installments, setInstallments] = useState(1);
-
-  // novos estados
-
-  // preços centralizados
-  const PRICES = {
-    silver: { monthly: 89.99, yearly: 899.99 },
-    gold: { monthly: 149.99, yearly: 1499.99 }, // ajuste aqui se o Gold tiver preço diferente
-  };
-
-  // helpers
-  const monthlyPrice = PRICES[planTier].monthly;
-  const yearlyPrice = PRICES[planTier].yearly;
-
-  const formatBRL = (v: number) =>
-    Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(
-      v
-    );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -304,13 +261,11 @@ export default function TeacherSubscription() {
         payload
       );
       console.log(response.data);
-
       if (paymentMethod === "PIX") {
         // Via PIX (fluxo fora do submit na sua UI, mas deixamos seguro)
         window.location.assign("/feenotuptodate");
         return;
       }
-
       // Cartão aprovado
       notifyAlert("Pagamento aprovado!", "green");
       setTimeout(() => {
@@ -329,140 +284,6 @@ export default function TeacherSubscription() {
       setLoading(false);
     }
   };
-
-  const styles: any = {
-    cardBase: {
-      position: "relative",
-      borderRadius: 14,
-      padding: 16,
-      boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-      border: "1px solid #e5e7eb",
-      cursor: "pointer",
-      transition:
-        "transform .18s ease, box-shadow .18s ease, border-color .18s",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      textAlign: "center",
-      minHeight: 190,
-      userSelect: "none",
-      outline: "none",
-    },
-    cardSelected: {
-      border: "1px solid #ed5914",
-      boxShadow: "0 10px 22px #ff510048",
-    },
-    img: {
-      width: 150,
-      height: 150,
-      objectFit: "contain",
-    },
-    price: {
-      fontSize: 16,
-      color: "#475569",
-      marginTop: 6,
-    },
-    badge: {
-      position: "absolute",
-      top: 10,
-      right: 10,
-      fontSize: 11,
-      background: "#ed5914",
-      color: "#fff",
-      borderRadius: "6px",
-      padding: "4px 8px",
-    },
-    container: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: "10px",
-    },
-    planContainer: {
-      display: "grid",
-      gap: "20px",
-      gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-      justifyContent: "center",
-      marginBottom: "20px",
-    },
-    planContainer2: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-      gap: 16,
-      alignItems: "stretch",
-    },
-    planCard: {
-      flex: 1,
-      padding: "20px",
-      borderRadius: "6px",
-      textAlign: "center",
-      cursor: "pointer",
-      transition: "all 0.3s ease",
-      backgroundColor: "#fafafa",
-    },
-    form: {
-      display: "flex",
-      gap: "5px",
-      flexDirection: "column",
-      width: "100%",
-      maxWidth: "900px",
-    },
-    grid: {
-      display: "grid",
-      gridTemplateColumns: "1fr",
-      gap: "5px",
-    },
-    grid3: {
-      display: "grid",
-      gridTemplateColumns: " 1fr",
-      gap: "5px",
-    },
-    grid2: {
-      display: "grid",
-      gridTemplateColumns: "1fr",
-      gap: "5px",
-    },
-    column: {
-      display: "flex",
-      flexDirection: "column",
-      background: "#f9f9f9",
-      padding: "20px",
-      borderRadius: "6px",
-      boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-    },
-    input: {
-      marginBottom: "10px",
-      padding: "10px",
-      fontSize: "16px",
-      borderRadius: "6px",
-      border: "1px solid #ccc",
-    },
-    button: {
-      marginLeft: "auto",
-      padding: "10px",
-      fontSize: "16px",
-      backgroundColor: "#ed5914",
-      color: "#fff",
-      border: "none",
-      cursor: "pointer",
-      borderRadius: "6px",
-      marginTop: "20px",
-      textDecoration: "none",
-    },
-    error: {
-      color: "red",
-      fontSize: 20,
-      fontWeight: "600",
-      marginTop: "10px",
-    },
-    responsiveGrid: {
-      display: "grid",
-      gridTemplateColumns: "1fr",
-      gap: "5px",
-    },
-  };
-
   useEffect(() => {
     const fetchAddress = async () => {
       const cleanCep = form.zip.replace(/\D/g, "");
@@ -501,26 +322,6 @@ export default function TeacherSubscription() {
     setSelectedPlan(plan);
   };
 
-  const planCardBase = {
-    flex: 1,
-    padding: "20px",
-    borderRadius: "6px",
-    textAlign: "center",
-    cursor: "pointer",
-    transition: "all 0.3s ease",
-  };
-
-  const selectedStyle = {
-    border: `2px solid #ed5914`,
-    backgroundColor: "#ed5914",
-    color: "#fff",
-  };
-
-  const unselectedStyle = {
-    border: "1px solid #ccc",
-    backgroundColor: "#fafafa",
-  };
-
   const isSelected = (plan: string) =>
     selectedPlan === plan
       ? {
@@ -532,935 +333,371 @@ export default function TeacherSubscription() {
           border: "1px solid #ccc",
         };
 
-  type PlanCardProps = {
-    tier: "silver" | "gold";
-    title: string;
-    imgSrc: string;
-    monthly: number;
-    yearly: number;
-    bgColor: string;
-    selected: boolean;
-    features: any;
-    onSelect: () => void;
-  };
-
-  const FEATURES: Record<
-    "silver" | "gold",
-    { title: string; value: string | number; status?: string | number }[]
-  > = {
-    silver: [
-      { title: "Limite de alunos particulares", value: 30 },
-      { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
-      {
-        title: "Materiais disponíveis para os alunos",
-        value: "",
-        status: "Não",
-      },
-      { title: "Gerenciamento de alunos", value: "", status: "Sim" },
-      {
-        title: "Curso para professores particulares",
-        value: "",
-        status: "Sim",
-      },
-      { title: "Gestão Financeira", value: "", status: "Sim" },
-
-      { title: "Limite de revisão de flashcards/dia", value: 25 },
-      { title: "Área de responsáveis", value: "", status: "Não" },
-      // { title: "Listening exercise", value: "", status: "Não" },
-      // { title: "Cadastro de subteachers", value: "", status: "Não" },
-      { title: "Emissão de contratos", value: "", status: "Não" },
-      {
-        title: "Personalização Visual da Plataforma",
-        value: "",
-        status: "Não",
-      },
-      { title: "Emissão de recibos", value: "", status: "Sim" },
-      { title: "Assistente de IA (Acumulativo)", value: "25 tokens/mês" },
-    ],
-    gold: [
-      {
-        title: "Limite de alunos particulares",
-        value: "100 (com a possibilidade de adquirir mais)",
-      },
-      { title: "Aulas prontas para lecionar", value: "", status: "Sim" },
-      {
-        title: "Materiais disponíveis para os alunos",
-        value: "",
-        status: "Sim",
-      },
-      { title: "Gerenciamento de alunos", value: "", status: "Sim" },
-      {
-        title: "Curso para professores particulares",
-        value: "",
-        status: "Sim",
-      },
-      { title: "Gestão Financeira", value: "", status: "Sim" },
-      { title: "Limite de revisão de flashcards/dia", value: "Sem limites" },
-      { title: "Área de responsáveis", value: "", status: "Sim" },
-      // { title: "Listening exercise", value: "", status: "Sim" },
-      // { title: "Cadastro de subteachers", value: "", status: "Sim" },
-      { title: "Emissão de contratos", value: "", status: "Sim" },
-      {
-        title: "Personalização Visual da Plataforma",
-        value: "",
-        status: "Sim",
-      },
-      { title: "Emissão de recibos", value: "", status: "Sim" },
-      { title: "Assistente de IA (Acumulativo)", value: "1.200 tokens/mês" },
-    ],
-  };
-
-  function PlanCard({
-    tier,
-    title,
-    imgSrc,
-    monthly,
-    yearly,
-    selected,
-    bgColor,
-    onSelect,
-    features,
-  }: PlanCardProps) {
-    const [hovered, setHovered] = React.useState(false);
-    return (
-      <div
-        role="radio"
-        aria-checked={selected}
-        tabIndex={0}
-        onClick={onSelect}
-        onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onSelect()}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        style={{
-          ...styles.cardBase,
-          ...(selected ? styles.cardSelected : {}),
-          transform:
-            hovered && !selected ? "translateY(-2px)" : "translateY(0)",
-          borderColor:
-            hovered && !selected ? "#cbd5e1" : selected ? "#ed5914" : "#e5e7eb",
-          background: bgColor,
-        }}
-      >
-        {selected && <span style={styles.badge}>Selecionado</span>}
-        <p>{title}</p>
-        <img src={imgSrc} alt={`${title} Plan`} style={{ ...styles.img }} />
-        <ul
-          style={{
-            textAlign: "center",
-            listStyleType: "none",
-            padding: 0,
-            fontSize: 12,
-            marginBottom: 10,
-          }}
-        >
-          {Array.isArray(features) &&
-            features.map((feat, idx) => (
-              <li
-                key={idx}
-                style={{
-                  marginBottom: 6,
-                  padding: "2px 10px",
-                  borderRadius: "6px",
-                  listStyleType: "none",
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <strong>{feat.title}</strong>
-                <br />
-                <div>
-                  {feat.value && (
-                    <span
-                      style={{
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {feat.value}{" "}
-                    </span>
-                  )}
-                  <span
-                    style={{
-                      color: feat.status === "Sim" ? "green" : "red",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {feat.status &&
-                      (feat.status === "Sim" ? "✔ Sim" : " ✘ Não")}
-                  </span>
-                </div>
-              </li>
-            ))}
-        </ul>
-        <div style={styles.price}>
-          {formatBRL(monthly)}/mês • {formatBRL(yearly)}/ano em até 6x
-        </div>
-      </div>
-    );
-  }
-
-  const getWhatsAppLink = () => {
-    const message = `Olá, gostaria de fazer o pagamento da plataforma Arvin no plano ${selectedPlan} Gold à vista via PIX.`;
-    return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
-  };
-
   return (
     <div style={styles.container}>
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
-          <h1
+          <div
             style={{
-              fontFamily: "Teko, sans-serif",
-              fontSize: "32px",
-              marginBottom: "20px",
-              color: "#111827",
+              display: "flex",
+              gap: "20px",
+              flexWrap: "wrap",
+              flex: 2,
             }}
           >
-            Cadastre-se
-          </h1>
-          <div
-            style={styles.planContainer}
-            role="radiogroup"
-            aria-label="Seleção de planos"
-          >
-            <PlanCard
-              tier="silver"
-              title="Silver"
-              bgColor="#c0c0c055"
-              imgSrc={silver}
-              monthly={PRICES.silver.monthly}
-              yearly={PRICES.silver.yearly}
-              selected={planTier === "silver"}
-              features={FEATURES.silver} // <-- aqui
-              onSelect={() => setPlanTier("silver")}
-            />
-
-            <PlanCard
-              bgColor="#ffd90064"
-              tier="gold"
-              title="Gold"
-              imgSrc={gold}
-              monthly={PRICES.gold.monthly}
-              yearly={PRICES.gold.yearly}
-              selected={planTier === "gold"}
-              features={FEATURES.gold} // <-- aqui
-              onSelect={() => setPlanTier("gold")}
-            />
-          </div>
-          <h2>Período</h2>
-          <div style={styles.planContainer}>
-            <div
-              style={{ ...styles.planCard, ...isSelected("monthly") }}
-              onClick={() => {
-                handlePlanSelect("monthly");
-                setPaymentMethod("CREDIT_CARD"); // mantém sua lógica
+            <article
+              style={{
+                maxWidth: "600px",
+                flex: 1,
+                minWidth: "300px",
               }}
             >
-              <p>{formatBRL(monthlyPrice)}/mês</p>
-            </div>
-
-            <div
-              style={{ ...styles.planCard, ...isSelected("yearly") }}
-              onClick={() => handlePlanSelect("yearly")}
-            >
-              <p>{formatBRL(yearlyPrice)}/ano em até 6x</p>
-            </div>
-          </div>
-          <>
-            {selectedPlan === "yearly" && (
-              <>
-                <h2>Método de Pagamento</h2>
-                <div style={styles.planContainer}>
-                  <div
-                    //@ts-ignore
-                    style={{
-                      ...planCardBase,
-                      ...(paymentMethod === "CREDIT_CARD"
-                        ? selectedStyle
-                        : unselectedStyle),
-                    }}
-                    onClick={() => setPaymentMethod("CREDIT_CARD")}
-                  >
-                    <p>Cartão (parcelável)</p>
-                  </div>
-                  <div
-                    //@ts-ignore
-                    style={{
-                      ...planCardBase,
-                      ...(paymentMethod === "PIX"
-                        ? selectedStyle
-                        : unselectedStyle),
-                    }}
-                    onClick={() => setPaymentMethod("PIX")}
-                  >
-                    <p>Pix à vista</p>
-                  </div>
-                </div>
-              </>
-            )}
-            {selectedPlan === "yearly" && paymentMethod === "CREDIT_CARD" && (
-              <div style={{ marginBottom: "20px" }}>
-                <label htmlFor="installments">Parcelas:</label>
-                <input
-                  type="number"
-                  id="installments"
-                  name="installments"
-                  value={installments}
-                  onChange={(e) =>
-                    setInstallments(
-                      Math.min(Math.max(Number(e.target.value), 1), 6)
-                    )
-                  }
-                  min={1}
-                  max={6}
-                  style={styles.input}
-                />
-                <p
-                  style={{ fontSize: "14px", color: "#333", marginTop: "5px" }}
-                >
-                  {installments}x de{" "}
-                  <strong>{formatBRL(yearlyPrice / installments)}</strong>
-                </p>
-              </div>
-            )}
-            {paymentMethod === "CREDIT_CARD" && (
-              <Grid container spacing={2}>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Nome"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="Sobrenome"
-                    name="lastname"
-                    value={form.lastname}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="Telefone (com DDD)"
-                    name="phoneNumber"
-                    type="tel"
-                    value={form.phoneNumber}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="E-mail"
-                    name="email"
-                    value={form.email}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ inputMode: "email" }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="Data de Nascimento (DD/MM/AAAA)"
-                    name="dateOfBirth"
-                    value={form.dateOfBirth}
-                    onChange={handleChange}
-                    fullWidth
-                    inputProps={{ maxLength: 10, inputMode: "numeric" }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="CPF"
-                    name="doc"
-                    value={form.doc}
-                    onChange={handleChange}
-                    fullWidth
-                    inputProps={{ maxLength: 15, inputMode: "numeric" }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="Número do Cartão"
-                    name="creditCardNumber"
-                    value={form.creditCardNumber}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 19, inputMode: "numeric" }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Nome Impresso no Cartão"
-                    name="creditCardHolderName"
-                    value={form.creditCardHolderName}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Mês de Expiração (MM)"
-                    name="creditCardExpiryMonth"
-                    value={form.creditCardExpiryMonth}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 2, inputMode: "numeric" }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Ano de Expiração (AAAA)"
-                    name="creditCardExpiryYear"
-                    value={form.creditCardExpiryYear}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 4, inputMode: "numeric" }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="CVV"
-                    name="creditCardCcv"
-                    value={form.creditCardCcv}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 4, inputMode: "numeric" }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="CEP"
-                    name="zip"
-                    value={form.zip}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "");
-                      if (value.length <= 8) {
-                        setForm({ ...form, zip: value });
-                      }
-                    }}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                    inputProps={{ maxLength: 8, inputMode: "numeric" }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Rua"
-                    name="address"
-                    value={form.address}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Número"
-                    name="addressNumber"
-                    value={form.addressNumber}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Bairro"
-                    name="neighborhood"
-                    value={form.neighborhood}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Cidade"
-                    name="city"
-                    value={form.city}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    label="Estado (UF)"
-                    name="state"
-                    value={form.state}
-                    onChange={handleChange}
-                    required={paymentMethod === "CREDIT_CARD"}
-                    fullWidth
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>
-                <br />
-                <Grid item xs={6}>
-                  <TextField
-                    label="Senha (mínimo 8 caracteres)"
-                    name="password"
-                    value={form.password}
-                    onChange={handleChange}
-                    fullWidth
-                    type="password"
-                    inputProps={{ maxLength: 15 }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-                <Grid item xs={6}>
-                  <TextField
-                    label="Confirme sua Senha (mínimo 8 caracteres)"
-                    name="confirmPassword"
-                    value={form.confirmPassword}
-                    onChange={handleChange}
-                    fullWidth
-                    type="password"
-                    inputProps={{ maxLength: 15 }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        "& fieldset": {
-                          borderColor: "#ed5914", // cor normal
-                        },
-                        "&:hover fieldset": {
-                          borderColor: "#ed5914", // ao passar o mouse
-                        },
-                        "&.Mui-focused fieldset": {
-                          color: "#ed5914", // quando focado
-                          borderColor: "#ed5914", // quando focado
-                        },
-                        "& label": {
-                          color: "#ed5914", // cor padrão do label
-                        },
-                        "& label.Mui-focused": {
-                          color: "#ed5914", // cor quando o label está flutuando
-                        },
-                      },
-                    }}
-                  />
-                </Grid>{" "}
-              </Grid>
-            )}
-            {paymentMethod === "PIX" && (
+              <h1 style={theTitle}>Cadastre-se</h1>
               <div
-                style={{
-                  padding: "3rem",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  alignContent: "center",
-                }}
+                style={styles.planButtonsRow}
+                role="radiogroup"
+                aria-label="Seleção de planos"
               >
-                <span
-                  onClick={() => {
-                    window.location.assign(getWhatsAppLink());
-                  }}
+                {(["silver", "gold"] as const).map((tier) => {
+                  const meta = TIER_META[tier];
+                  const selected = planTier === tier;
+                  return (
+                    <button
+                      key={tier}
+                      type="button"
+                      role="radio"
+                      aria-checked={selected}
+                      onClick={() => setPlanTier(tier)}
+                      onKeyDown={(e) =>
+                        (e.key === "Enter" || e.key === " ") &&
+                        setPlanTier(tier)
+                      }
+                      style={{
+                        ...styles.tierButtonMinimal,
+                        ...(selected ? styles.cardSelected : {}),
+                        borderColor: selected ? "#ed5914" : "#e5e7eb",
+                        backgroundColor: meta.bg,
+                        cursor: "pointer",
+                        position: "relative",
+                      }}
+                    >
+                      {selected && (
+                        <span
+                          style={{
+                            backgroundColor: "#ed5914",
+                            color: "white",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                          }}
+                        >
+                          Selecionado
+                        </span>
+                      )}
+                      <span>
+                        <img
+                          src={meta.img}
+                          alt={`${meta.title} Plan`}
+                          style={{
+                            ...styles.img,
+                            pointerEvents: "none",
+                          }}
+                        />
+                        <div style={styles.tierTitle}>{meta.title}</div>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div style={styles.detailsPanel}>
+                <h2
                   style={{
-                    backgroundColor: "#25D366",
-                    color: "white",
-                    padding: "12px 18px",
-                    border: "none",
-                    borderRadius: "4px",
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    cursor: "pointer",
-                    boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+                    marginTop: 0,
+                    marginBottom: 10,
+                    fontSize: 25,
+                    color: "#111827",
+                    textAlign: "center",
                   }}
                 >
-                  Para fazer o pagamento à vista, fale com nossa equipe por
-                  WhatsApp!
-                </span>
+                  {TIER_META[planTier].title}
+                  <span
+                    style={{
+                      fontWeight: "normal",
+                    }}
+                  >
+                    {" "}
+                    | {formatBRL(TIER_META[planTier].price / 10)}/mês •{" "}
+                    {formatBRL(TIER_META[planTier].price)}/ano
+                  </span>
+                </h2>
+                <ul
+                  style={{
+                    textAlign: "center",
+                    listStyleType: "none",
+                    padding: 0,
+                    fontSize: 14,
+                    marginBottom: 10,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
+                  {FEATURES[planTier].map((feat, idx) => (
+                    <li
+                      key={idx}
+                      style={{
+                        marginBottom: 6,
+                        padding: "10px",
+                        borderRadius: "4px",
+                        listStyleType: "none",
+                        backgroundColor: "#fff",
+                        minWidth: "200px",
+                        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      <strong>{feat.title}</strong>
+                      <br />
+                      <div>
+                        {feat.value && (
+                          <span style={{ fontStyle: "italic" }}>
+                            {feat.value}{" "}
+                          </span>
+                        )}
+                        <span
+                          style={{
+                            color: feat.status === "Sim" ? "green" : "red",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {feat.status &&
+                            (feat.status === "Sim" ? "✔ Sim" : "✘ Não")}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            )}
-            <TermsAndConditions
-              onValidityChange={(valid, data) => {
-                setTermsValid(valid);
-                setTermsMeta(data);
+            </article>
+            <article
+              style={{
+                maxWidth: "1100px",
+                flex: 1,
+                minWidth: "300px",
               }}
-            />
-            {paymentMethod !== "PIX" && (
-              <button
-                type="submit"
-                style={{
-                  ...styles.button,
-                  backgroundColor: loading || !termsValid ? "grey" : "#ed5914",
-                  cursor: loading || !termsValid ? "not-allowed" : "pointer",
-                }}
-                disabled={loading || !termsValid}
-              >
-                {loading ? (
-                  <CircularProgress style={{ color: "#ed5914" }} />
-                ) : (
-                  "Cadastrar"
+            >
+              <h1 style={theTitle}>Período</h1>
+              <div style={styles.planContainer}>
+                <div
+                  style={{ ...styles.planCard, ...isSelected("monthly") }}
+                  onClick={() => {
+                    handlePlanSelect("monthly");
+                    setPaymentMethod("CREDIT_CARD"); // mantém sua lógica
+                  }}
+                >
+                  <p>{formatBRL(monthlyPrice(planTier))}/mês</p>
+                </div>
+
+                <div
+                  style={{ ...styles.planCard, ...isSelected("yearly") }}
+                  onClick={() => handlePlanSelect("yearly")}
+                >
+                  <p>{formatBRL(yearlyPrice(planTier))}/ano em até 6x</p>
+                </div>
+              </div>
+              <>
+                {selectedPlan === "yearly" && (
+                  <>
+                    <h2>Método de Pagamento</h2>
+                    <div style={styles.planContainer}>
+                      <div
+                        //@ts-ignore
+                        style={{
+                          ...planCardBase,
+                          ...(paymentMethod === "CREDIT_CARD"
+                            ? selectedStyle
+                            : unselectedStyle),
+                        }}
+                        onClick={() => setPaymentMethod("CREDIT_CARD")}
+                      >
+                        <p>Cartão (parcelável)</p>
+                      </div>
+                      <div
+                        //@ts-ignore
+                        style={{
+                          ...planCardBase,
+                          ...(paymentMethod === "PIX"
+                            ? selectedStyle
+                            : unselectedStyle),
+                        }}
+                        onClick={() => setPaymentMethod("PIX")}
+                      >
+                        <p>Pix à vista</p>
+                      </div>
+                    </div>
+                  </>
                 )}
-              </button>
-            )}
-          </>
+                {selectedPlan === "yearly" &&
+                  paymentMethod === "CREDIT_CARD" && (
+                    <div style={{ marginBottom: "20px" }}>
+                      <label htmlFor="installments">Parcelas:</label>
+                      <input
+                        type="number"
+                        id="installments"
+                        name="installments"
+                        value={installments}
+                        onChange={(e) =>
+                          setInstallments(
+                            Math.min(Math.max(Number(e.target.value), 1), 6)
+                          )
+                        }
+                        min={1}
+                        max={6}
+                        style={styles.input}
+                      />
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          color: "#333",
+                          marginTop: "5px",
+                        }}
+                      >
+                        {installments}x de{" "}
+                        <strong>
+                          {formatBRL(yearlyPrice(planTier) / installments)}
+                        </strong>
+                      </p>
+                    </div>
+                  )}
+                {paymentMethod === "CREDIT_CARD" && (
+                  <Grid container spacing={{ xs: 1, sm: 2, md: 2 }}>
+                    {inputFields.map((field) => {
+                      const fullRow = new Set<FieldName>([
+                        "address",
+                        "creditCardNumber",
+                        "creditCardHolderName",
+                      ]);
+                      const isFull = fullRow.has(field.name);
+
+                      return (
+                        <Grid
+                          item
+                          key={field.name}
+                          // celular: sempre 12 colunas
+                          xs={12}
+                          // tablet/desktop: 6 colunas (duas por linha), exceto os full
+                          sm={isFull ? 12 : 6}
+                          md={isFull ? 12 : 6}
+                        >
+                          <TextField
+                            size="small"
+                            fullWidth
+                            label={field.label}
+                            name={field.name}
+                            type={field.type ?? "text"}
+                            value={form[field.name]}
+                            onChange={
+                              field.name === "zip"
+                                ? (e) => {
+                                    const onlyDigits = e.target.value.replace(
+                                      /\D/g,
+                                      ""
+                                    );
+                                    if (onlyDigits.length <= 8)
+                                      setForm((prev) => ({
+                                        ...prev,
+                                        zip: onlyDigits,
+                                      }));
+                                  }
+                                : handleChange
+                            }
+                            required={
+                              paymentMethod === "CREDIT_CARD" &&
+                              requiredIfCC.has(field.name)
+                            }
+                            inputProps={field.inputProps}
+                            sx={{
+                              ...inputStyle,
+                              // inputs ainda menores no mobile (estilo checkout)
+                              "& .MuiOutlinedInput-root": {
+                                ...inputStyle["& .MuiOutlinedInput-root"],
+                                "@media (max-width:600px)": {
+                                  fontSize: "0.85rem",
+                                },
+                              },
+                              "& .MuiInputLabel-root": {
+                                ...inputStyle["& .MuiInputLabel-root"],
+                                "@media (max-width:600px)": {
+                                  fontSize: "0.8rem",
+                                },
+                              },
+                            }}
+                          />
+                        </Grid>
+                      );
+                    })}
+                  </Grid>
+                )}
+                {paymentMethod === "PIX" && (
+                  <div
+                    style={{
+                      padding: "3rem",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignContent: "center",
+                    }}
+                  >
+                    <span
+                      onClick={() => {
+                        window.location.assign(getWhatsAppLink(selectedPlan));
+                      }}
+                      style={{
+                        backgroundColor: "#25D366",
+                        color: "white",
+                        padding: "12px 18px",
+                        border: "none",
+                        borderRadius: "4px",
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        cursor: "pointer",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      Para fazer o pagamento à vista, fale com nossa equipe por
+                      WhatsApp!
+                    </span>
+                  </div>
+                )}
+                <TermsAndConditions
+                  onValidityChange={(valid, data) => {
+                    setTermsValid(valid);
+                    setTermsMeta(data);
+                  }}
+                />
+                {paymentMethod !== "PIX" && (
+                  <button
+                    type="submit"
+                    style={{
+                      ...styles.button,
+                      backgroundColor:
+                        loading || !termsValid ? "grey" : "#ed5914",
+                      cursor:
+                        loading || !termsValid ? "not-allowed" : "pointer",
+                    }}
+                    disabled={loading || !termsValid}
+                  >
+                    {loading ? (
+                      <CircularProgress style={{ color: "#ed5914" }} />
+                    ) : (
+                      "Cadastrar"
+                    )}
+                  </button>
+                )}
+              </>
+            </article>
+          </div>
           {error && <p style={styles.error}>{error}</p>}
         </div>
       </form>

@@ -29,7 +29,6 @@ function LandingPage() {
         password,
       });
       const { token, loggedIn, notifications } = response.data;
-
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("selectedStudentID");
