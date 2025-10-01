@@ -506,6 +506,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
         headers,
       });
       setEventFull(response.data.event);
+      console.log(response.data.event);
       setLastFew(response.data.event.recentUnmarkedEvents || []);
       if (response?.data?.event?.recentUnmarkedEvents?.[0]?.theLesson) {
         setTheLessonLast(
@@ -3305,7 +3306,8 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                         }
                                                       >
                                                         ✨Ajude-me com a
-                                                        descrição do homework (-15)
+                                                        descrição do homework
+                                                        (-15)
                                                       </button>
                                                     )}
                                                   </>
@@ -4198,7 +4200,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     {!showEditForm && (
                       <span>
                         {/* Link de Acesso */}
-                        {link && (
+                        {link && status == "marcado" &&(
                           <div
                             style={{
                               textAlign: "center",
@@ -4238,6 +4240,46 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             </Link>
                           </div>
                         )}
+                        {
+                              googleDriveLink &&   <div
+                            style={{
+                              textAlign: "center",
+                            }}
+                          >
+                           <Link
+                              to={googleDriveLink}
+                              target="_blank"
+                              style={{
+                                color: partnerColor(),
+                                textDecoration: "none",
+                                padding: "0.75rem 1.5rem",
+                                backgroundColor: "white",
+                                border: `2px solid ${partnerColor()}`,
+                                borderRadius: "6px",
+                                textAlign: "center",
+                                transition: "all 0.3s ease",
+                                minWidth: "100%",
+                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = partnerColor();
+                                e.target.style.color = "white";
+                                e.target.style.transform = "translateY(-2px)";
+                                e.target.style.boxShadow =
+                                  "0 4px 8px rgba(0,0,0,0.15)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = "white";
+                                e.target.style.color = partnerColor();
+                                e.target.style.transform = "translateY(0)";
+                                e.target.style.boxShadow =
+                                  "0 2px 4px rgba(0,0,0,0.1)";
+                              }}
+                            >
+                              <b>Important Link:</b> {truncateString(googleDriveLink, 30)}
+                            </Link>
+                            </div>
+                        }
                         {/* Descrição */}
                         <div
                           style={{
@@ -4245,7 +4287,6 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             maxWidth: "85%",
                             alignItems: "center",
                             justifyContent: "center",
-
                             margin: "auto",
                           }}
                         >
