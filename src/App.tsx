@@ -55,10 +55,9 @@ import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTea
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
+export var isStaging = currentUrl.includes("staging");
 export var isArthurVincent =
-  currentUrl.includes("arthurvincent") ||
-  currentUrl.includes("staging") ||
-  isLocalHost;
+  currentUrl.includes("arthurvincent") || isStaging || isLocalHost;
 export var isArvin = currentUrl.includes("arvinplatform");
 export var isPortal = currentUrl.includes("portal");
 export var isArvinLandingPage = isArvin && !isPortal;

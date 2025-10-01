@@ -43,6 +43,7 @@ import {
 } from "../Styles/Styles";
 import Redirect from "../Redirect";
 import Tokens from "./Tokens";
+import MyCalendarRefactor from "./MyCalendar/MyCalendarRefactor";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
@@ -191,6 +192,17 @@ export function HomePage({ headers }: HeadersProps) {
       title: "My Calendar",
       component: (
         <MyCalendar
+          change={change}
+          setChange={setChange}
+          myId={_StudentId}
+          thePermissions={thePermissions}
+          headers={headers}
+        />
+      ),
+    },  {
+      title: "My Calendar Ref",
+      component: (
+        <MyCalendarRefactor
           change={change}
           setChange={setChange}
           myId={_StudentId}
