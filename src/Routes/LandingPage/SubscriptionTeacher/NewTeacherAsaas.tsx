@@ -24,7 +24,7 @@ import {
   FEATURES,
   FieldName,
   theTitle,
-} from "./styles";
+} from "./stylesNewTeacherAsaas";
 
 export default function TeacherSubscription() {
   // const [form, setForm] = useState({
