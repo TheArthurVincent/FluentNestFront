@@ -77,8 +77,10 @@ export default function ImageLessonModel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "16px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))",
+          gap: "10px",
+          alignItems: "center",
+          justifyItems: "center",
         }}
       >
         {element.images &&
@@ -86,24 +88,30 @@ export default function ImageLessonModel({
             <div
               key={i}
               style={{
-                backgroundColor: "#ffffff",
-                borderRadius: "6px",
-                padding: "16px",
+                backgroundImage: `url(${image.img})`,
+                width: "200px",
+                height: "200px",
+                backgroundSize: "cover",
+                borderRadius: "8px",
+                padding: "10px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                 border: "1px solid #f0f0f0",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                position: "relative",
+                overflow: "hidden",
               }}
             >
-              {/* Botões de interação no topo */}
               <div
                 style={{
                   display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "8px",
-                  marginBottom: "12px",
+                  justifyContent: "space-between",
+                  alignContent: "center",
+                  alignItems: "center",
                 }}
               >
-                {/* Botão de Audio */}
                 <Tooltip title="Ouvir texto">
                   <button
                     onClick={(e) => {
@@ -111,31 +119,23 @@ export default function ImageLessonModel({
                       readText(image.text, true, "en", selectedVoice);
                     }}
                     style={{
-                      backgroundColor: partnerColor(),
+                      backgroundColor: "transparent",
                       color: "white",
                       border: "none",
-                      borderRadius: "50%",
-                      width: "32px",
-                      height: "32px",
+                      width: "25px",
+                      height: "25px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       cursor: "pointer",
                       fontSize: "14px",
                       transition: "all 0.2s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "scale(1.1)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = "scale(1)";
+                      textShadow: "0 0 3px #555",
                     }}
                   >
-                    🔊
+                    <i className="fa fa-volume-up" />
                   </button>
                 </Tooltip>
-
-                {/* Botão de Add Flashcard */}
                 {!clickedButtons.has(i) && (
                   <Tooltip title="Adicionar aos flashcards">
                     <button
@@ -152,81 +152,56 @@ export default function ImageLessonModel({
                       style={{
                         color: "white",
                         border: "none",
-                        borderRadius: "50%",
-                        width: "32px",
-                        height: "32px",
+                        width: "25px",
+                        height: "25px",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
                         fontSize: "18px",
-                        fontWeight: "bold",
                         transition: "all 0.2s ease",
-                        backgroundColor: partnerColor(),
-                        boxShadow: `0 2px 8px ${partnerColor()}40`,
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = "scale(1.1)";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = "scale(1)";
+                        backgroundColor: "transparent",
                       }}
                     >
-                      +
+                      <span
+                        style={{
+                          fontSize: "13px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          textShadow: "0 0 3px #555",
+                        }}
+                      >
+                        <i className="fa fa-plus" />
+                      </span>
                     </button>
                   </Tooltip>
                 )}
-
-                {/* Indicador de adicionado */}
                 {clickedButtons.has(i) && (
                   <div
                     style={{
-                      backgroundColor: partnerColor(),
                       color: "white",
-                      borderRadius: "50%",
-                      width: "32px",
-                      height: "32px",
+                      width: "25px",
+                      height: "25px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontSize: "16px",
-                      boxShadow: `0 2px 8px ${partnerColor()}30`,
+                      textShadow: "0 0 3px #555",
                     }}
                   >
-                    ✓
+                    <i className="fa fa-check" />
                   </div>
                 )}
               </div>
-
-              {/* Imagem */}
               <div
                 style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "20px",
-                }}
-              >
-                <img
-                  src={image.img}
-                  alt={image.text || "Lesson image"}
-                  style={{
-                    width: "100%",
-                    maxWidth: "200px",
-                    aspectRatio: "1 / 1",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    borderRadius: "6px",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-                  }}
-                />
-              </div>
-              <div
-                style={{
-                  fontWeight: "600",
-                  color: "#1a1a1a",
-                  fontFamily: textTitleFont(),
+                  color: "#fff",
+                  backgroundColor: "#00000050",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  textAlign: "center",
                   fontSize: "16px",
+                  textShadow: "0 0 3px #555",
                 }}
               >
                 {image.text}
