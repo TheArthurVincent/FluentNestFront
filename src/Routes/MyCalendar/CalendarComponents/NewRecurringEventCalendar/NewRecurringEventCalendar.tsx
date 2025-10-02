@@ -114,6 +114,7 @@ function NewRecurringEventCalendar({
     setTheNewWeekDay("");
     setTheNewTimeOfTutoring("");
     setIsModalOfTutoringsVisible(false);
+    setAlternateBoolean(!alternateBoolean);
     setChange?.(!change);
   };
 
