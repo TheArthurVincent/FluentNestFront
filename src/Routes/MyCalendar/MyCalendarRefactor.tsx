@@ -24,7 +24,6 @@ import {
   updateInfo,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
-
 import { StyledDiv } from "./CalendarComponents/MyCalendarFunctions/MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -32,10 +31,8 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import {
   categoryList,
   convertToBase64,
-  formatTimeRange,
   getEmbedUrl,
   getLastMonday,
-  isEventTimeNowConsideringDuration,
 } from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import ToDoAddButton from "./CalendarComponents/ToDo/ToDoNew";
 import {
@@ -43,11 +40,10 @@ import {
   spanChecked,
   styleLiChecked,
 } from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions.Styles";
-
 import NewEventCalendar from "./CalendarComponents/NewEventCalendar/NewEventCalendar";
-
 import NewRecurringEventCalendar from "./CalendarComponents/NewRecurringEventCalendar/NewRecurringEventCalendar";
 import CardOneEvent from "./CalendarComponents/OneEventCard/CardOneEvent";
+
 interface MyCalendarRefactorProps {
   headers: any; // substitua pelo tipo real se souber a estrutura
   thePermissions: string[] | any;
@@ -103,7 +99,6 @@ function MyCalendarRefactor({
   const [category, setCategory] = useState<any | null>("");
   const [newStudentId, setNewStudentId] = useState<any | null>("");
   const [newGroupId, setNewGroupId] = useState<any | null>("");
-
   const [loadingModalInfo, setLoadingModalInfo] = useState<any | null>(false);
   const [eventFull, setEventFull] = useState<any | null>({});
   const [newEventId, setNewEventId] = useState<any | null>("");
@@ -1765,50 +1760,7 @@ function MyCalendarRefactor({
                             return timeA - timeB;
                           })
                           .map((event: any, eventIndex: any) => {
-                            const categoryColors = {
-                              "Group Class": { bg: "#614338ff", text: "#fff" },
-                              "Established Group Class": {
-                                bg: "#003f7eff",
-                                text: "#fff",
-                              },
-                              Rep: { bg: "grey", text: "#fff" },
-                              Tutoring: { bg: "#1e007eff", text: "#fff" },
-                              "Prize Class": { bg: "#27ae60", text: "#fff" },
-                              Standalone: { bg: "#48145fff", text: "#fff" },
-                              Test: { bg: "#34495e", text: "#fff" },
-                              "Marcar Reposição": {
-                                bg: "#2a7db4ff",
-                                text: "#fff",
-                              },
-                            };
-
-                            const statusColors = {
-                              desmarcado: {
-                                bg: "#ffebee",
-                                text: "#c62828",
-                                border: "#ef5350",
-                              },
-                              marcado: {
-                                bg: "#e3f2fd",
-                                text: "#1565c0",
-                                border: "#42a5f5",
-                              },
-                              realizada: {
-                                bg: "#e8f5e8",
-                                text: "#2e7d32",
-                                border: "#66bb6a",
-                              },
-                            };
-                            const categoryColor = categoryColors[
-                              event.category as keyof typeof categoryColors
-                            ] || { bg: "#000", text: "#fff" };
-                            const statusColor = statusColors[
-                              event.status as keyof typeof statusColors
-                            ] || {
-                              bg: "#f5f5f5",
-                              text: "#333",
-                              border: "#ddd",
-                            };
+                            
                             return (
                               <div
                                 key={`${event._id}-${eventIndex}`}
