@@ -45,7 +45,7 @@ import {
   isEventTimeNowConsideringDuration,
   times,
   weekDays,
-} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import ToDoAddButton from "./CalendarComponents/ToDo/ToDoNew";
 import {
   containerPlus,
@@ -56,7 +56,7 @@ import {
   spanChecked,
   styleLiChecked,
   updateButton,
-} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions.Styles";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions.Styles";
 import { display, fontSize } from "@mui/system";
 
 function MyCalendar({ headers, thePermissions, myId, setChange, change }) {

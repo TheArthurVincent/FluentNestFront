@@ -36,17 +36,18 @@ import {
   getEmbedUrl,
   getLastMonday,
   isEventTimeNowConsideringDuration,
-} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import ToDoAddButton from "./CalendarComponents/ToDo/ToDoNew";
 import {
   inputCheckBox,
   spanChecked,
   styleLiChecked,
-} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions.Styles";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions.Styles";
 
 import NewEventCalendar from "./CalendarComponents/NewEventCalendar/NewEventCalendar";
 
 import NewRecurringEventCalendar from "./CalendarComponents/NewRecurringEventCalendar/NewRecurringEventCalendar";
+import OneEvent from "./CalendarComponents/OneEventCard/OneEventCard";
 interface MyCalendarRefactorProps {
   headers: any; // substitua pelo tipo real se souber a estrutura
   thePermissions: string[] | any;
@@ -1811,177 +1812,23 @@ function MyCalendarRefactor({
                             return (
                               <div
                                 key={`${event._id}-${eventIndex}`}
-                                style={{
-                                  marginBottom: "5px",
-                                  borderRadius: "6px",
-                                  overflow: "hidden",
-                                  boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                                  transition: "all 0.2s ease",
-                                  cursor: "pointer",
-                                  border: `1px solid ${statusColor.border}`,
-                                }}
-                                onMouseEnter={(e: any) => {
-                                  e.currentTarget.style.transform =
-                                    "translateY(-2px)";
-                                  e.currentTarget.style.boxShadow =
-                                    "0 4px 12px rgba(0,0,0,0.15)";
-                                }}
-                                onMouseLeave={(e: any) => {
-                                  e.currentTarget.style.transform =
-                                    "translateY(0)";
-                                  e.currentTarget.style.boxShadow =
-                                    "0 2px 8px rgba(0,0,0,0.1)";
-                                }}
                                 onClick={() => handleSeeModal(event)}
                               >
-                                {/* Live Event Indicator */}
-                                {event.status !== "desmarcado" &&
-                                  isEventTimeNowConsideringDuration(
-                                    event,
-                                    hj,
-                                    date,
-                                    event.duration
-                                  ) && (
-                                    <div
-                                      style={{
-                                        background: "green",
-                                        padding: "2px",
-                                        position: "relative",
-                                        overflow: "hidden",
-                                      }}
-                                    >
-                                      <div
-                                        style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                          justifyContent: "center",
-                                          color: "white",
-                                          fontWeight: "600",
-                                          textTransform: "uppercase",
-                                          letterSpacing: "0.5px",
-                                        }}
-                                      >
-                                        <span
-                                          style={{
-                                            width: "6px",
-                                            height: "6px",
-                                            backgroundColor: "white",
-                                            borderRadius: "6px",
-                                            marginRight: "5px",
-                                            animation: "pulse 2s infinite",
-                                          }}
-                                        />
-                                        Live Now
-                                      </div>
-                                    </div>
-                                  )}
-                                <div
-                                  style={{
-                                    background: categoryColor.bg,
-                                    color: categoryColor.text,
-                                    padding: "5px",
-                                    position: "relative",
-                                    paddingBottom: `${event.duration / 5}px`,
-                                  }}
-                                >
-                                  <div
-                                    style={{
-                                      position: "absolute",
-                                      top: "5px",
-                                      right: "5px",
-                                      backgroundColor: "rgba(255,255,255,0.2)",
-                                      color: categoryColor.text,
-                                      padding: "2px 5px",
-                                      borderRadius: "6px",
-                                      fontWeight: "600",
-                                      textTransform: "uppercase",
-                                      letterSpacing: "0.3px",
-                                    }}
-                                  >
-                                    <i className="fa fa-clock-o" style={{}} />
-
-                                    {formatTimeRange(
-                                      event.time,
-                                      event.duration
-                                    )}
-                                  </div>
-
-                                  {/* Event Title/Description */}
-                                  <div
-                                    style={{
-                                      fontWeight: "600",
-                                      marginBottom: "5px",
-                                      lineHeight: "1.3",
-                                      paddingRight: "4rem",
-                                    }}
-                                  >
-                                    {event.groupName
-                                      ? truncateString(event.groupName, 11)
-                                      : event.student
-                                      ? truncateString(event.student, 11)
-                                      : event.description
-                                      ? truncateString(event.description, 10)
-                                      : "No description"}
-                                  </div>
-                                </div>
-
-                                {/* Status Footer */}
-                                <div
-                                  style={{
-                                    backgroundColor: statusColor.bg,
-                                    color: statusColor.text,
-                                    padding: "5px 5px",
-                                    fontWeight: "600",
-                                    textAlign: "center",
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.5px",
-                                    borderTop: `1px solid ${statusColor.border}`,
-                                  }}
-                                >
-                                  {(event.status === "desmarcado" ||
-                                    event.status === "Canceled") && (
-                                    <>
-                                      <i
-                                        className="fa fa-times-circle"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      {categoryList.find(
-                                        (cat) => cat.value === event.category
-                                      )?.text || event.category}
-                                    </>
-                                  )}
-                                  {(event.status === "marcado" ||
-                                    event.status === "Scheduled") && (
-                                    <>
-                                      <i
-                                        className="fa fa-calendar-check-o"
-                                        style={{ marginRight: "2px" }}
-                                      />
-                                      {categoryList.find(
-                                        (cat) => cat.value === event.category
-                                      )?.text || event.category}
-                                    </>
-                                  )}
-                                  {(event.status === "realizada" ||
-                                    event.status === "Completed") && (
-                                    <>
-                                      <i
-                                        className="fa fa-check-circle"
-                                        style={{ marginRight: "2px" }}
-                                      />
-
-                                      {categoryList.find(
-                                        (cat) => cat.value === event.category
-                                      )?.text || event.category}
-                                    </>
-                                  )}
-                                </div>
-                                <div>oiiiiiiiiii</div>
+                                <OneEvent
+                                  headers={headers}
+                                  thePermissions={thePermissions}
+                                  myId={myId}
+                                  setChange={setChange}
+                                  change={change}
+                                  alternateBoolean={alternateBoolean}
+                                  event={event}
+                                  eventIndex={eventIndex}
+                                  setAlternateBoolean={setAlternateBoolean}
+                                />
                               </div>
                             );
                           })}
 
-                        {/* Empty State */}
                         {events.filter(
                           (event: any) =>
                             event.date.toDateString() === date.toDateString()

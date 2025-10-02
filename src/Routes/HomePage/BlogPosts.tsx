@@ -26,7 +26,7 @@ import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
+import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 
 interface BlogPostsProps {
   headers: MyHeadersType | null;

@@ -1,26 +1,41 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { CircularProgress } from "@mui/material";
-import { partnerColor } from "../../../../Styles/Styles";
+import React, { useEffect } from "react";
 import { truncateString } from "../../../../Resources/UniversalComponents";
 import {
   categoryList,
   formatTimeRange,
   isEventTimeNowConsideringDuration,
-} from "../MyCalendarFunctions/MyCalendarFuncions";
+} from "../MyCalendarFunctions/MyCalendarFunctions";
+
+interface CalendarEvent {
+  date(
+    event: CalendarEvent,
+    hj: Date,
+    date: any,
+    duration: number | undefined
+  ): unknown;
+  _id?: string;
+  category?: string;
+  status?: string;
+  duration?: number;
+  time?: string;
+  groupName?: string;
+  student?: string;
+  description?: string;
+}
+
 interface OneEventProps {
-  headers: any; // substitua pelo tipo real se souber a estrutura
+  headers: any;
   thePermissions: string[] | any;
   myId: string | number;
   setChange: React.Dispatch<React.SetStateAction<boolean>>;
   change: boolean;
   alternateBoolean?: boolean;
   setAlternateBoolean?: any;
-  event: any; // substitua pelo tipo real se souber a estrutura
+  event: CalendarEvent | null | undefined;
   eventIndex: number;
-  students: any[]; // substitua pelo tipo real se souber a estrutura
 }
 
-function OneEvent({
+const OneEvent: React.FC<OneEventProps> = ({
   headers,
   thePermissions,
   myId,
@@ -30,105 +45,82 @@ function OneEvent({
   event,
   eventIndex,
   setAlternateBoolean,
-  students,
-}: OneEventProps) {
-  const [loadingModalInfo, setLoadingModalInfo] = useState(false);
-  const [loadingInfo, setLoadingInfo] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-  const [postNew, setPostNew] = useState(false);
-  const [eventId, setEventId] = useState("");
-  const [link, setLink] = useState("");
-  const [date, setDate] = useState("");
-  const [theTime, setTheTime] = useState("");
-  const [newStudentId, setNewStudentId] = useState("");
-  const [newGroupId, setNewGroupId] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [status, setStatus] = useState("");
-  const [isTutoring, setIsTutoring] = useState(false);
+}) => {
   const hj = new Date();
 
-  const handleSeeModal = (e: any) => {
-    const checkIfNew = e ? false : true;
-    setIsVisible(true);
-    setLoadingInfo(true);
-    setPostNew(checkIfNew);
-    setEventId(e ? e._id : "");
-    if (checkIfNew) {
-      setLink("");
-      setDate("");
-      setTheTime("");
-      setNewStudentId("");
-      setNewGroupId("");
-      setDescription("");
-      setCategory("");
-      setStatus("");
-      setLoadingInfo(false);
-    } else {
-      if (
-        e.category == "Standalone" ||
-        e.category == "Group Class" ||
-        e.category == "Test"
-      ) {
-        setIsTutoring(false);
-      } else if (
-        e.category == "Tutoring" ||
-        e.category == "Prize Class" ||
-        e.category == "Rep"
-      ) {
-        setIsTutoring(true);
-      }
-      setLoadingInfo(false);
-    }
-  };
+  useEffect(() => {
+    console.log("[DBG] event:", event);
+    console.log(
+      "[DBG] categoryList length:",
+      Array.isArray(categoryList) ? categoryList.length : "not array"
+    );
+    console.log(
+      "[DBG] formatTimeRange is fn:",
+      typeof formatTimeRange === "function"
+    );
+    console.log(
+      "[DBG] isEventTimeNowConsideringDuration is fn:",
+      typeof isEventTimeNowConsideringDuration === "function"
+    );
+  }, [event]);
 
-  const categoryColors = {
+  if (!event) return null;
+
+  const categoryColors: Record<string, { bg: string; text: string }> = {
     "Group Class": { bg: "#614338ff", text: "#fff" },
-    "Established Group Class": {
-      bg: "#003f7eff",
-      text: "#fff",
-    },
+    "Established Group Class": { bg: "#003f7eff", text: "#fff" },
     Rep: { bg: "grey", text: "#fff" },
     Tutoring: { bg: "#1e007eff", text: "#fff" },
     "Prize Class": { bg: "#27ae60", text: "#fff" },
     Standalone: { bg: "#48145fff", text: "#fff" },
     Test: { bg: "#34495e", text: "#fff" },
-    "Marcar Reposição": {
-      bg: "#2a7db4ff",
-      text: "#fff",
-    },
+    "Marcar Reposição": { bg: "#2a7db4ff", text: "#fff" },
   };
 
-  const statusColors = {
-    desmarcado: {
-      bg: "#ffebee",
-      text: "#c62828",
-      border: "#ef5350",
-    },
-    marcado: {
-      bg: "#e3f2fd",
-      text: "#1565c0",
-      border: "#42a5f5",
-    },
-    realizada: {
-      bg: "#e8f5e8",
-      text: "#2e7d32",
-      border: "#66bb6a",
-    },
+  const statusColors: Record<
+    string,
+    { bg: string; text: string; border: string }
+  > = {
+    desmarcado: { bg: "#ffebee", text: "#c62828", border: "#ef5350" },
+    marcado: { bg: "#e3f2fd", text: "#1565c0", border: "#42a5f5" },
+    realizada: { bg: "#e8f5e8", text: "#2e7d32", border: "#66bb6a" },
+    Canceled: { bg: "#ffebee", text: "#c62828", border: "#ef5350" },
+    Scheduled: { bg: "#e3f2fd", text: "#1565c0", border: "#42a5f5" },
+    Completed: { bg: "#e8f5e8", text: "#2e7d32", border: "#66bb6a" },
   };
-  const categoryColor = categoryColors[
-    event.category as keyof typeof categoryColors
-  ] || { bg: "#000", text: "#fff" };
-  const statusColor = statusColors[
-    event.status as keyof typeof statusColors
-  ] || {
+
+  const safeCategoryText = (cat?: string) =>
+    (cat &&
+      Array.isArray(categoryList) &&
+      categoryList.find((c: any) => c?.value === cat)?.text) ||
+    cat ||
+    "—";
+
+  const safeFormatTimeRange =
+    typeof formatTimeRange === "function"
+      ? formatTimeRange
+      : (_t: any, _d: any) => "";
+
+  const categoryColor = (event.category && categoryColors[event.category]) || {
+    bg: "#000",
+    text: "#fff",
+  };
+
+  const statusColor = (event.status && statusColors[event.status]) || {
     bg: "#f5f5f5",
     text: "#333",
     border: "#ddd",
   };
+
+  const durationPad =
+    Number.isFinite(event.duration as number) &&
+    typeof event.duration === "number"
+      ? `${event.duration / 5}px`
+      : "0px";
+
   return (
     <div
-      key={`${event._id}-${eventIndex}`}
+      key={`${event._id ?? "noid"}-${eventIndex}`}
       style={{
         marginBottom: "5px",
         borderRadius: "6px",
@@ -146,11 +138,14 @@ function OneEvent({
         e.currentTarget.style.transform = "translateY(0)";
         e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
       }}
-      onClick={() => handleSeeModal(event)}
     >
-      {/* Live Event Indicator */}
       {event.status !== "desmarcado" &&
-        isEventTimeNowConsideringDuration(event, hj, date, event.duration) && (
+        isEventTimeNowConsideringDuration(
+          event,
+          hj,
+          event.date,
+          event.duration
+        ) && (
           <div
             style={{
               background: "green",
@@ -165,60 +160,57 @@ function OneEvent({
                 alignItems: "center",
                 justifyContent: "center",
                 color: "white",
-                fontWeight: "600",
+                fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: "0.5px",
               }}
             >
               <span
                 style={{
-                  width: "6px",
-                  height: "6px",
+                  width: 6,
+                  height: 6,
                   backgroundColor: "white",
-                  borderRadius: "6px",
-                  marginRight: "5px",
-                  animation: "pulse 2s infinite",
+                  borderRadius: 6,
+                  marginRight: 5,
                 }}
               />
               Live Now
             </div>
           </div>
         )}
+
       <div
         style={{
           background: categoryColor.bg,
           color: categoryColor.text,
           padding: "5px",
           position: "relative",
-          paddingBottom: `${event.duration / 5}px`,
+          paddingBottom: durationPad,
         }}
       >
         <div
           style={{
             position: "absolute",
-            top: "5px",
-            right: "5px",
+            top: 5,
+            right: 5,
             backgroundColor: "rgba(255,255,255,0.2)",
             color: categoryColor.text,
             padding: "2px 5px",
-            borderRadius: "6px",
-            fontWeight: "600",
+            borderRadius: 6,
+            fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.3px",
           }}
         >
-          <i className="fa fa-clock-o" style={{}} />
-
-          {formatTimeRange(event.time, event.duration)}
+          <i className="fa fa-clock-o" />{" "}
+          {safeFormatTimeRange(event.time, event.duration)}
         </div>
 
-        {/* Event Title/Description */}
         <div
           style={{
-            fontWeight: "600",
-            marginBottom: "5px",
-            lineHeight: "1.3",
-            paddingRight: "4rem",
+            fontWeight: 600,
+            marginBottom: 5,
+            lineHeight: 1.3,
           }}
         >
           {event.groupName
@@ -231,13 +223,12 @@ function OneEvent({
         </div>
       </div>
 
-      {/* Status Footer */}
       <div
         style={{
           backgroundColor: statusColor.bg,
           color: statusColor.text,
           padding: "5px 5px",
-          fontWeight: "600",
+          fontWeight: 600,
           textAlign: "center",
           textTransform: "uppercase",
           letterSpacing: "0.5px",
@@ -246,32 +237,25 @@ function OneEvent({
       >
         {(event.status === "desmarcado" || event.status === "Canceled") && (
           <>
-            <i className="fa fa-times-circle" style={{ marginRight: "2px" }} />
-            {categoryList.find((cat) => cat.value === event.category)?.text ||
-              event.category}
+            <i className="fa fa-times-circle" style={{ marginRight: 2 }} />
+            {safeCategoryText(event.category)}
           </>
         )}
         {(event.status === "marcado" || event.status === "Scheduled") && (
           <>
-            <i
-              className="fa fa-calendar-check-o"
-              style={{ marginRight: "2px" }}
-            />
-            {categoryList.find((cat) => cat.value === event.category)?.text ||
-              event.category}
+            <i className="fa fa-calendar-check-o" style={{ marginRight: 2 }} />
+            {safeCategoryText(event.category)}
           </>
         )}
         {(event.status === "realizada" || event.status === "Completed") && (
           <>
-            <i className="fa fa-check-circle" style={{ marginRight: "2px" }} />
-
-            {categoryList.find((cat) => cat.value === event.category)?.text ||
-              event.category}
+            <i className="fa fa-check-circle" style={{ marginRight: 2 }} />
+            {safeCategoryText(event.category)}
           </>
         )}
       </div>
     </div>
   );
-}
+};
 
 export default OneEvent;
