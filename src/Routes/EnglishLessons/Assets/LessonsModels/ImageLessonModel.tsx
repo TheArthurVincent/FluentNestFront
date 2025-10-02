@@ -92,7 +92,7 @@ export default function ImageLessonModel({
                 width: "200px",
                 height: "200px",
                 backgroundSize: "cover",
-                borderRadius: "8px",
+                borderRadius: "3px",
                 padding: "10px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                 border: "1px solid #f0f0f0",
@@ -196,9 +196,9 @@ export default function ImageLessonModel({
               <div
                 style={{
                   color: "#fff",
-                  backgroundColor: "#00000050",
+                  backgroundColor: "#00000095",
                   padding: "8px",
-                  borderRadius: "4px",
+                  borderRadius: "3px",
                   textAlign: "center",
                   fontSize: "16px",
                   textShadow: "0 0 3px #555",
