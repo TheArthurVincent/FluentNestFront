@@ -93,7 +93,7 @@ export default function ImageLessonModel({
                 height: "200px",
                 backgroundSize: "cover",
                 borderRadius: "3px",
-                padding: "10px",
+                padding: "4px",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                 border: "1px solid #f0f0f0",
                 transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
@@ -197,10 +197,13 @@ export default function ImageLessonModel({
                 style={{
                   color: "#fff",
                   backgroundColor: "#00000095",
-                  padding: "8px",
+                  padding: "3px",
                   borderRadius: "3px",
                   textAlign: "center",
-                  fontSize: "16px",
+                  fontSize: "12px",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                  letterSpacing: "0.5px",
                   textShadow: "0 0 3px #555",
                 }}
               >
