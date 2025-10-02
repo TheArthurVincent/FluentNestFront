@@ -62,67 +62,76 @@ function MyCalendarRefactor({
   setChange,
   change,
 }: MyCalendarRefactorProps) {
-  const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
-  const [isVisible, setIsVisible] = useState(false);
-  const [deleteVisible, setDeleteVisible] = useState(false);
-  const [postNew, setPostNew] = useState(false);
-  const [showEditForm, setShowEditForm] = useState(false);
-  const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false);
-  const [loadingInfo, setLoadingInfo] = useState(true);
-  const [alternateText, setAlternateText] = useState("... Updating Class");
-  const [modalEditTodo, setModalEditTodo] = useState(false);
-  const [descriptionChecklistToEdit, setDescriptionChecklistToEdit] =
-    useState("");
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [alternateBoolean, setAlternateBoolean] = useState(false);
+  const [shouldScrollToToday, setShouldScrollToToday] = useState<any | null>(
+    true
+  );
+  const [isVisible, setIsVisible] = useState<any | null>(false);
+  const [deleteVisible, setDeleteVisible] = useState<any | null>(false);
+  const [postNew, setPostNew] = useState<any | null>(false);
+  const [showEditForm, setShowEditForm] = useState<any | null>(false);
+  const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState<any | null>(false);
+  const [loadingInfo, setLoadingInfo] = useState<any | null>(true);
+  const [alternateText, setAlternateText] = useState<any | null>(
+    "... Updating Class"
+  );
+  const [modalEditTodo, setModalEditTodo] = useState<any | null>(false);
+  const [descriptionChecklistToEdit, setDescriptionChecklistToEdit] = useState<
+    any | null
+  >("");
+  const [editingIndex, setEditingIndex] = useState<any | null>(null);
+  const [alternateBoolean, setAlternateBoolean] = useState<any | null>(false);
 
-  const [loading, setLoading] = useState(true);
-  const [date, setDate] = useState("");
-  const [theTime, setTheTime] = useState("");
-  const [link, setLink] = useState("");
-  const [description, setDescription] = useState("");
-  const [theGroup, setTheGroup] = useState("");
-  const [video, setVideo] = useState("");
-  const [googleDriveLink, setGoogleDriveLink] = useState("");
-  const [homework, setHomework] = useState("");
-  const [dueDate, setDueDate] = useState(
+  const [loading, setLoading] = useState<any | null>(true);
+  const [date, setDate] = useState<any | null>("");
+  const [theTime, setTheTime] = useState<any | null>("");
+  const [link, setLink] = useState<any | null>("");
+  const [description, setDescription] = useState<any | null>("");
+  const [theGroup, setTheGroup] = useState<any | null>("");
+  const [video, setVideo] = useState<any | null>("");
+  const [googleDriveLink, setGoogleDriveLink] = useState<any | null>("");
+  const [homework, setHomework] = useState<any | null>("");
+  const [dueDate, setDueDate] = useState<any | null>(
     new Date().toISOString().split("T")[0]
   );
-  const [base64String, setBase64String] = useState("");
-  const [fileName, setFileName] = useState("");
-  const [fileType, setFileType] = useState("");
-  const [flashcards, setFlashcards] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [uploading, setUploading] = useState(false);
-  const [category, setCategory] = useState("");
-  const [newStudentId, setNewStudentId] = useState("");
-  const [newGroupId, setNewGroupId] = useState("");
+  const [base64String, setBase64String] = useState<any | null>("");
+  const [fileName, setFileName] = useState<any | null>("");
+  const [fileType, setFileType] = useState<any | null>("");
+  const [flashcards, setFlashcards] = useState<any | null>("");
+  const [selectedFile, setSelectedFile] = useState<any | null>(null);
+  const [uploading, setUploading] = useState<any | null>(false);
+  const [category, setCategory] = useState<any | null>("");
+  const [newStudentId, setNewStudentId] = useState<any | null>("");
+  const [newGroupId, setNewGroupId] = useState<any | null>("");
 
-  const [loadingModalInfo, setLoadingModalInfo] = useState(false);
-  const [eventFull, setEventFull] = useState({});
-  const [newEventId, setNewEventId] = useState("");
-  const [studentsList, setStudentsList] = useState([]);
-  const [groupsList, setGroupsList] = useState([]);
-  const [events, setEvents] = useState([]);
-  const [isTutoring, setIsTutoring] = useState(false);
-  const [homeworkAdded, setHomeworkAdded] = useState(false);
-  const [flashcardsAdded, setFlashcardsAdded] = useState(false);
-  const [showHomework, setShowHomework] = useState(false);
-  const [showFlashcards, setShowFlashcards] = useState(false);
-  const [showEditSection, setShowEditSection] = useState(false);
-  const [editDescription, setEditDescription] = useState("");
-  const [editDate, setEditDate] = useState("");
-  const [editCategory, setEditCategory] = useState("");
-  const [seeReplenish, setSeeReplenish] = useState(false);
-  const [status, setStatus] = useState("");
-  const [groupName, setGroupName] = useState("");
-  const [groupId, setGroupId] = useState("");
-  const [duration, setDuration] = useState(60);
-  const [name, setName] = useState("");
-  const [eventId, setEventId] = useState("");
-  const [numberOfWeeks, setNumberOfWeeks] = useState(4);
-  const [loadingDescription, setLoadingDescription] = useState(false);
-  const [loadingHWDescription, setLoadingHWDescription] = useState(false);
+  const [loadingModalInfo, setLoadingModalInfo] = useState<any | null>(false);
+  const [eventFull, setEventFull] = useState<any | null>({});
+  const [newEventId, setNewEventId] = useState<any | null>("");
+  const [studentsList, setStudentsList] = useState<any | null>([]);
+  const [groupsList, setGroupsList] = useState<any | null>([]);
+  const [events, setEvents] = useState<any | null>([]);
+  const [isTutoring, setIsTutoring] = useState<any | null>(false);
+  const [homeworkAdded, setHomeworkAdded] = useState<any | null>(false);
+  const [flashcardsAdded, setFlashcardsAdded] = useState<any | null>(false);
+  const [showHomework, setShowHomework] = useState<any | null>(false);
+  const [showFlashcards, setShowFlashcards] = useState<any | null>(false);
+  const [showEditSection, setShowEditSection] = useState<any | null>(false);
+  const [editDescription, setEditDescription] = useState<any | null>("");
+  const [editDate, setEditDate] = useState<any | null>("");
+  const [editCategory, setEditCategory] = useState<any | null>("");
+  const [seeReplenish, setSeeReplenish] = useState<any | null>(false);
+  const [status, setStatus] = useState<any | null>("");
+  const [groupName, setGroupName] = useState<any | null>("");
+  const [groupId, setGroupId] = useState<any | null>("");
+  const [duration, setDuration] = useState<any | null>(60);
+  const [name, setName] = useState<any | null>("");
+  const [eventId, setEventId] = useState<any | null>("");
+  const [numberOfWeeks, setNumberOfWeeks] = useState<any | null>(4);
+  const [loadingDescription, setLoadingDescription] = useState<any | null>(
+    false
+  );
+  const [loadingHWDescription, setLoadingHWDescription] = useState<any | null>(
+    false
+  );
 
   useEffect(() => {
     setTimeout(() => {
@@ -200,14 +209,14 @@ function MyCalendarRefactor({
       try {
         const response = await axios.put(
           `${backDomain}/api/v1/ai-description/${myId}`,
-          { description, classTitle: theLesson.title },
+          { description, classTitle: theLesson?.title },
           { headers }
         );
         const adapted = response.data.adapted;
         setDescription(adapted);
         setLoadingDescription(false);
         setChange(!change);
-      } catch (error) {
+      } catch (error: any) {
         setLoadingDescription(false);
         notifyAlert(error?.response?.data?.message);
         console.log(error, "Erro");
@@ -228,7 +237,7 @@ function MyCalendarRefactor({
         setHomework(adapted);
         setLoadingHWDescription(false);
         setChange(!change);
-      } catch (error) {
+      } catch (error: any) {
         setLoadingHWDescription(false);
         console.log(error, "Erro");
         notifyAlert(error?.response?.data?.message);
@@ -238,9 +247,9 @@ function MyCalendarRefactor({
 
   var hj = new Date();
   var lm = getLastMonday(hj);
-  const [task, setTask] = useState({});
-  const [disabledAvoid, setDisabledAvoid] = useState(true);
-  const [today, setTheToday] = useState(lm);
+  const [task, setTask] = useState<any | null>({});
+  const [disabledAvoid, setDisabledAvoid] = useState<any | null>(true);
+  const [today, setTheToday] = useState<any | null>(lm);
   const { UniversalTexts } = useUserContext();
 
   useEffect(() => {
@@ -266,7 +275,7 @@ function MyCalendarRefactor({
         );
         const res = response.data.listOfStudents;
         setStudentsList(res);
-      } catch (error) {
+      } catch (error: any) {
         console.log(error, "Erro ao encontrar alunos");
       }
     }
@@ -278,13 +287,13 @@ function MyCalendarRefactor({
         );
         const res = response.data.groups;
         setGroupsList(res);
-      } catch (error) {
+      } catch (error: any) {
         console.log(error, "Erro ao encontrar grupos");
       }
     }
   };
 
-  const fetchTodo = async (id) => {
+  const fetchTodo = async (id: any) => {
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
         const response = await axios.get(
@@ -293,15 +302,15 @@ function MyCalendarRefactor({
         );
         setTask(response.data.todo);
         setModalEditTodo(true);
-      } catch (error) {
+      } catch (error: any) {
         console.log(error, "Erro ao encontrar alunos");
       }
     }
   };
 
-  const [todoList, setTodoList] = useState([]);
+  const [todoList, setTodoList] = useState<any | null>([]);
 
-  const loadGeneral = async (baseDate) => {
+  const loadGeneral = async (baseDate: any) => {
     setShowDeleteEventConfirmation(false);
     setDisabledAvoid(false);
     setLoading(true);
@@ -328,18 +337,18 @@ function MyCalendarRefactor({
         { headers, params: { today: monday } }
       );
       // Normalizadores
-      const addOneDayAndFormat = (dt) => {
+      const addOneDayAndFormat = (dt: any) => {
         const d = new Date(dt);
         d.setDate(d.getDate() + 1);
         return formattedDates(d);
       };
-      const normalizeEvent = (ev) => ({
+      const normalizeEvent = (ev: any) => ({
         ...ev,
         date: addOneDayAndFormat(ev.date),
         status: ev.status || "marcado",
       });
 
-      const normalizeTodo = (td) => ({
+      const normalizeTodo = (td: any) => ({
         ...td,
         date: addOneDayAndFormat(td.date),
       });
@@ -356,7 +365,7 @@ function MyCalendarRefactor({
       setShowFlashcards(false);
       setShowLastFew(false);
       setModalEditTodo(false);
-    } catch (error) {
+    } catch (error: any) {
       if (error?.response?.data?.error) {
         notifyAlert(error.response.data.error, partnerColor());
         setTimeout(() => onLoggOut(), 1000);
@@ -375,7 +384,7 @@ function MyCalendarRefactor({
     loadGeneral(new Date());
   }, [alternateBoolean]);
 
-  const handleChangeWeek = async (sum) => {
+  const handleChangeWeek = async (sum: any) => {
     setShowDeleteEventConfirmation(false);
     setDisabledAvoid(false);
 
@@ -384,22 +393,22 @@ function MyCalendarRefactor({
     loadGeneral(chosen);
   };
 
-  const handleDateChange = async (e) => {
+  const handleDateChange = async (e: any) => {
     const targetDate = new Date(e.target.value);
     loadGeneral(targetDate);
   };
-  var [studentsInGroup, setStudentsInGroup] = useState([
+  var [studentsInGroup, setStudentsInGroup] = useState<any | null>([
     {
       _id: "",
       lastname: "",
       name: "",
     },
   ]);
-  const [comments, setComments] = useState([]);
+  const [comments, setComments] = useState<any | null>([]);
   useEffect(() => {
     if (studentsInGroup.length > 0) {
       setComments(
-        studentsInGroup.map((student) => ({
+        studentsInGroup.map((student: any) => ({
           studentId: student._id,
           comment: "",
         }))
@@ -408,18 +417,18 @@ function MyCalendarRefactor({
   }, [studentsInGroup]);
 
   // Função para atualizar o comentário de um aluno específico
-  const handleStudentDescriptionChange = (index, value) => {
-    setComments((prev) => {
+  const handleStudentDescriptionChange = (index: any, value: any) => {
+    setComments((prev: any) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], comment: value };
       return updated;
     });
   };
 
-  const [lastFew, setLastFew] = useState([]);
-  const [showLastFew, setShowLastFew] = useState(false);
+  const [lastFew, setLastFew] = useState<any | null>([]);
+  const [showLastFew, setShowLastFew] = useState<any | null>(false);
 
-  const fetchOneEvent = async (id) => {
+  const fetchOneEvent = async (id: any) => {
     setLoadingModalInfo(true);
     if (!id) {
       return;
@@ -510,12 +519,12 @@ function MyCalendarRefactor({
       setDescription(newDescription);
       setDate(newDate);
       setLoadingModalInfo(false);
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao encontrarssss alunos");
       setLoadingModalInfo(false);
     }
   };
-  const fetchOneSetOfTutorings = async (studentId) => {
+  const fetchOneSetOfTutorings = async (studentId: any) => {
     if (!studentId) return;
     try {
       const response = await axios.get(
@@ -525,12 +534,12 @@ function MyCalendarRefactor({
         }
       );
       const tutorings = response.data.tutorings;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao encontrar alunos");
     }
   };
 
-  const fetchOneSetOfGroups = async (groupID) => {
+  const fetchOneSetOfGroups = async (groupID: any) => {
     if (!groupID) return;
     try {
       const response = await axios.get(
@@ -540,14 +549,14 @@ function MyCalendarRefactor({
         }
       );
       const groups = response.data.tutorings;
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao encontrar alunos");
     }
   };
 
   const postNewEvent = async () => {
     setLoadingInfo(true);
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
+    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     const id = user.id;
     try {
       const response = await axios.post(
@@ -571,11 +580,11 @@ function MyCalendarRefactor({
       setNewStudentId("");
       setDate("");
       loadGeneral(new Date(date));
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao criar evento");
     }
   };
-  const deleteOneMaterial = async (id) => {
+  const deleteOneMaterial = async (id: any) => {
     setLoadingInfo(true);
     try {
       const response = await axios.delete(`${backDomain}/api/v1/event/${id}`, {
@@ -592,7 +601,7 @@ function MyCalendarRefactor({
         setLoadingInfo(false);
         loadGeneral(new Date());
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao excluir evento");
     }
   };
@@ -600,7 +609,7 @@ function MyCalendarRefactor({
     deleteOneMaterial(newEventId);
   };
 
-  const editOneEvent = async (id) => {
+  const editOneEvent = async (id: any) => {
     setLoadingInfo(true);
     try {
       let backendStatus = status;
@@ -611,7 +620,7 @@ function MyCalendarRefactor({
       } else if (status === "Realized") {
         backendStatus = "realizada";
       }
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
 
       const response = await axios.put(
         `${backDomain}/api/v1/event/${id}`,
@@ -652,7 +661,7 @@ function MyCalendarRefactor({
         setLoadingInfo(false);
         loadGeneral(new Date(date));
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao criar evento");
     }
   };
@@ -660,7 +669,7 @@ function MyCalendarRefactor({
     editOneEvent(newEventId);
   };
 
-  const updateScheduled = async (id) => {
+  const updateScheduled = async (id: any) => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -674,11 +683,11 @@ function MyCalendarRefactor({
       if (response) {
         fetchOneEvent(id);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao atualizar evento");
     }
   };
-  const updateUnscheduled = async (id) => {
+  const updateUnscheduled = async (id: any) => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -692,12 +701,12 @@ function MyCalendarRefactor({
       if (response) {
         fetchOneEvent(id);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao atualizar evento");
     }
   };
 
-  const updateRealizedClass = async (id) => {
+  const updateRealizedClass = async (id: any) => {
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/eventstatus/${id}`,
@@ -711,7 +720,7 @@ function MyCalendarRefactor({
       if (response) {
         fetchOneEvent(id);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error, "Erro ao atualizar evento");
     }
   };
@@ -732,7 +741,7 @@ function MyCalendarRefactor({
     fetchStudents();
   }, [change]);
 
-  const handleCloseModal = (chosenDate) => {
+  const handleCloseModal = (chosenDate: any) => {
     setSeeReplenish(false);
     setIsVisible(false);
     setNewStudentId("");
@@ -745,7 +754,7 @@ function MyCalendarRefactor({
     loadGeneral(new Date(chosenDate ? chosenDate : new Date()));
   };
 
-  const handleFileChange = async (event) => {
+  const handleFileChange = async (event: any) => {
     const file = event.target.files?.[0];
     setSelectedFile(file || null);
 
@@ -757,7 +766,7 @@ function MyCalendarRefactor({
         setFileName(file.name);
         setFileType(file.type);
         setUploading(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Erro ao processar arquivo:", error);
         setUploading(false);
       }
@@ -773,23 +782,23 @@ function MyCalendarRefactor({
     setFileType("");
   };
 
-  const handleStudentChange = (e) => {
+  const handleStudentChange = (e: any) => {
     setNewStudentId(e.target.value);
     setNewGroupId("");
   };
 
-  const [showAIGENERATED, setShowAIGENERATED] = useState(false);
+  const [showAIGENERATED, setShowAIGENERATED] = useState<any | null>(false);
 
-  const handleHomeworkChange = (htmlContent) => {
+  const handleHomeworkChange = (htmlContent: any) => {
     setHomework(htmlContent);
   };
 
   const seeDelete = () => {
     setDeleteVisible(!deleteVisible);
   };
-  const [lessonsList, setLessonsList] = useState([]);
-  const [theLesson, setTheLesson] = useState(null);
-  const [theLessonLast, setTheLessonLast] = useState(null);
+  const [lessonsList, setLessonsList] = useState<any | null>([]);
+  const [theLesson, setTheLesson] = useState<any | null>(null);
+  const [theLessonLast, setTheLessonLast] = useState<any | null>(null);
 
   const getClasses = async () => {
     if (thePermissions === "superadmin" || thePermissions === "teacher") {
@@ -800,7 +809,7 @@ function MyCalendarRefactor({
         );
         const res = data?.lessons ?? [];
         setLessonsList(res);
-      } catch (error) {
+      } catch (error: any) {
         console.log(error, "Erro ao encontrar cursos");
       }
     }
@@ -811,25 +820,26 @@ function MyCalendarRefactor({
   }, []);
 
   const grouped = useMemo(() => {
-    const byCourse = {};
-    for (const l of lessonsList) {
-      const course = l.course ?? "Sem curso";
-      const module = l.module ?? "Sem módulo";
+    const byCourse: { [course: string]: { [module: string]: any[] } } = {};
+    for (const lesson of lessonsList) {
+      const course = lesson.course ?? "Sem curso";
+      const module = lesson.module ?? "Sem módulo";
       byCourse[course] ||= {};
       byCourse[course][module] ||= [];
-      byCourse[course][module].push(l);
+      byCourse[course][module].push(lesson);
     }
     return byCourse;
   }, [lessonsList]); // <<< DEPENDÊNCIAS CORRETAS
 
-  const handleLessonChange = (e) => {
+  const handleLessonChange = (e: any) => {
     const id = e.target.value;
     if (!id || id.startsWith("sep:")) return; // segurança extra
     // garanta a comparação como string
-    const found = lessonsList.find((l) => String(l.id) === id) || null;
+    const found =
+      lessonsList.find((lesson: any) => String(lesson.id) === id) || null;
     setTheLesson(found);
   };
-  const handleCategoryChange = (e) => {
+  const handleCategoryChange = (e: any) => {
     setLoadingInfo(true);
     if (e.target.value == "Rep") {
       setLink("");
@@ -871,7 +881,7 @@ function MyCalendarRefactor({
     setLoadingInfo(false);
   };
 
-  const handleSeeModal = (e) => {
+  const handleSeeModal = (e: any) => {
     fetchStudents();
     const checkIfNew = e ? false : true;
     setIsVisible(true);
@@ -942,8 +952,8 @@ function MyCalendarRefactor({
     futureDates.push(date);
   }
 
-  const calendarRef = useRef(null);
-  const todayRef = useRef(null);
+  const calendarRef = useRef<HTMLDivElement>(null);
+  const todayRef = useRef<HTMLDivElement>(null);
 
   {
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
@@ -965,7 +975,7 @@ function MyCalendarRefactor({
             onClick={() => {
               try {
                 updateChecklistTask(i, task._id);
-              } catch (error) {
+              } catch (error: any) {
                 notifyAlert("Erro ao atualizar checklist");
               }
             }}
@@ -1006,11 +1016,11 @@ function MyCalendarRefactor({
               width: "100%",
               display: isEditing ? "block" : "none",
             }}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setDescriptionChecklistToEdit(e.target.value);
               try {
                 updateChecklistTaskDescripton(i, task._id, e.target.value);
-              } catch (error) {
+              } catch (error: any) {
                 notifyAlert("Erro ao editar descrição do checklist");
               }
             }}
@@ -1032,9 +1042,9 @@ function MyCalendarRefactor({
     ) {
       const container = calendarRef.current;
       const todayElement = todayRef.current;
-      const containerWidth = container.offsetWidth;
-      const todayWidth = todayElement.offsetWidth;
-      const todayLeft = todayElement.offsetLeft;
+      const containerWidth = container?.offsetWidth;
+      const todayWidth = todayElement?.offsetWidth;
+      const todayLeft = todayElement?.offsetLeft;
       const scrollLeft = todayLeft - containerWidth / 2 + todayWidth / 2;
       container.scrollTo({
         left: scrollLeft,
@@ -1043,7 +1053,7 @@ function MyCalendarRefactor({
     }
   }, [loading, futureDates]);
 
-  const formattedDates = (dateString) => {
+  const formattedDates = (dateString: any) => {
     const date = new Date(dateString);
     date.toLocaleString("en-US", {
       weekday: "short",
@@ -1058,7 +1068,7 @@ function MyCalendarRefactor({
     return new Date(date);
   };
 
-  function newFormatDate(date) {
+  function newFormatDate(date: any) {
     let d = new Date(date);
     d.setDate(d.getDate() + 1);
     let day = String(d.getDate()).padStart(2, "0");
@@ -1070,7 +1080,7 @@ function MyCalendarRefactor({
 
   const handleScheduleReplenish = async () => {
     try {
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id } = user;
 
       const response = await axios.put(
@@ -1081,15 +1091,15 @@ function MyCalendarRefactor({
       );
       setShowAIGENERATED(false);
       loadGeneral(new Date());
-      handleCloseModal();
-    } catch (error) {
+      handleCloseModal(new Date());
+    } catch (error: any) {
       console.error(error);
     }
   };
 
-  const updateChecklistTask = async (index, taskID) => {
+  const updateChecklistTask = async (index: any, taskID: any) => {
     try {
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id } = user;
       const response = await axios.put(
         `${backDomain}/api/v1/todochecklist/${id}?todoId=${taskID}&checkList=${index}`,
@@ -1099,13 +1109,17 @@ function MyCalendarRefactor({
       );
       setShowAIGENERATED(false);
       fetchTodo(taskID);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
     }
   };
-  const updateChecklistTaskDescripton = async (index, taskID, desc) => {
+  const updateChecklistTaskDescripton = async (
+    index: any,
+    taskID: any,
+    desc: any
+  ) => {
     try {
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id } = user;
       const response = await axios.put(
         `${backDomain}/api/v1/todochecklistname/${id}?todoId=${taskID}&checkList=${index}&newDescription=${desc}`,
@@ -1114,13 +1128,13 @@ function MyCalendarRefactor({
         }
       );
       fetchTodo(taskID);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
     }
   };
-  const handleUpdateInfoTask = async (taskID) => {
+  const handleUpdateInfoTask = async (taskID: any) => {
     try {
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id } = user;
       const response = await axios.put(
         `${backDomain}/api/v1/todo/${id}?todoId=${taskID}`,
@@ -1136,15 +1150,15 @@ function MyCalendarRefactor({
       setSeeReplenish(false);
       setShowEditSection(false);
       loadGeneral(new Date(editDate));
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
     }
   };
   const [showDeleteEventConfirmation, setShowDeleteEventConfirmation] =
-    useState(false);
-  const handleDeleteTask = async (taskID) => {
+    useState<any | null>(false);
+  const handleDeleteTask = async (taskID: any) => {
     try {
-      const user = JSON.parse(localStorage.getItem("loggedIn"));
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id } = user;
 
       const response = await axios.delete(
@@ -1157,7 +1171,7 @@ function MyCalendarRefactor({
       setShowEditSection(false);
       setShowDeleteEventConfirmation(false);
       loadGeneral(new Date());
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
     }
   };
@@ -1194,7 +1208,7 @@ function MyCalendarRefactor({
                 }}
               >
                 <div
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={(e: any) => e.stopPropagation()}
                   style={{
                     background: "#fff",
                     borderRadius: "6px",
@@ -1293,7 +1307,9 @@ function MyCalendarRefactor({
                         <input
                           type="text"
                           value={editDescription}
-                          onChange={(e) => setEditDescription(e.target.value)}
+                          onChange={(e: any) =>
+                            setEditDescription(e.target.value)
+                          }
                           placeholder="Descrição"
                           style={{
                             padding: "8px",
@@ -1304,7 +1320,7 @@ function MyCalendarRefactor({
                         <input
                           type="date"
                           value={editDate}
-                          onChange={(e) => setEditDate(e.target.value)}
+                          onChange={(e: any) => setEditDate(e.target.value)}
                           style={{
                             padding: "8px",
                             borderRadius: "6px",
@@ -1313,7 +1329,7 @@ function MyCalendarRefactor({
                         />
                         <select
                           value={editCategory}
-                          onChange={(e) => setEditCategory(e.target.value)}
+                          onChange={(e: any) => setEditCategory(e.target.value)}
                           style={{
                             padding: "8px",
                             borderRadius: "6px",
@@ -1512,7 +1528,7 @@ function MyCalendarRefactor({
                                   type="text"
                                   value={descriptionChecklistToEdit}
                                   autoFocus
-                                  onChange={(e) =>
+                                  onChange={(e: any) =>
                                     setDescriptionChecklistToEdit(
                                       e.target.value
                                     )
@@ -1527,7 +1543,7 @@ function MyCalendarRefactor({
                                     );
                                     setEditingIndex(null);
                                   }}
-                                  onKeyDown={(e) => {
+                                  onKeyDown={(e: any) => {
                                     if (e.key === "Enter")
                                       e.currentTarget.blur();
                                     if (e.key === "Escape") {
@@ -1650,11 +1666,11 @@ function MyCalendarRefactor({
                           <div style={{ margin: "8px 4px" }}>
                             {todoList
                               .filter(
-                                (event) =>
+                                (event: any) =>
                                   event.date.toDateString() ===
                                   date.toDateString()
                               )
-                              .map((todo, idx) => (
+                              .map((todo: any, idx: any) => (
                                 <div
                                   key={todo._id || idx}
                                   onClick={() => {
@@ -1733,10 +1749,10 @@ function MyCalendarRefactor({
                       <div style={{ padding: "0 5px 1rem" }}>
                         {events
                           .filter(
-                            (event) =>
+                            (event: any) =>
                               event.date.toDateString() === date.toDateString()
                           )
-                          .sort((a, b) => {
+                          .sort((a: any, b: any) => {
                             const timeA =
                               parseInt(a.time.split(":")[0]) * 60 +
                               parseInt(a.time.split(":")[1]);
@@ -1745,7 +1761,7 @@ function MyCalendarRefactor({
                               parseInt(b.time.split(":")[1]);
                             return timeA - timeB;
                           })
-                          .map((event, eventIndex) => {
+                          .map((event: any, eventIndex: any) => {
                             const categoryColors = {
                               "Group Class": { bg: "#614338ff", text: "#fff" },
                               "Established Group Class": {
@@ -1781,9 +1797,11 @@ function MyCalendarRefactor({
                               },
                             };
                             const categoryColor = categoryColors[
-                              event.category
+                              event.category as keyof typeof categoryColors
                             ] || { bg: "#000", text: "#fff" };
-                            const statusColor = statusColors[event.status] || {
+                            const statusColor = statusColors[
+                              event.status as keyof typeof statusColors
+                            ] || {
                               bg: "#f5f5f5",
                               text: "#333",
                               border: "#ddd",
@@ -1800,13 +1818,13 @@ function MyCalendarRefactor({
                                   cursor: "pointer",
                                   border: `1px solid ${statusColor.border}`,
                                 }}
-                                onMouseEnter={(e) => {
+                                onMouseEnter={(e: any) => {
                                   e.currentTarget.style.transform =
                                     "translateY(-2px)";
                                   e.currentTarget.style.boxShadow =
                                     "0 4px 12px rgba(0,0,0,0.15)";
                                 }}
-                                onMouseLeave={(e) => {
+                                onMouseLeave={(e: any) => {
                                   e.currentTarget.style.transform =
                                     "translateY(0)";
                                   e.currentTarget.style.boxShadow =
@@ -1962,7 +1980,7 @@ function MyCalendarRefactor({
 
                         {/* Empty State */}
                         {events.filter(
-                          (event) =>
+                          (event: any) =>
                             event.date.toDateString() === date.toDateString()
                         ).length === 0 && (
                           <div
@@ -2061,10 +2079,12 @@ function MyCalendarRefactor({
                           fontWeight: "800",
                           transition: "color 0.2s",
                         }}
-                        onMouseEnter={(e) =>
+                        onMouseEnter={(e: any) =>
                           (e.target.style.color = partnerColor())
                         }
-                        onMouseLeave={(e) => (e.target.style.color = "#998")}
+                        onMouseLeave={(e: any) =>
+                          (e.target.style.color = "#998")
+                        }
                       >
                         ×
                       </span>
@@ -2131,12 +2151,12 @@ function MyCalendarRefactor({
                                   gap: "0.5rem",
                                   margin: "0 auto",
                                 }}
-                                onMouseEnter={(e) => {
+                                onMouseEnter={(e: any) => {
                                   e.target.style.transform = "translateY(-2px)";
                                   e.target.style.boxShadow =
                                     "0 6px 20px rgba(0,0,0,0.2)";
                                 }}
-                                onMouseLeave={(e) => {
+                                onMouseLeave={(e: any) => {
                                   e.target.style.transform = "translateY(0)";
                                   e.target.style.boxShadow =
                                     "0 4px 12px rgba(0,0,0,0.15)";
@@ -2311,11 +2331,11 @@ function MyCalendarRefactor({
                                       cursor: "pointer",
                                       transition: "all 0.2s ease",
                                     }}
-                                    onMouseEnter={(e) => {
+                                    onMouseEnter={(e: any) => {
                                       e.target.style.backgroundColor =
                                         "#5a6268";
                                     }}
-                                    onMouseLeave={(e) => {
+                                    onMouseLeave={(e: any) => {
                                       e.target.style.backgroundColor =
                                         "#6c757d";
                                     }}
@@ -2437,7 +2457,7 @@ function MyCalendarRefactor({
                                               <input
                                                 type="text"
                                                 value={description}
-                                                onChange={(e) =>
+                                                onChange={(e: any) =>
                                                   setDescription(e.target.value)
                                                 }
                                                 placeholder={
@@ -2455,14 +2475,14 @@ function MyCalendarRefactor({
                                                   transition:
                                                     "border-color 0.2s ease",
                                                 }}
-                                                onFocus={(e) => {
+                                                onFocus={(e: any) => {
                                                   e.target.style.borderColor =
                                                     partnerColor();
                                                   e.target.style.outline =
                                                     "none";
                                                   e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
                                                 }}
-                                                onBlur={(e) => {
+                                                onBlur={(e: any) => {
                                                   e.target.style.borderColor =
                                                     "#d1d5db";
                                                   e.target.style.boxShadow =
@@ -2526,7 +2546,7 @@ function MyCalendarRefactor({
                                             </label>
                                             <input
                                               value={video}
-                                              onChange={(e) =>
+                                              onChange={(e: any) =>
                                                 setVideo(e.target.value)
                                               }
                                               placeholder="https://youtube.com/... ou https://vimeo.com/..."
@@ -2542,13 +2562,13 @@ function MyCalendarRefactor({
                                                 transition:
                                                   "border-color 0.2s ease",
                                               }}
-                                              onFocus={(e) => {
+                                              onFocus={(e: any) => {
                                                 e.target.style.borderColor =
                                                   partnerColor();
                                                 e.target.style.outline = "none";
                                                 e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
                                               }}
-                                              onBlur={(e) => {
+                                              onBlur={(e: any) => {
                                                 e.target.style.borderColor =
                                                   "#d1d5db";
                                                 e.target.style.boxShadow =
@@ -2573,7 +2593,7 @@ function MyCalendarRefactor({
                                             <input
                                               placeholder="https://... .com/..."
                                               value={googleDriveLink}
-                                              onChange={(e) =>
+                                              onChange={(e: any) =>
                                                 setGoogleDriveLink(
                                                   e.target.value
                                                 )
@@ -2590,13 +2610,13 @@ function MyCalendarRefactor({
                                                 transition:
                                                   "border-color 0.2s ease",
                                               }}
-                                              onFocus={(e) => {
+                                              onFocus={(e: any) => {
                                                 e.target.style.borderColor =
                                                   partnerColor();
                                                 e.target.style.outline = "none";
                                                 e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
                                               }}
-                                              onBlur={(e) => {
+                                              onBlur={(e: any) => {
                                                 e.target.style.borderColor =
                                                   "#d1d5db";
                                                 e.target.style.boxShadow =
@@ -2643,7 +2663,10 @@ function MyCalendarRefactor({
                                                       label={course}
                                                     >
                                                       {Object.entries(
-                                                        modules
+                                                        modules as Record<
+                                                          string,
+                                                          any
+                                                        >
                                                       ).map(([module, ls]) => (
                                                         <React.Fragment
                                                           key={`${course}-${module}`}
@@ -2654,7 +2677,7 @@ function MyCalendarRefactor({
                                                           >
                                                             — {module} —
                                                           </option>
-                                                          {ls.map((l) => (
+                                                          {ls.map((l: any) => (
                                                             <option
                                                               key={l.id}
                                                               value={String(
@@ -2739,7 +2762,7 @@ function MyCalendarRefactor({
                                                 alignItems: "center",
                                                 gap: "4px",
                                               }}
-                                              onMouseEnter={(e) => {
+                                              onMouseEnter={(e: any) => {
                                                 e.target.style.backgroundColor =
                                                   "#f8f9fa";
                                                 e.target.style.borderColor =
@@ -2747,7 +2770,7 @@ function MyCalendarRefactor({
                                                 e.target.style.color =
                                                   "#495057";
                                               }}
-                                              onMouseLeave={(e) => {
+                                              onMouseLeave={(e: any) => {
                                                 e.target.style.backgroundColor =
                                                   "transparent";
                                                 e.target.style.borderColor =
@@ -2824,7 +2847,7 @@ function MyCalendarRefactor({
                                                         fontSize: "0.75rem",
                                                         cursor: "pointer",
                                                       }}
-                                                      onClick={(e) => {
+                                                      onClick={(e: any) => {
                                                         e.preventDefault();
                                                         setShowAIGENERATED(
                                                           false
@@ -2877,7 +2900,10 @@ function MyCalendarRefactor({
                                                     cada aluno.
                                                   </label>
                                                   {studentsInGroup.map(
-                                                    (student, index) => (
+                                                    (
+                                                      student: any,
+                                                      index: number
+                                                    ) => (
                                                       <div
                                                         key={
                                                           student._id || index
@@ -2892,7 +2918,7 @@ function MyCalendarRefactor({
                                                             comments[index]
                                                               ?.comment || ""
                                                           }
-                                                          onChange={(e) =>
+                                                          onChange={(e: any) =>
                                                             handleStudentDescriptionChange(
                                                               index,
                                                               e.target.value
@@ -2937,7 +2963,7 @@ function MyCalendarRefactor({
                                                     ? dueDate.split("T")[0]
                                                     : ""
                                                 }
-                                                onChange={(e) =>
+                                                onChange={(e: any) =>
                                                   setDueDate(e.target.value)
                                                 }
                                                 type="date"
@@ -2952,14 +2978,14 @@ function MyCalendarRefactor({
                                                   transition:
                                                     "border-color 0.2s ease",
                                                 }}
-                                                onFocus={(e) => {
+                                                onFocus={(e: any) => {
                                                   e.target.style.borderColor =
                                                     partnerColor();
                                                   e.target.style.outline =
                                                     "none";
                                                   e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
                                                 }}
-                                                onBlur={(e) => {
+                                                onBlur={(e: any) => {
                                                   e.target.style.borderColor =
                                                     "#d1d5db";
                                                   e.target.style.boxShadow =
@@ -3081,7 +3107,7 @@ function MyCalendarRefactor({
                                                       alignItems: "center",
                                                       gap: "4px",
                                                     }}
-                                                    onMouseEnter={(e) => {
+                                                    onMouseEnter={(e: any) => {
                                                       e.target.style.backgroundColor =
                                                         "#f8f9fa";
                                                       e.target.style.borderColor =
@@ -3089,7 +3115,7 @@ function MyCalendarRefactor({
                                                       e.target.style.color =
                                                         "#495057";
                                                     }}
-                                                    onMouseLeave={(e) => {
+                                                    onMouseLeave={(e: any) => {
                                                       e.target.style.backgroundColor =
                                                         "transparent";
                                                       e.target.style.borderColor =
@@ -3136,7 +3162,7 @@ function MyCalendarRefactor({
                                                       </label>
                                                       <textarea
                                                         value={flashcards || ""}
-                                                        onChange={(e) => {
+                                                        onChange={(e: any) => {
                                                           const newValue =
                                                             e.target.value;
                                                           if (
@@ -3169,14 +3195,14 @@ function MyCalendarRefactor({
                                                             "border-color 0.2s ease",
                                                           resize: "vertical",
                                                         }}
-                                                        onFocus={(e) => {
+                                                        onFocus={(e: any) => {
                                                           e.target.style.borderColor =
                                                             partnerColor();
                                                           e.target.style.outline =
                                                             "none";
                                                           e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
                                                         }}
-                                                        onBlur={(e) => {
+                                                        onBlur={(e: any) => {
                                                           e.target.style.borderColor =
                                                             "#d1d5db";
                                                           e.target.style.boxShadow =
@@ -3292,7 +3318,10 @@ function MyCalendarRefactor({
                                                 Select student...
                                               </option>
                                               {studentsList.map(
-                                                (student, index) => (
+                                                (
+                                                  student: any,
+                                                  index: number
+                                                ) => (
                                                   <option
                                                     key={index}
                                                     value={student.id}
@@ -3332,7 +3361,7 @@ function MyCalendarRefactor({
                                             </label>
                                             <input
                                               value={date}
-                                              onChange={(e) =>
+                                              onChange={(e: any) =>
                                                 setDate(e.target.value)
                                               }
                                               type="date"
@@ -3360,7 +3389,7 @@ function MyCalendarRefactor({
                                             </label>
                                             <input
                                               value={theTime}
-                                              onChange={(e) =>
+                                              onChange={(e: any) =>
                                                 setTheTime(e.target.value)
                                               }
                                               type="time"
@@ -3510,7 +3539,7 @@ function MyCalendarRefactor({
                                             </label>
                                             <input
                                               value={duration}
-                                              onChange={(e) =>
+                                              onChange={(e: any) =>
                                                 setDuration(e.target.value)
                                               }
                                               type="number"
@@ -3542,7 +3571,7 @@ function MyCalendarRefactor({
                                           </label>
                                           <input
                                             value={link}
-                                            onChange={(e) =>
+                                            onChange={(e: any) =>
                                               setLink(e.target.value)
                                             }
                                             placeholder="https://meet.google.com/..."
@@ -3577,7 +3606,7 @@ function MyCalendarRefactor({
                                           <input
                                             type="text"
                                             value={description}
-                                            onChange={(e) =>
+                                            onChange={(e: any) =>
                                               setDescription(e.target.value)
                                             }
                                             placeholder={
@@ -3755,7 +3784,7 @@ function MyCalendarRefactor({
                                     minWidth: "80%",
                                     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                   }}
-                                  onMouseEnter={(e) => {
+                                  onMouseEnter={(e: any) => {
                                     const el = e.currentTarget;
                                     el.style.backgroundColor = partnerColor();
                                     el.style.color = "white";
@@ -3763,7 +3792,7 @@ function MyCalendarRefactor({
                                     el.style.boxShadow =
                                       "0 4px 8px rgba(0,0,0,0.15)";
                                   }}
-                                  onMouseLeave={(e) => {
+                                  onMouseLeave={(e: any) => {
                                     const el = e.currentTarget;
                                     el.style.backgroundColor = "white";
                                     el.style.color = partnerColor();
@@ -3802,7 +3831,7 @@ function MyCalendarRefactor({
                                     minWidth: "80%",
                                     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                   }}
-                                  onMouseEnter={(e) => {
+                                  onMouseEnter={(e: any) => {
                                     const el = e.currentTarget;
                                     el.style.backgroundColor = partnerColor();
                                     el.style.color = "white";
@@ -3810,7 +3839,7 @@ function MyCalendarRefactor({
                                     el.style.boxShadow =
                                       "0 4px 8px rgba(0,0,0,0.15)";
                                   }}
-                                  onMouseLeave={(e) => {
+                                  onMouseLeave={(e: any) => {
                                     const el = e.currentTarget;
                                     el.style.backgroundColor = "white";
                                     el.style.color = partnerColor();
@@ -3887,11 +3916,11 @@ function MyCalendarRefactor({
                                   backgroundColor: textpartnerColorContrast(),
                                   fontFamily: "Arial, sans-serif",
                                 }}
-                                onMouseOver={(e) =>
+                                onMouseOver={(e: any) =>
                                   (e.currentTarget.style.textDecoration =
                                     "underline")
                                 }
-                                onMouseOut={(e) =>
+                                onMouseOut={(e: any) =>
                                   (e.currentTarget.style.textDecoration =
                                     "none")
                                 }
@@ -3921,7 +3950,6 @@ function MyCalendarRefactor({
                                 justifySelf: "center",
                                 flexDirection: "column",
                                 textAlign: "center",
-                                display: "block",
                                 width: "90%",
                               }}
                             >
@@ -3931,7 +3959,6 @@ function MyCalendarRefactor({
                                     fontSize: "0.75rem",
                                     color: "#6c757d",
                                     margin: " 10px 0",
-                                    fontWeight: "500",
                                     cursor: "pointer",
                                     display: "block",
                                     width: "100%",
@@ -3944,11 +3971,11 @@ function MyCalendarRefactor({
                                     transition:
                                       "background-color 120ms ease, box-shadow 120ms ease",
                                   }}
-                                  onMouseOver={(e) =>
+                                  onMouseOver={(e: any) =>
                                     (e.currentTarget.style.backgroundColor =
                                       "#fff")
                                   }
-                                  onMouseOut={(e) =>
+                                  onMouseOut={(e: any) =>
                                     (e.currentTarget.style.backgroundColor =
                                       "transparent")
                                   }
@@ -3965,7 +3992,7 @@ function MyCalendarRefactor({
                                     listStyle: "none",
                                   }}
                                 >
-                                  {lastFew.map((evt, idx) => (
+                                  {lastFew.map((evt: any, idx: any) => (
                                     <li
                                       key={evt._id || evt.id}
                                       style={{
@@ -3988,11 +4015,11 @@ function MyCalendarRefactor({
                                         transition:
                                           "box-shadow 120ms ease, border-color 120ms ease",
                                       }}
-                                      onMouseEnter={(e) =>
+                                      onMouseEnter={(e: any) =>
                                         (e.currentTarget.style.boxShadow =
                                           "0 2px 6px rgba(0,0,0,0.08)")
                                       }
-                                      onMouseLeave={(e) =>
+                                      onMouseLeave={(e: any) =>
                                         (e.currentTarget.style.boxShadow =
                                           "0 1px 2px rgba(0,0,0,0.04)")
                                       }
@@ -4007,11 +4034,11 @@ function MyCalendarRefactor({
                                             fontWeight: "600",
                                             fontSize: "14px",
                                           }}
-                                          onMouseOver={(e) =>
+                                          onMouseOver={(e: any) =>
                                             (e.currentTarget.style.color =
                                               partnerColor())
                                           }
-                                          onMouseDown={(e) =>
+                                          onMouseDown={(e: any) =>
                                             (e.currentTarget.style.color =
                                               "black")
                                           }
@@ -4024,7 +4051,6 @@ function MyCalendarRefactor({
                                         style={{
                                           fontWeight: 600,
                                           alignSelf: "start",
-                                          display: "inline-block",
                                           justifyContent: "space-between",
                                           padding: "2px 6px",
                                           display: "flex",
@@ -4115,11 +4141,11 @@ function MyCalendarRefactor({
                                                 transition:
                                                   "box-shadow 120ms ease, text-decoration-color 120ms ease",
                                               }}
-                                              onMouseOver={(e) =>
+                                              onMouseOver={(e: any) =>
                                                 (e.currentTarget.style.textDecoration =
                                                   "underline")
                                               }
-                                              onMouseOut={(e) =>
+                                              onMouseOut={(e: any) =>
                                                 (e.currentTarget.style.textDecoration =
                                                   "none")
                                               }
@@ -4389,11 +4415,11 @@ function MyCalendarRefactor({
                                         alignItems: "center",
                                         gap: "0.25rem",
                                       }}
-                                      onMouseEnter={(e) => {
+                                      onMouseEnter={(e: any) => {
                                         e.target.style.textDecoration =
                                           "underline";
                                       }}
-                                      onMouseLeave={(e) => {
+                                      onMouseLeave={(e: any) => {
                                         e.target.style.textDecoration = "none";
                                       }}
                                     >
@@ -4594,12 +4620,12 @@ function MyCalendarRefactor({
                                 fontSize: "10px",
                                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                               }}
-                              onMouseEnter={(e) => {
+                              onMouseEnter={(e: any) => {
                                 e.target.style.transform = "translateY(-1px)";
                                 e.target.style.boxShadow =
                                   "0 4px 8px rgba(0, 0, 0, 0.15)";
                               }}
-                              onMouseLeave={(e) => {
+                              onMouseLeave={(e: any) => {
                                 e.target.style.transform = "translateY(0px)";
                                 e.target.style.boxShadow =
                                   "0 2px 4px rgba(0, 0, 0, 0.1)";
@@ -4758,12 +4784,12 @@ function MyCalendarRefactor({
                                       borderRadius: "6px",
                                       transition: "all 0.2s ease",
                                     }}
-                                    onMouseEnter={(e) => {
+                                    onMouseEnter={(e: any) => {
                                       e.target.style.backgroundColor =
                                         "#f0f9ff";
                                       e.target.style.borderColor = "#0ea5e940";
                                     }}
-                                    onMouseLeave={(e) => {
+                                    onMouseLeave={(e: any) => {
                                       e.target.style.backgroundColor = "white";
                                       e.target.style.borderColor = "#0ea5e920";
                                     }}
