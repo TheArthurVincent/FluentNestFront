@@ -1581,7 +1581,9 @@ function MyCalendarRefactor({
                 </div>
               </div>
             )}
-            <HOne>{UniversalTexts.calendar}</HOne>
+            <HOne>
+              REFATORADO REFATORADO REFATORADO {UniversalTexts.calendar}
+            </HOne>
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
@@ -2008,6 +2010,8 @@ function MyCalendarRefactor({
             )}
           </div>
           {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
           <div>
             <div
               style={{
@@ -2127,7 +2131,6 @@ function MyCalendarRefactor({
                             <div
                               style={{
                                 margin: "1rem",
-
                                 textAlign: "center",
                               }}
                             >
@@ -3981,7 +3984,7 @@ function MyCalendarRefactor({
                                   }
                                   onClick={() => setShowLastFew(!showLastFew)}
                                 >
-                                  Histórico de aulas dadas
+                                 Última aula
                                 </span>
                               )}
                               {showLastFew && (
@@ -4938,9 +4941,8 @@ function MyCalendarRefactor({
               )}
             </div>
           </div>
-
-          {/* Nova Seção: Criar Nova Aula */}
-          <></>
+          {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
 
           <div
             style={{
@@ -5076,7 +5078,6 @@ function MyCalendarRefactor({
                   </button>
                   {authorizeOrNot && (
                     <span>
-                      //// //// //// //// //// //// //// //// ////
                       <NewRecurringEventCalendar
                         setAlternateBoolean={setAlternateBoolean}
                         alternateBoolean={alternateBoolean}
@@ -5087,7 +5088,6 @@ function MyCalendarRefactor({
                         studentsList={studentsList}
                         groupsList={groupsList}
                       />
-                      //// //// //// //// //// //// //// //// ////
                       <ToDoAddButton
                         userId={myId}
                         onCreated={() => {
