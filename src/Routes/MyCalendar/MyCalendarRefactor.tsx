@@ -5067,7 +5067,7 @@ function MyCalendarRefactor({
                   style={{ display: "flex", gap: "6px", alignItems: "center" }}
                 >
                   {/* Botão Hoje */}
-                  <button
+                  {/* <button
                     disabled={!disabledAvoid}
                     onClick={() => {
                       loadGeneral(new Date());
@@ -5075,7 +5075,7 @@ function MyCalendarRefactor({
                   >
                     <i className="fa fa-refresh" style={{ fontSize: "10px" }} />
                     <span>{UniversalTexts.calendarModal.today}</span>
-                  </button>
+                  </button> */}
                   {authorizeOrNot && (
                     <span>
                       <NewRecurringEventCalendar
