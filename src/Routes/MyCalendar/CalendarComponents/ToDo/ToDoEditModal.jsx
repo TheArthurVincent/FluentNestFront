@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { partnerColor, textpartnerColorContrast } from "../../../Styles/Styles";
-import { backDomain } from "../../../Resources/UniversalComponents";
+import { partnerColor, textpartnerColorContrast } from "../../../../Styles/Styles";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 
 function ToDoModal() {
   return (

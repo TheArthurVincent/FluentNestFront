@@ -32,7 +32,7 @@ import {
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
 import moment from "moment";
-import { StyledDiv } from "./MyCalendar.Styled";
+import { StyledDiv } from "./CalendarComponents/MyCalendarFunctions/MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
@@ -45,8 +45,8 @@ import {
   isEventTimeNowConsideringDuration,
   times,
   weekDays,
-} from "./CalendarComponents/MyCalendarFuncions";
-import ToDoAddButton from "./CalendarComponents/ToDoNew";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
+import ToDoAddButton from "./CalendarComponents/ToDo/ToDoNew";
 import {
   containerPlus,
   inputCheckBox,
@@ -55,7 +55,7 @@ import {
   spanChecked,
   styleLiChecked,
   updateButton,
-} from "./CalendarComponents/MyCalendarFuncions.Styles";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions.Styles";
 import { display, fontSize } from "@mui/system";
 import NewEventCalendar from "./CalendarComponents/NewEventCalendar/NewEventCalendar";
 import { isLocalHost } from "../../App";
@@ -5344,15 +5344,12 @@ function MyCalendarRefactor({
                   }}
                 />
               </div>
-
               <div style={{ display: "grid", gap: "5px" }}>
                 {/* Ações rápidas - Compactas */}
-
                 <div
                   style={{ display: "flex", gap: "6px", alignItems: "center" }}
                 >
                   {/* Botão Hoje */}
-
                   <button
                     disabled={!disabledAvoid}
                     onClick={() => {
@@ -5364,7 +5361,7 @@ function MyCalendarRefactor({
                   </button>
                   {authorizeOrNot && (
                     <span>
-                      //// //// ////
+                      //// //// //// //// //// //// //// //// ////
                       <NewRecurringEventCalendar
                         setAlternateBoolean={setAlternateBoolean}
                         alternateBoolean={alternateBoolean}
@@ -5376,7 +5373,7 @@ function MyCalendarRefactor({
                         studentsList={studentsList}
                         groupsList={groupsList}
                       />
-                      //// //// ////
+                      //// //// //// //// //// //// //// //// ////
                       <ToDoAddButton
                         userId={myId}
                         onCreated={() => {

@@ -21,7 +21,7 @@ import {
 import { Button, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
+import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
 
 export function MyClasses({ headers }) {
   const [loading, setLoading] = useState(false);

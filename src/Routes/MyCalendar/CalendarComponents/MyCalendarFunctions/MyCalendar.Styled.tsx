@@ -3,7 +3,7 @@ import {
   darkGreyColor,
   lightGreyColor,
   textPrimaryColorContrast,
-} from "../../Styles/Styles";
+} from "../../../../Styles/Styles";
 
 export const CoursesList = styled.div`
   display: grid;

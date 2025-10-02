@@ -11,7 +11,7 @@ import {
 } from "../../../../Styles/Styles";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { HTwo } from "../../../../Resources/Components/RouteBox";
-import { times, weekDays } from "../MyCalendarFuncions";
+import { times, weekDays } from "../MyCalendarFunctions/MyCalendarFuncions";
 interface NewRecurringEventCalendarProps {
   headers: any; // substitua pelo tipo real se possível
   myId: string | number;

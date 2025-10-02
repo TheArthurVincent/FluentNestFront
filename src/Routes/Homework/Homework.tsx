@@ -15,7 +15,7 @@ import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage"
 import { partnerColor, alwaysWhite, textTitleFont } from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
-import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFuncions";
+import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import NewHomeworkAssignmentHere from "./HomeworkComponents/NewHomeworkAssignmentInside";
 import MyClasses from "../MyClasses/MyClasses";

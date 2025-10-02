@@ -32,7 +32,7 @@ import {
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
 import moment from "moment";
-import { StyledDiv } from "./MyCalendar.Styled";
+import { StyledDiv } from "./CalendarComponents/MyCalendarFunctions/MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
@@ -45,8 +45,8 @@ import {
   isEventTimeNowConsideringDuration,
   times,
   weekDays,
-} from "./CalendarComponents/MyCalendarFuncions";
-import ToDoAddButton from "./CalendarComponents/ToDoNew";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
+import ToDoAddButton from "./CalendarComponents/ToDo/ToDoNew";
 import {
   containerPlus,
   inputCheckBox,
@@ -56,7 +56,7 @@ import {
   spanChecked,
   styleLiChecked,
   updateButton,
-} from "./CalendarComponents/MyCalendarFuncions.Styles";
+} from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions.Styles";
 import { display, fontSize } from "@mui/system";
 
 function MyCalendar({ headers, thePermissions, myId, setChange, change }) {

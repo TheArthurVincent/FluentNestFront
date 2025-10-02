@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { partnerColor, textpartnerColorContrast } from "../../../Styles/Styles";
-import { backDomain } from "../../../Resources/UniversalComponents";
-import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
+import { partnerColor, textpartnerColorContrast } from "../../../../Styles/Styles";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 
 function ToDoAddButton({ userId, onCreated }) {
   const [open, setOpen] = useState(false);

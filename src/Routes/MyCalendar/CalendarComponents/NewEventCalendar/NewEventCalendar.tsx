@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { categoryList } from "../MyCalendarFuncions";
+import { categoryList } from "../MyCalendarFunctions/MyCalendarFuncions";
 import { partnerColor, transparentWhite } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
