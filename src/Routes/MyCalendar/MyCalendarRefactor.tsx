@@ -47,7 +47,7 @@ import {
 import NewEventCalendar from "./CalendarComponents/NewEventCalendar/NewEventCalendar";
 
 import NewRecurringEventCalendar from "./CalendarComponents/NewRecurringEventCalendar/NewRecurringEventCalendar";
-import OneEvent from "./CalendarComponents/OneEventCard/OneEventCard";
+import CardOneEvent from "./CalendarComponents/OneEventCard/CardOneEvent";
 interface MyCalendarRefactorProps {
   headers: any; // substitua pelo tipo real se souber a estrutura
   thePermissions: string[] | any;
@@ -1814,7 +1814,7 @@ function MyCalendarRefactor({
                                 key={`${event._id}-${eventIndex}`}
                                 onClick={() => handleSeeModal(event)}
                               >
-                                <OneEvent
+                                <CardOneEvent
                                   headers={headers}
                                   thePermissions={thePermissions}
                                   myId={myId}
@@ -1857,8 +1857,6 @@ function MyCalendarRefactor({
               </div>
             )}
           </div>
-          {/*Modal de nossos/edição de eventos particulares */}
-          {/*Modal de nossos/edição de eventos particulares */}
           {/*Modal de nossos/edição de eventos particulares */}
           <div>
             <div
@@ -4790,8 +4788,6 @@ function MyCalendarRefactor({
             </div>
           </div>
           {/*Modal de nossos/edição de eventos particulares */}
-          {/*Modal de nossos/edição de eventos particulares */}
-
           <div
             style={{
               marginBottom: "1rem",

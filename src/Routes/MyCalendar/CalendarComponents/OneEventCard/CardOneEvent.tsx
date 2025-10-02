@@ -23,7 +23,7 @@ interface CalendarEvent {
   description?: string;
 }
 
-interface OneEventProps {
+interface CardOneEventProps {
   headers: any;
   thePermissions: string[] | any;
   myId: string | number;
@@ -35,7 +35,7 @@ interface OneEventProps {
   eventIndex: number;
 }
 
-const OneEvent: React.FC<OneEventProps> = ({
+const CardOneEvent: React.FC<CardOneEventProps> = ({
   headers,
   thePermissions,
   myId,
@@ -242,4 +242,4 @@ const OneEvent: React.FC<OneEventProps> = ({
   );
 };
 
-export default OneEvent;
+export default CardOneEvent;
