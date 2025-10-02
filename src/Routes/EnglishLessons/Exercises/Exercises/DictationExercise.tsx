@@ -137,9 +137,11 @@ export function DictationExercise({
   const similarity = similarityPercentage(target, answer);
   //arredondar para baixo para nota de 0 a 10 * numero de palavras
   const roundedSimilarity =
-    similarity >= 50 ? Math.floor(similarity / 20) * wordsExpected : 0;
-  const { matches, total, perWordCorrect, gtTokens, atTokens } =
-    countPositionMatches(target, answer);
+    similarity >= 70 ? Math.floor(similarity / 20) * wordsExpected : 0;
+  const { matches, total, perWordCorrect, atTokens } = countPositionMatches(
+    target,
+    answer
+  );
 
   const progressPct = Math.round((index / pool.length) * 100);
 
@@ -360,24 +362,32 @@ export function DictationExercise({
               ))}
             </div>
             <div style={{ fontSize: 12, color: "#6B7280", marginTop: 12 }}>
-              Gabarito (por posição):
+              Gabarito:
             </div>
-            <button
-              style={{ marginBottom: 8, marginRight: 8 }}
-              onClick={() => {
-                readText(target, true, language, selectedVoice);
+            <div
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "center",
               }}
-              disabled={!target || !hasTTS()}
-              aria-label={labels.play}
-              title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
             >
-              🔊 Ouvir
-            </button>
-            <b>{target && target}</b> <i>({targetTr})</i>
+              <button
+                onClick={() => {
+                  readText(target, true, language, selectedVoice);
+                }}
+                disabled={!target || !hasTTS()}
+                aria-label={labels.play}
+                title={target ? "Ouvir" : "Sem texto em inglês para ouvir"}
+              >
+                🔊 Ouvir
+              </button>
+              <div style={{ display: "grid", gap: 8 }}>
+                <b>{target && target}</b> <i>({targetTr})</i>
+              </div>
+            </div>
           </div>
         </div>
       )}
-
       {/* Gabarito literal (só após check) */}
       {checked && showKey && (
         <div

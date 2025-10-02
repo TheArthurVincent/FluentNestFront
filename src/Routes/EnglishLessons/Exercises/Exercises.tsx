@@ -81,7 +81,7 @@ export const defaultLabels = {
   play: "Ouvir",
   retry: "Ouvir de novo",
   yourAnswer:
-    "Sua resposta (Para pontuar, você precisa acertar pelo menos 50% do texto.)",
+    "Sua resposta (Para pontuar, você precisa acertar pelo menos 70% do texto.)",
   check: "Conferir",
   correctWords: "Palavras corretas",
   accuracy: "Precisão",
