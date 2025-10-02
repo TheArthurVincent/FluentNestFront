@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { partnerColor, textpartnerColorContrast } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
+interface ToDoAddButtonProps {
+  userId: string | number;
+  onCreated: (newItem: any) => void; // substitua `any` pelo tipo do item criado se souber
+}
 
-function ToDoAddButton({ userId, onCreated }) {
+function ToDoAddButton({ userId, onCreated }: ToDoAddButtonProps) {
   const [open, setOpen] = useState(false);
   const [NumberOfChecklists, setNumberOfChecklists] = useState(1);
   const [form, setForm] = useState({
@@ -54,7 +57,7 @@ function ToDoAddButton({ userId, onCreated }) {
 
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -63,6 +66,7 @@ function ToDoAddButton({ userId, onCreated }) {
     try {
       // Garante que a data está no formato YYYY-MM-DD
       let dateString = form.date;
+      //@ts-ignore
       if (dateString instanceof Date) {
         dateString = dateString.toISOString().split("T")[0];
       }
@@ -91,6 +95,8 @@ function ToDoAddButton({ userId, onCreated }) {
         checkList9: "",
         checkList10: "",
       });
+      //@ts-ignore
+
       if (onCreated) onCreated();
     } catch (err) {
       alert("Erro ao criar ToDo");
@@ -100,10 +106,7 @@ function ToDoAddButton({ userId, onCreated }) {
 
   return (
     <>
-      <button
-        onClick={() => setOpen(true)}
-        title="Novo ToDo"
-      >
+      <button onClick={() => setOpen(true)} title="Novo ToDo">
         + {UniversalTexts.task}
       </button>
       {open && (
@@ -112,6 +115,7 @@ function ToDoAddButton({ userId, onCreated }) {
             position: "fixed",
             top: 0,
             left: 0,
+            //@ts-ignore
             description: { type: String, required: false, unique: false },
             width: "100vw",
             height: "100vh",
@@ -207,6 +211,7 @@ function ToDoAddButton({ userId, onCreated }) {
                 placeholder={`Checklist ${i} ${
                   i == 1 ? "(Descreva pelo menos uma subtarefa)" : ""
                 }`}
+                // @ts-ignore
                 value={form[`checkList${i}`]}
                 onChange={handleChange}
                 style={{
