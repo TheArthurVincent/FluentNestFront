@@ -5002,8 +5002,8 @@ function MyCalendarRefactor({
                       padding: "0 12px",
                       fontWeight: "500",
                       color: "#495057",
-                      fontSize: "13px",
-                      minWidth: "80px",
+                      fontSize: "11px",
+                      minWidth: "75px",
                       textAlign: "center",
                     }}
                   >
