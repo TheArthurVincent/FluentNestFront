@@ -1682,7 +1682,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   <div
                     style={{
                       display: "flex",
-                      gap: "1.5rem",
+                      gap: "1rem",
                       marginBottom: "1rem",
                     }}
                   >
@@ -2478,11 +2478,11 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
               ) : (
                 <div
                   style={{
-                    padding: "1.5rem",
+                    padding: "1rem",
                     maxHeight: "40rem",
                     display: "flex",
                     flexDirection: "column",
-                    gap: "1.5rem",
+                    gap: "1rem",
                   }}
                 >
                   {/* Header */}
@@ -2498,7 +2498,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       <HOne
                         style={{
                           fontWeight: "700",
-                          fontSize: "1.5rem",
+                          fontSize: "1rem",
                         }}
                       >
                         {name}
@@ -2511,7 +2511,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           cursor: "pointer",
                           color: "#998",
-                          fontSize: "1.5rem",
+                          fontSize: "1rem",
                           fontWeight: "800",
                           transition: "color 0.2s",
                         }}
@@ -2554,7 +2554,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             display: "flex",
                             flexDirection: "column",
                             alignItems: "center",
-                            gap: "1.5rem",
+                            gap: "1rem",
                           }}
                         >
                           {!postNew && !showEditForm && (
@@ -2808,7 +2808,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     style={{
                                       width: "80%",
                                       display: "grid",
-                                      gap: "1.5rem",
+                                      gap: "1rem",
                                       borderRadius: "6px",
                                       padding: "8px",
                                     }}
@@ -2828,7 +2828,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             display: "flex",
                                             alignItems: "center",
                                             gap: "0.75rem",
-                                            marginBottom: "1.5rem",
+                                            marginBottom: "1rem",
                                             borderBottom: "1px solid #e5e7eb",
                                           }}
                                         >
@@ -2960,7 +2960,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                         <div
                                           style={{
                                             display: "grid",
-                                            gap: "1.5rem",
+                                            gap: "1rem",
                                           }}
                                         >
                                           {/* Vídeo */}
@@ -4110,7 +4110,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               color={item.color}
                                               onClick={item.onClick}
                                               style={{
-                                                padding: "5px 1.5rem",
+                                                padding: "5px 1rem",
 
                                                 fontWeight: "500",
                                                 width: "80px",
@@ -4125,7 +4125,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     <div
                                       style={{
                                         backgroundColor: "#f8d7da",
-                                        padding: "1.5rem",
+                                        padding: "1rem",
                                         borderRadius: "6px",
                                         border: "1px solid #f5c6cb",
                                         textAlign: "center",
@@ -4155,7 +4155,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                         <button
                                           onClick={seeDelete}
                                           style={{
-                                            padding: "5px 1.5rem",
+                                            padding: "5px 1rem",
                                             backgroundColor: partnerColor(),
                                             color: "white",
                                             border: "none",
@@ -4173,7 +4173,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                         <button
                                           onClick={deleteOneMaterialInside}
                                           style={{
-                                            padding: "5px 1.5rem",
+                                            padding: "5px 1rem",
                                             backgroundColor: "#dc3545",
                                             color: "white",
                                             border: "none",
@@ -4200,86 +4200,103 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     {!showEditForm && (
                       <span>
                         {/* Link de Acesso */}
-                        {link && status == "marcado" &&(
-                          <div
-                            style={{
-                              textAlign: "center",
-                            }}
-                          >
-                            <Link
-                              to={link}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: "white",
-                                border: `2px solid ${partnerColor()}`,
-                                borderRadius: "6px",
-                                textAlign: "center",
-                                transition: "all 0.3s ease",
-                                minWidth: "100%",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = partnerColor();
-                                e.target.style.color = "white";
-                                e.target.style.transform = "translateY(-2px)";
-                                e.target.style.boxShadow =
-                                  "0 4px 8px rgba(0,0,0,0.15)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "white";
-                                e.target.style.color = partnerColor();
-                                e.target.style.transform = "translateY(0)";
-                                e.target.style.boxShadow =
-                                  "0 2px 4px rgba(0,0,0,0.1)";
-                              }}
-                            >
-                              {UniversalTexts.calendarModal.clickToAccessClass}
-                            </Link>
-                          </div>
+
+                        {!showEditForm && (
+                          <span>
+                            {/* Link de Acesso */}
+                            {link &&
+                            (status === "marcado" || status === "Scheduled") ? (
+                              <div style={{ textAlign: "center" }}>
+                                <Link
+                                  to={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: "inline-block",
+                                    color: partnerColor(),
+                                    textDecoration: "none",
+                                    padding: "0.75rem 1rem",
+                                    backgroundColor: "white",
+                                    border: `2px solid ${partnerColor()}`,
+                                    borderRadius: "6px",
+                                    textAlign: "center",
+                                    transition: "all 0.3s ease",
+                                    maxWidth: "70%",
+
+                                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = partnerColor();
+                                    el.style.color = "white";
+                                    el.style.transform = "translateY(-2px)";
+                                    el.style.boxShadow =
+                                      "0 4px 8px rgba(0,0,0,0.15)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = "white";
+                                    el.style.color = partnerColor();
+                                    el.style.transform = "translateY(0)";
+                                    el.style.boxShadow =
+                                      "0 2px 4px rgba(0,0,0,0.1)";
+                                  }}
+                                >
+                                  {
+                                    UniversalTexts.calendarModal
+                                      .clickToAccessClass
+                                  }
+                                </Link>
+                              </div>
+                            ) : googleDriveLink ? (
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  marginTop: "2rem",
+                                }}
+                              >
+                                <Link
+                                  to={googleDriveLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: "inline-block",
+                                    color: partnerColor(),
+                                    textDecoration: "none",
+                                    padding: "0.75rem 1rem",
+                                    backgroundColor: "white",
+                                    border: `2px solid ${partnerColor()}`,
+                                    borderRadius: "6px",
+                                    textAlign: "center",
+                                    transition: "all 0.3s ease",
+                                    minWidth: "70%",
+                                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = partnerColor();
+                                    el.style.color = "white";
+                                    el.style.transform = "translateY(-2px)";
+                                    el.style.boxShadow =
+                                      "0 4px 8px rgba(0,0,0,0.15)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = "white";
+                                    el.style.color = partnerColor();
+                                    el.style.transform = "translateY(0)";
+                                    el.style.boxShadow =
+                                      "0 2px 4px rgba(0,0,0,0.1)";
+                                  }}
+                                >
+                                  <b>Important Link:</b>{" "}
+                                  {truncateString(googleDriveLink, 40)}
+                                </Link>
+                              </div>
+                            ) : null}
+                          </span>
                         )}
-                        {
-                              googleDriveLink &&   <div
-                            style={{
-                              textAlign: "center",
-                            }}
-                          >
-                           <Link
-                              to={googleDriveLink}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: "white",
-                                border: `2px solid ${partnerColor()}`,
-                                borderRadius: "6px",
-                                textAlign: "center",
-                                transition: "all 0.3s ease",
-                                minWidth: "100%",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = partnerColor();
-                                e.target.style.color = "white";
-                                e.target.style.transform = "translateY(-2px)";
-                                e.target.style.boxShadow =
-                                  "0 4px 8px rgba(0,0,0,0.15)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "white";
-                                e.target.style.color = partnerColor();
-                                e.target.style.transform = "translateY(0)";
-                                e.target.style.boxShadow =
-                                  "0 2px 4px rgba(0,0,0,0.1)";
-                              }}
-                            >
-                              <b>Important Link:</b> {truncateString(googleDriveLink, 30)}
-                            </Link>
-                            </div>
-                        }
+
                         {/* Descrição */}
                         <div
                           style={{
@@ -5343,7 +5360,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         onClick={() => setSeeReplenish(false)}
                         color="red"
                         style={{
-                          padding: "5px 1.5rem",
+                          padding: "5px 1rem",
                           fontWeight: "500",
                         }}
                       >
@@ -5353,7 +5370,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         onClick={handleScheduleReplenish}
                         color="green"
                         style={{
-                          padding: "5px 1.5rem",
+                          padding: "5px 1rem",
                           fontWeight: "500",
                         }}
                       >
@@ -5387,7 +5404,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 display: isModalOfTutoringsVisible ? "block" : "none",
                 zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                padding: "1.5rem",
+                padding: "1rem",
                 width: window.innerWidth <= 768 ? "90vw" : "28rem",
                 maxHeight: "80vh",
                 overflow: "auto",
@@ -5402,7 +5419,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1rem",
                 }}
               >
                 <HTwo
@@ -5431,7 +5448,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   <CircularProgress style={{ color: partnerColor() }} />
                 </div>
               ) : (
-                <div style={{ marginBottom: "1.5rem" }}>
+                <div style={{ marginBottom: "1rem" }}>
                   <div
                     style={{
                       display: "flex",
@@ -5575,7 +5592,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   <CircularProgress style={{ color: partnerColor() }} />
                 </div>
               ) : (
-                <div style={{ marginBottom: "1.5rem" }}>
+                <div style={{ marginBottom: "1rem" }}>
                   {showClasses &&
                     tutoringsListOfOneStudentOrGroup.length > 0 && (
                       <div>
@@ -5744,10 +5761,10 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 style={{
                   display: seeEditTutoring ? "block" : "none",
                   backgroundColor: "#fff3cd",
-                  padding: "1.5rem",
+                  padding: "1rem",
                   borderRadius: "6px",
                   border: "1px solid #ffeaa7",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1rem",
                 }}
               >
                 <div
@@ -5861,7 +5878,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   <button
                     onClick={updateOneTutoring}
                     style={{
-                      padding: "5px 1.5rem",
+                      padding: "5px 1rem",
                       backgroundColor: "#28a745",
                       color: "white",
                       border: "none",
@@ -5878,7 +5895,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 <button
                   onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
                   style={{
-                    padding: "8px 1.5rem",
+                    padding: "8px 1rem",
                     marginBottom: "5px",
                     borderRadius: "6px",
                     backgroundColor: !showSeeEditTutoring
@@ -5918,7 +5935,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
                     <div
                       style={{
-                        padding: "1.5rem",
+                        padding: "1rem",
                         borderRadius: "6px",
                         backgroundColor: "#d4edda",
                         border: "1px solid #c3e6cb",
@@ -6269,7 +6286,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                               onClick={newTutoring}
                               disabled={isFormIncomplete}
                               style={{
-                                padding: "5px 1.5rem",
+                                padding: "5px 1rem",
                                 backgroundColor: isFormIncomplete
                                   ? "#6c757d"
                                   : partnerColor(),
@@ -6369,7 +6386,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       style={{
                         background: "none",
                         border: "none",
-                        fontSize: "1.5rem",
+                        fontSize: "1rem",
                         color: "#998",
                         cursor: "pointer",
                         padding: "0.5rem",
@@ -6393,7 +6410,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   <div
                     style={{
                       display: "grid",
-                      gap: "1.5rem",
+                      gap: "1rem",
                     }}
                   >
                     {/* Categoria */}
@@ -6735,7 +6752,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       <button
                         onClick={handleCloseNewClassForm}
                         style={{
-                          padding: "0.75rem 1.5rem",
+                          padding: "0.75rem 1rem",
                           backgroundColor: "#6c757d",
                           color: "white",
                           border: "none",
@@ -6765,7 +6782,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           !newClass.description
                         }
                         style={{
-                          padding: "0.75rem 1.5rem",
+                          padding: "0.75rem 1rem",
                           backgroundColor: partnerColor(),
                           color: "white",
                           border: "none",

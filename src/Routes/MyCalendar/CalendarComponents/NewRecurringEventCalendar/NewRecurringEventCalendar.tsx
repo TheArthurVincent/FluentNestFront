@@ -12,7 +12,16 @@ import {
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { HTwo } from "../../../../Resources/Components/RouteBox";
 import { times, weekDays } from "../MyCalendarFuncions";
-
+interface NewRecurringEventCalendarProps {
+  headers: any; // substitua pelo tipo real se possível
+  myId: string | number;
+  setChange: React.Dispatch<React.SetStateAction<boolean>>;
+  change: boolean;
+  alternateBoolean: boolean;
+  setAlternateBoolean: React.Dispatch<React.SetStateAction<boolean>>;
+  studentsList?: Array<{ id: string | number; name: string }>;
+  groupsList?: Array<{ id: string | number; name: string }>;
+}
 function NewRecurringEventCalendar({
   headers,
   myId,
@@ -22,7 +31,7 @@ function NewRecurringEventCalendar({
   setAlternateBoolean,
   studentsList = [],
   groupsList = [],
-}) {
+}: NewRecurringEventCalendarProps) {
   // --- estado base do modal ---
   const [isModalOfTutoringsVisible, setIsModalOfTutoringsVisible] =
     useState(false);
@@ -47,8 +56,8 @@ function NewRecurringEventCalendar({
   const [theNewWeekDay, setTheNewWeekDay] = useState("");
   const [theNewTimeOfTutoring, setTheNewTimeOfTutoring] = useState("");
   const [theNewLink, setTheNewLink] = useState("");
-  const [duration, setDuration] = useState(60);
-  const [numberOfWeeks, setNumberOfWeeks] = useState(4);
+  const [duration, setDuration] = useState<any>(60);
+  const [numberOfWeeks, setNumberOfWeeks] = useState<any>(4);
 
   // editar recorrência existente
   const [seeEditTutoring, setSeeEditTutoring] = useState(false);
@@ -63,7 +72,7 @@ function NewRecurringEventCalendar({
   const { UniversalTexts } = useUserContext();
 
   // ----- utils -----
-  const isTutoringExpiringWithinMonth = (tutoring) => {
+  const isTutoringExpiringWithinMonth = (tutoring: any) => {
     if (!tutoring.endDate) return false;
     const today = new Date();
     const oneMonthFromNow = new Date(today);
@@ -72,10 +81,11 @@ function NewRecurringEventCalendar({
     return endDate < oneMonthFromNow;
   };
 
-  const getDaysUntilExpiration = (tutoring) => {
+  const getDaysUntilExpiration = (tutoring: any) => {
     if (!tutoring.endDate) return null;
     const today = new Date();
     const endDate = new Date(tutoring.endDate);
+    //@ts-ignore
     const diffTime = endDate - today;
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
@@ -108,7 +118,7 @@ function NewRecurringEventCalendar({
   };
 
   // ----- fetch lista por aluno/grupo -----
-  const fetchOneSetOfTutorings = async (studentId) => {
+  const fetchOneSetOfTutorings = async (studentId: any) => {
     if (!studentId) return;
     try {
       setLoadingTutoringDays(true);
@@ -124,7 +134,7 @@ function NewRecurringEventCalendar({
     }
   };
 
-  const fetchOneSetOfGroups = async (groupID) => {
+  const fetchOneSetOfGroups = async (groupID: any) => {
     if (!groupID) return;
     try {
       setLoadingTutoringDays(true);
@@ -140,7 +150,7 @@ function NewRecurringEventCalendar({
     }
   };
 
-  const fetchOneSetOfTutoringsInside = (e) => {
+  const fetchOneSetOfTutoringsInside = (e: any) => {
     const id = e.target.value;
     setNewStudentId(id);
     setNewGroupId("");
@@ -150,7 +160,7 @@ function NewRecurringEventCalendar({
     fetchOneSetOfTutorings(id);
   };
 
-  const fetchOneSetOfGroupClassesInside = (e) => {
+  const fetchOneSetOfGroupClassesInside = (e: any) => {
     const id = e.target.value;
     setNewGroupId(id);
     setNewStudentId("");
@@ -161,7 +171,7 @@ function NewRecurringEventCalendar({
   };
 
   // ----- editar existente -----
-  const seeEditOneTutoring = (item) => {
+  const seeEditOneTutoring = (item: any) => {
     setSeeEditTutoring(true);
     setTutoringId(item.id);
     setTimeOfTutoring(item.time);
@@ -177,8 +187,8 @@ function NewRecurringEventCalendar({
     setLink("");
   };
 
-  const handleWeekDayChange = (e) => setWeekDay(e.target.value);
-  const handleTimeChange = (e) => setTimeOfTutoring(e.target.value);
+  const handleWeekDayChange = (e: any) => setWeekDay(e.target.value);
+  const handleTimeChange = (e: any) => setTimeOfTutoring(e.target.value);
 
   const updateOneTutoring = async () => {
     try {
@@ -205,8 +215,10 @@ function NewRecurringEventCalendar({
   };
 
   // ----- criar nova -----
-  const handleTheNewWeekDayChange = (e) => setTheNewWeekDay(e.target.value);
-  const handleTheNewTimeChange = (e) => setTheNewTimeOfTutoring(e.target.value);
+  const handleTheNewWeekDayChange = (e: any) =>
+    setTheNewWeekDay(e.target.value);
+  const handleTheNewTimeChange = (e: any) =>
+    setTheNewTimeOfTutoring(e.target.value);
 
   const newTutoring = async () => {
     // calcula endDate (de próxima segunda até N semanas)
@@ -263,7 +275,7 @@ function NewRecurringEventCalendar({
   };
 
   // ----- deletar -----
-  const deleteTutoring = async (item) => {
+  const deleteTutoring = async (item: any) => {
     try {
       await axios.delete(`${backDomain}/api/v1/tutoringevent`, {
         data: {
@@ -352,8 +364,8 @@ function NewRecurringEventCalendar({
               color: "#998",
               transition: "color 0.2s",
             }}
-            onMouseEnter={(e) => (e.target.style.color = partnerColor())}
-            onMouseLeave={(e) => (e.target.style.color = "#998")}
+            onMouseEnter={(e: any) => (e.target.style.color = partnerColor())}
+            onMouseLeave={(e: any) => (e.target.style.color = "#998")}
           >
             ✕
           </Xp>
@@ -454,7 +466,7 @@ function NewRecurringEventCalendar({
                   <option value="" hidden>
                     Select student
                   </option>
-                  {studentsList.map((student) => (
+                  {studentsList.map((student: any) => (
                     <option key={student.id} value={student.id}>
                       {student.name + " " + student.lastname}
                     </option>
@@ -486,7 +498,7 @@ function NewRecurringEventCalendar({
                   <option value="" hidden>
                     Selecione o grupo...
                   </option>
-                  {groupsList.map((group) => (
+                  {groupsList.map((group: any) => (
                     <option key={group._id} value={group._id}>
                       {group.name}
                     </option>
@@ -512,11 +524,11 @@ function NewRecurringEventCalendar({
                 <div style={{ display: "grid", gap: "5px" }}>
                   {tutoringsListOfOneStudentOrGroup
                     .sort(
-                      (a, b) =>
+                      (a: any, b: any) =>
                         moment(a.day, "dddd").day() -
                         moment(b.day, "dddd").day()
                     )
-                    .map((item, index) => {
+                    .map((item: any, index: number) => {
                       const isExpiring = isTutoringExpiringWithinMonth(item);
                       const daysLeft = getDaysUntilExpiration(item);
                       return (
@@ -550,8 +562,10 @@ function NewRecurringEventCalendar({
                               }}
                             >
                               ⚠️
+                              {/* @ts-ignore */}
                               {daysLeft > 0
                                 ? `${UniversalTexts.endsIn} ${daysLeft} dia${
+                                    // @ts-ignore
                                     daysLeft > 1 ? "s" : ""
                                   } (${new Date(
                                     item.endDate
@@ -1121,7 +1135,7 @@ function NewRecurringEventCalendar({
                               (Number(numberOfWeeks) || 4) * 7 -
                               1
                           );
-                          const fmt = (d) =>
+                          const fmt = (d: any) =>
                             d.toLocaleDateString("pt-BR", {
                               day: "2-digit",
                               month: "2-digit",

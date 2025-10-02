@@ -4042,87 +4042,102 @@ function MyCalendarRefactor({
                     {!showEditForm && (
                       <span>
                         {/* Link de Acesso */}
-                        {link && status == "marcado" && (
-                          <div
-                            style={{
-                              textAlign: "center",
-                            }}
-                          >
-                            <Link
-                              to={link}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: "white",
-                                border: `2px solid ${partnerColor()}`,
-                                borderRadius: "6px",
-                                textAlign: "center",
-                                transition: "all 0.3s ease",
-                                minWidth: "100%",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = partnerColor();
-                                e.target.style.color = "white";
-                                e.target.style.transform = "translateY(-2px)";
-                                e.target.style.boxShadow =
-                                  "0 4px 8px rgba(0,0,0,0.15)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "white";
-                                e.target.style.color = partnerColor();
-                                e.target.style.transform = "translateY(0)";
-                                e.target.style.boxShadow =
-                                  "0 2px 4px rgba(0,0,0,0.1)";
-                              }}
-                            >
-                              {UniversalTexts.calendarModal.clickToAccessClass}
-                            </Link>
-                          </div>
+
+                        {!showEditForm && (
+                          <span>
+                            {/* Link de Acesso */}
+                            {link &&
+                            (status === "marcado" || status === "Scheduled") ? (
+                              <div style={{ textAlign: "center" }}>
+                                <Link
+                                  to={link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: "inline-block",
+                                    color: partnerColor(),
+                                    textDecoration: "none",
+                                    padding: "0.75rem 1.5rem",
+                                    backgroundColor: "white",
+                                    border: `2px solid ${partnerColor()}`,
+                                    borderRadius: "6px",
+                                    textAlign: "center",
+                                    transition: "all 0.3s ease",
+                                    minWidth: "80%",
+                                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = partnerColor();
+                                    el.style.color = "white";
+                                    el.style.transform = "translateY(-2px)";
+                                    el.style.boxShadow =
+                                      "0 4px 8px rgba(0,0,0,0.15)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = "white";
+                                    el.style.color = partnerColor();
+                                    el.style.transform = "translateY(0)";
+                                    el.style.boxShadow =
+                                      "0 2px 4px rgba(0,0,0,0.1)";
+                                  }}
+                                >
+                                  {
+                                    UniversalTexts.calendarModal
+                                      .clickToAccessClass
+                                  }
+                                </Link>
+                              </div>
+                            ) : googleDriveLink ? (
+                              <div
+                                style={{
+                                  textAlign: "center",
+                                  marginTop: "2rem",
+                                }}
+                              >
+                                <Link
+                                  to={googleDriveLink}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  style={{
+                                    display: "inline-block",
+                                    color: partnerColor(),
+                                    textDecoration: "none",
+                                    padding: "0.75rem 1.5rem",
+                                    backgroundColor: "white",
+                                    border: `2px solid ${partnerColor()}`,
+                                    borderRadius: "6px",
+                                    textAlign: "center",
+                                    transition: "all 0.3s ease",
+                                    minWidth: "80%",
+                                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = partnerColor();
+                                    el.style.color = "white";
+                                    el.style.transform = "translateY(-2px)";
+                                    el.style.boxShadow =
+                                      "0 4px 8px rgba(0,0,0,0.15)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.backgroundColor = "white";
+                                    el.style.color = partnerColor();
+                                    el.style.transform = "translateY(0)";
+                                    el.style.boxShadow =
+                                      "0 2px 4px rgba(0,0,0,0.1)";
+                                  }}
+                                >
+                                  <b>Important Link:</b>{" "}
+                                  {truncateString(googleDriveLink, 30)}
+                                </Link>
+                              </div>
+                            ) : null}
+                          </span>
                         )}
-                        {googleDriveLink && (
-                          <div
-                            style={{
-                              textAlign: "center",
-                            }}
-                          >
-                            <Link
-                              to={googleDriveLink}
-                              target="_blank"
-                              style={{
-                                color: partnerColor(),
-                                textDecoration: "none",
-                                padding: "0.75rem 1.5rem",
-                                backgroundColor: "white",
-                                border: `2px solid ${partnerColor()}`,
-                                borderRadius: "6px",
-                                textAlign: "center",
-                                transition: "all 0.3s ease",
-                                minWidth: "100%",
-                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.backgroundColor = partnerColor();
-                                e.target.style.color = "white";
-                                e.target.style.transform = "translateY(-2px)";
-                                e.target.style.boxShadow =
-                                  "0 4px 8px rgba(0,0,0,0.15)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.backgroundColor = "white";
-                                e.target.style.color = partnerColor();
-                                e.target.style.transform = "translateY(0)";
-                                e.target.style.boxShadow =
-                                  "0 2px 4px rgba(0,0,0,0.1)";
-                              }}
-                            >
-                              Important Link:{" "}
-                              {truncateString(googleDriveLink, 30)}
-                            </Link>
-                          </div>
-                        )}
+
                         {/* Descrição */}
                         <div
                           style={{
@@ -5345,7 +5360,6 @@ function MyCalendarRefactor({
                     }}
                   >
                     <i className="fa fa-refresh" style={{ fontSize: "10px" }} />
-
                     <span>{UniversalTexts.calendarModal.today}</span>
                   </button>
                   {authorizeOrNot && (

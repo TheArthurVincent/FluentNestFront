@@ -7,6 +7,17 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 import { CircularProgress } from "@mui/material";
 import { HTwo } from "../../../../Resources/Components/RouteBox";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
+interface NewEventCalendarProps {
+  headers: any; // ajuste para o tipo correto (ex.: Record<string,string>)
+  thePermissions: string[] | any;
+  myId: string | number;
+  setChange: React.Dispatch<React.SetStateAction<boolean>>;
+  alternateBoolean: boolean;
+  setAlternateBoolean: React.Dispatch<React.SetStateAction<boolean>>;
+  change: boolean;
+  studentsList?: Array<{ id: string | number; name: string }>;
+  groupsList?: Array<{ id: string | number; name: string }>;
+}
 
 function NewEventCalendar({
   headers,
@@ -18,7 +29,7 @@ function NewEventCalendar({
   change,
   studentsList = [],
   groupsList = [],
-}) {
+}: NewEventCalendarProps) {
   const { UniversalTexts } = useUserContext();
 
   const [showNewClassForm, setShowNewClassForm] = useState(false);
@@ -38,11 +49,11 @@ function NewEventCalendar({
   const authorizeOrNot =
     thePermissions === "superadmin" || thePermissions === "teacher";
 
-  const handleNewClassChange = (field, value) => {
+  const handleNewClassChange = (field: any, value: any) => {
     setNewClass((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleNewClassCategoryChange = (e) => {
+  const handleNewClassCategoryChange = (e: any) => {
     const category = e.target.value;
     let description = "";
 
@@ -105,7 +116,7 @@ function NewEventCalendar({
       if (response.status >= 200 && response.status < 300) {
         notifyAlert("Aula criada com sucesso!", partnerColor());
         handleCloseNewClassForm();
-        setChange?.((prev) => !prev); // opcional: força refresh externo
+        setChange?.(!change); // opcional: força refresh externo
       } else {
         throw new Error(`Falha na criação: status ${response.status}`);
       }
@@ -141,7 +152,7 @@ function NewEventCalendar({
       {authorizeOrNot && (
         <button
           onClick={() => {
-            setChange((prev) => !prev);
+            setChange(!change);
             setShowNewClassForm(true);
           }}
         >
@@ -308,7 +319,7 @@ function NewEventCalendar({
                     <option value="" hidden>
                       Selecione o aluno...
                     </option>
-                    {studentsList.map((student) => (
+                    {studentsList.map((student: any) => (
                       <option key={student.id} value={student.id}>
                         {student.name} {student.lastname}
                       </option>
@@ -348,7 +359,7 @@ function NewEventCalendar({
                     <option value="" hidden>
                       Selecione o grupo...
                     </option>
-                    {groupsList.map((group) => (
+                    {groupsList.map((group: any) => (
                       <option key={group._id} value={group._id}>
                         {group.name}
                       </option>
