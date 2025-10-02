@@ -4963,100 +4963,104 @@ function MyCalendarRefactor({
                 gap: "8px",
               }}
             >
-              {/* Alterador de Semanas */}
               <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  padding: "2px",
-                }}
+                style={{ display: "flex", gap: "4px", alignItems: "center" }}
               >
-                <button
-                  disabled={!disabledAvoid}
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    background: !disabledAvoid ? "#e9ecef" : "#ffffff",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "4px",
-                    color: !disabledAvoid ? "#adb5bd" : "#495057",
-                    cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.15s ease",
-                    fontSize: "12px",
-                  }}
-                  onClick={() => handleChangeWeek(-7)}
-                >
-                  <i className="fa fa-chevron-left" />
-                </button>
+                {/* Alterador de Semanas */}
                 <div
                   style={{
-                    padding: "0 12px",
-                    fontWeight: "500",
-                    color: "#495057",
-                    fontSize: "13px",
-                    minWidth: "80px",
-                    textAlign: "center",
-                  }}
-                >
-                  {today.toLocaleDateString("pt-BR", {
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </div>
-                <button
-                  disabled={!disabledAvoid}
-                  style={{
-                    width: "28px",
-                    height: "28px",
-                    background: !disabledAvoid ? "#e9ecef" : "#ffffff",
-                    border: "1px solid #dee2e6",
-                    borderRadius: "4px",
-                    color: !disabledAvoid ? "#adb5bd" : "#495057",
-                    cursor: !disabledAvoid ? "not-allowed" : "pointer",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    transition: "all 0.15s ease",
-                    fontSize: "12px",
+                    gap: "4px",
+                    background: "#f8f9fa",
+                    borderRadius: "6px",
+                    padding: "2px",
                   }}
-                  onClick={() => handleChangeWeek(7)}
                 >
-                  <i className="fa fa-chevron-right" />
-                </button>
-              </div>
-              {/* Seletor de Data - Minimalista */}
-              <div
-                style={{
-                  position: "relative",
-                  background: "#f8f9fa",
-                  borderRadius: "6px",
-                  border: "1px solid #e9ecef",
-                  overflow: "hidden",
-                }}
-              >
-                <input
-                  type="date"
-                  onChange={handleDateChange}
-                  value={today.toISOString().split("T")[0]}
-                  disabled={loading}
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      background: !disabledAvoid ? "#e9ecef" : "#ffffff",
+                      border: "1px solid #dee2e6",
+                      borderRadius: "4px",
+                      color: !disabledAvoid ? "#adb5bd" : "#495057",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.15s ease",
+                      fontSize: "12px",
+                    }}
+                    onClick={() => handleChangeWeek(-7)}
+                  >
+                    <i className="fa fa-chevron-left" />
+                  </button>
+                  <div
+                    style={{
+                      padding: "0 12px",
+                      fontWeight: "500",
+                      color: "#495057",
+                      fontSize: "13px",
+                      minWidth: "80px",
+                      textAlign: "center",
+                    }}
+                  >
+                    {today.toLocaleDateString("pt-BR", {
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </div>
+                  <button
+                    disabled={!disabledAvoid}
+                    style={{
+                      width: "28px",
+                      height: "28px",
+                      background: !disabledAvoid ? "#e9ecef" : "#ffffff",
+                      border: "1px solid #dee2e6",
+                      borderRadius: "4px",
+                      color: !disabledAvoid ? "#adb5bd" : "#495057",
+                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      transition: "all 0.15s ease",
+                      fontSize: "12px",
+                    }}
+                    onClick={() => handleChangeWeek(7)}
+                  >
+                    <i className="fa fa-chevron-right" />
+                  </button>
+                </div>
+                {/* Seletor de Data - Minimalista */}
+                <div
                   style={{
-                    padding: "6px 32px 6px 10px",
-                    border: "none",
-                    outline: "none",
-                    fontSize: "13px",
-                    fontWeight: "400",
-                    color: loading ? "#adb5bd" : "#495057",
-                    backgroundColor: "transparent",
-                    cursor: loading ? "not-allowed" : "pointer",
-                    opacity: loading ? 0.6 : 1,
+                    position: "relative",
+                    background: "#f8f9fa",
+                    borderRadius: "6px",
+                    border: "1px solid #e9ecef",
+                    overflow: "hidden",
                   }}
-                />
+                >
+                  <input
+                    type="date"
+                    onChange={handleDateChange}
+                    value={today.toISOString().split("T")[0]}
+                    disabled={loading}
+                    style={{
+                      padding: "6px 32px 6px 10px",
+                      border: "none",
+                      outline: "none",
+                      fontSize: "13px",
+                      fontWeight: "400",
+                      color: loading ? "#adb5bd" : "#495057",
+                      backgroundColor: "transparent",
+                      cursor: loading ? "not-allowed" : "pointer",
+                      opacity: loading ? 0.6 : 1,
+                    }}
+                  />
+                </div>
               </div>
               {/* Ações do professor - Compactas */}
               {authorizeOrNot && (
