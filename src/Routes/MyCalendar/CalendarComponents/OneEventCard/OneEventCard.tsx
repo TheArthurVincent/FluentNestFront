@@ -48,22 +48,6 @@ const OneEvent: React.FC<OneEventProps> = ({
 }) => {
   const hj = new Date();
 
-  useEffect(() => {
-    console.log("[DBG] event:", event);
-    console.log(
-      "[DBG] categoryList length:",
-      Array.isArray(categoryList) ? categoryList.length : "not array"
-    );
-    console.log(
-      "[DBG] formatTimeRange is fn:",
-      typeof formatTimeRange === "function"
-    );
-    console.log(
-      "[DBG] isEventTimeNowConsideringDuration is fn:",
-      typeof isEventTimeNowConsideringDuration === "function"
-    );
-  }, [event]);
-
   if (!event) return null;
 
   const categoryColors: Record<string, { bg: string; text: string }> = {
@@ -123,7 +107,7 @@ const OneEvent: React.FC<OneEventProps> = ({
       key={`${event._id ?? "noid"}-${eventIndex}`}
       style={{
         marginBottom: "5px",
-        borderRadius: "6px",
+        borderRadius: 4,
         overflow: "hidden",
         boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
         transition: "all 0.2s ease",
@@ -170,7 +154,7 @@ const OneEvent: React.FC<OneEventProps> = ({
                   width: 6,
                   height: 6,
                   backgroundColor: "white",
-                  borderRadius: 6,
+                  borderRadius: 3,
                   marginRight: 5,
                 }}
               />
@@ -196,7 +180,7 @@ const OneEvent: React.FC<OneEventProps> = ({
             backgroundColor: "rgba(255,255,255,0.2)",
             color: categoryColor.text,
             padding: "2px 5px",
-            borderRadius: 6,
+            borderRadius: 4,
             fontWeight: 600,
             textTransform: "uppercase",
             letterSpacing: "0.3px",
