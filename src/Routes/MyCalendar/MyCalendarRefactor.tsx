@@ -3984,7 +3984,7 @@ function MyCalendarRefactor({
                                   }
                                   onClick={() => setShowLastFew(!showLastFew)}
                                 >
-                                 Última aula
+                                  Última aula
                                 </span>
                               )}
                               {showLastFew && (
@@ -4963,6 +4963,7 @@ function MyCalendarRefactor({
                 gap: "8px",
               }}
             >
+              {/* Alterador de Semanas */}
               <div
                 style={{
                   display: "flex",
@@ -4993,7 +4994,6 @@ function MyCalendarRefactor({
                 >
                   <i className="fa fa-chevron-left" />
                 </button>
-
                 <div
                   style={{
                     padding: "0 12px",
@@ -5009,7 +5009,6 @@ function MyCalendarRefactor({
                     year: "numeric",
                   })}
                 </div>
-
                 <button
                   disabled={!disabledAvoid}
                   style={{
@@ -5031,9 +5030,7 @@ function MyCalendarRefactor({
                   <i className="fa fa-chevron-right" />
                 </button>
               </div>
-
               {/* Seletor de Data - Minimalista */}
-
               <div
                 style={{
                   position: "relative",
@@ -5061,54 +5058,40 @@ function MyCalendarRefactor({
                   }}
                 />
               </div>
-              <div style={{ display: "grid", gap: "5px" }}>
-                {/* Ações rápidas - Compactas */}
+              {/* Ações do professor - Compactas */}
+              {authorizeOrNot && (
                 <div
-                  style={{ display: "flex", gap: "6px", alignItems: "center" }}
+                  style={{ display: "flex", gap: "4px", alignItems: "center" }}
                 >
-                  {/* Botão Hoje */}
-                  {/* <button
-                    disabled={!disabledAvoid}
-                    onClick={() => {
-                      loadGeneral(new Date());
+                  <NewRecurringEventCalendar
+                    setAlternateBoolean={setAlternateBoolean}
+                    alternateBoolean={alternateBoolean}
+                    headers={headers}
+                    myId={myId}
+                    setChange={setChange}
+                    change={change}
+                    studentsList={studentsList}
+                    groupsList={groupsList}
+                  />
+                  <ToDoAddButton
+                    userId={myId}
+                    onCreated={() => {
+                      setAlternateBoolean(!alternateBoolean);
                     }}
-                  >
-                    <i className="fa fa-refresh" style={{ fontSize: "10px" }} />
-                    <span>{UniversalTexts.calendarModal.today}</span>
-                  </button> */}
-                  {authorizeOrNot && (
-                    <span>
-                      <NewRecurringEventCalendar
-                        setAlternateBoolean={setAlternateBoolean}
-                        alternateBoolean={alternateBoolean}
-                        headers={headers}
-                        myId={myId}
-                        setChange={setChange}
-                        change={change}
-                        studentsList={studentsList}
-                        groupsList={groupsList}
-                      />
-                      <ToDoAddButton
-                        userId={myId}
-                        onCreated={() => {
-                          setAlternateBoolean(!alternateBoolean);
-                        }}
-                      />
-                      <NewEventCalendar
-                        setAlternateBoolean={setAlternateBoolean}
-                        alternateBoolean={alternateBoolean}
-                        headers={headers}
-                        thePermissions={thePermissions}
-                        myId={myId}
-                        setChange={setChange}
-                        change={change}
-                        studentsList={studentsList}
-                        groupsList={groupsList}
-                      />
-                    </span>
-                  )}
+                  />
+                  <NewEventCalendar
+                    setAlternateBoolean={setAlternateBoolean}
+                    alternateBoolean={alternateBoolean}
+                    headers={headers}
+                    thePermissions={thePermissions}
+                    myId={myId}
+                    setChange={setChange}
+                    change={change}
+                    studentsList={studentsList}
+                    groupsList={groupsList}
+                  />
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </RouteDiv>
