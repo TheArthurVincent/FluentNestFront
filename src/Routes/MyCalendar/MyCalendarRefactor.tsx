@@ -3,27 +3,20 @@ import {
   HOne,
   HTwo,
   RouteDiv,
-  RouteDivCalendar,
   RouteSizeControlBox,
 } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
 import {
-  alwaysBlack,
   alwaysWhite,
   partnerColor,
   textGeneralFont,
   textpartnerColorContrast,
-  textPrimaryColorContrast,
-  textTitleFont,
   transparentWhite,
 } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { CircularProgress, LinearProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import {
-  Xp,
-  abreviateName,
   backDomain,
-  formatDate,
   formatDateBr,
   onLoggOut,
   onLoggOutFee,
@@ -31,7 +24,7 @@ import {
   updateInfo,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
-import moment from "moment";
+
 import { StyledDiv } from "./CalendarComponents/MyCalendarFunctions/MyCalendar.Styled";
 import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -43,23 +36,24 @@ import {
   getEmbedUrl,
   getLastMonday,
   isEventTimeNowConsideringDuration,
-  times,
-  weekDays,
 } from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions";
 import ToDoAddButton from "./CalendarComponents/ToDo/ToDoNew";
 import {
-  containerPlus,
   inputCheckBox,
-  recurrentButton,
-  singleClassButton,
   spanChecked,
   styleLiChecked,
-  updateButton,
 } from "./CalendarComponents/MyCalendarFunctions/MyCalendarFuncions.Styles";
-import { display, fontSize } from "@mui/system";
+
 import NewEventCalendar from "./CalendarComponents/NewEventCalendar/NewEventCalendar";
-import { isLocalHost } from "../../App";
+
 import NewRecurringEventCalendar from "./CalendarComponents/NewRecurringEventCalendar/NewRecurringEventCalendar";
+interface MyCalendarRefactorProps {
+  headers: any; // substitua pelo tipo real se souber a estrutura
+  thePermissions: string[] | any;
+  myId: string | number;
+  setChange: React.Dispatch<React.SetStateAction<boolean>>;
+  change: boolean;
+}
 
 function MyCalendarRefactor({
   headers,
@@ -67,13 +61,11 @@ function MyCalendarRefactor({
   myId,
   setChange,
   change,
-}) {
+}: MyCalendarRefactorProps) {
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [deleteVisible, setDeleteVisible] = useState(false);
   const [postNew, setPostNew] = useState(false);
-  const [dateModal, setDateModal] = useState(new Date());
-  const [seeEditTutoring, setSeeEditTutoring] = useState(false);
   const [showEditForm, setShowEditForm] = useState(false);
   const [POSTNEWINFOCLASS, setPOSTNEWINFOCLASS] = useState(false);
   const [loadingInfo, setLoadingInfo] = useState(true);
@@ -84,12 +76,9 @@ function MyCalendarRefactor({
   const [editingIndex, setEditingIndex] = useState(null);
   const [alternateBoolean, setAlternateBoolean] = useState(false);
 
-  const [showStudentsRecurring, setShowStudentsRecurring] = useState(true);
-  const [showGroupsRecurring, setShowGroupsRecurring] = useState(false);
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState("");
   const [theTime, setTheTime] = useState("");
-  const [showClasses, setShowClasses] = useState(false);
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
   const [theGroup, setTheGroup] = useState("");
@@ -108,14 +97,9 @@ function MyCalendarRefactor({
   const [category, setCategory] = useState("");
   const [newStudentId, setNewStudentId] = useState("");
   const [newGroupId, setNewGroupId] = useState("");
-  const [showSeeEditTutoring, setShowSeeEditTutoring] = useState(false);
-  const [
-    tutoringsListOfOneStudentOrGroup,
-    setTutoringsListOfOneStudentOrGroup,
-  ] = useState([]);
+
   const [loadingModalInfo, setLoadingModalInfo] = useState(false);
   const [eventFull, setEventFull] = useState({});
-  const [loadingTutoringDays, setLoadingTutoringDays] = useState(false);
   const [newEventId, setNewEventId] = useState("");
   const [studentsList, setStudentsList] = useState([]);
   const [groupsList, setGroupsList] = useState([]);
@@ -135,15 +119,10 @@ function MyCalendarRefactor({
   const [groupId, setGroupId] = useState("");
   const [duration, setDuration] = useState(60);
   const [name, setName] = useState("");
-  const [timeOfTutoring, setTimeOfTutoring] = useState("");
-  const [tutoringId, setTutoringId] = useState("");
-  const [weekDay, setWeekDay] = useState("");
-  const [theNewWeekDay, setTheNewWeekDay] = useState("");
-  const [theNewTimeOfTutoring, setTheNewTimeOfTutoring] = useState("");
   const [eventId, setEventId] = useState("");
-  const [theNewLink, setTheNewLink] = useState("");
-  const [endDateForTutoring, setEndDateForTutoring] = useState(null);
   const [numberOfWeeks, setNumberOfWeeks] = useState(4);
+  const [loadingDescription, setLoadingDescription] = useState(false);
+  const [loadingHWDescription, setLoadingHWDescription] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -190,24 +169,17 @@ function MyCalendarRefactor({
     setShowFlashcards(false);
     setLoading(false);
     setEventId("");
-    setTheNewLink("");
     setNumberOfWeeks(4);
-    setTheNewTimeOfTutoring("");
-    setEndDateForTutoring(null);
     setBase64String("");
     setFileName("");
     setFileType("");
-    setEndDateForTutoring(null);
     setFlashcards("");
     setSelectedFile(null);
     setUploading(false);
     setCategory("");
     setNewStudentId("");
     setNewGroupId("");
-    setShowSeeEditTutoring(false);
-    setTutoringsListOfOneStudentOrGroup([]);
     setTheTime("");
-    setShowClasses(false);
     setLink("");
     setDescription("");
     setVideo("");
@@ -217,15 +189,11 @@ function MyCalendarRefactor({
     setGroupsList([]);
     setStudentsList([]);
     setGroupsList([]);
-    setShowSeeEditTutoring(false);
     setShowEditForm(false);
     setShowHomework(false);
     setShowFlashcards(false);
     setLoading(false);
   };
-  const [loadingDescription, setLoadingDescription] = useState(false);
-  const [loadingHWDescription, setLoadingHWDescription] = useState(false);
-
   const handleClassSummary = async () => {
     setLoadingDescription(true);
     if (thePermissions == "superadmin" || thePermissions == "teacher") {
@@ -268,28 +236,13 @@ function MyCalendarRefactor({
     }
   };
 
-  const isTutoringExpiringWithinMonth = (tutoring) => {
-    if (!tutoring.endDate) return false;
-    const today = new Date();
-    const oneMonthFromNow = new Date(today);
-    oneMonthFromNow.setMonth(today.getMonth() + 1);
-    const endDate = new Date(tutoring.endDate);
-    return endDate < oneMonthFromNow;
-  };
-  const getDaysUntilExpiration = (tutoring) => {
-    if (!tutoring.endDate) return null;
-    const today = new Date();
-    const endDate = new Date(tutoring.endDate);
-    const diffTime = endDate - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
   var hj = new Date();
   var lm = getLastMonday(hj);
   const [task, setTask] = useState({});
   const [disabledAvoid, setDisabledAvoid] = useState(true);
   const [today, setTheToday] = useState(lm);
   const { UniversalTexts } = useUserContext();
+
   useEffect(() => {
     if (numberOfWeeks && numberOfWeeks > 0) {
       const today = new Date();
@@ -299,9 +252,7 @@ function MyCalendarRefactor({
       nextWeekDay.setDate(today.getDate() + daysUntilMonday);
       const endDate = new Date(nextWeekDay);
       endDate.setDate(nextWeekDay.getDate() + numberOfWeeks * 7 - 1);
-      setEndDateForTutoring(endDate);
     } else {
-      setEndDateForTutoring(null);
     }
   }, [numberOfWeeks]);
   const futureDates = [];
@@ -347,17 +298,6 @@ function MyCalendarRefactor({
       }
     }
   };
-  const [isFee, setIsFee] = useState(true);
-  const resetEveryThing = () => {
-    setGroupsList([]);
-    setStudentsList([]);
-    setEvents([]);
-    setShowSeeEditTutoring(false);
-    setShowEditForm(false);
-    setShowHomework(false);
-    setShowFlashcards(false);
-    setLoading(false);
-  };
 
   const [todoList, setTodoList] = useState([]);
 
@@ -372,7 +312,6 @@ function MyCalendarRefactor({
       const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id, feeUpToDate } = user;
       updateInfo(id, headers);
-      setIsFee(!!feeUpToDate);
       if (!feeUpToDate) {
         onLoggOutFee();
         return;
@@ -586,17 +525,9 @@ function MyCalendarRefactor({
         }
       );
       const tutorings = response.data.tutorings;
-      setLoadingTutoringDays(true);
-      setTutoringsListOfOneStudentOrGroup(response.data.tutorings);
-      setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
     }
-  };
-  const fetchOneSetOfTutoringsInside = (e) => {
-    const eTargetValue = e.target.value;
-    setNewStudentId(eTargetValue);
-    setShowClasses(true);
   };
 
   const fetchOneSetOfGroups = async (groupID) => {
@@ -609,20 +540,9 @@ function MyCalendarRefactor({
         }
       );
       const groups = response.data.tutorings;
-      setLoadingTutoringDays(true);
-      setTutoringsListOfOneStudentOrGroup(groups);
-      setLoadingTutoringDays(false);
     } catch (error) {
       console.log(error, "Erro ao encontrar alunos");
     }
-  };
-
-  const fetchOneSetOfGroupClassesInside = (e) => {
-    const eTargetValue = e.target.value;
-    setNewGroupId(eTargetValue);
-    setNewStudentId("");
-    setShowClasses(true);
-    setSeeEditTutoring(false);
   };
 
   const postNewEvent = async () => {
@@ -739,9 +659,7 @@ function MyCalendarRefactor({
   const editInside = () => {
     editOneEvent(newEventId);
   };
-  const ignoreBlurRef = useRef(false);
 
-  function commit(i, value) {}
   const updateScheduled = async (id) => {
     try {
       const response = await axios.put(
@@ -798,129 +716,6 @@ function MyCalendarRefactor({
     }
   };
 
-  const updateOneTutoring = async () => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/tutoringevent`,
-        {
-          id: tutoringId,
-          studentID: newStudentId || "",
-          groupId: newGroupId || "",
-          day: weekDay,
-          time: timeOfTutoring,
-          duration,
-          link,
-        },
-        {
-          headers,
-        }
-      );
-      setSeeEditTutoring(false);
-      fetchOneSetOfTutorings(newStudentId);
-    } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
-    }
-  };
-
-  const newTutoring = async () => {
-    if (endDateForTutoring) {
-      const today = new Date();
-      const oneMonthFromNow = new Date(today);
-      oneMonthFromNow.setMonth(today.getMonth() + 1);
-
-      if (endDateForTutoring < oneMonthFromNow) {
-        const endDateFormatted = endDateForTutoring.toLocaleDateString(
-          "pt-BR",
-          {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          }
-        );
-
-        const confirmMessage = `⚠️ ATENÇÃO: O período selecionado termina em ${endDateFormatted}, que é em menos de 1 mês.\n\nPara períodos curtos, recomendamos:\n• Excluir esta configuração de tutoria recorrente\n• Criar eventos únicos através do botão "Criar Evento"\n\nDeseja continuar mesmo assim?`;
-
-        if (!confirm(confirmMessage)) {
-          return;
-        }
-      }
-    }
-
-    try {
-      const response = await axios.post(
-        `${backDomain}/api/v1/tutoringevent`,
-        {
-          day: theNewWeekDay,
-          time: theNewTimeOfTutoring,
-          duration,
-          link: theNewLink,
-          studentID: newStudentId,
-          teacherID: myId,
-          groupId: newGroupId,
-          numberOfWeeks: numberOfWeeks || 4,
-          endDate: endDateForTutoring,
-        },
-        {
-          headers,
-        }
-      );
-      if (response) {
-        setSeeEditTutoring(false);
-        setShowSeeEditTutoring(false);
-        if (newStudentId) {
-          fetchOneSetOfTutorings(newStudentId);
-        } else if (newGroupId) {
-          fetchOneSetOfGroups(newGroupId);
-        }
-      }
-    } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
-    }
-  };
-
-  function isEventTimeNow(eventTime, hj, date) {
-    const [eventHour, eventMinute] = eventTime.time.split(":").map(Number);
-    if (
-      hj.getDate() == date.getDate() &&
-      hj.getMonth() == date.getMonth() &&
-      hj.getFullYear() == date.getFullYear() &&
-      hj.getHours() == eventHour &&
-      hj.getMinutes() >= eventMinute &&
-      hj.getMonth() == date.getMonth()
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  const deleteTutoring = async (item) => {
-    try {
-      const response = await axios.delete(
-        `${backDomain}/api/v1/tutoringevent`,
-        {
-          data: {
-            time: item.time,
-            day: item.day,
-            id: item.id,
-            studentID: newStudentId,
-            groupId: newGroupId,
-          },
-          headers,
-        }
-      );
-      if (response) {
-        setSeeEditTutoring(false);
-        if (newGroupId) {
-          fetchOneSetOfGroups(newGroupId);
-        } else {
-          fetchOneSetOfTutorings(newStudentId);
-        }
-      }
-    } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
-    }
-  };
-
   useEffect(() => {
     if (newStudentId !== "") {
       fetchOneSetOfTutorings(newStudentId);
@@ -937,45 +732,12 @@ function MyCalendarRefactor({
     fetchStudents();
   }, [change]);
 
-  const seeEditOneTutoring = (e) => {
-    setSeeEditTutoring(true);
-    fetchStudents();
-    setSeeReplenish(false);
-    setTheNewLink("");
-    setTheNewWeekDay("");
-    setTheNewTimeOfTutoring("");
-    setTutoringId(e.id);
-    setTimeOfTutoring(e.time);
-    setLink(e.link);
-    setWeekDay(e.day);
-    setDuration(e.duration);
-  };
-
-  const closeEditOneTutoring = () => {
-    setSeeEditTutoring(false);
-    setNewStudentId("");
-    setSeeReplenish(false);
-    setTheTime("");
-    setShowClasses(false);
-    setTheNewLink("");
-    setTimeOfTutoring("");
-    setTheNewWeekDay("");
-    setTheNewTimeOfTutoring("");
-    setWeekDay("");
-  };
-
   const handleCloseModal = (chosenDate) => {
     setSeeReplenish(false);
     setIsVisible(false);
     setNewStudentId("");
     setTheTime("");
-    setWeekDay("");
-    setTheNewLink("");
-    setShowClasses(false);
     setDescription("");
-    setTimeOfTutoring("");
-    setTheNewWeekDay("");
-    setTheNewTimeOfTutoring("");
     setShowEditForm(false);
     clearFile();
     setDueDate(new Date().toISOString().split("T")[0]);
@@ -1004,43 +766,11 @@ function MyCalendarRefactor({
     }
   };
 
-  const handleFileUpload = async () => {
-    if (!selectedFile) {
-      return;
-    }
-
-    try {
-      setUploading(true);
-      const base64File = await convertToBase64(selectedFile);
-      setBase64String(base64File);
-      setFileName(selectedFile.name);
-      setFileType(selectedFile.type);
-      setUploading(false);
-    } catch (error) {
-      console.error("Erro ao processar arquivo:", error);
-      setUploading(false);
-    }
-  };
-
   const clearFile = () => {
     setSelectedFile(null);
     setBase64String("");
     setFileName("");
     setFileType("");
-  };
-  const [dateOfTheWeek, setDateOfTheWeek] = useState(new Date());
-
-  const handleCloseModalOfTutorings = () => {
-    setNewStudentId("");
-    setTheTime("");
-    setWeekDay("");
-    setShowClasses(false);
-    setTheNewLink("");
-    setTimeOfTutoring("");
-    setTheNewWeekDay("");
-    setTheNewTimeOfTutoring("");
-    setIsModalOfTutoringsVisible(false);
-    loadGeneral(new Date(dateOfTheWeek));
   };
 
   const handleStudentChange = (e) => {
@@ -1048,13 +778,6 @@ function MyCalendarRefactor({
     setNewGroupId("");
   };
 
-  const handleTheNewWeekDayChange = (e) => {
-    setTheNewWeekDay(e.target.value);
-  };
-
-  const handleTheNewTimeChange = (e) => {
-    setTheNewTimeOfTutoring(e.target.value);
-  };
   const [showAIGENERATED, setShowAIGENERATED] = useState(false);
 
   const handleHomeworkChange = (htmlContent) => {
@@ -1148,14 +871,6 @@ function MyCalendarRefactor({
     setLoadingInfo(false);
   };
 
-  const handleWeekDayChange = (e) => {
-    setWeekDay(e.target.value);
-  };
-
-  const handleTimeChange = (e) => {
-    setTimeOfTutoring(e.target.value);
-  };
-
   const handleSeeModal = (e) => {
     fetchStudents();
     const checkIfNew = e ? false : true;
@@ -1218,30 +933,6 @@ function MyCalendarRefactor({
         setEditingIndex(i);
         return;
       }
-    }
-  };
-
-  const handleCheckbox4Change = async () => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventchecklist4/${newEventId}`,
-        { headers }
-      );
-      fetchOneEvent(newEventId);
-    } catch (error) {
-      console.log(error, "Erro");
-    }
-  };
-
-  const handleCheckbox5Change = async () => {
-    try {
-      const response = await axios.put(
-        `${backDomain}/api/v1/eventchecklist5/${newEventId}`,
-        { headers }
-      );
-      fetchOneEvent(newEventId);
-    } catch (error) {
-      console.log(error, "Erro");
     }
   };
 
@@ -1442,7 +1133,6 @@ function MyCalendarRefactor({
           headers,
         }
       );
-      setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
       loadGeneral(new Date(editDate));
@@ -1463,7 +1153,6 @@ function MyCalendarRefactor({
           headers,
         }
       );
-      setSeeEditTutoring(false);
       setSeeReplenish(false);
       setShowEditSection(false);
       setShowDeleteEventConfirmation(false);
@@ -5366,7 +5055,6 @@ function MyCalendarRefactor({
                         setAlternateBoolean={setAlternateBoolean}
                         alternateBoolean={alternateBoolean}
                         headers={headers}
-                        thePermissions={thePermissions}
                         myId={myId}
                         setChange={setChange}
                         change={change}
