@@ -264,8 +264,7 @@ export default function Modules({
                 height: "28px",
                 minWidth: "120px",
                 maxWidth: "150px",
-                outline: "none",
-                cursor: "pointer",
+                outline: "none"
               }}
             />
             <span
