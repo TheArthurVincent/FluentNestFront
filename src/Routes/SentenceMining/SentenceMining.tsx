@@ -26,6 +26,7 @@ import {
   UlSentences,
 } from "../EnglishLessons/Assets/Functions/EnglishActivities.Styled";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import { isArthurVincent } from "../../App";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -324,17 +325,20 @@ const SentenceMining = ({
               e.target.style.backgroundColor = "#f8fafc";
             }}
           >
-            {["Selecione um idioma", "Inglês", "Francês", "Espanhol"].map(
-              (language) => (
-                <option
-                  hidden={language === "Selecione um idioma"}
-                  key={language}
-                  value={language}
-                >
-                  {language}
-                </option>
-              )
-            )}
+            {[
+              "Selecione um idioma",
+              "Inglês",
+              "Espanhol",
+              isArthurVincent ? "Francês" : null,
+            ].map((language: any | null) => (
+              <option
+                hidden={language === "Selecione um idioma"}
+                key={language}
+                value={language}
+              >
+                {language}
+              </option>
+            ))}
           </select>
         )}
       </div>

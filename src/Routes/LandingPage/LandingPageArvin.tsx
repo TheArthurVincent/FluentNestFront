@@ -28,13 +28,15 @@ function LandingPageArvin() {
       href: "curso-gestao",
     },
     {
-      title: "🌍 3 Idiomas Para Ensinar",
+      title: "🌍 2 Idiomas Para Ensinar",
       description:
-        "Conte com materiais de inglês, espanhol e francês para oferecer mais opções aos seus alunos.",
-      href: "3-idiomas",
+        "Conte com materiais de inglês e espanhol para oferecer mais opções aos seus alunos.",
+      href: "2-idiomas",
       imgs: [
-        "https://ik.imagekit.io/vjz75qw96/assets/icons/lang?updatedAt=1758412572630",
-        "https://ik.imagekit.io/vjz75qw96/assets/icons/languages?updatedAt=1758410639180",
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/arvinlg.png?updatedAt=1759444234870",
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/espen.png?updatedAt=1759444234580",
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/screen%20(4).png?updatedAt=1759444234627",
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/quest.png?updatedAt=1759444312417",
       ],
     },
     {
@@ -280,7 +282,7 @@ function LandingPageArvin() {
                     src={img}
                     alt={section.title}
                     style={{
-                      maxWidth: "32vw",
+                      maxWidth: "20vw",
                       height: "auto", // 🔒 garante que não mude a proporção
                       borderRadius: "12px",
                       marginTop: "3rem",
