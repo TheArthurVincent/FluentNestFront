@@ -339,7 +339,19 @@ export function DictationExercise({
             >
               📊 Similaridade: <strong>{similarity}%</strong>
             </span>
-            <span>🏆 Sua nota:{roundedSimilarity}</span>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "6px 10px",
+                borderRadius: 999,
+                background: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+              }}
+            >
+              🏆 Sua nota: <strong>{roundedSimilarity}</strong>
+            </span>
           </div>
 
           <div style={{ marginTop: 16, display: "grid", gap: 8 }}>
