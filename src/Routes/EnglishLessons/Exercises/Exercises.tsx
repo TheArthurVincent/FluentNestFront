@@ -343,47 +343,49 @@ export default function ExerciseRunner({
           gap: 24,
         }}
       >
-        <div style={{ width: "100%" }}>
-          <HeaderBar title="Escolha o tipo de exercício" />
-          <div
-            style={{
-              display: "grid",
-              gap: 8,
-              gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-              flexWrap: "wrap",
-              marginBottom: 8,
-            }}
-          >
-            {available.map((entry) => {
-              const isActive = entry.key === activeKey;
-              return (
-                <button
-                  key={entry.key}
-                  onClick={() => {
-                    setActiveKey(entry.key);
-                    setRestartTick((t) => t + 1);
-                  }}
-                  style={{
-                    padding: "8px 12px",
-                    fontSize: 13,
-                    fontWeight: 700,
-                    border: isActive
-                      ? "1px solid #111827"
-                      : "1px solid #E5E7EB",
-                    color: isActive ? "#FFFFFF" : "#111827",
-                    background: isActive
-                      ? "linear-gradient(180deg, #111827 0%, #0B1220 100%)"
-                      : "#FFFFFF",
-                    cursor: "pointer",
-                  }}
-                  title={entry.title}
-                >
-                  {entry.title}
-                </button>
-              );
-            })}
+        {available.length > 1 && (
+          <div style={{ width: "100%" }}>
+            <HeaderBar title="Escolha o tipo de exercício" />
+            <div
+              style={{
+                display: "grid",
+                gap: 8,
+                gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+                flexWrap: "wrap",
+                marginBottom: 8,
+              }}
+            >
+              {available.map((entry) => {
+                const isActive = entry.key === activeKey;
+                return (
+                  <button
+                    key={entry.key}
+                    onClick={() => {
+                      setActiveKey(entry.key);
+                      setRestartTick((t) => t + 1);
+                    }}
+                    style={{
+                      padding: "8px 12px",
+                      fontSize: 13,
+                      fontWeight: 700,
+                      border: isActive
+                        ? "1px solid #111827"
+                        : "1px solid #E5E7EB",
+                      color: isActive ? "#FFFFFF" : "#111827",
+                      background: isActive
+                        ? "linear-gradient(180deg, #111827 0%, #0B1220 100%)"
+                        : "#FFFFFF",
+                      cursor: "pointer",
+                    }}
+                    title={entry.title}
+                  >
+                    {entry.title}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
         <div style={{ width: "100%" }}>
           {activeEntry ? (
             <div key={activeKey + "_" + restartTick}>
