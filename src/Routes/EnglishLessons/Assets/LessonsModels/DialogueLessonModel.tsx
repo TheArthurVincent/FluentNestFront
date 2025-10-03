@@ -101,11 +101,9 @@ export default function DialogueLessonModel({
   return (
     <div
       style={{
-        padding: "20px",
+        padding: "6px",
         margin: "20px 0",
-        backgroundColor: "#f8fafc",
         borderRadius: "4px",
-        border: "1px solid #e2e8f0",
       }}
     >
       <div
@@ -138,6 +136,7 @@ export default function DialogueLessonModel({
             borderRadius: "4px",
             border: `1px solid ${partnerColor()}`,
             backgroundColor: "#ffffff",
+            marginBottom: "12px",
             color: partnerColor(),
             fontSize: "18px",
             cursor: "pointer",

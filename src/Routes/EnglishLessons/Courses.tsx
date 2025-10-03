@@ -357,16 +357,12 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
           <div
             style={{
               backgroundColor: "white",
-              padding: "10px 20px",
-              borderRadius: 5,
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.59)",
               width: "90vw",
               maxWidth: 1200,
               marginInline: "auto",
             }}
           >
             <HOne>{UniversalTexts.theCourses}</HOne>
-
             <LangSection
               title="English"
               allowed={groupedAllowed.en}

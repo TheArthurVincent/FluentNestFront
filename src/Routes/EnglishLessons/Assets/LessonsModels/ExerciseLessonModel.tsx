@@ -30,7 +30,6 @@ export default function ExerciseLessonModel({
             <div
               key={index}
               style={{
-                background: "linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)",
                 borderRadius: "4px",
                 padding: "8px",
                 transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
@@ -46,26 +45,6 @@ export default function ExerciseLessonModel({
                   gap: "16px",
                 }}
               >
-                {/* Número do exercício */}
-                <div
-                  style={{
-                    background: `linear-gradient(135deg, ${partnerColor()} 0%, ${partnerColor()}dd 100%)`,
-                    color: "white",
-                    borderRadius: "4px",
-                    width: "28px",
-                    height: "28px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    flexShrink: 0,
-                    boxShadow: `0 3px 10px ${partnerColor()}30, 0 1px 3px rgba(0,0,0,0.1)`,
-                  }}
-                >
-                  {index + 1}
-                </div>
-                {/* Conteúdo do exercício */}
                 <div
                   style={{
                     fontSize: "16px",
@@ -76,7 +55,7 @@ export default function ExerciseLessonModel({
                     flex: 1,
                   }}
                 >
-                  {theitem}
+                  <b>{index + 1}-</b> {theitem}
                 </div>
               </div>
             </div>

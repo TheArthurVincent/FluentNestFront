@@ -3189,7 +3189,7 @@ export default function EnglishClassCourse2({
             ) : (
               <span
                 style={{
-                  fontSize: "10px",
+                  fontSize: "8px",
                 }}
               >
                 No next class
@@ -3205,7 +3205,7 @@ export default function EnglishClassCourse2({
               padding: "4px 8px",
               background: "rgba(255,255,255)",
               position: "sticky",
-              top: "3.6rem",
+              top: "3.2rem",
               zIndex: 5,
               flexWrap: "wrap",
               gap: "8px",
@@ -3511,11 +3511,7 @@ export default function EnglishClassCourse2({
               style={{
                 maxWidth: "1200px",
                 margin: "0 auto",
-                padding: "0 20px",
                 background: "#ffffff",
-                borderRadius: "4px",
-                boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
-                border: "1px solid #f1f5f9",
                 position: "relative",
                 overflow: "hidden",
               }}
@@ -3585,7 +3581,20 @@ export default function EnglishClassCourse2({
                               alignItems: "center",
                             }}
                           >
-                            <HTwo>{element.subtitle}</HTwo>
+                            <h2
+                              style={{
+                                fontSize: "22px",
+                                textAlign: "center",
+                                alignContent: "center",
+                                fontWeight: "600",
+                                justifyContent: "center",
+                                width: "100%",
+                                margin: "1rem",
+                                color: partnerColor(),
+                              }}
+                            >
+                              {element.subtitle}
+                            </h2>
                           </div>
                         )}
                         {element.image && element.subtitle && (

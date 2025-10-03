@@ -79,11 +79,7 @@ export default function VocabularyLesson({
     <div
       style={{
         padding: "0px",
-        background: "#f6f7f9",
         minHeight: "100px",
-        borderRadius: "4px",
-        boxShadow: "0 2px 8px #eee",
-        fontFamily: "Segoe UI, Arial, sans-serif",
       }}
     >
       <div

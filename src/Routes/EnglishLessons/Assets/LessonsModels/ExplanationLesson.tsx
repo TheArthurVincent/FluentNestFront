@@ -19,8 +19,6 @@ interface ExplanationLessonProps {
   };
 }
 
-
-
 export default function ExplanationLesson({
   headers,
   element,
@@ -28,8 +26,7 @@ export default function ExplanationLesson({
   return (
     <div
       style={{
-        padding: "2px",
-        margin: "20px 0",
+        margin: "5px 0",
       }}
     >
       <div
@@ -47,11 +44,7 @@ export default function ExplanationLesson({
               <div
                 key={index}
                 style={{
-                  background:
-                    "linear-gradient(135deg, #ffffff 0%, #f8fafb 100%)",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: "4px",
-                  padding: "10px",
+                  padding: "2px",
                   transition: "all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)",
                   position: "relative",
                   overflow: "hidden",
@@ -61,11 +54,11 @@ export default function ExplanationLesson({
                 <div
                   style={{
                     position: "absolute",
-                    top: "-50px",
-                    right: "-50px",
-                    width: "150px",
-                    height: "150px",
-                    background: `linear-gradient(135deg, ${partnerColor()}15 0%, ${partnerColor()}08 100%)`,
+                    top: "0px",
+                    left: "0px",
+                    width: "250px",
+                    height: "250px",
+                    // background: `linear-gradient(135deg, ${partnerColor()}15 0%, ${partnerColor()}08 100%)`,
                     borderRadius: "50%",
                     zIndex: 0,
                   }}
@@ -79,7 +72,7 @@ export default function ExplanationLesson({
                     fontWeight: "600",
                     marginBottom: "12px",
                     fontFamily: textTitleFont(),
-                    fontSize: 24,
+                    fontSize: 20,
                     letterSpacing: "-0.03em",
                     lineHeight: "1.2",
                   }}
