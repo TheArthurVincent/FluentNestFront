@@ -97,7 +97,7 @@ export function Groups({ headers, id }) {
       margin: "auto",
       marginTop: "16px",
       borderRadius: "4px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
       border: "1px solid #e8eaed",
       padding: "20px",
       gap: "10px",
@@ -371,7 +371,8 @@ export function Groups({ headers, id }) {
             maxHeight: "300px",
             backgroundColor: "white",
             overflowY: "auto",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1) inset",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06) inset",
           }}
         >
           {groups.map((group, index) => {

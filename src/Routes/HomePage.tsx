@@ -412,7 +412,7 @@ export function HomePage({ headers }: HeadersProps) {
                 alignItems: "center",
                 justifyContent: "center",
                 backdropFilter: "blur(10px)",
-                boxShadow: `0 0 20px grey`,
+                boxShadow: `0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)`,
                 border: `2px solid ${textPrimaryColorContrast()}30`,
                 animation: "pulse 2s ease-in-out infinite",
                 overflow: "hidden",

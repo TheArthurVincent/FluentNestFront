@@ -12,9 +12,6 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
   return (
     <div
       style={{
-        background: "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)",
-        borderRadius: "4px",
-        border: `2px solid ${partnerColor()}20`,
         position: "relative",
         overflow: "hidden",
       }}
@@ -28,7 +25,8 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
               marginBottom: "20px",
               borderRadius: "4px",
               overflow: "hidden",
-              boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+              boxShadow:
+                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
             <img

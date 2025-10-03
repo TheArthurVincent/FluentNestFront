@@ -146,7 +146,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     borderRadius: 5,
     overflow: "hidden",
     border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.06)",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     background: "#fff",
     transition: "transform 160ms ease, box-shadow 160ms ease",
     willChange: "transform",
@@ -154,7 +154,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
 
   const cardHover: React.CSSProperties = {
     transform: "translateY(-1px)",
-    boxShadow: "0 6px 14px rgba(0,0,0,0.08)",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
   };
 
   const thumbWrap: React.CSSProperties = {
@@ -349,44 +349,48 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
           />
         ))}
       </Routes>
-
       <Helmets text="Courses" />
-
       {displayRouteDiv ? (
         !loading ? (
-          <div
-            style={{
-              backgroundColor: "white",
-              width: "90vw",
-              maxWidth: 1200,
-              marginInline: "auto",
-            }}
-          >
-            <HOne>{UniversalTexts.theCourses}</HOne>
-            <LangSection
-              title="English"
-              allowed={groupedAllowed.en}
-              nonAllowed={groupedNonAllowed.en}
-            />
-            <LangSection
-              title="Español"
-              allowed={groupedAllowed.es}
-              nonAllowed={groupedNonAllowed.es}
-            />
-            <LangSection
-              title="Français"
-              allowed={groupedAllowed.fr}
-              nonAllowed={groupedNonAllowed.fr}
-            />
-
-            {(groupedAllowed.other.length > 0 ||
-              groupedNonAllowed.other.length > 0) && (
+          <div>
+            <div
+              style={{
+                padding: "10px",
+                boxShadow:
+                  "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)",
+                backgroundColor: "white",
+                borderRadius: 4,
+                width: "90vw",
+                maxWidth: 1200,
+                marginInline: "auto",
+              }}
+            >
+              <HOne>{UniversalTexts.theCourses}</HOne>
               <LangSection
-                title="🌐 Outros idiomas"
-                allowed={groupedAllowed.other}
-                nonAllowed={groupedNonAllowed.other}
+                title="English"
+                allowed={groupedAllowed.en}
+                nonAllowed={groupedNonAllowed.en}
               />
-            )}
+              <LangSection
+                title="Español"
+                allowed={groupedAllowed.es}
+                nonAllowed={groupedNonAllowed.es}
+              />
+              <LangSection
+                title="Français"
+                allowed={groupedAllowed.fr}
+                nonAllowed={groupedNonAllowed.fr}
+              />
+
+              {(groupedAllowed.other.length > 0 ||
+                groupedNonAllowed.other.length > 0) && (
+                <LangSection
+                  title="🌐 Outros idiomas"
+                  allowed={groupedAllowed.other}
+                  nonAllowed={groupedNonAllowed.other}
+                />
+              )}
+            </div>
           </div>
         ) : (
           <CircularProgress style={{ color: partnerColor() }} />

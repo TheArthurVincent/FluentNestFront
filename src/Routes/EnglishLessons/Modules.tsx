@@ -20,6 +20,7 @@ import EnglishClassCourse2 from "./Class";
 import { truncateTitle } from "./CoursesSideBar/CoursesSideBar";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
+import { CircularProgress } from "@mui/material";
 
 interface ModulesHomeProps {
   headers: MyHeadersType | null;
@@ -152,7 +153,7 @@ export default function Modules({
         backgroundColor: "white",
         padding: "10px",
         borderRadius: "4px",
-        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.59)",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)",
       }}
     >
       <Routes>
@@ -193,7 +194,7 @@ export default function Modules({
         <div>
           <HOne>{title}</HOne>
           {loading ? (
-            <>...</>
+            <><CircularProgress style={{ color: partnerColor() }} /></>
           ) : (
             <div
               style={{
@@ -264,7 +265,7 @@ export default function Modules({
                 height: "28px",
                 minWidth: "120px",
                 maxWidth: "150px",
-                outline: "none"
+                outline: "none",
               }}
             />
             <span

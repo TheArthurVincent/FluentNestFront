@@ -98,7 +98,8 @@ export default function VocabularyLesson({
                 borderRadius: "4px",
                 padding: "8px 12px 8px 12px",
                 position: "relative",
-                boxShadow: "0 1px 4px #e3e6ea",
+                boxShadow:
+                  "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                 minHeight: "40px",
                 display: "flex",
                 flexDirection: "column",
@@ -138,7 +139,8 @@ export default function VocabularyLesson({
                         justifyContent: "center",
                         fontSize: "13px",
                         background: "none",
-                        boxShadow: "0 1px 2px #e3e6ea",
+                        boxShadow:
+                          "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                         transition: "all 0.2s",
                         opacity: 0.6,
                       }}
@@ -201,7 +203,8 @@ export default function VocabularyLesson({
                           fontWeight: "bold",
                           fontSize: "15px",
                           cursor: "pointer",
-                          boxShadow: "0 1px 2px #e3e6ea",
+                          boxShadow:
+                            "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                           transition: "all 0.2s",
                           opacity: 0.7,
                         }}

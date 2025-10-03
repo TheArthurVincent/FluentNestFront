@@ -40,7 +40,7 @@ export function SubscriptionExpired() {
       padding: "32px",
       backgroundColor: "#ffffff",
       borderRadius: "4px",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
       border: "1px solid #e8eaed",
       maxWidth: "480px",
       textAlign: "center" as const,
@@ -60,7 +60,7 @@ export function SubscriptionExpired() {
     modernSection: {
       backgroundColor: "#ffffff",
       borderRadius: "4px",
-      boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+      boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
       border: "1px solid #e8eaed",
       padding: "24px",
       marginBottom: "16px",

@@ -10,7 +10,7 @@ export const ImgLesson = styled.img`
   margin: 1rem auto;
   object-position: center;
   border-radius: 4px;
-  box-shadow: 1px 1px 12px 3px #bbb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
   @media (max-width: 500px) {
     max-width: 15rem;
   }

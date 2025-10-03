@@ -220,7 +220,7 @@ export const TopBar: FC = () => {
     transform: "translate(-50%, -50%)",
     width: 400,
     bgcolor: "white",
-    boxShadow: 24,
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     p: 4,
     borderRadius: "4px",
     textAlign: "center",
@@ -415,7 +415,8 @@ export const TopBar: FC = () => {
                     style={{
                       position: "absolute",
                       background: "white",
-                      boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+                      boxShadow:
+                        "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                       borderRadius: "4px",
                       padding: "8px",
                       width: "180px",
@@ -576,7 +577,8 @@ export const TopBar: FC = () => {
                   top: "30px",
                   right: "-184px",
                   background: "white",
-                  boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
+                  boxShadow:
+                    "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)",
                   borderRadius: "4px",
                   padding: "10px",
                   minWidth: "250px",

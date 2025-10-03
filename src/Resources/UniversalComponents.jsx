@@ -379,7 +379,7 @@ export const ContainerClass = styled.div`
   overflow: hidden;
   border-radius: 4px;
   background-color: #000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 
   iframe {
     position: absolute;
@@ -397,7 +397,7 @@ export const IFrameVideoClass = styled.iframe`
   height: 100%;
   border: none;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 `;
 
 export const IFrameVideoClass2 = styled.iframe`
@@ -405,7 +405,7 @@ export const IFrameVideoClass2 = styled.iframe`
   height: 100%;
   border: none;
   border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+ box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 `;
 
 // Componente avançado para iframes responsivos com diferentes aspect ratios

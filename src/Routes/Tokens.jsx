@@ -34,7 +34,7 @@ export function Tokens({ id, headers, change }) {
     fontSize: "14px",
     fontFamily: textTitleFont(),
     fontWeight: "bold",
-    boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     position: "fixed",
     bottom: 10,
     right: 10,

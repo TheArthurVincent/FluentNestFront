@@ -49,7 +49,7 @@ export const HThreeModule = styled.h3`
   font-weight: bold;
   border-radius: 4px;
   transition: background-color 0.1s ease, color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
 
   &:hover {
     color: ${partnerColor()};

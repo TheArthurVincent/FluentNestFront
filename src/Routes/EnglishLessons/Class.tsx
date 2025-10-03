@@ -3210,7 +3210,8 @@ export default function EnglishClassCourse2({
               flexWrap: "wrap",
               gap: "8px",
               backdropFilter: "saturate(1.1) blur(2px)",
-              boxShadow: "0 1px 8px rgba(0,0,0,0.06)",
+              boxShadow:
+                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
             <span

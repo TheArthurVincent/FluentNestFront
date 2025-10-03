@@ -552,7 +552,8 @@ export function FindTeacher({ headers, id, plan }) {
             margin: "auto",
             marginBottom: "24px",
             borderRadius: "4px",
-            boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             padding: "24px",
@@ -1230,7 +1231,7 @@ export function FindTeacher({ headers, id, plan }) {
               marginTop: "16px",
               borderRadius: "4px",
               boxShadow:
-                "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
               border: "1px solid #e8eaed",
               maxWidth: "70rem",
               padding: "20px",
@@ -1735,7 +1736,8 @@ export function FindTeacher({ headers, id, plan }) {
             margin: "auto",
             marginTop: "16px",
             borderRadius: "4px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             padding: "20px",
@@ -2071,7 +2073,8 @@ export function FindTeacher({ headers, id, plan }) {
             margin: "auto",
             marginTop: "16px",
             borderRadius: "4px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             padding: "20px",
@@ -2397,7 +2400,8 @@ export function FindTeacher({ headers, id, plan }) {
             margin: "auto",
             marginTop: "16px",
             borderRadius: "4px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             padding: "20px",
@@ -2437,7 +2441,8 @@ export function FindTeacher({ headers, id, plan }) {
                     borderRadius: "4px",
                     marginBottom: "24px",
                     border: "1px solid #e8eaed",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                    boxShadow:
+                      "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                   }}
                 >
                   <Grid container spacing={3}>
@@ -2595,7 +2600,8 @@ export function FindTeacher({ headers, id, plan }) {
             outline: "none",
             transition: "all 0.2s ease",
             backgroundColor: "#ffffff",
-            boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
           }}
           type="text"
           placeholder="Pesquisar aluno..."
@@ -2608,7 +2614,8 @@ export function FindTeacher({ headers, id, plan }) {
           }}
           onBlur={(e) => {
             e.target.style.borderColor = "#e8eaed";
-            e.target.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+            e.target.style.boxShadow =
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)";
           }}
         />
       </div>
@@ -2619,7 +2626,8 @@ export function FindTeacher({ headers, id, plan }) {
             margin: "auto",
             marginTop: "1rem",
             borderRadius: "4px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             maxHeight: "30rem",
@@ -2968,7 +2976,8 @@ export function FindTeacher({ headers, id, plan }) {
         PaperProps={{
           style: {
             borderRadius: "4px",
-            boxShadow: "0 10px 40px rgba(0,0,0,0.1)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             border: "1px solid #e8eaed",
           },
         }}
@@ -3028,7 +3037,8 @@ export function FindTeacher({ headers, id, plan }) {
               borderRadius: "4px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              boxShadow:
+                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
             <Typography
@@ -3272,7 +3282,8 @@ export function FindTeacher({ headers, id, plan }) {
                   borderRadius: "4px",
                   textTransform: "none",
                   fontSize: "11px",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  boxShadow:
+                    "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                 }}
               >
                 Salvar Informações
@@ -3288,7 +3299,8 @@ export function FindTeacher({ headers, id, plan }) {
               borderRadius: "4px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              boxShadow:
+                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
             <Typography
@@ -3343,7 +3355,8 @@ export function FindTeacher({ headers, id, plan }) {
                     borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "11px",
-                    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                    boxShadow:
+                      "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                   }}
                 >
                   Salvar Permissões
@@ -3360,7 +3373,8 @@ export function FindTeacher({ headers, id, plan }) {
                 borderRadius: "4px",
                 marginBottom: "24px",
                 border: "1px solid #e8eaed",
-                boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+                boxShadow:
+                  "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
               }}
             >
               <Typography
@@ -3524,7 +3538,8 @@ export function FindTeacher({ headers, id, plan }) {
                       borderRadius: "4px",
                       textTransform: "none",
                       fontWeight: "500",
-                      boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      boxShadow:
+                        "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                     }}
                     color={item.color}
                     onClick={() =>
@@ -3646,7 +3661,8 @@ export function FindTeacher({ headers, id, plan }) {
               borderRadius: "4px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
-              boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+              boxShadow:
+                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
             <Typography
@@ -3749,7 +3765,8 @@ export function FindTeacher({ headers, id, plan }) {
                   borderRadius: "4px",
                   textTransform: "none",
                   fontSize: "11px",
-                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  boxShadow:
+                    "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                 }}
               >
                 Alterar Senha

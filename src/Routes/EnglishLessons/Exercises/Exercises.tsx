@@ -156,7 +156,8 @@ export function Card({
         borderRadius: 6,
         border: "1px solid #E5E7EB",
         background: "#fff",
-        boxShadow: "0 8px 28px rgba(0,0,0,0.08), 0 2px 6px rgba(0,0,0,0.04)",
+        boxShadow:
+          "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
         boxSizing: "border-box",
       }}
     >
