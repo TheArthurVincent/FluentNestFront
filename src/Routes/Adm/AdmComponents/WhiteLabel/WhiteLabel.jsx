@@ -353,7 +353,7 @@ export default function WhiteLabelPreview({ headers }) {
     overflowY: "auto",
     fontFamily: formData.textGeneralFont,
     color: formData.contrastColor,
-    borderRadius: "6px",
+    borderRadius: "4px",
     marginTop: "40px",
     border: `2px solid black`,
     width: "100%",
@@ -371,7 +371,7 @@ export default function WhiteLabelPreview({ headers }) {
     logo: formData.logo,
     padding: "10px 20px",
     border: "none",
-    borderRadius: "6px",
+    borderRadius: "4px",
     fontSize: "16px",
     fontFamily: formData.textTitleFont,
     cursor: "pointer",
@@ -426,7 +426,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               <div style={{ display: "grid", gap: "5px" }}>
@@ -454,7 +454,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               {" "}
@@ -465,7 +465,7 @@ export default function WhiteLabelPreview({ headers }) {
                   style={{
                     color: formData.color,
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                   }}
                 >
                   Cor Principal
@@ -497,7 +497,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               {" "}
@@ -507,7 +507,7 @@ export default function WhiteLabelPreview({ headers }) {
                     color: formData.contrastColor,
                     backgroundColor: formData.color,
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                   }}
                 >
                   Cor de contraste:{" "}
@@ -534,13 +534,13 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               <label
                 style={{
                   padding: "5px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                 }}
               >
                 Cor de fundo:{" "}
@@ -572,7 +572,7 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               <div style={{ display: "grid", gap: "5px" }}>
@@ -580,7 +580,7 @@ export default function WhiteLabelPreview({ headers }) {
                 <label
                   style={{
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     color: formData.color,
                     fontSize: "1.4rem",
                     fontWeight: "600",
@@ -615,14 +615,14 @@ export default function WhiteLabelPreview({ headers }) {
                 padding: "10px",
                 width: "200px",
                 border: "1px solid #ccc",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               <div style={{ display: "grid" }}>
                 <label
                   style={{
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     fontFamily: formData.textGeneralFont,
                   }}
                 >
@@ -722,7 +722,7 @@ export default function WhiteLabelPreview({ headers }) {
               className="box-shadow-black smooth"
               style={{
                 backgroundColor: alwaysWhite(),
-                borderRadius: "6px",
+                borderRadius: "4px",
                 color: alwaysBlack(),
                 padding: "0 0 2rem",
                 width: "85%",
@@ -795,7 +795,7 @@ export default function WhiteLabelPreview({ headers }) {
                         backgroundColor: formData.color,
                         textAlign: "center",
                         padding: "12px",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                       }}
                     >
                       <h1

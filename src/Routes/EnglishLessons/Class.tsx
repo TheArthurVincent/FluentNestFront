@@ -207,7 +207,7 @@ export default function EnglishClassCourse2({
       @import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
                 body {font-family: ${textGeneralFont()}; sans-serif; padding: 24px; }
                 h1, h2, h3 { color: ${partnerColor()};font-family: ${textGeneralFont()} }
-                img { max-width: 100%; border-radius: 6px; margin-bottom: 1rem; }
+                img { max-width: 100%; border-radius: 4px; margin-bottom: 1rem; }
                 p { font-size: 18px; margin-bottom: 1rem; }
     </style>
   </head>
@@ -3513,7 +3513,7 @@ export default function EnglishClassCourse2({
                 margin: "0 auto",
                 padding: "0 20px",
                 background: "#ffffff",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
                 border: "1px solid #f1f5f9",
                 position: "relative",
@@ -3606,7 +3606,7 @@ export default function EnglishClassCourse2({
                               padding: "0.5rem",
                               textAlign: "center",
                               backgroundColor: "#f6f6f6",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               margin: "0.5rem 0",
                               fontStyle: "italic",
                             }}

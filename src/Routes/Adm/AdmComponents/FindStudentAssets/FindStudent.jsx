@@ -557,7 +557,7 @@ export function FindStudent({
             backgroundColor: "#ffffff",
             margin: "auto",
             marginBottom: "24px",
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -649,7 +649,7 @@ export function FindStudent({
                 style={{
                   minWidth: "auto",
                   padding: "8px 10px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   color: partnerColor(),
                   borderColor: partnerColor(),
                   fontSize: "8px",
@@ -666,7 +666,7 @@ export function FindStudent({
               style={{
                 minWidth: "auto",
                 padding: "8px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 color: "#6c757d",
                 borderColor: "#e8eaed",
                 marginRight: "8px",
@@ -923,7 +923,7 @@ export function FindStudent({
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.feeUpToDate
@@ -971,7 +971,7 @@ export function FindStudent({
                     display: "inline-flex",
                     alignItems: "center",
                     padding: "4px 8px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     fontSize: "8px",
                     fontWeight: "500",
                     backgroundColor: selectedStudent.onHold
@@ -1020,7 +1020,7 @@ export function FindStudent({
                       display: "inline-flex",
                       alignItems: "center",
                       padding: "4px 8px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       fontSize: "8px",
                       fontWeight: "500",
                       backgroundColor:
@@ -1111,7 +1111,7 @@ export function FindStudent({
                       display: "inline-flex",
                       alignItems: "center",
                       padding: "4px 8px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       fontSize: "8px",
                       fontWeight: "500",
                       backgroundColor: "#e1f5fe",
@@ -1241,7 +1241,7 @@ export function FindStudent({
               backgroundColor: "#ffffff",
               margin: "auto",
               marginTop: "16px",
-              borderRadius: "6px",
+              borderRadius: "4px",
               boxShadow:
                 "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
               border: "1px solid #e8eaed",
@@ -1300,7 +1300,7 @@ export function FindStudent({
                         style={{
                           padding: "10px 16px",
                           backgroundColor: "#fafbfc",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #e8eaed",
                           display: "flex",
                           flexDirection: "column",
@@ -1353,7 +1353,7 @@ export function FindStudent({
                                 display: "inline-flex",
                                 alignItems: "center",
                                 padding: "2px 6px",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 fontSize: "8px",
                                 fontWeight: "500",
                                 backgroundColor: report.paidFor
@@ -1495,7 +1495,7 @@ export function FindStudent({
                     marginTop: "16px",
                     padding: "10px 16px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #dee2e6",
                   }}
                 >
@@ -1674,7 +1674,7 @@ export function FindStudent({
                     marginTop: "16px",
                     padding: "8px 10px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #dee2e6",
                   }}
                 >
@@ -1747,7 +1747,7 @@ export function FindStudent({
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -1809,7 +1809,7 @@ export function FindStudent({
                             style={{
                               backgroundColor: "#ffffff",
                               border: "1px solid #e9ecef",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               padding: "20px",
                               transition: "all 0.3s ease",
                               borderLeft: `4px solid ${
@@ -1860,7 +1860,7 @@ export function FindStudent({
                                         ? "#856404"
                                         : "#495057",
                                     padding: "4px 10px",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontSize: "8px",
 
                                     textTransform: "uppercase",
@@ -1873,7 +1873,7 @@ export function FindStudent({
                                     backgroundColor: "#e9ecef",
                                     color: "#495057",
                                     padding: "4px 8px",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontSize: "8px",
                                   }}
                                 >
@@ -2056,7 +2056,7 @@ export function FindStudent({
                     textAlign: "center",
                     padding: "40px 20px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "2px dashed #dee2e6",
                   }}
                 >
@@ -2083,7 +2083,7 @@ export function FindStudent({
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -2145,7 +2145,7 @@ export function FindStudent({
                             style={{
                               backgroundColor: "#ffffff",
                               border: "1px solid #e9ecef",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               padding: "20px",
                               transition: "all 0.3s ease",
                               borderLeft: `4px solid ${
@@ -2196,7 +2196,7 @@ export function FindStudent({
                                         ? "#856404"
                                         : "#495057",
                                     padding: "4px 10px",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontSize: "8px",
 
                                     textTransform: "uppercase",
@@ -2209,7 +2209,7 @@ export function FindStudent({
                                     backgroundColor: "#e9ecef",
                                     color: "#495057",
                                     padding: "4px 8px",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontSize: "8px",
                                   }}
                                 >
@@ -2382,7 +2382,7 @@ export function FindStudent({
                     textAlign: "center",
                     padding: "40px 20px",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "2px dashed #dee2e6",
                   }}
                 >
@@ -2409,7 +2409,7 @@ export function FindStudent({
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -2447,7 +2447,7 @@ export function FindStudent({
                   style={{
                     backgroundColor: "#ffffff",
                     padding: "24px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     marginBottom: "24px",
                     border: "1px solid #e8eaed",
                     boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -2603,7 +2603,7 @@ export function FindStudent({
             padding: "10px 16px",
             margin: "10px",
             border: "1px solid #e8eaed",
-            borderRadius: "6px",
+            borderRadius: "4px",
             fontSize: "11px",
             outline: "none",
             transition: "all 0.2s ease",
@@ -2631,7 +2631,7 @@ export function FindStudent({
             backgroundColor: "#ffffff",
             margin: "auto",
             marginTop: "1rem",
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
@@ -2738,7 +2738,7 @@ export function FindStudent({
                         <span
                           style={{
                             padding: "4px 8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             fontSize: "8px",
                             fontWeight: "500",
                             backgroundColor:
@@ -2786,7 +2786,7 @@ export function FindStudent({
             backgroundColor: "#fafbfc",
             margin: "auto",
             marginTop: "16px",
-            borderRadius: "6px",
+            borderRadius: "4px",
             border: "1px solid #e8eaed",
             maxWidth: "70rem",
             padding: "10px 16px",
@@ -2825,7 +2825,7 @@ export function FindStudent({
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2864,7 +2864,7 @@ export function FindStudent({
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2903,7 +2903,7 @@ export function FindStudent({
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2942,7 +2942,7 @@ export function FindStudent({
                   textAlign: "center",
                   padding: "8px 4px",
                   backgroundColor: "#ffffff",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #e8eaed",
                 }}
               >
@@ -2982,7 +2982,7 @@ export function FindStudent({
         maxWidth="lg"
         PaperProps={{
           style: {
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 10px 40px rgba(0,0,0,0.1)",
             border: "1px solid #e8eaed",
           },
@@ -3025,7 +3025,7 @@ export function FindStudent({
               style={{
                 minWidth: "auto",
                 padding: "8px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 color: "#6c757d",
               }}
             >
@@ -3040,7 +3040,7 @@ export function FindStudent({
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "6px",
+              borderRadius: "4px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3069,7 +3069,7 @@ export function FindStudent({
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": {
                         borderColor: "#e8eaed",
@@ -3098,7 +3098,7 @@ export function FindStudent({
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": {
                         borderColor: "#e8eaed",
@@ -3137,7 +3137,7 @@ export function FindStudent({
                   }}
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": {
                         borderColor: !isCpfValid ? "#e74c3c" : "#e8eaed",
@@ -3166,7 +3166,7 @@ export function FindStudent({
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": { borderColor: "#e8eaed" },
                       "&:hover fieldset": { borderColor: "#c3c4c7" },
@@ -3189,7 +3189,7 @@ export function FindStudent({
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": { borderColor: "#e8eaed" },
                       "&:hover fieldset": { borderColor: "#c3c4c7" },
@@ -3212,7 +3212,7 @@ export function FindStudent({
                   size="small"
                   sx={{
                     "& .MuiOutlinedInput-root": {
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& fieldset": { borderColor: "#e8eaed" },
                       "&:hover fieldset": { borderColor: "#c3c4c7" },
@@ -3284,7 +3284,7 @@ export function FindStudent({
                   color: "#fff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   textTransform: "none",
                   fontSize: "11px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -3300,7 +3300,7 @@ export function FindStudent({
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "6px",
+              borderRadius: "4px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3328,7 +3328,7 @@ export function FindStudent({
                     label="Permissões"
                     onChange={(e) => setPermissions(e.target.value)}
                     sx={{
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#fafbfc",
                       "& .MuiOutlinedInput-notchedOutline": {
                         borderColor: "#e8eaed",
@@ -3355,7 +3355,7 @@ export function FindStudent({
                     color: "#fff",
                     fontWeight: "500",
                     padding: "10px 24px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "11px",
                     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -3372,7 +3372,7 @@ export function FindStudent({
               style={{
                 backgroundColor: "#ffffff",
                 padding: "24px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 marginBottom: "24px",
                 border: "1px solid #e8eaed",
                 boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3397,7 +3397,7 @@ export function FindStudent({
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3429,7 +3429,7 @@ export function FindStudent({
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3461,7 +3461,7 @@ export function FindStudent({
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3493,7 +3493,7 @@ export function FindStudent({
                       textAlign: "center",
                       padding: "20px",
                       backgroundColor: "#fafbfc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #e8eaed",
                     }}
                   >
@@ -3536,7 +3536,7 @@ export function FindStudent({
                     style={{
                       fontSize: "11px",
                       padding: "8px 16px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       textTransform: "none",
                       fontWeight: "500",
                       boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
@@ -3568,7 +3568,7 @@ export function FindStudent({
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#fafbfc",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         "& fieldset": {
                           borderColor: "#e8eaed",
                         },
@@ -3600,7 +3600,7 @@ export function FindStudent({
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         backgroundColor: "#fafbfc",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         "& fieldset": {
                           borderColor: "#e8eaed",
                         },
@@ -3640,7 +3640,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     padding: "10px 24px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "11px",
                     borderColor: partnerColor(),
@@ -3658,7 +3658,7 @@ export function FindStudent({
             style={{
               backgroundColor: "#ffffff",
               padding: "24px",
-              borderRadius: "6px",
+              borderRadius: "4px",
               marginBottom: "24px",
               border: "1px solid #e8eaed",
               boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
@@ -3688,7 +3688,7 @@ export function FindStudent({
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "#fafbfc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       "& fieldset": {
                         borderColor: "#e8eaed",
                       },
@@ -3721,7 +3721,7 @@ export function FindStudent({
                   sx={{
                     "& .MuiOutlinedInput-root": {
                       backgroundColor: "#fafbfc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       "& fieldset": {
                         borderColor: "#e8eaed",
                       },
@@ -3761,7 +3761,7 @@ export function FindStudent({
                   color: "#fff",
                   fontWeight: "500",
                   padding: "10px 24px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   textTransform: "none",
                   fontSize: "11px",
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
@@ -3778,7 +3778,7 @@ export function FindStudent({
               display: "grid",
               justifyItems: "center",
               alignItems: "center",
-              borderRadius: "6px",
+              borderRadius: "4px",
               border: "1px solid #ffcccc",
             }}
           >
@@ -3791,7 +3791,7 @@ export function FindStudent({
                   style={{
                     fontWeight: "500",
                     padding: "10px 20px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     textTransform: "none",
                     fontSize: "11px",
                     borderColor: "#dc3545",
@@ -3841,7 +3841,7 @@ export function FindStudent({
                     style={{
                       fontWeight: "500",
                       padding: "10px 20px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       textTransform: "none",
                       fontSize: "11px",
                       color: "#6c757d",
@@ -3856,7 +3856,7 @@ export function FindStudent({
                     style={{
                       fontWeight: "500",
                       padding: "10px 20px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       textTransform: "none",
                       fontSize: "11px",
                       backgroundColor: "#dc3545",

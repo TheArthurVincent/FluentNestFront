@@ -143,7 +143,7 @@ const AddFlashCards = ({
   return (
     <div
       style={{
-        borderRadius: "6px",
+        borderRadius: "4px",
         zIndex: 10000,
         bottom: 10,
         right: 10,
@@ -264,7 +264,7 @@ const AddFlashCards = ({
                       listStyle: "none",
                       padding: "1rem",
                       border: "1px solid #ccc",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       backgroundColor: "#f9f9f9",
                       boxShadow: "2px 2px 6px rgba(0, 0, 0, 0.05)",
                     }}

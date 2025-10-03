@@ -99,7 +99,7 @@ function CoursesSideBar({ courses }) {
                           <CoursesListItem
                             className="hover-color"
                             style={{
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               color: "#000",
                               backgroundColor: location.pathname.includes(
                                 pathGenerator(lesson.title)

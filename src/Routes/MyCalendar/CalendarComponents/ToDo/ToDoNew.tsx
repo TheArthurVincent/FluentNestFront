@@ -131,7 +131,7 @@ function ToDoAddButton({ userId, onCreated }: ToDoAddButtonProps) {
             style={{
               background: "#fff",
               padding: "2rem",
-              borderRadius: "6px",
+              borderRadius: "4px",
               width: "320px",
               boxShadow: "0 2px 16px #0002",
             }}
@@ -178,7 +178,7 @@ function ToDoAddButton({ userId, onCreated }: ToDoAddButtonProps) {
                 disabled={NumberOfChecklists === 1}
                 style={{
                   border: "none",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "8px 16px",
                   fontWeight: 600,
                   backgroundColor: "#edededff",
@@ -194,7 +194,7 @@ function ToDoAddButton({ userId, onCreated }: ToDoAddButtonProps) {
                 onClick={() => setNumberOfChecklists(NumberOfChecklists + 1)}
                 style={{
                   border: "none",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "8px 16px",
                   fontWeight: 600,
                   backgroundColor: "#edededff",
@@ -236,7 +236,7 @@ function ToDoAddButton({ userId, onCreated }: ToDoAddButtonProps) {
                   background: "blue",
                   color: "white",
                   border: "none",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "8px 16px",
                 }}
               >
@@ -263,7 +263,7 @@ function ToDoAddButton({ userId, onCreated }: ToDoAddButtonProps) {
                       : "green",
                   color: "white",
                   border: "none",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "8px 16px",
                   fontWeight: 600,
                 }}

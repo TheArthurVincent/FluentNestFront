@@ -98,7 +98,7 @@ const SelectExercise: React.FC<SelectExerciseProps> = ({
                 marginBottom: "15px",
                 backgroundColor: getFeedbackColor(feedback[index]),
                 padding: "10px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 position: "relative",
               }}
             >
@@ -214,7 +214,7 @@ const SelectExercise: React.FC<SelectExerciseProps> = ({
                       backgroundColor: lightGreyColor(),
                       padding: "5px",
                       marginRight: "5px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                     }}
                   >
                     {opt.option && opt.option}

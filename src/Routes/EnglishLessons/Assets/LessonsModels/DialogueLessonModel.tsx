@@ -104,7 +104,7 @@ export default function DialogueLessonModel({
         padding: "20px",
         margin: "20px 0",
         backgroundColor: "#f8fafc",
-        borderRadius: "6px",
+        borderRadius: "4px",
         border: "1px solid #e2e8f0",
       }}
     >
@@ -135,7 +135,7 @@ export default function DialogueLessonModel({
           onChange={(e) => setSelectedCountry(e.target.value)}
           style={{
             padding: "8px 12px",
-            borderRadius: "6px",
+            borderRadius: "4px",
             border: `1px solid ${partnerColor()}`,
             backgroundColor: "#ffffff",
             color: partnerColor(),
@@ -316,7 +316,7 @@ export default function DialogueLessonModel({
             marginTop: "24px",
             padding: "16px",
             backgroundColor: "#f1f5f9",
-            borderRadius: "6px",
+            borderRadius: "4px",
             border: "1px solid #e2e8f0",
             fontSize: "18px",
             color: "#64748b",

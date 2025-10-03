@@ -33,7 +33,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
           alignItems: "center",
           cursor: "pointer",
           padding: "8px",
-          borderRadius: "6px",
+          borderRadius: "4px",
           transition: "background-color 0.2s",
         }}
         onClick={() => setShowModal(true)}
@@ -75,7 +75,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
             width: "100%",
             height: "12px",
             backgroundColor: "#e0e0e0",
-            borderRadius: "6px",
+            borderRadius: "4px",
             overflow: "hidden",
             margin: "5px 0",
             position: "relative",
@@ -85,7 +85,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
             style={{
               height: "100%",
               backgroundColor: isCompleted ? "#4CAF50" : partnerColor(),
-              borderRadius: "6px",
+              borderRadius: "4px",
             }}
             initial={{ width: "0%" }}
             animate={{ width: `${progressPercentage}%` }}
@@ -147,7 +147,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
             transition={{ duration: 0.2 }}
             style={{
               backgroundColor: "#fff",
-              borderRadius: "6px",
+              borderRadius: "4px",
               padding: "24px",
               maxWidth: "320px",
               width: "90%",
@@ -184,7 +184,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                 marginBottom: "20px",
                 padding: "16px",
                 backgroundColor: isCompleted ? "#e8f5e8" : "#f8f9fa",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: isCompleted ? "2px solid #4CAF50" : "none",
               }}
             >
@@ -334,7 +334,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                 textAlign: "center",
                 padding: "12px",
                 backgroundColor: isCompleted ? "#e8f5e8" : "#f8f9fa",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 marginBottom: "16px",
               }}
             >
@@ -379,7 +379,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                 backgroundColor: partnerColor(),
                 color: "#fff",
                 border: "none",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 fontSize: "14px",
                 fontWeight: "600",
                 cursor: "pointer",

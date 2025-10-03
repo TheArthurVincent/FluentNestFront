@@ -19,7 +19,7 @@ export default function RankingExplanationComponent() {
             style={{
               color: "#000",
               padding: "5px",
-              borderRadius: "6px",
+              borderRadius: "4px",
               border: "black solid 2px",
               backgroundColor: "white",
               display: "flex",
@@ -58,7 +58,7 @@ export default function RankingExplanationComponent() {
                   alignItems: "center",
                   margin: "5px",
                   padding: "5px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   gap: "5px",
                 }}
               >
@@ -71,7 +71,7 @@ export default function RankingExplanationComponent() {
                     fontWeight: 600,
                     padding: "5px",
                     top: "*15px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                   }}
                 >
                   {score.score}

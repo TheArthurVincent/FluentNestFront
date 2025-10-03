@@ -351,7 +351,7 @@ export function MyClasses({ headers }) {
               const timeChipStyle = {
                 display: "inline-block",
                 padding: "4px 8px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: isRealizada ? "1px solid #065f46" : "1px solid #a31111",
                 background: isRealizada
                   ? "rgba(5,150,105,0.07)"
@@ -365,7 +365,7 @@ export function MyClasses({ headers }) {
                 flexDirection: "column",
                 backgroundColor: "#fff",
                 border: "1px solid #e5e7eb",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 transition: "box-shadow 0.2s ease, transform 0.06s ease",
                 boxShadow: "0 1px 2px rgba(0,0,0,0.06)",
                 overflow: "hidden",
@@ -476,7 +476,7 @@ export function MyClasses({ headers }) {
                               style={{
                                 display: "inline-block",
                                 padding: "3px 8px",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 fontSize: "11px",
                                 fontWeight: 700,
                                 backgroundColor: isRealizada
@@ -508,7 +508,7 @@ export function MyClasses({ headers }) {
                               padding: "10px",
                               backgroundColor: "#fff",
                               border: "1px solid #e5e7eb",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                             }}
                           >
                             <>
@@ -538,7 +538,7 @@ export function MyClasses({ headers }) {
                               padding: "12px",
                               backgroundColor: "#fffef7",
                               border: "1px solid #fde68a",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                             }}
                           >
                             <strong
@@ -586,7 +586,7 @@ export function MyClasses({ headers }) {
                                 padding: "8px",
                                 backgroundColor: "#fff",
                                 border: "1px solid #e5e7eb",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                               }}
                             >
                               <Link
@@ -613,7 +613,7 @@ export function MyClasses({ headers }) {
                                 padding: "8px",
                                 backgroundColor: "#fff",
                                 border: "1px solid #e5e7eb",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                               }}
                             >
                               <Link
@@ -646,7 +646,7 @@ export function MyClasses({ headers }) {
                                 paddingBottom: "56.25%",
                                 height: 0,
                                 overflow: "hidden",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.08)",
                                 backgroundColor: "#000",
                               }}
@@ -666,7 +666,7 @@ export function MyClasses({ headers }) {
                                   width: "100%",
                                   height: "100%",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                 }}
                                 allowFullScreen
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -678,7 +678,7 @@ export function MyClasses({ headers }) {
                                 padding: "8px",
                                 backgroundColor: "#fff",
                                 border: "1px solid #e5e7eb",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                               }}
                             >
                               <Link

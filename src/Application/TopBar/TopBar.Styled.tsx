@@ -83,7 +83,7 @@ export const TopBarNavigationBurger = styled.div.attrs({
     font-weight: 600;
     font-size: 1rem;
     padding: 0.8rem 1rem;
-    border-radius: 6px;
+    border-radius: 4px;
     transition: color 0.3s, background-color 0.3s, padding-left 0.3s,
       transform 0.3s;
 

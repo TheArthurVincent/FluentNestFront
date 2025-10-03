@@ -31,7 +31,7 @@ export default function ExerciseLessonModel({
               key={index}
               style={{
                 background: "linear-gradient(135deg, #ffffff 0%, #fafbfc 100%)",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 padding: "8px",
                 transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
                 boxShadow:
@@ -51,7 +51,7 @@ export default function ExerciseLessonModel({
                   style={{
                     background: `linear-gradient(135deg, ${partnerColor()} 0%, ${partnerColor()}dd 100%)`,
                     color: "white",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     width: "28px",
                     height: "28px",
                     display: "flex",

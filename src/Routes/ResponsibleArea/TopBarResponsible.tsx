@@ -36,7 +36,7 @@ function TopBarResponsible() {
           background: partnerColor(),
           color: "#fff",
           border: "none",
-          borderRadius: "6px",
+          borderRadius: "4px",
           fontWeight: 600,
           fontSize: "15px",
           cursor: "pointer",

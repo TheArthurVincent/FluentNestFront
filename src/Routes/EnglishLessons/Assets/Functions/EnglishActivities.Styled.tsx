@@ -9,7 +9,7 @@ export const ImgLesson = styled.img`
   display: block;
   margin: 1rem auto;
   object-position: center;
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: 1px 1px 12px 3px #bbb;
   @media (max-width: 500px) {
     max-width: 15rem;
@@ -24,7 +24,7 @@ export const LiSentence = styled.li`
   margin-bottom: 10px;
   padding: 10px;
   border: solid 1px #eee;
-  border-radius: 6px;
+  border-radius: 4px;
   background-color: none;
 
   &:hover {
@@ -39,7 +39,7 @@ export const LiSentence = styled.li`
 
 export const RouteDivNotes = styled.div`
   background-color: ${alwaysWhite()};
-  border-radius: 6px;
+  border-radius: 4px;
   color: ${alwaysBlack()};
   padding: 0.5rem;
   position: sticky;

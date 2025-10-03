@@ -448,7 +448,7 @@ const SentenceMining = ({
                         style={{
                           padding: "5px",
                           marginBottom: "15px",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           color: textPrimaryColorContrast(),
                           backgroundColor: partnerColor(),
                           fontSize: "18px",
@@ -558,7 +558,7 @@ const SentenceMining = ({
                   padding: "8px",
                   fontWeight: 600,
                   width: "100%",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #ccc",
                   fontSize: "16px",
                 }}
@@ -573,7 +573,7 @@ const SentenceMining = ({
                   padding: "8px",
                   fontWeight: 600,
                   width: "100%",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #ccc",
                   fontSize: "16px",
                 }}
@@ -588,7 +588,7 @@ const SentenceMining = ({
                   padding: "8px",
                   fontWeight: 600,
                   width: "100%",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #ccc",
                   fontSize: "16px",
                 }}
@@ -603,7 +603,7 @@ const SentenceMining = ({
                   padding: "8px",
                   fontWeight: 600,
                   width: "100%",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #ccc",
                   fontSize: "16px",
                 }}

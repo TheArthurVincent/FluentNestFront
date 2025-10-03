@@ -343,7 +343,7 @@ function NewRecurringEventCalendar({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          borderRadius: "6px",
+          borderRadius: "4px",
         }}
       >
         {/* header */}
@@ -401,7 +401,7 @@ function NewRecurringEventCalendar({
                       : "grey",
                     color: "white",
                     padding: "5px 1rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "none",
                     cursor: "pointer",
                     marginBottom: "1rem",
@@ -428,7 +428,7 @@ function NewRecurringEventCalendar({
                       : "grey",
                     color: "white",
                     padding: "5px 1rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "none",
                     cursor: "pointer",
                     marginBottom: "1rem",
@@ -458,7 +458,7 @@ function NewRecurringEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                     backgroundColor: "white",
@@ -490,7 +490,7 @@ function NewRecurringEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                     backgroundColor: "white",
@@ -538,7 +538,7 @@ function NewRecurringEventCalendar({
                           style={{
                             backgroundColor: isExpiring ? "#ffebee" : "#f8f9fa",
                             padding: "0.5rem",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: isExpiring
                               ? "2px solid #f44336"
                               : "1px solid #dee2e6",
@@ -630,7 +630,7 @@ function NewRecurringEventCalendar({
                                   backgroundColor: partnerColor(),
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   cursor: "pointer",
                                 }}
                               >
@@ -643,7 +643,7 @@ function NewRecurringEventCalendar({
                                   backgroundColor: "#dc3545",
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   cursor: "pointer",
                                 }}
                               >
@@ -666,7 +666,7 @@ function NewRecurringEventCalendar({
             display: seeEditTutoring ? "block" : "none",
             backgroundColor: "#fff3cd",
             padding: "1.5rem",
-            borderRadius: "6px",
+            borderRadius: "4px",
             border: "1px solid #ffeaa7",
             marginBottom: "1.5rem",
           }}
@@ -688,7 +688,7 @@ function NewRecurringEventCalendar({
                 backgroundColor: "#dc3545",
                 color: "white",
                 border: "none",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 padding: "5px 1rem",
                 cursor: "pointer",
               }}
@@ -703,7 +703,7 @@ function NewRecurringEventCalendar({
               value={weekDay}
               style={{
                 padding: "5px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: "1px solid #ced4da",
                 backgroundColor: "white",
               }}
@@ -723,7 +723,7 @@ function NewRecurringEventCalendar({
               value={timeOfTutoring}
               style={{
                 padding: "5px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: "1px solid #ced4da",
                 backgroundColor: "white",
               }}
@@ -745,7 +745,7 @@ function NewRecurringEventCalendar({
               type="text"
               style={{
                 padding: "5px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: "1px solid #ced4da",
               }}
               required
@@ -768,7 +768,7 @@ function NewRecurringEventCalendar({
               max="300"
               style={{
                 padding: "5px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: "1px solid #ced4da",
                 maxWidth: "80px",
                 textAlign: "center",
@@ -783,7 +783,7 @@ function NewRecurringEventCalendar({
                 backgroundColor: "#28a745",
                 color: "white",
                 border: "none",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 cursor: "pointer",
                 fontWeight: 500,
               }}
@@ -800,7 +800,7 @@ function NewRecurringEventCalendar({
             style={{
               padding: "8px 1.5rem",
               marginBottom: "5px",
-              borderRadius: "6px",
+              borderRadius: "4px",
               backgroundColor: !showSeeEditTutoring ? "#f0f9f0" : "#fdf2f2",
               border: !showSeeEditTutoring
                 ? "1px solid #d4e6d4"
@@ -838,7 +838,7 @@ function NewRecurringEventCalendar({
             <div
               style={{
                 padding: "1.5rem",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 backgroundColor: "#d4edda",
                 border: "1px solid #c3e6cb",
               }}
@@ -853,7 +853,7 @@ function NewRecurringEventCalendar({
                   value={theNewWeekDay}
                   style={{
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     backgroundColor: "white",
                   }}
@@ -873,7 +873,7 @@ function NewRecurringEventCalendar({
                   value={theNewTimeOfTutoring}
                   style={{
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     backgroundColor: "white",
                   }}
@@ -895,7 +895,7 @@ function NewRecurringEventCalendar({
                   type="text"
                   style={{
                     padding: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                   }}
                   required
@@ -1167,7 +1167,7 @@ function NewRecurringEventCalendar({
                       : partnerColor(),
                     color: "white",
                     border: "none",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     cursor: isFormIncompleteNew ? "not-allowed" : "pointer",
                     fontWeight: 500,
                     opacity: isFormIncompleteNew ? 0.6 : 1,

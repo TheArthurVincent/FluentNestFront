@@ -233,7 +233,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                         paddingBottom: "56.25%", // 16:9 aspect ratio
                         height: 0,
                         overflow: "hidden",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
                         backgroundColor: "#000",
                       }}
@@ -247,7 +247,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                           width: "100%",
                           height: "100%",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                         }}
                         allowFullScreen
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -263,7 +263,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                     fontSize: "0.8rem",
                     padding: "1rem",
                     backgroundColor: "#ffffff",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     maxWidth: "800px",
                     lineHeight: "1",
                     color: "#222",

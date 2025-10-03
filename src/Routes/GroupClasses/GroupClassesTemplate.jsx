@@ -74,7 +74,7 @@ export default function GroupClassesTemplate({
 
     &::-webkit-scrollbar {
       width: 8px;
-      border-radius: 6px;
+      border-radius: 4px;
     }
     &::-webkit-scrollbar-thumb {
       background-color: ${courseColor};

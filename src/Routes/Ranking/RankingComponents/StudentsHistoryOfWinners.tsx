@@ -15,13 +15,13 @@
 //     place: "🥇 1st",
 //     img: "https://ik.imagekit.io/vjz75qw96/assets/icons/10.png",
 //     backgroundColor: "linear-gradient(135deg, gold, yellow)",
-//     borderRadius: "6px",
+//     borderRadius: "4px",
 //   },
 //   {
 //     place: "🥈 2nd",
 //     img: "https://ik.imagekit.io/vjz75qw96/assets/icons/11.png",
 //     backgroundColor: "linear-gradient(135deg, silver, lightgray)",
-//     borderRadius: "6px",
+//     borderRadius: "4px",
 //   },
 //   {
 //     place: "🥉 3rd",
@@ -152,7 +152,7 @@
 //         margin: "2rem auto",
 //         padding: "1.5rem",
 //         background: "#fff",
-//         borderRadius: "6px",
+//         borderRadius: "4px",
 //         boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.1)",
 //       }}
 //     >
@@ -170,7 +170,7 @@
 //             style={{
 //               background: `${lightGreyColor()} radial-gradient(white, ${lightGreyColor()})`,
 //               padding: "1.5rem",
-//               borderRadius: "6px",
+//               borderRadius: "4px",
 //               margin: "1rem 0",
 //               textAlign: "center",
 //               boxShadow: "0px 6px 10px rgba(0, 0, 0, 0.08)",

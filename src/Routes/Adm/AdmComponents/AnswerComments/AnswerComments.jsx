@@ -114,7 +114,7 @@ export function AllComments({ headers }) {
             width: 400,
             background: "white",
             padding: 3,
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: 24,
           }}
         >

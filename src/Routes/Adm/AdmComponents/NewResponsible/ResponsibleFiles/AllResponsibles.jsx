@@ -56,7 +56,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
     <div
       style={{
         background: "#fff",
-        borderRadius: "6px",
+        borderRadius: "4px",
         boxShadow: "0 2px 8px rgba(0,0,0,0.07)",
         padding: "24px",
         margin: "16px 0",
@@ -71,7 +71,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           padding: "12px 18px",
           marginBottom: "18px",
           border: `2px solid ${partnerColor()}`,
-          borderRadius: "6px",
+          borderRadius: "4px",
           fontSize: "15px",
           outline: "none",
           transition: "all 0.2s ease",
@@ -96,7 +96,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
           maxHeight: "340px",
           overflowY: "auto",
           border: `1px solid ${partnerColor()}40`,
-          borderRadius: "6px",
+          borderRadius: "4px",
           background: "#fafbfc",
           padding: "12px",
         }}
@@ -129,7 +129,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
                   marginLeft: 4,
                   background: `${partnerColor()}10`,
                   padding: "2px 8px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                 }}
               >
                 {resp.email}

@@ -1651,7 +1651,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     background: "#fff",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     boxShadow: "0 8px 32px #0002",
                     minWidth: "340px",
                     maxWidth: "95vw",
@@ -1690,7 +1690,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       style={{
                         background: "#f3f4f6",
                         color: "#555",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         padding: "4px 12px",
                         fontWeight: 500,
                       }}
@@ -1701,7 +1701,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       style={{
                         background: "#f3f4f6",
                         color: "#555",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         padding: "4px 12px",
                         fontWeight: 500,
                       }}
@@ -1719,7 +1719,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         background: partnerColor(),
                         color: textpartnerColorContrast(),
                         border: "none",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         padding: "6px 16px",
                         fontWeight: 600,
                         marginLeft: "8px",
@@ -1735,7 +1735,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           marginTop: "1rem",
                           background: "#f6f6f6",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           padding: "1rem",
                           boxShadow: "0 2px 8px #0001",
                           display: "flex",
@@ -1751,7 +1751,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           placeholder="Descrição"
                           style={{
                             padding: "8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ddd",
                           }}
                         />
@@ -1761,7 +1761,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           onChange={(e) => setEditDate(e.target.value)}
                           style={{
                             padding: "8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ddd",
                           }}
                         />
@@ -1770,7 +1770,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           onChange={(e) => setEditCategory(e.target.value)}
                           style={{
                             padding: "8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ddd",
                           }}
                         >
@@ -1800,7 +1800,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                 background: "red",
                                 color: "white",
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 padding: "6px 16px",
                                 fontWeight: 600,
                               }}
@@ -1814,7 +1814,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                 background: "#eee",
                                 color: "#333",
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 padding: "6px 16px",
                                 fontWeight: 500,
                               }}
@@ -1830,7 +1830,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                 background: partnerColor(),
                                 color: textpartnerColorContrast(),
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 padding: "6px 16px",
                                 fontWeight: 600,
                               }}
@@ -1846,7 +1846,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     style={{
                       display: showDeleteEventConfirmation ? "block" : "none",
                       background: "#f9fafb",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       padding: "12px 16px",
                       boxShadow: "0 2px 8px #0001",
                       border: "1px solid #e5e7eb",
@@ -1867,7 +1867,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           background: "blue",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           padding: "6px 16px",
                           fontWeight: 600,
                         }}
@@ -1882,7 +1882,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           background: "red",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           padding: "6px 16px",
                           fontWeight: 600,
                         }}
@@ -1907,7 +1907,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         padding: 0,
                         margin: "10px 0 0 0",
                         background: "#f9fafb",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         boxShadow: "0 2px 8px #0001",
                         border: "1px solid #e5e7eb",
                         maxWidth: "320px",
@@ -2053,7 +2053,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         border: isToday
                           ? `3px solid ${partnerColor()}`
                           : "1px solid #e0e0e0",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
                         boxShadow: isToday
                           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
@@ -2135,7 +2135,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                         : todo.category == "other"
                                         ? "rgba(216, 191, 234, 0.7)"
                                         : "rgba(234, 191, 215, 0.7)",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
                                   }}
@@ -2247,7 +2247,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                 key={`${event._id}-${eventIndex}`}
                                 style={{
                                   marginBottom: "5px",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   overflow: "hidden",
                                   boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                                   transition: "all 0.2s ease",
@@ -2300,7 +2300,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             width: "6px",
                                             height: "6px",
                                             backgroundColor: "white",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             marginRight: "5px",
                                             animation: "pulse 2s infinite",
                                           }}
@@ -2326,7 +2326,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       backgroundColor: "rgba(255,255,255,0.2)",
                                       color: categoryColor.text,
                                       padding: "2px 5px",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       fontWeight: "600",
                                       textTransform: "uppercase",
                                       letterSpacing: "0.3px",
@@ -2453,7 +2453,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 top: "0",
                 left: "0",
                 position: "fixed",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 zIndex: 98,
                 display: isVisible ? "block" : "none",
               }}
@@ -2531,7 +2531,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 style={{
                   backgroundColor: "#f8f9fa",
                   padding: "1.2rem",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   fontSize: "12px",
                   display: "flex",
                   flexDirection: "column",
@@ -2576,7 +2576,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                   backgroundColor: partnerColor(),
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   cursor: "pointer",
                                   transition: "all 0.3s ease",
                                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -2608,7 +2608,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     gap: "1rem",
                                     padding: "0.5rem",
                                     backgroundColor: "#f8f9fa",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                   }}
                                 >
                                   <div
@@ -2762,7 +2762,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       color: "white",
                                       border: "none",
                                       marginLeft: "auto",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       fontSize: "0.9rem",
                                       cursor: "pointer",
                                       transition: "all 0.2s ease",
@@ -2809,7 +2809,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       width: "80%",
                                       display: "grid",
                                       gap: "1rem",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       padding: "8px",
                                     }}
                                   >
@@ -2819,7 +2819,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       <div
                                         style={{
                                           boxSizing: "border-box",
-                                          borderRadius: "6px",
+                                          borderRadius: "4px",
                                           marginTop: "0.5rem",
                                         }}
                                       >
@@ -2834,7 +2834,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                         >
                                           <div
                                             style={{
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               display: "flex",
                                               alignItems: "center",
                                               justifyContent: "center",
@@ -2903,7 +2903,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                 style={{
                                                   width: "90%",
                                                   padding: "0.75rem",
-                                                  borderRadius: "6px",
+                                                  borderRadius: "4px",
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   lineHeight: "1.5",
@@ -2990,7 +2990,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               style={{
                                                 width: "90%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
@@ -3038,7 +3038,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               style={{
                                                 width: "90%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
@@ -3129,7 +3129,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               <div
                                                 style={{
                                                   border: "1px solid #e0e0e0",
-                                                  borderRadius: "6px",
+                                                  borderRadius: "4px",
                                                   padding: "1rem",
                                                   backgroundColor: "#f9fafb",
                                                   marginTop: "1rem",
@@ -3247,7 +3247,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                       style={{
                                                         backgroundColor:
                                                           "white",
-                                                        borderRadius: "6px",
+                                                        borderRadius: "4px",
                                                         border:
                                                           "1px solid #ced4da",
                                                         overflow: "hidden",
@@ -3409,7 +3409,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                 style={{
                                                   width: "90%",
                                                   padding: "0.75rem",
-                                                  borderRadius: "6px",
+                                                  borderRadius: "4px",
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
@@ -3464,7 +3464,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                   style={{
                                                     width: "90%",
                                                     padding: "0.75rem",
-                                                    borderRadius: "6px",
+                                                    borderRadius: "4px",
                                                     border: "1px solid #d1d5db",
                                                     fontSize: "0.875rem",
                                                     backgroundColor: "#ffffff",
@@ -3626,7 +3626,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                         style={{
                                                           width: "90%",
                                                           padding: "0.75rem",
-                                                          borderRadius: "6px",
+                                                          borderRadius: "4px",
                                                           border:
                                                             "1px solid #d1d5db",
                                                           fontSize: "0.875rem",
@@ -3706,7 +3706,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
                                               backgroundColor: "white",
@@ -3751,7 +3751,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                                 backgroundColor: "white",
@@ -3808,7 +3808,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                               }}
@@ -3836,7 +3836,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                               }}
@@ -3911,7 +3911,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             <div
                                               style={{
                                                 border: "1px solid #e0e0e0",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 padding: "1rem",
                                                 backgroundColor: "#f9fafb",
                                                 marginTop: "1rem",
@@ -3986,7 +3986,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                               }}
@@ -4019,7 +4019,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
                                             }}
@@ -4056,7 +4056,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
                                               lineHeight: "1.5",
@@ -4126,7 +4126,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       style={{
                                         backgroundColor: "#f8d7da",
                                         padding: "1rem",
-                                        borderRadius: "6px",
+                                        borderRadius: "4px",
                                         border: "1px solid #f5c6cb",
                                         textAlign: "center",
                                       }}
@@ -4159,7 +4159,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             backgroundColor: partnerColor(),
                                             color: "white",
                                             border: "none",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             cursor: "pointer",
 
                                             fontWeight: "500",
@@ -4177,7 +4177,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             backgroundColor: "#dc3545",
                                             color: "white",
                                             border: "none",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             cursor: "pointer",
                                             fontWeight: "500",
                                           }}
@@ -4218,7 +4218,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     padding: "0.75rem 1rem",
                                     backgroundColor: "white",
                                     border: `2px solid ${partnerColor()}`,
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     textAlign: "center",
                                     transition: "all 0.3s ease",
                                     maxWidth: "70%",
@@ -4266,7 +4266,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     padding: "0.75rem 1rem",
                                     backgroundColor: "white",
                                     border: `2px solid ${partnerColor()}`,
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     textAlign: "center",
                                     transition: "all 0.3s ease",
                                     minWidth: "70%",
@@ -4313,7 +4313,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                 backgroundColor: "white",
                                 marginTop: "2rem",
                                 padding: "10px",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 border: "1px solid #dee2e6",
                                 borderLeft: `4px solid ${partnerColor()}`,
                                 boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
@@ -4353,7 +4353,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                   textDecoration: "none",
                                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                   padding: "10px",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   backgroundColor: textpartnerColorContrast(),
                                   fontFamily: "Arial, sans-serif",
                                 }}
@@ -4405,7 +4405,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     cursor: "pointer",
                                     display: "block",
                                     width: "100%",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontWeight: 600,
                                     padding: "8px",
                                     border: `1px solid ${partnerColor()}`,
@@ -4444,7 +4444,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                         borderLeft: `3px solid ${
                                           partnerColor?.() || "#829ad1"
                                         }`,
-                                        borderRadius: "6px",
+                                        borderRadius: "4px",
                                         padding: "8px 12px",
                                         marginTop: "8px",
                                         marginBottom: "8px",
@@ -4533,7 +4533,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             marginTop: "6px",
                                             backgroundColor: "#ffffff",
                                             padding: "0.75rem",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             border: "1px solid #e5e7eb",
                                             fontSize: "0.85rem",
                                             color: "#374151",
@@ -4574,7 +4574,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                 color: partnerColor(),
                                                 textDecoration: "none",
                                                 padding: "8px 10px",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: `1px solid ${
                                                   partnerColor?.() || "#829ad1"
                                                 }`,
@@ -4619,7 +4619,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                               backgroundColor: "#f8f9fa",
                               marginTop: "0.5rem",
                               padding: "0.5rem 0.75rem",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #e9ecef",
                               display: "flex",
                               alignItems: "center",
@@ -4660,7 +4660,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           style={{
                             backgroundColor: "white",
                             padding: "0.75rem",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #e9ecef",
                             boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                           }}
@@ -4705,7 +4705,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       backgroundColor: partnerColor(),
                                       color: "white",
                                       padding: "0.2rem 0.75rem",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       fontWeight: "500",
                                       fontSize: "0.75rem",
                                       textAlign: "center",
@@ -4810,7 +4810,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                   style={{
                                     backgroundColor: "#f8f9fa",
                                     padding: "0.5rem",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     border: "1px solid #dee2e6",
                                   }}
                                 >
@@ -4908,7 +4908,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     backgroundColor: partnerColor(),
                                     color: "white",
                                     padding: "0.2rem 0.75rem",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontWeight: "500",
                                     fontSize: "0.75rem",
                                     textAlign: "center",
@@ -4992,7 +4992,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             style={{
                               backgroundColor: "#f8fafc",
                               padding: "1rem",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #e2e8f0",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                               marginTop: "1rem",
@@ -5039,7 +5039,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       ? "#fef3c7"
                                       : "#dcfce7",
                                   padding: "2px 8px",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   fontWeight: "500",
                                 }}
                               >
@@ -5060,7 +5060,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                 color: "white",
                                 textDecoration: "none",
                                 padding: "0.5rem 1rem",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 fontSize: "10px",
                                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                               }}
@@ -5168,7 +5168,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                     style={{
                                       backgroundColor: "white",
                                       padding: "0.75rem",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       border: "1px solid #e5e7eb",
                                       fontSize: "0.85rem",
                                       color: "#374151",
@@ -5225,7 +5225,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       padding: "0.5rem 0.75rem",
                                       backgroundColor: "white",
                                       border: "1px solid #0ea5e920",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       transition: "all 0.2s ease",
                                     }}
                                     onMouseEnter={(e) => {
@@ -5251,7 +5251,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             style={{
                               backgroundColor: "white",
                               padding: "0.75rem",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #e9ecef",
                               boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                               marginTop: "0.5rem",
@@ -5282,7 +5282,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                               style={{
                                 backgroundColor: "#f8f9fa",
                                 padding: "1rem",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 border: "1px solid #dee2e6",
                                 lineHeight: "1.6",
                                 fontSize: "0.9rem",
@@ -5314,7 +5314,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   style={{
                     backgroundColor: "#fff3cd",
                     padding: "1.2rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ffeaa7",
                   }}
                 >
@@ -5336,7 +5336,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       backgroundColor: "#6c757d",
                       color: "white",
                       padding: "1.2rem",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       textAlign: "center",
                     }}
                   >
@@ -5411,7 +5411,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                borderRadius: "6px",
+                borderRadius: "4px",
               }}
             >
               <div
@@ -5472,7 +5472,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             : "grey",
                           color: "white",
                           padding: "5px 1rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "none",
                           cursor: "pointer",
                           marginBottom: "1rem",
@@ -5499,7 +5499,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                             : "grey",
                           color: "white",
                           padding: "5px 1rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "none",
                           cursor: "pointer",
                           marginBottom: "1rem",
@@ -5530,7 +5530,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           width: "100%",
                           padding: "0.75rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #ced4da",
                           fontSize: "0.9rem",
                           backgroundColor: "white",
@@ -5567,7 +5567,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           style={{
                             width: "100%",
                             padding: "0.75rem",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ced4da",
                             fontSize: "0.9rem",
                             backgroundColor: "white",
@@ -5624,7 +5624,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                       ? "#ffebee"
                                       : "#f8f9fa",
                                     padding: "0.5rem",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     border: isExpiring
                                       ? "2px solid #f44336"
                                       : "1px solid #dee2e6",
@@ -5728,7 +5728,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                           backgroundColor: partnerColor(),
                                           color: "white",
                                           border: "none",
-                                          borderRadius: "6px",
+                                          borderRadius: "4px",
                                           cursor: "pointer",
                                         }}
                                       >
@@ -5741,7 +5741,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                           backgroundColor: "#dc3545",
                                           color: "white",
                                           border: "none",
-                                          borderRadius: "6px",
+                                          borderRadius: "4px",
                                           cursor: "pointer",
                                         }}
                                       >
@@ -5762,7 +5762,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   display: seeEditTutoring ? "block" : "none",
                   backgroundColor: "#fff3cd",
                   padding: "1rem",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #ffeaa7",
                   marginBottom: "1rem",
                 }}
@@ -5784,7 +5784,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       backgroundColor: "#dc3545",
                       color: "white",
                       border: "none",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       padding: "5px 1rem",
                       cursor: "pointer",
                     }}
@@ -5798,7 +5798,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     value={weekDay}
                     style={{
                       padding: "5px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #ced4da",
                       backgroundColor: "white",
                     }}
@@ -5819,7 +5819,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     value={timeOfTutoring}
                     style={{
                       padding: "5px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #ced4da",
                       backgroundColor: "white",
                     }}
@@ -5844,7 +5844,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     type="text"
                     style={{
                       padding: "5px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #ced4da",
                     }}
                     required
@@ -5868,7 +5868,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     max="300"
                     style={{
                       padding: "5px",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #ced4da",
                       maxWidth: "80px",
                       textAlign: "center",
@@ -5882,7 +5882,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                       backgroundColor: "#28a745",
                       color: "white",
                       border: "none",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       cursor: "pointer",
                       fontWeight: "500",
                     }}
@@ -5897,7 +5897,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   style={{
                     padding: "8px 1rem",
                     marginBottom: "5px",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     backgroundColor: !showSeeEditTutoring
                       ? "#f0f9f0"
                       : "#fdf2f2",
@@ -5936,7 +5936,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                     <div
                       style={{
                         padding: "1rem",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         backgroundColor: "#d4edda",
                         border: "1px solid #c3e6cb",
                       }}
@@ -5950,7 +5950,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           value={theNewWeekDay}
                           style={{
                             padding: "5px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ced4da",
                             backgroundColor: "white",
                           }}
@@ -5971,7 +5971,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           value={theNewTimeOfTutoring}
                           style={{
                             padding: "5px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ced4da",
                             backgroundColor: "white",
                           }}
@@ -5996,7 +5996,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           type="text"
                           style={{
                             padding: "5px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ced4da",
                           }}
                           required
@@ -6292,7 +6292,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                   : partnerColor(),
                                 color: "white",
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 cursor: isFormIncomplete
                                   ? "not-allowed"
                                   : "pointer",
@@ -6345,7 +6345,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
               }}
             >
@@ -6432,7 +6432,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           width: "100%",
                           padding: "0.75rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #ced4da",
                           fontSize: "0.9rem",
                           backgroundColor: "white",
@@ -6473,7 +6473,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           style={{
                             width: "100%",
                             padding: "0.75rem",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ced4da",
                             fontSize: "0.9rem",
                             backgroundColor: "white",
@@ -6512,7 +6512,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           style={{
                             width: "100%",
                             padding: "0.75rem",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ced4da",
                             fontSize: "0.9rem",
                             backgroundColor: "white",
@@ -6553,7 +6553,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           width: "100%",
                           padding: "0.75rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #ced4da",
                           fontSize: "0.9rem",
                         }}
@@ -6581,7 +6581,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           width: "100%",
                           padding: "0.75rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #ced4da",
                           fontSize: "0.9rem",
                         }}
@@ -6700,7 +6700,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           width: "100%",
                           padding: "0.75rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #ced4da",
                           fontSize: "0.9rem",
                         }}
@@ -6731,7 +6731,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                         style={{
                           width: "100%",
                           padding: "0.75rem",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           border: "1px solid #ced4da",
                           fontSize: "0.9rem",
                         }}
@@ -6756,7 +6756,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           backgroundColor: "#6c757d",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           cursor: "pointer",
                           fontSize: "0.9rem",
                           fontWeight: "500",
@@ -6786,7 +6786,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                           backgroundColor: partnerColor(),
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           cursor:
                             !newClass.category ||
                             !newClass.date ||
@@ -6825,7 +6825,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
             style={{
               marginBottom: "1rem",
               background: "#ffffff",
-              borderRadius: "6px",
+              borderRadius: "4px",
               border: "1px solid #e1e5e9",
               boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
               padding: "12px 16px",
@@ -6846,7 +6846,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                   alignItems: "center",
                   gap: "4px",
                   background: "#f8f9fa",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "2px",
                 }}
               >
@@ -6915,7 +6915,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 style={{
                   position: "relative",
                   background: "#f8f9fa",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   border: "1px solid #e9ecef",
                   overflow: "hidden",
                 }}

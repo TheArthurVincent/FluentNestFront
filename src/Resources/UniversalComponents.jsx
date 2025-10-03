@@ -377,7 +377,7 @@ export const ContainerClass = styled.div`
   padding-bottom: 56.25%; /* 16:9 aspect ratio */
   height: 0;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 4px;
   background-color: #000;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
@@ -388,7 +388,7 @@ export const ContainerClass = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
   }
 `;
 
@@ -396,7 +396,7 @@ export const IFrameVideoClass = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
@@ -404,7 +404,7 @@ export const IFrameVideoClass2 = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 6px;
+  border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 `;
 
@@ -449,7 +449,7 @@ export const ResponsiveIframeContainer = styled.div`
 
   /* Responsividade aprimorada */
   @media (max-width: 768px) {
-    border-radius: 6px;
+    border-radius: 4px;
     margin: 0.5rem 0;
     padding-bottom: ${(props) =>
       props.aspectRatio || "85%"}; /* Ainda maior em mobile */
@@ -480,7 +480,7 @@ export const EnhancedIframeContainer = styled.div`
   padding-bottom: 56.25%;
   height: 0;
   overflow: hidden;
-  border-radius: 6px;
+  border-radius: 4px;
   background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%),
     linear-gradient(-45deg, #f0f0f0 25%, transparent 25%),
     linear-gradient(45deg, transparent 75%, #f0f0f0 75%),
@@ -496,7 +496,7 @@ export const EnhancedIframeContainer = styled.div`
     width: 100%;
     height: 100%;
     border: none;
-    border-radius: 6px;
+    border-radius: 4px;
     transition: opacity 0.3s ease;
 
     &:hover {
@@ -698,7 +698,7 @@ export const BackToHomePage = () => {
           backgroundColor: "#000",
           color: textPrimaryColorContrast(),
           padding: "0.4rem",
-          borderRadius: "6px",
+          borderRadius: "4px",
           fontSize: "12px",
           textDecoration: "none",
         }}
@@ -718,7 +718,7 @@ export const UpgradeGoldButton = () => {
         color: "white",
         textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
         padding: "0.4rem",
-        borderRadius: "6px",
+        borderRadius: "4px",
         fontSize: "12px",
         textDecoration: "none",
         margin: "1rem auto",

@@ -106,7 +106,7 @@ export function AllStudents({ headers, id, plan }) {
     width: "100%",
     padding: "12px",
     border: "1px solid #ddd",
-    borderRadius: "6px",
+    borderRadius: "4px",
     fontSize: "14px",
     outline: "none",
     transition: "border-color 0.2s",
@@ -141,7 +141,7 @@ export function AllStudents({ headers, id, plan }) {
           maxWidth: "90%",
           margin: "1rem auto",
           padding: "1rem",
-          borderRadius: "6px",
+          borderRadius: "4px",
         }}
       >
         <HOne> Novo Aluno</HOne>
@@ -207,7 +207,7 @@ export function AllStudents({ headers, id, plan }) {
               fontSize: "16px",
               fontWeight: "600",
               border: "none",
-              borderRadius: "6px",
+              borderRadius: "4px",
               cursor: isLoading ? "not-allowed" : "pointer",
               marginTop: "1rem",
               display: "flex",

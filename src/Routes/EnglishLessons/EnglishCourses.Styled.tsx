@@ -32,7 +32,7 @@ export const CourseCard = styled.div`
   color: #333;
   padding: 0.2rem;
   font-size: 12px;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   &:hover {
     background-color: #f3f3f3;
@@ -43,7 +43,7 @@ export const CourseCard = styled.div`
   }
 
   img {
-    border-radius: 6px;
+    border-radius: 4px;
     width: 40px;
     height: 40px;
     object-fit: cover;

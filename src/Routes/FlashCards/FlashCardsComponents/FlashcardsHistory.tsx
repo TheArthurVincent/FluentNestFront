@@ -154,7 +154,7 @@ const FlashcardsHistory = ({
                   className="flashcard-day"
                   style={{
                     marginBottom: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     overflow: "hidden",
                     boxShadow: "0 1px 4px rgba(0, 0, 0, 0.06)",
                     border: "1px solid #f1f5f9",
@@ -229,7 +229,7 @@ const FlashcardsHistory = ({
                             padding: "0.5rem",
                             marginBottom: "0.5rem",
                             backgroundColor: "#ffffff",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #e2e8f0",
                             boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
                             transition:

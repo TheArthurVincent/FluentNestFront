@@ -32,7 +32,7 @@ export default function RankingList() {
                   ? `linear-gradient(135deg, ${theItems[levelNumber].textcolor}, rgba(255, 255, 255, 0.5))`
                   : theItems[levelNumber].color,
                 color: theItems[levelNumber].textcolor,
-                borderRadius: "6px",
+                borderRadius: "4px",
                 boxShadow: isSpecial
                   ? "0 0 20px rgba(255, 215, 0, 0.8)"
                   : "0 4px 8px rgba(0, 0, 0, 0.1)",
@@ -67,7 +67,7 @@ export default function RankingList() {
                   marginBottom: "1rem",
                   backgroundColor: theItems[levelNumber].color,
                   padding: "1rem",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                 }}
               >
                 <h3
@@ -104,7 +104,7 @@ export default function RankingList() {
               <div
                 style={{
                   background: theItems[levelNumber].backgroundcolor,
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "0.5rem 1rem",
                   textAlign: "left",
                   width: "100%",

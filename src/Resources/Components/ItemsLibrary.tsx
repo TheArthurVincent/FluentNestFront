@@ -60,7 +60,7 @@ export const MyButton = styled.button<ButtonProps>`
   );
   color: ${(props) => props.textcolor || alwaysWhite()};
   padding: 5px 1.2rem;
-  border-radius: 6px;
+  border-radius: 4px;
   border: none;
   cursor: pointer;
   display: inline;
@@ -74,7 +74,7 @@ export const MyButton = styled.button<ButtonProps>`
     );
 
     box-shadow: 1px 1px 10px 1px #bbb;
-    border-radius: 6px;
+    border-radius: 4px;
   }
 
   &:active {

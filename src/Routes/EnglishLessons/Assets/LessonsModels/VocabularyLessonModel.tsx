@@ -81,7 +81,7 @@ export default function VocabularyLesson({
         padding: "0px",
         background: "#f6f7f9",
         minHeight: "100px",
-        borderRadius: "6px",
+        borderRadius: "4px",
         boxShadow: "0 2px 8px #eee",
         fontFamily: "Segoe UI, Arial, sans-serif",
       }}
@@ -99,7 +99,7 @@ export default function VocabularyLesson({
               key={i}
               style={{
                 border: "1px solid #e3e6ea",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 padding: "8px 12px 8px 12px",
                 position: "relative",
                 boxShadow: "0 1px 4px #e3e6ea",

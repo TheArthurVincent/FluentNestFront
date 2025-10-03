@@ -52,7 +52,7 @@ export function NewHomeworkAssignmentHere({
         style={{
           display: "inline-block",
           padding: "0.5rem 1rem",
-          borderRadius: "6px",
+          borderRadius: "4px",
           fontSize: "0.8rem",
           textWrap: "nowrap",
         }}
@@ -84,7 +84,7 @@ export function NewHomeworkAssignmentHere({
             width: "100%",
             background: "#fff",
             padding: "2.5rem 2rem 2rem 2rem",
-            borderRadius: "6px",
+            borderRadius: "4px",
             boxShadow: "0 8px 32px rgba(30,41,59,0.18)",
             position: "relative",
             display: "flex",

@@ -47,7 +47,7 @@ export const HThreeModule = styled.h3`
   border-left: 5px solid ${"#000"};
   font-size: 1.1rem;
   font-weight: bold;
-  border-radius: 6px;
+  border-radius: 4px;
   transition: background-color 0.1s ease, color 0.3s ease;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 

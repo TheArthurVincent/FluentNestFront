@@ -31,7 +31,7 @@ export default function VocabularyLesson({
               key={i}
               style={{
                 backgroundColor: "#ffffff",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 padding: "5px",
                 transition: "all 0.3s ease",
                 position: "relative",

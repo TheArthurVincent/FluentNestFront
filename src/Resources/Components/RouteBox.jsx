@@ -25,7 +25,7 @@ export const RouteDiv = styled.div.attrs({
   className: "box-shadow-black smooth",
 })`
   background-color: ${alwaysWhite()};
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 1rem;
   width: 95vw;
   height: 100%;
@@ -35,7 +35,7 @@ export const RouteDivCalendar = styled.div.attrs({
   className: "box-shadow-black smooth",
 })`
   background-color: ${alwaysWhite()};
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 0.5rem;
   width: 95vw;
   height: 100%;
@@ -45,7 +45,7 @@ export const RouteDivCourses = styled.div.attrs({
   className: "box-shadow-black smooth",
 })`
   background-color: ${alwaysWhite()};
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 0.5rem;
   margin-right: auto;
   margin-left: auto;
@@ -100,7 +100,7 @@ export const SpanIcon = styled.span`
     gap: 0.2rem;
     font-size: 0.8rem;
     padding: 5px;
-    border-radius: 6px;
+    border-radius: 4px;
     background-color: ${alwaysBlack()};
   }
 `;
@@ -205,7 +205,7 @@ export const AnimatedLi = styled.li`
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 4px;
   height: 100%; /* Garante altura uniforme */
 `;
 
@@ -220,7 +220,7 @@ export const AnimatedLi3 = styled.li`
   text-align: center;
   background: #f9f9f9;
   border: 2px solid #000;
-  border-radius: 6px;
+  border-radius: 4px;
   height: 100%; /* Garante altura uniforme */
 `;
 export const AnimatedLi2 = styled.li`

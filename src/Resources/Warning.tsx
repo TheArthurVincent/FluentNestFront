@@ -8,7 +8,7 @@ const WarningText: React.FC<WarningTextProps> = ({ text }) => {
   return (
     <div
       style={{
-        borderRadius: "6px",
+        borderRadius: "4px",
         padding: "1rem",
         textAlign: "center",
         margin: "1rem",
@@ -22,7 +22,7 @@ const WarningText: React.FC<WarningTextProps> = ({ text }) => {
       <span
         style={{
           fontSize: "2rem",
-          borderRadius: "6px",
+          borderRadius: "4px",
           backgroundColor: "#FF2214",
           color: "#FFF",
         }}
@@ -32,7 +32,7 @@ const WarningText: React.FC<WarningTextProps> = ({ text }) => {
       <span
         style={{
           fontSize: "1.1rem",
-          borderRadius: "6px",
+          borderRadius: "4px",
           color: "#FF2214",
         }}
       >

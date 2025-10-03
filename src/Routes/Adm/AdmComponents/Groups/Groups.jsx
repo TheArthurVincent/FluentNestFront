@@ -96,7 +96,7 @@ export function Groups({ headers, id }) {
       backgroundColor: "#ffffff",
       margin: "auto",
       marginTop: "16px",
-      borderRadius: "6px",
+      borderRadius: "4px",
       boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
       border: "1px solid #e8eaed",
       padding: "20px",
@@ -113,7 +113,7 @@ export function Groups({ headers, id }) {
     item: (borderColor) => ({
       backgroundColor: "#fff",
       border: "1px solid #e9ecef",
-      borderRadius: "6px",
+      borderRadius: "4px",
       padding: "20px",
       transition: "all 0.3s ease",
       borderLeft: `4px solid ${borderColor}`,
@@ -382,7 +382,7 @@ export function Groups({ headers, id }) {
                   listStyle: "none",
                   marginBottom: 10,
                   padding: "10px",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   borderBottom: "1px solid #f2f2f2",
                   background:
                     group._id === selectedGroupId ? "#f6f6f6ff" : "#fcfcfcff",
@@ -441,7 +441,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: partnerColor(),
                           fontSize: 12,
                           padding: "3px 6px",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           marginRight: 10,
                         }}
                       >
@@ -729,7 +729,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: t.pillBg,
                           color: t.pillFg,
                           padding: "4px 10px",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           fontSize: "11px",
                           textTransform: "uppercase",
                           fontWeight: 600,
@@ -743,7 +743,7 @@ export function Groups({ headers, id }) {
                           backgroundColor: "#f1f3f5",
                           color: "#495057",
                           padding: "4px 8px",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           fontSize: "11px",
                         }}
                       >

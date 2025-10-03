@@ -1207,7 +1207,7 @@ function MyCalendarRefactor({
                   onClick={(e: any) => e.stopPropagation()}
                   style={{
                     background: "#fff",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     boxShadow: "0 8px 32px #0002",
                     minWidth: "340px",
                     maxWidth: "95vw",
@@ -1246,7 +1246,7 @@ function MyCalendarRefactor({
                       style={{
                         background: "#f3f4f6",
                         color: "#555",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         padding: "4px 12px",
                         fontWeight: 500,
                       }}
@@ -1257,7 +1257,7 @@ function MyCalendarRefactor({
                       style={{
                         background: "#f3f4f6",
                         color: "#555",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         padding: "4px 12px",
                         fontWeight: 500,
                       }}
@@ -1275,7 +1275,7 @@ function MyCalendarRefactor({
                         background: partnerColor(),
                         color: textpartnerColorContrast(),
                         border: "none",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         padding: "6px 16px",
                         fontWeight: 600,
                         marginLeft: "8px",
@@ -1291,7 +1291,7 @@ function MyCalendarRefactor({
                         style={{
                           marginTop: "1rem",
                           background: "#f6f6f6",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           padding: "1rem",
                           boxShadow: "0 2px 8px #0001",
                           display: "flex",
@@ -1309,7 +1309,7 @@ function MyCalendarRefactor({
                           placeholder="Descrição"
                           style={{
                             padding: "8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ddd",
                           }}
                         />
@@ -1319,7 +1319,7 @@ function MyCalendarRefactor({
                           onChange={(e: any) => setEditDate(e.target.value)}
                           style={{
                             padding: "8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ddd",
                           }}
                         />
@@ -1328,7 +1328,7 @@ function MyCalendarRefactor({
                           onChange={(e: any) => setEditCategory(e.target.value)}
                           style={{
                             padding: "8px",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #ddd",
                           }}
                         >
@@ -1358,7 +1358,7 @@ function MyCalendarRefactor({
                                 background: "red",
                                 color: "white",
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 padding: "6px 16px",
                                 fontWeight: 600,
                               }}
@@ -1372,7 +1372,7 @@ function MyCalendarRefactor({
                                 background: "#eee",
                                 color: "#333",
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 padding: "6px 16px",
                                 fontWeight: 500,
                               }}
@@ -1388,7 +1388,7 @@ function MyCalendarRefactor({
                                 background: partnerColor(),
                                 color: textpartnerColorContrast(),
                                 border: "none",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 padding: "6px 16px",
                                 fontWeight: 600,
                               }}
@@ -1404,7 +1404,7 @@ function MyCalendarRefactor({
                     style={{
                       display: showDeleteEventConfirmation ? "block" : "none",
                       background: "#f9fafb",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       padding: "12px 16px",
                       boxShadow: "0 2px 8px #0001",
                       border: "1px solid #e5e7eb",
@@ -1425,7 +1425,7 @@ function MyCalendarRefactor({
                           background: "blue",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           padding: "6px 16px",
                           fontWeight: 600,
                         }}
@@ -1440,7 +1440,7 @@ function MyCalendarRefactor({
                           background: "red",
                           color: "white",
                           border: "none",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           padding: "6px 16px",
                           fontWeight: 600,
                         }}
@@ -1465,7 +1465,7 @@ function MyCalendarRefactor({
                         padding: 0,
                         margin: "10px 0 0 0",
                         background: "#f9fafb",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         boxShadow: "0 2px 8px #0001",
                         border: "1px solid #e5e7eb",
                         maxWidth: "320px",
@@ -1613,7 +1613,7 @@ function MyCalendarRefactor({
                         border: isToday
                           ? `3px solid ${partnerColor()}`
                           : "1px solid #e0e0e0",
-                        borderRadius: "6px",
+                        borderRadius: "4px",
                         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
                         boxShadow: isToday
                           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
@@ -1695,7 +1695,7 @@ function MyCalendarRefactor({
                                         : todo.category == "other"
                                         ? "rgba(216, 191, 234, 0.7)"
                                         : "rgba(234, 191, 215, 0.7)",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     padding: "5px",
                                     boxShadow: "0 1px 2px #b8b8b8ff",
                                   }}
@@ -1819,7 +1819,7 @@ function MyCalendarRefactor({
                 top: "0",
                 left: "0",
                 position: "fixed",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 zIndex: 98,
                 display: isVisible ? "block" : "none",
               }}
@@ -1899,7 +1899,7 @@ function MyCalendarRefactor({
                 style={{
                   backgroundColor: "#f8f9fa",
                   padding: "1.2rem",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   fontSize: "12px",
                   display: "flex",
                   flexDirection: "column",
@@ -1943,7 +1943,7 @@ function MyCalendarRefactor({
                                   backgroundColor: partnerColor(),
                                   color: "white",
                                   border: "none",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   cursor: "pointer",
                                   transition: "all 0.3s ease",
                                   boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
@@ -1975,7 +1975,7 @@ function MyCalendarRefactor({
                                     gap: "1rem",
                                     padding: "0.5rem",
                                     backgroundColor: "#f8f9fa",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                   }}
                                 >
                                   <div
@@ -2127,7 +2127,7 @@ function MyCalendarRefactor({
                                       color: "white",
                                       border: "none",
                                       marginLeft: "auto",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       fontSize: "0.9rem",
                                       cursor: "pointer",
                                       transition: "all 0.2s ease",
@@ -2174,7 +2174,7 @@ function MyCalendarRefactor({
                                       width: "80%",
                                       display: "grid",
                                       gap: "1.5rem",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       padding: "8px",
                                     }}
                                   >
@@ -2184,7 +2184,7 @@ function MyCalendarRefactor({
                                       <div
                                         style={{
                                           boxSizing: "border-box",
-                                          borderRadius: "6px",
+                                          borderRadius: "4px",
                                           marginTop: "0.5rem",
                                         }}
                                       >
@@ -2199,7 +2199,7 @@ function MyCalendarRefactor({
                                         >
                                           <div
                                             style={{
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               display: "flex",
                                               alignItems: "center",
                                               justifyContent: "center",
@@ -2268,7 +2268,7 @@ function MyCalendarRefactor({
                                                 style={{
                                                   width: "90%",
                                                   padding: "0.75rem",
-                                                  borderRadius: "6px",
+                                                  borderRadius: "4px",
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   lineHeight: "1.5",
@@ -2355,7 +2355,7 @@ function MyCalendarRefactor({
                                               style={{
                                                 width: "90%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
@@ -2403,7 +2403,7 @@ function MyCalendarRefactor({
                                               style={{
                                                 width: "90%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #d1d5db",
                                                 fontSize: "0.875rem",
                                                 backgroundColor: "#ffffff",
@@ -2497,7 +2497,7 @@ function MyCalendarRefactor({
                                               <div
                                                 style={{
                                                   border: "1px solid #e0e0e0",
-                                                  borderRadius: "6px",
+                                                  borderRadius: "4px",
                                                   padding: "1rem",
                                                   backgroundColor: "#f9fafb",
                                                   marginTop: "1rem",
@@ -2612,7 +2612,7 @@ function MyCalendarRefactor({
                                                   <div
                                                     style={{
                                                       backgroundColor: "white",
-                                                      borderRadius: "6px",
+                                                      borderRadius: "4px",
                                                       border:
                                                         "1px solid #ced4da",
                                                       overflow: "hidden",
@@ -2729,7 +2729,7 @@ function MyCalendarRefactor({
                                                           style={{
                                                             width: "100%",
                                                             padding: "0.75rem",
-                                                            borderRadius: "6px",
+                                                            borderRadius: "4px",
                                                             border:
                                                               "1px solid #ced4da",
                                                             fontSize: "0.9rem",
@@ -2771,7 +2771,7 @@ function MyCalendarRefactor({
                                                 style={{
                                                   width: "90%",
                                                   padding: "0.75rem",
-                                                  borderRadius: "6px",
+                                                  borderRadius: "4px",
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
@@ -2823,7 +2823,7 @@ function MyCalendarRefactor({
                                                   style={{
                                                     width: "90%",
                                                     padding: "0.75rem",
-                                                    borderRadius: "6px",
+                                                    borderRadius: "4px",
                                                     border: "1px solid #d1d5db",
                                                     fontSize: "0.875rem",
                                                     backgroundColor: "#ffffff",
@@ -2985,7 +2985,7 @@ function MyCalendarRefactor({
                                                         style={{
                                                           width: "90%",
                                                           padding: "0.75rem",
-                                                          borderRadius: "6px",
+                                                          borderRadius: "4px",
                                                           border:
                                                             "1px solid #d1d5db",
                                                           fontSize: "0.875rem",
@@ -3064,7 +3064,7 @@ function MyCalendarRefactor({
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
                                               backgroundColor: "white",
@@ -3109,7 +3109,7 @@ function MyCalendarRefactor({
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                                 backgroundColor: "white",
@@ -3169,7 +3169,7 @@ function MyCalendarRefactor({
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                               }}
@@ -3197,7 +3197,7 @@ function MyCalendarRefactor({
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                               }}
@@ -3272,7 +3272,7 @@ function MyCalendarRefactor({
                                             <div
                                               style={{
                                                 border: "1px solid #e0e0e0",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 padding: "1rem",
                                                 backgroundColor: "#f9fafb",
                                                 marginTop: "1rem",
@@ -3347,7 +3347,7 @@ function MyCalendarRefactor({
                                               style={{
                                                 width: "100%",
                                                 padding: "0.75rem",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: "1px solid #ced4da",
                                                 fontSize: "0.9rem",
                                               }}
@@ -3380,7 +3380,7 @@ function MyCalendarRefactor({
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
                                             }}
@@ -3417,7 +3417,7 @@ function MyCalendarRefactor({
                                             style={{
                                               width: "100%",
                                               padding: "0.75rem",
-                                              borderRadius: "6px",
+                                              borderRadius: "4px",
                                               border: "1px solid #ced4da",
                                               fontSize: "0.9rem",
                                               lineHeight: "1.5",
@@ -3487,7 +3487,7 @@ function MyCalendarRefactor({
                                       style={{
                                         backgroundColor: "#f8d7da",
                                         padding: "1.5rem",
-                                        borderRadius: "6px",
+                                        borderRadius: "4px",
                                         border: "1px solid #f5c6cb",
                                         textAlign: "center",
                                       }}
@@ -3520,7 +3520,7 @@ function MyCalendarRefactor({
                                             backgroundColor: partnerColor(),
                                             color: "white",
                                             border: "none",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             cursor: "pointer",
 
                                             fontWeight: "500",
@@ -3538,7 +3538,7 @@ function MyCalendarRefactor({
                                             backgroundColor: "#dc3545",
                                             color: "white",
                                             border: "none",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             cursor: "pointer",
                                             fontWeight: "500",
                                           }}
@@ -3579,7 +3579,7 @@ function MyCalendarRefactor({
                                     padding: "0.75rem 1.5rem",
                                     backgroundColor: "white",
                                     border: `2px solid ${partnerColor()}`,
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     textAlign: "center",
                                     transition: "all 0.3s ease",
                                     minWidth: "80%",
@@ -3626,7 +3626,7 @@ function MyCalendarRefactor({
                                     padding: "0.75rem 1.5rem",
                                     backgroundColor: "white",
                                     border: `2px solid ${partnerColor()}`,
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     textAlign: "center",
                                     transition: "all 0.3s ease",
                                     minWidth: "80%",
@@ -3673,7 +3673,7 @@ function MyCalendarRefactor({
                                 backgroundColor: "white",
                                 marginTop: "2rem",
                                 padding: "10px",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 border: "1px solid #dee2e6",
                                 borderLeft: `4px solid ${partnerColor()}`,
                                 boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
@@ -3713,7 +3713,7 @@ function MyCalendarRefactor({
                                   textDecoration: "none",
                                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                                   padding: "10px",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   backgroundColor: textpartnerColorContrast(),
                                   fontFamily: "Arial, sans-serif",
                                 }}
@@ -3763,7 +3763,7 @@ function MyCalendarRefactor({
                                     cursor: "pointer",
                                     display: "block",
                                     width: "100%",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontWeight: 600,
                                     padding: "8px",
                                     border: `1px solid ${partnerColor()}`,
@@ -3802,7 +3802,7 @@ function MyCalendarRefactor({
                                         borderLeft: `3px solid ${
                                           partnerColor?.() || "#829ad1"
                                         }`,
-                                        borderRadius: "6px",
+                                        borderRadius: "4px",
                                         padding: "8px 12px",
                                         marginTop: "8px",
                                         marginBottom: "8px",
@@ -3890,7 +3890,7 @@ function MyCalendarRefactor({
                                             marginTop: "6px",
                                             backgroundColor: "#ffffff",
                                             padding: "0.75rem",
-                                            borderRadius: "6px",
+                                            borderRadius: "4px",
                                             border: "1px solid #e5e7eb",
                                             fontSize: "0.85rem",
                                             color: "#374151",
@@ -3931,7 +3931,7 @@ function MyCalendarRefactor({
                                                 color: partnerColor(),
                                                 textDecoration: "none",
                                                 padding: "8px 10px",
-                                                borderRadius: "6px",
+                                                borderRadius: "4px",
                                                 border: `1px solid ${
                                                   partnerColor?.() || "#829ad1"
                                                 }`,
@@ -3976,7 +3976,7 @@ function MyCalendarRefactor({
                               backgroundColor: "#f8f9fa",
                               marginTop: "0.5rem",
                               padding: "0.5rem 0.75rem",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #e9ecef",
                               display: "flex",
                               alignItems: "center",
@@ -4017,7 +4017,7 @@ function MyCalendarRefactor({
                           style={{
                             backgroundColor: "white",
                             padding: "0.75rem",
-                            borderRadius: "6px",
+                            borderRadius: "4px",
                             border: "1px solid #e9ecef",
                             boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                           }}
@@ -4062,7 +4062,7 @@ function MyCalendarRefactor({
                                       backgroundColor: partnerColor(),
                                       color: "white",
                                       padding: "0.2rem 0.75rem",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       fontWeight: "500",
                                       fontSize: "0.75rem",
                                       textAlign: "center",
@@ -4167,7 +4167,7 @@ function MyCalendarRefactor({
                                   style={{
                                     backgroundColor: "#f8f9fa",
                                     padding: "0.5rem",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     border: "1px solid #dee2e6",
                                   }}
                                 >
@@ -4265,7 +4265,7 @@ function MyCalendarRefactor({
                                     backgroundColor: partnerColor(),
                                     color: "white",
                                     padding: "0.2rem 0.75rem",
-                                    borderRadius: "6px",
+                                    borderRadius: "4px",
                                     fontWeight: "500",
                                     fontSize: "0.75rem",
                                     textAlign: "center",
@@ -4349,7 +4349,7 @@ function MyCalendarRefactor({
                             style={{
                               backgroundColor: "#f8fafc",
                               padding: "1rem",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #e2e8f0",
                               boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
                               marginTop: "1rem",
@@ -4396,7 +4396,7 @@ function MyCalendarRefactor({
                                       ? "#fef3c7"
                                       : "#dcfce7",
                                   padding: "2px 8px",
-                                  borderRadius: "6px",
+                                  borderRadius: "4px",
                                   fontWeight: "500",
                                 }}
                               >
@@ -4417,7 +4417,7 @@ function MyCalendarRefactor({
                                 color: "white",
                                 textDecoration: "none",
                                 padding: "0.5rem 1rem",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 fontSize: "10px",
                                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
                               }}
@@ -4525,7 +4525,7 @@ function MyCalendarRefactor({
                                     style={{
                                       backgroundColor: "white",
                                       padding: "0.75rem",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       border: "1px solid #e5e7eb",
                                       fontSize: "0.85rem",
                                       color: "#374151",
@@ -4582,7 +4582,7 @@ function MyCalendarRefactor({
                                       padding: "0.5rem 0.75rem",
                                       backgroundColor: "white",
                                       border: "1px solid #0ea5e920",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       transition: "all 0.2s ease",
                                     }}
                                     onMouseEnter={(e: any) => {
@@ -4608,7 +4608,7 @@ function MyCalendarRefactor({
                             style={{
                               backgroundColor: "white",
                               padding: "0.75rem",
-                              borderRadius: "6px",
+                              borderRadius: "4px",
                               border: "1px solid #e9ecef",
                               boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                               marginTop: "0.5rem",
@@ -4639,7 +4639,7 @@ function MyCalendarRefactor({
                               style={{
                                 backgroundColor: "#f8f9fa",
                                 padding: "1rem",
-                                borderRadius: "6px",
+                                borderRadius: "4px",
                                 border: "1px solid #dee2e6",
                                 lineHeight: "1.6",
                                 fontSize: "0.9rem",
@@ -4671,7 +4671,7 @@ function MyCalendarRefactor({
                   style={{
                     backgroundColor: "#fff3cd",
                     padding: "1.2rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ffeaa7",
                   }}
                 >
@@ -4693,7 +4693,7 @@ function MyCalendarRefactor({
                       backgroundColor: "#6c757d",
                       color: "white",
                       padding: "1.2rem",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       textAlign: "center",
                     }}
                   >
@@ -4744,7 +4744,7 @@ function MyCalendarRefactor({
             style={{
               marginBottom: "1rem",
               background: "#ffffff",
-              borderRadius: "6px",
+              borderRadius: "4px",
               border: "1px solid #e1e5e9",
               boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
               padding: "12px 16px",
@@ -4769,7 +4769,7 @@ function MyCalendarRefactor({
                     alignItems: "center",
                     gap: "4px",
                     background: "#f8f9fa",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     padding: "2px",
                   }}
                 >
@@ -4834,7 +4834,7 @@ function MyCalendarRefactor({
                   style={{
                     position: "relative",
                     background: "#f8f9fa",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #e9ecef",
                     overflow: "hidden",
                   }}

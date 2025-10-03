@@ -494,7 +494,7 @@ const ReviewFlashCards = ({
                                       display: "block",
                                       margin: "1rem auto",
                                       objectPosition: "center",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       boxShadow: "1px 1px 12px 3px #bbb",
                                     }}
                                     src={cards[0]?.img}
@@ -570,7 +570,7 @@ const ReviewFlashCards = ({
                                       display: "block",
                                       margin: "1rem auto",
                                       objectPosition: "center",
-                                      borderRadius: "6px",
+                                      borderRadius: "4px",
                                       boxShadow: "1px 1px 12px 3px #bbb",
                                     }}
                                     src={cards[0]?.img}
@@ -589,7 +589,7 @@ const ReviewFlashCards = ({
                           color: "#666",
                           fontSize: "14px",
                           backgroundColor: "#f8f9fa",
-                          borderRadius: "6px",
+                          borderRadius: "4px",
                           margin: "1rem 0",
                         }}
                       >
@@ -809,7 +809,7 @@ const ReviewFlashCards = ({
               onClick={() => setPlayCardAutomatically(!playCardAutomatically)}
               style={{
                 fontSize: "10px",
-                borderRadius: "6px",
+                borderRadius: "4px",
                 border: "1px solid #ddd",
                 padding: "2px 8px",
                 cursor: "pointer",

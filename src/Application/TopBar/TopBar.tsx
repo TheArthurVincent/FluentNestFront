@@ -222,7 +222,7 @@ export const TopBar: FC = () => {
     bgcolor: "white",
     boxShadow: 24,
     p: 4,
-    borderRadius: "6px",
+    borderRadius: "4px",
     textAlign: "center",
   };
 
@@ -416,7 +416,7 @@ export const TopBar: FC = () => {
                       position: "absolute",
                       background: "white",
                       boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       padding: "8px",
                       width: "180px",
                       top: "100%",
@@ -577,7 +577,7 @@ export const TopBar: FC = () => {
                   right: "-184px",
                   background: "white",
                   boxShadow: "0px 4px 6px rgba(0,0,0,0.1)",
-                  borderRadius: "6px",
+                  borderRadius: "4px",
                   padding: "10px",
                   minWidth: "250px",
                   zIndex: 100000000,

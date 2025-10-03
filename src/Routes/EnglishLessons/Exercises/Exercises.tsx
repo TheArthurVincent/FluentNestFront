@@ -327,7 +327,7 @@ export default function ExerciseRunner({
       style={{
         display: "flex",
         backgroundColor: "white",
-        borderRadius: "6px",
+        borderRadius: "4px",
         zIndex: 100,
         padding: "1rem",
         boxSizing: "border-box",

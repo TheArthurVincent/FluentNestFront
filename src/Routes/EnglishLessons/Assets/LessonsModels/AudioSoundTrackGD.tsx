@@ -48,7 +48,7 @@ export default function AudioFile({ element, selectedVoice }: AudioFileProps) {
           style={{
             padding: "1rem",
             backgroundColor: "#f9f9f9",
-            borderRadius: "6px",
+            borderRadius: "4px",
             border: "1px solid #e0e0e0",
             lineHeight: "1.6",
             fontSize: "1rem",

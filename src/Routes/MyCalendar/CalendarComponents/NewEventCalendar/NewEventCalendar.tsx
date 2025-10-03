@@ -186,7 +186,7 @@ function NewEventCalendar({
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          borderRadius: "6px",
+          borderRadius: "4px",
           boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
         }}
       >
@@ -269,7 +269,7 @@ function NewEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                     backgroundColor: "white",
@@ -310,7 +310,7 @@ function NewEventCalendar({
                     style={{
                       width: "100%",
                       padding: "0.75rem",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #ced4da",
                       fontSize: "0.9rem",
                       backgroundColor: "white",
@@ -350,7 +350,7 @@ function NewEventCalendar({
                     style={{
                       width: "100%",
                       padding: "0.75rem",
-                      borderRadius: "6px",
+                      borderRadius: "4px",
                       border: "1px solid #ced4da",
                       fontSize: "0.9rem",
                       backgroundColor: "white",
@@ -388,7 +388,7 @@ function NewEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -416,7 +416,7 @@ function NewEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -528,7 +528,7 @@ function NewEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -559,7 +559,7 @@ function NewEventCalendar({
                   style={{
                     width: "100%",
                     padding: "0.75rem",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     border: "1px solid #ced4da",
                     fontSize: "0.9rem",
                   }}
@@ -584,7 +584,7 @@ function NewEventCalendar({
                     backgroundColor: "#6c757d",
                     color: "white",
                     border: "none",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     cursor: "pointer",
                     fontSize: "0.9rem",
                     fontWeight: 500,
@@ -606,7 +606,7 @@ function NewEventCalendar({
                     backgroundColor: partnerColor(),
                     color: "white",
                     border: "none",
-                    borderRadius: "6px",
+                    borderRadius: "4px",
                     cursor: isDisabled ? "not-allowed" : "pointer",
                     fontSize: "0.9rem",
                     fontWeight: 500,
