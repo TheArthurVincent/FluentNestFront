@@ -11,6 +11,7 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
 import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import FindTeacher from "./FindTeacher";
 
 export function ArthurSection({ headers }) {
   const [resetVisible, setResetVisible] = useState(false);
@@ -55,7 +56,7 @@ export function ArthurSection({ headers }) {
       notifyAlert(error, "rgba(255, 0, 0, 1)");
     }
   };
-    const handleResetTokens = async () => {
+  const handleResetTokens = async () => {
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     const userId = getLoggedUser.id;
 

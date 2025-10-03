@@ -19,9 +19,10 @@ import FinancialResources from "./AdmComponents/FinancialResources/FinancialReso
 import Groups from "./AdmComponents/Groups/Groups";
 import ArthurSection from "./AdmComponents/ArthurSection/ArthurSection";
 import ResponsibleMainFile from "./AdmComponents/NewResponsible/ResponsibleMainFile";
+import FindTeacher from "./AdmComponents/ArthurSection/FindTeacher";
 
 export function Adm({ headers }: HeadersProps) {
-  const { id , plan } = localStorageLoggedIn;
+  const { id, plan } = localStorageLoggedIn;
 
   const componentsToRender = [
     {
@@ -30,7 +31,7 @@ export function Adm({ headers }: HeadersProps) {
       value: "1",
       tooltip:
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
-      component: <AllStudents id={id} headers={headers}plan={plan} />,
+      component: <AllStudents id={id} headers={headers} plan={plan} />,
     },
     {
       title: "Grupos",
@@ -109,6 +110,14 @@ export function Adm({ headers }: HeadersProps) {
       value: "10",
       tooltip: "OUT!",
       component: <ArthurSection headers={headers} />,
+      displayArthur: "block",
+    },
+    ,
+    isArthurVincent && {
+      title: "Teacher Finder",
+      value: "11",
+      tooltip: "OUT!",
+      component: <FindTeacher plan={plan} id={id} headers={headers} />,
       displayArthur: "block",
     },
   ].filter(Boolean); // Remove elementos false do array
