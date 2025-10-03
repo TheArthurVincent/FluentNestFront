@@ -802,7 +802,7 @@ const ReviewFlashCards = ({
               >
                 <option value="en">{"English"}</option>
                 <option value="es">{"Espanõl"}</option>
-                <option value="fr">{"Français"}</option>
+                {isArthurVincent && <option value="fr">{"Français"}</option>}
               </select>
             </div>
             <button

@@ -90,6 +90,22 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       link: "/listening",
     },
     {
+      id: "my-homework-and-lessons",
+      title: UniversalTexts.homeworkAndLessons,
+      description: UniversalTexts.homeworkAndLessonsDescription,
+      display: "flex",
+      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/hw?updatedAt=1759494748229",
+      link: "/my-homework-and-lessons",
+    },
+    {
+      id: "my-calendar",
+      title: UniversalTexts.calendar,
+      description: UniversalTexts.homeworkAndLessonsDescription,
+      display: "flex",
+      img: "https://ik.imagekit.io/vjz75qw96/assets/icons/calend.png?updatedAt=1759494846618",
+      link: "/my-calendar",
+    },
+    {
       id: "sentence-mining",
       title: UniversalTexts.vocabulary,
       description: UniversalTexts.enriqueça,
@@ -164,12 +180,6 @@ export function Blog({ headers, change, setChange }: BlogProps) {
                       className="image-background"
                       style={{ backgroundImage: `url(${session.img})` }}
                     />
-
-                    {/* <div className="overlay">
-                        <p className="session-description">
-                          {session.description}
-                        </p>
-                      </div> */}
                   </a>
                 ))}
               </div>
