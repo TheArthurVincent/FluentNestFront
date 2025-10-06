@@ -21,12 +21,12 @@ function LandingPageArvin() {
       href: "materiais-aula",
       video: "https://www.youtube.com/watch?v=sm8xx9d6uRU",
     },
-    {
-      title: "🚀 Curso de Gestão para Professores",
-      description:
-        "Aprenda passo a passo como se tornar um professor particular de sucesso e expandir seu negócio.",
-      href: "curso-gestao",
-    },
+    // {
+    //   title: "🚀 Curso de Gestão para Professores",
+    //   description:
+    //     "Aprenda passo a passo como se tornar um professor particular de sucesso e expandir seu negócio.",
+    //   href: "curso-gestao",
+    // },
     {
       title: "🌍 2 Idiomas Para Ensinar",
       description:
@@ -42,9 +42,9 @@ function LandingPageArvin() {
     {
       title: "🎧 Ferramentas De Estudos Para Alunos",
       description:
-        "Forneça flashcards e exercícios de escuta e pronúncia para potencializar o aprendizado dos seus alunos.",
+        "Forneça flashcards e exercícios de escuta e escrita para potencializar o aprendizado dos seus alunos.",
       href: "ferramentas-alunos",
-      video: "https://www.youtube.com/watch?v=pUjIuJ4SPfI",
+      // video: "https://www.youtube.com/watch?v=pUjIuJ4SPfI",
     },
     {
       title: "🎨 Personalização da Plataforma",
@@ -231,7 +231,7 @@ function LandingPageArvin() {
                 className="cta-button"
                 target="_blank"
               >
-                Inscreva-se
+                Inscreva-se com 30 dias grátuitos!
               </a>
             </div>
           </div>

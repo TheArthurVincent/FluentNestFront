@@ -691,13 +691,9 @@ body {
   display: block;
   padding: 1rem 0;
   max-width: 90%;
-  /* Ajuste conforme necessário */
   word-wrap: break-word;
-  /* Quebra palavras longas */
   overflow: hidden;
-  /* Esconde o excesso de texto */
   white-space: pre-wrap;
-  /* Mantém quebras de linha */
 }
 
 .box-shadow-white {

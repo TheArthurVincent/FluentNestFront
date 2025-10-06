@@ -397,11 +397,11 @@ export const FEATURES: Record<
       status: "Não",
     },
     { title: "Gerenciamento de alunos", value: "", status: "Sim" },
-    {
-      title: "Curso para professores particulares",
-      value: "",
-      status: "Sim",
-    },
+    // {
+    //   title: "Curso para professores particulares",
+    //   value: "",
+    //   status: "Sim",
+    // },
     { title: "Gestão Financeira", value: "", status: "Sim" },
 
     { title: "Limite de revisão de flashcards/dia", value: 25 },
@@ -429,11 +429,11 @@ export const FEATURES: Record<
       status: "Sim",
     },
     { title: "Gerenciamento de alunos", value: "", status: "Sim" },
-    {
-      title: "Curso para professores particulares",
-      value: "",
-      status: "Sim",
-    },
+    // {
+    //   title: "Curso para professores particulares",
+    //   value: "",
+    //   status: "Sim",
+    // },
     { title: "Gestão Financeira", value: "", status: "Sim" },
     { title: "Limite de revisão de flashcards/dia", value: "Sem limites" },
     { title: "Área de responsáveis", value: "", status: "Sim" },
