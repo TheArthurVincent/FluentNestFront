@@ -52,6 +52,7 @@ import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
 import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 import SubscriptionExpired from "./Routes/SubscriptionExpired";
 import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTeacherAsaas";
+import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinLandingPageNew";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -202,11 +203,16 @@ function App() {
         }
       })(),
     },
-
     {
       path: "/lp",
       element: (() => {
         return <LandingPageArvin />;
+      })(),
+    },
+    {
+      path: "/lp2",
+      element: (() => {
+        return <ArvinLandingPageNew />;
       })(),
     },
     {

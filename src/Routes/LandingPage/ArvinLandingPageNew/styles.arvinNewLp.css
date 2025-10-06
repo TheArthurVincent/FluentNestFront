@@ -1,0 +1,90 @@
+@import url("https://fonts.googleapis.com/css2?family=Athiti:wght@200;300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+.arvin-landing-page-container {
+  background-size: cover;
+  height: 100vh;
+  width: 100vw;
+  background-attachment: fixed;
+  background-position: center;
+  background-image: url("./assetsLandingPageArvin/bgwebp.webp");
+  background-blend-mode: multiply;
+  background-color: #101721;
+}
+
+
+/* Desktop Menu */
+.arvin-landing-page-desktop-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: fit-content;
+  height: 52px;
+  gap: 32px;
+  font-weight: 500;
+}
+
+.arvin-landing-page-desktop-menu-link {
+  font-family: Plus Jakarta Sans;
+  font-weight: 500;
+  text-decoration: none;
+  font-style: Medium;
+  font-size: 18px;
+  color: #C3D4E9;
+  line-height: 150%;
+  letter-spacing: -2%;
+  text-align: justify;
+}
+
+.arvin-landing-page-desktop-menu-button {
+  width: 143;
+  height: 52;
+  padding-top: 13px;
+  padding-right: 24px;
+  padding-bottom: 13px;
+  color: #fff;
+  background: #ED5914;
+  padding-left: 24px;
+  gap: 10px;
+  opacity: 1;
+  border-radius: 30px;
+  border: none;
+  font-family: Plus Jakarta Sans;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: -2%;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+/* Hamburger Menu */
+
+
+.arvin-landing-page-hamburguer-menu {
+  display: none;
+  font-weight: 500;
+}
+
+
+@media (max-width: 510px) {
+  .arvin-landing-page-hamburguer-menu {
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+
+  }
+
+  .arvin-landing-page-desktop-menu {
+    display: none;
+    font-weight: 500;
+
+  }
+
+
+}

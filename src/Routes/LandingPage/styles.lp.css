@@ -212,6 +212,7 @@ body {
   background-color: grey;
 }
 
+
 * {
   padding: 0;
   margin: 0;
@@ -374,4 +375,67 @@ h4 {
     width: 90%;
     max-width: 500px;
   }
+}
+
+
+/* ////////////////////// */
+.language-selector {
+  position: relative;
+  display: inline-block;
+  font-family: sans-serif;
+}
+
+.selector-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.selector-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.selector-button img {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
+  object-fit: cover;
+}
+
+.dropdown {
+  position: absolute;
+  top: 120%;
+  left: 0;
+  background: #222;
+  color: white;
+  list-style: none;
+  padding: 8px 0;
+  border-radius: 6px;
+  width: 150px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.dropdown li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.dropdown li:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dropdown img {
+  width: 20px;
+  height: 14px;
+  border-radius: 2px;
 }
