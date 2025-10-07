@@ -10,10 +10,15 @@ interface AudioElement {
 
 interface AudioFileProps {
   element: AudioElement;
+  hideText?: boolean;
   selectedVoice: any;
 }
 
-export default function AudioFile({ element, selectedVoice }: AudioFileProps) {
+export default function AudioFile({
+  element,
+  selectedVoice,
+  hideText,
+}: AudioFileProps) {
   // Extrair o ID do arquivo do Google Drive
   const getFileId = (url: string): string => {
     const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
@@ -23,27 +28,31 @@ export default function AudioFile({ element, selectedVoice }: AudioFileProps) {
   const fileId = getFileId(element.link);
 
   return (
-    <div style={{ marginBottom: "2rem" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "1rem",
+      }}
+    >
       {/* Player de áudio do Google Drive via iframe */}
       {fileId && (
-        <div style={{ marginBottom: "1rem" }}>
-          <iframe
-            src={`https://drive.google.com/file/d/${fileId}/preview`}
-            width="100%"
-            height="80"
-            frameBorder="0"
-            allow="autoplay"
-            title="Audio Player"
-            style={{
-              border: "1px solid #ddd",
-              borderRadius: "4px",
-            }}
-          />
-        </div>
+        <iframe
+          src={`https://drive.google.com/file/d/${fileId}/preview`}
+          width="97%"
+          height="80"
+          allow="autoplay"
+          title="Audio Player"
+          style={{
+            border: "1px solid #ddd",
+            borderRadius: "4px",
+          }}
+        />
       )}
 
       {/* Texto da lição */}
-      {element.text && (
+      {element.text && !hideText && (
         <div
           style={{
             padding: "1rem",

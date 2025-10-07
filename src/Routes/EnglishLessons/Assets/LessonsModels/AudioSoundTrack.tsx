@@ -19,6 +19,7 @@ interface AudioSoundTrackProps {
   text: string;
   element: any;
   selectedVoice: any;
+  hideText?: boolean;
 }
 
 export default function AudioSoundTrack({
@@ -31,6 +32,7 @@ export default function AudioSoundTrack({
   mainTag,
   text,
   selectedVoice,
+  hideText,
 }: AudioSoundTrackProps) {
   const actualHeaders = headers || {};
 
@@ -59,7 +61,7 @@ export default function AudioSoundTrack({
       const showThis =
         `${
           response.data.addedNewFlashcards
-            ? response.data.addedNewFlashcards  
+            ? response.data.addedNewFlashcards
             : ""
         }` +
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
@@ -112,7 +114,7 @@ export default function AudioSoundTrack({
           -
         </a>
       </div>
-      {text && (
+      {text && !hideText && (
         <div
           style={{
             padding: "1rem",
@@ -122,40 +124,6 @@ export default function AudioSoundTrack({
           <div dangerouslySetInnerHTML={{ __html: text }} />
         </div>
       )}
-      {/* {element.sentences && (
-        <UlSentences grid={element.grid}>
-          {element.sentences &&
-            element.sentences.map((sentence: any, i: number) => (
-              <LiSentence key={i}>
-                <Tooltip title="Add to flashcards">
-                  <button
-                    color="white"
-                    onClick={() =>
-                      addNewCards(sentence.english, sentence.portuguese)
-                    }
-                  >
-                    <i className="fa fa-files-o" aria-hidden="true" />
-                  </button>
-                </Tooltip>
-                <br />
-                <br />
-                <strong>{sentence.english}</strong>
-                <span
-                  className="audio-button"
-                  onClick={() => {
-                    readText(sentence.english, true, "en", selectedVoice);
-                  }}
-                >
-                  <i className="fa fa-volume-up" aria-hidden="true" />
-                </span>
-                <br />
-                <span style={{ fontStyle: "italic" }}>
-                  {sentence.portuguese}
-                </span>
-              </LiSentence>
-            ))}
-        </UlSentences>
-      )} */}
     </>
   );
 }

@@ -58,7 +58,6 @@ export default function ExplanationLesson({
                     left: "0px",
                     width: "250px",
                     height: "250px",
-                    // background: `linear-gradient(135deg, ${partnerColor()}15 0%, ${partnerColor()}08 100%)`,
                     borderRadius: "50%",
                     zIndex: 0,
                   }}
@@ -133,7 +132,6 @@ export default function ExplanationLesson({
                           borderLeft: `5px solid ${partnerColor()}`,
                           transition:
                             "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                          boxShadow: "0 2px 10px rgba(0, 0, 0, 0.04)",
                           padding: "5px 10px",
                         }}
                       >

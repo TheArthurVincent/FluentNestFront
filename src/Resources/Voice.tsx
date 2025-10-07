@@ -214,12 +214,6 @@ const Voice: FC<VoiceTypes> = ({
             </option>
           ))}
         </select>
-        {(() => {
-          const currentVoice = voiceOptions.find(
-            (v) => v.value === selectedOption
-          );
-          return currentVoice?.gender === "MALE" ? "🧏‍♂️" : "🧏‍♀️";
-        })()}
       </div>
     </div>
   );

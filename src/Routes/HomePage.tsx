@@ -92,25 +92,17 @@ export function HomePage({ headers }: HeadersProps) {
         );
         if (response.data.feeUpToDate === false) {
           onLoggOutFee();
-        } else {
-          console.log("Fee is up to date");
         }
         if (response2.data.uploadNeeded) {
           window.location.reload();
-        } else {
-          console.log("Upload is not needed");
         }
         if (response3.data.logoutNeeded == true) {
           console.log(response3.data.logoutNeeded, "ExpiredToken");
           onLoggOutToken();
-        } else {
-          console.log("Token is valid");
         }
         if (response4.data.logoutLimitDate == true) {
           console.log(response4.data.logoutLimitDate, "Assinatura Expirada");
           onLoggOutLimitDate();
-        } else {
-          console.log("Assinatura is valid");
         }
       }
     } catch (error) {
@@ -199,7 +191,8 @@ export function HomePage({ headers }: HeadersProps) {
           headers={headers}
         />
       ),
-    },  {
+    },
+    {
       title: "My Calendar Ref",
       component: (
         <MyCalendarRefactor

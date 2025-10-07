@@ -529,6 +529,9 @@ li {
   transform-style: preserve-3d;
   transition: transform 0.3s;
 }
+  .isMobileDisapear {
+    display: flex;
+  }
 
 .flashcard.flip {
   transform: rotateY(180deg);
