@@ -3276,10 +3276,11 @@ export default function EnglishClassCourse2({
             <HOne
               style={{
                 textAlign: "center",
-                fontSize: "22px",
+                fontSize: "18px",
+                fontWeight: "600",
               }}
             >
-              {`${order + 1}- ${theclass.title}`}{" "}
+              {theclass.title}
             </HOne>
             {nextClass !== "123456" ? (
               <span
@@ -4152,7 +4153,6 @@ export default function EnglishClassCourse2({
                 {(thePermissions === "superadmin" ||
                   thePermissions === "teacher") && (
                   <>
-               
                     <button
                       onClick={() => {
                         const template = generateInitialBoardContent();
@@ -4208,21 +4208,19 @@ export default function EnglishClassCourse2({
                         Áudios
                       </button>
                     )}
-                          <button
-                  onClick={downloadBoardPDF}
-                  title="Baixar PDF"
-                       style={{
-                    all: "unset",
-                  }}
-                  >
-                  <img
-                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                    alt="PDF"
-                    style={{ width:14, 
-                      cursor: "pointer",
-                      height:14 }}
-                  />
-                </button>
+                    <button
+                      onClick={downloadBoardPDF}
+                      title="Baixar PDF"
+                      style={{
+                        all: "unset",
+                      }}
+                    >
+                      <img
+                        src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                        alt="PDF"
+                        style={{ width: 14, cursor: "pointer", height: 14 }}
+                      />
+                    </button>
                     {seeCheck && (
                       <i
                         className="fa fa-check"
@@ -4241,7 +4239,6 @@ export default function EnglishClassCourse2({
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-             
                 {seeConfirm ? (
                   <div style={{ display: "flex", gap: 8 }}>
                     <button
@@ -4297,7 +4294,7 @@ export default function EnglishClassCourse2({
                       cursor: "pointer",
                       color: "#b91c1c",
                       width: 14,
-                      height: 14
+                      height: 14,
                     }}
                   >
                     ✕
