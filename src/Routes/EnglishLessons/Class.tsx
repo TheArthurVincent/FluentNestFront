@@ -3393,11 +3393,7 @@ export default function EnglishClassCourse2({
                     maxWidth: "70px",
                     outline: "none",
                     cursor: "pointer",
-                    display:
-                      thePermissions === "superadmin" ||
-                      thePermissions === "teacher"
-                        ? "block"
-                        : "none",
+                    display: "block"
                   }}
                   onMouseEnter={(e) => {
                     const target = e.target as HTMLElement;
