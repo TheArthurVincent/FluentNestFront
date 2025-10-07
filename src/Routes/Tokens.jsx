@@ -47,6 +47,7 @@ export function Tokens({ id, headers, change }) {
         <></>
       ) : (
         <div
+          className="no-print"
           onClick={() => {
             fetchTokens();
           }}
