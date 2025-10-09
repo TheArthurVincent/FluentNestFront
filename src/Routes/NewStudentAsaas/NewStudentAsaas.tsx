@@ -343,7 +343,7 @@ export default function Subscription() {
       <Helmets text="Cadastre-se" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
-          <div
+          {/* <div
             style={{
               display: "flex",
               justifyContent: "center",
@@ -351,7 +351,7 @@ export default function Subscription() {
             }}
           >
             <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
-          </div>
+          </div> */}
           <h2>Inicie sua jornada!</h2>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

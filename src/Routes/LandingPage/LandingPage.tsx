@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { partnerColor } from "../../Styles/Styles";
 import AppFooter from "../../Application/Footer/Footer";
 import { backDomain, LogoSVG } from "../../Resources/UniversalComponents";
 import "./styles.lp.css";
@@ -21,7 +20,7 @@ function LandingPage() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setFail(false);
-    setButton(<CircularProgress style={{ color: partnerColor() }} />);
+    setButton(<CircularProgress style={{ color: "#5ac116" }} />);
 
     try {
       const response = await axios.post(`${backDomain}/api/v1/studentlogin/`, {
@@ -62,13 +61,12 @@ function LandingPage() {
         "Acesse cursos organizados do nível básico ao avançado. Aprenda gramática, vocabulário, leitura, escuta e conversação com métodos práticos, objetivos e eficientes.",
       url: "https://www.youtube.com/embed/Bz7c-kT6tyE",
     },
-    {
-      title: "🗣️ Clube de Conversação",
-      description:
-        "Participe de encontros ao vivo para praticar o inglês com outros alunos e professores.",
-      url: "https://www.youtube.com/embed/g4YGm9G9SUw",
-    },
-
+    // {
+    //   title: "🗣️ Clube de Conversação",
+    //   description:
+    //     "Participe de encontros ao vivo para praticar o inglês com outros alunos e professores.",
+    //   url: "https://www.youtube.com/embed/g4YGm9G9SUw",
+    // },
     {
       title: "🧠 Sentence Mining",
       description:
@@ -101,7 +99,7 @@ function LandingPage() {
             marginRight: "6px",
             padding: "0 10px",
             fontSize: "10px",
-            backgroundColor: partnerColor(),
+            backgroundColor: "#5ac116",
             color: "#fff",
             border: "none",
             cursor: "pointer",
@@ -152,7 +150,7 @@ function LandingPage() {
               Você <b>vai</b> aprender inglês!
             </p>
             <a
-              style={{ backgroundColor: partnerColor() }}
+              style={{ backgroundColor: "#5ac116" }}
               href="#subscription-section"
               className="cta-button"
             >
@@ -286,7 +284,7 @@ export default LandingPage;
             <button
               type="submit"
               style={{
-                backgroundColor: partnerColor(),
+                backgroundColor: "#5ac116",
                 color: "#fff",
                 width: isMobile ? "100%" : "auto",
               }}
