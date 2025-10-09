@@ -3218,7 +3218,7 @@ export default function EnglishClassCourse2({
               }}
               to="/teaching-materials"
             >
-              English Courses
+              Materiais de Ensino
             </Link>{" "}
             <span style={{ color: darkGreyColor() }}>-</span>
             <span

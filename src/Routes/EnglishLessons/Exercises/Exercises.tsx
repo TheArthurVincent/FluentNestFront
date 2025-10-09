@@ -4,6 +4,7 @@ import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
+import { QuestionsExercise } from "./Exercises/Questions";
 
 type SentenceItem = { portuguese: string; english?: string };
 type ImageItem = {
@@ -140,6 +141,22 @@ function getFirstImagesBlock(elements?: ElementItem[]): ImageItem[] {
   return list;
 }
 
+function getExerciseElements(elements?: ElementItem[]): ElementExercise[] {
+  const list: ElementExercise[] = [];
+  const els = safeElements(elements);
+
+  for (const el of els) {
+    if (
+      (el as any)?.type === "exercise" &&
+      Array.isArray((el as ElementExercise).items) &&
+      (el as ElementExercise).items.length > 0
+    ) {
+      list.push(el as ElementExercise);
+    }
+  }
+  return list;
+}
+
 export function Card({
   children,
 }: {
@@ -225,6 +242,10 @@ export default function ExerciseRunner({
   const safeEls = safeElements(elements);
   const sentences = useMemo(() => getAllSentences(safeEls), [safeEls]);
   const imgs = useMemo(() => getFirstImagesBlock(safeEls), [safeEls]);
+  const exerciseElements = useMemo(
+    () => getExerciseElements(safeEls),
+    [safeEls]
+  );
 
   const exerciseCatalog: ExerciseEntry[] = [
     {
@@ -276,12 +297,25 @@ export default function ExerciseRunner({
         );
       },
     },
+    ...exerciseElements.map((exerciseElement, index) => ({
+      key: `questions_${index}`,
+      title: exerciseElement.subtitle || `Exercício ${index + 1}`,
+      render: ({ labels }: CatalogCtx) => (
+        <QuestionsExercise
+          exercise={exerciseScore}
+          exerciseElement={exerciseElement}
+          studentId={studentId || ""}
+          labels={labels}
+        />
+      ),
+    })),
   ];
 
   const available = exerciseCatalog.filter((e) => {
     if (e.key === "dictation_from_sentences") return sentences.length > 0;
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
+    if (e.key.startsWith("questions_")) return true; // Exercícios individuais já foram filtrados na criação
     return true;
   });
 
@@ -317,6 +351,10 @@ export default function ExerciseRunner({
           <li>
             Ou adicione um bloco <code>images</code> para habilitar os quizzes
             de imagem.
+          </li>
+          <li>
+            Ou adicione um bloco <code>exercise</code> para habilitar as
+            perguntas.
           </li>
         </ul>
       </Card>

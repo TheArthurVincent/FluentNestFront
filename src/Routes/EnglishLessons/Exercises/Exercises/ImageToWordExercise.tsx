@@ -183,85 +183,119 @@ export default function ImageToWordExercise({
           </div>
         }
       />
+      {/* Layout principal: imagem à esquerda, botões à direita */}
       <div
-        style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}
+        style={{
+          display: "flex",
+          gap: 24,
+          alignItems: "flex-start",
+          marginBottom: 16,
+        }}
       >
-        <img
-          src={current.img}
-          alt="quiz"
-          loading="lazy"
+        {/* Imagem */}
+        <div style={{ flex: "0 0 auto" }}>
+          <img
+            src={current.img}
+            alt="quiz"
+            loading="lazy"
+            style={{
+              width: "200px",
+              height: "200px",
+              border: "1px solid #eee",
+              objectFit: "cover",
+              borderRadius: 6,
+            }}
+          />
+        </div>
+
+        {/* Botões em lista vertical */}
+        <div
           style={{
-            width: "25vw",
-            height: "25vw",
-            border: "1px solid #eee",
-            objectFit: "cover",
-            borderRadius: 6,
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            paddingTop: 8,
           }}
-        />
-      </div>
-      <div
-        style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}
-      >
-        {options.map((opt, i) => {
-          let style: React.CSSProperties = {
-            textAlign: "left",
-            padding: "12px 16px",
-            borderRadius: 6,
-            cursor: hasAnswered ? "default" : "pointer",
-            background: "#FFFFFF",
-            transition: "background 160ms ease, border-color 160ms ease",
-          };
+        >
+          {options.map((opt, i) => {
+            let style: React.CSSProperties = {
+              textAlign: "left",
+              padding: "10px 14px",
+              borderRadius: 6,
+              cursor: hasAnswered ? "default" : "pointer",
+              background: "#FFFFFF",
+              border: "1px solid #E5E7EB",
+              transition: "background 160ms ease, border-color 160ms ease",
+              fontSize: "14px",
+              fontWeight: "500",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              minHeight: "44px",
+            };
 
-          if (hasAnswered) {
-            if (i === correctIdx) {
-              style = {
-                ...style,
-                background: "#D1FAE5",
-                border: "2px solid #2dffb2ff",
-              };
+            if (hasAnswered) {
+              if (i === correctIdx) {
+                style = {
+                  ...style,
+                  background: "#D1FAE5",
+                  border: "2px solid #2dffb2ff",
+                };
+              }
+              if (i === answeredIndex && i !== correctIdx) {
+                style = {
+                  ...style,
+                  background: "#FEE2E2",
+                  border: "2px solid #ff6969ff",
+                };
+              }
             }
-            if (i === answeredIndex && i !== correctIdx) {
-              style = {
-                ...style,
-                background: "#FEE2E2",
-                border: "2px solid #ff6969ff",
-              };
-            }
-          }
 
-          return (
-            <>
-              {index + 1 !== pool.length && (
+            return (
+              index + 1 !== pool.length && (
                 <div
                   key={i}
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: 8,
-                  }}
+                  style={{ display: "flex", gap: 8, alignItems: "center" }}
                 >
                   <button
                     onClick={() =>
                       readText(optionLabel(opt), true, language, selectedVoice)
                     }
+                    style={{
+                      padding: "8px",
+                      borderRadius: 4,
+                      background: "#F3F4F6",
+                      border: "1px solid #D1D5DB",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      minWidth: "32px",
+                      height: "32px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    title="Ouvir"
                   >
-                    <i className="fa fa-volume-up" aria-hidden="true" />{" "}
+                    <i className="fa fa-volume-up" aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => {
                       handleChoose(i, language);
                     }}
                     disabled={hasAnswered}
-                    style={style}
+                    style={{
+                      ...style,
+                      flex: 1,
+                    }}
                   >
-                    {!hasAnswered && i + 1} {hasAnswered && optionLabel(opt)}
+                    <span>{hasAnswered ? optionLabel(opt) : i + 1}</span>
                   </button>
                 </div>
-              )}
-            </>
-          );
-        })}
+              )
+            );
+          })}
+        </div>
       </div>
       {hasAnswered && isCorrect && (
         <div
@@ -278,7 +312,6 @@ export default function ImageToWordExercise({
           ✅ {merged.plusPoints}
         </div>
       )}
-
       {hasAnswered && (
         <div style={{ marginTop: 20, display: "flex", justifyContent: "end" }}>
           <button

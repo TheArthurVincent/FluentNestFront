@@ -215,7 +215,7 @@ export default function Modules({
                 }}
                 onClick={() => window.location.assign("/teaching-materials")}
               >
-                English Courses
+                Materiais de Ensino
               </span>
               <span
                 style={{
