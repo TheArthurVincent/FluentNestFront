@@ -28,7 +28,7 @@ export function Adm({ headers }: HeadersProps) {
     {
       title: "Alunos",
       displayArthur: "block",
-      value: "1",
+      value: "0",
       tooltip:
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
       component: <AllStudents id={id} headers={headers} plan={plan} />,
@@ -36,7 +36,7 @@ export function Adm({ headers }: HeadersProps) {
     {
       title: "Grupos",
       displayArthur: "block",
-      value: "2",
+      value: "1",
       tooltip:
         "Visualize, edite e gerencie todos os alunos cadastrados. Altere dados pessoais, permissões de acesso, redefina senhas ou exclua um aluno da plataforma quando necessário.",
       component: <Groups id={id} headers={headers} />,
@@ -44,7 +44,7 @@ export function Adm({ headers }: HeadersProps) {
     {
       title: "Financeiro",
       displayArthur: "block",
-      value: "4",
+      value: "3",
       tooltip:
         "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
       component: (
@@ -56,7 +56,7 @@ export function Adm({ headers }: HeadersProps) {
     {
       title: "Pai ou Responsável",
       displayArthur: "block",
-      value: "44",
+      value: "4",
       tooltip:
         "Gerencie as informações financeiras dos alunos, incluindo pagamentos, faturas e recibos.",
       component: (
@@ -112,7 +112,6 @@ export function Adm({ headers }: HeadersProps) {
       component: <ArthurSection headers={headers} />,
       displayArthur: "block",
     },
-    ,
     isArthurVincent && {
       title: "Teacher Finder",
       value: "11",
@@ -175,18 +174,15 @@ export function Adm({ headers }: HeadersProps) {
                     title={component.tooltip}
                     placement="bottom"
                     //@ts-ignore
-
                     key={index + component.value}
                   >
                     <Tab
                       style={{
                         color: partnerColor(),
                         //@ts-ignore
-
                         fontWeight: component.value === value ? 800 : 500,
                       }}
                       //@ts-ignore
-
                       label={component.title}
                       //@ts-ignore
                       value={component.value}
@@ -202,7 +198,6 @@ export function Adm({ headers }: HeadersProps) {
             <TabPanel
               style={{ padding: 0, margin: "1rem auto" }}
               //@ts-ignore
-
               key={index + component.value}
               //@ts-ignore
               value={component.value}
