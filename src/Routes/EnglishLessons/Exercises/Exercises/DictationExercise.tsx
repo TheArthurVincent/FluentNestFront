@@ -200,7 +200,7 @@ export function DictationExercise({
               marginBottom: 8,
             }}
           >
-            {labels.yourAnswer}:
+            {labels.yourAnswer}
           </label>
           <button
             style={{ marginBottom: 8, marginRight: 8 }}

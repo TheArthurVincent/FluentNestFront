@@ -167,14 +167,9 @@ export function Card({
     <div
       style={{
         width: "100%",
-        maxWidth: 672,
         marginLeft: "auto",
         marginRight: "auto",
-        borderRadius: 6,
-        border: "1px solid #E5E7EB",
         background: "#fff",
-        boxShadow:
-          "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
         boxSizing: "border-box",
       }}
     >
