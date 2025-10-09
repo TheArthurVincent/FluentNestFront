@@ -203,7 +203,9 @@ export function HomePage({ headers }: HeadersProps) {
           headers={headers}
         />
       ),
-    },
+    }, 
+    
+    
     {
       title: "Flash Cards",
       levelcard: true,
