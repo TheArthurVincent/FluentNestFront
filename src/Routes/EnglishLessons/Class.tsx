@@ -3820,12 +3820,12 @@ export default function EnglishClassCourse2({
                             headers={headers}
                             element={element}
                           />
-                        ) : element.type === "selectexercise" ? (
-                          <SelectExercise
-                            headers={headers}
-                            element={element}
-                            selectedVoice={selectedVoice}
-                          />
+                        // ) : element.type === "selectexercise" ? (
+                        //   <SelectExercise
+                        //     headers={headers}
+                        //     element={element}
+                        //     selectedVoice={selectedVoice}
+                        //   />
                         ) : element.type === "images" ? (
                           <ImageLessonModel
                             studentId={studentID}
@@ -3835,11 +3835,11 @@ export default function EnglishClassCourse2({
                             element={element}
                             selectedVoice={selectedVoice}
                           />
-                        ) : element.type === "exercise" ? (
-                          <ExerciseLessonModel
-                            headers={headers}
-                            item={element.items}
-                          />
+                        // ) : element.type === "exercise" ? (
+                        //   <ExerciseLessonModel
+                        //     headers={headers}
+                        //     item={element.items}
+                        //   />
                         ) : element.type === "explanation" ? (
                           <ExplanationLesson
                             headers={headers}
@@ -3857,13 +3857,7 @@ export default function EnglishClassCourse2({
                             subtitle={element.subtitle}
                             selectedVoice={selectedVoice}
                           />
-                        ) : element.type === "personalqanda" ? (
-                          <QandALessonPersonalModel
-                            headers={headers}
-                            studentId={studentID}
-                            mainTag={theclass.mainTag}
-                            item={element}
-                          />
+                  
                         ) : element.type === "dialogue" ? (
                           <DialogueLessonModel
                             headers={headers}
@@ -3875,7 +3869,7 @@ export default function EnglishClassCourse2({
                             headers={headers}
                             element={element}
                           />
-                        ) : element.type === "listenandtranslate" ? (
+                        ) : element.type === "listenandcomplete" ? (
                           <ListenAndTranslateLessonModel
                             headers={headers}
                             element={element}

@@ -5,6 +5,8 @@ import { DictationExercise } from "./Exercises/DictationExercise";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
 import { QuestionsExercise } from "./Exercises/Questions";
+import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
+import { SelectExercise } from "./Exercises/SelectExercise";
 
 type SentenceItem = { portuguese: string; english?: string };
 type ImageItem = {
@@ -53,12 +55,39 @@ type ElementAudio = {
   order?: number;
 };
 
+type ElementListenInEnglish = {
+  type: "listinenglish";
+  subtitle?: string;
+  comments?: string;
+  audios: { enusAudio: string }[];
+  order?: number;
+};
+
+type ElementSelectExercise = {
+  type: "selectexercise";
+  subtitle?: string;
+  options: {
+    question: string;
+    audio: string;
+    options: {
+      option: string;
+      status: "right" | "wrong";
+      reason?: string;
+    }[];
+    answer: string;
+    studentsWhoDidIt: string[];
+  }[];
+  order?: number;
+};
+
 type ElementItem =
   | ElementSentences
   | ElementImages
   | ElementDialogue
   | ElementExercise
-  | ElementAudio;
+  | ElementAudio
+  | ElementListenInEnglish
+  | ElementSelectExercise;
 
 type ExerciseRunnerProps = {
   elements?: ElementItem[];
@@ -157,6 +186,38 @@ function getExerciseElements(elements?: ElementItem[]): ElementExercise[] {
   return list;
 }
 
+function getListenInEnglishElements(elements?: ElementItem[]): ElementListenInEnglish[] {
+  const list: ElementListenInEnglish[] = [];
+  const els = safeElements(elements);
+
+  for (const el of els) {
+    if (
+      (el as any)?.type === "listinenglish" &&
+      Array.isArray((el as ElementListenInEnglish).audios) &&
+      (el as ElementListenInEnglish).audios.length > 0
+    ) {
+      list.push(el as ElementListenInEnglish);
+    }
+  }
+  return list;
+}
+
+function getSelectExerciseElements(elements?: ElementItem[]): ElementSelectExercise[] {
+  const list: ElementSelectExercise[] = [];
+  const els = safeElements(elements);
+
+  for (const el of els) {
+    if (
+      (el as any)?.type === "selectexercise" &&
+      Array.isArray((el as ElementSelectExercise).options) &&
+      (el as ElementSelectExercise).options.length > 0
+    ) {
+      list.push(el as ElementSelectExercise);
+    }
+  }
+  return list;
+}
+
 export function Card({
   children,
 }: {
@@ -241,6 +302,14 @@ export default function ExerciseRunner({
     () => getExerciseElements(safeEls),
     [safeEls]
   );
+  const listenInEnglishElements = useMemo(
+    () => getListenInEnglishElements(safeEls),
+    [safeEls]
+  );
+  const selectExerciseElements = useMemo(
+    () => getSelectExerciseElements(safeEls),
+    [safeEls]
+  );
 
   const exerciseCatalog: ExerciseEntry[] = [
     {
@@ -304,6 +373,34 @@ export default function ExerciseRunner({
         />
       ),
     })),
+    ...listenInEnglishElements.map((listenElement, index) => ({
+      key: `listen_${index}`,
+      title: listenElement.subtitle || `Listen in English ${index + 1}`,
+      render: ({ labels, selectedVoice }: CatalogCtx) => (
+        <ListenInEnglishExercise
+          exercise={exerciseScore}
+          exerciseElement={listenElement}
+          studentId={studentId || ""}
+          labels={labels}
+          selectedVoice={selectedVoice}
+          language={language}
+        />
+      ),
+    })),
+    ...selectExerciseElements.map((selectElement, index) => ({
+      key: `select_${index}`,
+      title: selectElement.subtitle || `Select Exercise ${index + 1}`,
+      render: ({ labels, selectedVoice }: CatalogCtx) => (
+        <SelectExercise
+          exercise={exerciseScore}
+          exerciseElement={selectElement}
+          studentId={studentId || ""}
+          labels={labels}
+          selectedVoice={selectedVoice}
+          language={language}
+        />
+      ),
+    })),
   ];
 
   const available = exerciseCatalog.filter((e) => {
@@ -311,6 +408,8 @@ export default function ExerciseRunner({
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
     if (e.key.startsWith("questions_")) return true; // Exercícios individuais já foram filtrados na criação
+    if (e.key.startsWith("listen_")) return true; // Exercícios de listening já foram filtrados na criação
+    if (e.key.startsWith("select_")) return true; // Exercícios de seleção já foram filtrados na criação
     return true;
   });
 
@@ -350,6 +449,14 @@ export default function ExerciseRunner({
           <li>
             Ou adicione um bloco <code>exercise</code> para habilitar as
             perguntas.
+          </li>
+          <li>
+            Ou adicione um bloco <code>listinenglish</code> para habilitar os
+            exercícios de listening.
+          </li>
+          <li>
+            Ou adicione um bloco <code>selectexercise</code> para habilitar os
+            exercícios de seleção múltipla.
           </li>
         </ul>
       </Card>
