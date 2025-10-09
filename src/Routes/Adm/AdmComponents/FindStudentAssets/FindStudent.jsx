@@ -748,7 +748,10 @@ export function FindStudent({
                     fontSize: "11px",
                   }}
                 >
-                  {formatPhoneNumber(selectedStudent.phoneNumber) || "N/A"}
+                  {(selectedStudent &&
+                    selectedStudent.phoneNumber &&
+                    formatPhoneNumber(selectedStudent.phoneNumber)) ||
+                    "N/A"}
                 </Typography>
               </div>
             </Grid>
