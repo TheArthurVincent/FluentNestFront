@@ -3229,7 +3229,7 @@ export default function EnglishClassCourse2({
               }}
               to="/teaching-materials"
             >
-              {truncateString("Materiais de Ensino", 25)}
+              Materiais de Ensino
             </Link>{" "}
             -{" "}
             <Link
@@ -3238,9 +3238,9 @@ export default function EnglishClassCourse2({
                 fontSize: "10px",
                 color: "#000",
               }}
-              to={`/teaching-materials/${pathGenerator(courseTitle)}`}
+              to={`/teaching-materials/${pathGenerator(courseTitle || "")}`}
             >
-              {truncateString(courseTitle, 25)}
+              {courseTitle ? truncateString(courseTitle, 25) : "..."}
             </Link>{" "}
             <span style={{ color: darkGreyColor() }}>-</span>
             <span
@@ -3251,7 +3251,7 @@ export default function EnglishClassCourse2({
                 color: partnerColor(),
               }}
             >
-              {truncateString(theclass.title, 25)}
+              {theclass?.title ? truncateString(theclass.title, 25) : "..."}
             </span>
           </div>
 
