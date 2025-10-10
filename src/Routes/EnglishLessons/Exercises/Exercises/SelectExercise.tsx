@@ -1,7 +1,7 @@
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 type OptionItem = {
   option: string;

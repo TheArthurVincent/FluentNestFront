@@ -1,8 +1,8 @@
 import axios from "axios";
 import { partnerColor } from "../../../../Styles/Styles";
-import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
-import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
-import React, { useEffect, useMemo, useState } from "react";
+import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
+import { Card } from "../Exercises";
+import React, { useEffect, useState } from "react";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 
 type ElementExercise = {
@@ -29,36 +29,10 @@ export function QuestionsExercise({
   const [loading, setLoading] = useState<boolean>(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
-  const [autoSaving, setAutoSaving] = useState<boolean>(false);
 
   // Use either single element or array of elements
   const elementsToUse =
     exerciseElements || (exerciseElement ? [exerciseElement] : []);
-
-  // Auto-save functionality
-  useEffect(() => {
-    if (!hasChanges || !editorContent.trim() || loading) return;
-
-    const autoSaveTimer = setTimeout(async () => {
-      setAutoSaving(true);
-      try {
-        const actualHeaders = headers || {};
-        await axios.put(
-          `${backDomain}/api/v1/exercise-board/${classId}?student=${studentId}`,
-          { content: editorContent, date: new Date() },
-          { headers: actualHeaders }
-        );
-        setLastSaved(new Date());
-        setHasChanges(false);
-      } catch (error) {
-        console.error("Erro no auto-save:", error);
-      } finally {
-        setAutoSaving(false);
-      }
-    }, 3000); // Auto-save after 3 seconds of inactivity
-
-    return () => clearTimeout(autoSaveTimer);
-  }, [editorContent, hasChanges, classId, studentId, headers, loading]);
 
   const generateInitialQuestionsContent = () => {
     let content = "";
@@ -182,7 +156,6 @@ export function QuestionsExercise({
     setEditorContent("");
     setLastSaved(null);
     setHasChanges(false);
-    setAutoSaving(false);
     setLoading(false);
   }, [studentId]);
 
@@ -203,12 +176,10 @@ export function QuestionsExercise({
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <button
               onClick={handleSaveExercise}
-              disabled={loading || (!hasChanges && !autoSaving)}
+              disabled={loading || !hasChanges}
               style={{
                 backgroundColor: loading
                   ? "#6b7280"
-                  : autoSaving
-                  ? "#f59e0b"
                   : hasChanges
                   ? partnerColor()
                   : "#10b981",
@@ -217,20 +188,18 @@ export function QuestionsExercise({
                 borderRadius: "6px",
                 padding: "8px 16px",
                 fontSize: "14px",
-                cursor: loading ? "not-allowed" : (hasChanges || autoSaving) ? "pointer" : "default",
+                cursor: loading
+                  ? "not-allowed"
+                  : hasChanges
+                  ? "pointer"
+                  : "default",
                 fontWeight: "500",
                 display: "flex",
                 alignItems: "center",
                 gap: "4px",
               }}
             >
-              {loading
-                ? "Salvando..."
-                : autoSaving
-                ? "🔄 Auto-salvando..."
-                : hasChanges
-                ? "💾 Salvar Agora"
-                : "✅ Salvo"}
+              {loading ? "Salvando..." : hasChanges ? "💾 Salvar" : "✅ Salvo"}
             </button>
             <button
               onClick={handleRestoreQuestions}
@@ -255,12 +224,7 @@ export function QuestionsExercise({
                 Última modificação: {lastSaved.toLocaleString("pt-BR")}
               </span>
             )}
-            {autoSaving && (
-              <span style={{ color: "#f59e0b", marginLeft: "8px" }}>
-                • Auto-salvando...
-              </span>
-            )}
-            {hasChanges && !autoSaving && (
+            {hasChanges && (
               <span style={{ color: "#f59e0b", marginLeft: "8px" }}>
                 • Não salvo
               </span>
@@ -326,7 +290,10 @@ export function QuestionsExercise({
             display: "flex",
             justifyContent: "space-between",
           }}
-        ></div>
+        >
+          <span>💡 Ctrl+S para salvar</span>
+          <span>{editorContent.length} caracteres</span>
+        </div>
       </div>
     </Card>
   );
