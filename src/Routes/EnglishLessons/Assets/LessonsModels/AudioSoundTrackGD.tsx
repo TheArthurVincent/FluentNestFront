@@ -55,16 +55,13 @@ export default function AudioFile({
       {element.text && !hideText && (
         <div
           style={{
-            padding: "1rem",
-            backgroundColor: "#f9f9f9",
-            borderRadius: "4px",
-            border: "1px solid #e0e0e0",
+            padding: "5px",
             lineHeight: "1.6",
-            fontSize: "1rem",
+            fontSize: "1.1rem",
             marginBottom: "1rem",
           }}
         >
-          <div style={{ color: "#444" }}>{element.text}</div>
+          <div>{element.text}</div>
         </div>
       )}
     </div>

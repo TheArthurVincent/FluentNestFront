@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { HOne, RouteDivCourses } from "../../Resources/Components/RouteBox";
+import { HOne } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Link, Outlet, Route, Routes, useLocation } from "react-router-dom";
@@ -18,7 +18,6 @@ import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import { CourseCard } from "./EnglishCourses.Styled";
 import EnglishClassCourse2 from "./Class";
 import { truncateTitle } from "./CoursesSideBar/CoursesSideBar";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { CircularProgress } from "@mui/material";
 
@@ -26,13 +25,11 @@ interface ModulesHomeProps {
   headers: MyHeadersType | null;
   courseId: string;
   title: string;
-  studentId: any;
 }
 
 export default function Modules({
   headers,
   courseId,
-  studentId,
   title,
 }: ModulesHomeProps) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -167,7 +164,6 @@ export default function Modules({
                 path={`${classItem._id}/`}
                 element={
                   <EnglishClassCourse2
-                    studentsWhoCompletedIt={classItem.studentsWhoCompletedIt}
                     headers={headers}
                     classId={classItem._id}
                     course={courseId}
@@ -181,7 +177,6 @@ export default function Modules({
                         ? modules[index + 1]?.classes[0]?._id
                         : "123456"
                     }
-                    order={index2}
                     courseTitle={title}
                   />
                 }
@@ -194,7 +189,9 @@ export default function Modules({
         <div>
           <HOne>{title}</HOne>
           {loading ? (
-            <><CircularProgress style={{ color: partnerColor() }} /></>
+            <>
+              <CircularProgress style={{ color: partnerColor() }} />
+            </>
           ) : (
             <div
               style={{

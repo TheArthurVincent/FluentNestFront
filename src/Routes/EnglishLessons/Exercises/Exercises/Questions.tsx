@@ -1,7 +1,9 @@
+import axios from "axios";
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
 import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
 import React, { useEffect, useMemo, useState } from "react";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 
 type ElementExercise = {
   type: "exercise";
@@ -11,27 +13,44 @@ type ElementExercise = {
 };
 
 export function QuestionsExercise({
-  exercise,
   exerciseElement,
+  exerciseElements,
   studentId,
-  labels,
+  headers,
+  classId,
 }: {
-  exercise: any;
-  exerciseElement: ElementExercise;
+  exerciseElement?: ElementExercise;
+  exerciseElements?: ElementExercise[];
+  headers?: any | null;
   studentId: string;
-  labels: typeof defaultLabels;
+  classId: string;
 }) {
   const [editorContent, setEditorContent] = useState<string>("");
 
+  // Use either single element or array of elements
+  const elementsToUse = exerciseElements || (exerciseElement ? [exerciseElement] : []);
+
   const generateInitialQuestionsContent = () => {
     let content = "";
+    let questionNumber = 1; // Continuous numbering across all sections
 
-    // Título do exercício
-    content += `${exerciseElement.subtitle || "Exercício"}\n\n`;
+    // If multiple elements, create sections for each
+    elementsToUse.forEach((element, elementIndex) => {
+      // Add section title if there are multiple elements or if element has subtitle
+      if (elementsToUse.length > 1 || element.subtitle) {
+        content += `${element.subtitle || `Exercício ${elementIndex + 1}`}\n\n`;
+      }
 
-    // Lista de perguntas
-    exerciseElement.items.forEach((item, itemIndex) => {
-      content += `${itemIndex + 1}. ${item}\n\n`;
+      // Lista de perguntas with continuous numbering
+      element.items.forEach((item) => {
+        content += `${questionNumber}. ${item}\n\n`;
+        questionNumber++;
+      });
+
+      // Add separator between sections if there are multiple elements
+      if (elementsToUse.length > 1 && elementIndex < elementsToUse.length - 1) {
+        content += `\n---\n\n`;
+      }
     });
 
     return content;
@@ -57,7 +76,22 @@ export function QuestionsExercise({
     if (!editorContent) {
       setEditorContent(generateInitialQuestionsContent());
     }
-  }, [exerciseElement]);
+  }, [elementsToUse]);
+  const [newHWDescription, setNewHWDescription] = useState("");
+
+  const actualHeaders = headers || {};
+
+  const handleSaveExercise = async () => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/board/${classId}?student=${studentId}`,
+        { content: newHWDescription, date: new Date() },
+        { headers: actualHeaders }
+      );
+    } catch (error) {
+      console.error(error, "Erro ao buscar comentários");
+    }
+  };
 
   return (
     <Card>
@@ -94,15 +128,11 @@ export function QuestionsExercise({
               width: "100%",
               height: "300px",
               border: "none",
-              borderRadius: "6px",
               padding: "12px",
-              fontSize: "14px",
-              fontFamily: "Arial, sans-serif",
               lineHeight: "1.5",
               resize: "vertical",
               outline: "none",
             }}
-            placeholder="Digite suas perguntas aqui..."
           />
         </div>
       </div>

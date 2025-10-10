@@ -95,6 +95,7 @@ type ExerciseRunnerProps = {
   exerciseScore?: any;
   flag?: boolean;
   dictationItems?: number;
+  classId: string;
   labels?: Partial<typeof defaultLabels>;
   studentId?: string;
   headers?: MyHeadersType | null;
@@ -186,7 +187,9 @@ function getExerciseElements(elements?: ElementItem[]): ElementExercise[] {
   return list;
 }
 
-function getListenInEnglishElements(elements?: ElementItem[]): ElementListenInEnglish[] {
+function getListenInEnglishElements(
+  elements?: ElementItem[]
+): ElementListenInEnglish[] {
   const list: ElementListenInEnglish[] = [];
   const els = safeElements(elements);
 
@@ -202,7 +205,9 @@ function getListenInEnglishElements(elements?: ElementItem[]): ElementListenInEn
   return list;
 }
 
-function getSelectExerciseElements(elements?: ElementItem[]): ElementSelectExercise[] {
+function getSelectExerciseElements(
+  elements?: ElementItem[]
+): ElementSelectExercise[] {
   const list: ElementSelectExercise[] = [];
   const els = safeElements(elements);
 
@@ -289,6 +294,7 @@ export default function ExerciseRunner({
   dictationItems = 10000,
   labels: labelsProp,
   studentId,
+  classId,
   exerciseScore = () => {},
   headers,
   selectedVoice,
@@ -361,18 +367,19 @@ export default function ExerciseRunner({
         );
       },
     },
-    ...exerciseElements.map((exerciseElement, index) => ({
-      key: `questions_${index}`,
-      title: exerciseElement.subtitle || `Exercício ${index + 1}`,
+    // Unified Questions section combining all exercise elements
+    ...(exerciseElements.length > 0 ? [{
+      key: "questions_unified",
+      title: "Questions",
       render: ({ labels }: CatalogCtx) => (
         <QuestionsExercise
-          exercise={exerciseScore}
-          exerciseElement={exerciseElement}
+          headers={headers}
+          classId={classId}
+          exerciseElements={exerciseElements} // Pass all exercise elements
           studentId={studentId || ""}
-          labels={labels}
         />
       ),
-    })),
+    }] : []),
     ...listenInEnglishElements.map((listenElement, index) => ({
       key: `listen_${index}`,
       title: listenElement.subtitle || `Listen in English ${index + 1}`,
@@ -407,7 +414,7 @@ export default function ExerciseRunner({
     if (e.key === "dictation_from_sentences") return sentences.length > 0;
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
-    if (e.key.startsWith("questions_")) return true; // Exercícios individuais já foram filtrados na criação
+    if (e.key === "questions_unified") return exerciseElements.length > 0; // Unified questions section
     if (e.key.startsWith("listen_")) return true; // Exercícios de listening já foram filtrados na criação
     if (e.key.startsWith("select_")) return true; // Exercícios de seleção já foram filtrados na criação
     return true;

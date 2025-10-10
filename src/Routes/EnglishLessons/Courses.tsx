@@ -343,7 +343,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                 courseId={route._id}
                 title={route.title}
                 headers={headers}
-                studentId={stId}
               />
             }
           />

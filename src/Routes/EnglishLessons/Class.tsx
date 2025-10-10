@@ -36,18 +36,14 @@ import VideoLessonModel from "./Assets/LessonsModels/VideoLessonModel";
 import SentenceLessonModel from "./Assets/LessonsModels/SentenceLessonModel";
 import TextLessonModel from "./Assets/LessonsModels/TextLessonModel";
 import MultipleTextsLessonModel from "./Assets/LessonsModels/MultipleTextsLessonModel";
-import SelectExercise from "./Assets/LessonsModels/MultipleSelectExercise";
 import ImageLessonModel from "./Assets/LessonsModels/ImageLessonModel";
-import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
 import DialogueLessonModel from "./Assets/LessonsModels/DialogueLessonModel";
 import SingleImageLessonModel from "./Assets/LessonsModels/SingleImageLessonModel";
 import ListenAndTranslateLessonModel from "./Assets/LessonsModels/ListenAndTranslateLessonModel";
 import TextsWithTranslateLessonModel from "./Assets/LessonsModels/TextWithNoAudio";
 import { CircularProgress } from "@mui/material";
-import QandALessonPersonalModel from "./Assets/LessonsModels/QandALessonPersonalModel";
 import NoFlashcardsSentenceLessonModel from "./Assets/LessonsModels/NoFlashcardsSentenceLessonModel";
 import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import Voice from "../../Resources/Voice";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { isArthurVincent } from "../../App";
@@ -64,17 +60,13 @@ interface EnglishClassCourse2ModelProps {
   courseTitle: any;
   previousClass: any;
   nextClass: any;
-  studentsWhoCompletedIt: any;
-  order: number | any;
 }
 
 export default function EnglishClassCourse2({
   headers,
   classId,
-  studentsWhoCompletedIt,
   previousClass,
   nextClass,
-  order,
   courseTitle,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -3393,7 +3385,7 @@ export default function EnglishClassCourse2({
                     maxWidth: "70px",
                     outline: "none",
                     cursor: "pointer",
-                    display: "block"
+                    display: "block",
                   }}
                   onMouseEnter={(e) => {
                     const target = e.target as HTMLElement;
@@ -3717,12 +3709,11 @@ export default function EnglishClassCourse2({
                           scrollMarginTop: `${barOffset + 4}px`,
                         }}
                       >
-                        {element.subtitle && (
+                        {element.subtitle && element.type !== "exercise" && (
                           <div
                             style={{
                               position: "sticky",
                               display: element.subtitle ? "block" : "none",
-
                               top: "7.6rem",
                               zIndex: 4,
                               marginBottom: 8,
@@ -3735,8 +3726,8 @@ export default function EnglishClassCourse2({
                             <h2
                               style={{
                                 margin: 0,
-                                padding: "10px 12px",
-                                fontSize: "22px",
+                                padding: "10px",
+                                fontSize: "18px",
                                 fontWeight: 600,
                                 color: partnerColor(),
                                 textAlign: "center",
@@ -3820,13 +3811,13 @@ export default function EnglishClassCourse2({
                             headers={headers}
                             element={element}
                           />
-                        // ) : element.type === "selectexercise" ? (
+                        ) : // ) : element.type === "selectexercise" ? (
                         //   <SelectExercise
                         //     headers={headers}
                         //     element={element}
                         //     selectedVoice={selectedVoice}
                         //   />
-                        ) : element.type === "images" ? (
+                        element.type === "images" ? (
                           <ImageLessonModel
                             studentId={studentID}
                             mainTag={theclass.mainTag}
@@ -3835,11 +3826,6 @@ export default function EnglishClassCourse2({
                             element={element}
                             selectedVoice={selectedVoice}
                           />
-                        // ) : element.type === "exercise" ? (
-                        //   <ExerciseLessonModel
-                        //     headers={headers}
-                        //     item={element.items}
-                        //   />
                         ) : element.type === "explanation" ? (
                           <ExplanationLesson
                             headers={headers}
@@ -3857,7 +3843,6 @@ export default function EnglishClassCourse2({
                             subtitle={element.subtitle}
                             selectedVoice={selectedVoice}
                           />
-                  
                         ) : element.type === "dialogue" ? (
                           <DialogueLessonModel
                             headers={headers}
@@ -3888,6 +3873,7 @@ export default function EnglishClassCourse2({
             </div>
           ) : (
             <ExerciseRunner
+              classId={theclass.id}
               exerciseScore={exerciseScore}
               elements={theclass.elements}
               count={1000000}
