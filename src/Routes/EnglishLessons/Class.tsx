@@ -3079,6 +3079,24 @@ export default function EnglishClassCourse2({
             }
             break;
 
+          case "audio":
+            if (element.text) {
+              content += p(b("Áudio:"));
+              const plain = sanitizeText(
+                element.text.replace(/<[^>]+>/g, " "),
+                2000
+              );
+              content += p(plain);
+            }
+            if (Array.isArray(element.sentences)) {
+              content += p(b("Frases do Áudio:"));
+              element.sentences.forEach((s: any) => {
+                if (s.english) content += p(sanitizeText(s.english, 200));
+                if (s.portuguese) content += p(i(s.portuguese));
+              });
+            }
+            break;
+
           case "audiosoundtrack":
             if (element.text) {
               content += p(b("Conteúdo do Áudio:"));
@@ -3211,20 +3229,19 @@ export default function EnglishClassCourse2({
               }}
               to="/teaching-materials"
             >
-              Materiais de Ensino
+              {truncateString("Materiais de Ensino", 25)}
             </Link>{" "}
-            <span style={{ color: darkGreyColor() }}>-</span>
-            <span
+            -{" "}
+            <Link
               style={{
                 textDecoration: "none",
                 fontSize: "10px",
                 color: "#000",
-                cursor: "pointer",
               }}
-              onClick={backToCourses}
+              to={`/teaching-materials/${pathGenerator(courseTitle)}`}
             >
-              {courseTitle}
-            </span>{" "}
+              {truncateString(courseTitle, 25)}
+            </Link>{" "}
             <span style={{ color: darkGreyColor() }}>-</span>
             <span
               style={{
@@ -3234,7 +3251,7 @@ export default function EnglishClassCourse2({
                 color: partnerColor(),
               }}
             >
-              {theclass.title}
+              {truncateString(theclass.title, 25)}
             </span>
           </div>
 
@@ -3352,7 +3369,6 @@ export default function EnglishClassCourse2({
                       outline: "none",
                       cursor: "pointer",
                     }}
-                    className="isMobileDisapear"
                     onMouseEnter={(e) => {
                       const target = e.target as HTMLElement;
                       if (!seeSlides) {
