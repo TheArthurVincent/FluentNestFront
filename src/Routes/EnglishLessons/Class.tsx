@@ -3710,7 +3710,7 @@ export default function EnglishClassCourse2({
                           scrollMarginTop: `${barOffset + 4}px`,
                         }}
                       >
-                        {element.subtitle && element.type !== "exercise" && (
+                        {element.subtitle && element.type !== "exercise" && element.type !== "selectexercise" && (
                           <div
                             style={{
                               position: "sticky",
