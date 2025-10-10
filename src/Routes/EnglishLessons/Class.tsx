@@ -3600,13 +3600,21 @@ export default function EnglishClassCourse2({
                 >
                   <style>{`.topbar-sections::-webkit-scrollbar { display: none; }`}</style>
                   {sectionElems.map((s: any, i: number) => {
-                    // Só renderiza se tiver subtitle
-                    if (!s.subtitle) return null;
+                    // Só renderiza se tiver subtitle e não for exercise/selectexercise
+                    if (
+                      !s.subtitle ||
+                      s.type === "exercise" ||
+                      s.type === "selectexercise"
+                    )
+                      return null;
 
                     const id = makeId(s.subtitle, i);
                     const isActive = id === activeId;
                     const sectionsWithSubtitle = sectionElems.filter(
-                      (elem: any) => !!elem.subtitle
+                      (elem: any) =>
+                        !!elem.subtitle &&
+                        elem.type !== "exercise" &&
+                        elem.type !== "selectexercise"
                     );
                     const currentIndex = sectionsWithSubtitle.findIndex(
                       (elem: any) => elem === s
