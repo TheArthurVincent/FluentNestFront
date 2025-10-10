@@ -4,7 +4,6 @@ import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
-import { QuestionsExercise } from "./Exercises/Questions";
 import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
 
@@ -368,18 +367,18 @@ export default function ExerciseRunner({
       },
     },
     // Unified Questions section combining all exercise elements
-    ...(exerciseElements.length > 0 ? [{
-      key: "questions_unified",
-      title: "Questions",
-      render: ({ labels }: CatalogCtx) => (
-        <QuestionsExercise
-          headers={headers}
-          classId={classId}
-          exerciseElements={exerciseElements} // Pass all exercise elements
-          studentId={studentId || ""}
-        />
-      ),
-    }] : []),
+    // ...(exerciseElements.length > 0 ? [{
+    //   key: "questions_unified",
+    //   title: "Questions",
+    //   render: ({ labels }: CatalogCtx) => (
+    //     <QuestionsExercise
+    //       headers={headers}
+    //       classId={classId}
+    //       exerciseElements={exerciseElements} // Pass all exercise elements
+    //       studentId={studentId || ""}
+    //     />
+    //   ),
+    // }] : []),
     ...listenInEnglishElements.map((listenElement, index) => ({
       key: `listen_${index}`,
       title: listenElement.subtitle || `Listen in English ${index + 1}`,
