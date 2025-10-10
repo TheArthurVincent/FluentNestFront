@@ -19,7 +19,7 @@ import {
   pathGenerator,
   truncateString,
 } from "../../Resources/UniversalComponents";
-import { HOne, HTwo } from "../../Resources/Components/RouteBox";
+import { HOne } from "../../Resources/Components/RouteBox";
 import { Link } from "react-router-dom";
 import {
   darkGreyColor,
@@ -261,6 +261,7 @@ export default function EnglishClassCourse2({
         setIsCompleted(false);
       }
       setheClass(clss);
+      console.log(clss._id);
       setLoading(false);
       setCommentsTrigger(true);
     } catch (error) {
@@ -3873,12 +3874,14 @@ export default function EnglishClassCourse2({
             </div>
           ) : (
             <ExerciseRunner
-              classId={theclass.id}
+              key={`exercises-${studentID}`} // Force re-render when student changes
+              classId={theclass._id}
               exerciseScore={exerciseScore}
               elements={theclass.elements}
               count={1000000}
               dictationItems={10000000}
               studentId={studentID}
+              
               headers={headers}
               selectedVoice={selectedVoice}
               language={classLanguage}
