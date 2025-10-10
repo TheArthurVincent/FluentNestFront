@@ -30,28 +30,23 @@ export function QuestionsExercise({
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [hasChanges, setHasChanges] = useState<boolean>(false);
 
-  // Use either single element or array of elements
   const elementsToUse =
     exerciseElements || (exerciseElement ? [exerciseElement] : []);
 
   const generateInitialQuestionsContent = () => {
     let content = "";
-    let questionNumber = 1; // Continuous numbering across all sections
+    let questionNumber = 1;
 
-    // If multiple elements, create sections for each
     elementsToUse.forEach((element, elementIndex) => {
-      // Add section title if there are multiple elements or if element has subtitle
       if (elementsToUse.length > 1 || element.subtitle) {
         content += `${element.subtitle || `Exercício ${elementIndex + 1}`}\n\n`;
       }
 
-      // Lista de perguntas with continuous numbering
       element.items.forEach((item) => {
         content += `${questionNumber}. ${item}\n\n`;
         questionNumber++;
       });
 
-      // Add separator between sections if there are multiple elements
       if (elementsToUse.length > 1 && elementIndex < elementsToUse.length - 1) {
         content += `\n---\n\n`;
       }
@@ -66,12 +61,10 @@ export function QuestionsExercise({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Impedir Ctrl+V (colar)
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "v") {
       e.preventDefault();
     }
 
-    // Save on Ctrl+S
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
       e.preventDefault();
       handleSaveExercise();
@@ -84,7 +77,6 @@ export function QuestionsExercise({
     setHasChanges(true);
   };
 
-  // Load saved exercise board from backend
   const loadExerciseBoard = async () => {
     if (!studentId || !classId) return;
 
@@ -101,17 +93,16 @@ export function QuestionsExercise({
         setLastSaved(response.data.date ? new Date(response.data.date) : null);
         setHasChanges(false);
       } else {
-        // No saved content, use initial generated content
         const initialContent = generateInitialQuestionsContent();
         setEditorContent(initialContent);
-        setHasChanges(true); // Mark as having changes so user can save initial content
+        setHasChanges(true);
       }
     } catch (error) {
       console.error("Erro ao carregar exercícios salvos:", error);
-      // Fallback to initial content
+
       const initialContent = generateInitialQuestionsContent();
       setEditorContent(initialContent);
-      setHasChanges(true); // Mark as having changes so user can save initial content
+      setHasChanges(true);
       notifyAlert(
         "Não foi possível carregar exercícios salvos. Usando template padrão.",
         "#f59e0b"
@@ -121,7 +112,6 @@ export function QuestionsExercise({
     }
   };
 
-  // Save exercise board to backend
   const handleSaveExercise = async () => {
     if (!studentId || !classId || !editorContent.trim()) return;
 
@@ -151,7 +141,6 @@ export function QuestionsExercise({
     }
   }, [studentId, classId]);
 
-  // Reset state when student changes
   useEffect(() => {
     setEditorContent("");
     setLastSaved(null);

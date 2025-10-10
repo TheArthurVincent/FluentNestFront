@@ -3710,34 +3710,36 @@ export default function EnglishClassCourse2({
                           scrollMarginTop: `${barOffset + 4}px`,
                         }}
                       >
-                        {element.subtitle && element.type !== "exercise" && element.type !== "selectexercise" && (
-                          <div
-                            style={{
-                              position: "sticky",
-                              display: element.subtitle ? "block" : "none",
-                              top: "7.6rem",
-                              zIndex: 4,
-                              marginBottom: 8,
-                              background: "rgba(255,255,255,0.98)",
-                              backdropFilter: "saturate(1.1) blur(6px)",
-                              borderBottom: `2px solid ${partnerColor()}15`,
-                              borderRadius: 4,
-                            }}
-                          >
-                            <h2
+                        {element.subtitle &&
+                          element.type !== "exercise" &&
+                          element.type !== "selectexercise" && (
+                            <div
                               style={{
-                                margin: 0,
-                                padding: "10px",
-                                fontSize: "18px",
-                                fontWeight: 600,
-                                color: partnerColor(),
-                                textAlign: "center",
+                                position: "sticky",
+                                display: element.subtitle ? "block" : "none",
+                                top: "7.6rem",
+                                zIndex: 4,
+                                marginBottom: 8,
+                                background: "rgba(255,255,255,0.98)",
+                                backdropFilter: "saturate(1.1) blur(6px)",
+                                borderBottom: `2px solid ${partnerColor()}15`,
+                                borderRadius: 4,
                               }}
                             >
-                              {element.subtitle}
-                            </h2>
-                          </div>
-                        )}
+                              <h2
+                                style={{
+                                  margin: 0,
+                                  padding: "10px",
+                                  fontSize: "18px",
+                                  fontWeight: 600,
+                                  color: partnerColor(),
+                                  textAlign: "center",
+                                }}
+                              >
+                                {element.subtitle}
+                              </h2>
+                            </div>
+                          )}
                         {element.image && element.subtitle && (
                           <ImgLesson
                             src={element.image}
@@ -3881,7 +3883,6 @@ export default function EnglishClassCourse2({
               count={1000000}
               dictationItems={10000000}
               studentId={studentID}
-              
               headers={headers}
               selectedVoice={selectedVoice}
               language={classLanguage}

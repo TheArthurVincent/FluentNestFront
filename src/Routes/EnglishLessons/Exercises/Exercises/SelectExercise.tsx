@@ -1,6 +1,6 @@
 import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert, readText } from "../../Assets/Functions/FunctionLessons";
-import { Card, defaultLabels, HeaderBar, shuffle } from "../Exercises";
+import { Card, defaultLabels, HeaderBar } from "../Exercises";
 import React, { useState } from "react";
 
 type OptionItem = {
@@ -46,6 +46,8 @@ export function SelectExercise({
   const [isPlaying, setIsPlaying] = useState(false);
   const [completed, setCompleted] = useState(0);
   const [score, setScore] = useState(0);
+  const [showText, setShowText] = useState(false);
+  const [textRevealed, setTextRevealed] = useState(false);
 
   const currentQuestion = exerciseElement.options[currentQuestionIndex];
   const totalQuestions = exerciseElement.options.length;
@@ -69,6 +71,11 @@ export function SelectExercise({
     setSelectedOption(option);
   };
 
+  const handleShowText = () => {
+    setShowText(true);
+    setTextRevealed(true);
+  };
+
   const checkAnswer = () => {
     if (!selectedOption) {
       notifyAlert("Selecione uma opção primeiro!", "#ff6b6b");
@@ -80,13 +87,16 @@ export function SelectExercise({
     setShowResult(true);
 
     if (correct) {
-      setScore(score + 3); // 3 pontos por resposta correta
+      const points = textRevealed ? 3 : 6; // 6 pontos sem ver texto, 3 com texto
+      setScore(score + points);
       if (exercise && typeof exercise === "function") {
         exercise(
-          3,
+          points,
           `Exercício de seleção: ${
             exerciseElement.subtitle || "Select Exercise"
-          } - Pergunta ${currentQuestionIndex + 1}`
+          } - Pergunta ${currentQuestionIndex + 1} (${
+            textRevealed ? "com texto" : "só áudio"
+          })`
         );
       }
     }
@@ -99,6 +109,8 @@ export function SelectExercise({
       setCurrentQuestionIndex(currentQuestionIndex + 1);
       setSelectedOption("");
       setShowResult(false);
+      setShowText(false);
+      setTextRevealed(false);
     }
   };
 
@@ -108,6 +120,8 @@ export function SelectExercise({
     setShowResult(false);
     setCompleted(0);
     setScore(0);
+    setShowText(false);
+    setTextRevealed(false);
   };
 
   if (!exerciseElement.options || exerciseElement.options.length === 0) {
@@ -127,24 +141,24 @@ export function SelectExercise({
 
   return (
     <Card>
-      <div style={{ padding: "24px", maxWidth: "600px", margin: "0 auto" }}>
+      <div style={{ padding: "16px", maxWidth: "800px", margin: "0 auto" }}>
         {isFinished ? (
-          <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <div style={{ fontSize: "32px", marginBottom: "12px" }}>🎉</div>
-            <h3
+          <div style={{ textAlign: "center", padding: "12px 0" }}>
+            <div style={{ fontSize: "24px", marginBottom: "8px" }}>🎉</div>
+            <h4
               style={{
                 color: partnerColor(),
-                marginBottom: "8px",
-                fontSize: "18px",
+                marginBottom: "4px",
+                fontSize: "16px",
               }}
             >
               Concluído!
-            </h3>
+            </h4>
             <p
               style={{
                 color: "#6B7280",
-                marginBottom: "20px",
-                fontSize: "14px",
+                marginBottom: "12px",
+                fontSize: "12px",
               }}
             >
               {score} pontos
@@ -156,8 +170,8 @@ export function SelectExercise({
                 color: "white",
                 border: "none",
                 borderRadius: "4px",
-                padding: "8px 16px",
-                fontSize: "14px",
+                padding: "6px 12px",
+                fontSize: "12px",
                 cursor: "pointer",
                 fontWeight: "500",
               }}
@@ -167,170 +181,261 @@ export function SelectExercise({
           </div>
         ) : (
           <>
-            {/* Header simples */}
+            {/* Header compacto */}
             <div
               style={{
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                marginBottom: "24px",
-                fontSize: "14px",
+                marginBottom: "16px",
+                fontSize: "12px",
                 color: "#6B7280",
+                borderBottom: "1px solid #E5E7EB",
+                paddingBottom: "8px",
               }}
             >
               <span>
-                {currentQuestionIndex + 1}/{totalQuestions}
+                Questão {currentQuestionIndex + 1}/{totalQuestions}
               </span>
               <span style={{ color: partnerColor(), fontWeight: "600" }}>
                 {score} pts
               </span>
             </div>
 
-            {/* Botão de áudio minimalista */}
-            <div style={{ textAlign: "center", marginBottom: "24px" }}>
-              <button
-                onClick={playAudio}
-                disabled={isPlaying}
-                style={{
-                  backgroundColor: "transparent",
-                  color: partnerColor(),
-                  border: `2px solid ${partnerColor()}`,
-                  borderRadius: "50%",
-                  width: "48px",
-                  height: "48px",
-                  fontSize: "16px",
-                  cursor: isPlaying ? "not-allowed" : "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  transition: "all 0.2s ease",
-                  opacity: isPlaying ? 0.6 : 1,
-                }}
-              >
-                {isPlaying ? "⏸" : "▶"}
-              </button>
-            </div>
-
-            {/* Opções simplificadas */}
+            {/* Layout horizontal: áudio à esquerda, opções à direita */}
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
-                gap: "8px",
-                marginBottom: "20px",
+                alignItems: "flex-start",
+                gap: "20px",
+                marginBottom: "16px",
               }}
             >
-              {currentQuestion.options.map((option, index) => {
-                const isSelected = selectedOption === option.option;
-                const isCorrectOption = option.status === "right";
-
-                let backgroundColor = "#FFFFFF";
-                let borderColor = "#E5E7EB";
-                let textColor = "#374151";
-
-                if (showResult) {
-                  if (isSelected) {
-                    if (isCorrect) {
-                      backgroundColor = "#10B981";
-                      borderColor = "#10B981";
-                      textColor = "#FFFFFF";
-                    } else {
-                      backgroundColor = "#EF4444";
-                      borderColor = "#EF4444";
-                      textColor = "#FFFFFF";
-                    }
-                  } else if (isCorrectOption) {
-                    backgroundColor = "#F0FDF4";
-                    borderColor = "#22C55E";
-                    textColor = "#16A34A";
-                  }
-                } else if (isSelected) {
-                  backgroundColor = "#F0F9FF";
-                  borderColor = partnerColor();
-                  textColor = partnerColor();
-                }
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => handleOptionSelect(option.option)}
-                    disabled={showResult}
-                    style={{
-                      backgroundColor,
-                      border: `1px solid ${borderColor}`,
-                      color: textColor,
-                      borderRadius: "6px",
-                      padding: "12px 16px",
-                      fontSize: "16px",
-                      fontWeight: "500",
-                      cursor: showResult ? "default" : "pointer",
-                      transition: "all 0.15s ease",
-                      textAlign: "left",
-                      width: "100%",
-                    }}
-                  >
-                    {option.option}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Botões de ação simplificados */}
-            <div style={{ textAlign: "center" }}>
-              {!showResult ? (
-                <button
-                  onClick={checkAnswer}
-                  disabled={!selectedOption}
-                  style={{
-                    backgroundColor: selectedOption
-                      ? partnerColor()
-                      : "#F3F4F6",
-                    color: selectedOption ? "white" : "#9CA3AF",
-                    border: "none",
-                    borderRadius: "6px",
-                    padding: "10px 20px",
-                    fontSize: "14px",
-                    cursor: selectedOption ? "pointer" : "not-allowed",
-                    fontWeight: "500",
-                  }}
-                >
-                  Verificar
-                </button>
-              ) : (
-                currentQuestionIndex < totalQuestions - 1 && (
-                  <button
-                    onClick={nextQuestion}
-                    style={{
-                      backgroundColor: partnerColor(),
-                      color: "white",
-                      border: "none",
-                      borderRadius: "6px",
-                      padding: "10px 20px",
-                      fontSize: "14px",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                    }}
-                  >
-                    Continuar
-                  </button>
-                )
-              )}
-            </div>
-            {/* Feedback minimalista */}
-            {showResult && (
+              {/* Seção do áudio */}
               <div
                 style={{
-                  marginTop: "16px",
-                  textAlign: "center",
-                  fontSize: "14px",
-                  color: isCorrect ? "#16A34A" : "#DC2626",
-                  fontWeight: "500",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  minWidth: "120px",
                 }}
               >
-                {isCorrect ? "✓ Correto" : "✗ Incorreto"}
-                {isCorrect && " (+3)"}
+                <button
+                  onClick={playAudio}
+                  disabled={isPlaying}
+                  style={{
+                    backgroundColor: "transparent",
+                    color: partnerColor(),
+                    border: `1px solid ${partnerColor()}`,
+                    borderRadius: "6px",
+                    width: "36px",
+                    height: "36px",
+                    fontSize: "12px",
+                    cursor: isPlaying ? "not-allowed" : "pointer",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    transition: "all 0.2s ease",
+                    opacity: isPlaying ? 0.6 : 1,
+                    marginBottom: "8px",
+                  }}
+                >
+                  {isPlaying ? "⏸" : "▶"}
+                </button>
+
+                {/* Texto do áudio (se revelado) */}
+                {showText && (
+                  <div
+                    style={{
+                      backgroundColor: "#F0F9FF",
+                      border: `1px solid ${partnerColor()}`,
+                      borderRadius: "4px",
+                      padding: "8px",
+                      marginBottom: "8px",
+                      fontSize: "12px",
+                      textAlign: "center",
+                      maxWidth: "150px",
+                      wordWrap: "break-word",
+                    }}
+                  >
+                    "{currentQuestion.audio}"
+                  </div>
+                )}
+
+                {/* Botão para revelar texto */}
+                {!showText && !showResult && (
+                  <button
+                    onClick={handleShowText}
+                    style={{
+                      backgroundColor: "transparent",
+                      color: "#6B7280",
+                      border: "1px solid #E5E7EB",
+                      borderRadius: "4px",
+                      padding: "4px 8px",
+                      fontSize: "10px",
+                      cursor: "pointer",
+                      marginBottom: "4px",
+                      transition: "all 0.2s ease",
+                    }}
+                  >
+                    👁 Ver texto (-3 pts)
+                  </button>
+                )}
+
+                <span
+                  style={{
+                    fontSize: "10px",
+                    color: "#6B7280",
+                    textAlign: "center",
+                  }}
+                >
+                  {showText ? "Texto revelado" : "Ouça e escolha"}
+                  <br />
+                  <span
+                    style={{
+                      color: textRevealed ? "#DC2626" : "#16A34A",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {textRevealed ? "3 pts" : "6 pts"}
+                  </span>
+                </span>
               </div>
-            )}
+
+              {/* Opções em lista compacta */}
+              <div style={{ flex: 1 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px",
+                  }}
+                >
+                  {currentQuestion.options.map((option, index) => {
+                    const isSelected = selectedOption === option.option;
+                    const isCorrectOption = option.status === "right";
+
+                    let backgroundColor = "#FFFFFF";
+                    let borderColor = "#E5E7EB";
+                    let textColor = "#374151";
+
+                    if (showResult) {
+                      if (isSelected) {
+                        if (isCorrect) {
+                          backgroundColor = "#10B981";
+                          borderColor = "#10B981";
+                          textColor = "#FFFFFF";
+                        } else {
+                          backgroundColor = "#EF4444";
+                          borderColor = "#EF4444";
+                          textColor = "#FFFFFF";
+                        }
+                      } else if (isCorrectOption) {
+                        backgroundColor = "#F0FDF4";
+                        borderColor = "#22C55E";
+                        textColor = "#16A34A";
+                      }
+                    } else if (isSelected) {
+                      backgroundColor = "#F0F9FF";
+                      borderColor = partnerColor();
+                      textColor = partnerColor();
+                    }
+
+                    return (
+                      <button
+                        key={index}
+                        onClick={() => handleOptionSelect(option.option)}
+                        disabled={showResult}
+                        style={{
+                          backgroundColor,
+                          border: `1px solid ${borderColor}`,
+                          color: textColor,
+                          borderRadius: "4px",
+                          padding: "8px 12px",
+                          fontSize: "14px",
+                          fontWeight: "400",
+                          cursor: showResult ? "default" : "pointer",
+                          transition: "all 0.15s ease",
+                          textAlign: "left",
+                          width: "100%",
+                        }}
+                      >
+                        {String.fromCharCode(65 + index)}. {option.option}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer compacto com ações */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                borderTop: "1px solid #E5E7EB",
+                paddingTop: "12px",
+              }}
+            >
+              {/* Feedback minimalista */}
+              <div style={{ fontSize: "12px", minHeight: "18px" }}>
+                {showResult && (
+                  <span
+                    style={{
+                      color: isCorrect ? "#16A34A" : "#DC2626",
+                      fontWeight: "500",
+                    }}
+                  >
+                    {isCorrect
+                      ? `✓ Correto (+${textRevealed ? 3 : 6})`
+                      : "✗ Incorreto"}
+                  </span>
+                )}
+              </div>
+
+              {/* Botão de ação */}
+              <div>
+                {!showResult ? (
+                  <button
+                    onClick={checkAnswer}
+                    disabled={!selectedOption}
+                    style={{
+                      backgroundColor: selectedOption
+                        ? partnerColor()
+                        : "#F3F4F6",
+                      color: selectedOption ? "white" : "#9CA3AF",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "6px 16px",
+                      fontSize: "12px",
+                      cursor: selectedOption ? "pointer" : "not-allowed",
+                      fontWeight: "500",
+                    }}
+                  >
+                    Verificar
+                  </button>
+                ) : (
+                  currentQuestionIndex < totalQuestions - 1 && (
+                    <button
+                      onClick={nextQuestion}
+                      style={{
+                        backgroundColor: partnerColor(),
+                        color: "white",
+                        border: "none",
+                        borderRadius: "4px",
+                        padding: "6px 16px",
+                        fontSize: "12px",
+                        cursor: "pointer",
+                        fontWeight: "500",
+                      }}
+                    >
+                      Próxima →
+                    </button>
+                  )
+                )}
+              </div>
+            </div>
           </>
         )}
       </div>
