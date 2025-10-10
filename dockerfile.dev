@@ -1,0 +1,19 @@
+FROM node:lts-alpine
+
+RUN apk add --no-cache bash
+
+WORKDIR /usr/src/app
+
+# Copiar package files
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar código fonte
+COPY . .
+
+EXPOSE 5173
+
+# Comando para desenvolvimento com hot reload
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

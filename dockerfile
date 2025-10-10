@@ -1,6 +1,6 @@
-FROM node:20.11.1-slim
+FROM node:lts-alpine
 
-RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache bash
 
 WORKDIR /usr/src/app
 COPY package*.json ./
@@ -17,4 +17,6 @@ RUN npm run build
 RUN npm install --global serve
 
 EXPOSE 3000
-CMD [ "npm", "start" ]
+
+# Comando para servir a aplicação
+CMD ["serve", "-s", "dist", "-l", "3000"]
