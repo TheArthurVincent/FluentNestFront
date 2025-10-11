@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import {
   alwaysWhite,
   partnerColor,
-  textGeneralFont,
   textpartnerColorContrast,
   transparentWhite,
 } from "../../Styles/Styles";
@@ -2893,14 +2892,16 @@ function MyCalendarRefactor({
                                             <option value="category" hidden>
                                               Select category...
                                             </option>
-                                            {categoryList.map((cat, index) => (
-                                              <option
-                                                key={index}
-                                                value={cat.value}
-                                              >
-                                                {cat.text}
-                                              </option>
-                                            ))}
+                                            {categoryList.map(
+                                              (cat: any, index: number) => (
+                                                <option
+                                                  key={index}
+                                                  value={cat.value}
+                                                >
+                                                  {cat.text}
+                                                </option>
+                                              )
+                                            )}
                                           </select>
                                         </div>
 

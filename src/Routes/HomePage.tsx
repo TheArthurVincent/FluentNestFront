@@ -43,7 +43,7 @@ import {
 } from "../Styles/Styles";
 import Redirect from "../Redirect";
 import Tokens from "./Tokens";
-import MyCalendarRefactor from "./MyCalendar/MyCalendarRefactor";
+import MyCalendarNew from "./MyCalendar/MyCalendarNew";
 
 export function HomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
@@ -195,7 +195,7 @@ export function HomePage({ headers }: HeadersProps) {
     {
       title: "My Calendar Ref",
       component: (
-        <MyCalendarRefactor
+        <MyCalendarNew
           change={change}
           setChange={setChange}
           myId={_StudentId}

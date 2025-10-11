@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import axios from "axios";
@@ -11,7 +11,94 @@ import {
 } from "../../../../Styles/Styles";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
 import { HTwo } from "../../../../Resources/Components/RouteBox";
-import { times, weekDays } from "../MyCalendarFunctions/MyCalendarFunctions";
+
+const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const times = [
+  "6:00",
+  "6:15",
+  "6:30",
+  "6:45",
+
+  "7:00",
+  "7:15",
+  "7:30",
+  "7:45",
+
+  "8:00",
+  "8:15",
+  "8:30",
+  "8:45",
+
+  "9:00",
+  "9:15",
+  "9:30",
+  "9:45",
+
+  "10:00",
+  "10:15",
+  "10:30",
+  "10:45",
+
+  "11:00",
+  "11:15",
+  "11:30",
+  "11:45",
+
+  "12:00",
+  "12:15",
+  "12:30",
+  "12:45",
+
+  "13:00",
+  "13:15",
+  "13:30",
+  "13:45",
+
+  "14:00",
+  "14:15",
+  "14:30",
+  "14:45",
+
+  "15:00",
+  "15:15",
+  "15:30",
+  "15:45",
+
+  "16:00",
+  "16:15",
+  "16:30",
+  "16:45",
+
+  "17:00",
+  "17:15",
+  "17:30",
+  "17:45",
+
+  "18:00",
+  "18:15",
+  "18:30",
+  "18:45",
+
+  "19:00",
+  "19:15",
+  "19:30",
+  "19:45",
+
+  "20:00",
+  "20:15",
+  "20:30",
+  "20:45",
+
+  "21:00",
+  "21:15",
+  "21:30",
+  "21:45",
+
+  "22:00",
+  "22:15",
+  "22:30",
+  "22:45",
+];
 interface NewRecurringEventCalendarProps {
   headers: any; // substitua pelo tipo real se possível
   myId: string | number;
@@ -71,6 +158,13 @@ function NewRecurringEventCalendar({
 
   const { UniversalTexts } = useUserContext();
 
+  // Effect para debug quando as props mudam
+  useEffect(() => {
+    console.log("=== NewRecurringEventCalendar Props Changed ===");
+    console.log("studentsList:", studentsList);
+    console.log("groupsList:", groupsList);
+  }, [studentsList, groupsList]);
+
   // ----- utils -----
   const isTutoringExpiringWithinMonth = (tutoring: any) => {
     if (!tutoring.endDate) return false;
@@ -92,6 +186,13 @@ function NewRecurringEventCalendar({
   };
 
   const handleSeeModalOfTutorings = () => {
+    console.log("=== DEBUG NewRecurringEventCalendar ===");
+    console.log("studentsList:", studentsList);
+    console.log("groupsList:", groupsList);
+    console.log("studentsList length:", studentsList?.length);
+    console.log("groupsList length:", groupsList?.length);
+    setAlternateBoolean(!alternateBoolean);
+
     setChange?.(!change);
     setNewStudentId("");
     setNewGroupId("");
@@ -379,6 +480,21 @@ function NewRecurringEventCalendar({
           </div>
         ) : (
           <div style={{ marginBottom: "1.5rem" }}>
+            {/* Debug info */}
+            <div
+              style={{
+                padding: "8px",
+                background: "#f0f0f0",
+                borderRadius: "4px",
+                marginBottom: "1rem",
+                fontSize: "12px",
+                color: "#666",
+              }}
+            >
+              Students: {studentsList?.length || 0} | Groups:{" "}
+              {groupsList?.length || 0}
+            </div>
+
             {/* tabs aluno/grupo */}
             <div
               style={{
@@ -467,11 +583,22 @@ function NewRecurringEventCalendar({
                   <option value="" hidden>
                     Select student
                   </option>
-                  {studentsList.map((student: any) => (
-                    <option key={student.id} value={student.id}>
-                      {student.name + " " + student.lastname}
-                    </option>
-                  ))}
+                  {studentsList && studentsList.length > 0 ? (
+                    studentsList.map((student: any) => (
+                      <option
+                        key={student.id || student._id}
+                        value={student.id || student._id}
+                      >
+                        {(student.name ||
+                          student.firstName ||
+                          student.username) +
+                          " " +
+                          (student.lastname || student.lastName || "")}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading students...</option>
+                  )}
                 </select>
               </div>
             )}
@@ -499,11 +626,18 @@ function NewRecurringEventCalendar({
                   <option value="" hidden>
                     Selecione o grupo...
                   </option>
-                  {groupsList.map((group: any) => (
-                    <option key={group._id} value={group._id}>
-                      {group.name}
-                    </option>
-                  ))}
+                  {groupsList && groupsList.length > 0 ? (
+                    groupsList.map((group: any) => (
+                      <option
+                        key={group._id || group.id}
+                        value={group._id || group.id}
+                      >
+                        {group.name || group.title || group.groupName}
+                      </option>
+                    ))
+                  ) : (
+                    <option disabled>Loading groups...</option>
+                  )}
                 </select>
               </div>
             )}
@@ -711,7 +845,7 @@ function NewRecurringEventCalendar({
               <option value="" hidden>
                 {UniversalTexts.calendarModal.selectWeekDay}
               </option>
-              {weekDays.map((wd) => (
+              {weekDays.map((wd: any) => (
                 <option key={wd} value={wd}>
                   {wd}
                 </option>
@@ -731,7 +865,7 @@ function NewRecurringEventCalendar({
               <option value="" hidden>
                 {UniversalTexts.calendarModal.selectTime}
               </option>
-              {times.map((t) => (
+              {times.map((t: any) => (
                 <option key={t} value={t}>
                   {t}
                 </option>
@@ -861,7 +995,7 @@ function NewRecurringEventCalendar({
                   <option hidden value="">
                     {UniversalTexts.calendarModal.selectWeekDayOption}
                   </option>
-                  {weekDays.map((wd) => (
+                  {weekDays.map((wd: any) => (
                     <option key={wd} value={wd}>
                       {wd}
                     </option>
@@ -881,7 +1015,7 @@ function NewRecurringEventCalendar({
                   <option hidden value="">
                     {UniversalTexts.calendarModal.selectTimeOption}
                   </option>
-                  {times.map((t) => (
+                  {times.map((t: any) => (
                     <option key={t} value={t}>
                       {t}
                     </option>
