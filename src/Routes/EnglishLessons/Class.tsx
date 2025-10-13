@@ -4139,69 +4139,46 @@ export default function EnglishClassCourse2({
               transition: "transform .18s ease",
             }}
           >
-            {/* Header */}
+            {/* Content Area */}
             <div
               style={{
-                position: "sticky",
-                top: 0,
-                zIndex: 1,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-                padding: "10px 12px",
-                background:
-                  "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)",
-                borderBottom: "1px solid #eef0f2",
-                backdropFilter: "saturate(1.1) blur(6px)",
+                display: "grid",
+                // gridTemplateColumns: "1fr",
+                gap: 8,
+                padding: 12,
+                overflow: "hidden",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {(thePermissions === "superadmin" ||
-                  thePermissions === "teacher") && (
-                  <>
-                    <button
-                      onClick={() => {
-                        const template = generateInitialBoardContent();
-                        setEditorKey((v) => v + 1);
-                        setNewHWDescription(template);
-                        setEditorContent(template);
-                        setConfirm(true);
-                      }}
-                      title="Restaurar Lousa"
-                      style={{
-                        border: "1px solid #e5e7eb",
-                        background: "#fff",
-                        color: "#111827",
-                        padding: "6px 10px",
-                        borderRadius: 4,
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Restaurar Lousa
-                    </button>
-
-                    {confirm && (
+              {/* Header */}
+              <div
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  zIndex: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 12,
+                  padding: 8,
+                  background:
+                    "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)",
+                  borderBottom: "1px solid #eef0f2",
+                  backdropFilter: "saturate(1.1) blur(6px)",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {(thePermissions === "superadmin" ||
+                    thePermissions === "teacher") && (
+                    <>
                       <button
-                        onClick={handleSaveBoard}
-                        style={{
-                          border: `1px solid ${partnerColor?.() || "#2563eb"}`,
-                          background: partnerColor?.() || "#2563eb",
-                          color: "#fff",
-                          padding: "6px 10px",
-                          borderRadius: 4,
-                          fontSize: 12,
-                          cursor: "pointer",
+                        onClick={() => {
+                          const template = generateInitialBoardContent();
+                          setEditorKey((v) => v + 1);
+                          setNewHWDescription(template);
+                          setEditorContent(template);
+                          setConfirm(true);
                         }}
-                      >
-                        Salvar Lousa de {studentName}
-                      </button>
-                    )}
-
-                    {hasAudioElement && (
-                      <button
-                        onClick={() => setSeeAudios((v) => !v)}
+                        title="Restaurar Lousa"
                         style={{
                           border: "1px solid #e5e7eb",
                           background: "#fff",
@@ -4212,311 +4189,149 @@ export default function EnglishClassCourse2({
                           cursor: "pointer",
                         }}
                       >
-                        Áudios
+                        Restaurar Lousa
                       </button>
-                    )}
-                    <button
-                      onClick={downloadBoardPDF}
-                      title="Baixar PDF"
-                      style={{
-                        all: "unset",
-                      }}
-                    >
-                      <img
-                        src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                        alt="PDF"
-                        style={{ width: 14, cursor: "pointer", height: 14 }}
-                      />
-                    </button>
-                    {seeCheck && (
-                      <i
-                        className="fa fa-check"
-                        style={{
-                          padding: 6,
-                          borderRadius: "999px",
-                          backgroundColor: "#fff",
-                          color: "green",
-                          fontSize: 12,
-                          border: "1px solid #e5e7eb",
-                        }}
-                      />
-                    )}
-                  </>
-                )}
-              </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                {seeConfirm ? (
-                  <div style={{ display: "flex", gap: 8 }}>
-                    <button
-                      onClick={() => {
-                        setSeeAudios(false);
-                        setSeeConfirm(false);
-                      }}
-                      style={{
-                        border: "1px solid #e5e7eb",
-                        background: "#fff",
-                        color: "#111827",
-                        padding: "6px 10px",
-                        borderRadius: 4,
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Cancelar
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSeeAudios(false);
-                        setSeeConfirm(false);
-                        setSeeSlides(false);
-                        const template = generateInitialBoardContent();
-                        setEditorContent(template);
-                        setNewHWDescription(template);
-                      }}
-                      style={{
-                        border: "1px solid #fecaca",
-                        background: "#fee2e2",
-                        color: "#b91c1c",
-                        padding: "6px 10px",
-                        borderRadius: 4,
-                        fontSize: 12,
-                        cursor: "pointer",
-                      }}
-                    >
-                      Fechar sem salvar
-                    </button>
-                  </div>
-                ) : (
-                  <button
-                    onClick={() => {
-                      setSeeAudios(false);
-                      if (confirm) setSeeConfirm(true);
-                      else setSeeSlides(false);
-                    }}
-                    aria-label="Fechar"
-                    style={{
-                      all: "unset",
-                      background: "#fff",
-                      cursor: "pointer",
-                      color: "#b91c1c",
-                      width: 14,
-                      height: 14,
-                    }}
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-            </div>
-
-            {/* Meta */}
-            <div
-              style={{ padding: "6px 12px", borderBottom: "1px solid #f3f4f6" }}
-            >
-              {boardDate && (
-                <span
-                  style={{
-                    color: "#6b7280",
-                    fontSize: 12,
-                    fontStyle: "italic",
-                  }}
-                >
-                  Última edição para {studentName}:{" "}
-                  <strong>{formatDateBrWithHour(boardDate)}</strong>
-                </span>
-              )}
-            </div>
-
-            {/* Content Area */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr",
-                gridTemplateRows:
-                  seeAudios && hasAudioElement ? "minmax(0, 36%) 1fr" : "1fr",
-                gap: 8,
-                padding: 12,
-                overflow: "hidden",
-              }}
-            >
-              {/* Áudios */}
-              {hasAudioElement && seeAudios && (
-                <div
-                  style={{
-                    border: "1px solid #eef0f2",
-                    borderRadius: 4,
-                    padding: 10,
-                    overflow: "hidden",
-                    display: "grid",
-                    gridTemplateRows: "auto 1fr",
-                    minHeight: 0,
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: 8,
-                      paddingBottom: 6,
-                      borderBottom: "1px dashed #eef0f2",
-                    }}
-                  >
-                    <h3
-                      style={{
-                        margin: 0,
-                        fontSize: 14,
-                        color: partnerColor?.() || "#111827",
-                      }}
-                    >
-                      Áudios da Aula
-                    </h3>
-
-                    {/* Pager */}
-                    {(() => {
-                      const audioElements =
-                        (theclass?.elements || []).filter(
-                          (el: any) =>
-                            el.type === "audio" || el.type === "audiosoundtrack"
-                        ) || [];
-                      const total = audioElements.length;
-
-                      return (
-                        <div
+                      {confirm && (
+                        <button
+                          onClick={handleSaveBoard}
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 8,
+                            border: `1px solid ${
+                              partnerColor?.() || "#2563eb"
+                            }`,
+                            background: partnerColor?.() || "#2563eb",
+                            color: "#fff",
+                            padding: "6px 10px",
+                            borderRadius: 4,
+                            fontSize: 12,
+                            cursor: "pointer",
                           }}
                         >
-                          <button
-                            onClick={() =>
-                              setCurrentAudioIndex((i) => Math.max(0, i - 1))
-                            }
-                            disabled={currentAudioIndex === 0}
-                            style={{
-                              all: "unset",
-                              cursor:
-                                currentAudioIndex === 0
-                                  ? "not-allowed"
-                                  : "pointer",
-                              color:
-                                currentAudioIndex === 0
-                                  ? "#cbd5e1"
-                                  : partnerColor?.() || "#111827",
-                              fontSize: 16,
-                              padding: 4,
-                            }}
-                            aria-label="Anterior"
-                            title="Anterior"
-                          >
-                            ←
-                          </button>
-                          <span style={{ fontSize: 12, color: "#6b7280" }}>
-                            {Math.min(currentAudioIndex + 1, total)} / {total}
-                          </span>
-                          <button
-                            onClick={() =>
-                              setCurrentAudioIndex((i) =>
-                                Math.min(total - 1, i + 1)
-                              )
-                            }
-                            disabled={currentAudioIndex >= total - 1}
-                            style={{
-                              all: "unset",
-                              cursor:
-                                currentAudioIndex >= total - 1
-                                  ? "not-allowed"
-                                  : "pointer",
-                              color:
-                                currentAudioIndex >= total - 1
-                                  ? "#cbd5e1"
-                                  : partnerColor?.() || "#111827",
-                              fontSize: 16,
-                              padding: 4,
-                            }}
-                            aria-label="Próximo"
-                            title="Próximo"
-                          >
-                            →
-                          </button>
-                          <button
-                            style={{
-                              all: "unset",
-                              cursor: "pointer",
-                              color: "#933232ff",
-                              fontSize: 12,
-                              padding: 2,
-                            }}
-                            onClick={() => {
-                              setSeeAudios(false);
-                            }}
-                          >
-                            ✕
-                          </button>
-                        </div>
-                      );
-                    })()}
-                  </div>
+                          Salvar Lousa de {studentName}
+                        </button>
+                      )}
 
-                  <div style={{ overflow: "auto", paddingTop: 8 }}>
-                    {(() => {
-                      const audioElements =
-                        (theclass?.elements || []).filter(
-                          (el: any) =>
-                            el.type === "audio" || el.type === "audiosoundtrack"
-                        ) || [];
-                      const currentAudio = audioElements[currentAudioIndex];
-                      if (!currentAudio) return null;
-
-                      return (
-                        <div style={{ display: "grid", gap: 6 }}>
-                          {currentAudio.subtitle && (
-                            <h4
-                              style={{
-                                margin: 0,
-                                fontSize: 12,
-                                color: partnerColor?.() || "#111827",
-                              }}
-                            >
-                              {currentAudio.subtitle}
-                            </h4>
-                          )}
-
-                          {currentAudio.type === "audio" ? (
-                            <AudioFile
-                              hideText
-                              element={currentAudio}
-                              selectedVoice={selectedVoice}
-                            />
-                          ) : (
-                            <AudioSoundTrack
-                              headers={headers}
-                              text={currentAudio.text}
-                              hideText
-                              src={currentAudio.src}
-                              studentId={studentID}
-                              mainTag={theclass.mainTag}
-                              element={currentAudio}
-                              link={currentAudio.link}
-                              subtitle={currentAudio.subtitle}
-                              selectedVoice={selectedVoice}
-                            />
-                          )}
-                        </div>
-                      );
-                    })()}
-                  </div>
+                      {hasAudioElement && (
+                        <button
+                          onClick={() => setSeeAudios((v) => !v)}
+                          style={{
+                            border: "1px solid #e5e7eb",
+                            background: "#fff",
+                            color: "#111827",
+                            padding: "6px 10px",
+                            borderRadius: 4,
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Áudios
+                        </button>
+                      )}
+                      <button
+                        onClick={downloadBoardPDF}
+                        title="Baixar PDF"
+                        style={{
+                          all: "unset",
+                        }}
+                      >
+                        <img
+                          src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                          alt="PDF"
+                          style={{ width: 14, cursor: "pointer", height: 14 }}
+                        />
+                      </button>
+                      {seeCheck && (
+                        <i
+                          className="fa fa-check"
+                          style={{
+                            padding: 6,
+                            borderRadius: "999px",
+                            backgroundColor: "#fff",
+                            color: "green",
+                            fontSize: 12,
+                            border: "1px solid #e5e7eb",
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                  {boardDate && (
+                    <span
+                      style={{
+                        color: "#6b7280",
+                        fontSize: 12,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Última edição para {studentName}:{" "}
+                      <strong>{formatDateBrWithHour(boardDate)}</strong>
+                    </span>
+                  )}
                 </div>
-              )}
 
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  {seeConfirm ? (
+                    <div style={{ display: "flex", gap: 8 }}>
+                      <button
+                        onClick={() => {
+                          setSeeAudios(false);
+                          setSeeConfirm(false);
+                        }}
+                        style={{
+                          background: "#fff",
+                          color: "#111827",
+                          fontSize: 12,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSeeAudios(false);
+                          setSeeConfirm(false);
+                          setSeeSlides(false);
+                          const template = generateInitialBoardContent();
+                          setEditorContent(template);
+                          setNewHWDescription(template);
+                        }}
+                        style={{
+                          background: "#fee2e2",
+                          color: "#b91c1c",
+                          padding: "6px 10px",
+                          borderRadius: 4,
+                          fontSize: 12,
+                          cursor: "pointer",
+                        }}
+                      >
+                        Fechar sem salvar
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setSeeAudios(false);
+                        if (confirm) setSeeConfirm(true);
+                        else setSeeSlides(false);
+                      }}
+                      aria-label="Fechar"
+                      style={{
+                        all: "unset",
+                        background: "#fff",
+                        cursor: "pointer",
+                        color: "#b91c1c",
+                        width: 14,
+                        height: 14,
+                      }}
+                    >
+                      ✕
+                    </button>
+                  )}
+                </div>
+              </div>
               {/* Editor / Read-only */}
               <div
                 style={{
-                  border: "1px solid #eef0f2",
-                  borderRadius: 4,
-                  padding: 10,
                   overflow: "hidden",
                 }}
               >
@@ -4559,6 +4374,178 @@ export default function EnglishClassCourse2({
                   </div>
                 )}
               </div>
+
+              {/* Áudios */}
+              {hasAudioElement && seeAudios && (
+                <div
+                  style={{
+                    borderRadius: 4,
+                    padding: 10,
+                    overflow: "hidden",
+                    display: "grid",
+                    gridTemplateRows: "auto 1fr",
+                    minHeight: 0,
+                  }}
+                >
+                  <div style={{ overflow: "auto", paddingTop: 8 }}>
+                    {(() => {
+                      const audioElements =
+                        (theclass?.elements || []).filter(
+                          (el: any) =>
+                            el.type === "audio" || el.type === "audiosoundtrack"
+                        ) || [];
+                      const currentAudio = audioElements[currentAudioIndex];
+                      if (!currentAudio) return null;
+
+                      return (
+                        <div style={{ display: "grid", gap: 3 }}>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            {currentAudio.subtitle && (
+                              <h4
+                                style={{
+                                  margin: 0,
+                                  fontSize: 12,
+                                  color: partnerColor?.() || "#111827",
+                                }}
+                              >
+                                {currentAudio.subtitle}
+                              </h4>
+                            )}
+
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                gap: 8,
+                                paddingBottom: 6,
+                              }}
+                            >
+                              {(() => {
+                                const audioElements =
+                                  (theclass?.elements || []).filter(
+                                    (el: any) =>
+                                      el.type === "audio" ||
+                                      el.type === "audiosoundtrack"
+                                  ) || [];
+                                const total = audioElements.length;
+
+                                return (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 8,
+                                    }}
+                                  >
+                                    <button
+                                      onClick={() =>
+                                        setCurrentAudioIndex((i) =>
+                                          Math.max(0, i - 1)
+                                        )
+                                      }
+                                      disabled={currentAudioIndex === 0}
+                                      style={{
+                                        all: "unset",
+                                        cursor:
+                                          currentAudioIndex === 0
+                                            ? "not-allowed"
+                                            : "pointer",
+                                        color:
+                                          currentAudioIndex === 0
+                                            ? "#cbd5e1"
+                                            : partnerColor?.() || "#111827",
+                                        fontSize: 16,
+                                        padding: 4,
+                                      }}
+                                      aria-label="Anterior"
+                                      title="Anterior"
+                                    >
+                                      ←
+                                    </button>
+                                    <span
+                                      style={{ fontSize: 12, color: "#6b7280" }}
+                                    >
+                                      {Math.min(currentAudioIndex + 1, total)} /{" "}
+                                      {total}
+                                    </span>
+                                    <button
+                                      onClick={() =>
+                                        setCurrentAudioIndex((i) =>
+                                          Math.min(total - 1, i + 1)
+                                        )
+                                      }
+                                      disabled={currentAudioIndex >= total - 1}
+                                      style={{
+                                        all: "unset",
+                                        cursor:
+                                          currentAudioIndex >= total - 1
+                                            ? "not-allowed"
+                                            : "pointer",
+                                        color:
+                                          currentAudioIndex >= total - 1
+                                            ? "#cbd5e1"
+                                            : partnerColor?.() || "#111827",
+                                        fontSize: 16,
+                                        padding: 4,
+                                      }}
+                                      aria-label="Próximo"
+                                      title="Próximo"
+                                    >
+                                      →
+                                    </button>
+                                    <button
+                                      style={{
+                                        all: "unset",
+                                        cursor: "pointer",
+                                        color: "#933232ff",
+                                        fontSize: 12,
+                                        padding: 2,
+                                      }}
+                                      onClick={() => {
+                                        setSeeAudios(false);
+                                      }}
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                );
+                              })()}
+                            </div>
+                          </div>
+
+                          {currentAudio.type === "audio" ? (
+                            <AudioFile
+                              hideText
+                              element={currentAudio}
+                              selectedVoice={selectedVoice}
+                            />
+                          ) : (
+                            <AudioSoundTrack
+                              headers={headers}
+                              text={currentAudio.text}
+                              hideText
+                              src={currentAudio.src}
+                              studentId={studentID}
+                              mainTag={theclass.mainTag}
+                              element={currentAudio}
+                              link={currentAudio.link}
+                              subtitle={currentAudio.subtitle}
+                              selectedVoice={selectedVoice}
+                            />
+                          )}
+                        </div>
+                      );
+                    })()}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
