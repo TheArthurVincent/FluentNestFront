@@ -3206,6 +3206,8 @@ export default function EnglishClassCourse2({
         backgroundColor: "white",
         width: "1000px",
         maxWidth: "93vw",
+        boxSizing: "border-box",
+
       }}
     >
       <Helmets text={classTitle} />
@@ -3317,7 +3319,7 @@ export default function EnglishClassCourse2({
               display: "grid",
               position: "sticky",
               top: "2.8rem",
-              zIndex: 5,
+              boxSizing: "border-box",
             }}
           >
             <span
@@ -3327,6 +3329,8 @@ export default function EnglishClassCourse2({
                 justifyContent: "space-between",
                 margin: "0.5rem 0",
                 marginBottom: "0",
+maxWidth:"80%",
+boxSizing:"border-box",
                 padding: "4px 8px",
                 background: "rgba(255,255,255)",
                 flexWrap: "wrap",
@@ -3586,7 +3590,7 @@ export default function EnglishClassCourse2({
                   backgroundColor: "#fff",
                   padding: "0  10px ",
                   display: "block", // ⬅️ adicionado
-                  width: "95%", // ⬅️ adicionado (limita pelo grid/viewport)
+                  width: "90%", // ⬅️ adicionado (limita pelo grid/viewport)
                   boxSizing: "border-box", // ⬅️ adicionado (padding conta na largura)
                 }}
               >
@@ -3602,8 +3606,7 @@ export default function EnglishClassCourse2({
                     flexWrap: "nowrap",
                     alignItems: "center",
                     overflowX: "auto",
-                    width: "100%", // ⬅️ antes estava "99%"
-                    maxWidth: "100%", // ⬅️ garante clamp
+                    width: "95%", // ⬅️ antes estava "99%"
                     minWidth: 0, // ⬅️ permite encolher e criar overflow
                     gap: "5px",
                     padding: "2px",

@@ -632,7 +632,10 @@ function EditModal({
       {loadingModalInfo ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
-        <>{name}</>
+        <>{name} - {formatDateForDisplay(event.date)} - {event.time}
+        {link}
+        
+        </>
       )}
     </>
   );
