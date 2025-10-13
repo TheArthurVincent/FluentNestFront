@@ -4290,7 +4290,69 @@ export default function EnglishClassCourse2({
                     </span>
                   )}
                 </div>
-
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      setBoardZoom((prev) => Math.max(prev - 0.1, 0.3))
+                    }
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      background: "#f3f4f6",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                    title="Diminuir zoom (Ctrl + -)"
+                  >
+                    -
+                  </button>
+                  <span style={{ minWidth: "45px", textAlign: "center" }}>
+                    {Math.round(boardZoom * 100)}%
+                  </span>
+                  <button
+                    onClick={() =>
+                      setBoardZoom((prev) => Math.min(prev + 0.1, 3))
+                    }
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      background: "#f3f4f6",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                    title="Aumentar zoom (Ctrl + +)"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => setBoardZoom(1)}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      padding: "4px 6px",
+                      background: "#f3f4f6",
+                      borderRadius: "4px",
+                      fontSize: "10px",
+                    }}
+                    title="Resetar zoom (Ctrl + 0)"
+                  >
+                    Reset
+                  </button>
+                </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   {seeConfirm ? (
                     <div style={{ display: "flex", gap: 8 }}>
@@ -4351,79 +4413,6 @@ export default function EnglishClassCourse2({
                   )}
                 </div>
               </div>
-
-              {/* Controles de Zoom da Lousa */}
-              {seeSlides && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 10,
-                    right: 10,
-                    zIndex: 1000,
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    background: "rgba(255, 255, 255, 0.9)",
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                    fontSize: "12px",
-                    fontFamily: textGeneralFont(),
-                  }}
-                >
-                  <button
-                    onClick={() =>
-                      setBoardZoom((prev) => Math.max(prev - 0.1, 0.3))
-                    }
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      padding: "4px 8px",
-                      background: "#f3f4f6",
-                      borderRadius: "4px",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                    title="Diminuir zoom (Ctrl + -)"
-                  >
-                    -
-                  </button>
-                  <span style={{ minWidth: "45px", textAlign: "center" }}>
-                    {Math.round(boardZoom * 100)}%
-                  </span>
-                  <button
-                    onClick={() =>
-                      setBoardZoom((prev) => Math.min(prev + 0.1, 3))
-                    }
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      padding: "4px 8px",
-                      background: "#f3f4f6",
-                      borderRadius: "4px",
-                      fontSize: "14px",
-                      fontWeight: "bold",
-                    }}
-                    title="Aumentar zoom (Ctrl + +)"
-                  >
-                    +
-                  </button>
-                  <button
-                    onClick={() => setBoardZoom(1)}
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      padding: "4px 6px",
-                      background: "#f3f4f6",
-                      borderRadius: "4px",
-                      fontSize: "10px",
-                    }}
-                    title="Resetar zoom (Ctrl + 0)"
-                  >
-                    Reset
-                  </button>
-                </div>
-              )}
 
               {/* Editor / Read-only */}
               <div
