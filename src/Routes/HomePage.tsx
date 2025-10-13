@@ -81,8 +81,13 @@ export function HomePage({ headers }: HeadersProps) {
     const responseInterceptor = axios.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-          console.log("Erro de autorização detectado, token possivelmente inválido");
+        if (
+          error.response &&
+          (error.response.status === 401 || error.response.status === 403)
+        ) {
+          console.log(
+            "Erro de autorização detectado, token possivelmente inválido"
+          );
           onLoggOutToken();
         }
         return Promise.reject(error);
@@ -133,12 +138,12 @@ export function HomePage({ headers }: HeadersProps) {
         `${backDomain}/api/v1/uploadneeded/${id}`,
         { headers: authHeaders }
       );
-      
+
       const response3 = await axios.get(
         `${backDomain}/api/v1/logmeoutornot/${id}`,
         { headers: authHeaders }
       );
-      
+
       const response4 = await axios.get(
         `${backDomain}/api/v1/limitdate/${id}`,
         { headers: authHeaders }
@@ -161,8 +166,13 @@ export function HomePage({ headers }: HeadersProps) {
     } catch (error: any) {
       console.error("Error checking fee status:", error);
       // Erros de autenticação já são tratados pelo interceptor, mas mantendo como fallback
-      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-        console.log("Erro de autorização em seeFee, token possivelmente inválido");
+      if (
+        error.response &&
+        (error.response.status === 401 || error.response.status === 403)
+      ) {
+        console.log(
+          "Erro de autorização em seeFee, token possivelmente inválido"
+        );
         onLoggOutToken();
       }
     }
@@ -261,9 +271,8 @@ export function HomePage({ headers }: HeadersProps) {
           headers={headers}
         />
       ),
-    }, 
-    
-    
+    },
+
     {
       title: "Flash Cards",
       levelcard: true,

@@ -24,7 +24,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
 import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
-import jwt from "jsonwebtoken";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
 import {
   backgroundImage,
@@ -109,23 +108,52 @@ export var localStorageLoggedIn = (() => {
   }
 })();
 
+// Função para decodificar JWT no browser (sem dependências externas)
+function decodeJWT(token: string) {
+  try {
+    // Dividir o token em suas partes
+    const parts = token.split(".");
+    if (parts.length !== 3) {
+      return null;
+    }
+
+    // Decodificar a parte do payload (segunda parte)
+    const payload = parts[1];
+
+    // Adicionar padding se necessário (Base64 URL decode)
+    let base64 = payload.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64.length % 4) {
+      base64 += "=";
+    }
+
+    // Decodificar base64
+    const decoded = atob(base64);
+
+    // Converter para objeto JSON
+    return JSON.parse(decoded);
+  } catch (error) {
+    console.error("Erro ao decodificar JWT:", error);
+    return null;
+  }
+}
+
 export var verifyToken = () => {
   try {
     var token = localStorage.getItem("authorization");
-    if (!token || token.trim() === '') {
+    if (!token || token.trim() === "") {
       return false;
     }
 
     // Verificar se o token tem o formato correto (3 partes separadas por pontos)
-    const tokenParts = token.split('.');
+    const tokenParts = token.split(".");
     if (tokenParts.length !== 3) {
       console.warn("[App] Token JWT não possui formato válido");
       return false;
     }
 
     // Decodificar o JWT para verificar se ainda é válido
-    const decodedToken = jwt.decode(token) as any;
-    if (!decodedToken || typeof decodedToken !== 'object') {
+    const decodedToken = decodeJWT(token);
+    if (!decodedToken || typeof decodedToken !== "object") {
       console.warn("[App] Token JWT não pode ser decodificado");
       return false;
     }
@@ -150,7 +178,8 @@ export var verifyToken = () => {
     }
 
     // Verificar se o token foi emitido no futuro (iat - issued at)
-    if (decodedToken.iat && decodedToken.iat > currentTime + 300) { // 5 minutos de tolerância para diferenças de relógio
+    if (decodedToken.iat && decodedToken.iat > currentTime + 300) {
+      // 5 minutos de tolerância para diferenças de relógio
       console.warn("[App] Token JWT emitido no futuro");
       return false;
     }
@@ -172,8 +201,8 @@ export var verifyTokenWithServer = async () => {
     }
 
     // Importar axios de forma dinâmica para evitar problemas de dependência circular
-    const { default: axios } = await import('axios');
-    const { isDev } = await import('./Resources/UniversalComponents');
+    const { default: axios } = await import("axios");
+    const { isDev } = await import("./Resources/UniversalComponents");
     const backDomain = isDev();
 
     const response = await axios.get(`${backDomain}/api/v1/verify-token`, {
