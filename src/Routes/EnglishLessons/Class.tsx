@@ -81,6 +81,8 @@ export default function EnglishClassCourse2({
     useState<boolean>(false);
   const [newHWDescription, setNewHWDescription] = useState("");
   const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
+  const [boardZoom, setBoardZoom] = useState<number>(1); // Estado para controlar o zoom da lousa
+
   const handleHWDescriptionChange = (htmlContent: any) => {
     setConfirm(true);
     setNewHWDescription(htmlContent);
@@ -2919,6 +2921,26 @@ export default function EnglishClassCourse2({
   };
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Zoom da lousa com Ctrl + / Ctrl -
+      if ((event.ctrlKey || event.metaKey) && seeSlides) {
+        if (event.key === "+" || event.key === "=") {
+          event.preventDefault();
+          setBoardZoom((prev) => Math.min(prev + 0.1, 3)); // Máximo 300% zoom
+          return;
+        }
+        if (event.key === "-") {
+          event.preventDefault();
+          setBoardZoom((prev) => Math.max(prev - 0.1, 0.3)); // Mínimo 30% zoom
+          return;
+        }
+        if (event.key === "0") {
+          event.preventDefault();
+          setBoardZoom(1); // Resetar para 100%
+          return;
+        }
+      }
+
+      // Salvar lousa com Ctrl+S
       if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
         event.preventDefault();
         if (
@@ -2934,7 +2956,7 @@ export default function EnglishClassCourse2({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [seeSlides, thePermissions, newHWDescription, studentID]);
+  }, [seeSlides, thePermissions, newHWDescription, studentID, boardZoom]);
 
   const handleGetBoard = async (id: string) => {
     setLoadingBoard(true);
@@ -4329,17 +4351,106 @@ export default function EnglishClassCourse2({
                   )}
                 </div>
               </div>
+
+              {/* Controles de Zoom da Lousa */}
+              {seeSlides && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    zIndex: 1000,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    background: "rgba(255, 255, 255, 0.9)",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                    fontSize: "12px",
+                    fontFamily: textGeneralFont(),
+                  }}
+                >
+                  <button
+                    onClick={() =>
+                      setBoardZoom((prev) => Math.max(prev - 0.1, 0.3))
+                    }
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      background: "#f3f4f6",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                    title="Diminuir zoom (Ctrl + -)"
+                  >
+                    -
+                  </button>
+                  <span style={{ minWidth: "45px", textAlign: "center" }}>
+                    {Math.round(boardZoom * 100)}%
+                  </span>
+                  <button
+                    onClick={() =>
+                      setBoardZoom((prev) => Math.min(prev + 0.1, 3))
+                    }
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      padding: "4px 8px",
+                      background: "#f3f4f6",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                    }}
+                    title="Aumentar zoom (Ctrl + +)"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => setBoardZoom(1)}
+                    style={{
+                      all: "unset",
+                      cursor: "pointer",
+                      padding: "4px 6px",
+                      background: "#f3f4f6",
+                      borderRadius: "4px",
+                      fontSize: "10px",
+                    }}
+                    title="Resetar zoom (Ctrl + 0)"
+                  >
+                    Reset
+                  </button>
+                </div>
+              )}
+
               {/* Editor / Read-only */}
               <div
                 style={{
-                  overflow: "hidden",
+                  overflow: "auto",
+                  position: "relative",
                 }}
               >
                 {!loadingBoard ? (
-                  <div style={{ height: "100%", width: "100%" }}>
+                  <div
+                    style={{
+                      height: "100%",
+                      overflow: "auto",
+                      width: "100%",
+                      transition: "transform 0.2s ease-in-out",
+                    }}
+                  >
                     {thePermissions === "teacher" ||
                     thePermissions === "superadmin" ? (
-                      <div style={{ height: "100%" }}>
+                      <div
+                        style={{
+                          height: "100%",
+
+                          transformOrigin: "top left",
+                          transform: `scale(${boardZoom})`,
+                        }}
+                      >
                         <HTMLEditor
                           key={editorKey}
                           initialContent={editorContent}
