@@ -56,6 +56,13 @@ export function HomePage({ headers }: HeadersProps) {
   var [see, setSee] = useState(false);
 
   useEffect(() => {
+    // Verificar se o token JWT é válido antes de prosseguir
+    if (!verifyToken()) {
+      console.log("Token inválido no HomePage, redirecionando para login");
+      onLoggOutToken();
+      return;
+    }
+
     var user = localStorage.getItem("loggedIn");
     if (user) {
       var { permissions, picture, id } = JSON.parse(user);
@@ -64,49 +71,100 @@ export function HomePage({ headers }: HeadersProps) {
       setPicture(picture);
       setAdmin(permissions === "superadmin" ? true : false);
       setTeacher(permissions === "teacher" ? true : false);
+      updateInfo(id, headers);
     } else {
       onLoggOut();
       return;
     }
-    updateInfo(id, headers);
+
+    // Configurar interceptor do axios para capturar erros de autenticação
+    const responseInterceptor = axios.interceptors.response.use(
+      (response) => response,
+      (error) => {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+          console.log("Erro de autorização detectado, token possivelmente inválido");
+          onLoggOutToken();
+        }
+        return Promise.reject(error);
+      }
+    );
+
+    // Cleanup do interceptor quando o componente for desmontado
+    return () => {
+      axios.interceptors.response.eject(responseInterceptor);
+    };
   }, []);
 
   var seeFee = async () => {
     try {
-      var userHere = localStorage.getItem("loggedIn");
-      if (userHere) {
-        //@ts-ignore
-        var { id } = JSON.parse(userHere);
-        var response = await axios.get(
-          `${backDomain}/api/v1/studentfeeuptodate/${id}`
-        );
-
-        const response2 = await axios.get(
-          `${backDomain}/api/v1/uploadneeded/${id}`
-        );
-        const response3 = await axios.get(
-          `${backDomain}/api/v1/logmeoutornot/${id}`
-        );
-        const response4 = await axios.get(
-          `${backDomain}/api/v1/limitdate/${id}`
-        );
-        if (response.data.feeUpToDate === false) {
-          onLoggOutFee();
-        }
-        if (response2.data.uploadNeeded) {
-          window.location.reload();
-        }
-        if (response3.data.logoutNeeded == true) {
-          console.log(response3.data.logoutNeeded, "ExpiredToken");
-          onLoggOutToken();
-        }
-        if (response4.data.logoutLimitDate == true) {
-          console.log(response4.data.logoutLimitDate, "Assinatura Expirada");
-          onLoggOutLimitDate();
-        }
+      // Verificar se o token JWT ainda é válido antes de fazer qualquer chamada
+      if (!verifyToken()) {
+        console.log("Token JWT expirado ou inválido em seeFee");
+        onLoggOutToken();
+        return;
       }
-    } catch (error) {
+
+      var userHere = localStorage.getItem("loggedIn");
+      if (!userHere) {
+        console.log("Usuário não encontrado no localStorage");
+        onLoggOut();
+        return;
+      }
+
+      //@ts-ignore
+      var { id } = JSON.parse(userHere);
+      if (!id) {
+        console.log("ID do usuário não encontrado");
+        onLoggOut();
+        return;
+      }
+
+      // Fazer as chamadas da API com headers de autorização
+      const authHeaders = {
+        Authorization: `Bearer ${localStorage.getItem("authorization")}`,
+      };
+
+      var response = await axios.get(
+        `${backDomain}/api/v1/studentfeeuptodate/${id}`,
+        { headers: authHeaders }
+      );
+
+      const response2 = await axios.get(
+        `${backDomain}/api/v1/uploadneeded/${id}`,
+        { headers: authHeaders }
+      );
+      
+      const response3 = await axios.get(
+        `${backDomain}/api/v1/logmeoutornot/${id}`,
+        { headers: authHeaders }
+      );
+      
+      const response4 = await axios.get(
+        `${backDomain}/api/v1/limitdate/${id}`,
+        { headers: authHeaders }
+      );
+
+      if (response.data.feeUpToDate === false) {
+        onLoggOutFee();
+      }
+      if (response2.data.uploadNeeded) {
+        window.location.reload();
+      }
+      if (response3.data.logoutNeeded == true) {
+        console.log(response3.data.logoutNeeded, "ExpiredToken");
+        onLoggOutToken();
+      }
+      if (response4.data.logoutLimitDate == true) {
+        console.log(response4.data.logoutLimitDate, "Assinatura Expirada");
+        onLoggOutLimitDate();
+      }
+    } catch (error: any) {
       console.error("Error checking fee status:", error);
+      // Erros de autenticação já são tratados pelo interceptor, mas mantendo como fallback
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        console.log("Erro de autorização em seeFee, token possivelmente inválido");
+        onLoggOutToken();
+      }
     }
   };
 

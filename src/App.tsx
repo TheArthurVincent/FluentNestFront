@@ -24,6 +24,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { UserProvider } from "./Application/SelectLanguage/SelectLanguage";
 import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
+import jwt from "jsonwebtoken";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
 import {
   backgroundImage,
@@ -111,10 +112,80 @@ export var localStorageLoggedIn = (() => {
 export var verifyToken = () => {
   try {
     var token = localStorage.getItem("authorization");
-    return token;
+    if (!token || token.trim() === '') {
+      return false;
+    }
+
+    // Verificar se o token tem o formato correto (3 partes separadas por pontos)
+    const tokenParts = token.split('.');
+    if (tokenParts.length !== 3) {
+      console.warn("[App] Token JWT não possui formato válido");
+      return false;
+    }
+
+    // Decodificar o JWT para verificar se ainda é válido
+    const decodedToken = jwt.decode(token) as any;
+    if (!decodedToken || typeof decodedToken !== 'object') {
+      console.warn("[App] Token JWT não pode ser decodificado");
+      return false;
+    }
+
+    // Verificar se o token tem as propriedades mínimas necessárias
+    if (!decodedToken.exp) {
+      console.warn("[App] Token JWT não possui data de expiração");
+      return false;
+    }
+
+    // Verificar se o token expirou
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (decodedToken.exp < currentTime) {
+      console.warn("[App] Token JWT expirado");
+      return false;
+    }
+
+    // Verificar se o token ainda não é válido (nbf - not before)
+    if (decodedToken.nbf && decodedToken.nbf > currentTime) {
+      console.warn("[App] Token JWT ainda não é válido");
+      return false;
+    }
+
+    // Verificar se o token foi emitido no futuro (iat - issued at)
+    if (decodedToken.iat && decodedToken.iat > currentTime + 300) { // 5 minutos de tolerância para diferenças de relógio
+      console.warn("[App] Token JWT emitido no futuro");
+      return false;
+    }
+
+    console.log("[App] Token JWT válido");
+    return true;
   } catch (err) {
-    console.error("[App] Erro ao buscar token:", err);
-    return null;
+    console.error("[App] Erro ao verificar token:", err);
+    return false;
+  }
+};
+
+// Função para validar o token com o servidor (opcional, para validação mais rigorosa)
+export var verifyTokenWithServer = async () => {
+  try {
+    const token = localStorage.getItem("authorization");
+    if (!verifyToken()) {
+      return false;
+    }
+
+    // Importar axios de forma dinâmica para evitar problemas de dependência circular
+    const { default: axios } = await import('axios');
+    const { isDev } = await import('./Resources/UniversalComponents');
+    const backDomain = isDev();
+
+    const response = await axios.get(`${backDomain}/api/v1/verify-token`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return response.status === 200;
+  } catch (err) {
+    console.error("[App] Erro ao verificar token com servidor:", err);
+    return false;
   }
 };
 
