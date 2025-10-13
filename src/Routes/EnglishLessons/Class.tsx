@@ -81,7 +81,7 @@ export default function EnglishClassCourse2({
     useState<boolean>(false);
   const [newHWDescription, setNewHWDescription] = useState("");
   const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
-  const [boardZoom, setBoardZoom] = useState<number>(1); // Estado para controlar o zoom da lousa
+  const [boardZoom, setBoardZoom] = useState<number>(100); // Estado para controlar o zoom da lousa em %
 
   const handleHWDescriptionChange = (htmlContent: any) => {
     setConfirm(true);
@@ -2925,17 +2925,17 @@ export default function EnglishClassCourse2({
       if ((event.ctrlKey || event.metaKey) && seeSlides) {
         if (event.key === "+" || event.key === "=") {
           event.preventDefault();
-          setBoardZoom((prev) => Math.min(prev + 0.1, 3)); // Máximo 300% zoom
+          setBoardZoom((prev) => Math.min(prev + 10, 200)); // Máximo 200% zoom
           return;
         }
         if (event.key === "-") {
           event.preventDefault();
-          setBoardZoom((prev) => Math.max(prev - 0.1, 0.3)); // Mínimo 30% zoom
+          setBoardZoom((prev) => Math.max(prev - 10, 100)); // Mínimo 100% zoom
           return;
         }
         if (event.key === "0") {
           event.preventDefault();
-          setBoardZoom(1); // Resetar para 100%
+          setBoardZoom(100); // Resetar para 100%
           return;
         }
       }
@@ -4303,7 +4303,7 @@ export default function EnglishClassCourse2({
                 >
                   <button
                     onClick={() =>
-                      setBoardZoom((prev) => Math.max(prev - 0.1, 0.3))
+                      setBoardZoom((prev) => Math.max(prev - 10, 100))
                     }
                     style={{
                       all: "unset",
@@ -4319,11 +4319,11 @@ export default function EnglishClassCourse2({
                     -
                   </button>
                   <span style={{ minWidth: "45px", textAlign: "center" }}>
-                    {Math.round(boardZoom * 100)}%
+                    {Math.round(boardZoom)}%
                   </span>
                   <button
                     onClick={() =>
-                      setBoardZoom((prev) => Math.min(prev + 0.1, 3))
+                      setBoardZoom((prev) => Math.min(prev + 10, 200))
                     }
                     style={{
                       all: "unset",
@@ -4421,9 +4421,20 @@ export default function EnglishClassCourse2({
                       <div
                         style={{
                           height: "100%",
-
+              width: boardZoom == 100   ? "99%" :
+                      boardZoom == 110   ? "90%" :
+                      boardZoom == 120   ? "83%" :
+                      boardZoom == 130   ? "77%" :
+                      boardZoom == 140   ? "71%" :
+                      boardZoom == 150   ? "66%" :
+                      boardZoom == 160   ? "62%" :
+                      boardZoom == 170   ? "58%" :
+                      boardZoom == 180   ? "55%" :
+                      boardZoom == 190   ? "53%"  :
+                      boardZoom == 200   ? "50%"  :
+                      "80%",
                           transformOrigin: "top left",
-                          transform: `scale(${boardZoom})`,
+                          transform: `scale(${boardZoom / 100})`,
                         }}
                       >
                         <HTMLEditor
