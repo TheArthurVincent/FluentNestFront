@@ -4200,7 +4200,7 @@ export default function EnglishClassCourse2({
                           setEditorContent(template);
                           setConfirm(true);
                         }}
-                        title="Restaurar Lousa"
+                        title="Restaurar"
                         style={{
                           border: "1px solid #e5e7eb",
                           background: "#fff",
@@ -4211,7 +4211,7 @@ export default function EnglishClassCourse2({
                           cursor: "pointer",
                         }}
                       >
-                        Restaurar Lousa
+                        Restaurar
                       </button>
 
                       {confirm && (
@@ -4229,7 +4229,7 @@ export default function EnglishClassCourse2({
                             cursor: "pointer",
                           }}
                         >
-                          Salvar Lousa de {studentName}
+                          Salvar Lousa de {truncateString(studentName, 8)}
                         </button>
                       )}
 
@@ -4285,7 +4285,7 @@ export default function EnglishClassCourse2({
                         fontStyle: "italic",
                       }}
                     >
-                      Última edição para {studentName}:{" "}
+                      Última edição:{" "}
                       <strong>{formatDateBrWithHour(boardDate)}</strong>
                     </span>
                   )}
@@ -4337,20 +4337,6 @@ export default function EnglishClassCourse2({
                     title="Aumentar zoom (Ctrl + +)"
                   >
                     +
-                  </button>
-                  <button
-                    onClick={() => setBoardZoom(1)}
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      padding: "4px 6px",
-                      background: "#f3f4f6",
-                      borderRadius: "4px",
-                      fontSize: "10px",
-                    }}
-                    title="Resetar zoom (Ctrl + 0)"
-                  >
-                    Reset
                   </button>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
