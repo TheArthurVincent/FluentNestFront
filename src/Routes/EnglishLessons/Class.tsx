@@ -3207,7 +3207,6 @@ export default function EnglishClassCourse2({
         width: "1000px",
         maxWidth: "93vw",
         boxSizing: "border-box",
-
       }}
     >
       <Helmets text={classTitle} />
@@ -3317,6 +3316,7 @@ export default function EnglishClassCourse2({
           <div
             style={{
               display: "grid",
+              zIndex: 10,
               position: "sticky",
               top: "2.8rem",
               boxSizing: "border-box",
@@ -3329,8 +3329,8 @@ export default function EnglishClassCourse2({
                 justifyContent: "space-between",
                 margin: "0.5rem 0",
                 marginBottom: "0",
-maxWidth:"80%",
-boxSizing:"border-box",
+                maxWidth: "98%",
+                boxSizing: "border-box",
                 padding: "4px 8px",
                 background: "rgba(255,255,255)",
                 flexWrap: "wrap",
