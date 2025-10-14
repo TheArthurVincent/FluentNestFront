@@ -72,7 +72,6 @@ function MyCalendarNew({
       );
       const res = response.data.listOfStudents;
       setStudentsList(res || []);
-      console.log("Estudantes buscados:", res);
     } catch (error: any) {
       console.log(error, "Erro ao buscar estudantes e grupos");
     }
@@ -218,8 +217,6 @@ function MyCalendarNew({
 
   // Handlers para eventos e todos
   const handleEventClick = (event: any) => {
-    console.log("Event clicked:", event);
-
     // Configurar a visualização de evento único
     setSelectedEvent(event);
     setSelectedEventDate(event.date);
@@ -264,7 +261,7 @@ function MyCalendarNew({
               style={{
                 marginBottom: "1rem",
                 background: "#ffffff",
-                borderRadius: "8px",
+                borderRadius: 4,
                 border: "1px solid #e1e5e9",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
                 padding: "16px",
@@ -290,7 +287,7 @@ function MyCalendarNew({
                       padding: "8px 12px",
                       background: "#f8f9fa",
                       border: "1px solid #dee2e6",
-                      borderRadius: "6px",
+                      borderRadius: 4,
                       cursor: "pointer",
                       fontSize: "14px",
                       fontWeight: "500",
@@ -323,7 +320,7 @@ function MyCalendarNew({
                         alignItems: "center",
                         gap: "4px",
                         background: "#f8f9fa",
-                        borderRadius: "6px",
+                        borderRadius: 4,
                         padding: "4px",
                         border: "1px solid #e9ecef",
                       }}
@@ -335,7 +332,7 @@ function MyCalendarNew({
                           height: "32px",
                           background: !disabledAvoid ? "#e9ecef" : "#ffffff",
                           border: "1px solid #dee2e6",
-                          borderRadius: "4px",
+                          borderRadius: 4,
                           color: !disabledAvoid ? "#adb5bd" : "#495057",
                           cursor: !disabledAvoid ? "not-allowed" : "pointer",
                           display: "flex",
@@ -373,7 +370,7 @@ function MyCalendarNew({
                           height: "32px",
                           background: !disabledAvoid ? "#e9ecef" : "#ffffff",
                           border: "1px solid #dee2e6",
-                          borderRadius: "4px",
+                          borderRadius: 4,
                           color: !disabledAvoid ? "#adb5bd" : "#495057",
                           cursor: !disabledAvoid ? "not-allowed" : "pointer",
                           display: "flex",
@@ -394,7 +391,7 @@ function MyCalendarNew({
                       style={{
                         position: "relative",
                         background: "#f8f9fa",
-                        borderRadius: "6px",
+                        borderRadius: 4,
                         border: "1px solid #e9ecef",
                         overflow: "hidden",
                       }}
@@ -555,7 +552,7 @@ function MyCalendarNew({
                       flex: "0 0 40%",
                       minWidth: "40%",
                       background: "#ffffff",
-                      borderRadius: "8px",
+                      borderRadius: 4,
                       border: "1px solid #e1e5e9",
                       boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
                       padding: "16px",
@@ -563,31 +560,14 @@ function MyCalendarNew({
                       maxHeight: "calc(100vh - 200px)",
                     }}
                   >
-                    <div
-                      style={{
-                        borderBottom: "1px solid #e9ecef",
-                        paddingBottom: "12px",
-                        marginBottom: "16px",
-                      }}
-                    >
-                      <h3
-                        style={{
-                          margin: 0,
-                          color: partnerColor(),
-                          fontSize: "18px",
-                          fontWeight: "600",
-                        }}
-                      >
-                        📝 Editar Evento
-                      </h3>
-                    </div>
-
                     <EventEditModal
                       headers={headers}
                       thePermissions={thePermissions}
                       myId={myId}
                       setChange={setChange}
+                      fetchStudents={fetchStudents}
                       change={change}
+                      studentID={selectedEvent.student?._id || selectedEvent.student.id}
                       alternateBoolean={alternateBoolean}
                       setAlternateBoolean={setAlternateBoolean}
                       event={selectedEvent}
@@ -595,6 +575,7 @@ function MyCalendarNew({
                         setShowSingleEventView(false);
                         setSelectedEvent(null);
                       }}
+                      onEventUpdated={() => loadGeneral(selectedEventDate || new Date())}
                     />
                   </div>
                 )}

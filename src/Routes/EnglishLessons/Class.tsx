@@ -4421,18 +4421,30 @@ export default function EnglishClassCourse2({
                       <div
                         style={{
                           height: "100%",
-              width: boardZoom == 100   ? "99%" :
-                      boardZoom == 110   ? "90%" :
-                      boardZoom == 120   ? "83%" :
-                      boardZoom == 130   ? "77%" :
-                      boardZoom == 140   ? "71%" :
-                      boardZoom == 150   ? "66%" :
-                      boardZoom == 160   ? "62%" :
-                      boardZoom == 170   ? "58%" :
-                      boardZoom == 180   ? "55%" :
-                      boardZoom == 190   ? "53%"  :
-                      boardZoom == 200   ? "50%"  :
-                      "80%",
+                          width:
+                            boardZoom == 100
+                              ? "99%"
+                              : boardZoom == 110
+                              ? "90%"
+                              : boardZoom == 120
+                              ? "83%"
+                              : boardZoom == 130
+                              ? "77%"
+                              : boardZoom == 140
+                              ? "71%"
+                              : boardZoom == 150
+                              ? "66%"
+                              : boardZoom == 160
+                              ? "62%"
+                              : boardZoom == 170
+                              ? "58%"
+                              : boardZoom == 180
+                              ? "55%"
+                              : boardZoom == 190
+                              ? "53%"
+                              : boardZoom == 200
+                              ? "50%"
+                              : "80%",
                           transformOrigin: "top left",
                           transform: `scale(${boardZoom / 100})`,
                         }}
