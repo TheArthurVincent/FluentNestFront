@@ -868,44 +868,42 @@ function EditModal({
                 padding: "0 1rem",
               }}
             >
-                        {/* Link da aula */}
-                {link && (
-                  <div
+              {/* Link da aula */}
+              {link && (
+                <div
+                  style={{
+                    fontWeight: "600",
+                    padding: "12px 16px",
+                    textAlign: "center",
+                    backgroundColor: "#f8f9fa",
+                    borderRadius: "8px",
+                    marginBottom: "8px",
+                    border: "1px solid #e9ecef",
+                  }}
+                >
+                  <a
+                    href={link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     style={{
-                        fontWeight: "600",
-                      padding: "12px 16px",
                       textAlign: "center",
-backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      marginBottom: "8px",
-                      border: "1px solid #e9ecef",
 
+                      marginLeft: "8px",
+                      color: partnerColor(),
+                      textDecoration: "none",
+                      fontSize: "14px",
                     }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
                   >
-                    
-                    <a
-                      href={link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                      textAlign: "center",
-
-                        marginLeft: "8px",
-                        color: partnerColor(),
-                        textDecoration: "none",
-                        fontSize: "14px",
-                      }}
-                      onMouseOver={(e) =>
-                        (e.currentTarget.style.textDecoration = "underline")
-                      }
-                      onMouseOut={(e) =>
-                        (e.currentTarget.style.textDecoration = "none")
-                      }
-                    >
-                      Acessar aula
-                    </a>
-                  </div>
-                )}
+                    Acessar aula
+                  </a>
+                </div>
+              )}
               {/* Informações básicas em lista */}
               <div style={{ marginBottom: "1.5rem" }}>
                 {/* Status */}
@@ -993,8 +991,6 @@ backgroundColor: "#f8f9fa",
                     </span>
                   </div>
                 )}
-
-      
 
                 {/* Google Drive */}
                 {googleDriveLink && (
