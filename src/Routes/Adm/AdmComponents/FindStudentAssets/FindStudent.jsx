@@ -3310,78 +3310,80 @@ export function FindStudent({
           </div>
 
           {/* SEÇÃO 2: PERMISSÕES */}
-          <div
-            style={{
-              backgroundColor: "#ffffff",
-              padding: "24px",
-              borderRadius: "4px",
-              marginBottom: "24px",
-              border: "1px solid #e8eaed",
-              boxShadow:
-                "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-            }}
-          >
-            <Typography
-              variant="h6"
+          {isArthurVincent && (
+            <div
               style={{
-                marginBottom: "20px",
-                fontWeight: "600",
-                color: "#2c3e50",
-                fontSize: "12px",
+                backgroundColor: "#ffffff",
+                padding: "24px",
+                borderRadius: "4px",
+                marginBottom: "24px",
+                border: "1px solid #e8eaed",
+                boxShadow:
+                  "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
               }}
             >
-              Permissões
-            </Typography>
-            <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth variant="outlined" size="small">
-                  <InputLabel style={{ color: "#6c757d", fontSize: "11px" }}>
-                    Permissões
-                  </InputLabel>
-                  <Select
-                    value={permissions}
-                    label="Permissões"
-                    onChange={(e) => setPermissions(e.target.value)}
-                    sx={{
+              <Typography
+                variant="h6"
+                style={{
+                  marginBottom: "20px",
+                  fontWeight: "600",
+                  color: "#2c3e50",
+                  fontSize: "12px",
+                }}
+              >
+                Permissões
+              </Typography>
+              <Grid container spacing={3}>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth variant="outlined" size="small">
+                    <InputLabel style={{ color: "#6c757d", fontSize: "11px" }}>
+                      Permissões
+                    </InputLabel>
+                    <Select
+                      value={permissions}
+                      label="Permissões"
+                      onChange={(e) => setPermissions(e.target.value)}
+                      sx={{
+                        borderRadius: "4px",
+                        backgroundColor: "#fafbfc",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#e8eaed",
+                        },
+                        "&:hover .MuiOutlinedInput-notchedOutline": {
+                          borderColor: "#c3c4c7",
+                        },
+                        "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                          borderColor: partnerColor(),
+                        },
+                      }}
+                    >
+                      <MenuItem value="student">Aluno</MenuItem>
+                      <MenuItem value="teacher">Professor</MenuItem>
+                      <MenuItem value="superadmin">Admin</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    onClick={() => editStudentPermissions(ID)}
+                    style={{
+                      marginTop: "16px",
+                      backgroundColor: partnerColor(),
+                      color: "#fff",
+                      fontWeight: "500",
+                      padding: "10px 24px",
                       borderRadius: "4px",
-                      backgroundColor: "#fafbfc",
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#e8eaed",
-                      },
-                      "&:hover .MuiOutlinedInput-notchedOutline": {
-                        borderColor: "#c3c4c7",
-                      },
-                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                        borderColor: partnerColor(),
-                      },
+                      textTransform: "none",
+                      fontSize: "11px",
+                      boxShadow:
+                        "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                     }}
                   >
-                    <MenuItem value="student">Aluno</MenuItem>
-                    <MenuItem value="teacher">Professor</MenuItem>
-                    <MenuItem value="superadmin">Admin</MenuItem>
-                  </Select>
-                </FormControl>
-                <Button
-                  variant="contained"
-                  onClick={() => editStudentPermissions(ID)}
-                  style={{
-                    marginTop: "16px",
-                    backgroundColor: partnerColor(),
-                    color: "#fff",
-                    fontWeight: "500",
-                    padding: "10px 24px",
-                    borderRadius: "4px",
-                    textTransform: "none",
-                    fontSize: "11px",
-                    boxShadow:
-                      "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-                  }}
-                >
-                  Salvar Permissões
-                </Button>
+                    Salvar Permissões
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </div>
+            </div>
+          )}
           {/* SEÇÃO 3: PONTUAÇÃO */}
           {isArthurVincent && (
             <div
