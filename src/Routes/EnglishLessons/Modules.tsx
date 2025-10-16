@@ -377,7 +377,7 @@ export default function Modules({
                               alt={cls.title}
                             /> */}
                             <p className="hoverable-paragraph">
-                              #{idx + 1} - {cls.title}
+                              {idx + 1}- {cls.title}
                               <span
                                 className="hidden-span"
                                 style={{
