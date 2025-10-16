@@ -98,6 +98,13 @@ export function Adm({ headers }: HeadersProps) {
       displayArthur: "block",
     },
     isArthurVincent && {
+      title: "Teachers",
+      value: "11",
+      tooltip: "OUT!",
+      component: <FindTeacher plan={plan} id={id} headers={headers} />,
+      displayArthur: "block",
+    },
+    isArthurVincent && {
       title: "Comentários",
       value: "9",
       tooltip:
@@ -110,13 +117,6 @@ export function Adm({ headers }: HeadersProps) {
       value: "10",
       tooltip: "OUT!",
       component: <ArthurSection headers={headers} />,
-      displayArthur: "block",
-    },
-    isArthurVincent && {
-      title: "Teacher Finder",
-      value: "11",
-      tooltip: "OUT!",
-      component: <FindTeacher plan={plan} id={id} headers={headers} />,
       displayArthur: "block",
     },
   ].filter(Boolean); // Remove elementos false do array
