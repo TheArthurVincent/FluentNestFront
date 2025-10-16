@@ -194,10 +194,13 @@ export default function Modules({
             </>
           ) : (
             <div
+className="flex-grid"
+         
+            >
+            <div
               style={{
                 display: "flex",
                 alignItems: "center",
-                marginBottom: "1rem",
                 width: "90vw",
                 justifyContent: "left",
                 gap: "1rem",
@@ -207,6 +210,7 @@ export default function Modules({
                 style={{
                   fontSize: "10px",
                   cursor: "pointer",
+   
                   textDecoration: "none",
                   color: darkGreyColor(),
                 }}
@@ -232,39 +236,17 @@ export default function Modules({
                 {title}
               </span>
             </div>
-          )}
-          <span
+                  <span
             style={{
               display: "flex",
               alignItems: "center",
               gap: "8px",
-              marginBottom: "10px",
               fontSize: "14px",
               color: textTitleFont(),
               fontWeight: "500",
             }}
           >
-            <input
-              type="text"
-              placeholder="Search classes by name..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }}
-              style={{
-                borderRadius: "4px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "11px",
-                fontWeight: "400",
-                color: "#64748b",
-                padding: "4px 6px",
-                height: "28px",
-                minWidth: "120px",
-                maxWidth: "150px",
-                outline: "none",
-              }}
-            />
+  
             <span
               style={{
                 display:
@@ -303,14 +285,31 @@ export default function Modules({
                 ))}
               </select>
             </span>
+                      <input
+              type="text"
+              placeholder="Search classes by name..."
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
+              style={{
+                borderRadius: "4px",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "#f8fafc",
+                fontSize: "11px",
+                fontWeight: "400",
+                color: "#64748b",
+                padding: "4px 6px",
+                height: "28px",
+                minWidth: "120px",
+                outline: "none",
+              }}
+            />
           </span>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          ></div>
+            </div>
+          )}
+    
+  
           {filtered
             .sort((a: any, b: any) => a.order - b.order)
             .map((module: any, index: number) => (

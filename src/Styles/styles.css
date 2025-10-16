@@ -3,7 +3,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Athiti:wght@200;300;400;500;600;700&family=Electrolize&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Gotu&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,900&family=PT+Sans+Narrow:wght@400;700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=East+Sea+Dokdo&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,100..900;1,100..900&family=East+Sea+Dokdo&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Athiti&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
@@ -111,8 +111,6 @@ textarea {
   grid-template-columns: 0.1fr 1fr;
 }
 
-
-
 /* Universal button style - linguee inspired, discrete, structure only */
 button {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -150,7 +148,6 @@ button:hover {
 button:active {
   box-shadow: 0 0 0 1px #111 inset;
 }
-
 
 button:disabled {
   background-color: #f5f5f5;
@@ -529,9 +526,10 @@ li {
   transform-style: preserve-3d;
   transition: transform 0.3s;
 }
-  .isMobileDisapear {
-    display: flex;
-  }
+
+.isMobileDisapear {
+  display: flex;
+}
 
 .flashcard.flip {
   transform: rotateY(180deg);
@@ -663,14 +661,26 @@ li {
 }
 
 @media (max-width: 750px) {
-
   .personalization-wrapper {
     grid-template-columns: 1fr;
   }
 
-
   .isMobileDisapear {
     display: none;
+  }
+}
+
+.flex-grid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90vw;
+}
+
+@media (max-width: 550px) {
+  .flex-grid {
+    display: grid;
+    grid-template-columns: 1fr;
   }
 }
 
@@ -707,7 +717,6 @@ body {
 .box-shadow-black {
   padding: 16px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  ;
 }
 
 .pointer-text:hover {
@@ -1149,7 +1158,7 @@ EXEMPLOS DE USO:
   cursor: pointer;
 }
 
-.linguee-radio input[type="radio"]:checked+.linguee-radio-dot {
+.linguee-radio input[type="radio"]:checked + .linguee-radio-dot {
   opacity: 1;
   transform: scale(1);
 }
@@ -1158,7 +1167,7 @@ EXEMPLOS DE USO:
   outline: none;
 }
 
-.linguee-radio input[type="radio"]:focus~.linguee-radio {
+.linguee-radio input[type="radio"]:focus ~ .linguee-radio {
   border-color: #111;
   box-shadow: 0 0 0 1px #111;
 }
@@ -1216,16 +1225,19 @@ EXEMPLOS DE USO:
   cursor: pointer;
 }
 
-.linguee-checkbox input[type="checkbox"]:checked~.linguee-checkbox {
+.linguee-checkbox input[type="checkbox"]:checked ~ .linguee-checkbox {
   background-color: #111;
   border-color: #111;
 }
 
-.linguee-checkbox input[type="checkbox"]:checked~.linguee-checkbox .linguee-checkbox-check {
+.linguee-checkbox
+  input[type="checkbox"]:checked
+  ~ .linguee-checkbox
+  .linguee-checkbox-check {
   opacity: 1;
 }
 
-.linguee-checkbox input[type="checkbox"]:focus~.linguee-checkbox {
+.linguee-checkbox input[type="checkbox"]:focus ~ .linguee-checkbox {
   box-shadow: 0 0 0 1px #111;
 }
 
@@ -1274,7 +1286,7 @@ EXEMPLOS DE USO:
   cursor: pointer;
 }
 
-.linguee-toggle input[type="checkbox"]:checked+.linguee-toggle-slider {
+.linguee-toggle input[type="checkbox"]:checked + .linguee-toggle-slider {
   transform: translateX(20px);
 }
 
