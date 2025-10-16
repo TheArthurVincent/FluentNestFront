@@ -141,6 +141,10 @@ export var verifyToken = () => {
   try {
     var token = localStorage.getItem("authorization");
     if (!token || token.trim() === "") {
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -148,6 +152,10 @@ export var verifyToken = () => {
     const tokenParts = token.split(".");
     if (tokenParts.length !== 3) {
       console.warn("[App] Token JWT não possui formato válido");
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -155,12 +163,20 @@ export var verifyToken = () => {
     const decodedToken = decodeJWT(token);
     if (!decodedToken || typeof decodedToken !== "object") {
       console.warn("[App] Token JWT não pode ser decodificado");
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
     // Verificar se o token tem as propriedades mínimas necessárias
     if (!decodedToken.exp) {
       console.warn("[App] Token JWT não possui data de expiração");
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -168,12 +184,20 @@ export var verifyToken = () => {
     const currentTime = Math.floor(Date.now() / 1000);
     if (decodedToken.exp < currentTime) {
       console.warn("[App] Token JWT expirado");
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
     // Verificar se o token ainda não é válido (nbf - not before)
     if (decodedToken.nbf && decodedToken.nbf > currentTime) {
       console.warn("[App] Token JWT ainda não é válido");
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -181,6 +205,10 @@ export var verifyToken = () => {
     if (decodedToken.iat && decodedToken.iat > currentTime + 300) {
       // 5 minutos de tolerância para diferenças de relógio
       console.warn("[App] Token JWT emitido no futuro");
+      localStorage.removeItem("authorization");
+      localStorage.removeItem("loggedIn");
+      localStorage.removeItem("studentData");
+      localStorage.removeItem("whiteLabel");
       return false;
     }
 
