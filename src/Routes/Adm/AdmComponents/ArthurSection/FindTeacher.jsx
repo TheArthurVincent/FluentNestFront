@@ -24,7 +24,6 @@ import {
   FormControl,
   InputLabel,
   Grid,
-  Typography,
   Switch,
   FormControlLabel,
 } from "@mui/material";
@@ -583,7 +582,7 @@ export function FindTeacher({ headers, id, plan }) {
                 alt=""
               />
               <div>
-                <Typography
+                <div
                   variant="h6"
                   style={{
                     fontWeight: "600",
@@ -593,15 +592,15 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   {selectedStudent.name} {selectedStudent.lastname}
-                </Typography>
-                <Typography
+                </div>
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "11px",
                   }}
                 >
                   {selectedStudent.email}
-                </Typography>
+                </div>
               </div>
             </div>
             <Button
@@ -672,7 +671,7 @@ export function FindTeacher({ headers, id, plan }) {
           <Grid container spacing={3}>
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -682,8 +681,8 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Username
-                </Typography>
-                <Typography
+                </div>
+                <div
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
@@ -691,13 +690,13 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   {selectedStudent.username || "N/A"}
-                </Typography>
+                </div>
               </div>
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -707,8 +706,8 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   CPF/Documento
-                </Typography>
-                <Typography
+                </div>
+                <div
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
@@ -716,13 +715,13 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   {formatCPF(selectedStudent.doc) || "N/A"}
-                </Typography>
+                </div>
               </div>
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -732,8 +731,8 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Telefone
-                </Typography>
-                <Typography
+                </div>
+                <div
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
@@ -741,13 +740,13 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   {formatPhoneNumber(selectedStudent.phoneNumber) || "N/A"}
-                </Typography>
+                </div>
               </div>
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -757,8 +756,8 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Data Nascimento
-                </Typography>
-                <Typography
+                </div>
+                <div
                   style={{
                     fontWeight: "500",
                     color: "#2c3e50",
@@ -772,13 +771,13 @@ export function FindTeacher({ headers, id, plan }) {
                         )
                       )
                     : "N/A"}
-                </Typography>
+                </div>
               </div>
             </Grid>
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -788,7 +787,7 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Status Mensalidade
-                </Typography>
+                </div>
                 <div
                   style={{
                     display: "inline-flex",
@@ -826,7 +825,7 @@ export function FindTeacher({ headers, id, plan }) {
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -836,7 +835,7 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Status Matrícula
-                </Typography>
+                </div>
                 <div
                   style={{
                     display: "inline-flex",
@@ -874,7 +873,7 @@ export function FindTeacher({ headers, id, plan }) {
 
             <Grid item xs={12} sm={6} md={3}>
               <div style={{ marginBottom: "16px" }}>
-                <Typography
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "8px",
@@ -884,7 +883,7 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Permissões
-                </Typography>
+                </div>
                 <div
                   style={{
                     display: "inline-flex",
@@ -934,7 +933,7 @@ export function FindTeacher({ headers, id, plan }) {
             {selectedStudent.address && (
               <Grid item xs={12}>
                 <div style={{ marginBottom: "16px" }}>
-                  <Typography
+                  <div
                     style={{
                       color: "#6c757d",
                       fontSize: "8px",
@@ -944,8 +943,8 @@ export function FindTeacher({ headers, id, plan }) {
                     }}
                   >
                     Endereço
-                  </Typography>
-                  <Typography
+                  </div>
+                  <div
                     style={{
                       fontWeight: "500",
                       color: "#2c3e50",
@@ -953,7 +952,7 @@ export function FindTeacher({ headers, id, plan }) {
                     }}
                   >
                     {selectedStudent.address}
-                  </Typography>
+                  </div>
                 </div>
               </Grid>
             )}
@@ -1182,7 +1181,7 @@ export function FindTeacher({ headers, id, plan }) {
             }}
           >
             <div>
-              <Typography
+              <div
                 variant="h5"
                 style={{
                   fontWeight: "600",
@@ -1191,8 +1190,8 @@ export function FindTeacher({ headers, id, plan }) {
                 }}
               >
                 {newName} {newLastName}
-              </Typography>
-              <Typography
+              </div>
+              <div
                 variant="body2"
                 style={{
                   color: "#6c757d",
@@ -1200,7 +1199,7 @@ export function FindTeacher({ headers, id, plan }) {
                 }}
               >
                 Gerenciar informações do aluno
-              </Typography>
+              </div>
             </div>
             <Button
               onClick={handleSeeModal}
@@ -1229,7 +1228,7 @@ export function FindTeacher({ headers, id, plan }) {
                 "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
-            <Typography
+            <div
               variant="h6"
               style={{
                 marginBottom: "20px",
@@ -1239,7 +1238,7 @@ export function FindTeacher({ headers, id, plan }) {
               }}
             >
               Informações Básicas
-            </Typography>
+            </div>
 
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -1463,7 +1462,7 @@ export function FindTeacher({ headers, id, plan }) {
                 "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
-            <Typography
+            <div
               variant="h6"
               style={{
                 marginBottom: "20px",
@@ -1473,7 +1472,7 @@ export function FindTeacher({ headers, id, plan }) {
               }}
             >
               Permissões
-            </Typography>
+            </div>
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth variant="outlined" size="small">
@@ -1537,7 +1536,7 @@ export function FindTeacher({ headers, id, plan }) {
                 "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
             }}
           >
-            <Typography
+            <div
               variant="h6"
               style={{
                 marginBottom: "20px",
@@ -1547,7 +1546,7 @@ export function FindTeacher({ headers, id, plan }) {
               }}
             >
               Alterar Senha
-            </Typography>
+            </div>
 
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
@@ -1677,7 +1676,7 @@ export function FindTeacher({ headers, id, plan }) {
               </>
             ) : (
               <div style={{ width: "100%", textAlign: "center" }}>
-                <Typography
+                <div
                   style={{
                     color: "#dc3545",
                     fontWeight: "600",
@@ -1686,8 +1685,8 @@ export function FindTeacher({ headers, id, plan }) {
                   }}
                 >
                   Confirmar Exclusão
-                </Typography>
-                <Typography
+                </div>
+                <div
                   style={{
                     color: "#6c757d",
                     fontSize: "11px",
@@ -1701,7 +1700,7 @@ export function FindTeacher({ headers, id, plan }) {
                   ?
                   <br />
                   <small>Esta ação não pode ser desfeita.</small>
-                </Typography>
+                </div>
                 <div
                   style={{
                     display: "flex",
