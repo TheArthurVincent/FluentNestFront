@@ -552,7 +552,7 @@ function EditModal({
       try {
         const response = await axios.put(
           `${backDomain}/api/v1/ai-description/${myId}`,
-          { description, classTitle: theLesson.title },
+          { description, classTitle: theLesson?.title || "", status },
           { headers }
         );
         const adapted = response.data.adapted;
@@ -1321,121 +1321,472 @@ function EditModal({
           )}
 
           {/* Edit Form */}
-          {showEditForm && (
-            <div
-              style={{
-                backgroundColor: "#f8f9fa",
-                padding: "1rem",
-                borderRadius: 4,
-                border: "1px solid #dee2e6",
-                marginTop: "1rem",
-              }}
-            >
-              <h4>Editar Evento</h4>
-              {/* Date and Time */}
+          {showEditForm &&
+            (status !== "desmarcado" ? (
               <div
                 style={{
-                  display: "grid",
-                  gap: "1rem",
-                  gridTemplateColumns: "1fr 1fr",
+                  backgroundColor: "#f8f9fa",
+                  padding: "1rem",
+                  borderRadius: 4,
+                  border: "1px solid #dee2e6",
+                  marginTop: "1rem",
                 }}
               >
-                <div style={{ marginBottom: "1rem" }}>
-                  <label>Data:</label>
-                  <input
-                    type="date"
-                    value={date}
-                    onChange={(e) => setDate(e.target.value)}
-                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                  />
-                </div>
-                <div style={{ marginBottom: "1rem" }}>
-                  <label>Horário:</label>
-                  <input
-                    type="time"
-                    value={theTime}
-                    onChange={(e) => setTheTime(e.target.value)}
-                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                  />
-                </div>
-              </div>
-              {/* Link */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Link da aula:</label>
-                <input
-                  type="url"
-                  value={link}
-                  onChange={(e) => setLink(e.target.value)}
-                  placeholder="https://..."
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
-              </div>
-              {/* Link */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Vídeo:</label>
-                <input
-                  type="url"
-                  value={video}
-                  onChange={(e) => setVideo(e.target.value)}
-                  placeholder="https://youtube.com/..."
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
-              </div>
-              {/* Google Drive */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Google Drive:</label>
-                <input
-                  type="url"
-                  value={googleDriveLink}
-                  onChange={(e) => setGoogleDriveLink(e.target.value)}
-                  placeholder="https://drive.google.com/..."
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
-              </div>
+                <h4>Editar Evento</h4>
 
-              {/* Lesson Selection */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Aula Usada:</label>
-                <select
-                  onChange={handleLessonChange}
-                  value={theLesson?.id ? String(theLesson.id) : ""}
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                {/* Description */}
+                <div
+                  style={{
+                    display: "grid",
+                    alignItems: "center",
+                    gap: "1rem",
+                    gridTemplateColumns: "1fr 1fr",
+                  }}
                 >
-                  <option value="" hidden>
-                    Selecionar aula...
-                  </option>
-                  {Object.entries(grouped).map(([course, modules]) => (
-                    <optgroup key={course} label={course}>
-                      {Object.entries(modules).map(([module, ls]) => (
-                        <React.Fragment key={`${course}-${module}`}>
-                          <option value={`sep:${course}:${module}`} disabled>
-                            — {module} —
-                          </option>
-                          {ls.map((l) => (
-                            <option key={l.id} value={String(l.id)}>
-                              {l.title}
-                            </option>
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>Descrição:</label>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
+                      <input
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "4px",
+                          marginTop: "4px",
+                        }}
+                      />
+                      <button
+                        title="-5"
+                        style={{
+                          all: "unset",
+                          fontSize: "1rem",
+                          border: "null",
+                          padding: "0",
+                          backgroundColor: "transparent",
+                          cursor:
+                            loadingDescription || !description
+                              ? "not-allowed"
+                              : "pointer",
+                          opacity: loadingDescription || !description ? 0.5 : 1,
+                        }}
+                        disabled={loadingDescription || !description}
+                        onClick={handleClassSummary}
+                      >
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "2px",
+                          }}
+                        >
+                          ✨{" "}
+                          <span
+                            style={{
+                              fontSize: "0.75rem",
+                              verticalAlign: "super",
+                              marginLeft: "-2px",
+                            }}
+                          >
+                            -5
+                          </span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Lesson Selection */}
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>Aula Usada:</label>
+                    <select
+                      onChange={handleLessonChange}
+                      value={theLesson?.id ? String(theLesson.id) : ""}
+                      style={{
+                        width: "100%",
+                        padding: "4px",
+                        marginTop: "4px",
+                      }}
+                    >
+                      <option value="" hidden>
+                        Selecionar aula...
+                      </option>
+                      {Object.entries(grouped).map(([course, modules]) => (
+                        <optgroup key={course} label={course}>
+                          {Object.entries(modules).map(([module, ls]) => (
+                            <React.Fragment key={`${course}-${module}`}>
+                              <option
+                                value={`sep:${course}:${module}`}
+                                disabled
+                              >
+                                — {module} —
+                              </option>
+                              {ls.map((l) => (
+                                <option key={l.id} value={String(l.id)}>
+                                  {l.title}
+                                </option>
+                              ))}
+                            </React.Fragment>
                           ))}
-                        </React.Fragment>
+                        </optgroup>
                       ))}
-                    </optgroup>
-                  ))}
-                </select>
+                    </select>
+                  </div>
+                </div>
+                {status !== "realizada" && (
+                  <div
+                    style={{
+                      display: "grid",
+                      gap: "1rem",
+                      gridTemplateColumns: "1fr 1fr",
+                    }}
+                  >
+                    <div style={{ marginBottom: "1rem" }}>
+                      <label>Data:</label>
+                      <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "4px",
+                          marginTop: "4px",
+                        }}
+                      />
+                    </div>
+                    <div style={{ marginBottom: "1rem" }}>
+                      <label>Horário:</label>
+                      <input
+                        type="time"
+                        value={theTime}
+                        onChange={(e) => setTheTime(e.target.value)}
+                        style={{
+                          width: "100%",
+                          padding: "4px",
+                          marginTop: "4px",
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+                {/* Link */}
+                {status !== "realizada" && (
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>Link da aula:</label>
+                    <input
+                      type="url"
+                      value={link}
+                      onChange={(e) => setLink(e.target.value)}
+                      placeholder="https://..."
+                      style={{
+                        width: "100%",
+                        padding: "4px",
+                        marginTop: "4px",
+                      }}
+                    />
+                  </div>
+                )}
+                {/* Link */}
+                {status == "realizada" && (
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>Vídeo:</label>
+                    <input
+                      type="url"
+                      value={video}
+                      onChange={(e) => setVideo(e.target.value)}
+                      placeholder="https://youtube.com/..."
+                      style={{
+                        width: "100%",
+                        padding: "4px",
+                        marginTop: "4px",
+                      }}
+                    />
+                  </div>
+                )}
+                {/* Google Drive */}
+                <div style={{ marginBottom: "1rem" }}>
+                  <label>Google Drive:</label>
+                  <input
+                    type="url"
+                    value={googleDriveLink}
+                    onChange={(e) => setGoogleDriveLink(e.target.value)}
+                    placeholder="https://drive.google.com/..."
+                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                  />
+                </div>
+                <div>
+                  {/* Homework Section */}
+                  <span>
+                    {!homeworkAdded && status == "realizada" && (
+                      <div style={{ marginBottom: "5px" }}>
+                        <button
+                          type="button"
+                          onClick={() => setShowHomework(!showHomework)}
+                          style={{
+                            padding: "6px 12px",
+                            fontSize: "13px",
+                            fontWeight: "500",
+                            color: "#6c757d",
+                            backgroundColor: "white",
+                            border: "1px solid #e9ecef",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          {showHomework ? "- Hide Homework" : "+ Add Homework"}
+                        </button>
+                        {showHomework && (
+                          <div>
+                            <label
+                              style={{
+                                display: "block",
+                                marginBottom: "0.5rem",
+                                fontWeight: "500",
+                                color: "#374151",
+                                fontSize: "0.875rem",
+                              }}
+                            >
+                              Homework
+                            </label>
+                            {!loadingHWDescription ? (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: "white",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ced4da",
+                                    overflow: "hidden",
+                                  }}
+                                >
+                                  {!showAIGENERATED ? (
+                                    <HTMLEditor
+                                      onChange={handleHomeworkChange}
+                                      initialContent={homework || "Type"}
+                                    />
+                                  ) : (
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: homework,
+                                      }}
+                                    />
+                                  )}
+                                </div>
+                                <div style={{ margin: "1rem" }} />
+                                {showAIGENERATED ? (
+                                  <button
+                                    style={{
+                                      fontSize: "0.75rem",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      setShowAIGENERATED(false);
+                                    }}
+                                  >
+                                    Voltar ao editor (isto excluirá a descrição
+                                    gerada)
+                                  </button>
+                                ) : (
+                                  <button
+                                    title="-15"
+                                    style={{
+                                      fontSize: "0.75rem",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={handleHWDescription}
+                                  >
+                                    ✨Ajude-me com a descrição do homework (-15)
+                                  </button>
+                                )}
+                              </>
+                            ) : (
+                              <CircularProgress
+                                style={{
+                                  color: partnerColor(),
+                                }}
+                              />
+                            )}
+                            {studentsInGroup.length > 1 && (
+                              <div style={{ marginTop: "1rem" }}>
+                                <label
+                                  style={{
+                                    display: "block",
+                                    marginBottom: "0.5rem",
+                                    fontWeight: "600",
+                                    color: "#495057",
+                                    fontSize: "0.9rem",
+                                  }}
+                                >
+                                  📝 Descrição individual para cada aluno.
+                                </label>
+                                {studentsInGroup.map((student, index) => (
+                                  <div key={student._id || index}>
+                                    {student.name + " " + student.lastname}
+                                    <input
+                                      type="text"
+                                      value={comments[index]?.description || ""}
+                                      onChange={(e) =>
+                                        handleStudentDescriptionChange(
+                                          index,
+                                          e.target.value
+                                        )
+                                      }
+                                      placeholder="Comentário para o aluno"
+                                      style={{
+                                        width: "100%",
+                                        padding: "0.75rem",
+                                        borderRadius: "6px",
+                                        border: "1px solid #ced4da",
+                                        fontSize: "0.9rem",
+                                        marginTop: "0.5rem",
+                                      }}
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </span>
+                  {/* Flashcards Section */}
+                  <span>
+                    <div style={{ marginBottom: "5px" }}>
+                      {!flashcardsAdded && status == "realizada" && (
+                        <button
+                          type="button"
+                          onClick={() => setShowFlashcards(!showFlashcards)}
+                          style={{
+                            padding: "6px 12px",
+                            fontSize: "13px",
+                            fontWeight: "500",
+                            color: "#6c757d",
+                            backgroundColor: "white",
+                            border: "1px solid #e9ecef",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                            transition: "all 0.2s ease",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "4px",
+                          }}
+                        >
+                          {showFlashcards
+                            ? "- Hide Flashcards"
+                            : "+ Add Flashcards"}
+                        </button>
+                      )}
+
+                      {showFlashcards && (
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "500",
+                              color: "#374151",
+                              fontSize: "0.875rem",
+                            }}
+                          >
+                            Flashcards
+                          </label>
+                          <textarea
+                            value={flashcards}
+                            onChange={(e) => setFlashcards(e.target.value)}
+                            rows={4}
+                            style={{
+                              width: "100%",
+                              padding: "8px 12px",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "14px",
+                            }}
+                            placeholder="Digite os flashcards aqui..."
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </span>
+                </div>
+                {/* Duration */}
+                <div style={{ marginBottom: "1rem" }}>
+                  <label>Duração (minutos):</label>
+                  <input
+                    type="number"
+                    value={duration}
+                    onChange={(e) => setDuration(parseInt(e.target.value))}
+                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                  />
+                </div>
+                {/* Save Button */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "10px",
+                    textAlign: "center",
+                  }}
+                >
+                  <button
+                    onClick={() => setShowEditForm(false)}
+                    style={{
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={editOneEvent}
+                    disabled={loadingInfo}
+                    style={{
+                      backgroundColor: partnerColor(),
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                      marginRight: "10px",
+                    }}
+                  >
+                    {loadingInfo ? "Salvando..." : "Salvar"}
+                  </button>
+                </div>
               </div>
-              {/* Description */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Descrição:</label>
+            ) : (
+              <div>
+                <label>Descrição (Motivo do cancelamento):</label>
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
                     gap: "10px",
+                    marginBottom: "1rem",
                   }}
                 >
                   <input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                    style={{
+                      width: "100%",
+                      padding: "4px",
+                      marginTop: "4px",
+                    }}
                   />
                   <button
                     title="-5"
@@ -1475,316 +1826,47 @@ function EditModal({
                     </span>
                   </button>
                 </div>
-              </div>
-              {/* Homework Section */}
-              {!homeworkAdded && (
-                <div style={{ marginBottom: "1rem" }}>
-                  <button
-                    type="button"
-                    onClick={() => setShowHomework(!showHomework)}
-                    style={{
-                      padding: "6px 12px",
-                      fontSize: "13px",
-                      fontWeight: "500",
-                      color: "#6c757d",
-                      backgroundColor: "transparent",
-                      border: "1px solid #e9ecef",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      marginBottom: "8px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                    onMouseEnter={(e: any) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.borderColor = "#dee2e6";
-                      e.target.style.color = "#495057";
-                    }}
-                    onMouseLeave={(e: any) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.borderColor = "#e9ecef";
-                      e.target.style.color = "#6c757d";
-                    }}
-                  >
-                    <span style={{ fontSize: "10px" }}>
-                      {showHomework ? "📝" : "➕"}
-                    </span>
-                    {showHomework ? "Hide Homework" : "Add Homework"}
-                  </button>
-                  {showHomework && (
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.5rem",
-                          fontWeight: "500",
-                          color: "#374151",
-                          fontSize: "0.875rem",
-                        }}
-                      >
-                        Homework
-                      </label>
-                      {!loadingHWDescription ? (
-                        <>
-                          <div
-                            style={{
-                              backgroundColor: "white",
-                              borderRadius: "4px",
-                              border: "1px solid #ced4da",
-                              overflow: "hidden",
-                            }}
-                          >
-                            {!showAIGENERATED ? (
-                              <HTMLEditor
-                                onChange={handleHomeworkChange}
-                                initialContent={homework || "Type"}
-                              />
-                            ) : (
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: homework,
-                                }}
-                              />
-                            )}
-                          </div>
-                          <div style={{ margin: "1rem" }} />
-                          {showAIGENERATED ? (
-                            <button
-                              style={{
-                                fontSize: "0.75rem",
-                                cursor: "pointer",
-                              }}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setShowAIGENERATED(false);
-                              }}
-                            >
-                              Voltar ao editor (isto excluirá a descrição
-                              gerada)
-                            </button>
-                          ) : (
-                            <button
-                              title="-15"
-                              style={{
-                                fontSize: "0.75rem",
-                                cursor: "pointer",
-                              }}
-                              onClick={handleHWDescription}
-                            >
-                              ✨Ajude-me com a descrição do homework (-15)
-                            </button>
-                          )}
-                        </>
-                      ) : (
-                        <CircularProgress
-                          style={{
-                            color: partnerColor(),
-                          }}
-                        />
-                      )}
-                      {studentsInGroup.length > 1 && (
-                        <div style={{ marginTop: "1rem" }}>
-                          <label
-                            style={{
-                              display: "block",
-                              marginBottom: "0.5rem",
-                              fontWeight: "600",
-                              color: "#495057",
-                              fontSize: "0.9rem",
-                            }}
-                          >
-                            📝 Descrição individual para cada aluno.
-                          </label>
-                          {studentsInGroup.map((student, index) => (
-                            <div key={student._id || index}>
-                              {student.name + " " + student.lastname}
-                              <input
-                                type="text"
-                                value={comments[index]?.description || ""}
-                                onChange={(e) =>
-                                  handleStudentDescriptionChange(
-                                    index,
-                                    e.target.value
-                                  )
-                                }
-                                placeholder="Comentário para o aluno"
-                                style={{
-                                  width: "100%",
-                                  padding: "0.75rem",
-                                  borderRadius: "6px",
-                                  border: "1px solid #ced4da",
-                                  fontSize: "0.9rem",
-                                  marginTop: "0.5rem",
-                                }}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Flashcards Section */}
-              <div style={{ marginBottom: "1rem" }}>
-                {!flashcardsAdded && (
-                  <button
-                    type="button"
-                    onClick={() => setShowFlashcards(!showFlashcards)}
-                    style={{
-                      padding: "6px 12px",
-                      fontSize: "13px",
-                      fontWeight: "500",
-                      color: "#6c757d",
-                      backgroundColor: "transparent",
-                      border: "1px solid #e9ecef",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      transition: "all 0.2s ease",
-                      marginBottom: "8px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "4px",
-                    }}
-                    onMouseEnter={(e: any) => {
-                      e.target.style.backgroundColor = "#f8f9fa";
-                      e.target.style.borderColor = "#dee2e6";
-                      e.target.style.color = "#495057";
-                    }}
-                    onMouseLeave={(e: any) => {
-                      e.target.style.backgroundColor = "transparent";
-                      e.target.style.borderColor = "#e9ecef";
-                      e.target.style.color = "#6c757d";
-                    }}
-                  >
-                    <span style={{ fontSize: "10px" }}>
-                      {showFlashcards ? "🎴" : "➕"}
-                    </span>
-                    {showFlashcards ? "Hide Flashcards" : "Add Flashcards"}
-                  </button>
-                )}
-
-                {showFlashcards && (
-                  <div>
-                    <label
-                      style={{
-                        display: "block",
-                        marginBottom: "0.5rem",
-                        fontWeight: "500",
-                        color: "#374151",
-                        fontSize: "0.875rem",
-                      }}
-                    >
-                      Flashcards
-                    </label>
-                    <textarea
-                      value={flashcards}
-                      onChange={(e) => setFlashcards(e.target.value)}
-                      rows={4}
-                      style={{
-                        width: "100%",
-                        padding: "8px 12px",
-                        borderRadius: "4px",
-                        border: "1px solid #ced4da",
-                        fontSize: "14px",
-                      }}
-                      placeholder="Digite os flashcards aqui..."
-                    />
-                  </div>
-                )}
-              </div>
-              {/* <div
-                style={{
-                  backgroundColor: "#f8f9fa",
-                  padding: "0.5rem",
-                  borderRadius: 4,
-                  border: "1px solid #dee2e6",
-                }}
-              >
+                {/* Save Button */}
                 <div
                   style={{
-                    marginTop: "0.5rem",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "10px",
                     textAlign: "center",
                   }}
                 >
-                  <a
-                    href={video}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    onClick={() => setShowEditForm(false)}
                     style={{
-                      color: partnerColor(),
-                      textDecoration: "none",
-                      fontWeight: "500",
-                      fontSize: "0.75rem",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
+                      backgroundColor: "#6c757d",
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                      borderRadius: 4,
+                      cursor: "pointer",
                     }}
                   >
-                    <i className="fa fa-external-link" />
-                    {video.includes("youtube.com") || video.includes("youtu.be")
-                      ? "YouTube"
-                      : video.includes("vimeo.com")
-                      ? "Vimeo"
-                      : "Vídeo"}
-                  </a>
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={editOneEvent}
+                    disabled={loadingInfo}
+                    style={{
+                      backgroundColor: partnerColor(),
+                      color: "white",
+                      border: "none",
+                      padding: "10px 20px",
+                      borderRadius: 4,
+                      cursor: "pointer",
+                      marginRight: "10px",
+                    }}
+                  >
+                    {loadingInfo ? "Salvando..." : "Salvar"}
+                  </button>
                 </div>
-              </div> */}
-              {/* Duration */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Duração (minutos):</label>
-                <input
-                  type="number"
-                  value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value))}
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
               </div>
-
-              {/* Save Button */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: "10px",
-                  textAlign: "center",
-                }}
-              >
-                <button
-                  onClick={() => setShowEditForm(false)}
-                  style={{
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    border: "none",
-                    padding: "10px 20px",
-                    borderRadius: 4,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancelar
-                </button>
-                <button
-                  onClick={editOneEvent}
-                  disabled={loadingInfo}
-                  style={{
-                    backgroundColor: partnerColor(),
-                    color: "white",
-                    border: "none",
-                    padding: "10px 20px",
-                    borderRadius: 4,
-                    cursor: "pointer",
-                    marginRight: "10px",
-                  }}
-                >
-                  {loadingInfo ? "Salvando..." : "Salvar"}
-                </button>
-              </div>
-            </div>
-          )}
+            ))}
         </div>
       )}
     </>
