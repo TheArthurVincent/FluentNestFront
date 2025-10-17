@@ -241,7 +241,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
     setLoading(false);
   };
   const [loadingHWDescription, setLoadingHWDescription] = useState(false);
-  
+
   const [loadingDescription, setLoadingDescription] = useState(false);
   const handleClassSummary = async () => {
     setLoadingDescription(true);
@@ -560,7 +560,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
-
+console.log(homeworkAdded,"homeworkAdded")
       setCategory(newCategory);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
@@ -3222,164 +3222,156 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                                 : "Add Homework"}
                                             </button>
                                           )}
-                                          {
-                                            showHomework && (
-                                              <div>
-                                                <label
-                                                  style={{
-                                                    display: "block",
-                                                    marginBottom: "0.5rem",
-                                                    fontWeight: "500",
-                                                    color: "#374151",
-                                                    fontSize: "0.875rem",
-                                                  }}
-                                                >
-                                                  {
-                                                    UniversalTexts.calendarModal
-                                                      .homework
-                                                  }
-                                                </label>
-                                                {!loadingHWDescription ? (
-                                                  <>
-                                                    {" "}
-                                                    <div
-                                                      style={{
-                                                        backgroundColor:
-                                                          "white",
-                                                        borderRadius: "4px",
-                                                        border:
-                                                          "1px solid #ced4da",
-                                                        overflow: "hidden",
-                                                      }}
-                                                    >
-                                                      {!showAIGENERATED ? (
-                                                        <span>
-                                                          <HTMLEditor
-                                                            onChange={
-                                                              handleHomeworkChange
-                                                            }
-                                                            initialContent={
-                                                              "Type"
-                                                            }
-                                                          />
-                                                        </span>
-                                                      ) : (
-                                                        <div
-                                                          dangerouslySetInnerHTML={{
-                                                            __html: homework,
-                                                          }}
-                                                        />
-                                                      )}
-                                                    </div>
-                                                    <div
-                                                      style={{
-                                                        margin: "1rem",
-                                                      }}
-                                                    />
-                                                    {showAIGENERATED ? (
-                                                      <button
-                                                        style={{
-                                                          fontSize: "0.75rem",
-                                                          cursor: "pointer",
-                                                        }}
-                                                        onClick={(e) => {
-                                                          e.preventDefault();
-                                                          setShowAIGENERATED(
-                                                            false
-                                                          );
-                                                        }}
-                                                      >
-                                                        Voltar ao editor (isto
-                                                        excluirá a descrição
-                                                        gerada)
-                                                      </button>
-                                                    ) : (
-                                                      <button
-                                                        title="-15"
-                                                        style={{
-                                                          fontSize: "0.75rem",
-                                                          cursor: "pointer",
-                                                        }}
-                                                        onClick={
-                                                          handleHWDescription
-                                                        }
-                                                      >
-                                                        ✨Ajude-me com a
-                                                        descrição do homework
-                                                        (-15)
-                                                      </button>
-                                                    )}
-                                                  </>
-                                                ) : (
-                                                  <CircularProgress
-                                                    style={{
-                                                      color: partnerColor(),
-                                                    }}
-                                                  />
-                                                )}
-                                                {studentsInGroup.length > 1 && (
+                                          {showHomework && (
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                {
+                                                  UniversalTexts.calendarModal
+                                                    .homework
+                                                }
+                                              </label>
+                                              {!loadingHWDescription ? (
+                                                <>
+                                                  {" "}
                                                   <div
                                                     style={{
-                                                      marginTop: "1rem",
+                                                      backgroundColor: "white",
+                                                      borderRadius: "4px",
+                                                      border:
+                                                        "1px solid #ced4da",
+                                                      overflow: "hidden",
                                                     }}
                                                   >
-                                                    <label
-                                                      style={{
-                                                        display: "block",
-                                                        marginBottom: "0.5rem",
-                                                        fontWeight: "600",
-                                                        color: "#495057",
-                                                        fontSize: "0.9rem",
-                                                      }}
-                                                    >
-                                                      📝 Descrição individual
-                                                      para cada aluno.
-                                                    </label>
-                                                    {studentsInGroup.map(
-                                                      (student, index) => (
-                                                        <div
-                                                          key={
-                                                            student._id || index
+                                                    {!showAIGENERATED ? (
+                                                      <span>
+                                                        <HTMLEditor
+                                                          onChange={
+                                                            handleHomeworkChange
                                                           }
-                                                        >
-                                                          {student.name +
-                                                            " " +
-                                                            student.lastname}
-                                                          <input
-                                                            type="text"
-                                                            value={
-                                                              comments[index]
-                                                                ?.comment || ""
-                                                            }
-                                                            onChange={(e) =>
-                                                              handleStudentDescriptionChange(
-                                                                index,
-                                                                e.target.value
-                                                              )
-                                                            }
-                                                            placeholder="Comentário para o aluno"
-                                                            style={{
-                                                              width: "100%",
-                                                              padding:
-                                                                "0.75rem",
-                                                              borderRadius:
-                                                                "6px",
-                                                              border:
-                                                                "1px solid #ced4da",
-                                                              fontSize:
-                                                                "0.9rem",
-                                                              marginTop:
-                                                                "0.5rem",
-                                                            }}
-                                                          />
-                                                        </div>
-                                                      )
+                                                          initialContent={
+                                                            "Type"
+                                                          }
+                                                        />
+                                                      </span>
+                                                    ) : (
+                                                      <div
+                                                        dangerouslySetInnerHTML={{
+                                                          __html: homework,
+                                                        }}
+                                                      />
                                                     )}
                                                   </div>
-                                                )}
-                                              </div>
-                                            )
-                                          }
+                                                  <div
+                                                    style={{
+                                                      margin: "1rem",
+                                                    }}
+                                                  />
+                                                  {showAIGENERATED ? (
+                                                    <button
+                                                      style={{
+                                                        fontSize: "0.75rem",
+                                                        cursor: "pointer",
+                                                      }}
+                                                      onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setShowAIGENERATED(
+                                                          false
+                                                        );
+                                                      }}
+                                                    >
+                                                      Voltar ao editor (isto
+                                                      excluirá a descrição
+                                                      gerada)
+                                                    </button>
+                                                  ) : (
+                                                    <button
+                                                      title="-15"
+                                                      style={{
+                                                        fontSize: "0.75rem",
+                                                        cursor: "pointer",
+                                                      }}
+                                                      onClick={
+                                                        handleHWDescription
+                                                      }
+                                                    >
+                                                      ✨Ajude-me com a descrição
+                                                      do homework (-15)
+                                                    </button>
+                                                  )}
+                                                </>
+                                              ) : (
+                                                <CircularProgress
+                                                  style={{
+                                                    color: partnerColor(),
+                                                  }}
+                                                />
+                                              )}
+                                              {studentsInGroup.length > 1 && (
+                                                <div
+                                                  style={{
+                                                    marginTop: "1rem",
+                                                  }}
+                                                >
+                                                  <label
+                                                    style={{
+                                                      display: "block",
+                                                      marginBottom: "0.5rem",
+                                                      fontWeight: "600",
+                                                      color: "#495057",
+                                                      fontSize: "0.9rem",
+                                                    }}
+                                                  >
+                                                    📝 Descrição individual para
+                                                    cada aluno.
+                                                  </label>
+                                                  {studentsInGroup.map(
+                                                    (student, index) => (
+                                                      <div
+                                                        key={
+                                                          student._id || index
+                                                        }
+                                                      >
+                                                        {student.name +
+                                                          " " +
+                                                          student.lastname}
+                                                        <input
+                                                          type="text"
+                                                          value={
+                                                            comments[index]
+                                                              ?.comment || ""
+                                                          }
+                                                          onChange={(e) =>
+                                                            handleStudentDescriptionChange(
+                                                              index,
+                                                              e.target.value
+                                                            )
+                                                          }
+                                                          placeholder="Comentário para o aluno"
+                                                          style={{
+                                                            width: "100%",
+                                                            padding: "0.75rem",
+                                                            borderRadius: "6px",
+                                                            border:
+                                                              "1px solid #ced4da",
+                                                            fontSize: "0.9rem",
+                                                            marginTop: "0.5rem",
+                                                          }}
+                                                        />
+                                                      </div>
+                                                    )
+                                                  )}
+                                                </div>
+                                              )}
+                                            </div>
+                                          )}
                                           {/* Due Date */}
                                           {!homeworkAdded && showHomework && (
                                             <div>
