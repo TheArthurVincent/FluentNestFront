@@ -362,7 +362,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
       }
     }
   };
-  const [isFee, setIsFee] = useState(true);
+  // const [isFee, setIsFee] = useState(true);
   const resetEveryThing = () => {
     setGroupsList([]);
     setStudentsList([]);
@@ -380,14 +380,13 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
     setShowDeleteEventConfirmation(false);
     setDisabledAvoid(false);
     setLoading(true);
-    setShouldScrollToToday(!!baseDate === false); // opcional
+    setShouldScrollToToday(!baseDate === false); // opcional
 
     try {
       // Usuário + mensalidade
       const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
       const { id, feeUpToDate } = user;
       updateInfo(id, headers);
-      setIsFee(!!feeUpToDate);
 
       if (!feeUpToDate) {
         onLoggOutFee();
