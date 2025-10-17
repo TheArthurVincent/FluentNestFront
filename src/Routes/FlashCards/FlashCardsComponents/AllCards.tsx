@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import {
   backDomain,
+  formatDate,
   onLoggOut,
   Xp,
 } from "../../../Resources/UniversalComponents";
@@ -471,7 +472,7 @@ var AllCards = ({
                           <strong>Rate:</strong> {card.reviewRate}
                         </div>
                         <div style={{ gridColumn: "1 / -1" }}>
-                          <strong>Created:</strong> {card.updatedAt}
+                          <strong>Created:</strong> {formatDate(card.updatedAt)}
                         </div>
                         {card.tags && card.tags.length > 0 && (
                           <div style={{ gridColumn: "1 / -1" }}>

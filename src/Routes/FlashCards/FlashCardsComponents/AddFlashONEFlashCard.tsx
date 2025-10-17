@@ -115,16 +115,6 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
           }}
         >
           <div style={{ flex: 1 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6b7280",
-                marginBottom: "0.25rem",
-              }}
-            >
-              Front
-            </label>
             <input
               type="text"
               value={frontCard}
@@ -165,16 +155,6 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
           }}
         >
           <div style={{ flex: 1 }}>
-            <label
-              style={{
-                display: "block",
-                fontSize: "12px",
-                color: "#6b7280",
-                marginBottom: "0.25rem",
-              }}
-            >
-              Back
-            </label>
             <input
               type="text"
               value={backCard}
@@ -207,16 +187,6 @@ const AddOneFlashCard: React.FC<AddOneFlashCardProps> = ({
 
       {/* Comments */}
       <div>
-        <label
-          style={{
-            display: "block",
-            fontSize: "12px",
-            color: "#6b7280",
-            marginBottom: "0.25rem",
-          }}
-        >
-          Comments (optional)
-        </label>
         <input
           type="text"
           value={backComments}

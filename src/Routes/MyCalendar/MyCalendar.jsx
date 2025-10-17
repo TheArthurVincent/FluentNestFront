@@ -3513,8 +3513,7 @@ console.log(homeworkAdded,"homeworkAdded")
                                               "Horário vazio para reposição" && (
                                               <div>
                                                 {/* Flashcards */}
-
-                                                {!flashcardsAdded && (
+                                                {/* {!flashcardsAdded && (
                                                   <button
                                                     type="button"
                                                     onClick={() =>
@@ -3571,7 +3570,7 @@ console.log(homeworkAdded,"homeworkAdded")
                                                       ? "Hide Flashcards"
                                                       : "Add Flashcards"}
                                                   </button>
-                                                )}
+                                                )} */}
 
                                                 {!flashcardsAdded &&
                                                   showFlashcards && (
