@@ -445,7 +445,6 @@ function EditModal({
         { headers }
       );
       if (response) {
-        notifyAlert("Status atualizado para Marcado!", partnerColor());
         setStatus("marcado");
         setChange(!change);
         fetchOneEvent(event._id || event.id);
@@ -468,7 +467,6 @@ function EditModal({
         { headers }
       );
       if (response) {
-        notifyAlert("Status atualizado para Desmarcado!", partnerColor());
         setStatus("desmarcado");
         setChange(!change);
         fetchOneEvent(event._id || event.id);
@@ -491,7 +489,6 @@ function EditModal({
         { headers }
       );
       if (response) {
-        notifyAlert("Status atualizado para Realizada!", partnerColor());
         setStatus("realizada");
         setChange(!change);
         fetchOneEvent(event._id || event.id);
@@ -1332,8 +1329,33 @@ function EditModal({
                   marginTop: "1rem",
                 }}
               >
-                <h4>Editar Evento</h4>
-
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  <h4>Editar Evento</h4>
+                  <span
+                    style={{
+                      color: "black",
+                      fontWeight: "900",
+                    }}
+                    onClick={() => setShowEditForm(false)}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.cursor = "pointer";
+                      e.currentTarget.style.color = partnerColor();
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.cursor = "pointer";
+                      e.currentTarget.style.color = "black";
+                    }}
+                  >
+                    x
+                  </span>
+                </div>
                 {/* Description */}
                 <div
                   style={{
