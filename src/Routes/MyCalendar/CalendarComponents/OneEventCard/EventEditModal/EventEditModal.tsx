@@ -1531,15 +1531,41 @@ function EditModal({
                   </div>
                 )}
                 {/* Google Drive */}
-                <div style={{ marginBottom: "1rem" }}>
-                  <label>Google Drive:</label>
-                  <input
-                    type="url"
-                    value={googleDriveLink}
-                    onChange={(e) => setGoogleDriveLink(e.target.value)}
-                    placeholder="https://drive.google.com/..."
-                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                  />
+                <div
+                  style={{
+                    display: "grid",
+                    gap: "1rem",
+                    gridTemplateColumns: "1fr 1fr",
+                  }}
+                >
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>Google Drive:</label>
+                    <input
+                      type="url"
+                      value={googleDriveLink}
+                      onChange={(e) => setGoogleDriveLink(e.target.value)}
+                      placeholder="https://drive.google.com/..."
+                      style={{
+                        width: "100%",
+                        padding: "4px",
+                        marginTop: "4px",
+                      }}
+                    />
+                  </div>
+                  {/* Duration */}
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label>Duração (minutos):</label>
+                    <input
+                      type="number"
+                      value={duration}
+                      onChange={(e) => setDuration(parseInt(e.target.value))}
+                      style={{
+                        width: "100%",
+                        padding: "4px",
+                        marginTop: "4px",
+                      }}
+                    />
+                  </div>
                 </div>
                 <div>
                   {/* Homework Section */}
@@ -1740,16 +1766,7 @@ function EditModal({
                     </div>
                   </span>
                 </div>
-                {/* Duration */}
-                <div style={{ marginBottom: "1rem" }}>
-                  <label>Duração (minutos):</label>
-                  <input
-                    type="number"
-                    value={duration}
-                    onChange={(e) => setDuration(parseInt(e.target.value))}
-                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                  />
-                </div>
+
                 {/* Save Button */}
                 <div
                   style={{
