@@ -240,9 +240,9 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
     setShowFlashcards(false);
     setLoading(false);
   };
-  const [loadingDescription, setLoadingDescription] = useState(false);
   const [loadingHWDescription, setLoadingHWDescription] = useState(false);
-
+  
+  const [loadingDescription, setLoadingDescription] = useState(false);
   const handleClassSummary = async () => {
     setLoadingDescription(true);
     if (thePermissions == "superadmin" || thePermissions == "teacher") {

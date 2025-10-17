@@ -546,25 +546,24 @@ function EditModal({
   // Gerar resumo da aula com AI
   const handleClassSummary = async () => {
     setLoadingDescription(true);
-    if (thePermissions === "superadmin" || thePermissions === "teacher") {
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
       try {
-        const prompt = `Generate a class summary for: ${
-          theLesson?.title || "English lesson"
-        }`;
-        const response = await axios.post(
-          `${backDomain}/api/v1/ai-description`,
-          { prompt },
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-description/${myId}`,
+          { description, classTitle: theLesson.title },
           { headers }
         );
-        setDescription(response.data.description || "");
-      } catch (error) {
-        console.log(error, "Erro ao gerar resumo");
-      } finally {
+        const adapted = response.data.adapted;
+        setDescription(adapted);
         setLoadingDescription(false);
+        setChange(!change);
+      } catch (error) {
+        setLoadingDescription(false);
+        // notifyAlert(error?.response?.data?.message);
+        console.log(error, "Erro");
       }
     }
   };
-
   // Gerar homework com AI
   const handleHWDescription = async () => {
     setLoadingHWDescription(true);
@@ -825,7 +824,7 @@ function EditModal({
           )}
 
           {/* Edit and Delete Buttons */}
-          {authorizeOrNot && !showEditForm && (
+          {authorizeOrNot && !showEditForm && !deleteVisible && (
             <div
               style={{
                 display: "flex",
@@ -860,6 +859,57 @@ function EditModal({
               >
                 Deletar
               </button>
+            </div>
+          )}
+
+          {/* Delete Confirmation */}
+          {deleteVisible && (
+            <div
+              style={{
+                backgroundColor: "#f8f9fa",
+                padding: "1rem",
+                borderRadius: 4,
+                border: "1px solid #dee2e6",
+                marginTop: "1rem",
+                textAlign: "center",
+              }}
+            >
+              <p>Tem certeza que deseja deletar este evento?</p>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  justifyContent: "center",
+                }}
+              >
+                <button
+                  onClick={deleteThisEvent}
+                  disabled={loadingInfo}
+                  style={{
+                    backgroundColor: "#dc3545",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  {loadingInfo ? "Deletando..." : "Confirmar"}
+                </button>
+                <button
+                  onClick={() => setDeleteVisible(false)}
+                  style={{
+                    backgroundColor: "#6c757d",
+                    color: "white",
+                    border: "none",
+                    padding: "8px 16px",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           )}
           {!showEditForm && (
@@ -1267,57 +1317,6 @@ function EditModal({
             </div>
           )}
 
-          {/* Delete Confirmation */}
-          {deleteVisible && (
-            <div
-              style={{
-                backgroundColor: "#f8f9fa",
-                padding: "1rem",
-                borderRadius: 4,
-                border: "1px solid #dee2e6",
-                marginTop: "1rem",
-                textAlign: "center",
-              }}
-            >
-              <p>Tem certeza que deseja deletar este evento?</p>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "center",
-                }}
-              >
-                <button
-                  onClick={deleteThisEvent}
-                  disabled={loadingInfo}
-                  style={{
-                    backgroundColor: "#dc3545",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 16px",
-                    borderRadius: 4,
-                    cursor: "pointer",
-                  }}
-                >
-                  {loadingInfo ? "Deletando..." : "Confirmar"}
-                </button>
-                <button
-                  onClick={() => setDeleteVisible(false)}
-                  style={{
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    border: "none",
-                    padding: "8px 16px",
-                    borderRadius: 4,
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancelar
-                </button>
-              </div>
-            </div>
-          )}
-
           {/* Edit Form */}
           {showEditForm && (
             <div
@@ -1423,11 +1422,56 @@ function EditModal({
               {/* Description */}
               <div style={{ marginBottom: "1rem" }}>
                 <label>Descrição:</label>
-                <input
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                >
+                  <input
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                  />
+                  <button
+                    title="-5"
+                    style={{
+                      all: "unset",
+                      fontSize: "1rem",
+                      border: "null",
+                      padding: "0",
+                      backgroundColor: "transparent",
+                      cursor:
+                        loadingDescription || !description
+                          ? "not-allowed"
+                          : "pointer",
+                      opacity: loadingDescription || !description ? 0.5 : 1,
+                    }}
+                    disabled={loadingDescription || !description}
+                    onClick={handleClassSummary}
+                  >
+                    <span
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "2px",
+                      }}
+                    >
+                      ✨{" "}
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          verticalAlign: "super",
+                          marginLeft: "-2px",
+                        }}
+                      >
+                        -5
+                      </span>
+                    </span>
+                  </button>
+                </div>
               </div>
               {/* Homework */}
               <div style={{ marginBottom: "1rem" }}>
