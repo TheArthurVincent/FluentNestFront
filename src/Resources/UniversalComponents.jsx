@@ -1813,13 +1813,11 @@ export const onLoggOutFee = () => {
   localStorage.removeItem("authorization");
   localStorage.removeItem("loggedIn");
   localStorage.removeItem("selectedStudentID");
-
   localStorage.removeItem("flashcardsToday");
   localStorage.removeItem("notifications");
   localStorage.removeItem("voiceGender");
   localStorage.removeItem("voiceLang");
   localStorage.removeItem("voiceOption");
-
   notifyAlert("Sua mensalidade não está em dia. Faça login novamente", "red");
   setTimeout(() => {
     window.location.assign("/login");

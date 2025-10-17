@@ -388,6 +388,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
       const { id, feeUpToDate } = user;
       updateInfo(id, headers);
       setIsFee(!!feeUpToDate);
+
       if (!feeUpToDate) {
         onLoggOutFee();
         return;

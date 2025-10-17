@@ -322,8 +322,10 @@ export function PendingHomeworkAssignments({ headers }) {
                       padding: "8px 0",
                     }}
                   >
-                    <Link
-                      to={homework.googleDriveLink}
+                    <a
+                      href={homework.googleDriveLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{
                         color: partnerColor(),
                         textDecoration: "none",
@@ -340,7 +342,7 @@ export function PendingHomeworkAssignments({ headers }) {
                     >
                       <i className="fa fa-external-link" />
                       Access the class here
-                    </Link>
+                    </a>
                   </div>
                 )}
                 {homework.answers && (
