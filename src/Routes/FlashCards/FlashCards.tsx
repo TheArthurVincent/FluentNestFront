@@ -103,6 +103,20 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
         />
       ),
     },
+    
+    {
+      title: UniversalTexts.add,
+      value: "4",
+      adm: true,
+      component: (
+        <AddFlashCards
+          display="block"
+          selectedStudentName={selectedStudent}
+          headers={headers}
+          selectedStudentId={getCurrentStudentId()}
+        />
+      ),
+    },
     {
       title: UniversalTexts.myCards,
       value: "2",
@@ -117,19 +131,6 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       adm: false,
       component: (
         <FlashcardsHistory
-          headers={headers}
-          selectedStudentId={getCurrentStudentId()}
-        />
-      ),
-    },
-    {
-      title: UniversalTexts.add,
-      value: "4",
-      adm: true,
-      component: (
-        <AddFlashCards
-          display="block"
-          selectedStudentName={selectedStudent}
           headers={headers}
           selectedStudentId={getCurrentStudentId()}
         />

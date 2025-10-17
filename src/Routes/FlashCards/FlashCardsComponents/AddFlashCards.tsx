@@ -34,6 +34,7 @@ const AddFlashCards = ({
   const [addCardVisible, setAddCardVisible] = useState<boolean>(true);
   const [isAIMode, setIsAIMode] = useState<boolean>(false);
   const [textInput, setTextInput] = useState<string>("");
+  const [numberOfCards, setNumberOfCards] = useState<number>(5);
   const [cards, setCards] = useState<FlashCard[]>([
     {
       frontCard: "",
@@ -91,7 +92,7 @@ const AddFlashCards = ({
     try {
       const response = await axios.put(
         `${backDomain}/api/v1/ai-flashcards-from-text`,
-        { textInput }
+        { textInput, numberOfCards }
       );
       console.log(response.data, "Resposta da IA");
 
@@ -266,7 +267,7 @@ const AddFlashCards = ({
                     <textarea
                       value={textInput}
                       onChange={(e) => setTextInput(e.target.value)}
-                      placeholder="Cole aqui o texto que você quer transformar em flashcards..."
+                      placeholder="Cole aqui o conteúdo que você quer transformar em flashcards..."
                       style={{
                         width: "100%",
                         minHeight: "200px",
@@ -284,36 +285,73 @@ const AddFlashCards = ({
                       marginTop: "0.5rem",
                       display: "flex",
                       gap: "0.5rem",
+                      alignItems: "center",
                     }}
                   >
                     <button
+                      title={
+                        //verificar se textimput está vazio ou é menor que 30 palavras
+                        textInput.trim().split(" ").length < 30 ||
+                        textInput.trim() === ""
+                          ? "Insira pelo menos 30 palavras para gerar flashcards"
+                          : `Gerar ${numberOfCards} flashcards`
+                      }
+                      disabled={
+                        loadingFlashcardsAI ||
+                        //verificar se textimput está vazio ou é menor que 30 palavras
+                        textInput.trim().split(" ").length < 30 ||
+                        textInput.trim() === ""
+                      }
                       onClick={() => {
                         handleFlashcardsAI();
                       }}
                       style={{
-                        backgroundColor: partnerColor(),
+                        backgroundColor:
+                          loadingFlashcardsAI ||
+                          //verificar se textimput está vazio ou é menor que 30 palavras
+                          textInput.trim().split(" ").length < 30 ||
+                          textInput.trim() === ""
+                            ? "#ccc"
+                            : partnerColor(),
                         color: textpartnerColorContrast(),
                         border: "none",
                         borderRadius: "4px",
                         padding: "0.5rem 1rem",
                         cursor: "pointer",
+                        flex: 1,
                       }}
                     >
-                      ✨ Gerar Flashcards
+                      ✨ Gerar {numberOfCards} Flashcards
                     </button>
-                    <button
-                      onClick={() => setTextInput("")}
+                    <div
                       style={{
-                        backgroundColor: "#f0f0f0",
-                        color: "#333",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        padding: "0.5rem 1rem",
-                        cursor: "pointer",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        gap: "0.2rem",
                       }}
                     >
-                      Limpar
-                    </button>
+                      <select
+                        value={numberOfCards}
+                        onChange={(e) =>
+                          setNumberOfCards(Number(e.target.value))
+                        }
+                        style={{
+                          padding: "0.4rem 0.5rem",
+                          border: "1px solid #ccc",
+                          borderRadius: "4px",
+                          fontSize: "14px",
+                          backgroundColor: "#fff",
+                          cursor: "pointer",
+                          minWidth: "70px",
+                        }}
+                      >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={20}>20</option>
+                        <option value={30}>30</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -338,7 +376,6 @@ const AddFlashCards = ({
                   ))}
                 </div>
               )}
-
               <br />
               <span
                 style={{
