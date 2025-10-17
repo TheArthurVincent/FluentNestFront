@@ -195,11 +195,11 @@ export const formatTimeRange = (startTime, durationMinutes = 60) => {
 };
 export const categoryList = [
   {
-    text: "Aula experimental",
+    text: "Aula Experimental",
     value: "Test",
   },
   {
-    text: "Aula única",
+    text: "Aula Única",
     value: "Standalone",
   },
   {
@@ -207,23 +207,23 @@ export const categoryList = [
     value: "Group Class",
   },
   {
-    text: "Aula de um Grupo",
+    text: "Aula De Um Grupo",
     value: "Established Group Class",
   },
   {
-    text: "Aula de reposição",
+    text: "Aula De Reposição",
     value: "Rep",
   },
   {
-    text: "Aula de prêmio",
+    text: "Aula Prêmio",
     value: "Prize Class",
   },
   {
-    text: "Aula de tutoria",
+    text: "Aula De Tutoria",
     value: "Tutoring",
   },
   {
-    text: "Horário vazio para reposição",
+    text: "Horário Vazio Para Reposição",
     value: "Marcar Reposição",
   },
 ];

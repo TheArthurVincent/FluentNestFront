@@ -254,17 +254,13 @@ function MyCalendarNew({
       {headers ? (
         <RouteDiv style={{ width: "96vw" }}>
           <div>
-            <HOne>📅 {UniversalTexts.calendar} - Nova Versão</HOne>
-
             {/* Controles de Navegação */}
             <div
               style={{
                 marginBottom: "1rem",
-                background: "#ffffff",
                 borderRadius: 4,
-                border: "1px solid #e1e5e9",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-                padding: "16px",
+                border: "1px solid #fffe1e5e9",
+                padding: "6px",
               }}
             >
               <div
@@ -304,7 +300,6 @@ function MyCalendarNew({
                     ← Voltar à Semana
                   </button>
                 )}
-
                 {/* Navegação de Semanas (apenas na visualização de semana) */}
                 {!showSingleEventView && (
                   <div
@@ -346,7 +341,6 @@ function MyCalendarNew({
                       >
                         ←
                       </button>
-
                       <div
                         style={{
                           padding: "0 16px",
@@ -362,7 +356,6 @@ function MyCalendarNew({
                           year: "numeric",
                         })}
                       </div>
-
                       <button
                         disabled={!disabledAvoid}
                         style={{
@@ -385,7 +378,6 @@ function MyCalendarNew({
                         →
                       </button>
                     </div>
-
                     {/* Seletor de Data */}
                     <div
                       style={{
@@ -416,7 +408,6 @@ function MyCalendarNew({
                     </div>
                   </div>
                 )}
-
                 {/* Título da visualização de evento único */}
                 {showSingleEventView && selectedEvent && (
                   <div
@@ -437,7 +428,6 @@ function MyCalendarNew({
                     })}
                   </div>
                 )}
-
                 {/* Ações do Professor (apenas na visualização de semana) */}
                 {authorizeOrNot && !showSingleEventView && (
                   <div
@@ -470,7 +460,6 @@ function MyCalendarNew({
                 )}
               </div>
             </div>
-
             {/* Calendário da Semana */}
             {loading ? (
               <div
@@ -485,15 +474,18 @@ function MyCalendarNew({
               </div>
             ) : (
               <div
+                className={showSingleEventView ? "container-calendar" : ""}
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "1fr 2.5fr",
-                  gap: "16px",
-                  height: showSingleEventView ? "calc(100vh - 200px)" : "auto",
+                  gap: "4px",
+                  height: showSingleEventView ? "75vh" : "auto",
                 }}
               >
                 {/* Container do Calendário */}
                 <div
+                  className={
+                    showSingleEventView ? "isMobileDisapearCalendar" : ""
+                  }
                   style={{
                     flex: showSingleEventView ? "0 0 60%" : "1",
                     minWidth: showSingleEventView ? "60%" : "auto",
@@ -506,7 +498,7 @@ function MyCalendarNew({
                       display: "flex",
                       gap: "8px",
                       overflowX: showSingleEventView ? "hidden" : "auto",
-                      padding: "16px 0",
+                      padding: showSingleEventView ? "0" : "16px 0",
                       scrollbarWidth: "thin",
                       scrollbarColor: `${partnerColor()} transparent`,
                       justifyContent: showSingleEventView
@@ -554,10 +546,9 @@ function MyCalendarNew({
                       background: "#ffffff",
                       borderRadius: 4,
                       border: "1px solid #e1e5e9",
-                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-                      padding: "16px",
+                      padding: "8px",
                       overflow: "auto",
-                      maxHeight: "calc(100vh - 200px)",
+                      maxHeight: "100vh",
                     }}
                   >
                     <EventEditModal
@@ -567,7 +558,9 @@ function MyCalendarNew({
                       setChange={setChange}
                       fetchStudents={fetchStudents}
                       change={change}
-                      studentID={selectedEvent.student?._id || selectedEvent.student.id}
+                      studentID={
+                        selectedEvent.student?._id || selectedEvent.student.id
+                      }
                       alternateBoolean={alternateBoolean}
                       setAlternateBoolean={setAlternateBoolean}
                       event={selectedEvent}
@@ -575,7 +568,9 @@ function MyCalendarNew({
                         setShowSingleEventView(false);
                         setSelectedEvent(null);
                       }}
-                      onEventUpdated={() => loadGeneral(selectedEventDate || new Date())}
+                      onEventUpdated={() =>
+                        loadGeneral(selectedEventDate || new Date())
+                      }
                     />
                   </div>
                 )}

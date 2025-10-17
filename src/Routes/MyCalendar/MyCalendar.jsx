@@ -3223,7 +3223,6 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                                             </button>
                                           )}
                                           {
-                                            // !homeworkAdded &&
                                             showHomework && (
                                               <div>
                                                 <label

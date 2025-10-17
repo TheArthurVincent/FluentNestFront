@@ -84,7 +84,7 @@ export function CardCalendar({
         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
         boxShadow: isToday
           ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
-          : "0 2px 8px rgba(0,0,0,0.08)",
+          : "none",
         transition: "all 0.3s ease",
         minWidth: "200px",
       }}

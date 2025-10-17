@@ -9,11 +9,13 @@ import {
 import {
   backDomain,
   formatDateBr,
+  truncateString,
 } from "../../../../../Resources/UniversalComponents";
 import { useUserContext } from "../../../../../Application/SelectLanguage/SelectLanguage";
 import { notifyAlert } from "../../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../../../../Resources/Components/HTMLEditor";
 import {
+  categoryList,
   convertToBase64,
   getEmbedUrl,
 } from "../../MyCalendarFunctions/MyCalendarFunctions";
@@ -738,7 +740,7 @@ function EditModal({
                 gap: "1rem",
                 padding: "0.5rem",
                 backgroundColor: "#f8f9fa",
-                borderRadius: "4px",
+                borderRadius: 4,
                 marginBottom: "1rem",
               }}
             >
@@ -839,7 +841,7 @@ function EditModal({
                   color: "white",
                   border: "none",
                   padding: "8px 16px",
-                  borderRadius: "4px",
+                  borderRadius: 4,
                   cursor: "pointer",
                 }}
               >
@@ -852,7 +854,7 @@ function EditModal({
                   color: "white",
                   border: "none",
                   padding: "8px 16px",
-                  borderRadius: "4px",
+                  borderRadius: 4,
                   cursor: "pointer",
                 }}
               >
@@ -876,7 +878,7 @@ function EditModal({
                     padding: "12px 16px",
                     textAlign: "center",
                     backgroundColor: "#f8f9fa",
-                    borderRadius: "8px",
+                    borderRadius: 4,
                     marginBottom: "8px",
                     border: "1px solid #e9ecef",
                   }}
@@ -887,7 +889,6 @@ function EditModal({
                     rel="noopener noreferrer"
                     style={{
                       textAlign: "center",
-
                       marginLeft: "8px",
                       color: partnerColor(),
                       textDecoration: "none",
@@ -904,119 +905,98 @@ function EditModal({
                   </a>
                 </div>
               )}
-              {/* Informações básicas em lista */}
-              <div style={{ marginBottom: "1.5rem" }}>
-                {/* Status */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "12px 16px",
-                    backgroundColor: "#f8f9fa",
-                    borderRadius: "8px",
-                    marginBottom: "8px",
-                    border: "1px solid #e9ecef",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: "8px",
-                      height: "8px",
-                      borderRadius: "50%",
-                      backgroundColor:
-                        status === "marcado"
-                          ? "#007bff"
-                          : status === "realizada"
-                          ? "#28a745"
-                          : status === "desmarcado"
-                          ? "#dc3545"
-                          : "#6c757d",
-                      marginRight: "12px",
-                    }}
-                  />
-                  <span style={{ fontWeight: "500", color: "#495057" }}>
-                    Status:
-                  </span>
-                  <span style={{ marginLeft: "8px", color: "#6c757d" }}>
-                    {status === "marcado"
-                      ? "Marcado"
-                      : status === "realizada"
-                      ? "Realizada"
-                      : status === "desmarcado"
-                      ? "Desmarcado"
-                      : status || "Não definido"}
-                  </span>
-                </div>
-
+              {/* Informações básicas em grid discreto */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: "8px",
+                  marginBottom: "0.5rem",
+                }}
+              >
                 {/* Categoria */}
                 {category && (
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      padding: "12px 16px",
+                      padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      marginBottom: "8px",
+                      borderRadius: 4,
                       border: "1px solid #e9ecef",
+                      fontSize: "13px",
                     }}
                   >
-                    <span style={{ fontWeight: "500", color: "#495057" }}>
-                      Categoria:
-                    </span>
-                    <span style={{ marginLeft: "8px", color: "#6c757d" }}>
-                      {category}
+                    <i
+                      className="fa fa-tag"
+                      style={{
+                        color: "#6c757d",
+                        marginRight: "8px",
+                        fontSize: "12px",
+                      }}
+                    />
+                    <span style={{ color: "#6c757d" }}>
+                      {categoryList.map((cat, index) =>
+                        cat.value == category ? (
+                          <span key={index}>{cat.text}</span>
+                        ) : null
+                      )}
                     </span>
                   </div>
                 )}
-
                 {/* Duração */}
                 {duration && (
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      padding: "12px 16px",
+                      padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      marginBottom: "8px",
+                      borderRadius: 4,
                       border: "1px solid #e9ecef",
+                      fontSize: "13px",
                     }}
                   >
-                    <span style={{ fontWeight: "500", color: "#495057" }}>
-                      Duração:
-                    </span>
-                    <span style={{ marginLeft: "8px", color: "#6c757d" }}>
-                      {duration} minutos
-                    </span>
+                    <i
+                      className="fa fa-clock-o"
+                      style={{
+                        color: "#6c757d",
+                        marginRight: "8px",
+                        fontSize: "12px",
+                      }}
+                    />
+                    <span style={{ color: "#6c757d" }}>{duration} min</span>
                   </div>
                 )}
-
                 {/* Google Drive */}
                 {googleDriveLink && (
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      padding: "12px 16px",
+                      padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      marginBottom: "8px",
+                      borderRadius: 4,
                       border: "1px solid #e9ecef",
+                      fontSize: "13px",
                     }}
                   >
-                    <span style={{ fontWeight: "500", color: "#495057" }}>
-                      Link Importante:
-                    </span>
+                    <i
+                      className="fa fa-google"
+                      style={{
+                        color: "#6c757d",
+                        marginRight: "8px",
+                        fontSize: "12px",
+                      }}
+                    />
                     <a
                       href={googleDriveLink}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
-                        marginLeft: "8px",
                         color: partnerColor(),
                         textDecoration: "none",
-                        fontSize: "14px",
+                        fontSize: "13px",
                       }}
                       onMouseOver={(e) =>
                         (e.currentTarget.style.textDecoration = "underline")
@@ -1025,27 +1005,31 @@ function EditModal({
                         (e.currentTarget.style.textDecoration = "none")
                       }
                     >
-                      Acessar arquivos
+                      Link Importante
                     </a>
                   </div>
                 )}
-
                 {/* Lição relacionada */}
                 {theLesson && theLesson.course && theLesson.id && (
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      padding: "12px 16px",
+                      padding: "8px 12px",
                       backgroundColor: "#f8f9fa",
-                      borderRadius: "8px",
-                      marginBottom: "8px",
+                      borderRadius: 4,
                       border: "1px solid #e9ecef",
+                      fontSize: "13px",
                     }}
                   >
-                    <span style={{ fontWeight: "500", color: "#495057" }}>
-                      Lição:
-                    </span>
+                    <i
+                      className="fa fa-book"
+                      style={{
+                        color: "#6c757d",
+                        marginRight: "8px",
+                        fontSize: "12px",
+                      }}
+                    />
                     <a
                       href={`/teaching-materials/${theLesson.course
                         .toLowerCase()
@@ -1053,10 +1037,9 @@ function EditModal({
                         .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
                       target="_blank"
                       style={{
-                        marginLeft: "8px",
                         color: partnerColor(),
                         textDecoration: "none",
-                        fontSize: "14px",
+                        fontSize: "13px",
                       }}
                       onMouseOver={(e) =>
                         (e.currentTarget.style.textDecoration = "underline")
@@ -1065,7 +1048,8 @@ function EditModal({
                         (e.currentTarget.style.textDecoration = "none")
                       }
                     >
-                      {theLesson.title} | {theLesson.course}
+                      {truncateString(theLesson.title, 12)} |{" "}
+                      {truncateString(theLesson.course, 12)}
                     </a>
                   </div>
                 )}
@@ -1077,7 +1061,7 @@ function EditModal({
                   style={{
                     backgroundColor: "#fff",
                     padding: "16px",
-                    borderRadius: "8px",
+                    borderRadius: 4,
                     border: "1px solid #e9ecef",
                     borderLeft: `4px solid ${partnerColor()}`,
                     marginBottom: "1.5rem",
@@ -1114,7 +1098,7 @@ function EditModal({
                   style={{
                     backgroundColor: "#fff",
                     padding: "16px",
-                    borderRadius: "8px",
+                    borderRadius: 4,
                     border: "1px solid #e9ecef",
                     borderLeft: `4px solid #ffc107`,
                     marginBottom: "1.5rem",
@@ -1170,7 +1154,7 @@ function EditModal({
                         justifyContent: "space-between",
                         padding: "12px 16px",
                         backgroundColor: "#f8f9fa",
-                        borderRadius: "8px",
+                        borderRadius: 4,
                         border: "1px solid #e9ecef",
                         cursor: "pointer",
                       }}
@@ -1193,7 +1177,7 @@ function EditModal({
                           marginTop: "8px",
                           padding: "12px",
                           backgroundColor: "#fff",
-                          borderRadius: "8px",
+                          borderRadius: 4,
                           border: "1px solid #e9ecef",
                         }}
                       >
@@ -1237,7 +1221,7 @@ function EditModal({
                               style={{
                                 width: "8px",
                                 height: "8px",
-                                borderRadius: "50%",
+                                borderRadius: 4,
                                 backgroundColor: "#28a745",
                               }}
                             />
@@ -1251,26 +1235,13 @@ function EditModal({
               {/* Vídeo da aula - Última seção */}
               {video && (
                 <div style={{ marginBottom: "1rem" }}>
-                  <h6
-                    style={{
-                      margin: "0 0 12px 0",
-                      color: partnerColor(),
-                      fontWeight: "600",
-                      fontSize: "14px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.5px",
-                      textAlign: "center",
-                    }}
-                  >
-                    Vídeo da Aula
-                  </h6>
                   <div
                     style={{
                       position: "relative",
                       paddingBottom: "56.25%",
                       height: 0,
                       overflow: "hidden",
-                      borderRadius: "8px",
+                      borderRadius: 4,
                       backgroundColor: "#000",
                       boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
                     }}
@@ -1284,7 +1255,7 @@ function EditModal({
                         width: "100%",
                         height: "100%",
                         border: "none",
-                        borderRadius: "8px",
+                        borderRadius: 4,
                       }}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -1302,7 +1273,7 @@ function EditModal({
               style={{
                 backgroundColor: "#f8f9fa",
                 padding: "1rem",
-                borderRadius: "4px",
+                borderRadius: 4,
                 border: "1px solid #dee2e6",
                 marginTop: "1rem",
                 textAlign: "center",
@@ -1324,7 +1295,7 @@ function EditModal({
                     color: "white",
                     border: "none",
                     padding: "8px 16px",
-                    borderRadius: "4px",
+                    borderRadius: 4,
                     cursor: "pointer",
                   }}
                 >
@@ -1337,7 +1308,7 @@ function EditModal({
                     color: "white",
                     border: "none",
                     padding: "8px 16px",
-                    borderRadius: "4px",
+                    borderRadius: 4,
                     cursor: "pointer",
                   }}
                 >
@@ -1353,34 +1324,39 @@ function EditModal({
               style={{
                 backgroundColor: "#f8f9fa",
                 padding: "1rem",
-                borderRadius: "4px",
+                borderRadius: 4,
                 border: "1px solid #dee2e6",
                 marginTop: "1rem",
               }}
             >
               <h4>Editar Evento</h4>
-
               {/* Date and Time */}
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Data:</label>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
+              <div
+                style={{
+                  display: "grid",
+                  gap: "1rem",
+                  gridTemplateColumns: "1fr 1fr",
+                }}
+              >
+                <div style={{ marginBottom: "1rem" }}>
+                  <label>Data:</label>
+                  <input
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                  />
+                </div>
+                <div style={{ marginBottom: "1rem" }}>
+                  <label>Horário:</label>
+                  <input
+                    type="time"
+                    value={theTime}
+                    onChange={(e) => setTheTime(e.target.value)}
+                    style={{ width: "100%", padding: "4px", marginTop: "4px" }}
+                  />
+                </div>
               </div>
-
-              <div style={{ marginBottom: "1rem" }}>
-                <label>Horário:</label>
-                <input
-                  type="time"
-                  value={theTime}
-                  onChange={(e) => setTheTime(e.target.value)}
-                  style={{ width: "100%", padding: "4px", marginTop: "4px" }}
-                />
-              </div>
-
               {/* Link */}
               <div style={{ marginBottom: "1rem" }}>
                 <label>Link da aula:</label>
@@ -1444,31 +1420,28 @@ function EditModal({
                   ))}
                 </select>
               </div>
-
               {/* Description */}
               <div style={{ marginBottom: "1rem" }}>
                 <label>Descrição:</label>
-                <textarea
+                <input
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  rows={4}
                   style={{ width: "100%", padding: "4px", marginTop: "4px" }}
                 />
               </div>
-
               {/* Homework */}
               <div style={{ marginBottom: "1rem" }}>
                 <label>Homework:</label>
                 <HTMLEditor
-                  initialContent={homework}
+                  initialContent={"."}
                   onChange={handleHomeworkChange}
                 />
               </div>
-              <div
+              {/* <div
                 style={{
                   backgroundColor: "#f8f9fa",
                   padding: "0.5rem",
-                  borderRadius: "4px",
+                  borderRadius: 4,
                   border: "1px solid #dee2e6",
                 }}
               >
@@ -1500,7 +1473,7 @@ function EditModal({
                       : "Vídeo"}
                   </a>
                 </div>
-              </div>
+              </div> */}
               {/* Duration */}
               <div style={{ marginBottom: "1rem" }}>
                 <label>Duração (minutos):</label>
@@ -1513,7 +1486,28 @@ function EditModal({
               </div>
 
               {/* Save Button */}
-              <div style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <button
+                  onClick={() => setShowEditForm(false)}
+                  style={{
+                    backgroundColor: "#6c757d",
+                    color: "white",
+                    border: "none",
+                    padding: "10px 20px",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  Cancelar
+                </button>
                 <button
                   onClick={editOneEvent}
                   disabled={loadingInfo}
@@ -1522,25 +1516,12 @@ function EditModal({
                     color: "white",
                     border: "none",
                     padding: "10px 20px",
-                    borderRadius: "4px",
+                    borderRadius: 4,
                     cursor: "pointer",
                     marginRight: "10px",
                   }}
                 >
                   {loadingInfo ? "Salvando..." : "Salvar"}
-                </button>
-                <button
-                  onClick={() => setShowEditForm(false)}
-                  style={{
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    border: "none",
-                    padding: "10px 20px",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
-                  Cancelar
                 </button>
               </div>
             </div>
