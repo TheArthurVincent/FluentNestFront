@@ -78,26 +78,26 @@ export function HomePage({ headers }: HeadersProps) {
     }
 
     // Configurar interceptor do axios para capturar erros de autenticação
-    const responseInterceptor = axios.interceptors.response.use(
-      (response) => response,
-      (error) => {
-        if (
-          error.response &&
-          (error.response.status === 401 || error.response.status === 403)
-        ) {
-          console.log(
-            "Erro de autorização detectado, token possivelmente inválido"
-          );
-          onLoggOutToken();
-        }
-        return Promise.reject(error);
-      }
-    );
+    // const responseInterceptor = axios.interceptors.response.use(
+    //   (response) => response,
+    //   (error) => {
+    //     if (
+    //       error.response &&
+    //       (error.response.status === 401 || error.response.status === 403)
+    //     ) {
+    //       console.log(
+    //         "Erro de autorização detectado, token possivelmente inválido"
+    //       );
+    //       onLoggOutToken();
+    //     }
+    //     return Promise.reject(error);
+    //   }
+    // );
 
     // Cleanup do interceptor quando o componente for desmontado
-    return () => {
-      axios.interceptors.response.eject(responseInterceptor);
-    };
+    // return () => {
+    //   axios.interceptors.response.eject(responseInterceptor);
+    // };
   }, []);
 
   var seeFee = async () => {
