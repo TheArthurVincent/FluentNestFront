@@ -3338,7 +3338,8 @@ export default function EnglishClassCourse2({
           <div
             style={{
               display: "grid",
-              zIndex: 10,
+              zIndex: 2,
+              maxWidth: "800px",
               position: "sticky",
               top: "2.8rem",
               boxSizing: "border-box",
