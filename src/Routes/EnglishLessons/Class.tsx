@@ -3339,7 +3339,6 @@ export default function EnglishClassCourse2({
             style={{
               display: "grid",
               zIndex: 2,
-              maxWidth: "800px",
               position: "sticky",
               top: "2.8rem",
               boxSizing: "border-box",
@@ -3352,7 +3351,7 @@ export default function EnglishClassCourse2({
                 justifyContent: "space-between",
                 margin: "0.5rem 0",
                 marginBottom: "0",
-                maxWidth: "98%",
+                // maxWidth: "98%",
                 boxSizing: "border-box",
                 padding: "4px 8px",
                 background: "rgba(255,255,255)",
@@ -3629,7 +3628,7 @@ export default function EnglishClassCourse2({
                     flexWrap: "nowrap",
                     alignItems: "center",
                     overflowX: "auto",
-                    width: "95%", // ⬅️ antes estava "99%"
+                    // width: "95%", // ⬅️ antes estava "99%"
                     minWidth: 0, // ⬅️ permite encolher e criar overflow
                     gap: "5px",
                     padding: "2px",
