@@ -28,7 +28,12 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function optionLabel(img: ImageItem) {
-  return (img?.english || img?.portuguese || img?.text || "").trim();
+  const label = (img?.english || img?.portuguese || img?.text || "").trim();
+  return label;
+}
+
+function hasValidLabel(img: ImageItem) {
+  return optionLabel(img).length > 0;
 }
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -97,7 +102,10 @@ export default function ImageToWordExercise({
 }) {
   const merged = { ...defaultLabels, ...(labels || {}) };
   const safeImgs = useMemo(
-    () => (Array.isArray(images) ? images.filter((i) => i?.img) : []),
+    () =>
+      Array.isArray(images)
+        ? images.filter((i) => i?.img && hasValidLabel(i))
+        : [],
     [images]
   );
 
@@ -105,6 +113,17 @@ export default function ImageToWordExercise({
     return (
       <Card>
         <div style={{ fontSize: 14, color: "#6B7280" }}>{merged.noImages}</div>
+      </Card>
+    );
+  }
+
+  // Verificar se temos pelo menos 3 imagens para fazer um exercício válido
+  if (safeImgs.length < 3) {
+    return (
+      <Card>
+        <div style={{ fontSize: 14, color: "#6B7280" }}>
+          Necessário pelo menos 3 imagens com texto válido para este exercício.
+        </div>
       </Card>
     );
   }
@@ -118,6 +137,23 @@ export default function ImageToWordExercise({
   const [earnedPoints, setEarnedPoints] = useState(0); // opcional (acumula)
 
   const current = pool[index];
+
+  // Validação adicional: verificar se a imagem atual tem label válido
+  if (!current || !hasValidLabel(current)) {
+    console.error(
+      "ImageToWordExercise: Imagem atual sem texto válido",
+      current
+    );
+    return (
+      <Card>
+        <div style={{ fontSize: 14, color: "#EF4444" }}>
+          Erro: Imagem sem texto válido detectada. Por favor, verifique os dados
+          do exercício.
+        </div>
+      </Card>
+    );
+  }
+
   function resetExercise() {
     setIndex(0);
     setAnsweredIndex(null);
@@ -126,14 +162,63 @@ export default function ImageToWordExercise({
   }
 
   const options = useMemo(() => {
-    const others = shuffle(pool.filter((_, idx) => idx !== index)).slice(0, 2);
+    // Garantir que temos pelo menos 3 imagens válidas para fazer o exercício
+    if (pool.length < 3) {
+      console.warn(
+        "ImageToWordExercise: Menos de 3 imagens válidas disponíveis"
+      );
+      return [current];
+    }
+
+    // Filtrar outras opções que tenham labels válidos e diferentes da atual
+    const currentLabel = optionLabel(current);
+    const others = shuffle(
+      pool.filter((img, idx) => {
+        const isNotCurrent = idx !== index;
+        const hasDifferentLabel = optionLabel(img) !== currentLabel;
+        const hasLabel = hasValidLabel(img);
+        return isNotCurrent && hasDifferentLabel && hasLabel;
+      })
+    ).slice(0, 2);
+
+    // Se não temos opções suficientes, adicionar mais da pool geral
+    if (others.length < 2 && pool.length >= 3) {
+      const remaining = pool.filter(
+        (_, idx) => idx !== index && !others.includes(pool[idx])
+      );
+      others.push(...remaining.slice(0, 2 - others.length));
+    }
+
     return shuffle([current, ...others]);
-  }, [index, pool]);
+  }, [index, pool, current]);
 
   const correctIdx = useMemo(
     () => options.findIndex((o) => o === current),
     [options, current]
   );
+
+  // Validação final: verificar se todas as opções têm labels válidos
+  const hasInvalidOptions = options.some((opt) => !hasValidLabel(opt));
+
+  if (hasInvalidOptions) {
+    console.error(
+      "ImageToWordExercise: Opções com labels inválidos detectadas",
+      options
+    );
+    return (
+      <Card>
+        <div style={{ fontSize: 14, color: "#EF4444" }}>
+          Erro: Opções inválidas detectadas. Pulando para próximo exercício...
+        </div>
+        <button
+          onClick={() => onNext?.()}
+          style={{ marginTop: 10, padding: "8px 16px", borderRadius: 4 }}
+        >
+          Próximo
+        </button>
+      </Card>
+    );
+  }
 
   const hasAnswered = answeredIndex !== null;
   const isCorrect = hasAnswered && answeredIndex === correctIdx;
