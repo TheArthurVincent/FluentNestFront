@@ -10,18 +10,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   // </React.StrictMode>
 );
 
-// Register Service Worker for PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('ServiceWorker registration successful:', registration.scope);
-      })
-      .catch((error) => {
-        console.log('ServiceWorker registration failed:', error);
-      });
-  });
-}
+// NÃO registrar Service Worker manual - deixar VitePWA gerenciar
+// O VitePWA já está configurado no vite.config.js e gerencia automaticamente
 
 // Inicializar OneSignal após o carregamento da página
 if (typeof window !== 'undefined') {

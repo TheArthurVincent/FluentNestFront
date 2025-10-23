@@ -1,51 +1,42 @@
 import OneSignal from 'react-onesignal';
 
 // Configuração do OneSignal
-const ONESIGNAL_APP_ID = 'e8118605-2b3d-470c-b53b-999e6bfd5ecf'; // Substituir pelo seu App ID do OneSignal
+const ONESIGNAL_APP_ID = "ac15da54-4225-4872-940a-3fb0b8d37d62";
 
 export const initializeOneSignal = async () => {
   try {
     await OneSignal.init({
       appId: ONESIGNAL_APP_ID,
-      allowLocalhostAsSecureOrigin: true, // Para desenvolvimento local
+      allowLocalhostAsSecureOrigin: true,
 
-      // Desabilitar botão padrão (vamos usar nosso componente customizado)
       notifyButton: {
         enable: false,
       },
 
-      // Mensagem de boas-vindas após inscrição
       welcomeNotification: {
         title: "Bem-vindo ao ARVIN! 🎉",
         message: "Você receberá notificações sobre novas aulas e conteúdos exclusivos"
       },
 
-      // Configuração do prompt nativo
       promptOptions: {
         slidedown: {
-          enabled: false, // Desabilitar, usaremos nosso componente customizado
+          enabled: false,
           actionMessage: "Quer receber notificações sobre novas aulas e conteúdos?",
           acceptButtonText: "Sim, quero!",
           cancelButtonText: "Agora não",
         }
-      },
-
-      // Service Worker do OneSignal
-      serviceWorkerParam: {
-        scope: '/'
-      },
-      serviceWorkerPath: 'OneSignalSDKWorker.js'
+      }
     });
 
     console.log('✅ OneSignal inicializado com sucesso!');
 
     // Evento quando usuário se inscreve
-    OneSignal.on('subscriptionChange', (isSubscribed) => {
-      console.log('Status de inscrição mudou:', isSubscribed);
+    OneSignal.User.PushSubscription.addEventListener('change', (event) => {
+      console.log('Status de inscrição mudou:', event);
     });
 
     // Evento quando notificação é exibida
-    OneSignal.on('notificationDisplay', (event) => {
+    OneSignal.Notifications.addEventListener('foregroundWillDisplay', (event) => {
       console.log('Notificação exibida:', event);
     });
 
@@ -54,12 +45,12 @@ export const initializeOneSignal = async () => {
   }
 };
 
-// Serviço com funções úteis do OneSignal
+// Serviço com funções úteis do OneSignal (atualizado para nova API)
 export const OneSignalService = {
   // Obter ID do usuário no OneSignal
   getUserId: async () => {
     try {
-      const userId = await OneSignal.getUserId();
+      const userId = await OneSignal.User.PushSubscription.id;
       return userId;
     } catch (error) {
       console.error('Erro ao obter user ID:', error);
@@ -70,8 +61,8 @@ export const OneSignalService = {
   // Verificar se está inscrito para notificações
   isSubscribed: async () => {
     try {
-      const isPushEnabled = await OneSignal.isPushNotificationsEnabled();
-      return isPushEnabled;
+      const permission = await OneSignal.Notifications.permission;
+      return permission === true || permission === 'granted';
     } catch (error) {
       console.error('Erro ao verificar inscrição:', error);
       return false;
@@ -81,8 +72,8 @@ export const OneSignalService = {
   // Solicitar permissão para notificações
   requestPermission: async () => {
     try {
-      await OneSignal.registerForPushNotifications();
-      return true;
+      const result = await OneSignal.Notifications.requestPermission();
+      return result === true || result === 'granted';
     } catch (error) {
       console.error('Erro ao solicitar permissão:', error);
       return false;
@@ -92,7 +83,7 @@ export const OneSignalService = {
   // Adicionar tags ao usuário (para segmentação)
   setTags: async (tags) => {
     try {
-      await OneSignal.sendTags(tags);
+      await OneSignal.User.addTags(tags);
       console.log('Tags adicionadas:', tags);
     } catch (error) {
       console.error('Erro ao adicionar tags:', error);
@@ -102,7 +93,7 @@ export const OneSignalService = {
   // Remover tags do usuário
   deleteTags: async (tagKeys) => {
     try {
-      await OneSignal.deleteTags(tagKeys);
+      await OneSignal.User.removeTags(tagKeys);
       console.log('Tags removidas:', tagKeys);
     } catch (error) {
       console.error('Erro ao remover tags:', error);
@@ -112,7 +103,7 @@ export const OneSignalService = {
   // Associar ID externo do usuário (seu sistema)
   setExternalUserId: async (userId) => {
     try {
-      await OneSignal.setExternalUserId(userId);
+      await OneSignal.login(userId);
       console.log('External User ID configurado:', userId);
     } catch (error) {
       console.error('Erro ao configurar external user ID:', error);
@@ -122,7 +113,7 @@ export const OneSignalService = {
   // Remover ID externo
   removeExternalUserId: async () => {
     try {
-      await OneSignal.removeExternalUserId();
+      await OneSignal.logout();
       console.log('External User ID removido');
     } catch (error) {
       console.error('Erro ao remover external user ID:', error);
@@ -132,7 +123,7 @@ export const OneSignalService = {
   // Cancelar inscrição de notificações
   unsubscribe: async () => {
     try {
-      await OneSignal.setSubscription(false);
+      await OneSignal.User.PushSubscription.optOut();
       console.log('Inscrição cancelada');
       return true;
     } catch (error) {
@@ -144,7 +135,7 @@ export const OneSignalService = {
   // Reinscrever para notificações
   resubscribe: async () => {
     try {
-      await OneSignal.setSubscription(true);
+      await OneSignal.User.PushSubscription.optIn();
       console.log('Reinscrito com sucesso');
       return true;
     } catch (error) {
@@ -156,8 +147,10 @@ export const OneSignalService = {
   // Obter estado de permissão
   getNotificationPermission: async () => {
     try {
-      const permission = await OneSignal.getNotificationPermission();
-      return permission; // 'default', 'granted', 'denied'
+      const permission = await OneSignal.Notifications.permission;
+      if (permission === true || permission === 'granted') return 'granted';
+      if (permission === false || permission === 'denied') return 'denied';
+      return 'default';
     } catch (error) {
       console.error('Erro ao obter permissão:', error);
       return 'default';
@@ -168,9 +161,9 @@ export const OneSignalService = {
   sendOutcome: async (outcomeName, value = null) => {
     try {
       if (value) {
-        await OneSignal.sendOutcomeWithValue(outcomeName, value);
+        await OneSignal.Session.sendOutcome(outcomeName, value);
       } else {
-        await OneSignal.sendOutcome(outcomeName);
+        await OneSignal.Session.sendOutcome(outcomeName);
       }
       console.log('Outcome enviado:', outcomeName);
     } catch (error) {
@@ -181,7 +174,7 @@ export const OneSignalService = {
   // Abrir prompt padrão do OneSignal (slidedown)
   showSlidedownPrompt: async () => {
     try {
-      await OneSignal.showSlidedownPrompt();
+      await OneSignal.Slidedown.promptPush();
     } catch (error) {
       console.error('Erro ao mostrar slidedown:', error);
     }
@@ -189,4 +182,3 @@ export const OneSignalService = {
 };
 
 export default OneSignalService;
-

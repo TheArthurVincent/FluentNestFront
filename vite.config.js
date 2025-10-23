@@ -1,9 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from 'vite-plugin-pwa';
+
 export default defineConfig({
   server:{
-    allowHosts: [
+    allowedHosts: [
       "arvin.rafascripts.dev.br"
     ]
   },
@@ -74,12 +75,53 @@ export default defineConfig({
         workbox: {
           cleanupOutdatedCaches: true,
           sourcemap: true,
+
+          // NÃO cachear requisições do OneSignal e APIs
+          navigateFallbackDenylist: [/^\/api/, /onesignal/],
+          runtimeCaching: [
+            {
+              // Cachear assets estáticos
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: {
+                  maxEntries: 10,
+                  maxAgeSeconds: 60 * 60 * 24 * 365 // 1 ano
+                },
+                cacheableResponse: {
+                  statuses: [0, 200]
+                }
+              }
+            },
+            {
+              // NÃO cachear OneSignal
+              urlPattern: /onesignal\.com/i,
+              handler: 'NetworkOnly'
+            },
+            {
+              // NÃO cachear APIs
+              urlPattern: /\/api\//i,
+              handler: 'NetworkOnly'
+            }
+          ],
+
           globPatterns: ['**/*.{js,css,html,png,svg,ico,jpg,jpeg,json}'],
+
+          // Excluir arquivos do OneSignal do cache do Workbox
+          globIgnores: ['**/OneSignalSDK*.js'],
+
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5 MB
         },
         devOptions: {
           enabled: true
-        }
+        },
+
+        // Registrar automaticamente o SW
+        registerType: 'autoUpdate',
+
+        // Desabilitar injeção do registro do SW (vamos fazer manualmente se necessário)
+        injectRegister: 'auto'
       })
   ],
 });

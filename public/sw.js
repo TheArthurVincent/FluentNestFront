@@ -25,6 +25,23 @@ self.addEventListener('install', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+  const url = new URL(event.request.url);
+
+  // NÃO interceptar requisições do OneSignal
+  if (url.hostname.includes('onesignal.com') ||
+      url.pathname.includes('OneSignalSDK') ||
+      url.pathname.includes('/push/')) {
+    return; // Deixar OneSignal gerenciar suas próprias requisições
+  }
+
+  // NÃO interceptar requisições de API/backend (login, etc)
+  if (event.request.method !== 'GET' ||
+      url.pathname.includes('/api/') ||
+      url.pathname.includes('login') ||
+      url.pathname.includes('auth')) {
+    return; // Deixar passar direto sem cache
+  }
+
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
@@ -32,6 +49,7 @@ self.addEventListener('fetch', (event) => {
         if (response) {
           return response;
         }
+
         return fetch(event.request).then(
           (response) => {
             // Check if valid response
@@ -49,7 +67,10 @@ self.addEventListener('fetch', (event) => {
 
             return response;
           }
-        );
+        ).catch(() => {
+          // Se falhar, tentar retornar do cache mesmo sendo diferente
+          return caches.match('/index.html');
+        });
       })
   );
 });
@@ -71,3 +92,30 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
+// Suporte para notificações push (integração com OneSignal)
+self.addEventListener('push', (event) => {
+  console.log('Push notification recebida:', event);
+  // Deixar OneSignal gerenciar as notificações
+});
+
+self.addEventListener('notificationclick', (event) => {
+  console.log('Notificação clicada:', event);
+  event.notification.close();
+
+  // Abrir ou focar na janela do app
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Se já tiver uma janela aberta, focar nela
+        for (let client of clientList) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            return client.focus();
+          }
+        }
+        // Senão, abrir nova janela
+        if (clients.openWindow) {
+          return clients.openWindow(event.notification.data?.url || '/');
+        }
+      })
+  );
+});

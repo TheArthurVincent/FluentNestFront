@@ -11,6 +11,7 @@ import { Alert, CircularProgress, Grid, TextField } from "@mui/material";
 import Helmets from "../../Resources/Helmets";
 import { NavLink } from "react-router-dom";
 import { isArvin, isLocalHost } from "../../App";
+import { handleLoginSuccess } from "../../services/oneSignalLoginIntegration";
 
 export function Login() {
   const [email, setEmail] = useState<string>("");
@@ -49,6 +50,10 @@ export function Login() {
       localStorage.setItem("notifications", JSON.stringify(notifications));
       localStorage.setItem("loggedIn", JSON.stringify(loggedIn));
       localStorage.setItem("whiteLabel", JSON.stringify(whiteLabel));
+
+      //Get sub domain
+      const subDomain = window.location.hostname.split(".")[0];
+      await handleLoginSuccess(loggedIn, subDomain);
 
       setButton("Sucesso");
       window.location.assign("/");
