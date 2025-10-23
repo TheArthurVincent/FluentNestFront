@@ -54,6 +54,7 @@ import SubscriptionExpired from "./Routes/SubscriptionExpired";
 import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTeacherAsaas";
 import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinLandingPageNew";
 import InstallPWA from "./Components/InstallPWA";
+import NotificationManager from "./Components/NotificationManager";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -350,6 +351,7 @@ function App() {
           })}
         </Routes>
         <InstallPWA />
+        <NotificationManager />
       </Router>
     </UserProvider>
   );
