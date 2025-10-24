@@ -267,6 +267,7 @@ export function FindStudent({
       notifyAlert("Aluno excluído");
       fetchStudents();
       handleSeeModal();
+      window.location.reload();
     } catch (error) {
       notifyAlert(error);
 

@@ -135,7 +135,7 @@ export function Adm({ headers }: HeadersProps) {
 
   return (
     <RouteDiv>
-      <Helmets text="Adm" />
+      <Helmets text="Administrativo" />
       <TabContext value={value}>
         <span className="no-print">
           <div
