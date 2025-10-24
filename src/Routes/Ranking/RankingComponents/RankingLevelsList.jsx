@@ -215,10 +215,13 @@ export const levels = () => {
       flashcards25Reviews: 450,
       homeworkAssignmentsDone: 80,
       textcolor: "#54bf08",
-      background: "https://ik.imagekit.io/vjz75qw96/assets/assets_for_classes/Thumbs%20de%20aulas.jpg?updatedAt=1703950987210",
+      background:
+        "https://ik.imagekit.io/vjz75qw96/assets/assets_for_classes/Thumbs%20de%20aulas.jpg?updatedAt=1703950987210",
       text: "loading",
-      image: "https://ik.imagekit.io/vjz75qw96/assets/pngs/supreme.png?updatedAt=1715899271630",
-      image2: "https://ik.imagekit.io/vjz75qw96/assets/pngs/1.png?updatedAt=1715899265785",
+      image:
+        "https://ik.imagekit.io/vjz75qw96/assets/pngs/supreme.png?updatedAt=1715899271630",
+      image2:
+        "https://ik.imagekit.io/vjz75qw96/assets/pngs/1.png?updatedAt=1715899265785",
     },
   ];
 };
