@@ -720,6 +720,7 @@ export function FinancialResources({ headers, id, plan }) {
       notifyAlert("Aluno excluído");
       fetchStudents();
       handleSeeModal();
+      window.location.reload();
     } catch (error) {
       notifyAlert(error);
       handleSeeModal();

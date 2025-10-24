@@ -270,7 +270,6 @@ export function FindStudent({
       window.location.reload();
     } catch (error) {
       notifyAlert(error);
-
       handleSeeModal();
       console.error(error);
     }

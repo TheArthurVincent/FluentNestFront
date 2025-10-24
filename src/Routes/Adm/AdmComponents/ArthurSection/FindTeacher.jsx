@@ -260,6 +260,7 @@ export function FindTeacher({ headers, id, plan }) {
       notifyAlert("Aluno excluído");
       fetchStudents();
       handleSeeModal();
+      window.location.reload();
     } catch (error) {
       notifyAlert(error);
 
