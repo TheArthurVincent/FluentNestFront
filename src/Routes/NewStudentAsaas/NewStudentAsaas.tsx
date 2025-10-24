@@ -3,11 +3,8 @@ import axios from "axios";
 import React from "react";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { partnerColor } from "../../Styles/Styles";
 import { HThree } from "../MyClasses/MyClasses.Styled";
-import { TextField, Grid, CircularProgress, Alert } from "@mui/material";
-import { IFrameAsaas } from "../HomePage/Blog.Styled";
-import Helmets from "../../Resources/Helmets";
+import { TextField, Grid, CircularProgress } from "@mui/material";
 
 export const generateUsername = (
   name: string,
