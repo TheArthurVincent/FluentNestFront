@@ -161,7 +161,16 @@ function LandingPage() {
       </section>
       {/* Benefícios */}
       <section className="benefits-section thesection-2">
-        <h2 className="section-title">Por que aprender conosco?</h2>
+        <p
+          style={{
+            marginBottom: "1rem",
+            fontSize: "24px",
+            fontWeight: 600,
+            color: "#fff",
+          }}
+        >
+          Por que aprender conosco?
+        </p>
         <div className="benefits-cards">
           {videos.map((video: any, index: any) => (
             <div
@@ -205,7 +214,16 @@ function LandingPage() {
         </div>
       </section>
       <section className="benefits-section thesection-1">
-        <h2 className="section-title">💬 Veja o que dizem os alunos</h2>
+        <p
+          style={{
+            marginBottom: "1rem",
+            fontSize: "24px",
+            fontWeight: 600,
+            color: "#000",
+          }}
+        >
+          💬 Veja o que dizem os alunos
+        </p>
         <div className="testimonial-scroller">
           {[
             "https://www.youtube.com/embed/-eSmGb2CkPY",

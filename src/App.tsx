@@ -10,7 +10,7 @@ try {
       backgroundImage: "",
       logo: "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135",
       textGeneralFont: "Roboto",
-      textTitleFont: "Teko",
+      textTitleFont: "Roboto",
     };
     localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
   }

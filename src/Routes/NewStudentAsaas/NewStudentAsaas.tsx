@@ -61,53 +61,53 @@ function formatCPF(value: string): string {
 }
 
 export default function Subscription() {
-  const [form, setForm] = useState({
-    name: "",
-    promoCode: "",
-    lastname: "",
-    username: "",
-    phoneNumber: "",
-    doc: "",
-    email: "",
-    dateOfBirth: "",
-    address: "",
-    neighborhood: "",
-    city: "",
-    state: "",
-    addressNumber: "",
-    zip: "",
-    password: "",
-    confirmPassword: "",
-    creditCardNumber: "",
-    creditCardHolderName: "",
-    creditCardExpiryMonth: "",
-    creditCardExpiryYear: "",
-    creditCardCcv: "",
-  });
-
   // const [form, setForm] = useState({
   //   name: "",
-  //   promoCode: "123",
-  //   lastname: "Doe",
+  //   // promoCode: "",
+  //   lastname: "",
   //   username: "",
-  //   phoneNumber: "11930303030",
+  //   phoneNumber: "",
   //   doc: "",
-  //   email: "d@cristout.com",
-  //   dateOfBirth: "10/10/2025",
-  //   address: "Rua Nelia",
-  //   neighborhood: "Embu",
-  //   city: "Embu das Artes",
-  //   state: "SP",
-  //   addressNumber: "123",
-  //   zip: "06703794",
-  //   password: "123456789",
-  //   confirmPassword: "123456789",
-  //   creditCardNumber: "5397 2566 6440 3902",
-  //   creditCardHolderName: "John Doe",
-  //   creditCardExpiryMonth: "01",
-  //   creditCardExpiryYear: "2026",
-  //   creditCardCcv: "420",
+  //   email: "",
+  //   dateOfBirth: "",
+  //   address: "",
+  //   neighborhood: "",
+  //   city: "",
+  //   state: "",
+  //   addressNumber: "",
+  //   zip: "",
+  //   password: "",
+  //   confirmPassword: "",
+  //   creditCardNumber: "",
+  //   creditCardHolderName: "",
+  //   creditCardExpiryMonth: "",
+  //   creditCardExpiryYear: "",
+  //   creditCardCcv: "",
   // });
+
+  const [form, setForm] = useState({
+    name: "",
+    // promoCode: "123",
+    lastname: "Doe",
+    username: "",
+    phoneNumber: "11930303030",
+    doc: "",
+    email: "d@cristout.com",
+    dateOfBirth: "10/10/2025",
+    address: "Rua Nelia",
+    neighborhood: "Embu",
+    city: "Embu das Artes",
+    state: "SP",
+    addressNumber: "123",
+    zip: "06703794",
+    password: "123456789",
+    confirmPassword: "123456789",
+    creditCardNumber: "5397 2566 6440 3902",
+    creditCardHolderName: "John Doe",
+    creditCardExpiryMonth: "01",
+    creditCardExpiryYear: "2026",
+    creditCardCcv: "420",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"CREDIT_CARD" | "PIX">(
@@ -340,7 +340,6 @@ export default function Subscription() {
 
   return (
     <div style={styles.container}>
-      <Helmets text="Cadastre-se" />
       <form onSubmit={handleSubmit} style={styles.form}>
         <div style={styles.column}>
           {/* <div
@@ -352,7 +351,16 @@ export default function Subscription() {
           >
             <IFrameAsaas src="https://www.youtube.com/embed/qUiHhLsyiIw" />
           </div> */}
-          <h2>Inicie sua jornada!</h2>
+          <p
+            style={{
+              marginBottom: "1rem",
+              fontSize: "24px",
+              fontWeight: 600,
+              color: "#000",
+            }}
+          >
+            Inicie sua jornada!
+          </p>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -443,7 +451,7 @@ export default function Subscription() {
                 }}
               />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <TextField
                 label="Código de recomentação (opcional)"
                 name="promoCode"
@@ -472,8 +480,7 @@ export default function Subscription() {
                   },
                 }}
               />
-            </Grid>
-
+            </Grid> */}
             <Grid item xs={12}>
               <TextField
                 label="Número de telefone com DDD"
@@ -662,7 +669,16 @@ export default function Subscription() {
           </Grid>
         </div>
         <div style={styles.column}>
-          <h2>Plano</h2>
+          <p
+            style={{
+              marginBottom: "1rem",
+              fontSize: "24px",
+              fontWeight: 600,
+              color: "#000",
+            }}
+          >
+            Plano
+          </p>
           <div style={styles.planContainer}>
             <div
               style={{ ...styles.planCard, ...isSelected("monthly") }}
