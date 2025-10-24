@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import {
   backDomain,
-  isValidCPF,
   UpgradeGoldButton,
 } from "../../../../Resources/UniversalComponents";
 import { CircularProgress } from "@mui/material";
@@ -36,7 +35,6 @@ export function AllStudents({ headers, id, plan }) {
       lastname: "",
       email: "",
       dateOfBirth: "",
-      cpf: "",
       password: "",
       confirmPassword: "",
     });
@@ -48,11 +46,6 @@ export function AllStudents({ headers, id, plan }) {
 
     if (!name || !lastname || !email || !password || !confirmPassword) {
       notifyAlert("Preencha todos os campos obrigatórios!");
-      return false;
-    }
-
-    if (!isValidCPF(cpf)) {
-      notifyAlert("CPF inválido!");
       return false;
     }
 
@@ -76,7 +69,6 @@ export function AllStudents({ headers, id, plan }) {
       lastname: formData.lastname,
       email: formData.email,
       password: formData.password,
-      doc: formData.cpf,
       dateOfBirth: formData.dateOfBirth,
     };
 
@@ -117,7 +109,6 @@ export function AllStudents({ headers, id, plan }) {
     { label: "Sobrenome", type: "text", key: "lastname", required: true },
     { label: "E-mail", type: "email", key: "email", required: true },
     { label: "Data de Nascimento", type: "date", key: "dateOfBirth" },
-    { label: "CPF", type: "text", key: "cpf", required: true },
     { label: "Senha", type: "password", key: "password", required: true },
     {
       label: "Confirme a Senha",
@@ -145,10 +136,7 @@ export function AllStudents({ headers, id, plan }) {
         }}
       >
         <HOne> Novo Aluno</HOne>
-        <form
-          onSubmit={handleSubmit}
-          style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-        >
+        <form className="grid-2-1" onSubmit={handleSubmit}>
           {formFields.map(({ label, type, key, required }) => (
             <div key={key}>
               <label
@@ -168,19 +156,7 @@ export function AllStudents({ headers, id, plan }) {
                 value={formData[key]}
                 onChange={(e) => {
                   let value = e.target.value;
-                  if (key === "cpf") {
-                    value = value.replace(/\D/g, ""); // Remove tudo que não for número
-                  }
                   handleChange(key)({ target: { value } });
-                }}
-                onPaste={(e) => {
-                  if (key === "cpf") {
-                    e.preventDefault();
-                    const pasted = e.clipboardData
-                      .getData("Text")
-                      .replace(/\D/g, "");
-                    handleChange(key)({ target: { value: pasted } });
-                  }
                 }}
                 style={{
                   ...inputStyle,
@@ -196,7 +172,7 @@ export function AllStudents({ headers, id, plan }) {
               />
             </div>
           ))}
-
+          <div />
           <button
             type="submit"
             disabled={isLoading}

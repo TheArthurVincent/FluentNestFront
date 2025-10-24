@@ -664,6 +664,7 @@ li {
 .isMobileDisapearCalendar {
   display: flex;
 }
+
 .container-calendar {
   grid-template-columns: 1fr 4fr;
 }
@@ -672,9 +673,10 @@ li {
   .isMobileDisapearCalendar {
     display: none;
   }
+
   .container-calendar {
-  grid-template-columns: 1fr;
-}
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 750px) {
@@ -695,7 +697,26 @@ li {
   width: 90vw;
 }
 
+.grid-2-1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 95%;
+  margin: auto;
+}
+
+@media (max-width: 700px) {
+  .grid-2-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin: auto;
+    width: 95%;
+  }
+}
+
 @media (max-width: 550px) {
+
   .flex-grid {
     display: grid;
     grid-template-columns: 1fr;

@@ -138,7 +138,7 @@ const InstallPWA = () => {
       <div>
         <strong>Instalar ARVIN</strong>
         <p style={{ margin: '4px 0 0 0', fontSize: '14px' }}>
-          Instale o app para acesso rápido e offline
+          Instale o app para acesso rápido
         </p>
       </div>
       <div style={{ display: 'flex', gap: '12px' }}>
