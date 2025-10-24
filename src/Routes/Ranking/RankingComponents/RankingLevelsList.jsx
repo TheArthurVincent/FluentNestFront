@@ -16,8 +16,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/assets_for_classes/ASSETS%20AND%20LIABILITIES.jpg?updatedAt=1692919364512",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/white.png?updatedAt=1715899271696",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/1.png?updatedAt=1715899265785",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/1.png",
     },
     {
       level: 2,
@@ -34,8 +33,7 @@ export const levels = () => {
       totalScore: 10000,
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/yellow.png?updatedAt=1715899273407",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/2.png?updatedAt=1715899267032",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/2.png",
     },
     {
       level: 3,
@@ -52,8 +50,7 @@ export const levels = () => {
       totalScore: 22000,
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/blue.png?updatedAt=1715899268299",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/3.png?updatedAt=1715899266690",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/3.png",
     },
     {
       level: 4,
@@ -71,8 +68,7 @@ export const levels = () => {
       totalScore: 35000,
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/red.png?updatedAt=1715899270341",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/4.png?updatedAt=1715899266231",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/4.png",
     },
     {
       level: 5,
@@ -89,8 +85,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/green.png?updatedAt=1711540460421",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/green.png?updatedAt=1715899269178",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/5.png?updatedAt=1715899269573",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/5.png",
     },
     {
       level: 6,
@@ -107,8 +102,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/orange.png?updatedAt=1711540461559",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/orange.png?updatedAt=1715899269599",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/6.png?updatedAt=1715899267210",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/6.png",
     },
     {
       level: 7,
@@ -125,8 +119,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/purple.png?updatedAt=1711540461792",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/purple.png?updatedAt=1715899270084",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/7.png?updatedAt=1715899267116",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/7.png",
     },
     {
       level: 8,
@@ -143,8 +136,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/black.png?updatedAt=1711540461288",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/black.png?updatedAt=1715899272118",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/8.png?updatedAt=1715899266816",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/8.png",
     },
     {
       level: 9,
@@ -161,8 +153,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/black.png?updatedAt=1711540461288",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/bronze.png?updatedAt=1715902897571",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/9.png?updatedAt=1715899269542",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/9.png",
     },
     {
       level: 10,
@@ -179,8 +170,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/black.png?updatedAt=1711540461288",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/silver.png?updatedAt=1715902897080",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/10.png?updatedAt=1715899266753",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/10.png",
     },
     {
       level: 11,
@@ -197,8 +187,7 @@ export const levels = () => {
         "https://ik.imagekit.io/vjz75qw96/assets/bg/black.png?updatedAt=1711540461288",
       image:
         "https://ik.imagekit.io/vjz75qw96/assets/pngs/golden.png?updatedAt=1715902897585",
-      image2:
-        "https://ik.imagekit.io/vjz75qw96/assets/pngs/11.png?updatedAt=1715899268475",
+      image2: "https://ik.imagekit.io/vjz75qw96/assets/icons/levels/11.png",
     },
     {
       level: 12,
