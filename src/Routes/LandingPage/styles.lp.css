@@ -65,13 +65,10 @@ body {
 
 .thesection-2 {
   background-color: #222;
-
 }
-
 
 .thesection-2 p {
   color: #eee;
-
 }
 
 .thesection-3 {
@@ -211,7 +208,6 @@ body {
   border-radius: 4px;
   background-color: grey;
 }
-
 
 * {
   padding: 0;
@@ -376,7 +372,6 @@ h4 {
     max-width: 500px;
   }
 }
-
 
 /* ////////////////////// */
 .language-selector {
