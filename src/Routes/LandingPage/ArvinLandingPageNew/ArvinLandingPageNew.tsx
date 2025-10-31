@@ -1,14 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
-import {
-  Menu,
-  MenuItem,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  Box,
-} from "@mui/material";
-import { GlobeIcon, ListIcon } from "@phosphor-icons/react";
+import { ListIcon } from "@phosphor-icons/react";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -190,63 +182,91 @@ function ArvinLandingPageNew() {
             </span>
           </div>
         </div>
+        <div
+          style={{
+            maxWidth: 500,
+            margin: "0 auto",
+          }}
+        >
+          <section>
+            <div
+              style={{
+                fontWeight: 700,
+                fontStyle: "Bold",
+                fontSize: "36px",
+                lineHeight: "120%",
+                margin: "16px 24px",
+                letterSpacing: "-3%",
+                color: "#FFF",
+                textAlign: "center",
+              }}
+            >
+              Não existe outra plataforma tão completa para professores!
+            </div>
+            <div
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 400,
+                fontStyle: "Regular",
+                fontSize: "16px",
+                lineHeight: "150%",
+                color: "#90A3BF",
+                margin: "0px 24px 32px 24px",
+                letterSpacing: "-2%",
+                textAlign: "center",
+              }}
+            >
+              Conquiste mais alunos, tenha total controle da sua agenda e
+              transforme sua forma de ensinar com metodologias e ferramentas que
+              realmente funcionam.
+            </div>
+          </section>
+          <section
+            style={{
+              display: "grid",
+              gap: "16px",
+              padding: "24px",
+            }}
+          >
+            <button
+              style={{
+                color: "#FFF",
+                backgroundColor: "#ED5914",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontSize: "14px",
+                lineHeight: "150%",
+                letterSpacing: "-2%",
+                textAlign: "center",
+                borderRadius: "30px",
+                border: "none",
+                padding: "15.5px 0",
+              }}
+            >
+              Testar gratuitamente por 30 dias
+            </button>
+            <button
+              style={{
+                backgroundColor: "#1A202C",
+                color: "#C3D4E9",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontSize: "14px",
+                lineHeight: "150%",
+                letterSpacing: "-2%",
+                textAlign: "center",
+                borderRadius: "30px",
+                border: "none",
+                padding: "15.5px 0",
+              }}
+            >
+              Ver planos
+            </button>
+          </section>
+        </div>
       </div>
     </div>
   );
 }
 
 export default ArvinLandingPageNew;
-
-
-{
-  /* <IconButton
-              id="lang-selector-button"
-              aria-controls={menuOpen ? "lang-selector-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={menuOpen ? "true" : undefined}
-              onClick={handleButtonClick}
-              size="small"
-              sx={{
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "white",
-                gap: 1,
-                padding: "6px 10px",
-                borderRadius: "10px",
-              }}
-            >
-              <GlobeIcon size={18} />
-              <span style={{ fontSize: 12, letterSpacing: 0.5 }}>
-                {selectedLang.code.toUpperCase()}
-              </span>
-            </IconButton>
-            <Menu
-              id="lang-selector-menu"
-              anchorEl={menuAnchor}
-              open={menuOpen}
-              onClose={handleClose}
-              MenuListProps={{
-                "aria-labelledby": "lang-selector-button",
-                dense: true,
-              }}
-            >
-              {languages.map((lang) => (
-                <MenuItem
-                  key={lang.code}
-                  onClick={() => handleSelect(lang)}
-                  selected={selectedLang.code === lang.code}
-                >
-                  <ListItemIcon>
-                    <img
-                      src={lang.flag}
-                      alt={lang.label}
-                      style={{ width: 18, height: 12, borderRadius: 2 }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText>{lang.label}</ListItemText>
-                </MenuItem>
-              ))}
-            </Menu> */
-}
-{
-  /* Menu Hamburguer (placeholder) */
-}
