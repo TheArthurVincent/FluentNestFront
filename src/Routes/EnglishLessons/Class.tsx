@@ -3366,8 +3366,6 @@ export default function EnglishClassCourse2({
                   gap: "8px",
                 }}
               >
-                {(thePermissions === "superadmin" ||
-                  thePermissions === "teacher") && (
                   <button
                     title="Ver Quadro"
                     onClick={() => {
@@ -3409,7 +3407,6 @@ export default function EnglishClassCourse2({
                   >
                     Lousa
                   </button>
-                )}
                 <button
                   style={{
                     borderRadius: "4px",

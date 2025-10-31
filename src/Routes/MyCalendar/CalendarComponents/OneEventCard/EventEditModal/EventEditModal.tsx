@@ -1,11 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CircularProgress } from "@mui/material";
-import { Link } from "react-router-dom";
 import axios from "axios";
-import {
-  partnerColor,
-  textpartnerColorContrast,
-} from "../../../../../Styles/Styles";
+import { partnerColor } from "../../../../../Styles/Styles";
 import {
   backDomain,
   formatDateBr,

@@ -250,7 +250,14 @@ function MyCalendarNew({
   return (
     <>
       {headers ? (
-        <RouteDiv style={{ width: "96vw" }}>
+        <div
+          style={{
+            width: "98vw",
+            padding: "10px",
+            overflowX: "auto",
+            backgroundColor: "#fff",
+          }}
+        >
           <div>
             {/* Controles de Navegação */}
             <div
@@ -426,6 +433,7 @@ function MyCalendarNew({
                     })}
                   </div>
                 )}
+
                 {/* Ações do Professor (apenas na visualização de semana) */}
                 {authorizeOrNot && !showSingleEventView && (
                   <div
@@ -471,82 +479,75 @@ function MyCalendarNew({
                 <CircularProgress style={{ color: partnerColor() }} />
               </div>
             ) : (
-              <div
-                className={showSingleEventView ? "container-calendar" : ""}
-                style={{
-                  display: "grid",
-                  gap: "4px",
-                  height: showSingleEventView ? "75vh" : "auto",
-                }}
-              >
-                {/* Container do Calendário */}
-                <div
-                  className={
-                    showSingleEventView ? "isMobileDisapearCalendar" : ""
-                  }
-                  style={{
-                    flex: showSingleEventView ? "0 0 60%" : "1",
-                    minWidth: showSingleEventView ? "60%" : "auto",
-                  }}
-                >
+              <>
+                {/* VISUALIZAÇÃO SEMANA */}
+                {!showSingleEventView && (
                   <div
-                    ref={calendarRef}
-                    onScroll={() => setShouldScrollToToday(false)}
                     style={{
-                      display: "flex",
-                      gap: "8px",
-                      overflowX: showSingleEventView ? "hidden" : "auto",
-                      padding: showSingleEventView ? "0" : "16px 0",
-                      scrollbarWidth: "thin",
-                      scrollbarColor: `${partnerColor()} transparent`,
-                      justifyContent: showSingleEventView
-                        ? "flex-start"
-                        : "flex-start",
+                      display: "grid",
+                      gap: "4px",
                     }}
                   >
-                    {futureDates.map((date, index) => {
-                      const hj = new Date();
-                      const isToday =
-                        hj.getDate() === date.getDate() &&
-                        hj.getMonth() === date.getMonth() &&
-                        hj.getFullYear() === date.getFullYear();
+                    <div>
+                      <div
+                        ref={calendarRef}
+                        onScroll={() => setShouldScrollToToday(false)}
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          overflowX: "auto",
+                          padding: "16px 0",
+                          scrollbarWidth: "thin",
+                          scrollbarColor: `${partnerColor()} transparent`,
+                          justifyContent: "flex-start",
+                        }}
+                      >
+                        {futureDates.map((date, index) => {
+                          const hj = new Date();
+                          const isToday =
+                            hj.getDate() === date.getDate() &&
+                            hj.getMonth() === date.getMonth() &&
+                            hj.getFullYear() === date.getFullYear();
 
-                      return (
-                        <CardCalendar
-                          key={index}
-                          date={date}
-                          index={index}
-                          isToday={isToday}
-                          todayRef={isToday ? todayRef : undefined}
-                          todoList={todoList}
-                          events={events}
-                          onTodoClick={handleTodoClick}
-                          onEventClick={handleEventClick}
-                          headers={headers}
-                          thePermissions={thePermissions}
-                          myId={myId}
-                          setChange={setChange}
-                          change={change}
-                          alternateBoolean={alternateBoolean}
-                          setAlternateBoolean={setAlternateBoolean}
-                        />
-                      );
-                    })}
+                          return (
+                            <CardCalendar
+                              key={index}
+                              date={date}
+                              index={index}
+                              isToday={isToday}
+                              todayRef={isToday ? todayRef : undefined}
+                              todoList={todoList}
+                              events={events}
+                              onTodoClick={handleTodoClick}
+                              onEventClick={handleEventClick}
+                              headers={headers}
+                              thePermissions={thePermissions}
+                              myId={myId}
+                              setChange={setChange}
+                              change={change}
+                              alternateBoolean={alternateBoolean}
+                              setAlternateBoolean={setAlternateBoolean}
+                            />
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Container do Modal de Edição (apenas na visualização de evento único) */}
+                {/* VISUALIZAÇÃO SOMENTE DO EVENTO */}
                 {showSingleEventView && selectedEvent && (
                   <div
                     style={{
-                      flex: "0 0 40%",
-                      minWidth: "40%",
+                      width: "100%",
+                      maxWidth: 960,
+                      margin: "0 auto",
                       background: "#ffffff",
-                      borderRadius: 4,
+                      borderRadius: 8,
                       border: "1px solid #e1e5e9",
-                      padding: "8px",
+                      padding: 12,
                       overflow: "auto",
-                      maxHeight: "100vh",
+                      maxHeight: "80vh",
                     }}
                   >
                     <EventEditModal
@@ -557,7 +558,7 @@ function MyCalendarNew({
                       fetchStudents={fetchStudents}
                       change={change}
                       studentID={
-                        selectedEvent.student?._id || selectedEvent.student.id
+                        selectedEvent.student?._id || selectedEvent.student?.id
                       }
                       alternateBoolean={alternateBoolean}
                       setAlternateBoolean={setAlternateBoolean}
@@ -572,7 +573,7 @@ function MyCalendarNew({
                     />
                   </div>
                 )}
-              </div>
+              </>
             )}
           </div>
 
@@ -585,7 +586,7 @@ function MyCalendarNew({
             onEventCreated={handleEventCreated}
             initialDate={today.toISOString().split("T")[0]}
           />
-        </RouteDiv>
+        </div>
       ) : (
         <RouteSizeControlBox>
           {UniversalTexts.calendarModal.noLoggedUser}
