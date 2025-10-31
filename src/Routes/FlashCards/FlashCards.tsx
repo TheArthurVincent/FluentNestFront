@@ -103,10 +103,10 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
         />
       ),
     },
-    
+
     {
       title: UniversalTexts.add,
-      value: "4",
+      value: "2",
       adm: true,
       component: (
         <AddFlashCards
@@ -119,7 +119,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
     },
     {
       title: UniversalTexts.myCards,
-      value: "2",
+      value: "3",
       adm: false,
       component: (
         <AllCards headers={headers} selectedStudentId={getCurrentStudentId()} />
@@ -127,7 +127,7 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
     },
     {
       title: UniversalTexts.history,
-      value: "3",
+      value: "4",
       adm: false,
       component: (
         <FlashcardsHistory
@@ -232,12 +232,18 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
               "& .MuiTab-root": {
                 fontFamily: textTitleFont(),
                 color: partnerColor(),
+                padding: "0px",
+                fontSize: "12px",
               },
               "& .Mui-selected": {
                 color: partnerColor(),
+                padding: "0px",
+                fontSize: "12px",
               },
               "& .MuiTabs-indicator": {
                 backgroundColor: partnerColor(),
+                padding: "0px",
+                fontSize: "12px",
               },
             }}
           >

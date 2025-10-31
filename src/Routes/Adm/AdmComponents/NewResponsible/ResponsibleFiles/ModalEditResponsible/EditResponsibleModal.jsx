@@ -57,7 +57,6 @@ export function EditResponsibleModal({
         },
         { headers }
       );
-      console.log(response);
       setFlag((prev) => !prev);
       setSeeModal(false);
     } catch (err) {
@@ -74,7 +73,6 @@ export function EditResponsibleModal({
         `${backDomain}/api/v1/responsible/${theID}`,
         { headers }
       );
-      console.log(response);
       setFlag((prev) => !prev);
       setSeeModal(false);
     } catch (err) {

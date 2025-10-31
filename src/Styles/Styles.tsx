@@ -48,15 +48,17 @@ export const logoPartner = (): string => {
 };
 
 export const textGeneralFont = (): string => {
-  const wl = getWhiteLabel();
-  return wl.textGeneralFont || "Lato";
+  // const wl = getWhiteLabel();
+  // return wl.textGeneralFont || "Lato";
+  return "Plus Jakarta Sans";
 };
 
 export const textpartnerColorContrast = (): string => "#fff";
 
 export const textTitleFont = (): string => {
-  const wl = getWhiteLabel();
-  return wl.textTitleFont || "Roboto";
+  // const wl = getWhiteLabel();
+  // return wl.textTitleFont || "Roboto";
+  return "Plus Jakarta Sans";
 };
 
 // Cores fixas

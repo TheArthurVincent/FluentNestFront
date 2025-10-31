@@ -32,7 +32,7 @@ import EnglishCourses from "./EnglishLessons/Courses";
 import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
-import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
+// import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 import MyCalendar from "./MyCalendar/MyCalendar";
 import {
@@ -76,28 +76,6 @@ export function HomePage({ headers }: HeadersProps) {
       onLoggOut();
       return;
     }
-
-    // Configurar interceptor do axios para capturar erros de autenticação
-    // const responseInterceptor = axios.interceptors.response.use(
-    //   (response) => response,
-    //   (error) => {
-    //     if (
-    //       error.response &&
-    //       (error.response.status === 401 || error.response.status === 403)
-    //     ) {
-    //       console.log(
-    //         "Erro de autorização detectado, token possivelmente inválido"
-    //       );
-    //       onLoggOutToken();
-    //     }
-    //     return Promise.reject(error);
-    //   }
-    // );
-
-    // Cleanup do interceptor quando o componente for desmontado
-    // return () => {
-    //   axios.interceptors.response.eject(responseInterceptor);
-    // };
   }, []);
 
   var seeFee = async () => {
@@ -221,10 +199,10 @@ export function HomePage({ headers }: HeadersProps) {
       title: "My Classes",
       component: <MyClasses headers={headers} />,
     },
-    {
-      title: "Words of The Day",
-      component: <WordOfTheDayList />,
-    },
+    // {
+    //   title: "Words of The Day",
+    //   component: <WordOfTheDayList />,
+    // },
     {
       title: "Homework",
       levelcard: false,

@@ -48,11 +48,6 @@ function highlightDifferences(
           userWord || "(extra)"
         }</span>`
       );
-      console.log(
-        `<span style="color: red; font-weight: 400;">${
-          userWord || "(extra)"
-        }</span>`
-      );
     }
   }
 
@@ -200,7 +195,6 @@ const ListeningExerciseNew = ({
       const { permissions, id } = user
         ? JSON.parse(user)
         : { permissions: "", id: "" };
-      console.log(permissions, id);
       const selectedStudentID = localStorage.getItem("selectedStudentID") || "null";
       setMyPermissions(permissions);
       setSelectedStudentId(selectedStudentID || id);

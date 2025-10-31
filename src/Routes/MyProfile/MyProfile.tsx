@@ -16,7 +16,7 @@ import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
-import { isArthurVincent } from "../../App";
+// import { isArthurVincent } from "../../App";
 import { HOne } from "../../Resources/Components/RouteBox";
 const styles = {
   container: {
@@ -610,68 +610,6 @@ export function MyProfile({ headers }: HeadersProps) {
                 >
                   Informações Pessoais
                 </h2>
-
-                {isArthurVincent && (
-                  <div
-                    style={{
-                      backgroundColor: "#f8f9fa",
-                      padding: "16px",
-                      borderRadius: "4px",
-                      border: "1px solid #e9ecef",
-                      marginBottom: "20px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        flexWrap: "wrap",
-                        gap: "12px",
-                      }}
-                    >
-                      {user.tutoree && isArthurVincent && (
-                        <div>
-                          <span style={styles.profileLabel}>
-                            🎁 Código promocional
-                          </span>
-                          <p
-                            style={{
-                              margin: "4px 0 0 0",
-                              fontSize: "12px",
-                              color: "#6c757d",
-                            }}
-                          >
-                            Recomende a plataforma para ganhar{" "}
-                            <strong>20% de desconto</strong> nos 3 primeiros
-                            meses!
-                          </p>
-                        </div>
-                      )}
-                      <button
-                        onClick={copyToClipboard}
-                        style={{
-                          padding: "8px 16px",
-                          fontSize: "12px",
-                          fontWeight: "600",
-                          cursor: "pointer",
-                          border: "none",
-                          borderRadius: "4px",
-                          backgroundColor: partnerColor(),
-                          color: "#fff",
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        {user.username}
-                        {copied && (
-                          <span style={{ marginLeft: "8px", fontSize: "10px" }}>
-                            ✓ Copiado!
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                )}
                 <div>
                   {myProfileList.map((item, index) => (
                     <div key={index} style={styles.profileItem}>
@@ -696,7 +634,7 @@ export function MyProfile({ headers }: HeadersProps) {
                     </span>
                   </div>
 
-                  {new Date(user.limitCancelDate) > new Date() &&
+                  {/* {new Date(user.limitCancelDate) > new Date() &&
                   !user.subscriptionAsaas &&
                   !user.tutoree &&
                   isArthurVincent ? (
@@ -710,7 +648,7 @@ export function MyProfile({ headers }: HeadersProps) {
                           }
                           style={styles.button}
                         >
-                          💬 Solicitar Reembolso via WhatsApp
+                          💬 Falar  via WhatsApp
                         </button>
                       </div>
                     </div>
@@ -746,7 +684,7 @@ export function MyProfile({ headers }: HeadersProps) {
                         </div>
                       )}
                     </>
-                  )}
+                  )} */}
 
                   {showModal && (
                     <div

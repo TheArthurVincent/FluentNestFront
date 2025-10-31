@@ -257,7 +257,6 @@ export default function TeacherSubscription() {
         `${backDomain}/api/v1/cadastro-teacher`,
         payload
       );
-      console.log(response.data);
       if (paymentMethod === "PIX") {
         // Via PIX (fluxo fora do submit na sua UI, mas deixamos seguro)
         window.location.assign("/feenotuptodate");

@@ -83,7 +83,6 @@ function MyCalendarNew({
       });
       const res = response.data.groups;
       setGroupsList(res || []);
-      console.log(res, "Grupos buscados");
     } catch (error: any) {
       console.log(error, "Erro ao buscar estudantes e grupos");
     }
@@ -236,7 +235,6 @@ function MyCalendarNew({
   };
 
   const handleTodoClick = (todoId: string) => {
-    console.log("Todo clicked:", todoId);
     // TODO: Implementar modal de todo
   };
 

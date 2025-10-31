@@ -158,13 +158,6 @@ function NewRecurringEventCalendar({
 
   const { UniversalTexts } = useUserContext();
 
-  // Effect para debug quando as props mudam
-  useEffect(() => {
-    console.log("=== NewRecurringEventCalendar Props Changed ===");
-    console.log("studentsList:", studentsList);
-    console.log("groupsList:", groupsList);
-  }, [studentsList, groupsList]);
-
   // ----- utils -----
   const isTutoringExpiringWithinMonth = (tutoring: any) => {
     if (!tutoring.endDate) return false;
@@ -186,11 +179,6 @@ function NewRecurringEventCalendar({
   };
 
   const handleSeeModalOfTutorings = () => {
-    console.log("=== DEBUG NewRecurringEventCalendar ===");
-    console.log("studentsList:", studentsList);
-    console.log("groupsList:", groupsList);
-    console.log("studentsList length:", studentsList?.length);
-    console.log("groupsList length:", groupsList?.length);
     setAlternateBoolean(!alternateBoolean);
 
     setChange?.(!change);

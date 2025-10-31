@@ -263,7 +263,6 @@ export default function EnglishClassCourse2({
         setIsCompleted(false);
       }
       setheClass(clss);
-      console.log(clss._id);
       setLoading(false);
       setCommentsTrigger(true);
     } catch (error) {

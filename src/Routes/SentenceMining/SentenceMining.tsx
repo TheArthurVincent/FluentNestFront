@@ -613,17 +613,19 @@ const SentenceMining = ({
         </section>
       )}
       <span style={{ display: "flex", justifyContent: "right" }}>
-        <a
-          style={{
-            fontSize: "13px",
-            marginTop: "15px",
-            color: "#999",
-            textDecoration: "none",
-          }}
-          href="/flash-cards"
-        >
-          Veja os flashcards dos alunos
-        </a>
+        {!isArthurVincent && (
+          <a
+            style={{
+              fontSize: "13px",
+              marginTop: "15px",
+              color: "#999",
+              textDecoration: "none",
+            }}
+            href="/flash-cards"
+          >
+            Veja os flashcards dos alunos
+          </a>
+        )}
       </span>
     </RouteDiv>
   );

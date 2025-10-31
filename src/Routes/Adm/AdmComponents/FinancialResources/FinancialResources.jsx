@@ -339,7 +339,6 @@ export function FinancialResources({ headers, id, plan }) {
       setNewCostDescription("");
     } catch (error) {
       notifyAlert("Erro ao criar custo fíxo", partnerColor());
-      console.log("Aqui", error.response);
     }
   };
 

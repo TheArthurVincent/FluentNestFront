@@ -92,9 +92,6 @@ export const TopBar: FC = () => {
       localStorage.getItem("notifications") || "{}"
     );
     setPermissions(getLoggedUser.permissions);
-    console.log(getLoggedUser.permissions == "teacher");
-    console.log(getLoggedUser.permissions == "superadmin");
-    console.log(isArthurVincent);
     setNotifications(notifications);
     setid(getLoggedUser.id);
     setTimeout(() => {

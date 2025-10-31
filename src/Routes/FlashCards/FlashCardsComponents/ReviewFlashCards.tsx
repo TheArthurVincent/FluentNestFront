@@ -15,8 +15,6 @@ import {
 import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
-import WordOfTheDay from "../../WordOfTheDay/WordOfTheDay";
-import { isArthurVincent } from "../../../App";
 
 interface FlashCardsPropsRv {
   headers: MyHeadersType | null;
@@ -340,14 +338,6 @@ const ReviewFlashCards = ({
               width: "100%",
             }}
           >
-            {isArthurVincent && (
-              <WordOfTheDay
-                change={change}
-                onChange={onChange}
-                headers={headers}
-              />
-            )}
-
             {/* Flashcard area */}
             {see && (
               <div ref={cardRef} style={{ width: "100%", maxWidth: "400px" }}>
@@ -802,7 +792,7 @@ const ReviewFlashCards = ({
               >
                 <option value="en">{"English"}</option>
                 <option value="es">{"Espanõl"}</option>
-                {isArthurVincent && <option value="fr">{"Français"}</option>}
+                <option value="fr">{"Français"}</option>
               </select>
             </div>
             <button
@@ -828,21 +818,6 @@ const ReviewFlashCards = ({
       <div style={{ margin: "1.5rem 0 1rem 0", padding: "0 1rem" }}>
         <ProgressCounter see={seeConf} flashcardsToday={flashcardsToday} />
       </div>
-      {isArthurVincent && (
-        <a
-          href="/words-of-the-day"
-          style={{
-            fontSize: "11px",
-            color: "#999",
-            textDecoration: "none",
-            display: "block",
-            textAlign: "center",
-            padding: "0.5rem",
-          }}
-        >
-          {UniversalTexts?.previousWordsOfTheDay || "Previous Words of the Day"}
-        </a>
-      )}
     </section>
   );
 };

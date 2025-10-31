@@ -94,7 +94,6 @@ const AddFlashCards = ({
         `${backDomain}/api/v1/ai-flashcards-from-text`,
         { textInput, numberOfCards }
       );
-      console.log(response.data, "Resposta da IA");
 
       // Processar os cards retornados pela IA
       if (response.data.flashcards && response.data.flashcards.cards) {

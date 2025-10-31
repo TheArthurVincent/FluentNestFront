@@ -506,7 +506,6 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
         headers,
       });
       setEventFull(response.data.event);
-      console.log(response.data.event);
       setLastFew(response.data.event.recentUnmarkedEvents || []);
       if (response?.data?.event?.recentUnmarkedEvents?.[0]?.theLesson) {
         setTheLessonLast(

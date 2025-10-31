@@ -170,7 +170,6 @@ export function Groups({ headers, id }) {
           : [...prev, studentId]
       );
     }
-    console.log("arrayOfIds", arrayOfIds);
   };
 
   const fetchStudents = async () => {
@@ -258,7 +257,6 @@ export function Groups({ headers, id }) {
 
   const handleChangeName = async (groupId, groupName) => {
     setGroupNameToEdit(groupName);
-    console.log("no", groupName, groupNameToEdit);
     if (groupId) {
       try {
         const response = await axios.put(
@@ -281,7 +279,6 @@ export function Groups({ headers, id }) {
 
   const handleChangeDescription = async (groupId, groupDescription) => {
     setGroupDescriptionToEdit(groupDescription);
-    console.log(groupDescription);
 
     if (groupId) {
       try {

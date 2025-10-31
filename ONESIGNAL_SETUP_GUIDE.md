@@ -100,8 +100,6 @@ const handleLogin = async (userData) => {
     plano: userData.plano || 'free',
     ultimoAcesso: new Date().toISOString()
   });
-  
-  console.log('✅ Usuário associado ao OneSignal');
 };
 ```
 
@@ -228,8 +226,6 @@ async function enviarNotificacao(opcoes) {
         }
       }
     );
-    
-    console.log('✅ Notificação enviada:', response.data);
     return { success: true, data: response.data };
   } catch (error) {
     console.error('❌ Erro ao enviar notificação:', error.response?.data || error);
