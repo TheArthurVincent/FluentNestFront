@@ -363,7 +363,6 @@ function LandingPageArvin() {
           </button>
           <span
             style={{
-              fontFamily: "Lato",
               fontSize: "12px",
               color: "#9ca3af",
             }}

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export function AllComments({ headers }) {
   const [comments, setComments] = useState([]);
@@ -115,7 +115,8 @@ export function AllComments({ headers }) {
             background: "white",
             padding: 3,
             borderRadius: "4px",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+            boxShadow:
+              "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
           }}
         >
           <Typography variant="h6" sx={{ marginBottom: 2 }}>

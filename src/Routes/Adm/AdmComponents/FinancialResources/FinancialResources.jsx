@@ -44,9 +44,7 @@ import {
   alwaysWhite,
   partnerColor,
   primaryColor,
-  textGeneralFont,
   textPrimaryColorContrast,
-  textTitleFont,
 } from "../../../../Styles/Styles";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
@@ -1231,7 +1229,6 @@ export function FinancialResources({ headers, id, plan }) {
 
         <HOne
           style={{
-            fontFamily: textTitleFont(),
             color: partnerColor(),
             textAlign: "center",
             margin: "0.5rem",
@@ -1252,7 +1249,6 @@ export function FinancialResources({ headers, id, plan }) {
             border: "1px solid #d1d5db",
             borderRadius: "4px",
             fontSize: "14px",
-            fontFamily: textGeneralFont(),
             color: "#374151",
             backgroundColor: "#fff",
             outline: "none",
@@ -1304,7 +1300,6 @@ export function FinancialResources({ headers, id, plan }) {
                       style={{
                         fontSize: "16px",
                         color: "#6b7280",
-                        fontFamily: textGeneralFont(),
                         marginBottom: "20px",
                       }}
                     >
@@ -1354,7 +1349,6 @@ export function FinancialResources({ headers, id, plan }) {
                                     fontWeight: "600",
                                     color: "#0c5460",
                                     marginBottom: "8px",
-                                    fontFamily: textGeneralFont(),
                                   }}
                                 >
                                   DICA: Verifique antes de gerar o relatório
@@ -1364,7 +1358,6 @@ export function FinancialResources({ headers, id, plan }) {
                                     fontSize: "13px",
                                     color: "#0c5460",
                                     lineHeight: "1.5",
-                                    fontFamily: textGeneralFont(),
                                   }}
                                 >
                                   • Confirme se as{" "}
@@ -1529,7 +1522,6 @@ export function FinancialResources({ headers, id, plan }) {
                               fontSize: "11px",
                               color: "#6b7280",
                               marginBottom: "8px",
-                              fontFamily: textGeneralFont(),
                               fontWeight: "400",
                               textTransform: "uppercase",
                               letterSpacing: "0.5px",
@@ -1542,7 +1534,6 @@ export function FinancialResources({ headers, id, plan }) {
                               fontWeight: "600",
                               color: item.color,
                               marginBottom: "4px",
-                              fontFamily: textTitleFont(),
                             }}
                           >
                             R$ {formatNumber(item.value)}
@@ -1551,7 +1542,6 @@ export function FinancialResources({ headers, id, plan }) {
                             <div
                               style={{
                                 color: "#9ca3af",
-                                fontFamily: textGeneralFont(),
                                 fontWeight: "400",
                                 ...item.subtitleStyle,
                               }}
@@ -1594,7 +1584,6 @@ export function FinancialResources({ headers, id, plan }) {
                               fontWeight: "600",
                               color: "#374151",
                               marginBottom: "16px",
-                              fontFamily: textGeneralFont(),
                             }}
                           >
                             Entradas
@@ -1656,7 +1645,6 @@ export function FinancialResources({ headers, id, plan }) {
                                           report.paidSoFar > 0
                                         ? "#f59e0b"
                                         : "#c62828",
-                                      fontFamily: textGeneralFont(),
                                     }}
                                   >
                                     {report.paidFor &&
@@ -1715,7 +1703,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontWeight: "500",
                                         color: "#374151",
                                         marginBottom: "2px",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       {truncateString(
@@ -1727,7 +1714,6 @@ export function FinancialResources({ headers, id, plan }) {
                                       style={{
                                         fontSize: "11px",
                                         color: "#6b7280",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       {report.discount > 0 &&
@@ -1749,10 +1735,8 @@ export function FinancialResources({ headers, id, plan }) {
                                     <div
                                       style={{
                                         fontSize: "13px",
-
                                         fontWeight: "600",
                                         color: "#0f8311ff",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       R$ {formatNumber(report.paidSoFar || 0)} /
@@ -1813,7 +1797,6 @@ export function FinancialResources({ headers, id, plan }) {
                                       textAlign: "center",
                                       borderRadius: "4px",
                                       color: "#9ca3af",
-                                      fontFamily: textGeneralFont(),
                                     }}
                                   >
                                     <i
@@ -1829,7 +1812,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontWeight: "400",
                                         color: "#6b7280",
                                         marginBottom: "2px",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       {truncateString(
@@ -1841,7 +1823,6 @@ export function FinancialResources({ headers, id, plan }) {
                                       style={{
                                         fontSize: "11px",
                                         color: "#9ca3af",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       Não contabilizado
@@ -1860,7 +1841,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontSize: "13px",
                                         fontWeight: "500",
                                         color: "#9ca3af",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       R${" "}
@@ -1878,7 +1858,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         borderRadius: "4px",
                                         backgroundColor: "#f3f4f6",
                                         color: "#6b7280",
-                                        fontFamily: textGeneralFont(),
                                         minWidth: "60px",
                                       }}
                                     >
@@ -1916,7 +1895,6 @@ export function FinancialResources({ headers, id, plan }) {
                               fontWeight: "600",
                               color: "#374151",
                               marginBottom: "16px",
-                              fontFamily: textGeneralFont(),
                             }}
                           >
                             Saídas
@@ -1979,7 +1957,6 @@ export function FinancialResources({ headers, id, plan }) {
                                           report.paidSoFar > 0
                                         ? "#f59e0b"
                                         : "#c62828",
-                                      fontFamily: textGeneralFont(),
                                     }}
                                   >
                                     {report.paidFor &&
@@ -2038,7 +2015,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontWeight: "500",
                                         color: "#374151",
                                         marginBottom: "2px",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       {truncateString(
@@ -2050,7 +2026,6 @@ export function FinancialResources({ headers, id, plan }) {
                                       style={{
                                         fontSize: "11px",
                                         color: "#6b7280",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       {report.discount > 0 &&
@@ -2074,7 +2049,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontSize: "13px",
                                         fontWeight: "600",
                                         color: "#dc2626",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       R$ {formatNumber(report.paidSoFar || 0)} /
@@ -2135,7 +2109,6 @@ export function FinancialResources({ headers, id, plan }) {
                                       textAlign: "center",
                                       borderRadius: "4px",
                                       color: "#9ca3af",
-                                      fontFamily: textGeneralFont(),
                                     }}
                                   >
                                     <i
@@ -2151,7 +2124,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontWeight: "400",
                                         color: "#6b7280",
                                         marginBottom: "2px",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       {truncateString(
@@ -2163,7 +2135,6 @@ export function FinancialResources({ headers, id, plan }) {
                                       style={{
                                         fontSize: "11px",
                                         color: "#9ca3af",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       Não contabilizado
@@ -2182,7 +2153,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         fontSize: "13px",
                                         fontWeight: "500",
                                         color: "#9ca3af",
-                                        fontFamily: textGeneralFont(),
                                       }}
                                     >
                                       R${" "}
@@ -2200,7 +2170,6 @@ export function FinancialResources({ headers, id, plan }) {
                                         borderRadius: "4px",
                                         backgroundColor: "#f3f4f6",
                                         color: "#6b7280",
-                                        fontFamily: textGeneralFont(),
                                         minWidth: "60px",
                                       }}
                                     >
@@ -2275,7 +2244,6 @@ export function FinancialResources({ headers, id, plan }) {
                 >
                   <div
                     style={{
-                      fontFamily: textGeneralFont(),
                       color: "#374151",
                       fontSize: "14px",
                       fontWeight: "600",
@@ -2293,7 +2261,6 @@ export function FinancialResources({ headers, id, plan }) {
                         padding: "2px 6px",
                         borderRadius: "4px",
                         fontWeight: "500",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       {getActiveStudentsWithFees().length}
@@ -2314,7 +2281,6 @@ export function FinancialResources({ headers, id, plan }) {
                         fontSize: "12px",
                         fontWeight: "600",
                         color: "#6b7280",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       R$ {formatNumber(calculateMonthlyRevenue())}
@@ -2376,7 +2342,6 @@ export function FinancialResources({ headers, id, plan }) {
                             fontSize: "18px",
                             fontWeight: "500",
                             color: partnerColor(),
-                            fontFamily: textGeneralFont(),
                           }}
                         >
                           R$ {formatNumber(calculateMonthlyRevenue())}
@@ -2385,7 +2350,6 @@ export function FinancialResources({ headers, id, plan }) {
                           style={{
                             fontSize: "10px",
                             color: "#666",
-                            fontFamily: textGeneralFont(),
                           }}
                         >
                           Receita Total
@@ -2406,7 +2370,6 @@ export function FinancialResources({ headers, id, plan }) {
                             fontSize: "18px",
                             fontWeight: "500",
                             color: "#333",
-                            fontFamily: textGeneralFont(),
                           }}
                         >
                           {getActiveStudentsWithFees().length}
@@ -2415,7 +2378,6 @@ export function FinancialResources({ headers, id, plan }) {
                           style={{
                             fontSize: "10px",
                             color: "#666",
-                            fontFamily: textGeneralFont(),
                           }}
                         >
                           Alunos Ativos
@@ -2433,7 +2395,6 @@ export function FinancialResources({ headers, id, plan }) {
                           marginBottom: "6px",
                           padding: "6px 0",
                           borderBottom: "1px solid #ddd",
-                          fontFamily: textGeneralFont(),
                         }}
                       >
                         Mensalidades ({getStudentsWithFees().length} total •{" "}
@@ -2509,7 +2470,6 @@ export function FinancialResources({ headers, id, plan }) {
                                     fontWeight: "500",
                                     fontSize: "12px",
                                     opacity: student.onHold ? 0.6 : 1,
-                                    fontFamily: textGeneralFont(),
                                   }}
                                 >
                                   {student.name}{" "}
@@ -2536,7 +2496,6 @@ export function FinancialResources({ headers, id, plan }) {
                                     textDecoration: student.onHold
                                       ? "line-through"
                                       : "none",
-                                    fontFamily: textGeneralFont(),
                                   }}
                                 >
                                   R$ {formatNumber(student.fee)}
@@ -2557,7 +2516,6 @@ export function FinancialResources({ headers, id, plan }) {
                     padding: "16px",
                     color: "#9ca3af",
                     fontSize: "11px",
-                    fontFamily: textGeneralFont(),
                   }}
                 >
                   Clique para ver
@@ -2608,7 +2566,6 @@ export function FinancialResources({ headers, id, plan }) {
             >
               <div
                 style={{
-                  fontFamily: textGeneralFont(),
                   color: "#374151",
                   fontSize: "14px",
                   fontWeight: "600",
@@ -2627,7 +2584,6 @@ export function FinancialResources({ headers, id, plan }) {
                     padding: "2px 6px",
                     borderRadius: "4px",
                     fontWeight: "500",
-                    fontFamily: textGeneralFont(),
                   }}
                 >
                   {fixedCosts.length}
@@ -2648,7 +2604,6 @@ export function FinancialResources({ headers, id, plan }) {
                     fontSize: "12px",
                     fontWeight: "600",
                     color: "#6b7280",
-                    fontFamily: textGeneralFont(),
                   }}
                 >
                   R${" "}
@@ -2737,7 +2692,6 @@ export function FinancialResources({ headers, id, plan }) {
                             fontWeight: "400",
                             color: "#4b5563",
                             lineHeight: "1.4",
-                            fontFamily: textGeneralFont(),
                           }}
                         >
                           {cost.description}
@@ -2747,7 +2701,6 @@ export function FinancialResources({ headers, id, plan }) {
                             fontSize: "13px",
                             fontWeight: "500",
                             color: "#ef4444",
-                            fontFamily: textGeneralFont(),
                           }}
                         >
                           R$ {formatNumber(cost.amount)}
@@ -2767,7 +2720,6 @@ export function FinancialResources({ headers, id, plan }) {
                     style={{
                       fontSize: "12px",
                       lineHeight: "1.5",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Nenhum custo fixo
@@ -2784,7 +2736,6 @@ export function FinancialResources({ headers, id, plan }) {
                 padding: "16px",
                 color: "#9ca3af",
                 fontSize: "11px",
-                fontFamily: textGeneralFont(),
               }}
             >
               Clique para ver
@@ -2816,7 +2767,6 @@ export function FinancialResources({ headers, id, plan }) {
               >
                 <h2
                   style={{
-                    fontFamily: textTitleFont(),
                     color: "#1f2937",
                     fontSize: "18px",
                     fontWeight: "500",
@@ -2960,7 +2910,6 @@ export function FinancialResources({ headers, id, plan }) {
               >
                 <div
                   style={{
-                    fontFamily: textGeneralFont(),
                     color: "#1f2937",
                     fontSize: "16px",
                     fontWeight: "500",
@@ -2991,7 +2940,6 @@ export function FinancialResources({ headers, id, plan }) {
                         color: "#6b7280",
                         fontSize: "12px",
                         marginBottom: "4px",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       Descrição
@@ -3001,7 +2949,6 @@ export function FinancialResources({ headers, id, plan }) {
                         fontSize: "16px",
                         color: "#374151",
                         fontWeight: "500",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       {selectedCost.description}
@@ -3014,7 +2961,6 @@ export function FinancialResources({ headers, id, plan }) {
                         color: "#6b7280",
                         fontSize: "12px",
                         marginBottom: "4px",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       Valor
@@ -3024,7 +2970,6 @@ export function FinancialResources({ headers, id, plan }) {
                         fontSize: "20px",
                         color: "#ef4444",
                         fontWeight: "600",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       R$ {formatNumber(selectedCost.amount)}
@@ -3037,7 +2982,6 @@ export function FinancialResources({ headers, id, plan }) {
                         color: "#6b7280",
                         fontSize: "12px",
                         marginBottom: "4px",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       Mês
@@ -3046,7 +2990,6 @@ export function FinancialResources({ headers, id, plan }) {
                       style={{
                         fontSize: "14px",
                         color: "#374151",
-                        fontFamily: textGeneralFont(),
                       }}
                     >
                       {selectedCost.month || currentMonthYear}
@@ -3094,7 +3037,6 @@ export function FinancialResources({ headers, id, plan }) {
                       color: "#ef4444",
                       fontWeight: "500",
                       marginBottom: "16px",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     ⚠️ Tem certeza que deseja excluir?
@@ -3104,7 +3046,6 @@ export function FinancialResources({ headers, id, plan }) {
                       fontSize: "14px",
                       color: "#6b7280",
                       marginBottom: "8px",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Esta ação não pode ser desfeita.
@@ -3114,7 +3055,6 @@ export function FinancialResources({ headers, id, plan }) {
                       fontSize: "16px",
                       color: "#374151",
                       fontWeight: "500",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     <strong>{selectedCost.description}</strong> - R${" "}
@@ -3189,7 +3129,6 @@ export function FinancialResources({ headers, id, plan }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Cancelar
@@ -3211,7 +3150,6 @@ export function FinancialResources({ headers, id, plan }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
                       backgroundColor:
                         !editCostDescription.trim() || !editCostAmount
                           ? "#9ca3af"
@@ -3233,7 +3171,6 @@ export function FinancialResources({ headers, id, plan }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Não
@@ -3252,7 +3189,6 @@ export function FinancialResources({ headers, id, plan }) {
                       fontWeight: "500",
                       textTransform: "none",
                       padding: "6px 16px",
-                      fontFamily: textGeneralFont(),
                     }}
                   >
                     Sim, excluir
@@ -3286,7 +3222,6 @@ export function FinancialResources({ headers, id, plan }) {
               >
                 <h2
                   style={{
-                    fontFamily: textTitleFont(),
                     color: "#1f2937",
                     fontSize: "18px",
                     fontWeight: "500",
@@ -3791,7 +3726,6 @@ export function FinancialResources({ headers, id, plan }) {
               >
                 <h2
                   style={{
-                    fontFamily: textTitleFont(),
                     color: "#1f2937",
                     fontSize: "18px",
                     fontWeight: "500",

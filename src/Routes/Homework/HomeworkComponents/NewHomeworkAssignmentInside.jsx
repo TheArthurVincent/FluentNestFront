@@ -3,7 +3,7 @@ import { backDomain } from "../../../Resources/UniversalComponents";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import HTMLEditor from "../../../Resources/Components/HTMLEditor";
-import { partnerColor, textTitleFont } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 import { notifyAlert } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
 
@@ -66,7 +66,6 @@ export function NewHomeworkAssignmentHere({
           display: isModalOpen ? "flex" : "none",
           position: "fixed",
           zIndex: 100000000,
-          fontFamily: textTitleFont(),
           width: "100vw",
           height: "100vh",
           top: 0,

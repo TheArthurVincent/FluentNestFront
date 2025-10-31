@@ -117,7 +117,6 @@ export const styles: any = {
   tierTitle: {
     fontWeight: 500,
     fontSize: 24,
-    fontFamily: "Roboto",
     color: "#111827",
   },
   tierPriceMini: {
@@ -182,7 +181,6 @@ export const styles: any = {
 };
 
 export const theTitle = {
-  fontFamily: "Roboto, sans-serif",
   fontSize: "32px",
   marginBottom: "20px",
   color: partnerColor(),

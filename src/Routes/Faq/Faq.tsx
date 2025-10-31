@@ -6,11 +6,7 @@ import {
   getVideoEmbedUrl,
   onLoggOut,
 } from "../../Resources/UniversalComponents";
-import {
-  partnerColor,
-  textTitleFont,
-  transparentWhite,
-} from "../../Styles/Styles";
+import { transparentWhite } from "../../Styles/Styles";
 import { DivAppear, H3FAQ } from "../MyClasses/MyClasses.Styled";
 import { Input } from "@mui/material";
 import { contentFaq } from "./FaqContent";

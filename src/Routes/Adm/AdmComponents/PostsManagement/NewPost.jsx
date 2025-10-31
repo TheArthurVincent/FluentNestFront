@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import HTMLEditor from "../../../../Resources/Components/HTMLEditor";
 import { CircularProgress } from "@mui/material";
@@ -50,12 +50,10 @@ export function NewPost({ headers }) {
         maxWidth: "800px",
         margin: "0 auto",
         padding: "1rem",
-        fontFamily: textTitleFont(),
       }}
     >
       <HOne
         style={{
-          fontFamily: textTitleFont(),
           color: partnerColor(),
           textAlign: "center",
           marginBottom: "2rem",

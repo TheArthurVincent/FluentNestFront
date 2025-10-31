@@ -3,8 +3,7 @@ import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { CircularProgress } from "@mui/material";
-import { HOne } from "../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 
 interface FlashcardItem {
   _id: string;

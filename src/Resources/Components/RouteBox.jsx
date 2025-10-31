@@ -5,7 +5,6 @@ import {
   alwaysBlack,
   transparentWhite,
   partnerColor,
-  textTitleFont,
 } from "../../Styles/Styles";
 
 export const RouteSizeControlBox = styled.div`
@@ -119,12 +118,10 @@ export const HOne = styled.h1`
   font-weight: 500;
   color: ${partnerColor()};
   margin: 12px 0;
-  font-family: ${textTitleFont()};
 `;
 
 export const HTwo = styled.h2`
   font-size: 1.2rem;
-  font-family:${textTitleFont()},
   color: ${partnerColor()};
   font-weight: 500;
   padding: 0.6rem;

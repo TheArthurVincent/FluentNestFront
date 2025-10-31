@@ -1,7 +1,6 @@
 import React from "react";
 import RankingList from "./RankingList";
 import RankingExplanationComponent from "./RankingExplanationComponents/RankingExplanationComponents";
-import { textGeneralFont } from "../../../Styles/Styles";
 
 export default function RankingExplanation() {
   return (
@@ -18,7 +17,6 @@ export default function RankingExplanation() {
           borderRadius: "4px",
           maxWidth: "800px",
           margin: "2rem auto",
-          fontFamily: textGeneralFont(),
           color: "#333",
           lineHeight: "1.6",
         }}

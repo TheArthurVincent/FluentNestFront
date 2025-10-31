@@ -1,6 +1,6 @@
 import React from "react";
 import { SignUp } from "./types.SignUp";
-import { partnerColor, textTitleFont } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 
 export function InputFieldSignUp({
   value,
@@ -14,7 +14,6 @@ export function InputFieldSignUp({
       style={{
         display: "flex",
         flexDirection: "column",
-        fontFamily: textTitleFont(),
         justifyContent: "center",
       }}
     >
@@ -24,7 +23,6 @@ export function InputFieldSignUp({
           fontSize: "15px",
           paddingBottom: "2px",
           fontWeight: 500,
-          fontFamily: textTitleFont(),
         }}
       >
         {placeholder}

@@ -16,7 +16,6 @@ import {
   alwaysBlack,
   partnerColor,
   textPrimaryColorContrast,
-  textTitleFont,
 } from "../../Styles/Styles";
 import Helmets from "../../Resources/Helmets";
 import { IFrameVideoBlog } from "../HomePage/Blog.Styled";

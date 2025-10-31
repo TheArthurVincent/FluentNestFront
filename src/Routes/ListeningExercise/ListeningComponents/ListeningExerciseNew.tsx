@@ -11,11 +11,7 @@ import {
   notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import {
-  alwaysWhite,
-  partnerColor,
-  textGeneralFont,
-} from "../../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
@@ -195,7 +191,8 @@ const ListeningExerciseNew = ({
       const { permissions, id } = user
         ? JSON.parse(user)
         : { permissions: "", id: "" };
-      const selectedStudentID = localStorage.getItem("selectedStudentID") || "null";
+      const selectedStudentID =
+        localStorage.getItem("selectedStudentID") || "null";
       setMyPermissions(permissions);
       setSelectedStudentId(selectedStudentID || id);
       if (permissions === "superadmin" || permissions === "teacher") {
@@ -889,7 +886,6 @@ const ListeningExerciseNew = ({
                         </p>
                         <p
                           style={{
-                            fontFamily: textGeneralFont(),
                             fontSize: "12px",
                             fontWeight: 400,
                             color: "#555",

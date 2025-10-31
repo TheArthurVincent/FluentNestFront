@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../../../Styles/Styles";
+import { textPrimaryColorContrast } from "../../../../Styles/Styles";
 import {
   GridRankingExplanation,
   GridRankingExplanationCard,
@@ -35,15 +32,11 @@ export default function RankingExplanationComponent() {
                 backgroundColor: criteria.color,
                 color: "white",
                 padding: "10px",
-                // transform: criteria.transform ? criteria.transform : "none",
               }}
               className={criteria.icon}
               aria-hidden="true"
             />{" "}
-            <span style={{ fontFamily: textTitleFont() }}>
-              {" "}
-              {criteria.title}
-            </span>
+            <span> {criteria.title}</span>
           </HThree>
           <div>
             {criteria.score.map((score, index) => (
@@ -67,7 +60,6 @@ export default function RankingExplanationComponent() {
                   style={{
                     backgroundColor: score.color,
                     color: textPrimaryColorContrast(),
-                    fontFamily: textTitleFont(),
                     fontWeight: 600,
                     padding: "5px",
                     top: "*15px",

@@ -613,7 +613,6 @@ function NewEventModal({
                   backgroundColor: "#fff",
                   cursor: loading ? "not-allowed" : "text",
                   resize: "vertical",
-                  fontFamily: "inherit",
                 }}
                 onFocus={(e) => (e.target.style.borderColor = partnerColor())}
                 onBlur={(e) => (e.target.style.borderColor = "#e9ecef")}

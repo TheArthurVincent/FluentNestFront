@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { backDomain, onLoggOut } from "../../../Resources/UniversalComponents";
+import { backDomain } from "../../../Resources/UniversalComponents";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import { CircularProgress } from "@mui/material";
 import { HOne } from "../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../Styles/Styles";
+import { partnerColor } from "../../../Styles/Styles";
 
 interface FlashcardItem {
   _id: string;

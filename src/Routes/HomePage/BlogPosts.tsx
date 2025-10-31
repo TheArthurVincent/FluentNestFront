@@ -10,19 +10,12 @@ import axios from "axios";
 import {
   formatDate,
   backDomain,
-  getVideoEmbedUrl,
   Xp,
   UniversalButtonsDivFlex,
-  onLoggOut,
 } from "../../Resources/UniversalComponents";
-import {
-  alwaysWhite,
-  partnerColor,
-  textGeneralFont,
-  textTitleFont,
-} from "../../Styles/Styles";
-import { Button, CircularProgress } from "@mui/material";
-import { DivModal, IFrameAsaas, ImgBlog, InternDivModal } from "./Blog.Styled";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
+import { CircularProgress } from "@mui/material";
+import { ImgBlog, InternDivModal } from "./Blog.Styled";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
@@ -209,9 +202,7 @@ export function BlogPosts({ headers }: BlogPostsProps) {
                           <i className="fa fa-edit" aria-hidden="true" />
                         </button>
                       )}
-                      <HTwo style={{ fontFamily: textGeneralFont() }}>
-                        {post.title}
-                      </HTwo>
+                      <HTwo>{post.title}</HTwo>
                     </span>
                     {post.createdAt && (
                       <span>{formatDate(post.createdAt)}</span>

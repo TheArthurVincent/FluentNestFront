@@ -11,32 +11,14 @@ const getWhiteLabel = () => {
   }
 };
 
-export const backgroundType = (): string => {
-  const wl = getWhiteLabel();
-  return wl.backgroundType || "color";
-};
-
 export const partnerColor = (): string => {
   const wl = getWhiteLabel();
   return wl.color || "#ed5914";
 };
 
-export const theBackgroundColor = (): string => {
-  const wl = getWhiteLabel();
-  return wl.backgroundColor || "#e7e7e7ff";
-};
-
 export const textPrimaryColorContrast = (): string => {
   const wl = getWhiteLabel();
   return wl.contrastColor || "#eee";
-};
-
-export const backgroundImage = (): string => {
-  const wl = getWhiteLabel();
-  return (
-    wl.backgroundImage ||
-    "https://ik.imagekit.io/vjz75qw96/assets/icons/eagbggg?updatedAt=1749920491769"
-  );
 };
 
 export const logoPartner = (): string => {
@@ -47,19 +29,7 @@ export const logoPartner = (): string => {
   );
 };
 
-export const textGeneralFont = (): string => {
-  // const wl = getWhiteLabel();
-  // return wl.textGeneralFont || "Lato";
-  return "Plus Jakarta Sans";
-};
-
 export const textpartnerColorContrast = (): string => "#fff";
-
-export const textTitleFont = (): string => {
-  // const wl = getWhiteLabel();
-  // return wl.textTitleFont || "Roboto";
-  return "Plus Jakarta Sans";
-};
 
 // Cores fixas
 export const primaryColor = (): string => "#000";

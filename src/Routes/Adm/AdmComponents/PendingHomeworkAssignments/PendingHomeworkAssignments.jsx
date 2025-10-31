@@ -338,7 +338,6 @@ export function PendingHomeworkAssignments({ id, headers }) {
                       border: "1px solid #e0e0e0",
                       borderRadius: "4px",
                       padding: "1.2rem",
-                      fontFamily: "cursive",
                       lineHeight: "1.6",
                       color: "#444",
                     }}

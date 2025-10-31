@@ -9,9 +9,7 @@ import axios from "axios";
 import { Tooltip } from "@mui/material";
 import {
   partnerColor,
-  textGeneralFont,
   textpartnerColorContrast,
-  textTitleFont,
 } from "../../../../Styles/Styles";
 
 interface SentenceLessonModelProps {
@@ -210,7 +208,6 @@ export default function SentenceLessonModel({
                     fontWeight: 500,
                     color: "#222",
                     fontSize: "18px",
-                    fontFamily: textGeneralFont(),
                     marginBottom: 2,
                     wordBreak: "break-word",
                   }}

@@ -12,7 +12,7 @@ import {
 } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor  } from "../../../../Styles/Styles";
 import { isArthurVincent, localStorageLoggedIn } from "../../../../App";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 

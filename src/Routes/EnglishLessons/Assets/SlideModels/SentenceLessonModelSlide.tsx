@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  partnerColor,
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
@@ -81,7 +77,6 @@ export default function SentenceLessonModelSlide({
                     fontSize: "2rem",
                     cursor: "pointer",
                     marginRight: "1rem",
-                    fontFamily: textTitleFont(),
                   }}
                   onClick={() => {
                     readText(sentence.english, true, "en", selectedVoice);

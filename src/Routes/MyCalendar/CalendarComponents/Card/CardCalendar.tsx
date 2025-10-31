@@ -1,11 +1,7 @@
-import React from 'react';
-import { StyledDiv } from '../MyCalendarFunctions/MyCalendar.Styled';
-import CardOneEvent from '../OneEventCard/CardOneEvent';
-import {
-  partnerColor,
-  textGeneralFont,
-  alwaysWhite
-} from '../../../../Styles/Styles';
+import React from "react";
+import { StyledDiv } from "../MyCalendarFunctions/MyCalendar.Styled";
+import CardOneEvent from "../OneEventCard/CardOneEvent";
+import { partnerColor, alwaysWhite } from "../../../../Styles/Styles";
 
 interface TodoItem {
   _id: string;
@@ -48,9 +44,9 @@ interface CardCalendarProps {
 
 // Função utilitária para truncar strings
 const truncateString = (str: string, wordLimit: number): string => {
-  const words = str.split(' ');
+  const words = str.split(" ");
   if (words.length <= wordLimit) return str;
-  return words.slice(0, wordLimit).join(' ') + '...';
+  return words.slice(0, wordLimit).join(" ") + "...";
 };
 
 export function CardCalendar({
@@ -70,16 +66,13 @@ export function CardCalendar({
   alternateBoolean,
   setAlternateBoolean,
 }: CardCalendarProps) {
-  
   return (
     <StyledDiv
       className={isToday ? "glowing" : "none"}
       ref={isToday ? todayRef : null}
       style={{
         fontSize: "10px",
-        border: isToday
-          ? `3px solid ${partnerColor()}`
-          : "1px solid #e0e0e0",
+        border: isToday ? `3px solid ${partnerColor()}` : "1px solid #e0e0e0",
         borderRadius: "4px",
         backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
         boxShadow: isToday
@@ -99,7 +92,6 @@ export function CardCalendar({
           top: 0,
           fontWeight: 700,
           textAlign: "center",
-          fontFamily: textGeneralFont(),
           background: isToday
             ? partnerColor()
             : "linear-gradient(135deg, #111, #555)",
@@ -163,8 +155,7 @@ export function CardCalendar({
                   }}
                 >
                   <span style={{ fontSize: "10px" }}>
-                    {todo.description &&
-                      truncateString(todo.description, 5)}
+                    {todo.description && truncateString(todo.description, 5)}
                   </span>
                   <span
                     style={{
@@ -202,8 +193,7 @@ export function CardCalendar({
       <div style={{ padding: "0 5px 1rem" }}>
         {events
           .filter(
-            (event: Event) =>
-              event.date.toDateString() === date.toDateString()
+            (event: Event) => event.date.toDateString() === date.toDateString()
           )
           .sort((a: Event, b: Event) => {
             const timeA =
@@ -237,8 +227,7 @@ export function CardCalendar({
 
         {/* Mensagem quando não há eventos */}
         {events.filter(
-          (event: Event) =>
-            event.date.toDateString() === date.toDateString()
+          (event: Event) => event.date.toDateString() === date.toDateString()
         ).length === 0 && (
           <div
             style={{

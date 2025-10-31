@@ -39,7 +39,6 @@ const generatePPT = async () => {
       bold: true,
       align: "center",
       color: partnerColor().replace("#", ""),
-      fontFace: textTitleFont(),
     });
 
     const safeSubtitle = sanitizeText(`Curso: ${courseTitle}`, 80);
@@ -51,7 +50,6 @@ const generatePPT = async () => {
       fontSize: 24,
       align: "center",
       color: darkGreyColor().replace("#", ""),
-      fontFace: textGeneralFont(),
     });
 
     titleSlide.addText(`Gerado em: ${new Date().toLocaleDateString("pt-BR")}`, {
@@ -62,7 +60,6 @@ const generatePPT = async () => {
       fontSize: 18,
       align: "center",
       color: darkGreyColor().replace("#", ""),
-      fontFace: textGeneralFont(),
     });
 
     // Processar elementos da aula
@@ -88,7 +85,6 @@ const generatePPT = async () => {
               bold: true,
               align: "center",
               color: partnerColor().replace("#", ""),
-              fontFace: textTitleFont(),
             });
           }
 
@@ -102,7 +98,6 @@ const generatePPT = async () => {
               fontSize: 20,
               align: "center",
               color: darkGreyColor().replace("#", ""),
-              fontFace: textGeneralFont(),
             });
           }
         }

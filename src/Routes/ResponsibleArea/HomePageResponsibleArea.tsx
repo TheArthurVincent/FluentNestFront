@@ -4,16 +4,11 @@ import { onLoggOut, pathGenerator } from "../../Resources/UniversalComponents";
 import AppFooter from "../../Application/Footer/Footer";
 import { Outlet, Route, Routes } from "react-router-dom";
 import { Login } from "@mui/icons-material";
-import {
-  BlogRouteSizeControlBox,
-  RouteDiv,
-} from "../../Resources/Components/RouteBox";
-import { TopBar } from "../../Application/TopBar/TopBar";
+import { BlogRouteSizeControlBox } from "../../Resources/Components/RouteBox";
 import {
   logoPartner,
   partnerColor,
   textPrimaryColorContrast,
-  textTitleFont,
 } from "../../Styles/Styles";
 import { verifyToken } from "../../App";
 import React from "react";
@@ -22,7 +17,7 @@ import TopBarResponsible from "./TopBarResponsible";
 
 export function HomePageResponsibleArea({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
-const [id,setId] = useState<string>("")
+  const [id, setId] = useState<string>("");
   useEffect(() => {
     var user = localStorage.getItem("loggedIn");
     if (user) {
@@ -189,7 +184,6 @@ const [id,setId] = useState<string>("")
                   if (e.currentTarget.parentElement) {
                     e.currentTarget.parentElement.innerHTML = `
                 <div style="
-                  font-family: ${textTitleFont()};
                   font-size: 2.5rem;
                   font-weight: bold;
                   color: ${textPrimaryColorContrast()};
@@ -207,7 +201,6 @@ const [id,setId] = useState<string>("")
               style={{
                 color: textPrimaryColorContrast(),
                 fontSize: "2rem",
-                fontFamily: textTitleFont(),
                 animation: "fadeInOut 2s ease-in-out infinite",
               }}
             >

@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { HOne } from "../../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import FindTeacher from "./FindTeacher";
 

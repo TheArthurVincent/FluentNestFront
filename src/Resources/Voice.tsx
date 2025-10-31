@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import { partnerColor, textGeneralFont } from "../Styles/Styles";
+import { partnerColor } from "../Styles/Styles";
 
 interface VoiceTypes {
   changeB: boolean;
@@ -174,7 +174,7 @@ const Voice: FC<VoiceTypes> = ({
   }, [selectedOption, changeB]);
 
   return (
-    <div style={{ margin: "5px 0", fontFamily: textGeneralFont() }}>
+    <div style={{ margin: "5px 0" }}>
       <div
         style={{
           display: "flex",

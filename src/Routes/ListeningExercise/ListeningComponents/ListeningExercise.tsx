@@ -11,11 +11,7 @@ import {
   notifyAlert,
   readText,
 } from "../../EnglishLessons/Assets/Functions/FunctionLessons";
-import {
-  alwaysWhite,
-  partnerColor,
-  textGeneralFont,
-} from "../../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../../Styles/Styles";
 import { ProgressCounter } from "../../FlashCardsToday/FlashCardsToday";
 import Voice from "../../../Resources/Voice";
 import { useUserContext } from "../../../Application/SelectLanguage/SelectLanguage";
@@ -909,7 +905,6 @@ const ListeningExercise = ({
                         </p>
                         <p
                           style={{
-                            fontFamily: textGeneralFont(),
                             fontSize: "12px",
                             fontWeight: 400,
                             color: "#555",

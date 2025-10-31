@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { CircularProgress, Tooltip } from "@mui/material";
-
+import { CircularProgress } from "@mui/material";
 import { backDomain, formatDateBr } from "../../Resources/UniversalComponents";
 import { readText } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { HOne, HTwo, RouteDiv } from "../../Resources/Components/RouteBox";
-import { partnerColor, textGeneralFont } from "../../Styles/Styles";
+import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
+import { partnerColor } from "../../Styles/Styles";
 
 type WordItem = {
   _id: string;
@@ -149,7 +148,7 @@ const WordOfTheDayList = () => {
                   opacity: 0.9,
                 }}
               />
-              <div style={{ fontFamily: textGeneralFont(), lineHeight: 1.35 }}>
+              <div style={{ lineHeight: 1.35 }}>
                 <p
                   style={{
                     fontSize: 12,

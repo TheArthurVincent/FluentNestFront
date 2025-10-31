@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import { listOfCriteria } from "../Ranking/RankingComponents/ListOfCriteria";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, alwaysWhite, textTitleFont } from "../../Styles/Styles";
+import { partnerColor, alwaysWhite } from "../../Styles/Styles";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import { CircularProgress, Tab, Tabs } from "@mui/material";
 import { getEmbedUrl } from "../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
@@ -434,40 +434,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
   return (
     <RouteDiv>
       <Helmets text="Classes & Homework" />
-      {/* <div style={{ borderBottom: 0, marginBottom: "1rem" }}>
-        <Tabs
-          value={tabValue}
-          onChange={handleTabChange}
-          sx={{
-            fontFamily: textTitleFont(),
-            color: partnerColor(),
-            "& .MuiTab-root": {
-              fontFamily: textTitleFont(),
-              color: partnerColor(),
-            },
-            "& .Mui-selected": {
-              color: partnerColor(),
-            },
-            "& .MuiTabs-indicator": {
-              color: partnerColor(),
-              backgroundColor: partnerColor(),
-            },
-          }}
-        >
-          <Tab
-            label={UniversalTexts.homework}
-            style={{
-              color: partnerColor(),
-            }}
-          />
-          <Tab
-            label={UniversalTexts.myClasses}
-            style={{
-              color: partnerColor(),
-            }}
-          />
-        </Tabs>
-      </div> */}
       <div>
         {tabValue === 0 && (
           <>
@@ -1855,7 +1821,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
                                                         border:
                                                           "1px solid #f1f5f9",
                                                         borderRadius: 6,
-                                                        fontFamily: "cursive",
                                                       }}
                                                       dangerouslySetInnerHTML={{
                                                         __html:

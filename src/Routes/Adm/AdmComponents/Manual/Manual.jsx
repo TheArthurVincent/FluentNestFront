@@ -1,6 +1,6 @@
 import React from "react";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export function Manual() {
   const tableStyle = {
@@ -34,7 +34,6 @@ export function Manual() {
     >
       <HOne
         style={{
-          fontFamily: textTitleFont(),
           color: partnerColor(),
         }}
       >

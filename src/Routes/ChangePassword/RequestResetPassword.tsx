@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { logoPartner, partnerColor, textTitleFont } from "../../Styles/Styles";
+import { logoPartner, partnerColor } from "../../Styles/Styles";
 import { backDomain } from "../../Resources/UniversalComponents";
 import "font-awesome/css/font-awesome.min.css";
 import axios from "axios";

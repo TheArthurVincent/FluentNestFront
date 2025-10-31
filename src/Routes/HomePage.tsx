@@ -39,7 +39,6 @@ import {
   partnerColor,
   textPrimaryColorContrast,
   logoPartner,
-  textTitleFont,
 } from "../Styles/Styles";
 import Redirect from "../Redirect";
 import Tokens from "./Tokens";
@@ -472,7 +471,6 @@ export function HomePage({ headers }: HeadersProps) {
                   if (e.currentTarget.parentElement) {
                     e.currentTarget.parentElement.innerHTML = `
                 <div style="
-                  font-family: ${textTitleFont()};
                   font-size: 2.5rem;
                   font-weight: bold;
                   color: ${textPrimaryColorContrast()};
@@ -490,7 +488,6 @@ export function HomePage({ headers }: HeadersProps) {
               style={{
                 color: textPrimaryColorContrast(),
                 fontSize: "2rem",
-                fontFamily: textTitleFont(),
                 animation: "fadeInOut 2s ease-in-out infinite",
               }}
             >

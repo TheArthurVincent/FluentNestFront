@@ -12,7 +12,7 @@ import axios from "axios";
 import { CircularProgress, Tooltip } from "@mui/material";
 import Modules from "./Modules";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
 
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
@@ -314,7 +314,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
           style={{
             margin: "0 0 10px 0",
             fontSize: "1.1rem",
-            fontFamily: textTitleFont(),
           }}
         >
           {title}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Tab } from "@mui/material";
-import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import RankingExplanation from "./RankingComponents/RankingExplanation";
@@ -86,10 +86,8 @@ export default function Ranking({ headers }: HeadersProps) {
             scrollButtons="auto"
             aria-label="scrollable auto tabs example"
             sx={{
-              fontFamily: textTitleFont(),
               color: partnerColor(),
               "& .MuiTab-root": {
-                fontFamily: textTitleFont(),
                 color: partnerColor(),
               },
               "& .Mui-selected": {

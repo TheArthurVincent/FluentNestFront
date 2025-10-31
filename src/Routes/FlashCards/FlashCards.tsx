@@ -3,7 +3,7 @@ import { RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Tab, CircularProgress } from "@mui/material";
-import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
 import ReviewFlashCards from "./FlashCardsComponents/ReviewFlashCards";
@@ -227,10 +227,8 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
             scrollButtons="auto"
             aria-label="scrollable auto tabs example"
             sx={{
-              fontFamily: textTitleFont(),
               color: partnerColor(),
               "& .MuiTab-root": {
-                fontFamily: textTitleFont(),
                 color: partnerColor(),
                 padding: "0px",
                 fontSize: "12px",

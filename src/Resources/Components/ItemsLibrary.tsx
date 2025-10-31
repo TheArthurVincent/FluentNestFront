@@ -1,9 +1,5 @@
 import styled from "styled-components";
-import {
-  alwaysWhite,
-  partnerColor,
-  textGeneralFont,
-} from "../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 
 interface ButtonProps {
   firstcolor?: string;

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert } from "../Functions/FunctionLessons";
-import { textTitleFont, partnerColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import axios from "axios";
 

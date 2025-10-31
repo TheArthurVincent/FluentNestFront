@@ -266,7 +266,6 @@ export function QuestionsExercise({
               resize: "vertical",
               outline: "none",
               backgroundColor: loading ? "#f9fafb" : "white",
-              fontFamily: "monospace",
             }}
           />
         </div>

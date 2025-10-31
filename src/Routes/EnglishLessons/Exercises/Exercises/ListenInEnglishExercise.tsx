@@ -201,7 +201,6 @@ export function ListenInEnglishExercise({
             borderRadius: "6px",
             padding: "12px",
             fontSize: "14px",
-            fontFamily: "inherit",
             lineHeight: "1.4",
             resize: "vertical",
             outline: "none",

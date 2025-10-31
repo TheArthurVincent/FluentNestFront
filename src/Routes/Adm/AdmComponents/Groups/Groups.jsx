@@ -45,7 +45,6 @@ import {
   partnerColor,
   textpartnerColorContrast,
   textPrimaryColorContrast,
-  textTitleFont,
 } from "../../../../Styles/Styles";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
@@ -530,7 +529,6 @@ export function Groups({ headers, id }) {
                 style={{
                   backgroundColor: "transparent",
                   border: "none",
-                  fontFamily: textTitleFont(),
                   fontWeight: 600,
                   fontSize: 16,
                 }}
@@ -557,7 +555,6 @@ export function Groups({ headers, id }) {
                   border: "none",
                   fontWeight: 600,
                   fontSize: 16,
-                  fontFamily: textTitleFont(),
                 }}
                 type="text"
                 placeholder="Descrição do grupo"

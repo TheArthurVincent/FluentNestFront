@@ -6,7 +6,6 @@ import {
 } from "../../Resources/Components/RouteBox";
 import { BackToHomePage } from "../../Resources/UniversalComponents";
 import Helmets from "../../Resources/Helmets";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 export default function NotFound() {
   return (

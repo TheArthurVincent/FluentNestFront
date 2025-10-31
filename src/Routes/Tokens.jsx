@@ -1,6 +1,5 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { textTitleFont } from "../Styles/Styles";
 import { backDomain } from "../Resources/UniversalComponents";
 
 export function Tokens({ id, headers, change }) {
@@ -32,7 +31,6 @@ export function Tokens({ id, headers, change }) {
     padding: "5px 10px",
     borderRadius: "10px",
     fontSize: "14px",
-    fontFamily: textTitleFont(),
     fontWeight: "bold",
     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     position: "fixed",

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
+import React from "react";
 import { readText } from "../Functions/FunctionLessons";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 interface VocabularyLessonProps {
   element: any;

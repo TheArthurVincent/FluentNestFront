@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { HeadersProps } from "../../../../Resources/types.universalInterfaces";
-import {
-  backDomain,
-  formatDateBr,
-} from "../../../../Resources/UniversalComponents";
+import { backDomain } from "../../../../Resources/UniversalComponents";
 import { MyButton } from "../../../../Resources/Components/ItemsLibrary";
 import Helmets from "../../../../Resources/Helmets";
 import { CircularProgress } from "@mui/material";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import {
   getWhiteLabel,
   isArthurVincent,
@@ -239,7 +236,6 @@ export function Invoice({ headers }: HeadersProps) {
               )}
               <h1
                 style={{
-                  fontFamily: textTitleFont(),
                   color: partnerColor(),
                 }}
               >

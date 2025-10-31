@@ -10,7 +10,6 @@ import { Tooltip } from "@mui/material";
 import {
   partnerColor,
   textpartnerColorContrast,
-  textTitleFont,
 } from "../../../../Styles/Styles";
 
 interface VocabularyLessonProps {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { textTitleFont, partnerColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { Tooltip } from "@mui/material";
 import { readText, notifyAlert } from "../Functions/FunctionLessons";
 import {
@@ -216,7 +216,6 @@ export default function ImageLessonModelSlide({
                   style={{
                     fontWeight: "600",
                     color: "#111",
-                    fontFamily: textTitleFont(),
                     textAlign: "center",
                   }}
                 >

@@ -11,10 +11,8 @@ import {
   alwaysBlack,
   alwaysWhite,
   partnerColor,
-  textGeneralFont,
   textpartnerColorContrast,
   textPrimaryColorContrast,
-  textTitleFont,
   transparentWhite,
 } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
@@ -559,7 +557,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
-console.log(homeworkAdded,"homeworkAdded")
+      console.log(homeworkAdded, "homeworkAdded");
       setCategory(newCategory);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
@@ -2070,7 +2068,6 @@ console.log(homeworkAdded,"homeworkAdded")
                           top: 0,
                           fontWeight: 700,
                           textAlign: "center",
-                          fontFamily: textGeneralFont(),
                           background: isToday
                             ? partnerColor()
                             : "linear-gradient(135deg, #111, #555)",
@@ -4344,7 +4341,6 @@ console.log(homeworkAdded,"homeworkAdded")
                                   padding: "10px",
                                   borderRadius: "4px",
                                   backgroundColor: textpartnerColorContrast(),
-                                  fontFamily: "Arial, sans-serif",
                                 }}
                                 onMouseOver={(e) =>
                                   (e.currentTarget.style.textDecoration =

@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { formatDate } from "../../../Resources/UniversalComponents";
-import {
-  partnerColor,
-  textPrimaryColorContrast,
-  textTitleFont,
-} from "../../../Styles/Styles";
-import { HOne, HTwo } from "../../../Resources/Components/RouteBox";
+import { partnerColor, textPrimaryColorContrast } from "../../../Styles/Styles";
 
 interface CountDownProps {
   text: string;
@@ -71,7 +66,6 @@ export default function Countdown({ text, targetDate }: CountDownProps) {
           borderRadius: "4px",
           fontSize: "1rem",
           padding: "6px 8px",
-          fontFamily: textTitleFont(),
           fontWeight: 600,
           display: "inline",
         }}

@@ -24,8 +24,6 @@ import { Link } from "react-router-dom";
 import {
   darkGreyColor,
   partnerColor,
-  textTitleFont,
-  textGeneralFont,
   logoPartner,
   transparentBlack,
 } from "../../Styles/Styles";
@@ -300,8 +298,8 @@ export default function EnglishClassCourse2({
       @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
       @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
       @import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
-                body {font-family: ${textGeneralFont()}; sans-serif; padding: 24px; }
-                h1, h2, h3 { color: ${partnerColor()};font-family: ${textGeneralFont()} }
+                body {padding: 24px; }
+                h1, h2, h3 { color: ${partnerColor()}; }
                 img { max-width: 100%; border-radius: 4px; margin-bottom: 1rem; }
                 p { font-size: 18px; margin-bottom: 1rem; }
     </style>
@@ -493,7 +491,6 @@ export default function EnglishClassCourse2({
         bold: true,
         align: "center",
         color: partnerColor().replace("#", ""),
-        fontFace: textTitleFont(),
       });
 
       if (theclass.image) {
@@ -522,7 +519,6 @@ export default function EnglishClassCourse2({
         fontSize: 18,
         align: "center",
         color: darkGreyColor().replace("#", ""),
-        fontFace: textGeneralFont(),
       });
 
       const dateY = theclass.image ? 4.8 : 2.9;
@@ -534,7 +530,6 @@ export default function EnglishClassCourse2({
         fontSize: 10,
         align: "center",
         color: darkGreyColor().replace("#", ""),
-        fontFace: textGeneralFont(),
       });
 
       const logoUrl = logoPartner();
@@ -608,7 +603,6 @@ export default function EnglishClassCourse2({
                     bold: true,
                     align: "center",
                     color: partnerColor().replace("#", ""),
-                    fontFace: textTitleFont(),
                   });
                 }
 
@@ -625,7 +619,6 @@ export default function EnglishClassCourse2({
                     fontSize: 18,
                     align: "center",
                     color: darkGreyColor().replace("#", ""),
-                    fontFace: textGeneralFont(),
                   });
                 }
 
@@ -641,7 +634,6 @@ export default function EnglishClassCourse2({
                   bold: true,
                   align: "left",
                   color: partnerColor().replace("#", ""),
-                  fontFace: textGeneralFont(),
                 });
 
                 const logoUrl = logoPartner();
@@ -682,7 +674,7 @@ export default function EnglishClassCourse2({
                       h: 6,
                       fontSize: 16,
                       color: darkGreyColor().replace("#", ""),
-                      fontFace: textGeneralFont(),
+
                       breakLine: true,
                     });
                   }
@@ -720,7 +712,6 @@ export default function EnglishClassCourse2({
                       fontSize: 24,
                       bold: true,
                       color: partnerColor().replace("#", ""),
-                      fontFace: textTitleFont(),
                     });
 
                     let yPos = 2;
@@ -737,7 +728,6 @@ export default function EnglishClassCourse2({
                           fontSize: 16,
                           bold: true,
                           color: partnerColor().replace("#", ""),
-                          fontFace: textGeneralFont(),
                         });
 
                         if (sentence.portuguese) {
@@ -752,7 +742,6 @@ export default function EnglishClassCourse2({
                             h: 0.5,
                             fontSize: 16,
                             color: darkGreyColor().replace("#", ""),
-                            fontFace: textGeneralFont(),
                           });
                         }
                         yPos += 1.5;
@@ -788,7 +777,6 @@ export default function EnglishClassCourse2({
                       fontSize: 24,
                       bold: true,
                       color: partnerColor().replace("#", ""),
-                      fontFace: textTitleFont(),
                     });
 
                     let yPos = 2;
@@ -805,7 +793,6 @@ export default function EnglishClassCourse2({
                           fontSize: 18,
                           bold: true,
                           color: partnerColor().replace("#", ""),
-                          fontFace: textGeneralFont(),
                         });
 
                         if (sentence.portuguese) {
@@ -820,7 +807,6 @@ export default function EnglishClassCourse2({
                             h: 0.5,
                             fontSize: 16,
                             color: darkGreyColor().replace("#", ""),
-                            fontFace: textGeneralFont(),
                           });
                         }
                         yPos += 1.5;
@@ -866,7 +852,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "center",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
 
                         let yPos = 1.5;
@@ -886,7 +871,7 @@ export default function EnglishClassCourse2({
                               h: 0.5,
                               fontSize: 24,
                               color: darkGreyColor().replace("#", ""),
-                              fontFace: textGeneralFont(),
+
                               valign: "top",
                             }
                           );
@@ -951,7 +936,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "center",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
 
                         let yPos = 1.5;
@@ -964,7 +948,7 @@ export default function EnglishClassCourse2({
                             h: 1.5,
                             fontSize: 16,
                             color: darkGreyColor().replace("#", ""),
-                            fontFace: textGeneralFont(),
+
                             valign: "top",
                             breakLine: true,
                           });
@@ -1015,7 +999,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "center",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
 
                         const positions = [
@@ -1052,7 +1035,6 @@ export default function EnglishClassCourse2({
                                   fontSize: 12,
                                   align: "center",
                                   color: darkGreyColor().replace("#", ""),
-                                  fontFace: textGeneralFont(),
                                 });
                               }
                             }
@@ -1108,7 +1090,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "center",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
 
                         try {
@@ -1157,7 +1138,6 @@ export default function EnglishClassCourse2({
                     bold: true,
                     align: "center",
                     color: partnerColor().replace("#", ""),
-                    fontFace: textTitleFont(),
                   });
 
                   const cleanAudioText = cleanHtml(element.text);
@@ -1169,7 +1149,7 @@ export default function EnglishClassCourse2({
                     h: 5.5,
                     fontSize: 16,
                     color: darkGreyColor().replace("#", ""),
-                    fontFace: textGeneralFont(),
+
                     breakLine: true,
                   });
                 }
@@ -1200,7 +1180,6 @@ export default function EnglishClassCourse2({
                       bold: true,
                       align: "center",
                       color: partnerColor().replace("#", ""),
-                      fontFace: textTitleFont(),
                     });
 
                     let yPos = 1.5;
@@ -1217,7 +1196,6 @@ export default function EnglishClassCourse2({
                           fontSize: 18,
                           bold: true,
                           color: partnerColor().replace("#", ""),
-                          fontFace: textGeneralFont(),
                         });
 
                         if (sentence.portuguese) {
@@ -1235,7 +1213,6 @@ export default function EnglishClassCourse2({
 
                             fontStyle: "italic",
                             color: darkGreyColor().replace("#", ""),
-                            fontFace: textGeneralFont(),
                           });
                         }
                         yPos += 1.4;
@@ -1270,7 +1247,6 @@ export default function EnglishClassCourse2({
                             bold: true,
                             align: "center",
                             color: partnerColor().replace("#", ""),
-                            fontFace: textTitleFont(),
                           });
                         }
 
@@ -1312,7 +1288,7 @@ export default function EnglishClassCourse2({
                                 h: 0.8,
                                 fontSize: 16,
                                 color: darkGreyColor().replace("#", ""),
-                                fontFace: textGeneralFont(),
+
                                 valign: "top",
                               });
                               yPos += 0.8;
@@ -1346,7 +1322,6 @@ export default function EnglishClassCourse2({
                       bold: true,
                       align: "center",
                       color: partnerColor().replace("#", ""),
-                      fontFace: textTitleFont(),
                     });
                   }
 
@@ -1379,7 +1354,6 @@ export default function EnglishClassCourse2({
                               bold: true,
                               align: "center",
                               color: partnerColor().replace("#", ""),
-                              fontFace: textTitleFont(),
                             });
                           }
                           yPos = 1.2;
@@ -1403,7 +1377,6 @@ export default function EnglishClassCourse2({
                             bold: true,
                             align: "left",
                             color: darkGreyColor().replace("#", ""),
-                            fontFace: textTitleFont(),
                           });
 
                           // Hífen separador
@@ -1427,7 +1400,7 @@ export default function EnglishClassCourse2({
                             fontSize: 16,
                             align: "left",
                             color: darkGreyColor().replace("#", ""),
-                            fontFace: textGeneralFont(),
+
                             italic: true,
                           });
 
@@ -1467,7 +1440,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "center",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
                       }
 
@@ -1490,7 +1462,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "left",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
 
                         // Fala da pessoa A
@@ -1502,7 +1473,7 @@ export default function EnglishClassCourse2({
                           fontSize: 16,
                           align: "left",
                           color: darkGreyColor().replace("#", ""),
-                          fontFace: textGeneralFont(),
+
                           valign: "top",
                         });
 
@@ -1526,7 +1497,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           align: "left",
                           color: partnerColor().replace("#", ""),
-                          fontFace: textTitleFont(),
                         });
 
                         // Fala da pessoa B
@@ -1538,7 +1508,7 @@ export default function EnglishClassCourse2({
                           fontSize: 16,
                           align: "left",
                           color: darkGreyColor().replace("#", ""),
-                          fontFace: textGeneralFont(),
+
                           valign: "top",
                         });
                       }
@@ -1579,7 +1549,6 @@ export default function EnglishClassCourse2({
                       bold: true,
                       align: "center",
                       color: partnerColor().replace("#", ""),
-                      fontFace: textTitleFont(),
                     });
 
                     const genericText = `Este slide representa um elemento do tipo "${element.type}". \\n\\nEdite este conteúdo conforme necessário.`;
@@ -1591,7 +1560,6 @@ export default function EnglishClassCourse2({
                       fontSize: 18,
                       align: "center",
                       color: darkGreyColor().replace("#", ""),
-                      fontFace: textGeneralFont(),
                     });
                   }
                 } catch (defaultError) {
@@ -1644,7 +1612,6 @@ export default function EnglishClassCourse2({
               bold: true,
               size: 48,
               color: partnerColor().replace("#", ""),
-              font: textTitleFont(),
             }),
           ],
           heading: HeadingLevel.TITLE,
@@ -1662,7 +1629,6 @@ export default function EnglishClassCourse2({
               text: safeSubtitle,
               size: 24,
               color: darkGreyColor().replace("#", ""),
-              font: textGeneralFont(),
             }),
           ],
           alignment: AlignmentType.CENTER,
@@ -1678,7 +1644,6 @@ export default function EnglishClassCourse2({
               text: `Data: ${new Date().toLocaleDateString("pt-BR")}`,
               size: 20,
               color: darkGreyColor().replace("#", ""),
-              font: textGeneralFont(),
             }),
           ],
           alignment: AlignmentType.CENTER,
@@ -1696,7 +1661,6 @@ export default function EnglishClassCourse2({
                 bold: true,
                 size: 24,
                 color: partnerColor().replace("#", ""),
-                font: textTitleFont(),
               }),
             ],
             heading: HeadingLevel.HEADING_1,
@@ -1711,7 +1675,6 @@ export default function EnglishClassCourse2({
               new TextRun({
                 text: safeDescription,
                 size: 22,
-                font: textGeneralFont(),
               }),
             ],
             spacing: { after: 400 },
@@ -1737,7 +1700,6 @@ export default function EnglishClassCourse2({
                       bold: true,
                       size: 28,
                       color: partnerColor().replace("#", ""),
-                      font: textTitleFont(),
                     }),
                   ],
                   heading: HeadingLevel.HEADING_1,
@@ -1756,7 +1718,6 @@ export default function EnglishClassCourse2({
                       text: safeDescription,
                       size: 20,
                       italics: true,
-                      font: textGeneralFont(),
                     }),
                   ],
                   spacing: { after: 300 },
@@ -1775,7 +1736,6 @@ export default function EnglishClassCourse2({
                         new TextRun({
                           text: safeText,
                           size: 22,
-                          font: textGeneralFont(),
                         }),
                       ],
                       spacing: { after: 300 },
@@ -1798,7 +1758,6 @@ export default function EnglishClassCourse2({
                               bold: true,
                               size: 22,
                               color: partnerColor().replace("#", ""),
-                              font: textTitleFont(),
                             }),
                           ],
                           spacing: { after: 100 },
@@ -1818,7 +1777,6 @@ export default function EnglishClassCourse2({
                                 size: 16,
                                 italics: true,
                                 color: darkGreyColor().replace("#", ""),
-                                font: textGeneralFont(),
                               }),
                             ],
                             spacing: { after: 200 },
@@ -1840,7 +1798,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 24,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
@@ -1855,7 +1812,6 @@ export default function EnglishClassCourse2({
                           new TextRun({
                             text: safeItem,
                             size: 20,
-                            font: textGeneralFont(),
                           }),
                         ],
                         spacing: { after: 150 },
@@ -1881,7 +1837,6 @@ export default function EnglishClassCourse2({
                           new TextRun({
                             text: safeParagraph,
                             size: 20,
-                            font: textGeneralFont(),
                           }),
                         ],
                         spacing: { after: 200 },
@@ -1904,7 +1859,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 22,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
@@ -1917,7 +1871,6 @@ export default function EnglishClassCourse2({
                         new TextRun({
                           text: safeAudioText,
                           size: 20,
-                          font: textGeneralFont(),
                         }),
                       ],
                       spacing: { after: 300 },
@@ -1934,7 +1887,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 22,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
@@ -1952,7 +1904,6 @@ export default function EnglishClassCourse2({
                               bold: true,
                               size: 20,
                               color: partnerColor().replace("#", ""),
-                              font: textTitleFont(),
                             }),
                           ],
                           spacing: { after: 100 },
@@ -1971,7 +1922,6 @@ export default function EnglishClassCourse2({
                                 text: `   ${safePortuguese}`,
                                 size: 18,
                                 color: darkGreyColor().replace("#", ""),
-                                font: textGeneralFont(),
                               }),
                             ],
                             spacing: { after: 200 },
@@ -1993,7 +1943,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 22,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
@@ -2009,7 +1958,6 @@ export default function EnglishClassCourse2({
                             new TextRun({
                               text: safeEnglish,
                               size: 20,
-                              font: textTitleFont(),
                             }),
                           ],
                           spacing: { after: 100 },
@@ -2028,7 +1976,6 @@ export default function EnglishClassCourse2({
                               text: `   ${safePortuguese}`,
                               size: 18,
                               color: darkGreyColor().replace("#", ""),
-                              font: textGeneralFont(),
                             }),
                           ],
                           spacing: { after: 150 },
@@ -2049,7 +1996,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 20,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
@@ -2072,7 +2018,6 @@ export default function EnglishClassCourse2({
                                 bold: true,
                                 size: 32,
                                 color: partnerColor().replace("#", ""),
-                                font: textTitleFont(),
                               }),
                             ],
                             heading: HeadingLevel.HEADING_2,
@@ -2095,7 +2040,6 @@ export default function EnglishClassCourse2({
                                   new TextRun({
                                     text: `• ${safeListItem}`,
                                     size: 22,
-                                    font: textGeneralFont(),
                                   }),
                                 ],
                                 spacing: { after: 200 },
@@ -2129,7 +2073,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 24,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 400, after: 300 },
@@ -2154,7 +2097,6 @@ export default function EnglishClassCourse2({
                                 bold: true,
                                 size: 20,
                                 color: darkGreyColor().replace("#", ""),
-                                font: textTitleFont(),
                               }),
                               new TextRun({
                                 text: " - ",
@@ -2166,7 +2108,7 @@ export default function EnglishClassCourse2({
                                 text: safePortuguese,
                                 size: 20,
                                 color: darkGreyColor().replace("#", ""),
-                                font: textGeneralFont(),
+
                                 italics: true,
                               }),
                             ],
@@ -2189,7 +2131,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 24,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 400, after: 300 },
@@ -2209,13 +2150,11 @@ export default function EnglishClassCourse2({
                               bold: true,
                               size: 18,
                               color: partnerColor().replace("#", ""),
-                              font: textTitleFont(),
                             }),
                             new TextRun({
                               text: safeDialogue,
                               size: 18,
                               color: darkGreyColor().replace("#", ""),
-                              font: textGeneralFont(),
                             }),
                           ],
                           spacing: { after: 150 },
@@ -2244,7 +2183,6 @@ export default function EnglishClassCourse2({
                           bold: true,
                           size: 20,
                           color: partnerColor().replace("#", ""),
-                          font: textTitleFont(),
                         }),
                       ],
                       spacing: { before: 300, after: 200 },
@@ -2259,7 +2197,6 @@ export default function EnglishClassCourse2({
                           size: 18,
                           italics: true,
                           color: darkGreyColor().replace("#", ""),
-                          font: textGeneralFont(),
                         }),
                       ],
                       spacing: { after: 300 },
@@ -2277,7 +2214,6 @@ export default function EnglishClassCourse2({
                     text: "─".repeat(50),
                     size: 16,
                     color: darkGreyColor().replace("#", ""),
-                    font: textGeneralFont(),
                   }),
                 ],
                 alignment: AlignmentType.CENTER,
@@ -3366,47 +3302,47 @@ export default function EnglishClassCourse2({
                   gap: "8px",
                 }}
               >
-                  <button
-                    title="Ver Quadro"
-                    onClick={() => {
-                      handleGetBoard(studentID);
-                      setTimeout(() => {
-                        setSeeSlides(!seeSlides);
-                        setConfirm(false);
-                      }, 500);
-                    }}
-                    style={{
-                      borderRadius: "4px",
-                      border: SeeMarginBoardStudent
-                        ? `2px solid ${partnerColor()}`
-                        : "1px solid #e2e8f0",
-                      backgroundColor: SeeMarginBoardStudent
-                        ? "#bfc2c5ff"
-                        : "#f8fafc",
-                      fontSize: "11px",
-                      fontWeight: "400",
-                      color: "#64748b",
-                      padding: "4px 6px",
-                      height: "28px",
-                      maxWidth: "70px",
-                      outline: "none",
-                      cursor: "pointer",
-                    }}
-                    onMouseEnter={(e) => {
-                      const target = e.target as HTMLElement;
-                      if (!seeSlides) {
-                        target.style.background = "#f1f5f9";
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      const target = e.target as HTMLElement;
-                      if (!seeSlides) {
-                        target.style.background = "#f8fafc";
-                      }
-                    }}
-                  >
-                    Lousa
-                  </button>
+                <button
+                  title="Ver Quadro"
+                  onClick={() => {
+                    handleGetBoard(studentID);
+                    setTimeout(() => {
+                      setSeeSlides(!seeSlides);
+                      setConfirm(false);
+                    }, 500);
+                  }}
+                  style={{
+                    borderRadius: "4px",
+                    border: SeeMarginBoardStudent
+                      ? `2px solid ${partnerColor()}`
+                      : "1px solid #e2e8f0",
+                    backgroundColor: SeeMarginBoardStudent
+                      ? "#bfc2c5ff"
+                      : "#f8fafc",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    color: "#64748b",
+                    padding: "4px 6px",
+                    height: "28px",
+                    maxWidth: "70px",
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                  onMouseEnter={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (!seeSlides) {
+                      target.style.background = "#f1f5f9";
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    const target = e.target as HTMLElement;
+                    if (!seeSlides) {
+                      target.style.background = "#f8fafc";
+                    }
+                  }}
+                >
+                  Lousa
+                </button>
                 <button
                   style={{
                     borderRadius: "4px",
@@ -3584,7 +3520,6 @@ export default function EnglishClassCourse2({
                     fontSize: "11px",
                     fontWeight: "400",
                     color: "#64748b",
-                    fontFamily: textGeneralFont(),
                   }}
                 >
                   <input
@@ -4294,7 +4229,6 @@ export default function EnglishClassCourse2({
                     padding: "8px 12px",
                     borderRadius: "8px",
                     fontSize: "12px",
-                    fontFamily: textGeneralFont(),
                   }}
                 >
                   <button

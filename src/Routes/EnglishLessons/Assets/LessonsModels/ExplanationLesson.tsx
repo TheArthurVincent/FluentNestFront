@@ -1,10 +1,6 @@
 import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import {
-  partnerColor,
-  textGeneralFont,
-  textTitleFont,
-} from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 interface ExplanationItem {
   title: string;
@@ -70,7 +66,6 @@ export default function ExplanationLesson({
                     zIndex: 1,
                     fontWeight: "600",
                     marginBottom: "12px",
-                    fontFamily: textTitleFont(),
                     fontSize: 20,
                     letterSpacing: "-0.03em",
                     lineHeight: "1.2",
@@ -149,7 +144,6 @@ export default function ExplanationLesson({
                               // fontSize: "17px",
                               fontWeight: "400",
                               lineHeight: "1.7",
-                              fontFamily: textGeneralFont(),
                               flex: 1,
                             }}
                           >

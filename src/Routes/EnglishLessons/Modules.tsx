@@ -9,11 +9,7 @@ import {
   pathGenerator,
 } from "../../Resources/UniversalComponents";
 import axios from "axios";
-import {
-  darkGreyColor,
-  partnerColor,
-  textTitleFont,
-} from "../../Styles/Styles";
+import { darkGreyColor, partnerColor } from "../../Styles/Styles";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import { CourseCard } from "./EnglishCourses.Styled";
 import EnglishClassCourse2 from "./Class";
@@ -193,123 +189,119 @@ export default function Modules({
               <CircularProgress style={{ color: partnerColor() }} />
             </>
           ) : (
-            <div
-className="flex-grid"
-         
-            >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                width: "90vw",
-                justifyContent: "left",
-                gap: "1rem",
-              }}
-            >
+            <div className="flex-grid">
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  width: "90vw",
+                  justifyContent: "left",
+                  gap: "1rem",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "10px",
+                    cursor: "pointer",
+
+                    textDecoration: "none",
+                    color: darkGreyColor(),
+                  }}
+                  onClick={() => window.location.assign("/teaching-materials")}
+                >
+                  Materiais de Ensino
+                </span>
+                <span
+                  style={{
+                    color: darkGreyColor(),
+                  }}
+                >
+                  -
+                </span>
+                <span
+                  style={{
+                    color: partnerColor(),
+                    fontSize: "10px",
+                    fontStyle: "italic",
+                    textDecoration: "none",
+                  }}
+                >
+                  {title}
+                </span>
+              </div>
               <span
                 style={{
-                  fontSize: "10px",
-                  cursor: "pointer",
-   
-                  textDecoration: "none",
-                  color: darkGreyColor(),
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "14px",
+                  fontWeight: "500",
                 }}
-                onClick={() => window.location.assign("/teaching-materials")}
               >
-                Materiais de Ensino
+                <span
+                  style={{
+                    display:
+                      thePermissions === "superadmin" ||
+                      thePermissions === "teacher"
+                        ? "block"
+                        : "none",
+                  }}
+                >
+                  <select
+                    onChange={(e) => handleStudentChange(e)}
+                    value={theStudentID}
+                    style={{
+                      borderRadius: "4px",
+                      border: "1px solid #e2e8f0",
+                      backgroundColor: "#f8fafc",
+                      fontSize: "11px",
+                      fontWeight: "400",
+                      color: "#64748b",
+                      padding: "4px 6px",
+                      height: "28px",
+                      minWidth: "120px",
+                      maxWidth: "150px",
+                      outline: "none",
+                      cursor: "pointer",
+                    }}
+                    onFocus={(e) =>
+                      (e.currentTarget.style.borderColor = partnerColor())
+                    }
+                    onBlur={(e) =>
+                      (e.currentTarget.style.borderColor = "#e2e8f0")
+                    }
+                  >
+                    {studentsList.map((student: any, index: number) => (
+                      <option key={index} value={student.id}>
+                        {student.name + " " + student.lastname}
+                      </option>
+                    ))}
+                  </select>
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search classes by name..."
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                  }}
+                  style={{
+                    borderRadius: "4px",
+                    border: "1px solid #e2e8f0",
+                    backgroundColor: "#f8fafc",
+                    fontSize: "11px",
+                    fontWeight: "400",
+                    color: "#64748b",
+                    padding: "4px 6px",
+                    height: "28px",
+                    minWidth: "120px",
+                    outline: "none",
+                  }}
+                />
               </span>
-              <span
-                style={{
-                  color: darkGreyColor(),
-                }}
-              >
-                -
-              </span>
-              <span
-                style={{
-                  color: partnerColor(),
-                  fontSize: "10px",
-                  fontStyle: "italic",
-                  textDecoration: "none",
-                }}
-              >
-                {title}
-              </span>
-            </div>
-                  <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              fontSize: "14px",
-              color: textTitleFont(),
-              fontWeight: "500",
-            }}
-          >
-  
-            <span
-              style={{
-                display:
-                  thePermissions === "superadmin" ||
-                  thePermissions === "teacher"
-                    ? "block"
-                    : "none",
-              }}
-            >
-              <select
-                onChange={(e) => handleStudentChange(e)}
-                value={theStudentID}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "11px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "4px 6px",
-                  height: "28px",
-                  minWidth: "120px",
-                  maxWidth: "150px",
-                  outline: "none",
-                  cursor: "pointer",
-                }}
-                onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = partnerColor())
-                }
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
-              >
-                {studentsList.map((student: any, index: number) => (
-                  <option key={index} value={student.id}>
-                    {student.name + " " + student.lastname}
-                  </option>
-                ))}
-              </select>
-            </span>
-                      <input
-              type="text"
-              placeholder="Search classes by name..."
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-              }}
-              style={{
-                borderRadius: "4px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "11px",
-                fontWeight: "400",
-                color: "#64748b",
-                padding: "4px 6px",
-                height: "28px",
-                minWidth: "120px",
-                outline: "none",
-              }}
-            />
-          </span>
             </div>
           )}
-    
-  
+
           {filtered
             .sort((a: any, b: any) => a.order - b.order)
             .map((module: any, index: number) => (

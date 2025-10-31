@@ -17,6 +17,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Raleway&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Teko:wght@300..700&display=swap');
 
 *::-webkit-scrollbar {
   width: 11px;
@@ -39,6 +40,7 @@ html {
 
 * {
   padding: 0;
+  font-family: Plus Jakarta Sans, "Inter", sans-serif;
   margin: 0;
 }
 
@@ -62,7 +64,6 @@ html {
 input,
 textarea,
 select {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -113,7 +114,6 @@ textarea {
 
 /* Universal button style - linguee inspired, discrete, structure only */
 button {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -273,7 +273,6 @@ h4 {
 .loading {
   text-align: center;
   padding: 40px;
-  font-family: "Lato", sans-serif;
   color: #444;
 }
 
@@ -1068,7 +1067,6 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   outline: none;
@@ -1109,7 +1107,6 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   outline: none;
@@ -1135,7 +1132,6 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23999' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
@@ -1226,7 +1222,6 @@ EXEMPLOS DE USO:
 
 .linguee-radio-label {
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   cursor: pointer;
   user-select: none;
@@ -1292,7 +1287,6 @@ EXEMPLOS DE USO:
 
 .linguee-checkbox-label {
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   cursor: pointer;
   user-select: none;
@@ -1356,7 +1350,6 @@ EXEMPLOS DE USO:
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   background-color: #fff;
   cursor: pointer;
@@ -1430,7 +1423,6 @@ EXEMPLOS DE USO:
 .linguee-label {
   display: block;
   font-size: 14px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   color: #111;
   margin-bottom: 4px;
   font-weight: 500;

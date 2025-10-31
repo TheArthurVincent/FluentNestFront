@@ -5,12 +5,9 @@ try {
     const defaultWL = {
       backgroundType: "color",
       color: "#ed5914",
-      backgroundColor: "#e7e7e7ff",
+      backgroundColor: "#eee",
       contrastColor: "#eee",
-      backgroundImage: "",
       logo: "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135",
-      textGeneralFont: "Roboto",
-      textTitleFont: "Roboto",
     };
     localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
   }
@@ -26,12 +23,7 @@ import { MessageDrive } from "./Routes/Message/Message";
 import { authorizationToken } from "./App.Styled";
 import { MyHeadersType } from "./Resources/types.universalInterfaces";
 import {
-  backgroundImage,
-  backgroundType,
   partnerColor,
-  textGeneralFont,
-  textTitleFont,
-  theBackgroundColor,
   textPrimaryColorContrast,
   logoPartner,
 } from "./Styles/Styles";
@@ -71,14 +63,9 @@ export var getWhiteLabel = (() => {
     if (wl) {
       const parsed = JSON.parse(wl);
       return {
-        backgroundType: parsed.backgroundType ?? backgroundType(),
         color: parsed.color ?? partnerColor(),
-        backgroundColor: parsed.backgroundColor ?? theBackgroundColor(),
         contrastColor: parsed.contrastColor ?? textPrimaryColorContrast(),
-        backgroundImage: parsed.backgroundImage ?? backgroundImage(),
         logo: parsed.logo ?? logoPartner(),
-        textGeneralFont: parsed.textGeneralFont ?? textGeneralFont(),
-        textTitleFont: parsed.textTitleFont ?? textTitleFont(),
       };
     }
   } catch (err) {
@@ -86,14 +73,9 @@ export var getWhiteLabel = (() => {
   }
   // Se não existe ou erro, retorna todos os padrões
   return {
-    backgroundType: backgroundType(),
     color: partnerColor(),
-    backgroundColor: theBackgroundColor(),
     contrastColor: textPrimaryColorContrast(),
-    backgroundImage: backgroundImage(),
     logo: logoPartner(),
-    textGeneralFont: textGeneralFont(),
-    textTitleFont: textTitleFont(),
   };
 })();
 
@@ -256,14 +238,6 @@ var headers: MyHeadersType = {
 function App() {
   var [_StudentId, setStudentId] = useState<string>("");
 
-  // Protege manipulação do DOM
-  try {
-    document.body.style.backgroundColor = theBackgroundColor();
-    document.body.style.backgroundImage = "";
-  } catch (err) {
-    console.warn("[App] Erro ao definir background:", err);
-  }
-
   const [isResponsible, setIsResponsible] = useState<boolean>(false);
 
   useEffect(() => {
@@ -282,20 +256,12 @@ function App() {
         console.warn("[App] Erro ao verificar responsável:", err);
       }
       // Aplica fontes apenas se existir
-      document.body.style.fontFamily = textGeneralFont();
-      // Aplica em h1/h2 apenas se existir
       ["h1", "h2"].forEach((tag) => {
         const el = document.querySelector(tag);
         if (el && el instanceof HTMLElement) {
-          el.style.fontFamily = textTitleFont();
           el.style.color = partnerColor();
         }
       });
-      // Aplica em input/select apenas se existir
-      const inputEl = document.querySelector("input");
-      if (inputEl) inputEl.style.fontFamily = textGeneralFont();
-      const selectEl = document.querySelector("select");
-      if (selectEl) selectEl.style.fontFamily = textTitleFont();
 
       if (user) {
         try {

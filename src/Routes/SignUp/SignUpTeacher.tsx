@@ -4,7 +4,6 @@ import React from "react";
 import { backDomain } from "../../Resources/UniversalComponents";
 import { HOne, HTwo } from "../../Resources/Components/RouteBox";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
-import { partnerColor, textTitleFont } from "../../Styles/Styles";
 
 export const generateUsername = (
   name: string,

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { textGeneralFont, partnerColor } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 export default function TextAreaLesson() {
   const [value, setValue] = useState("");
@@ -33,7 +33,6 @@ export default function TextAreaLesson() {
     >
       <div
         style={{
-          fontFamily: textGeneralFont(),
           fontSize: "14px",
           fontWeight: "600",
           color: partnerColor(),
@@ -56,7 +55,7 @@ export default function TextAreaLesson() {
           width: "100%",
           minHeight: "120px",
           padding: "16px",
-          fontFamily: textGeneralFont(),
+
           fontSize: "14px",
           lineHeight: "1.6",
           border: isFocused

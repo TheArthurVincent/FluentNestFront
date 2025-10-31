@@ -11,7 +11,6 @@ import {
   darkGreyColor,
   lightGreyColor,
   partnerColor,
-  textTitleFont,
 } from "../../Styles/Styles";
 import CoursesSideBar from "../../Application/CoursesSideBar/CoursesSideBar";
 import styled from "styled-components";

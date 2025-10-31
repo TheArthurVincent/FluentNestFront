@@ -1,6 +1,6 @@
 import React from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { partnerColor, textGeneralFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 
 interface TextLessonModelProps {
   headers: MyHeadersType | null;
@@ -51,7 +51,6 @@ export default function TextLessonModel({ text, image }: TextLessonModelProps) {
         {/* Text content */}
         <div
           style={{
-            fontFamily: textGeneralFont(),
             fontSize: "16px",
             lineHeight: "1.8",
             color: "#2c3e50",

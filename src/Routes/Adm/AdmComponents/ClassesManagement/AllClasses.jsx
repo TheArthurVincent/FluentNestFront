@@ -4,7 +4,7 @@ import { HOne } from "../../../../Resources/Components/RouteBox";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { Button, CircularProgress, Input, Modal } from "@mui/material";
 import { Link } from "react-router-dom";
-import { partnerColor, textTitleFont } from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { HThree } from "../../../MyClasses/MyClasses.Styled";
 
 export function AllClasses({ headers }) {

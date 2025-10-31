@@ -3,15 +3,10 @@ import axios from "axios";
 import {
   alwaysBlack,
   alwaysWhite,
-  backgroundImage,
-  backgroundType,
   logoPartner,
   partnerColor,
-  textGeneralFont,
   textpartnerColorContrast,
   textPrimaryColorContrast,
-  textTitleFont,
-  theBackgroundColor,
 } from "../../../../Styles/Styles";
 import { HOne, HTwo } from "../../../../Resources/Components/RouteBox";
 import { useUserContext } from "../../../../Application/SelectLanguage/SelectLanguage";
@@ -32,18 +27,12 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 export default function WhiteLabelPreview({ headers }) {
   const [studentID, setid] = useState("");
   const [previewLogo, setPreviewLogo] = useState(logoPartner());
-  const [previewBackground, setPreviewBackground] = useState(backgroundImage());
   const [tabValue, setTabValue] = useState("1");
   const [goldVisible, setGoldVisible] = useState(false);
   const [formData, setFormData] = useState({
-    backgroundType: "color", // "image" ou "color"
-    backgroundImage: backgroundImage(),
-    backgroundColor: theBackgroundColor(),
     logo: logoPartner(),
     color: partnerColor(),
     contrastColor: textPrimaryColorContrast(),
-    textTitleFont: textTitleFont(),
-    textGeneralFont: textGeneralFont(),
   });
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -146,7 +135,6 @@ export default function WhiteLabelPreview({ headers }) {
           fontSize: "1.5rem",
           textAlign: "center",
           color: formData.color,
-          fontFamily: formData.textTitleFont,
         }}
       >
         Exemplo de Título
@@ -158,7 +146,6 @@ export default function WhiteLabelPreview({ headers }) {
           padding: "0.6rem",
           marginBottom: "1rem",
           color: formData.color,
-          fontFamily: formData.textTitleFont,
         }}
       >
         Exemplo de Subtítulo
@@ -167,14 +154,11 @@ export default function WhiteLabelPreview({ headers }) {
         style={{
           fontSize: "1.1rem",
           padding: "6px",
-          fontFamily: formData.textGeneralFont,
         }}
       >
         Exemplo de Subtítulo
       </h3>
-      <p style={{ fontFamily: formData.textGeneralFont }}>
-        Visualização com o fundo, cores e fontes escolhidas.
-      </p>
+      <p>Visualização com o fundo, cores e fontes escolhidas.</p>
       <div
         style={{
           margin: "2rem",
@@ -188,14 +172,11 @@ export default function WhiteLabelPreview({ headers }) {
           style={{
             backgroundColor: formData.color,
             color: formData.contrastColor,
-            fontFamily: formData.textGeneralFont,
           }}
         >
           Botão de exemplo
         </button>
-        <button style={{ fontFamily: formData.textGeneralFont }}>
-          Botão de exemplo
-        </button>
+        <button>Botão de exemplo</button>
       </div>
     </div>
   );
@@ -207,22 +188,15 @@ export default function WhiteLabelPreview({ headers }) {
           fontSize: "1.3rem",
           textAlign: "center",
           color: formData.color,
-          fontFamily: formData.textTitleFont,
         }}
       >
         Detalhes do Tema
       </h1>
-      <p style={{ fontFamily: formData.textGeneralFont }}>
+      <p>
         Aqui você pode visualizar informações específicas sobre as fontes e
         cores escolhidas para o seu tema.
       </p>
-      <ul style={{ fontFamily: formData.textGeneralFont, paddingLeft: "1rem" }}>
-        <li>
-          <strong>Fonte Título:</strong> {formData.textTitleFont}
-        </li>
-        <li>
-          <strong>Fonte Geral:</strong> {formData.textGeneralFont}
-        </li>
+      <ul style={{ paddingLeft: "1rem" }}>
         <li>
           <strong>Cor Principal:</strong>{" "}
           <span style={{ color: formData.color }}>{formData.color}</span>
@@ -238,18 +212,15 @@ export default function WhiteLabelPreview({ headers }) {
           fontSize: "1.3rem",
           textAlign: "center",
           color: formData.color,
-          fontFamily: formData.textTitleFont,
         }}
       >
         Mais informações
       </h1>
-      <p style={{ fontFamily: formData.textGeneralFont }}>
+      <p>
         Nesta aba você pode adicionar elementos futuros, exemplos de uso do
         tema, ou botões personalizados.
       </p>
-      <button style={{ fontFamily: formData.textGeneralFont }}>
-        Testar botão adicional
-      </button>
+      <button>Testar botão adicional</button>
     </div>
   );
 
@@ -340,18 +311,10 @@ export default function WhiteLabelPreview({ headers }) {
   };
 
   const sampleStyles = {
-    backgroundImage:
-      formData.backgroundType === "image"
-        ? `url(${previewBackground})`
-        : "none",
-    backgroundColor:
-      formData.backgroundType === "color"
-        ? formData.backgroundColor
-        : "transparent",
+    backgroundColor: "#eee",
     backgroundSize: "cover",
     backgroundPosition: "center",
     overflowY: "auto",
-    fontFamily: formData.textGeneralFont,
     color: formData.contrastColor,
     borderRadius: "4px",
     marginTop: "40px",
@@ -373,7 +336,7 @@ export default function WhiteLabelPreview({ headers }) {
     border: "none",
     borderRadius: "4px",
     fontSize: "16px",
-    fontFamily: formData.textTitleFont,
+
     cursor: "pointer",
   };
   const { UniversalTexts } = useUserContext();
@@ -562,85 +525,6 @@ export default function WhiteLabelPreview({ headers }) {
                 }}
               />
             </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "15px",
-                padding: "10px",
-                width: "200px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
-            >
-              <div style={{ display: "grid", gap: "5px" }}>
-                {" "}
-                <label
-                  style={{
-                    padding: "5px",
-                    borderRadius: "4px",
-                    color: formData.color,
-                    fontSize: "1.4rem",
-                    fontWeight: "600",
-                    fontFamily: formData.textTitleFont,
-                  }}
-                >
-                  Fonte Primária (para títulos):{" "}
-                </label>
-                <select
-                  style={{
-                    maxWidth: "160px",
-                  }}
-                  name="textTitleFont"
-                  value={formData.textTitleFont}
-                  onChange={handleChange}
-                >
-                  {titleFonts.map((font) => (
-                    <option key={font} value={font}>
-                      {font}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginBottom: "15px",
-                padding: "10px",
-                width: "200px",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-              }}
-            >
-              <div style={{ display: "grid" }}>
-                <label
-                  style={{
-                    padding: "5px",
-                    borderRadius: "4px",
-                    fontFamily: formData.textGeneralFont,
-                  }}
-                >
-                  Fonte Secundária (para textos):{" "}
-                </label>
-                <select
-                  name="textGeneralFont"
-                  value={formData.textGeneralFont}
-                  onChange={handleChange}
-                >
-                  {generalTextFonts.map((font) => (
-                    <option key={font} value={font}>
-                      {font}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
             {goldVisible ? (
               <UpgradeGoldButton />
             ) : (
@@ -706,7 +590,6 @@ export default function WhiteLabelPreview({ headers }) {
                       />
                       <span
                         style={{
-                          fontFamily: formData.textGeneralFont,
                           color: link.color ? formData.color : alwaysBlack(),
                           textAlign: "center",
                         }}
@@ -746,7 +629,6 @@ export default function WhiteLabelPreview({ headers }) {
                       aria-label="tabs preview"
                       sx={{
                         "& .MuiTab-root": {
-                          fontFamily: formData.textTitleFont,
                           color: "black",
                           fontWeight: 500,
                         },
@@ -798,18 +680,8 @@ export default function WhiteLabelPreview({ headers }) {
                         borderRadius: "4px",
                       }}
                     >
-                      <h1
-                        style={{
-                          fontFamily: formData.textTitleFont,
-                        }}
-                      >
-                        Contraste
-                      </h1>
-                      <p
-                        style={{
-                          fontFamily: formData.textGeneralFont,
-                        }}
-                      >
+                      <h1 style={{}}>Contraste</h1>
+                      <p>
                         Este é um exemplo de contraste entre as cores. Escolha
                         entre **preto** ou **branco** a opção que oferece melhor
                         legibilidade e harmonia visual com a sua marca.

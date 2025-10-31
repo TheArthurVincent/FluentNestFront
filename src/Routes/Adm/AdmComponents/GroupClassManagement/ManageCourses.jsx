@@ -7,7 +7,6 @@ import {
   alwaysWhite,
   lightGreyColor,
   partnerColor,
-  textTitleFont,
 } from "../../../../Styles/Styles";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";

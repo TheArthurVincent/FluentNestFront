@@ -4,7 +4,7 @@ import Tab from "@mui/material/Tab";
 import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
-import { alwaysWhite, partnerColor, textTitleFont } from "../../Styles/Styles";
+import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 import NewPost from "./AdmComponents/PostsManagement/NewPost";
 import Helmets from "../../Resources/Helmets";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
@@ -148,10 +148,8 @@ export function Adm({ headers }: HeadersProps) {
           >
             <TabList
               sx={{
-                fontFamily: textTitleFont(),
                 color: partnerColor(),
                 "& .MuiTab-root": {
-                  fontFamily: textTitleFont(),
                   color: partnerColor(),
                 },
                 "& .Mui-selected": {

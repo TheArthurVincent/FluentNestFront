@@ -274,7 +274,6 @@ const AddFlashCards = ({
                         border: "1px solid #ccc",
                         borderRadius: "4px",
                         fontSize: "14px",
-                        fontFamily: "inherit",
                         resize: "vertical",
                       }}
                     />
