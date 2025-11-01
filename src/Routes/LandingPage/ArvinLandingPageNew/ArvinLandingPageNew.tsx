@@ -8,6 +8,7 @@ import {
 } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 import { fontSize } from "@mui/system";
+import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -622,7 +623,7 @@ function ArvinLandingPageNew() {
                       height: "auto",
                       objectFit: "contain",
                     }}
-                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Card.svg"
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/up.svg"
                   />
                 ) : (
                   <img
@@ -631,23 +632,189 @@ function ArvinLandingPageNew() {
                       height: "auto",
                       objectFit: "contain",
                     }}
-                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Card%20(1).svg"
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/down.svg"
                   />
                 )}
               </div>
             </div>
           </section>
+
           <section
             style={{
-              backgroundColor: "#fff",
+              backgroundColor: "#101721",
               width: "100%",
               padding: "24px",
               margin: "0 auto",
               boxSizing: "border-box",
             }}
           >
-            {" "}
+            <div
+              style={{
+                maxWidth: 850,
+                margin: "0 auto",
+                display: "grid",
+                gap: "12px",
+                textAlign: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  fontStyle: "bold",
+                  fontSize: "12px",
+                  lineHeight: "150%",
+                  letterSpacing: "0%",
+                  textAlign: "center",
+                  textTransform: "uppercase",
+                  color: "#ED5914",
+                }}
+              >
+                TESTEMUNHOS
+              </div>
+              <p
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  fontStyle: "Bold",
+                  fontSize: "24px",
+                  lineHeight: "150%",
+                  letterSpacing: "-3%",
+                  textAlign: "center",
+                  color: "#FFFFFF",
+                }}
+              >
+                O que dizem os nossos parceiros
+              </p>
+              <p
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 500,
+                  fontStyle: "Medium",
+                  fontSize: "14px",
+                  lineHeight: "150%",
+                  letterSpacing: "-2%",
+                  textAlign: "center",
+                  color: "#90A3BF",
+                }}
+              >
+                Depoimentos reais de quem já usa o Arvin para transformar suas
+                aulas, gerenciar alunos e conquistar mais resultados.
+              </p>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(384px, 1fr))",
+                  gap: "24px",
+                }}
+              >
+                {testimonialsArvin.map((item: any, index: any) => {
+                  return (
+                    <div
+                      key={index}
+                      style={{
+                        display: "flex",
+                        backgroundColor: "#1A202C",
+                        padding: "24px",
+                        justifyContent: "center",
+                        textAlign: "left",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "40px",
+                          width: "100%",
+                          flexDirection: "column",
+                        }}
+                      >
+                        <div>
+                          {" "}
+                          <p
+                            style={{
+                              marginBottom: "12px",
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: " 700",
+                              fontStyle: " Bold",
+                              fontSize: " 16px",
+                              lineHeight: "150%",
+                              letterSpacing: -"2%",
+                              color: "#FFFFFF",
+                            }}
+                          >
+                            {item.title}{" "}
+                          </p>
+                          <p
+                            style={{
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: 500,
+                              fontStyle: "Medium",
+                              fontSize: "14px",
+                              lineHeight: "150%",
+                              letterSpacing: "-2%",
+                              color: "#F3F5F7",
+                            }}
+                          >
+                            {item.description}
+                          </p>
+                        </div>
+                        <div
+                          style={{
+                            border: "1px solid rgba(144, 163, 191, 0.2",
+                          }}
+                        />
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                          }}
+                        >
+                          <img
+                            style={{
+                              width: 56,
+                              height: 56,
+                              borderRadius: "10.5px",
+                            }}
+                            src={item.img}
+                            alt={item.name}
+                          />
+                          <div>
+                            <p
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontWeight: 700,
+                                fontStyle: "Bold",
+                                fontSize: "18px",
+                                lineHeight: "150%",
+                                letterSpacing: "-3%",
+                                color: "#FFFFFF",
+                              }}
+                            >
+                              {item.name}
+                            </p>
+                            <p
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontWeight: 400,
+                                fontSize: "14px",
+                                lineHeight: "150%",
+                                letterSpacing: "-3%",
+                                color: "#C3D4E9",
+                              }}
+                            >
+                              {item.role}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </section>
+          <div style={{ height: "1000px" }} />
         </div>
       </div>
     </div>
