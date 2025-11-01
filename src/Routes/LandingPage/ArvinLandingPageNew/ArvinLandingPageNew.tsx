@@ -136,12 +136,7 @@ function ArvinLandingPageNew() {
   };
 
   return (
-    <div
-      className="arvin-landing-page-container"
-      style={{
-        marginBottom: "1000px",
-      }}
-    >
+    <div className="arvin-landing-page-container">
       <div className="arvin-landing-page-container-inside">
         <div
           style={{
@@ -313,7 +308,6 @@ function ArvinLandingPageNew() {
                   fontSize: "24px",
                   lineHeight: "150%",
                   letterSpacing: "-3%",
-                  
                 }}
               >
                 O que você ganha ao empreender com a gente?
