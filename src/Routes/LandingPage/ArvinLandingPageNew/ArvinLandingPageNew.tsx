@@ -134,6 +134,33 @@ function ArvinLandingPageNew() {
     safeStorage.set("arvin_selected_lang", lang);
     handleClose();
   };
+  const [selectedToggle, setSelectedToggle] = useState(1);
+
+
+  const selectedToggle1 = {
+    paddingTop: "13px",
+    cursor: "pointer",
+    paddingRight: "24px",
+    paddingBottom: "13px",
+    borderRadius: "30px",
+    paddingLeft: "24px",
+    backgroundColor: selectedToggle == 1 ? "#ED5914" : "#101721",
+    color: "#FFF",
+    fontFamily: "Plus Jakarta Sans",
+  };
+
+
+  const selectedToggle2 = {
+    cursor: "pointer",
+    paddingTop: "13px",
+    paddingRight: "24px",
+    paddingBottom: "13px",
+    paddingLeft: "24px",
+    borderRadius: "30px",
+    backgroundColor: "#f3f5f7",
+    color: "#90A3BF",
+    fontFamily: "Plus Jakarta Sans",
+  };
 
   return (
     <div className="arvin-landing-page-container">
@@ -383,6 +410,95 @@ function ArvinLandingPageNew() {
                   </div>
                 );
               })}
+            </div>
+          </section>
+          <section
+            style={{
+              backgroundColor: "#fff",
+              width: "100vw",
+              padding: "24px",
+              margin: "0 auto",
+            }}
+          >
+            <div
+              style={{
+                maxWidth: 850,
+                margin: "0 auto",
+                display: "grid",
+                gap: "12px",
+                textAlign: "left",
+              }}
+            >
+              <div
+                style={{
+                  color: "#ED5914",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  fontStyle: "Bold",
+                  fontSize: "12px",
+                  lineHeight: "150%",
+                  letterSpacing: "0%",
+                  textTransform: "uppercase",
+                }}
+              >
+                A FÓRMULA DO SUCESSO
+              </div>
+              <div
+                style={{
+                  color: "#101721",
+                  fontFamily: "Plus Jakarta Sans",
+                  marginTop: "6px",
+                  fontWeight: 700,
+                  padding: "2px",
+                  fontStyle: "Bold",
+                  fontSize: "24px",
+                  lineHeight: "150%",
+                  letterSpacing: "-3%",
+                }}
+              >
+                Saiba por que o Arvin é essencial para o seu sucesso
+              </div>
+              <div
+                style={{
+                  gap: "10px",
+                  fontWeight: 600,
+                  maxWidth: 400,
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  opacity: 1,
+                  borderRadius: "30px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  backgroundColor: "#f3f5f7",
+                }}
+              >
+                <div
+                  onClick={() => {
+                    setSelectedToggle(1);
+                  }}
+                  style={
+                    selectedToggle == 1 ? selectedToggle1 : selectedToggle2
+                  }
+                >
+                  Com o Arvin
+                </div>
+                <div
+                  onClick={() => {
+                    setSelectedToggle(2);
+                  }}
+                  style={
+                    selectedToggle == 2 ? selectedToggle1 : selectedToggle2
+                  }
+                >
+                  Sem o Arvin
+                </div>
+              </div>
+
+              <div>
+                Tenha acesso a ferramentas que ajudam a otimizar o ensino e a
+                gestão do seu negócio, proporcionando uma experiência eficiente
+                e personalizada tanto para o professor quanto para o aluno.
+              </div>
             </div>
           </section>
         </div>
