@@ -136,7 +136,6 @@ function ArvinLandingPageNew() {
   };
   const [selectedToggle, setSelectedToggle] = useState(1);
 
-
   const selectedToggle1 = {
     paddingTop: "13px",
     cursor: "pointer",
@@ -148,7 +147,6 @@ function ArvinLandingPageNew() {
     color: "#FFF",
     fontFamily: "Plus Jakarta Sans",
   };
-
 
   const selectedToggle2 = {
     cursor: "pointer",
