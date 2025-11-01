@@ -7,6 +7,7 @@ import {
   XCircleIcon,
 } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
+import { fontSize } from "@mui/system";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -141,11 +142,12 @@ function ArvinLandingPageNew() {
   const [selectedToggle, setSelectedToggle] = useState(1);
 
   const selectedToggle1 = {
-    paddingTop: "13px",
     cursor: "pointer",
+    borderRadius: "30px",
+    fontSize: "14px",
+    paddingTop: "13px",
     paddingRight: "24px",
     paddingBottom: "13px",
-    borderRadius: "30px",
     paddingLeft: "24px",
     backgroundColor: selectedToggle == 1 ? "#ED5914" : "#101721",
     color: "#FFF",
@@ -153,12 +155,13 @@ function ArvinLandingPageNew() {
   };
 
   const selectedToggle2 = {
+    borderRadius: "30px",
     cursor: "pointer",
+    fontSize: "14px",
     paddingTop: "13px",
     paddingRight: "24px",
     paddingBottom: "13px",
     paddingLeft: "24px",
-    borderRadius: "30px",
     backgroundColor: "#f3f5f7",
     color: "#90A3BF",
     fontFamily: "Plus Jakarta Sans",
@@ -256,7 +259,7 @@ function ArvinLandingPageNew() {
                 textAlign: "center",
               }}
             >
-              Conquiste mais alunos, tenha total controle da sua agenda e
+              Engaje seus alunos, tenha total controle da sua agenda e
               transforme sua forma de ensinar com metodologias e ferramentas que
               realmente funcionam.
             </div>
@@ -473,13 +476,13 @@ function ArvinLandingPageNew() {
                 style={{
                   gap: "10px",
                   fontWeight: 600,
-                  maxWidth: 400,
-                  marginLeft: "auto",
-                  marginRight: "auto",
                   marginBottom: "24px",
                   opacity: 1,
                   borderRadius: "30px",
-                  display: "flex",
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  alignItems: "center",
+                  textAlign: "center",
                   justifyContent: "space-between",
                   backgroundColor: "#f3f5f7",
                 }}
