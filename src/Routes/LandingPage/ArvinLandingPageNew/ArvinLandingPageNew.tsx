@@ -98,7 +98,6 @@ function ArvinLandingPageNew() {
     return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
   };
 
-  // Limpeza de chaves legadas ao montar
   useEffect(() => {
     const keysToDrop = [
       "loggedIn",
@@ -124,7 +123,7 @@ function ArvinLandingPageNew() {
   const defaultLang = useMemo(() => {
     const stored = safeStorage.get("arvin_selected_lang");
     const found = languages.find((l) => l.code === stored?.code);
-    return found || languages[1]; // pt como padrão
+    return found || languages[1];
   }, []);
 
   const [selectedLang, setSelectedLang] = useState<any>(defaultLang);
@@ -167,7 +166,14 @@ function ArvinLandingPageNew() {
 
   return (
     <div className="arvin-landing-page-container">
-      <div className="arvin-landing-page-container-inside">
+      <div
+        className="arvin-landing-page-container-inside"
+        style={{
+          boxSizing: "border-box",
+          width: "100%",
+          minHeight: "100dvh",
+        }}
+      >
         <div
           style={{
             height: 96,
@@ -302,9 +308,10 @@ function ArvinLandingPageNew() {
           <section
             style={{
               backgroundColor: "#fff",
-              width: "100vw",
+              width: "100%",
               padding: "24px",
               margin: "0 auto",
+              boxSizing: "border-box",
             }}
           >
             <div
@@ -418,9 +425,10 @@ function ArvinLandingPageNew() {
           <section
             style={{
               backgroundColor: "#fff",
-              width: "100vw",
+              width: "100%",
               padding: "24px",
               margin: "0 auto",
+              boxSizing: "border-box",
             }}
           >
             <div
