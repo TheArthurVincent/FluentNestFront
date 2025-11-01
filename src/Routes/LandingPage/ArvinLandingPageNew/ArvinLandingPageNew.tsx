@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
-import { ListIcon } from "@phosphor-icons/react";
+import { ListIcon, StackPlusIcon } from "@phosphor-icons/react";
+import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -135,7 +136,12 @@ function ArvinLandingPageNew() {
   };
 
   return (
-    <div className="arvin-landing-page-container">
+    <div
+      className="arvin-landing-page-container"
+      style={{
+        marginBottom: "1000px",
+      }}
+    >
       <div className="arvin-landing-page-container-inside">
         <div
           style={{
@@ -164,7 +170,6 @@ function ArvinLandingPageNew() {
               Inscrever-se
             </button>
           </div>
-
           <div className="arvin-landing-page-hamburguer-menu">
             <span
               style={{
@@ -182,18 +187,19 @@ function ArvinLandingPageNew() {
             </span>
           </div>
         </div>
-        <div
-          style={{
-            maxWidth: 500,
-            margin: "0 auto",
-          }}
-        >
-          <section>
+        <div>
+          <section
+            style={{
+              margin: "0 auto",
+              maxWidth: 500,
+            }}
+          >
             <div
               style={{
                 fontWeight: 700,
                 fontStyle: "Bold",
                 fontSize: "36px",
+                maxWidth: 500,
                 lineHeight: "120%",
                 margin: "16px 24px",
                 letterSpacing: "-3%",
@@ -206,6 +212,7 @@ function ArvinLandingPageNew() {
             <div
               style={{
                 fontFamily: "Plus Jakarta Sans",
+                maxWidth: 500,
                 fontWeight: 400,
                 fontStyle: "Regular",
                 fontSize: "16px",
@@ -225,6 +232,8 @@ function ArvinLandingPageNew() {
             style={{
               display: "grid",
               gap: "16px",
+              maxWidth: 500,
+              margin: "0 auto",
               padding: "24px",
             }}
           >
@@ -262,6 +271,123 @@ function ArvinLandingPageNew() {
             >
               Ver planos
             </button>
+          </section>
+          <section
+            style={{
+              backgroundColor: "#fff",
+              width: "100vw",
+              padding: "24px",
+              margin: "0 auto",
+            }}
+          >
+            <div
+              style={{
+                maxWidth: 500,
+                margin: "0 auto",
+                display: "grid",
+                gap: "12px",
+                textAlign: "left",
+              }}
+            >
+              <div
+                style={{
+                  color: "#ED5914",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  fontStyle: "Bold",
+                  fontSize: "12px",
+                  lineHeight: "150%",
+                  letterSpacing: "0%",
+                  textTransform: "uppercase",
+                }}
+              >
+                PRINCIPAIS FUNCIONALIDADES
+              </div>
+              <div
+                style={{
+                  color: "#101721",
+                  fontFamily: "Plus Jakarta Sans",
+                  marginTop: "6px",
+                  fontWeight: 700,
+                  fontStyle: "Bold",
+                  fontSize: "24px",
+                  lineHeight: "150%",
+                  letterSpacing: "-3%",
+                  
+                }}
+              >
+                O que você ganha ao empreender com a gente?
+              </div>
+              <div>
+                Tenha acesso a ferramentas que ajudam a otimizar o ensino e a
+                gestão do seu negócio, proporcionando uma experiência eficiente
+                e personalizada tanto para o professor quanto para o aluno.
+              </div>
+              <div>O que você ganha ao empreender com a gente?</div>
+              <div>
+                Tenha acesso a ferramentas que ajudam a otimizar o ensino e a
+                gestão do seu negócio, proporcionando uma experiência eficiente
+                e personalizada tanto para o professor quanto para o aluno.
+              </div>
+              {featuresArvin.map((item: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className="arvin-landing-page-feature-item"
+                    style={{
+                      marginTop: "32px",
+                    }}
+                  >
+                    {item.icon && (
+                      <div
+                        style={{
+                          backgroundColor: "#ED5914",
+                          display: "inline-flex",
+                          padding: "12px",
+                          borderRadius: "8px",
+                        }}
+                      >
+                        {item.icon}
+                      </div>
+                    )}
+                    <div>
+                      {item.title && (
+                        <p
+                          style={{
+                            color: "#101721",
+                            fontFamily: "Plus Jakarta Sans",
+                            fontWeight: 600,
+                            fontStyle: "SemiBold",
+                            marginTop: "16px",
+                            marginBottom: "8px",
+                            fontSize: "18px",
+                            lineHeight: "150%",
+                            letterSpacing: "-3%",
+                          }}
+                        >
+                          {item.title}
+                        </p>
+                      )}
+                      {item.description && (
+                        <p
+                          style={{
+                            fontFamily: "Plus Jakarta Sans",
+                            fontWeight: 500,
+                            fontStyle: "Medium",
+                            fontSize: "14px",
+                            lineHeight: "150%",
+                            color: "#596780",
+                            letterSpacing: "-2%",
+                          }}
+                        >
+                          {item.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </section>
         </div>
       </div>
