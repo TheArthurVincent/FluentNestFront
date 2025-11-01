@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
-import { ListIcon, StackPlusIcon } from "@phosphor-icons/react";
+import { ListIcon } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 
 const safeStorage = {
@@ -141,6 +141,8 @@ function ArvinLandingPageNew() {
         <div
           style={{
             height: 96,
+            maxWidth: 1700,
+            margin: "0 auto",
             padding: 24,
             boxSizing: "border-box",
             display: "flex",
@@ -186,7 +188,7 @@ function ArvinLandingPageNew() {
           <section
             style={{
               margin: "0 auto",
-              maxWidth: 500,
+              maxWidth: 850,
             }}
           >
             <div
@@ -194,7 +196,7 @@ function ArvinLandingPageNew() {
                 fontWeight: 700,
                 fontStyle: "Bold",
                 fontSize: "36px",
-                maxWidth: 500,
+                maxWidth: 850,
                 lineHeight: "120%",
                 margin: "16px 24px",
                 letterSpacing: "-3%",
@@ -202,12 +204,12 @@ function ArvinLandingPageNew() {
                 textAlign: "center",
               }}
             >
-              Não existe outra plataforma tão completa para professores!
+              Não existe outra plataforma tão completa para professores!
             </div>
             <div
               style={{
                 fontFamily: "Plus Jakarta Sans",
-                maxWidth: 500,
+                maxWidth: 850,
                 fontWeight: 400,
                 fontStyle: "Regular",
                 fontSize: "16px",
@@ -227,7 +229,7 @@ function ArvinLandingPageNew() {
             style={{
               display: "grid",
               gap: "16px",
-              maxWidth: 500,
+              maxWidth: 850,
               margin: "0 auto",
               padding: "24px",
             }}
@@ -277,7 +279,7 @@ function ArvinLandingPageNew() {
           >
             <div
               style={{
-                maxWidth: 500,
+                maxWidth: 850,
                 margin: "0 auto",
                 display: "grid",
                 gap: "12px",
