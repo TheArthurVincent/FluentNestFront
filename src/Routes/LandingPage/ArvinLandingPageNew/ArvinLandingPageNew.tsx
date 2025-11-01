@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
-import { ListIcon } from "@phosphor-icons/react";
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  ListIcon,
+  XCircleIcon,
+} from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 
 const safeStorage = {
@@ -463,6 +468,7 @@ function ArvinLandingPageNew() {
                   maxWidth: 400,
                   marginLeft: "auto",
                   marginRight: "auto",
+                  marginBottom: "24px",
                   opacity: 1,
                   borderRadius: "30px",
                   display: "flex",
@@ -491,11 +497,86 @@ function ArvinLandingPageNew() {
                   Sem o Arvin
                 </div>
               </div>
-
               <div>
-                Tenha acesso a ferramentas que ajudam a otimizar o ensino e a
-                gestão do seu negócio, proporcionando uma experiência eficiente
-                e personalizada tanto para o professor quanto para o aluno.
+                <div
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 700,
+                    fontStyle: "Bold",
+                    fontSize: "16px",
+                    lineHeight: "150%",
+                    letterSpacing: "-3%",
+                    marginBottom: "24px",
+                  }}
+                >
+                  Vantagens exclusivas para o seu ensino
+                </div>
+                {selectedToggle === 1 &&
+                  [
+                    "Acompanhe o progresso dos alunos em tempo real e organize tudo em um único lugar.",
+                    "Ofereça materiais didáticos prontos e personalize a experiência de ensino.",
+                    "Automatize relatórios financeiros e o envio de conteúdos com facilidade.",
+                  ].map((item: any, index: any) => {
+                    return (
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          gap: "12px",
+                          marginBottom: "24px",
+                        }}
+                      >
+                        <CheckCircleIcon
+                          weight="fill"
+                          color="#0FBD11"
+                          size={24}
+                        />
+                        <p
+                          style={{
+                            fontFamily: "Plus Jakarta Sans",
+                            fontWeight: 500,
+                            fontStyle: "Medium",
+                            fontSize: "14px",
+                            lineHeight: "150%",
+                            letterSpacing: "-2%",
+                          }}
+                        >
+                          {item}
+                        </p>
+                      </div>
+                    );
+                  })}
+                {selectedToggle === 2 &&
+                  [
+                    "Acompanhe manualmente o progresso dos alunos, o que toma mais tempo.",
+                    "Depende de materiais externos e não oferece uma experiência personalizada.",
+                    "Relatórios financeiros e o envio de conteúdos exigem trabalho manual.",
+                  ].map((item: any, index: any) => {
+                    return (
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          gap: "12px",
+                          marginBottom: "24px",
+                        }}
+                      >
+                        <XCircleIcon weight="fill" color="#FF4423" size={24} />
+                        <p
+                          style={{
+                            fontFamily: "Plus Jakarta Sans",
+                            fontWeight: 500,
+                            fontStyle: "Medium",
+                            fontSize: "14px",
+                            lineHeight: "150%",
+                            letterSpacing: "-2%",
+                          }}
+                        >
+                          {item}
+                        </p>
+                      </div>
+                    );
+                  })}
               </div>
             </div>
           </section>
