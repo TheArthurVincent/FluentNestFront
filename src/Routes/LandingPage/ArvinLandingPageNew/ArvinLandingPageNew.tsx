@@ -365,64 +365,73 @@ function ArvinLandingPageNew() {
                 gestão do seu negócio, proporcionando uma experiência eficiente
                 e personalizada tanto para o professor quanto para o aluno.
               </div>
-              {featuresArvin.map((item: any, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    className="arvin-landing-page-feature-item"
-                    style={{
-                      marginTop: "32px",
-                    }}
-                  >
-                    {item.icon && (
-                      <div
-                        style={{
-                          backgroundColor: "#ED5914",
-                          display: "inline-flex",
-                          padding: "12px",
-                          borderRadius: "8px",
-                        }}
-                      >
-                        {item.icon}
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                  gap: "24px",
+                }}
+              >
+                {featuresArvin.map((item: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className="arvin-landing-page-feature-item"
+                      style={{
+                        marginTop: "32px",
+                      }}
+                    >
+                      {item.icon && (
+                        <div
+                          style={{
+                            backgroundColor: "#ED5914",
+                            display: "inline-flex",
+                            padding: "12px",
+                            borderRadius: "8px",
+                          }}
+                        >
+                          {item.icon}
+                        </div>
+                      )}
+                      <div>
+                        {item.title && (
+                          <p
+                            style={{
+                              color: "#101721",
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: 600,
+                              fontStyle: "SemiBold",
+                              marginTop: "16px",
+                              marginBottom: "8px",
+                              fontSize: "18px",
+                              lineHeight: "150%",
+                              letterSpacing: "-3%",
+                            }}
+                          >
+                            {item.title}
+                          </p>
+                        )}
+                        {item.description && (
+                          <p
+                            style={{
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: 500,
+                              fontStyle: "Medium",
+                              fontSize: "14px",
+                              lineHeight: "150%",
+                              color: "#596780",
+                              letterSpacing: "-2%",
+                            }}
+                          >
+                            {item.description}
+                          </p>
+                        )}
                       </div>
-                    )}
-                    <div>
-                      {item.title && (
-                        <p
-                          style={{
-                            color: "#101721",
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 600,
-                            fontStyle: "SemiBold",
-                            marginTop: "16px",
-                            marginBottom: "8px",
-                            fontSize: "18px",
-                            lineHeight: "150%",
-                            letterSpacing: "-3%",
-                          }}
-                        >
-                          {item.title}
-                        </p>
-                      )}
-                      {item.description && (
-                        <p
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 500,
-                            fontStyle: "Medium",
-                            fontSize: "14px",
-                            lineHeight: "150%",
-                            color: "#596780",
-                            letterSpacing: "-2%",
-                          }}
-                        >
-                          {item.description}
-                        </p>
-                      )}
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
           </section>
           <section
@@ -459,137 +468,185 @@ function ArvinLandingPageNew() {
               </div>
               <div
                 style={{
-                  color: "#101721",
-                  fontFamily: "Plus Jakarta Sans",
-                  marginTop: "6px",
-                  fontWeight: 700,
-                  padding: "2px",
-                  fontStyle: "Bold",
-                  fontSize: "24px",
-                  lineHeight: "150%",
-                  letterSpacing: "-3%",
-                }}
-              >
-                Saiba por que o Arvin é essencial para o seu sucesso
-              </div>
-              <div
-                style={{
-                  gap: "10px",
-                  fontWeight: 600,
-                  marginBottom: "24px",
-                  opacity: 1,
-                  borderRadius: "30px",
                   display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  alignItems: "center",
-                  textAlign: "center",
-                  justifyContent: "space-between",
-                  backgroundColor: "#f3f5f7",
+                  gap: "24px",
+                  alignItems: "end",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
                 }}
               >
-                <div
-                  onClick={() => {
-                    setSelectedToggle(1);
-                  }}
-                  style={
-                    selectedToggle == 1 ? selectedToggle1 : selectedToggle2
-                  }
-                >
-                  Com o Arvin
+                <div>
+                  <div
+                    style={{
+                      color: "#101721",
+                      fontFamily: "Plus Jakarta Sans",
+                      marginTop: "6px",
+                      fontWeight: 700,
+                      padding: "2px",
+                      fontStyle: "Bold",
+                      fontSize: "24px",
+                      lineHeight: "150%",
+                      letterSpacing: "-3%",
+                      marginBottom: "64px",
+                    }}
+                  >
+                    Saiba por que o Arvin é essencial para o seu sucesso
+                  </div>
+                  <div
+                    style={{
+                      gap: "10px",
+                      fontWeight: 600,
+                      marginBottom: "24px",
+                      opacity: 1,
+                      borderRadius: "30px",
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      alignItems: "center",
+                      textAlign: "center",
+                      justifyContent: "space-between",
+                      backgroundColor: "#f3f5f7",
+                    }}
+                  >
+                    <div
+                      onClick={() => {
+                        setSelectedToggle(1);
+                      }}
+                      style={
+                        selectedToggle == 1 ? selectedToggle1 : selectedToggle2
+                      }
+                    >
+                      Com o Arvin
+                    </div>
+                    <div
+                      onClick={() => {
+                        setSelectedToggle(2);
+                      }}
+                      style={
+                        selectedToggle == 2 ? selectedToggle1 : selectedToggle2
+                      }
+                    >
+                      Sem o Arvin
+                    </div>
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 700,
+                        fontStyle: "Bold",
+                        fontSize: "16px",
+                        lineHeight: "150%",
+                        letterSpacing: "-3%",
+                        marginBottom: "24px",
+                      }}
+                    >
+                      {selectedToggle === 1
+                        ? "Vantagens exclusivas para o seu ensino"
+                        : "Desvantagens de ensinar sem o Arvin"}
+                    </div>
+                    {selectedToggle === 1 &&
+                      [
+                        "Acompanhe o progresso dos alunos em tempo real e organize tudo em um único lugar.",
+                        "Ofereça materiais didáticos prontos e personalize a experiência de ensino.",
+                        "Automatize relatórios financeiros e o envio de conteúdos com facilidade.",
+                      ].map((item: any, index: any) => {
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              display: "flex",
+                              gap: "12px",
+                              marginBottom: "24px",
+                            }}
+                          >
+                            <CheckCircleIcon
+                              weight="fill"
+                              color="#0FBD11"
+                              size={24}
+                            />
+                            <p
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontWeight: 500,
+                                fontStyle: "Medium",
+                                fontSize: "14px",
+                                lineHeight: "150%",
+                                letterSpacing: "-2%",
+                              }}
+                            >
+                              {item}
+                            </p>
+                          </div>
+                        );
+                      })}
+                    {selectedToggle === 2 &&
+                      [
+                        "Acompanhe manualmente o progresso dos alunos, o que toma mais tempo.",
+                        "Depende de materiais externos e não oferece uma experiência personalizada.",
+                        "Relatórios financeiros e o envio de conteúdos exigem trabalho manual.",
+                      ].map((item: any, index: any) => {
+                        return (
+                          <div
+                            key={index}
+                            style={{
+                              display: "flex",
+                              gap: "12px",
+                              marginBottom: "24px",
+                            }}
+                          >
+                            <XCircleIcon
+                              weight="fill"
+                              color="#FF4423"
+                              size={24}
+                            />
+                            <p
+                              style={{
+                                fontFamily: "Plus Jakarta Sans",
+                                fontWeight: 500,
+                                fontStyle: "Medium",
+                                fontSize: "14px",
+                                lineHeight: "150%",
+                                letterSpacing: "-2%",
+                              }}
+                            >
+                              {item}
+                            </p>
+                          </div>
+                        );
+                      })}
+                  </div>
                 </div>
-                <div
-                  onClick={() => {
-                    setSelectedToggle(2);
-                  }}
-                  style={
-                    selectedToggle == 2 ? selectedToggle1 : selectedToggle2
-                  }
-                >
-                  Sem o Arvin
-                </div>
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontFamily: "Plus Jakarta Sans",
-                    fontWeight: 700,
-                    fontStyle: "Bold",
-                    fontSize: "16px",
-                    lineHeight: "150%",
-                    letterSpacing: "-3%",
-                    marginBottom: "24px",
-                  }}
-                >
-                  Vantagens exclusivas para o seu ensino
-                </div>
-                {selectedToggle === 1 &&
-                  [
-                    "Acompanhe o progresso dos alunos em tempo real e organize tudo em um único lugar.",
-                    "Ofereça materiais didáticos prontos e personalize a experiência de ensino.",
-                    "Automatize relatórios financeiros e o envio de conteúdos com facilidade.",
-                  ].map((item: any, index: any) => {
-                    return (
-                      <div
-                        key={index}
-                        style={{
-                          display: "flex",
-                          gap: "12px",
-                          marginBottom: "24px",
-                        }}
-                      >
-                        <CheckCircleIcon
-                          weight="fill"
-                          color="#0FBD11"
-                          size={24}
-                        />
-                        <p
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 500,
-                            fontStyle: "Medium",
-                            fontSize: "14px",
-                            lineHeight: "150%",
-                            letterSpacing: "-2%",
-                          }}
-                        >
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
-                {selectedToggle === 2 &&
-                  [
-                    "Acompanhe manualmente o progresso dos alunos, o que toma mais tempo.",
-                    "Depende de materiais externos e não oferece uma experiência personalizada.",
-                    "Relatórios financeiros e o envio de conteúdos exigem trabalho manual.",
-                  ].map((item: any, index: any) => {
-                    return (
-                      <div
-                        key={index}
-                        style={{
-                          display: "flex",
-                          gap: "12px",
-                          marginBottom: "24px",
-                        }}
-                      >
-                        <XCircleIcon weight="fill" color="#FF4423" size={24} />
-                        <p
-                          style={{
-                            fontFamily: "Plus Jakarta Sans",
-                            fontWeight: 500,
-                            fontStyle: "Medium",
-                            fontSize: "14px",
-                            lineHeight: "150%",
-                            letterSpacing: "-2%",
-                          }}
-                        >
-                          {item}
-                        </p>
-                      </div>
-                    );
-                  })}
+                {selectedToggle === 1 ? (
+                  <img
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "contain",
+                    }}
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Card.svg"
+                  />
+                ) : (
+                  <img
+                    style={{
+                      width: "100%",
+                      height: "auto",
+                      objectFit: "contain",
+                    }}
+                    src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Card%20(1).svg"
+                  />
+                )}
               </div>
             </div>
+          </section>
+          <section
+            style={{
+              backgroundColor: "#fff",
+              width: "100%",
+              padding: "24px",
+              margin: "0 auto",
+              boxSizing: "border-box",
+            }}
+          >
+            {" "}
           </section>
         </div>
       </div>
