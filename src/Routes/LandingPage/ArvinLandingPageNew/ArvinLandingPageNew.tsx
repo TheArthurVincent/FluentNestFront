@@ -7,6 +7,7 @@ import {
   LightningIcon,
   ListIcon,
   SketchLogoIcon,
+  WhatsappLogoIcon,
   XCircleIcon,
 } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
@@ -39,10 +40,14 @@ const safeStorage = {
 
 function ArvinLandingPageNew() {
   const getWhatsAppLink = () => {
-    const message = `Olá, gostaria de fazer saber mais sobre a plataforma ARVIN.`;
-    return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
+    console.log("clicou");
+    const message = `Olá, gostaria de saber mais sobre a plataforma ARVIN.`;
+    // Abre em nova aba
+    window.open(
+      `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
   };
-
   useEffect(() => {
     const keysToDrop = [
       "loggedIn",
@@ -1168,7 +1173,7 @@ function ArvinLandingPageNew() {
                     {[
                       {
                         check: true,
-                        text: "Até 100 alunos particulares",
+                        text: "100+ alunos particulares",
                       },
                       {
                         check: true,
@@ -1271,7 +1276,101 @@ function ArvinLandingPageNew() {
               </div>
             </div>
           </section>
-          <div style={{ height: "1000px" }} />
+          <section
+            style={{
+              backgroundColor: "#101721",
+              width: "100%",
+              padding: "24px 48px",
+              margin: 0,
+              boxSizing: "border-box",
+              overflowX: "clip",
+              display: "grid",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 700,
+                fontSize: 12,
+                marginBottom: "6px",
+                lineHeight: "150%",
+                textTransform: "uppercase",
+                color: "#ED5914",
+              }}
+            >
+              FALE CONOSCO
+            </div>
+            <p
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 700,
+                marginBottom: "12px",
+                fontSize: 24,
+                lineHeight: "150%",
+                letterSpacing: "-0.03em", // % → em
+                color: "#FFFFFF",
+                margin: 0,
+              }}
+            >
+              Fale com nossa equipe agora no WhatsApp{" "}
+            </p>
+
+            <p
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 500,
+                fontSize: 14,
+                lineHeight: "150%",
+                letterSpacing: "-0.02em",
+                color: "#90A3BF",
+                margin: 0,
+              }}
+            >
+              Tire suas dúvidas, conheça os planos, fale com o suporte e
+              descubra como a plataforma pode impulsionar seus resultados no
+              ensino e nos negócios.
+            </p>
+            <button
+              onClick={() => getWhatsAppLink()}
+              style={{
+                color: "#FFFFFF",
+                backgroundColor: "#0FBD11",
+                borderRadius: 30,
+                padding: "12px 24px",
+                marginTop: "36px",
+                border: "none",
+                cursor: "pointer",
+                marginBottom: "16px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                display: "flex",
+                width: "90%",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontStyle: "SemiBold",
+                fontSize: "14px",
+                lineHeight: "150%",
+                letterSpacing: "-2%",
+                textAlign: "center",
+              }}
+            >
+              <WhatsappLogoIcon color="#fff" size={18} />
+              Chamar no WhatsApp{" "}
+            </button>
+          </section>
+          <footer
+            style={{
+              backgroundColor: "#fff",
+              width: "100%",
+              padding: "24px 48px",
+              margin: 0,
+              boxSizing: "border-box",
+              overflowX: "clip",
+              display: "grid",
+            }}
+          >
+            oi oi oi oi oi oi oi oi
+          </footer>
         </div>
       </div>
     </div>
