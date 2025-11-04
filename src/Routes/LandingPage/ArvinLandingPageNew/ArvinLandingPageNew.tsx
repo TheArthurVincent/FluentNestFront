@@ -1,9 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
 import {
+  CastleTurretIcon,
   CheckCircleIcon,
+  CrownSimpleIcon,
   LightningIcon,
   ListIcon,
+  SketchLogoIcon,
   XCircleIcon,
 } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
@@ -55,12 +58,7 @@ function ArvinLandingPageNew() {
     safeStorage.remove(keysToDrop);
   }, []);
 
-  const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-
-  const handleClose = () => setMenuAnchor(null);
-
-  const [isMonth, setIsMonth] = useState(true);
-
+  const [isMonth, setIsMonth] = useState(false);
   const [selectedToggle, setSelectedToggle] = useState(1);
 
   const selectedToggle1 = {
@@ -839,12 +837,13 @@ function ArvinLandingPageNew() {
             </div>
             <div
               style={{
-                padding: "4px 12px",
                 margin: "auto",
                 display: "inline",
                 backgroundColor: "#ED59143D",
                 color: "#101721",
                 fontSize: "14px",
+                padding: "4px 12px",
+                marginBottom: "24px",
                 borderRadius: "30px",
                 fontFamily: "Plus Jakarta Sans",
               }}
@@ -853,54 +852,68 @@ function ArvinLandingPageNew() {
             </div>
             <div
               style={{
-                backgroundColor: "#F3F5F7",
+                maxWidth: "1500px",
                 gap: "32px",
-                borderRadius: "12px",
-                marginTop: "24px",
+                margin: "auto",
                 padding: "24px",
               }}
             >
               <div
                 style={{
-                  backgroundColor: "#101721",
-                  color: "#fff",
-                  gap: "10px",
-                  borderRadius: "30px",
-                  paddingTop: "4px",
-                  paddingRight: "16px",
-                  paddingBottom: "4px",
-                  textAlign: "center",
-                  paddingLeft: "16px",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+                  gap: "24px",
                 }}
               >
-                Grátis por 30 dias
-              </div>
-              {!isMonth ? (
-                <>
-                  <p
-                    style={{
-                      fontFamily: "Plus Jakarta Sans",
-                      fontWeight: 600,
-                      fontStyle: "SemiBold",
-                      fontSize: "24px",
-                      lineHeight: "150%",
-                      letterSpacing: "-3%",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "16px",
-                      marginTop: "16px",
-                      marginBottom: "12px",
-                    }}
-                  >
-                    <LightningIcon size={24} color="#ED5914" weight="fill" />
-                    Entusiasta
-                  </p>
+                <div
+                  style={{
+                    backgroundColor: "#F3F5F7",
+                    borderRadius: "12px",
+                    padding: "4px 12px",
+                  }}
+                >
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 600,
+                        fontStyle: "SemiBold",
+                        fontSize: "24px",
+                        lineHeight: "150%",
+                        letterSpacing: "-3%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        marginTop: "16px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <CastleTurretIcon size={24} color="grey" weight="fill" />
+                      Silver
+                    </p>
+                    <div
+                      style={{
+                        backgroundColor: "#101721",
+                        color: "#fff",
+                        gap: "10px",
+                        borderRadius: "30px",
+                        paddingTop: "4px",
+                        paddingRight: "16px",
+                        paddingBottom: "4px",
+                        textAlign: "center",
+                        paddingLeft: "16px",
+                      }}
+                    >
+                      Grátis por 30 dias
+                    </div>
+                  </div>
                   <p
                     style={{
                       fontFamily: "Plus Jakarta Sans",
                       fontWeight: 500,
                       fontStyle: "Medium",
                       fontSize: "14px",
+                      marginTop: "24px",
                       lineHeight: "150%",
                       letterSpacing: "-2%",
                       color: "#596780",
@@ -925,7 +938,7 @@ function ArvinLandingPageNew() {
                         letterSpacing: "-3%",
                       }}
                     >
-                      R$ 89,99
+                      {!isMonth ? <>R$ 89,99</> : <>R$ 899,90</>}
                     </span>
                     <span
                       style={{
@@ -938,14 +951,258 @@ function ArvinLandingPageNew() {
                         letterSpacing: "-2%",
                       }}
                     >
-                      /mês
+                      {!isMonth ? <>/mês</> : <>/ano</>}
                     </span>
                   </p>
-                  <div>oi</div>
-                </>
-              ) : (
-                <></>
-              )}
+                  <div>
+                    {[
+                      {
+                        check: true,
+                        text: "Até 30 alunos particulares",
+                      },
+                      {
+                        check: true,
+                        text: "25 flashcards/dia",
+                      },
+                      {
+                        check: true,
+                        text: "Aulas prontas para lecionar",
+                      },
+                      {
+                        check: true,
+                        text: "1.000 tokens de IA por mês",
+                      },
+                      {
+                        check: true,
+                        text: "Gerenciamento de alunos",
+                      },
+                      {
+                        check: false,
+                        text: "Gestão financeira e relatórios",
+                      },
+                      {
+                        check: false,
+                        text: "Área de responsáveis",
+                      },
+                      {
+                        check: false,
+                        text: "Emissão de recibos",
+                      },
+                      {
+                        check: false,
+                        text: "Personalização da plataforma",
+                      },
+                    ].map((item: any, index: number) => {
+                      return (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            marginBottom: "16px",
+                          }}
+                          key={index}
+                        >
+                          {item.check ? (
+                            <CheckCircleIcon
+                              weight="fill"
+                              color="#0FBD11"
+                              size={24}
+                            />
+                          ) : (
+                            <XCircleIcon
+                              weight="fill"
+                              color="#596780"
+                              size={24}
+                            />
+                          )}
+                          <span
+                            style={{
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: 500,
+                              fontStyle: "Medium",
+                              fontSize: "14px",
+                              lineHeight: "150%",
+                              letterSpacing: "-2%",
+                            }}
+                          >
+                            {item.text}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    backgroundColor: "#F3F5F7",
+                    borderRadius: "12px",
+                    padding: "4px 12px",
+                  }}
+                >
+                  <div>
+                    <p
+                      style={{
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 600,
+                        fontStyle: "SemiBold",
+                        fontSize: "24px",
+                        lineHeight: "150%",
+                        letterSpacing: "-3%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        marginTop: "16px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <CrownSimpleIcon size={24} color="gold" weight="fill" />
+                      Gold
+                    </p>
+                    <div
+                      style={{
+                        backgroundColor: "#101721",
+                        color: "#fff",
+                        gap: "10px",
+                        borderRadius: "30px",
+                        paddingTop: "4px",
+                        paddingRight: "16px",
+                        paddingBottom: "4px",
+                        textAlign: "center",
+                        paddingLeft: "16px",
+                      }}
+                    >
+                      Grátis por 30 dias
+                    </div>
+                  </div>
+                  <p
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 500,
+                      fontStyle: "Medium",
+                      fontSize: "14px",
+                      marginTop: "24px",
+                      lineHeight: "150%",
+                      letterSpacing: "-2%",
+                      color: "#596780",
+                    }}
+                  >
+                    Para quem vive do ensino e busca liberdade total com
+                    recursos avançados.
+                  </p>
+                  <p
+                    style={{
+                      margin: "24px 0",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#101721",
+                        fontFamily: " Plus Jakarta Sans",
+                        fontWeight: 600,
+                        fontStyle: "SemiBold",
+                        fontSize: "32px",
+                        lineHeight: "150%",
+                        letterSpacing: "-3%",
+                      }}
+                    >
+                      {!isMonth ? <>R$ 149,99</> : <>R$ 1.499,90</>}
+                    </span>
+                    <span
+                      style={{
+                        color: "#596780",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 500,
+                        fontStyle: "Medium",
+                        fontSize: "16px",
+                        lineHeight: "150%",
+                        letterSpacing: "-2%",
+                      }}
+                    >
+                      {!isMonth ? <>/mês</> : <>/ano</>}
+                    </span>
+                  </p>
+                  <div>
+                    {[
+                      {
+                        check: true,
+                        text: "Até 100 alunos particulares",
+                      },
+                      {
+                        check: true,
+                        text: "Flashcards ilimitados por dia",
+                      },
+                      {
+                        check: true,
+                        text: "Aulas prontas para lecionar",
+                      },
+                      {
+                        check: true,
+                        text: "25 tokens de IA por mês",
+                      },
+                      {
+                        check: true,
+                        text: "Gerenciamento de alunos",
+                      },
+                      {
+                        check: true,
+                        text: "Gestão financeira e relatórios",
+                      },
+                      {
+                        check: true,
+                        text: "Área de responsáveis",
+                      },
+                      {
+                        check: true,
+                        text: "Emissão de recibos",
+                      },
+                      {
+                        check: true,
+                        text: "Personalização da plataforma",
+                      },
+                    ].map((item: any, index: number) => {
+                      return (
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "12px",
+                            marginBottom: "16px",
+                          }}
+                          key={index}
+                        >
+                          {item.check ? (
+                            <CheckCircleIcon
+                              weight="fill"
+                              color="#0FBD11"
+                              size={24}
+                            />
+                          ) : (
+                            <XCircleIcon
+                              weight="fill"
+                              color="#596780"
+                              size={24}
+                            />
+                          )}
+                          <span
+                            style={{
+                              fontFamily: "Plus Jakarta Sans",
+                              fontWeight: 500,
+                              fontStyle: "Medium",
+                              fontSize: "14px",
+                              lineHeight: "150%",
+                              letterSpacing: "-2%",
+                            }}
+                          >
+                            {item.text}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
           <div style={{ height: "1000px" }} />
