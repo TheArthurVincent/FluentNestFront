@@ -735,6 +735,7 @@ function ArvinLandingPageNew() {
               backgroundColor: "#fff",
               width: "100%",
               padding: "48.15px 24px",
+              display: "grid",
               margin: "0 auto",
               boxSizing: "border-box",
             }}
@@ -823,6 +824,27 @@ function ArvinLandingPageNew() {
                 />
               </div>{" "}
               <div>Anual</div>
+              <img
+                style={{
+                  translate: "-40% 50%",
+                }}
+                src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Arrow.png"
+                alt=""
+              />
+            </div>
+            <div
+              style={{
+                padding: "4px 12px",
+                margin: "auto",
+                display: "inline",
+                backgroundColor: "#ED59143D",
+                color: "#101721",
+                fontSize: "14px",
+                borderRadius: "30px",
+                fontFamily: "Plus Jakarta Sans",
+              }}
+            >
+              Economize 20%
             </div>
           </section>
           <div style={{ height: "1000px" }} />
