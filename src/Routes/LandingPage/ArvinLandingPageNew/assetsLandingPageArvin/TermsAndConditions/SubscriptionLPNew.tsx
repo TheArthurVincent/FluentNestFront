@@ -95,8 +95,8 @@ export default function TeacherSignupSection({ id, headers }: any) {
       email: formData.email,
       password: formData.password,
       dateOfBirth: formData.birthDate,
-      phone: `${formData.countryCode} ${formData.phone}`,
-      plan: formData.plan, // NEW: envia silver | gold
+      phone: `${formData.phone}`,
+      plan: formData.plan,
     };
 
     try {
@@ -131,7 +131,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
         .ts-wrap {
           max-width: 850px;
           margin: 0 auto;
-          background: #FFFFFF;
+          background: #101721;
           border-radius: 16px;
           display: grid;
           gap: 24px;
@@ -162,7 +162,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           padding: 10px 12px;
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 14px;
-          color: #101721;
+          color: #555;
           outline: none;
           width: 100%;
           box-sizing: border-box;
@@ -172,7 +172,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
           font-family: 'Plus Jakarta Sans', sans-serif;
           font-size: 14px;
           font-weight: 600;
-          color: #101721;
+          color: #fff;
           margin-bottom: 6px;
         }
 
@@ -235,7 +235,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 700,
               fontSize: 24,
-              color: "#101721",
+              color: "#fff",
               margin: 0,
             }}
           >
@@ -308,6 +308,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
                 E-mail
               </label>
               <input
+                placeholder="email@google.net"
                 type="email"
                 id="email"
                 name="email"

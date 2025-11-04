@@ -1332,9 +1332,32 @@ function ArvinLandingPageNew() {
               </div>
             </div>
           </section>
+
           <section
             style={{
-              backgroundColor: "#101721",
+                            backgroundColor: "#101721",
+              width: "100%",
+            }}
+          >
+            <div
+              style={{
+                padding: "24px 48px",
+                margin: 0,
+                maxWidth: 900,
+                color: "#fff",
+                marginLeft: "auto",
+                marginRight: "auto",
+                boxSizing: "border-box",
+                overflowX: "clip",
+                display: "grid",
+              }}
+            >
+              <TeacherSignupSection />
+            </div>
+          </section>
+                    <section
+            style={{
+              backgroundColor: "#fff",
               width: "100%",
             }}
           >
@@ -1371,7 +1394,7 @@ function ArvinLandingPageNew() {
                   fontSize: 24,
                   lineHeight: "150%",
                   letterSpacing: "-0.03em", // % → em
-                  color: "#FFFFFF",
+                  color: "#101721",
                   margin: 0,
                 }}
               >
@@ -1420,28 +1443,6 @@ function ArvinLandingPageNew() {
                 <WhatsappLogoIcon color="#fff" size={18} />
                 Chamar no WhatsApp{" "}
               </button>
-            </div>
-          </section>
-          <section
-            style={{
-              backgroundColor: "#fff",
-              width: "100%",
-            }}
-          >
-            <div
-              style={{
-                padding: "24px 48px",
-                margin: 0,
-                maxWidth: 900,
-                color: "#fff",
-                marginLeft: "auto",
-                marginRight: "auto",
-                boxSizing: "border-box",
-                overflowX: "clip",
-                display: "grid",
-              }}
-            >
-              <TeacherSignupSection />
             </div>
           </section>
           <footer
