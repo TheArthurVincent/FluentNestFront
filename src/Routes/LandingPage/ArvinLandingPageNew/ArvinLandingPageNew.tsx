@@ -11,6 +11,7 @@ import {
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
 import TermsAndConditions from "./assetsLandingPageArvin/TermsAndConditions/TermsAndConditions";
+import TeacherSignupSection from "./assetsLandingPageArvin/TermsAndConditions/SubscriptionLPNew";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -174,7 +175,7 @@ function ArvinLandingPageNew() {
           <div className="arvin-landing-page-desktop-menu">
             <a
               className="arvin-landing-page-desktop-menu-link"
-              href="http://arvinplatform.com/login"
+              href="http://portal.arvinplatform.com/login"
               target="_blank"
             >
               Entrar
@@ -1421,12 +1422,34 @@ function ArvinLandingPageNew() {
               </button>
             </div>
           </section>
-          <footer
+          <section
             style={{
               backgroundColor: "#fff",
               width: "100%",
+            }}
+          >
+            <div
+              style={{
+                padding: "24px 48px",
+                margin: 0,
+                maxWidth: 900,
+                color: "#fff",
+                marginLeft: "auto",
+                marginRight: "auto",
+                boxSizing: "border-box",
+                overflowX: "clip",
+                display: "grid",
+              }}
+            >
+              <TeacherSignupSection />
+            </div>
+          </section>
+          <footer
+            style={{
+              backgroundColor: "#101721",
+              width: "100%",
               padding: "24px 48px",
-              color: "#596780",
+              color: "#FFFFFF",
               margin: 0,
               boxSizing: "border-box",
               overflowX: "clip",
@@ -1437,11 +1460,12 @@ function ArvinLandingPageNew() {
           >
             <img
               style={{
-                width: "40px",
+                width: "80px",
                 height: "auto",
+                marginBottom: "16px",
                 objectFit: "contain",
               }}
-              src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135"
+              src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-White-Slogan.png?updatedAt=1756124444756"
               alt="Arvin Logo"
             />
 
