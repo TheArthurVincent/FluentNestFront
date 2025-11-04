@@ -1,6 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
-import { CheckCircleIcon, ListIcon, XCircleIcon } from "@phosphor-icons/react";
+import {
+  CheckCircleIcon,
+  LightningIcon,
+  ListIcon,
+  XCircleIcon,
+} from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 
 import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
@@ -845,6 +850,69 @@ function ArvinLandingPageNew() {
               }}
             >
               Economize 20%
+            </div>
+            <div
+              style={{
+                backgroundColor: "#F3F5F7",
+                gap: "32px",
+                borderRadius: "12px",
+                marginTop: "24px",
+                padding: "24px",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "#101721",
+                  color: "#fff",
+                  gap: "10px",
+                  borderRadius: "30px",
+                  paddingTop: "4px",
+                  paddingRight: "16px",
+                  paddingBottom: "4px",
+                  textAlign: "center",
+                  paddingLeft: "16px",
+                }}
+              >
+                Grátis por 30 dias
+              </div>
+              {!isMonth ? (
+                <>
+                  <p
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 600,
+                      fontStyle: "SemiBold",
+                      fontSize: "24px",
+                      lineHeight: "150%",
+                      letterSpacing: "-3%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "16px",
+                      marginTop: "16px",
+                      marginBottom: "12px",
+                    }}
+                  >
+                    <LightningIcon size={24} color="#ED5914" weight="fill" />
+                    Entusiasta
+                  </p>
+                  <p
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 500,
+                      fontStyle: "Medium",
+                      fontSize: "14px",
+                      lineHeight: "150%",
+                      letterSpacing: "-2%",
+                      color: "#596780",
+                    }}
+                  >
+                    Para quem está começando a ensinar e quer uma plataforma
+                    completa e prática.
+                  </p>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           </section>
           <div style={{ height: "1000px" }} />
