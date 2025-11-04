@@ -956,7 +956,13 @@ function ArvinLandingPageNew() {
                         letterSpacing: "-2%",
                       }}
                     >
-                      {!isMonth ? <>/mês</> : <>/ano (em até 10x sem juros)</>}
+                      {!isMonth ? (
+                        <>/mês</>
+                      ) : (
+                        <>
+                          /ano <br /> (em até 10x sem juros)
+                        </>
+                      )}
                     </span>
                   </p>
                   <div>
@@ -1149,7 +1155,13 @@ function ArvinLandingPageNew() {
                         letterSpacing: "-2%",
                       }}
                     >
-                      {!isMonth ? <>/mês</> : <>/ano (em até 10x sem juros)</>}
+                      {!isMonth ? (
+                        <>/mês</>
+                      ) : (
+                        <>
+                          /ano <br /> (em até 10x sem juros)
+                        </>
+                      )}
                     </span>
                   </p>
                   <div>
