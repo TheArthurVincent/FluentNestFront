@@ -92,6 +92,13 @@ function ArvinLandingPageNew() {
     fontFamily: "Plus Jakarta Sans",
   };
 
+  const scrollToPlans = () => {
+    document.getElementById("planos")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   return (
     <div className="arvin-landing-page-container">
       <div
@@ -212,6 +219,7 @@ function ArvinLandingPageNew() {
                 border: "none",
                 padding: "15.5px 0",
               }}
+              onClick={scrollToPlans}
             >
               Testar gratuitamente por 30 dias
             </button>
@@ -229,6 +237,7 @@ function ArvinLandingPageNew() {
                 border: "none",
                 padding: "15.5px 0",
               }}
+              onClick={scrollToPlans}
             >
               Ver planos
             </button>
@@ -745,6 +754,7 @@ function ArvinLandingPageNew() {
             </div>
           </section>
           <section
+            id="planos"
             style={{
               backgroundColor: "#fff",
               width: "100%",
