@@ -557,14 +557,14 @@ function ArvinLandingPageNew() {
               </div>
             </div>
           </section>
-
           <section
             style={{
               backgroundColor: "#101721",
               width: "100%",
-              padding: "24px",
-              margin: "0 auto",
+              padding: "24px 0",
+              margin: 0,
               boxSizing: "border-box",
+              overflowX: "clip", // evita comer a direita no mobile
             }}
           >
             <div
@@ -572,164 +572,170 @@ function ArvinLandingPageNew() {
                 maxWidth: 850,
                 margin: "0 auto",
                 display: "grid",
-                gap: "12px",
+                gap: 12,
                 textAlign: "center",
+                paddingInline: 24, // garante respiro lateral
+                boxSizing: "border-box",
               }}
             >
               <div
                 style={{
                   fontFamily: "Plus Jakarta Sans",
                   fontWeight: 700,
-                  fontStyle: "bold",
-                  fontSize: "12px",
+                  fontSize: 12,
                   lineHeight: "150%",
-                  letterSpacing: "0%",
-                  textAlign: "center",
                   textTransform: "uppercase",
                   color: "#ED5914",
                 }}
               >
                 TESTEMUNHOS
               </div>
+
               <p
                 style={{
                   fontFamily: "Plus Jakarta Sans",
                   fontWeight: 700,
-                  fontStyle: "Bold",
-                  fontSize: "24px",
+                  fontSize: 24,
                   lineHeight: "150%",
-                  letterSpacing: "-3%",
-                  textAlign: "center",
+                  letterSpacing: "-0.03em", // % → em
                   color: "#FFFFFF",
+                  margin: 0,
                 }}
               >
                 O que dizem os nossos parceiros
               </p>
+
               <p
                 style={{
                   fontFamily: "Plus Jakarta Sans",
                   fontWeight: 500,
-                  fontStyle: "Medium",
-                  fontSize: "14px",
+                  fontSize: 14,
                   lineHeight: "150%",
-                  letterSpacing: "-2%",
-                  textAlign: "center",
+                  letterSpacing: "-0.02em",
                   color: "#90A3BF",
+                  margin: 0,
                 }}
               >
                 Depoimentos reais de quem já usa o Arvin para transformar suas
                 aulas, gerenciar alunos e conquistar mais resultados.
               </p>
+
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(384px, 1fr))",
-                  gap: "24px",
+                  // coluna encolhe até 100% da tela, mas com piso de ~300px
+                  gridTemplateColumns:
+                    "repeat(auto-fit, minmax(min(100%, 300px), 1fr))",
+                  gap: 24,
+                  justifyItems: "center", // centraliza os cards na coluna
                 }}
               >
-                {testimonialsArvin.map((item: any, index: any) => {
-                  return (
+                {testimonialsArvin.map((item, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      backgroundColor: "#1A202C",
+                      padding: 24,
+                      textAlign: "left",
+                      width: "100%",
+                      maxWidth: 520, // impede alargar demais em telas médias
+                      boxSizing: "border-box",
+                      borderRadius: 12,
+                    }}
+                  >
                     <div
-                      key={index}
                       style={{
                         display: "flex",
-                        backgroundColor: "#1A202C",
-                        padding: "24px",
-                        justifyContent: "center",
-                        textAlign: "left",
+                        gap: 40,
+                        width: "100%",
+                        flexDirection: "column",
                       }}
                     >
+                      <div>
+                        <p
+                          style={{
+                            margin: "0 0 12px 0",
+                            fontFamily: "Plus Jakarta Sans",
+                            fontWeight: 700,
+                            fontSize: 16,
+                            lineHeight: "150%",
+                            letterSpacing: "-0.02em",
+                            color: "#FFFFFF",
+                          }}
+                        >
+                          {item.title}
+                        </p>
+                        <p
+                          style={{
+                            margin: 0,
+                            fontFamily: "Plus Jakarta Sans",
+                            fontWeight: 500,
+                            fontSize: 14,
+                            lineHeight: "150%",
+                            letterSpacing: "-0.02em",
+                            color: "#F3F5F7",
+                          }}
+                        >
+                          {item.description}
+                        </p>
+                      </div>
+
+                      <div
+                        style={{
+                          border: "1px solid rgba(144,163,191,0.2)", // parêntese corrigido
+                        }}
+                      />
+
                       <div
                         style={{
                           display: "flex",
-                          gap: "40px",
-                          width: "100%",
-                          flexDirection: "column",
+                          alignItems: "center",
+                          gap: 12,
                         }}
                       >
+                        <img
+                          style={{
+                            width: 56,
+                            height: 56,
+                            borderRadius: 10.5,
+                            objectFit: "cover",
+                          }}
+                          src={item.img}
+                          alt={item.name}
+                        />
                         <div>
-                          {" "}
                           <p
                             style={{
-                              marginBottom: "12px",
+                              margin: 0,
                               fontFamily: "Plus Jakarta Sans",
-                              fontWeight: " 700",
-                              fontStyle: " Bold",
-                              fontSize: " 16px",
+                              fontWeight: 700,
+                              fontSize: 18,
                               lineHeight: "150%",
-                              letterSpacing: -"2%",
+                              letterSpacing: "-0.03em",
                               color: "#FFFFFF",
                             }}
                           >
-                            {item.title}{" "}
+                            {item.name}
                           </p>
                           <p
                             style={{
+                              margin: 0,
                               fontFamily: "Plus Jakarta Sans",
-                              fontWeight: 500,
-                              fontStyle: "Medium",
-                              fontSize: "14px",
+                              fontWeight: 400,
+                              fontSize: 14,
                               lineHeight: "150%",
-                              letterSpacing: "-2%",
-                              color: "#F3F5F7",
+                              letterSpacing: "-0.03em",
+                              color: "#C3D4E9",
                             }}
                           >
-                            {item.description}
+                            {item.role}
                           </p>
-                        </div>
-                        <div
-                          style={{
-                            border: "1px solid rgba(144, 163, 191, 0.2",
-                          }}
-                        />
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "12px",
-                          }}
-                        >
-                          <img
-                            style={{
-                              width: 56,
-                              height: 56,
-                              borderRadius: "10.5px",
-                            }}
-                            src={item.img}
-                            alt={item.name}
-                          />
-                          <div>
-                            <p
-                              style={{
-                                fontFamily: "Plus Jakarta Sans",
-                                fontWeight: 700,
-                                fontStyle: "Bold",
-                                fontSize: "18px",
-                                lineHeight: "150%",
-                                letterSpacing: "-3%",
-                                color: "#FFFFFF",
-                              }}
-                            >
-                              {item.name}
-                            </p>
-                            <p
-                              style={{
-                                fontFamily: "Plus Jakarta Sans",
-                                fontWeight: 400,
-                                fontSize: "14px",
-                                lineHeight: "150%",
-                                letterSpacing: "-3%",
-                                color: "#C3D4E9",
-                              }}
-                            >
-                              {item.role}
-                            </p>
-                          </div>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           </section>
@@ -855,7 +861,6 @@ function ArvinLandingPageNew() {
                 maxWidth: "1500px",
                 gap: "32px",
                 margin: "auto",
-                padding: "24px",
               }}
             >
               <div
