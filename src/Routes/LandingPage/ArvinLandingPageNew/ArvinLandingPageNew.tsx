@@ -1,18 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "./styles.arvinNewLp.css";
 import {
   CastleTurretIcon,
   CheckCircleIcon,
   CrownSimpleIcon,
-  LightningIcon,
   ListIcon,
-  SketchLogoIcon,
   WhatsappLogoIcon,
   XCircleIcon,
 } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
-
 import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
+import TermsAndConditions from "./assetsLandingPageArvin/TermsAndConditions/TermsAndConditions";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -97,6 +95,53 @@ function ArvinLandingPageNew() {
       behavior: "smooth",
       block: "start",
     });
+  };
+
+  const [openTerms, setOpenTerms] = useState(false);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+  const closeBtnRef = useRef<HTMLButtonElement | null>(null);
+  const [openPolicy, setOpenPolicy] = useState(false);
+
+  // trava scroll quando aberto
+  useEffect(() => {
+    if (!openTerms) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [openTerms]);
+
+  // ESC + focus trap simples
+  useEffect(() => {
+    if (!openTerms) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpenTerms(false);
+      if (e.key === "Tab") {
+        const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a, button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables || focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          (last as HTMLElement).focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          (first as HTMLElement).focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    setTimeout(() => closeBtnRef.current?.focus(), 0);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [openTerms]);
+
+  const openTermsModal = () => setOpenTerms(true);
+  const closeTermsModal = () => setOpenTerms(false);
+  const overlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) closeTermsModal();
   };
 
   return (
@@ -1399,6 +1444,7 @@ function ArvinLandingPageNew() {
               src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135"
               alt="Arvin Logo"
             />
+
             <div
               style={{
                 display: "flex",
@@ -1409,9 +1455,33 @@ function ArvinLandingPageNew() {
                 justifyContent: "center",
               }}
             >
-              <span>Termos e Condições</span>
-              <span>Política de Publicidade</span>
-            </div>{" "}
+              {/* ---------- Termos e Condições ---------- */}
+              <span
+                onClick={() => setOpenTerms(true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) =>
+                  (e.key === "Enter" || e.key === " ") && setOpenTerms(true)
+                }
+                style={{ cursor: "pointer" }}
+              >
+                Termos e Condições
+              </span>
+
+              {/* ---------- Política de Publicidade ---------- */}
+              <span
+                onClick={() => setOpenPolicy(true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) =>
+                  (e.key === "Enter" || e.key === " ") && setOpenPolicy(true)
+                }
+                style={{ cursor: "pointer" }}
+              >
+                Política de Publicidade
+              </span>
+            </div>
+
             <div
               style={{
                 display: "grid",
@@ -1427,6 +1497,195 @@ function ArvinLandingPageNew() {
                 Doxa Tech Serviços de Software Ltda. All rights reserved
               </span>
             </div>
+
+            {/* ---------- MODAL: Termos e Condições ---------- */}
+            {openTerms && (
+              <div
+                onClick={overlayClick}
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.5)",
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 9999,
+                  padding: 16,
+                }}
+                role="presentation"
+              >
+                <div
+                  ref={dialogRef}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="terms-title-inline"
+                  style={{
+                    width: "min(900px, 100%)",
+                    maxHeight: "85vh",
+                    background: "#FFFFFF",
+                    color: "#101721",
+                    borderRadius: 12,
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "16px 20px",
+                      borderBottom: "1px solid rgba(0,0,0,0.08)",
+                      background: "#F9FAFB",
+                    }}
+                  >
+                    <h2
+                      id="terms-title-inline"
+                      style={{
+                        margin: 0,
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 700,
+                        fontSize: 18,
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      Termos e Condições
+                    </h2>
+                    <button
+                      ref={closeBtnRef}
+                      onClick={() => setOpenTerms(false)}
+                      aria-label="Fechar"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: 22,
+                        lineHeight: 1,
+                        padding: 4,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div
+                    style={{
+                      padding: 20,
+                      overflow: "auto",
+                      fontFamily: "Plus Jakarta Sans",
+                      fontSize: 14,
+                      lineHeight: "160%",
+                      color: "#596780",
+                    }}
+                  >
+                    <TermsAndConditions />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ---------- MODAL: Política de Publicidade ---------- */}
+            {openPolicy && (
+              <div
+                onClick={overlayClick}
+                style={{
+                  position: "fixed",
+                  inset: 0,
+                  background: "rgba(0,0,0,0.5)",
+                  display: "grid",
+                  placeItems: "center",
+                  zIndex: 9999,
+                  padding: 16,
+                }}
+                role="presentation"
+              >
+                <div
+                  ref={dialogRef}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-labelledby="policy-title-inline"
+                  style={{
+                    width: "min(900px, 100%)",
+                    maxHeight: "85vh",
+                    background: "#FFFFFF",
+                    color: "#101721",
+                    borderRadius: 12,
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+                    display: "flex",
+                    flexDirection: "column",
+                    overflow: "hidden",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "16px 20px",
+                      borderBottom: "1px solid rgba(0,0,0,0.08)",
+                      background: "#F9FAFB",
+                    }}
+                  >
+                    <h2
+                      id="policy-title-inline"
+                      style={{
+                        margin: 0,
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 700,
+                        fontSize: 18,
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      Política de Publicidade
+                    </h2>
+                    <button
+                      ref={closeBtnRef}
+                      onClick={() => setOpenPolicy(false)}
+                      aria-label="Fechar"
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: 22,
+                        lineHeight: 1,
+                        padding: 4,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div
+                    style={{
+                      padding: 20,
+                      overflow: "auto",
+                      fontFamily: "Plus Jakarta Sans",
+                      fontSize: 14,
+                      lineHeight: "160%",
+                      color: "#596780",
+                    }}
+                  >
+                    <p>
+                      A presente Política de Publicidade regula a exibição de
+                      anúncios, conteúdos patrocinados e parcerias dentro da
+                      plataforma Arvin. Toda publicidade será claramente
+                      identificada, e nenhum dado pessoal será compartilhado com
+                      terceiros sem o consentimento do usuário.
+                    </p>
+                    <p>
+                      A Arvin compromete-se a manter transparência, ética e
+                      conformidade com a Lei Geral de Proteção de Dados (Lei nº
+                      13.709/2018), zelando pela experiência segura e educativa
+                      de seus usuários.
+                    </p>
+                    <p style={{ marginTop: 16 }}>
+                      Última atualização: 24 de setembro de 2025
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </footer>
         </div>
       </div>
