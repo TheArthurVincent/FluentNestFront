@@ -146,7 +146,7 @@ const InstallPWA = () => {
 
   return (
     <InstallPromptContainer>
-      <div>
+      {/* <div>
         <strong>Instalar ARVIN</strong>
         <p style={{ margin: "4px 0 0 0", fontSize: "14px" }}>
           Instale o app para acesso rápido
@@ -155,7 +155,7 @@ const InstallPWA = () => {
       <div style={{ display: "flex", gap: "12px" }}>
         <InstallButton onClick={handleInstallClick}>Instalar</InstallButton>
         <DismissButton onClick={handleDismiss}>Agora não</DismissButton>
-      </div>
+      </div> */}
     </InstallPromptContainer>
   );
 };
