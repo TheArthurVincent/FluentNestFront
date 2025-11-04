@@ -466,8 +466,8 @@ function ArvinLandingPageNew() {
                     {selectedToggle === 1 &&
                       [
                         "Acompanhe o progresso dos alunos em tempo real e organize tudo em um único lugar.",
-                        "Ofereça materiais didáticos prontos e personalize a experiência de ensino.",
-                        "Automatize relatórios financeiros e o envio de conteúdos com facilidade.",
+                        "Ofereça materiais didáticos prontos e com exercícios para os alunos.",
+                        "Gere relatórios financeiros e o envio de conteúdos com facilidade.",
                       ].map((item: any, index: any) => {
                         return (
                           <div
@@ -501,7 +501,7 @@ function ArvinLandingPageNew() {
                     {selectedToggle === 2 &&
                       [
                         "Acompanhe manualmente o progresso dos alunos, o que toma mais tempo.",
-                        "Depende de materiais externos e não oferece uma experiência personalizada.",
+                        "Dependa de materiais externos que não oferecem uma experiência personalizada.",
                         "Relatórios financeiros e o envio de conteúdos exigem trabalho manual.",
                       ].map((item: any, index: any) => {
                         return (
@@ -951,7 +951,7 @@ function ArvinLandingPageNew() {
                         letterSpacing: "-2%",
                       }}
                     >
-                      {!isMonth ? <>/mês</> : <>/ano</>}
+                      {!isMonth ? <>/mês</> : <>/ano (em até 10x sem juros)</>}
                     </span>
                   </p>
                   <div>
@@ -1144,7 +1144,7 @@ function ArvinLandingPageNew() {
                         letterSpacing: "-2%",
                       }}
                     >
-                      {!isMonth ? <>/mês</> : <>/ano</>}
+                      {!isMonth ? <>/mês</> : <>/ano (em até 10x sem juros)</>}
                     </span>
                   </p>
                   <div>
