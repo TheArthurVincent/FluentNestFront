@@ -17,7 +17,8 @@ export const testimonialsArvin = [
   },
   {
     title: "Os alunos amam",
-    description: "A plataforma é incrível!.",
+    description:
+      "Meus alunos amam a plataforma. A confiança para prospectar e a retenção aumentaram muito!",
     name: "Victor Leonardo",
     role: "Professor particular",
     img: "https://ik.imagekit.io/vjz75qw96/assets/icons/Testemunhos/vic.png",

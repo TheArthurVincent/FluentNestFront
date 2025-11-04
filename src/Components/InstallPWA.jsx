@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 
 const InstallPromptContainer = styled.div`
   position: fixed;
@@ -67,11 +67,22 @@ const DismissButton = styled.button`
   }
 `;
 
+function isMobileDevice() {
+  return (
+    typeof window !== "undefined" &&
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  );
+}
+
 const InstallPWA = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    setIsMobile(isMobileDevice());
     const handler = (e) => {
       // Prevent the mini-infobar from appearing on mobile
       e.preventDefault();
@@ -81,15 +92,15 @@ const InstallPWA = () => {
       setShowInstallPrompt(true);
     };
 
-    window.addEventListener('beforeinstallprompt', handler);
+    window.addEventListener("beforeinstallprompt", handler);
 
     // Check if app is already installed
-    if (window.matchMedia('(display-mode: standalone)').matches) {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
       setShowInstallPrompt(false);
     }
 
     return () => {
-      window.removeEventListener('beforeinstallprompt', handler);
+      window.removeEventListener("beforeinstallprompt", handler);
     };
   }, []);
 
@@ -114,12 +125,12 @@ const InstallPWA = () => {
   const handleDismiss = () => {
     setShowInstallPrompt(false);
     // Save dismiss state to localStorage to not show again for a while
-    localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+    localStorage.setItem("pwa-install-dismissed", Date.now().toString());
   };
 
   // Check if user dismissed recently (within 7 days)
   useEffect(() => {
-    const dismissed = localStorage.getItem('pwa-install-dismissed');
+    const dismissed = localStorage.getItem("pwa-install-dismissed");
     if (dismissed) {
       const dismissedTime = parseInt(dismissed);
       const sevenDaysInMs = 7 * 24 * 60 * 60 * 1000;
@@ -129,7 +140,7 @@ const InstallPWA = () => {
     }
   }, []);
 
-  if (!showInstallPrompt) {
+  if (!showInstallPrompt || !isMobile) {
     return null;
   }
 
@@ -137,11 +148,11 @@ const InstallPWA = () => {
     <InstallPromptContainer>
       <div>
         <strong>Instalar ARVIN</strong>
-        <p style={{ margin: '4px 0 0 0', fontSize: '14px' }}>
+        <p style={{ margin: "4px 0 0 0", fontSize: "14px" }}>
           Instale o app para acesso rápido
         </p>
       </div>
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div style={{ display: "flex", gap: "12px" }}>
         <InstallButton onClick={handleInstallClick}>Instalar</InstallButton>
         <DismissButton onClick={handleDismiss}>Agora não</DismissButton>
       </div>
@@ -150,4 +161,3 @@ const InstallPWA = () => {
 };
 
 export default InstallPWA;
-
