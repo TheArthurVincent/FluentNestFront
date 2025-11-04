@@ -1280,96 +1280,143 @@ function ArvinLandingPageNew() {
             style={{
               backgroundColor: "#101721",
               width: "100%",
-              padding: "24px 48px",
-              margin: 0,
-              boxSizing: "border-box",
-              overflowX: "clip",
-              display: "grid",
             }}
           >
             <div
               style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 700,
-                fontSize: 12,
-                marginBottom: "6px",
-                lineHeight: "150%",
-                textTransform: "uppercase",
-                color: "#ED5914",
-              }}
-            >
-              FALE CONOSCO
-            </div>
-            <p
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 700,
-                marginBottom: "12px",
-                fontSize: 24,
-                lineHeight: "150%",
-                letterSpacing: "-0.03em", // % → em
-                color: "#FFFFFF",
+                padding: "24px 48px",
                 margin: 0,
-              }}
-            >
-              Fale com nossa equipe agora no WhatsApp{" "}
-            </p>
-
-            <p
-              style={{
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 500,
-                fontSize: 14,
-                lineHeight: "150%",
-                letterSpacing: "-0.02em",
-                color: "#90A3BF",
-                margin: 0,
-              }}
-            >
-              Tire suas dúvidas, conheça os planos, fale com o suporte e
-              descubra como a plataforma pode impulsionar seus resultados no
-              ensino e nos negócios.
-            </p>
-            <button
-              onClick={() => getWhatsAppLink()}
-              style={{
-                color: "#FFFFFF",
-                backgroundColor: "#0FBD11",
-                borderRadius: 30,
-                padding: "12px 24px",
-                marginTop: "36px",
-                border: "none",
-                cursor: "pointer",
-                marginBottom: "16px",
+                maxWidth: 900,
                 marginLeft: "auto",
                 marginRight: "auto",
-                display: "flex",
-                width: "90%",
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontStyle: "SemiBold",
-                fontSize: "14px",
-                lineHeight: "150%",
-                letterSpacing: "-2%",
-                textAlign: "center",
+                boxSizing: "border-box",
+                overflowX: "clip",
+                display: "grid",
               }}
             >
-              <WhatsappLogoIcon color="#fff" size={18} />
-              Chamar no WhatsApp{" "}
-            </button>
+              <div
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  fontSize: 12,
+                  marginBottom: "6px",
+                  lineHeight: "150%",
+                  textTransform: "uppercase",
+                  color: "#ED5914",
+                }}
+              >
+                FALE CONOSCO
+              </div>
+              <p
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 700,
+                  marginBottom: "12px",
+                  fontSize: 24,
+                  lineHeight: "150%",
+                  letterSpacing: "-0.03em", // % → em
+                  color: "#FFFFFF",
+                  margin: 0,
+                }}
+              >
+                Fale com nossa equipe agora no WhatsApp{" "}
+              </p>
+
+              <p
+                style={{
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 500,
+                  fontSize: 14,
+                  lineHeight: "150%",
+                  letterSpacing: "-0.02em",
+                  color: "#90A3BF",
+                  margin: 0,
+                }}
+              >
+                Tire suas dúvidas, conheça os planos, fale com o suporte e
+                descubra como a plataforma pode impulsionar seus resultados no
+                ensino e nos negócios.
+              </p>
+              <button
+                onClick={() => getWhatsAppLink()}
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "#0FBD11",
+                  borderRadius: 30,
+                  padding: "12px 24px",
+                  marginTop: "36px",
+                  border: "none",
+                  cursor: "pointer",
+                  marginBottom: "16px",
+                  marginLeft: "auto",
+                  marginRight: "auto",
+                  display: "flex",
+                  width: "90%",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 600,
+                  fontStyle: "SemiBold",
+                  fontSize: "14px",
+                  lineHeight: "150%",
+                  letterSpacing: "-2%",
+                  textAlign: "center",
+                }}
+              >
+                <WhatsappLogoIcon color="#fff" size={18} />
+                Chamar no WhatsApp{" "}
+              </button>
+            </div>
           </section>
           <footer
             style={{
               backgroundColor: "#fff",
               width: "100%",
               padding: "24px 48px",
+              color: "#596780",
               margin: 0,
               boxSizing: "border-box",
               overflowX: "clip",
               display: "grid",
+              alignItems: "center",
+              justifyItems: "center",
             }}
           >
-            oi oi oi oi oi oi oi oi
+            <img
+              style={{
+                width: "40px",
+                height: "auto",
+                objectFit: "contain",
+              }}
+              src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135"
+              alt="Arvin Logo"
+            />
+            <div
+              style={{
+                display: "flex",
+                gap: 32,
+                textDecoration: "underline",
+                alignItems: "center",
+                textAlign: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span>Termos e Condições</span>
+              <span>Política de Publicidade</span>
+            </div>{" "}
+            <div
+              style={{
+                display: "grid",
+                marginTop: "24px",
+                gap: 8,
+                alignItems: "center",
+                textAlign: "center",
+                justifyContent: "center",
+              }}
+            >
+              <span>© 2025 Arvin</span>
+              <span>
+                Doxa Tech Serviços de Software Ltda. All rights reserved
+              </span>
+            </div>
           </footer>
         </div>
       </div>
