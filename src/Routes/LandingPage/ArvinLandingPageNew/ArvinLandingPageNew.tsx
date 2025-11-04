@@ -12,6 +12,8 @@ import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
 import TermsAndConditions from "./assetsLandingPageArvin/TermsAndConditions/TermsAndConditions";
 import TeacherSignupSection from "./assetsLandingPageArvin/TermsAndConditions/SubscriptionLPNew";
+import { IFrameAsaas } from "../../HomePage/Blog.Styled";
+import { getResponsiveEmbedUrl } from "../../../Resources/UniversalComponents";
 
 const safeStorage = {
   get(key: any, fallback = null) {
@@ -256,48 +258,77 @@ function ArvinLandingPageNew() {
             style={{
               display: "grid",
               gap: "16px",
-              gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
-              maxWidth: 850,
+              alignItems: "center",
+              justifyItems: "center",
               margin: "0 auto",
               padding: "24px",
             }}
           >
-            <button
+            <div
               style={{
-                color: "#FFF",
-                backgroundColor: "#ED5914",
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontSize: "14px",
-                lineHeight: "150%",
-                letterSpacing: "-2%",
-                textAlign: "center",
-                borderRadius: "30px",
-                border: "none",
-                padding: "15.5px 0",
+                display: "grid",
+                gap: "16px",
+                maxWidth: 850,
+                gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
               }}
-              onClick={scrollToSubscription}
             >
-              Testar gratuitamente por 30 dias
-            </button>
-            <button
+              <button
+                style={{
+                  color: "#FFF",
+                  backgroundColor: "#ED5914",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  lineHeight: "150%",
+                  letterSpacing: "-2%",
+                  textAlign: "center",
+                  borderRadius: "30px",
+                  border: "none",
+                  padding: "15.5px 0",
+                }}
+                onClick={scrollToSubscription}
+              >
+                Testar gratuitamente por 30 dias
+              </button>
+              <button
+                style={{
+                  backgroundColor: "#1A202C",
+                  color: "#C3D4E9",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 600,
+                  fontSize: "14px",
+                  lineHeight: "150%",
+                  letterSpacing: "-2%",
+                  textAlign: "center",
+                  borderRadius: "30px",
+                  border: "none",
+                  padding: "15.5px 0",
+                }}
+                onClick={scrollToPlans}
+              >
+                Ver planos
+              </button>
+            </div>
+            {/* <div
               style={{
-                backgroundColor: "#1A202C",
-                color: "#C3D4E9",
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontSize: "14px",
-                lineHeight: "150%",
-                letterSpacing: "-2%",
-                textAlign: "center",
-                borderRadius: "30px",
-                border: "none",
-                padding: "15.5px 0",
+                display: "grid",
+                width: "100%",
+                alignContent: "center",
+                justifyItems: "center",
+                maxHeight: "80px",
+                transform: "translateY(100px)",
               }}
-              onClick={scrollToPlans}
-            >
-              Ver planos
-            </button>
+            > */}
+            <IFrameAsaas
+              style={{
+                borderRadius: "16px",
+              }}
+              id="video-section"
+              src={getResponsiveEmbedUrl(
+                "https://www.youtube.com/watch?v=mJc5dBDVPaA"
+              )}
+            />
+            {/* </div> */}
           </section>
           <section
             style={{
@@ -311,7 +342,7 @@ function ArvinLandingPageNew() {
             <div
               style={{
                 maxWidth: 850,
-                margin: "0 auto",
+                margin: " 0 auto",
                 display: "grid",
                 gap: "12px",
                 textAlign: "left",
@@ -324,6 +355,7 @@ function ArvinLandingPageNew() {
                   fontWeight: 700,
                   fontStyle: "Bold",
                   fontSize: "12px",
+
                   lineHeight: "150%",
                   letterSpacing: "0%",
                   textTransform: "uppercase",
