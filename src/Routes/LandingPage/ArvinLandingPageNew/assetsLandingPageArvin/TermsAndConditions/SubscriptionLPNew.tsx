@@ -110,6 +110,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
         `Usuário cadastrado com sucesso! ${response?.data?.message || ""}`,
         "green"
       );
+      window.location.assign("http://portal.arvinplatform.com/login");
     } catch (error: any) {
       notifyAlert(
         `Erro ao cadastrar ${formData.firstName}. ${

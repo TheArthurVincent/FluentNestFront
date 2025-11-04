@@ -98,6 +98,13 @@ function ArvinLandingPageNew() {
     });
   };
 
+  const scrollToSubscription = () => {
+    document.getElementById("cadastro")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
   const [openTerms, setOpenTerms] = useState(false);
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -180,7 +187,10 @@ function ArvinLandingPageNew() {
             >
               Entrar
             </a>
-            <button className="arvin-landing-page-desktop-menu-button">
+            <button
+              onClick={scrollToSubscription}
+              className="arvin-landing-page-desktop-menu-button"
+            >
               Inscrever-se
             </button>
           </div>
@@ -246,6 +256,7 @@ function ArvinLandingPageNew() {
             style={{
               display: "grid",
               gap: "16px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
               maxWidth: 850,
               margin: "0 auto",
               padding: "24px",
@@ -265,7 +276,7 @@ function ArvinLandingPageNew() {
                 border: "none",
                 padding: "15.5px 0",
               }}
-              onClick={scrollToPlans}
+              onClick={scrollToSubscription}
             >
               Testar gratuitamente por 30 dias
             </button>
@@ -1334,8 +1345,9 @@ function ArvinLandingPageNew() {
           </section>
 
           <section
+            id="cadastro"
             style={{
-                            backgroundColor: "#101721",
+              backgroundColor: "#101721",
               width: "100%",
             }}
           >
@@ -1355,7 +1367,7 @@ function ArvinLandingPageNew() {
               <TeacherSignupSection />
             </div>
           </section>
-                    <section
+          <section
             style={{
               backgroundColor: "#fff",
               width: "100%",
