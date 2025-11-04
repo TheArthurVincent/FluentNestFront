@@ -1,13 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "./styles.arvinNewLp.css";
-import {
-  CheckCircleIcon,
-  CheckIcon,
-  ListIcon,
-  XCircleIcon,
-} from "@phosphor-icons/react";
+import { CheckCircleIcon, ListIcon, XCircleIcon } from "@phosphor-icons/react";
 import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
-import { fontSize } from "@mui/system";
+
 import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
 
 const safeStorage = {
@@ -55,31 +50,12 @@ function ArvinLandingPageNew() {
     safeStorage.remove(keysToDrop);
   }, []);
 
-  const languages = [
-    { code: "en", label: "English", flag: "https://flagcdn.com/gb.svg" },
-    { code: "pt", label: "Português", flag: "https://flagcdn.com/br.svg" },
-    { code: "es", label: "Español", flag: "https://flagcdn.com/es.svg" },
-    { code: "fr", label: "Français", flag: "https://flagcdn.com/fr.svg" },
-  ];
-
-  const defaultLang = useMemo(() => {
-    const stored = safeStorage.get("arvin_selected_lang");
-    const found = languages.find((l) => l.code === stored?.code);
-    return found || languages[1];
-  }, []);
-
-  const [selectedLang, setSelectedLang] = useState<any>(defaultLang);
   const [menuAnchor, setMenuAnchor] = useState<null | HTMLElement>(null);
-  const menuOpen = Boolean(menuAnchor);
 
-  const handleButtonClick = (e: any) => setMenuAnchor(e.currentTarget);
   const handleClose = () => setMenuAnchor(null);
 
-  const handleSelect = (lang: any) => {
-    setSelectedLang(lang);
-    safeStorage.set("arvin_selected_lang", lang);
-    handleClose();
-  };
+  const [isMonth, setIsMonth] = useState(true);
+
   const [selectedToggle, setSelectedToggle] = useState(1);
 
   const selectedToggle1 = {
@@ -800,6 +776,9 @@ function ArvinLandingPageNew() {
               </p>
             </div>
             <div
+              onClick={() => {
+                setIsMonth(!isMonth);
+              }}
               style={{
                 display: "flex",
                 gap: "16px",
@@ -827,8 +806,8 @@ function ArvinLandingPageNew() {
                 <div
                   style={{
                     borderRadius: "50%",
-                    backgroundColor: "#ED5914",
-                    height: "100%",
+                    backgroundColor: isMonth ? "#ED5914" : "#FFF",
+                    height: "28px",
                     width: "28px",
                     margin: "4px",
                   }}
@@ -836,7 +815,7 @@ function ArvinLandingPageNew() {
                 <div
                   style={{
                     borderRadius: "50%",
-                    backgroundColor: "#FFF",
+                    backgroundColor: !isMonth ? "#ED5914" : "#FFF",
                     height: "28px",
                     width: "28px",
                     margin: "4px",
