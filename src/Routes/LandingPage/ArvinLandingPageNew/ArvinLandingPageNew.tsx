@@ -35,66 +35,6 @@ const safeStorage = {
 };
 
 function ArvinLandingPageNew() {
-  const itemsOfPage = useMemo(
-    () => [
-      {
-        title: "👨‍🏫 Gestão de Alunos",
-        description:
-          "Organize turmas, acompanhe o desempenho e facilite o controle dos seus alunos.",
-        href: "gestao-alunos",
-        video: "https://www.youtube.com/watch?v=esFGOKs5hPI",
-      },
-      {
-        title: "📚 Materiais de Aula",
-        description:
-          "Tenha acesso a materiais prontos e organizados, do nível básico ao avançado, para usar em suas aulas de gramática, vocabulário, leitura, escuta e conversação.",
-        href: "materiais-aula",
-        video: "https://www.youtube.com/watch?v=sm8xx9d6uRU",
-      },
-      {
-        title: "🌍 2 Idiomas Para Ensinar",
-        description:
-          "Conte com materiais de inglês e espanhol para oferecer mais opções aos seus alunos.",
-        href: "2-idiomas",
-        imgs: [
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/arvinlg.png?updatedAt=1759444234870",
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/espen.png?updatedAt=1759444234580",
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/screen%20(4).png?updatedAt=1759444234627",
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Screenshots/quest.png?updatedAt=1759444312417",
-        ],
-      },
-      {
-        title: "🎧 Ferramentas De Estudos Para Alunos",
-        description:
-          "Forneça flashcards e exercícios de escuta e escrita para potencializar o aprendizado dos seus alunos.",
-        href: "ferramentas-alunos",
-      },
-      {
-        title: "🎨 Personalização da Plataforma",
-        description:
-          "Adapte a plataforma ao seu estilo de ensino e ofereça uma experiência única aos seus alunos.",
-        href: "personalizacao",
-      },
-      {
-        title: "💰 Gestão Financeira",
-        description:
-          "Controle pagamentos, organize suas finanças e mantenha a sustentabilidade do seu negócio de aulas particulares.",
-        href: "gestao-financeira",
-        imgs: [
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/financ?updatedAt=1758412532112",
-          "https://ik.imagekit.io/vjz75qw96/assets/icons/fic?updatedAt=1758412532107",
-        ],
-      },
-      {
-        title: "✨ Assistente de IA",
-        description:
-          "Gerencie seu negócio e conteúdo educacional de forma automatizada e personalizada.",
-        href: "assistente-ia",
-      },
-    ],
-    []
-  );
-
   const getWhatsAppLink = () => {
     const message = `Olá, gostaria de fazer saber mais sobre a plataforma ARVIN.`;
     return `https://wa.me/5511972369299?text=${encodeURIComponent(message)}`;
@@ -812,6 +752,98 @@ function ArvinLandingPageNew() {
                   );
                 })}
               </div>
+            </div>
+          </section>
+          <section
+            style={{
+              backgroundColor: "#fff",
+              width: "100%",
+              padding: "48.15px 24px",
+              margin: "0 auto",
+              boxSizing: "border-box",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+              }}
+            >
+              <p
+                style={{
+                  fontWeight: 700,
+                  fontStyle: "Bold",
+                  fontSize: "24px",
+                  color: "#101721",
+                  lineHeight: "150%",
+                  letterSpacing: -"-3%",
+                  textAlign: "center",
+                }}
+              >
+                Dê o próximo passo na sua jornada como educador
+              </p>
+              <p
+                style={{
+                  color: "#596780",
+                  marginTop: "12px",
+                  marginBottom: "36px",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontWeight: 500,
+                  fontStyle: "Medium",
+                  fontSize: "14px",
+                  lineHeight: "150%",
+                  letterSpacing: "-2%",
+                  textAlign: "center",
+                }}
+              >
+                Escolha o plano que oferece as ferramentas certas para crescer e
+                ensinar com liberdade.
+              </p>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                gap: "16px",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "209px",
+                margin: "0 auto",
+              }}
+            >
+              <div>Mensal </div>
+              <div
+                style={{
+                  height: "36px",
+                  width: "70px",
+                  padding: "1px",
+                  backgroundColor: "#ED5914",
+                  borderRadius: "50px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  cursor: "pointer",
+                  alignSelf: "center",
+                }}
+              >
+                <div
+                  style={{
+                    borderRadius: "50%",
+                    backgroundColor: "#ED5914",
+                    height: "100%",
+                    width: "28px",
+                    margin: "4px",
+                  }}
+                />
+                <div
+                  style={{
+                    borderRadius: "50%",
+                    backgroundColor: "#FFF",
+                    height: "28px",
+                    width: "28px",
+                    margin: "4px",
+                  }}
+                />
+              </div>{" "}
+              <div>Anual</div>
             </div>
           </section>
           <div style={{ height: "1000px" }} />
