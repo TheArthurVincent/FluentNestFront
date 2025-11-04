@@ -909,6 +909,39 @@ function ArvinLandingPageNew() {
                     Para quem está começando a ensinar e quer uma plataforma
                     completa e prática.
                   </p>
+                  <p
+                    style={{
+                      margin: "24px 0",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color: "#101721",
+                        fontFamily: " Plus Jakarta Sans",
+                        fontWeight: 600,
+                        fontStyle: "SemiBold",
+                        fontSize: "32px",
+                        lineHeight: "150%",
+                        letterSpacing: "-3%",
+                      }}
+                    >
+                      R$ 89,99
+                    </span>
+                    <span
+                      style={{
+                        color: "#596780",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 500,
+                        fontStyle: "Medium",
+                        fontSize: "16px",
+                        lineHeight: "150%",
+                        letterSpacing: "-2%",
+                      }}
+                    >
+                      /mês
+                    </span>
+                  </p>
+                  <div>oi</div>
                 </>
               ) : (
                 <></>
