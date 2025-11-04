@@ -1031,9 +1031,33 @@ function ArvinLandingPageNew() {
                         </div>
                       );
                     })}
+                    <button
+                      style={{
+                        color: "#FFFFFF",
+                        backgroundColor: "#ED5914",
+                        borderRadius: 30,
+                        padding: "12px 24px",
+                        border: "none",
+                        cursor: "pointer",
+                        marginTop: "16px",
+                        marginBottom: "16px",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        display: "block",
+                        width: "90%",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 600,
+                        fontStyle: "SemiBold",
+                        fontSize: "14px",
+                        lineHeight: "150%",
+                        letterSpacing: "-2%",
+                        textAlign: "center",
+                      }}
+                    >
+                      Contratar agora
+                    </button>
                   </div>
                 </div>
-
                 <div
                   style={{
                     backgroundColor: "#F3F5F7",
@@ -1200,6 +1224,31 @@ function ArvinLandingPageNew() {
                         </div>
                       );
                     })}
+                    <button
+                      style={{
+                        color: "#FFFFFF",
+                        backgroundColor: "#ED5914",
+                        borderRadius: 30,
+                        padding: "12px 24px",
+                        border: "none",
+                        cursor: "pointer",
+                        marginTop: "16px",
+                        marginBottom: "16px",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                        display: "block",
+                        width: "90%",
+                        fontFamily: "Plus Jakarta Sans",
+                        fontWeight: 600,
+                        fontStyle: "SemiBold",
+                        fontSize: "14px",
+                        lineHeight: "150%",
+                        letterSpacing: "-2%",
+                        textAlign: "center",
+                      }}
+                    >
+                      Contratar agora
+                    </button>
                   </div>
                 </div>
               </div>

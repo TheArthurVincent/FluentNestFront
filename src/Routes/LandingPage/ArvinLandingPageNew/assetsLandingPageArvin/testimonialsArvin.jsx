@@ -16,7 +16,7 @@ export const testimonialsArvin = [
     img: "https://ik.imagekit.io/vjz75qw96/assets/icons/Testemunhos/73755670b8f877b2c6038843022986e2071c7228.png",
   },
   {
-    title: "Os alunos amam",
+    title: "Os alunos amam!",
     description:
       "A plataforma está sendo um recurso muito bom e tem facilitado tanto as minhas aulas quanto no estudo de casa dos alunos. Eles estão gostando bastante!",
     name: "Victor Leonardo",
@@ -25,7 +25,8 @@ export const testimonialsArvin = [
   },
   {
     title: "Meu trabalho melhorou muito",
-    description: "A plataforma é incrível!.",
+    description:
+      "A plataforma Arvin é dinâmica e excelente para ensinar; meus alunos amaram aprender de forma interativa!",
     name: "Gabriel Isaías",
     role: "Professor particular",
     img: "https://ik.imagekit.io/vjz75qw96/assets/icons/Testemunhos/gab.png",
