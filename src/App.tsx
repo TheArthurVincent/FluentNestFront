@@ -36,11 +36,9 @@ import ResetPasswordFinalChange from "./Routes/ChangePassword/ResetPasswordFinal
 import SignUp from "./Routes/SignUp/SignUp";
 import EmailCheck from "./Routes/NewStudentAsaas/EmailCheck";
 import FeeNotUpToDate from "./Routes/FeeNotUpToDate";
-import LandingPage from "./Routes/LandingPage/LandingPage";
 import Redirect from "./Redirect";
 import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
-import LandingPageArvin from "./Routes/LandingPage/LandingPageArvin";
 import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 import SubscriptionExpired from "./Routes/SubscriptionExpired";
 import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTeacherAsaas";
@@ -299,14 +297,14 @@ function App() {
         }
       })(),
     },
+    // {
+    //   path: "/lp",
+    //   element: (() => {
+    //     return <LandingPageArvin />;
+    //   })(),
+    // },
     {
       path: "/lp",
-      element: (() => {
-        return <LandingPageArvin />;
-      })(),
-    },
-    {
-      path: "/lp2",
       element: (() => {
         return <ArvinLandingPageNew />;
       })(),
@@ -320,12 +318,13 @@ function App() {
     {
       path: "/cadastre-se",
       element: (() => {
-        try {
-          return isPortal ? <Login /> : <LandingPage />;
-        } catch (err) {
-          console.error("[App] Erro ao definir rota /cadastre-se:", err);
-          return <Login />;
-        }
+        return <Login />;
+        // try {
+        //   return isPortal ? <Login /> : <LandingPage />;
+        // } catch (err) {
+        //   console.error("[App] Erro ao definir rota /cadastre-se:", err);
+        //   return <Login />;
+        // }
       })(),
     },
     {
