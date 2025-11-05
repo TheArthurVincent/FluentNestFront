@@ -12,9 +12,19 @@ import { featuresArvin } from "./assetsLandingPageArvin/featuresArvin";
 import { testimonialsArvin } from "./assetsLandingPageArvin/testimonialsArvin";
 import TermsAndConditions from "./assetsLandingPageArvin/TermsAndConditions/TermsAndConditions";
 import TeacherSignupSection from "./assetsLandingPageArvin/TermsAndConditions/SubscriptionLPNew";
-import { IFrameAsaas } from "../../HomePage/Blog.Styled";
 import { getResponsiveEmbedUrl } from "../../../Resources/UniversalComponents";
+import styled from "styled-components";
 
+const IFrameAsaas = styled.iframe`
+  display: block;
+  width: min(80%, 850px);
+  max-width: 100%;
+  aspect-ratio: 16 / 9; /* mantém proporção */
+  height: auto;
+  margin-inline: auto; /* centraliza horizontalmente */
+  border: 0;
+  border-radius: 16px;
+`;
 const safeStorage = {
   get(key: any, fallback = null) {
     try {
@@ -309,26 +319,29 @@ function ArvinLandingPageNew() {
                 Ver planos
               </button>
             </div>
-            {/* <div
-              style={{
-                display: "grid",
-                width: "100%",
-                alignContent: "center",
-                justifyItems: "center",
-                maxHeight: "80px",
-                transform: "translateY(100px)",
-              }}
-            > */}
-            <IFrameAsaas
-              style={{
-                borderRadius: "16px",
-              }}
-              id="video-section"
-              src={getResponsiveEmbedUrl(
-                "https://www.youtube.com/watch?v=mJc5dBDVPaA"
-              )}
-            />
-            {/* </div> */}
+          </section>
+          <section
+            style={{
+              background:
+                "linear-gradient(to bottom, #000000ff 50%, #ffffff 50%)",
+              display: "grid",
+              gap: "16px",
+              alignItems: "center",
+              justifyItems: "center",
+              margin: "0 auto",
+              padding: "12px 0",
+            }}
+          >
+            <div style={{ width: "100%", maxWidth: 850, margin: "0 auto" }}>
+              <IFrameAsaas
+                src={getResponsiveEmbedUrl(
+                  "https://www.youtube.com/watch?v=mJc5dBDVPaA"
+                )}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+                title="Apresentação Arvin"
+              />
+            </div>
           </section>
           <section
             style={{
