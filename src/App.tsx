@@ -45,6 +45,7 @@ import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTea
 import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinLandingPageNew";
 import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
+import LandingPage from "./Routes/LandingPage/LandingPage";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -289,7 +290,7 @@ function App() {
           ) : verifyToken() ? (
             <HomePage headers={headers} />
           ) : (
-            <Redirect to={isLocalHost ? "/login" : "/cadastre-se"} />
+            <Redirect to={"/login"} />
           );
         } catch (err) {
           console.error("[App] Erro ao definir rota /*:", err);
@@ -297,34 +298,10 @@ function App() {
         }
       })(),
     },
-    // {
-    //   path: "/lp",
-    //   element: (() => {
-    //     return <LandingPageArvin />;
-    //   })(),
-    // },
     {
       path: "/lp",
       element: (() => {
         return <ArvinLandingPageNew />;
-      })(),
-    },
-    {
-      path: "/lp/arvin",
-      element: (() => {
-        return <TeacherSubscription />;
-      })(),
-    },
-    {
-      path: "/cadastre-se",
-      element: (() => {
-        return <Login />;
-        // try {
-        //   return isPortal ? <Login /> : <LandingPage />;
-        // } catch (err) {
-        //   console.error("[App] Erro ao definir rota /cadastre-se:", err);
-        //   return <Login />;
-        // }
       })(),
     },
     {
@@ -339,15 +316,8 @@ function App() {
       })(),
     },
     {
-      path: "/signup",
-      element: (() => {
-        try {
-          return <Login />;
-        } catch (err) {
-          console.error("[App] Erro ao definir rota /signup:", err);
-          return <Login />;
-        }
-      })(),
+      path: "/cadastre-se",
+      element: <Redirect to={"/login"} />,
     },
     {
       path: "/message",
