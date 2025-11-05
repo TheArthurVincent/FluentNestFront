@@ -322,6 +322,10 @@ function App() {
       })(),
     },
     {
+      path: "/cadastre-se",
+      element: <Redirect to={"/login"} />,
+    },
+    {
       path: "/message",
       element: (() => {
         try {

@@ -1207,6 +1207,7 @@ function ArvinLandingPageNew() {
                             letterSpacing: "-2%",
                             textAlign: "center",
                           }}
+                          onClick={scrollToSubscription}
                         >
                           Contratar agora
                         </button>
@@ -1410,6 +1411,7 @@ function ArvinLandingPageNew() {
                             letterSpacing: "-2%",
                             textAlign: "center",
                           }}
+                          onClick={scrollToSubscription}
                         >
                           Contratar agora
                         </button>
