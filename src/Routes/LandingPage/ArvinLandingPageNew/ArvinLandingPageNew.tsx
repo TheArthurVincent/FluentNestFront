@@ -283,7 +283,8 @@ function ArvinLandingPageNew() {
                   display: "grid",
                   gap: "16px",
                   alignItems: "center",
-                  justifyItems: "center",
+                  justifyItems: "space-between",
+                  maxWidth: 650,
                   margin: "0 auto",
                   padding: "24px",
                 }}
@@ -292,7 +293,7 @@ function ArvinLandingPageNew() {
                   style={{
                     display: "grid",
                     gap: "16px",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
                   }}
                 >
                   <button
