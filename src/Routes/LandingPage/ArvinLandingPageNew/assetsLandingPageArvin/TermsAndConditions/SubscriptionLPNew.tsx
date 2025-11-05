@@ -14,7 +14,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
     birthDate: "",
     password: "",
     confirmPassword: "",
-    plan: "silver", // NEW
+    plan: "gold", // NEW
   });
 
   const [errors, setErrors] = useState<{ confirmPassword?: string }>({});
@@ -400,7 +400,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
               gap: "12px",
             }}
           >
-            <select
+            {/* <select
               name="plan"
               style={{ marginRight: "12px" }}
               value={formData.plan}
@@ -410,7 +410,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
             >
               <option value="silver">Silver</option>
               <option value="gold">Gold</option>
-            </select>
+            </select> */}
             <button
               type="submit"
               className="ts-btn"
