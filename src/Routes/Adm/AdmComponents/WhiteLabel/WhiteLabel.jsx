@@ -488,7 +488,7 @@ export default function WhiteLabelPreview({ headers }) {
                 </select>
               </div>
             </div>
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -524,7 +524,7 @@ export default function WhiteLabelPreview({ headers }) {
                   backgroundColor: formData.backgroundColor,
                 }}
               />
-            </div>
+            </div> */}
             {goldVisible ? (
               <UpgradeGoldButton />
             ) : (

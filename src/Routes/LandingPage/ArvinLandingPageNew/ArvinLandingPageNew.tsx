@@ -1587,7 +1587,6 @@ function ArvinLandingPageNew() {
               <div
                 style={{
                   padding: "24px 48px",
-                  paddingBottom: 480,
                   margin: 0,
                   maxWidth: 900,
                   marginLeft: "auto",
