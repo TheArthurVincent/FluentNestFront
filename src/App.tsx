@@ -46,6 +46,8 @@ import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinL
 import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
 import LandingPage from "./Routes/LandingPage/LandingPage";
+import path from "path";
+import LoginComponent from "./Routes/LoginComponent/LoginComponent";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -305,13 +307,17 @@ function App() {
       })(),
     },
     {
+      path: "/login2",
+      element: <LoginComponent />,
+    },
+    {
       path: "/login",
       element: (() => {
         try {
-          return verifyToken() ? <Redirect to={"/"} /> : <Login />;
+          return verifyToken() ? <Redirect to={"/"} /> : <LoginComponent />;
         } catch (err) {
           console.error("[App] Erro ao definir rota /login:", err);
-          return <Login />;
+          return <LoginComponent />;
         }
       })(),
     },
@@ -323,10 +329,10 @@ function App() {
       path: "/message",
       element: (() => {
         try {
-          return verifyToken() ? <MessageDrive /> : <Login />;
+          return verifyToken() ? <MessageDrive /> : <LoginComponent />;
         } catch (err) {
           console.error("[App] Erro ao definir rota /message:", err);
-          return <Login />;
+          return <LoginComponent />;
         }
       })(),
     },
@@ -334,10 +340,10 @@ function App() {
       path: "*",
       element: (() => {
         try {
-          return verifyToken() ? <NotFound /> : <Login />;
+          return verifyToken() ? <NotFound /> : <LoginComponent />;
         } catch (err) {
           console.error("[App] Erro ao definir rota *:", err);
-          return <Login />;
+          return <LoginComponent />;
         }
       })(),
     },
