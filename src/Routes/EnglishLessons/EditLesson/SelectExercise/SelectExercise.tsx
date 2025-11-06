@@ -192,7 +192,7 @@ export default function SelectExerciseEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 10,
+        padding: "5px 12px",
         background: "linear-gradient(to right, #3b50c655, #ffffff)",
       }}
     >

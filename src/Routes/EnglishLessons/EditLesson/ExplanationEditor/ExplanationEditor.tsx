@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { uploadImageViaBackend } from "../../../../Resources/ImgUpload";
+import { truncateString } from "../../../../Resources/UniversalComponents";
 
 export type ExplanationSection = {
   image?: string | null; // pode ser null/undefined
@@ -147,7 +148,7 @@ export default function ExplanationEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 12,
+        padding: "5px 12px",
         background: "linear-gradient(to right, #eef2ff55, #ffffff)",
       }}
     >
@@ -163,7 +164,7 @@ export default function ExplanationEditor({
           onClick={() => setOpen(!open)}
           style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
         >
-          Explanation {value.subtitle ? `- ${value.subtitle}` : ""}
+          Explanation - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
         <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <div>

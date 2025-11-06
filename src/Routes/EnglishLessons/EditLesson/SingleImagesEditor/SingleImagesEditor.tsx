@@ -126,7 +126,7 @@ export default function SingleImagesEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 8,
-        padding: 12,
+        padding: "5px 12px",
         background: "linear-gradient(to right, #eef2ff77, #ffffff)",
       }}
       onDragOver={(e) => e.preventDefault()}
