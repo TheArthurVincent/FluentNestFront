@@ -101,7 +101,7 @@ export default function TermsAndConditions({
     box: {
       border: "1px solid #e5e7eb",
       borderRadius: 4,
-      padding: 12,
+      padding: 10,
       height: 180,
       overflow: "auto" as const,
       background: "#f9fafb",

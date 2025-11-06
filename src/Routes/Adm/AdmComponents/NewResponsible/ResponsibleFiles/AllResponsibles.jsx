@@ -117,7 +117,7 @@ export function AllResponsibles({ headers, id, flag, setFlag, myId }) {
               }}
             >
               <HTwo
-                style={{ color: partnerColor(), fontWeight: 600, fontSize: 18 }}
+                style={{ color: partnerColor(), fontWeight: 600, fontSize: 16 }}
               >
                 {resp.name} {resp.lastname}
               </HTwo>

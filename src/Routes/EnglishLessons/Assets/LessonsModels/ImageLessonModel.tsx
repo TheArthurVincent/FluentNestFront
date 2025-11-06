@@ -250,7 +250,7 @@ export default function ImageLessonModel({
                         alignItems: "center",
                         justifyContent: "center",
                         cursor: "pointer",
-                        fontSize: 18,
+                        fontSize: 16,
                         textShadow: "0 0 3px #555",
                       }}
                       aria-label="Adicionar aos flashcards"

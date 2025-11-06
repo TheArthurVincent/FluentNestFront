@@ -1,17 +1,20 @@
 import React, { useMemo, useState } from "react";
-
+import { truncateString } from "../../../../Resources/UniversalComponents";
 export type VideoBlock = {
-  subtitle: string;
-  video: string; // ex.: https://vimeo.com/1020740651 | https://youtu.be/abcd | https://site/video.mp4
+  subtitle?: string;
   type: "video";
+  video?: string;
   order?: number;
+  grid?: number;
 };
 
 type Props = {
   value: VideoBlock;
   onChange: (next: VideoBlock) => void;
   onRemove?: () => void;
-  titleRightExtra?: React.ReactNode;
+  titleRightExtra?: any;
+  onMoveUp?: () => void; // NOVO
+  onMoveDown?: () => void; // NOVO
 };
 
 export default function VideoEditor({
@@ -19,12 +22,13 @@ export default function VideoEditor({
   onChange,
   onRemove,
   titleRightExtra,
+  onMoveUp,
+  onMoveDown,
 }: Props) {
   const [forcePreviewKey, setForcePreviewKey] = useState(0); // para recarregar preview
+  const [showConfig, setShowConfig] = useState(false);
 
   const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
-  const updateOrder = (order: number | undefined) =>
-    onChange({ ...value, order });
   const updateVideo = (video: string) => onChange({ ...value, video });
 
   const trimAll = () => {
@@ -41,7 +45,7 @@ export default function VideoEditor({
   };
 
   // --- helpers de embed ---
-  const classifyVideo = (url: string) => {
+  const classifyVideo = (url?: string) => {
     const u = (url || "").trim();
     if (!u) return { kind: "empty" as const };
 
@@ -92,110 +96,157 @@ export default function VideoEditor({
   return (
     <div
       style={{
-        border: "1px solid #e2e8f0",
-        borderRadius: 10,
-        padding: 12,
+        border: "1px solid #ece2f0ff",
+        background: "linear-gradient(to right, #e455552c, #ffffff)",
+        borderRadius: 6,
+        padding: 10,
         display: "grid",
         gap: 12,
-        background: "white",
       }}
     >
-      {/* header + ações */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
+          display: "flex",
+          justifyContent: "space-between",
           alignItems: "center",
-          gap: 8,
+          textAlign: "center",
         }}
       >
-        <div style={{ display: "grid", gap: 6 }}>
-          <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
-          <input
-            value={value.subtitle}
-            onChange={(e) => updateSubtitle(e.target.value)}
-            placeholder="Ex.: Verbs"
-            style={inputStyle}
-          />
-        </div>
+        <strong
+          onClick={() => {
+            setShowConfig(!showConfig);
+          }}
+          style={{ fontSize: 16, cursor: "pointer", color: "#0f172a" }}
+        >
+          Vídeo - {value.subtitle && truncateString(value.subtitle, 15)}
+        </strong>
 
-        <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
-          <button onClick={trimAll} style={ghostBtnStyle} title="Trim">
-            Trim
-          </button>
-          {titleRightExtra}
+        <span
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveUp?.();
+                }}
+                style={ghostBtnStyle}
+                title="Mover bloco para cima"
+              >
+                ↑
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveDown?.();
+                }}
+                style={ghostBtnStyle}
+                title="Mover bloco para baixo"
+              >
+                ↓
+              </button>
+            </div>
+          </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
               Remover bloco
             </button>
           )}
-        </div>
+        </span>
       </div>
-      {/* URL do vídeo */}
-      <div style={{ display: "grid", gap: 6 }}>
-        <label style={{ fontSize: 12, color: "#334155" }}>
-          Vídeo (YouTube/Vimeo/MP4)
-        </label>
-        <input
-          type="url"
-          value={value.video}
-          onChange={(e) => updateVideo(e.target.value)}
-          placeholder="https://vimeo.com/1020740651"
-          style={inputStyle}
-        />
-        <div style={{ display: "flex", gap: 8 }}>
-          <button onClick={testPreview} style={ghostBtnStyle}>
-            Testar link
-          </button>
-          {!isValid && value.video && (
-            <span style={{ color: "#b91c1c", fontSize: 12 }}>
-              URL não reconhecida. Use YouTube, Vimeo ou arquivo
-              .mp4/.webm/.ogg.
-            </span>
-          )}
-        </div>
-      </div>
-
-      {/* Preview responsivo */}
-      {value.video && (
-        <div style={{ display: "grid", gap: 6 }}>
-          <label style={{ fontSize: 12, color: "#334155" }}>Prévia</label>
-
-          {/* container 16:9 responsivo */}
-          <div style={ratioBox}>
-            <div style={ratioContent} key={forcePreviewKey}>
-              {embed.kind === "youtube" || embed.kind === "vimeo" ? (
-                <iframe
-                  src={embed.src}
-                  title="video preview"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  style={iframeStyle}
-                />
-              ) : embed.kind === "file" ? (
-                <video controls style={videoStyle}>
-                  <source src={embed.src} />
-                  Seu navegador não suporta vídeo.
-                </video>
-              ) : (
-                // unknown: tentar iframe mesmo assim
-                <iframe
-                  src={embed.src}
-                  title="video preview"
-                  style={iframeStyle}
-                />
+      {showConfig && (
+        <>
+          {/* header + ações */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
+              <input
+                value={value.subtitle}
+                onChange={(e) => updateSubtitle(e.target.value)}
+                placeholder="Ex.: Verbs"
+                style={inputStyle}
+              />
+            </div>
+          </div>
+          {/* URL do vídeo */}
+          <div style={{ display: "grid", gap: 6 }}>
+            <label style={{ fontSize: 12, color: "#334155" }}>
+              Vídeo (YouTube/Vimeo/MP4)
+            </label>
+            <input
+              type="url"
+              value={value.video}
+              onChange={(e) => updateVideo(e.target.value)}
+              placeholder="https://vimeo.com/1020740651"
+              style={inputStyle}
+            />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={testPreview} style={ghostBtnStyle}>
+                Testar link
+              </button>
+              {!isValid && value.video && (
+                <span style={{ color: "#b91c1c", fontSize: 12 }}>
+                  URL não reconhecida. Use YouTube, Vimeo ou arquivo
+                  .mp4/.webm/.ogg.
+                </span>
               )}
             </div>
           </div>
 
-          {/* dicas de link */}
-          <small style={{ color: "#64748b" }}>
-            YouTube: cole a URL do vídeo (ex.:{" "}
-            <code>youtube.com/watch?v=ID</code> ou <code>youtu.be/ID</code>).{" "}
-            Vimeo: <code>vimeo.com/123456789</code>. Arquivo: link direto{" "}
-            <code>.mp4/.webm/.ogg</code>.
-          </small>
-        </div>
+          {/* Preview responsivo */}
+          {value.video && (
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>Prévia</label>
+
+              {/* container 16:9 responsivo */}
+              <div style={ratioBox}>
+                <div style={ratioContent} key={forcePreviewKey}>
+                  {embed.kind === "youtube" || embed.kind === "vimeo" ? (
+                    <iframe
+                      src={embed.src}
+                      title="video preview"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      style={iframeStyle}
+                    />
+                  ) : embed.kind === "file" ? (
+                    <video controls style={videoStyle}>
+                      <source src={embed.src} />
+                      Seu navegador não suporta vídeo.
+                    </video>
+                  ) : (
+                    // unknown: tentar iframe mesmo assim
+                    <iframe
+                      src={embed.src}
+                      title="video preview"
+                      style={iframeStyle}
+                    />
+                  )}
+                </div>
+              </div>
+
+              {/* dicas de link */}
+              <small style={{ color: "#64748b" }}>
+                YouTube: cole a URL do vídeo (ex.:{" "}
+                <code>youtube.com/watch?v=ID</code> ou <code>youtu.be/ID</code>
+                ). Vimeo: <code>vimeo.com/123456789</code>. Arquivo: link direto{" "}
+                <code>.mp4/.webm/.ogg</code>.
+              </small>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -215,7 +266,7 @@ const ghostBtnStyle: React.CSSProperties = {
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
-  padding: "8px 12px",
+  padding: "6px 10px",
   cursor: "pointer",
   fontSize: 13,
 };

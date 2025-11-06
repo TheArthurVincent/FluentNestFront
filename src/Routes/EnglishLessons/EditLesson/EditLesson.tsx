@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import SentencesEditor, {
@@ -6,16 +6,88 @@ import SentencesEditor, {
 } from "./SentencesEditor/SentencesEditor";
 import VocabularyEditor from "./VocabularyEditor/VocabularyEditor";
 import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
+import ExerciseEditor, { ExerciseBlock } from "./ExerciseEditor/ExerciseEditor";
+import TagsEditor from "./TagsEditor/TagsEditor";
+import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
+import ImagesEditor, {
+  ImagesBlock,
+  ImageEntry,
+} from "./ImagesEditor/ImagesEditor";
+import AudioAndTextEditor, {
+  AudioBlock,
+} from "./AudioAndTextEditor/AudioAndTextEditor";
+import DialogueEditor, { DialogueBlock } from "./DialogueEditor/DialogueEditor";
+import SelectExerciseEditor, {
+  SelectExerciseBlock,
+} from "./SelectExercise/SelectExercise";
+import ExplanationEditor, {
+  ExplanationBlock,
+} from "./ExplanationEditor/ExplanationEditor";
+import SingleImagesEditor, {
+  SingleImagesBlock,
+} from "./SingleImagesEditor/SingleImagesEditor";
 
 type ElementItem =
   | {
       subtitle?: string;
       order?: number;
       grid?: number;
-      type: string; // "video" | "sentences" | ...
+      type: "video";
       video?: string;
-      sentences?: Array<any>;
     }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "sentences" | "vocabulary";
+      sentences: Array<any>;
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "exercise";
+      items: string[];
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "images";
+      images: ImageEntry[];
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "audio";
+      text: string;
+      link: string;
+      image?: string;
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "dialogue";
+      dialogue: string[];
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "selectexercise";
+      options: SelectExerciseBlock["options"];
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "singleimages";
+      images: string[];
+    }
+  // 🔥 Novo tipo explanation no union principal
+  | ExplanationBlock
   | Record<string, any>;
 
 interface ClassDetails {
@@ -24,69 +96,87 @@ interface ClassDetails {
   elements: ElementItem[];
   image: string;
   language: string;
-  mainTag: string;
   module: string;
   moduleId?: string;
   order: number;
-  [k: string]: any; // tolerante a campos extras vindos do back
+  title?: string;
+  tags?: string[];
+  [k: string]: any;
 }
 
 interface EditLessonModelProps {
   classId: string;
+  setSeeEdit?: (v: boolean) => void;
   headers?: any;
-  onUpdated?: (updated: ClassDetails) => void; // callback opcional
+  onUpdated?: (updated: ClassDetails) => void;
 }
+
+type NewBlockType =
+  | "sentences"
+  | "vocabulary"
+  | "video"
+  | "exercise"
+  | "images"
+  | "audio"
+  | "dialogue"
+  | "selectexercise"
+  | "explanation"
+  | "singleimages";
 
 export default function EditLesson({
   classId,
   headers,
   onUpdated,
+  setSeeEdit,
 }: EditLessonModelProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [elementsMode, setElementsMode] = useState<"inputs" | "json">("inputs");
 
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
 
-  // campos editáveis no form principal
+  // cabeçalho
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  const [mainTag, setMainTag] = useState("");
   const [order, setOrder] = useState<number>(0);
-  const [elementsJSON, setElementsJSON] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
+
+  // elements por inputs
+  const [elements, setElements] = useState<ElementItem[]>([]);
+
+  // upload estado
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // estado do “adicionar bloco”
+  const [newType, setNewType] = useState<NewBlockType>("sentences");
+
+  // (opcional) validade global
+  const [isValid, setIsValid] = useState(true);
 
   const getClass = async () => {
+    setSeeEdit?.(true);
     setLoading(true);
     setError(null);
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
-        {
-          headers,
-        }
+        { headers }
       );
       const data: ClassDetails =
         response?.data?.classDetails || response?.data || response?.data?.data;
 
-      if (!data) {
-        throw new Error("Resposta sem dados de aula (classDetails).");
-      }
+      if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
       setLesson(data);
-      // Preenche o form
+      setTitle(data.title ?? "");
       setDescription(data.description ?? "");
       setImage(data.image ?? "");
-      setMainTag(data.mainTag ?? "");
       setOrder(Number(data.order ?? 0));
-
-      try {
-        setElementsJSON(JSON.stringify(data.elements ?? [], null, 2));
-      } catch {
-        setElementsJSON("[]");
-      }
-
+      setTags(Array.isArray(data.tags) ? data.tags : []);
+      setElements(Array.isArray(data.elements) ? data.elements : []);
       setOpen(true);
     } catch (err: any) {
       console.error(err);
@@ -98,45 +188,42 @@ export default function EditLesson({
 
   const handleSave = async () => {
     if (!lesson) return;
+
+    if (!isValid) {
+      alert("Por favor, corrija os erros nos elementos antes de salvar.");
+      return;
+    }
     setSaving(true);
     setError(null);
 
-    // Valida JSON dos elements
-    let parsedElements: ElementItem[] = [];
-    try {
-      const parsed = JSON.parse(elementsJSON);
-      if (!Array.isArray(parsed)) {
-        throw new Error("O campo 'elements' precisa ser um array JSON.");
-      }
-      parsedElements = parsed;
-    } catch (e: any) {
-      setSaving(false);
-      setError(`Elements inválido: ${e.message}`);
-      return;
-    }
-
     const payload: ClassDetails = {
       ...lesson,
+      title,
       description,
       image,
-      mainTag,
       order: Number(order),
-      elements: parsedElements,
+      tags,
+      elements,
     };
 
     try {
       const res = await axios.put(
-        `${backDomain}/api/v1/course/${classId}`,
+        `${backDomain}/api/v1/class-edit/${classId}`,
         payload,
-        { headers }
+        {
+          headers,
+        }
       );
-
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
       setLesson(updated);
+      if (updated?.image) setImage(updated.image);
+      setTitle(updated?.title ?? title);
+      setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
+
       onUpdated?.(updated);
-      setOpen(false);
+      window.location.reload();
     } catch (err: any) {
       console.error(err);
       const msg =
@@ -148,19 +235,30 @@ export default function EditLesson({
       setSaving(false);
     }
   };
-  const [elements, setElements] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (elementsMode === "inputs") {
-      try {
-        const parsed = JSON.parse(elementsJSON);
-        if (Array.isArray(parsed)) setElements(parsed);
-      } catch {
-        // se der erro, mantenha o que tinha
-      }
+  const onPickLessonImage = async (f?: File | null) => {
+    if (!f) return;
+    try {
+      setUploadError(null);
+      setUploadingImage(true);
+
+      const url = await uploadImageViaBackend(f, {
+        folder: "/lessons",
+        fileName: `lesson_${classId}_main_${Date.now()}.jpg`,
+        headers,
+      });
+
+      setImage(url);
+    } catch (e: any) {
+      console.error("Erro ao subir imagem da aula:", e?.message || e);
+      setUploadError("Falha ao fazer upload da imagem. Tente novamente.");
+    } finally {
+      setUploadingImage(false);
     }
-  }, [elementsMode]); // só quando mudar de modo
-  const updateElementAt = (index: number, next: any) => {
+  };
+
+  // helpers elements
+  const updateElementAt = (index: number, next: ElementItem) => {
     setElements((prev) => {
       const clone = prev.slice();
       clone[index] = next;
@@ -175,202 +273,273 @@ export default function EditLesson({
       return clone;
     });
   };
+
+  const moveElement = (from: number, to: number) => {
+    setElements((prev) => {
+      if (to < 0 || to >= prev.length) return prev;
+      const clone = prev.slice();
+      const [item] = clone.splice(from, 1);
+      clone.splice(to, 0, item);
+      return clone;
+    });
+  };
+
+  const moveElementUp = (index: number) => moveElement(index, index - 1);
+  const moveElementDown = (index: number) => moveElement(index, index + 1);
+
+  // ---------- Adicionar novo bloco ----------
+  const getNextOrder = () => (elements?.length ?? 0) + 1;
+
+  const makeEmptyBlock = (type: NewBlockType): ElementItem => {
+    const base = { subtitle: "", order: getNextOrder() };
+
+    switch (type) {
+      case "singleimages":
+        return { ...base, type: "singleimages", images: [] };
+      case "sentences":
+        return { ...base, type: "sentences", sentences: [] };
+      case "vocabulary":
+        return { ...base, type: "vocabulary", sentences: [] };
+      case "video":
+        return { ...base, type: "video", video: "" };
+      case "exercise":
+        return { ...base, type: "exercise", items: [] };
+      case "images":
+        return { ...base, type: "images", images: [] as ImageEntry[] };
+      case "audio":
+        return { ...base, type: "audio", text: "", link: "", image: "" };
+      case "dialogue":
+        return { ...base, type: "dialogue", dialogue: [] };
+      case "selectexercise":
+        return { ...base, type: "selectexercise", options: [] };
+      // 🔥 Novo: bloco Explanation (casca vazia)
+      case "explanation":
+        return {
+          ...base,
+          type: "explanation",
+          subtitle: "",
+          explanation: [
+            { image: null, title: "", list: [""] }, // 1 seção inicial vazia
+          ],
+        } as ExplanationBlock;
+      default:
+        return base as any;
+    }
+  };
+
+  const addBlock = (pos: "start" | "end" = "end") => {
+    const block = makeEmptyBlock(newType);
+    setElements((prev) => {
+      if (pos === "start") return [block, ...prev];
+      return [...prev, block];
+    });
+  };
+
   return (
     <>
-      <button
-        onClick={getClass}
-        disabled={loading}
-        style={{
-          borderRadius: "4px",
-          border: "1px solid #e2e8f0",
-          backgroundColor: "#f8fafc",
-          fontSize: "11px",
-          fontWeight: "400",
-          color: "#64748b",
-          padding: "4px 6px",
-          height: "28px",
-          outline: "none",
-          cursor: "pointer",
-          display: "block",
-        }}
-      >
-        {loading ? "Carregando..." : "Editar Aula"}
-      </button>
+      {!open && (
+        <button
+          onClick={open ? () => setOpen(false) : getClass}
+          disabled={loading}
+          style={{
+            borderRadius: "4px",
+            border: "1px solid #e2e8f0",
+            backgroundColor: "#f8fafc",
+            fontSize: "11px",
+            fontWeight: 400,
+            color: "#64748b",
+            padding: "4px 6px",
+            height: 28,
+            outline: "none",
+            cursor: "pointer",
+            display: "block",
+          }}
+        >
+          {loading ? "Carregando..." : open ? "Fechar editor" : "Editar Aula"}
+        </button>
+      )}
+
       {open && (
         <div
-          role="dialog"
-          aria-modal="true"
-          style={{
-            position: "fixed",
-            inset: 0,
-            top: 250,
-            zIndex: 9999,
-            background: "rgba(15, 23, 42, 0.6)",
-            display: "grid",
-            placeItems: "center",
-            padding: 16,
-          }}
-          onClick={() => {
-            // fechar ao clicar no backdrop
-            setOpen(false);
-          }}
+          aria-label="Editor de aula"
+          style={{ marginTop: 12, borderRadius: 12, padding: 16 }}
         >
           <div
             style={{
-              width: "min(960px, 99vw)",
-              maxHeight: "90vh",
-              overflow: "auto",
-              background: "white",
-              borderRadius: 12,
-              boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
-              padding: 16,
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              alignItems: "center",
+              marginBottom: 12,
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <div
+            <h2
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr auto",
-                alignItems: "center",
-                marginBottom: 12,
+                fontFamily: "Inter, system-ui, sans-serif",
+                fontSize: 16,
+                margin: 0,
               }}
             >
-              <h2
+              Editar Aula
+            </h2>
+
+            <button
+              onClick={() => {
+                setOpen(false);
+                setSeeEdit?.(false);
+              }}
+              style={{
+                border: "none",
+                background: "transparent",
+                fontSize: 14,
+                cursor: "pointer",
+                color: "#64748b",
+              }}
+              aria-label="Fechar"
+              title="Fechar"
+            >
+              Fechar
+            </button>
+          </div>
+
+          {error && (
+            <div
+              style={{
+                background: "#fee2e2",
+                color: "#991b1b",
+                padding: 8,
+                borderRadius: 8,
+                marginBottom: 12,
+                fontSize: 12,
+              }}
+            >
+              {error}
+            </div>
+          )}
+
+          {/* Cabeçalho */}
+          <div
+            style={{
+              display: "grid",
+              gap: 12,
+              gridTemplateColumns: "1fr",
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Título da aula
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Ex.: Business Essentials — Vocabulary & Usage"
                 style={{
-                  fontFamily: "Inter, system-ui, sans-serif",
-                  fontSize: 18,
-                  margin: 0,
+                  width: "100%",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  padding: 8,
+                  fontSize: 13,
                 }}
-              >
-                Editar Aula
-              </h2>
-              <button
-                onClick={() => setOpen(false)}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  fontSize: 20,
-                  cursor: "pointer",
-                }}
-                aria-label="Fechar"
-                title="Fechar"
-              >
-                ×
-              </button>
+              />
             </div>
 
-            {error && (
-              <div
-                style={{
-                  background: "#fee2e2",
-                  color: "#991b1b",
-                  padding: 8,
-                  borderRadius: 8,
-                  marginBottom: 12,
-                  fontSize: 12,
-                }}
-              >
-                {error}
-              </div>
-            )}
+            <TagsEditor
+              value={tags}
+              onChange={setTags}
+              helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+            />
 
-            {/* Campos principais */}
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Description
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                rows={3}
+                placeholder="Descrição da aula"
+                style={{
+                  width: "100%",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  padding: 8,
+                  fontSize: 13,
+                }}
+              />
+            </div>
+
             <div
               style={{
                 display: "grid",
-                gap: 12,
-                gridTemplateColumns: "1fr",
-                marginBottom: 12,
+                gridTemplateColumns: "repeat(auto-fit, minmax(390px, 1fr))",
+                alignItems: "start",
+                gap: 20,
               }}
             >
               <div style={{ display: "grid", gap: 6 }}>
                 <label style={{ fontSize: 12, color: "#334155" }}>
-                  Description
+                  Imagem da aula (upload imediato)
                 </label>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  placeholder="Descrição da aula"
-                  style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 13,
-                  }}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) =>
+                    onPickLessonImage(e.target.files?.[0] || null)
+                  }
+                  disabled={uploadingImage}
                 />
+                {uploadingImage && (
+                  <small style={{ color: "#0ea5e9" }}>Enviando imagem...</small>
+                )}
+                {uploadError && (
+                  <small style={{ color: "#b91c1c" }}>{uploadError}</small>
+                )}
+                {image && (
+                  <img
+                    src={image}
+                    alt="Lesson thumbnail"
+                    style={{
+                      width: 200,
+                      height: 200,
+                      display: "block",
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      border: "1px solid #e2e8f0",
+                    }}
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
+                )}
               </div>
 
               <div
-                style={{
-                  display: "grid",
-                  gap: 12,
-                  gridTemplateColumns: "1fr 1fr",
-                }}
+                style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr" }}
               >
                 <div style={{ display: "grid", gap: 6 }}>
                   <label style={{ fontSize: 12, color: "#334155" }}>
-                    Image
+                    Language
                   </label>
-                  <input
-                    type="url"
-                    value={image}
-                    onChange={(e) => setImage(e.target.value)}
-                    placeholder="https://..."
+                  <select
+                    value={lesson?.language ?? "en"}
+                    onChange={(e) =>
+                      setLesson((prev) =>
+                        prev ? { ...prev, language: e.target.value } : prev
+                      )
+                    }
                     style={{
                       width: "100%",
                       border: "1px solid #e2e8f0",
                       borderRadius: 8,
                       padding: 8,
                       fontSize: 13,
+                      background: "white",
+                      color: "#0f172a",
                     }}
-                  />
-                </div>
-
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Main Tag
-                  </label>
-                  <input
-                    value={mainTag}
-                    onChange={(e) => setMainTag(e.target.value)}
-                    placeholder="businessenglish"
-                    style={{
-                      width: "100%",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      padding: 8,
-                      fontSize: 13,
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div
-                style={{
-                  display: "grid",
-                  gap: 12,
-                  gridTemplateColumns: "1fr 1fr",
-                }}
-              >
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Language (somente leitura)
-                  </label>
-                  <input
-                    value={lesson?.language ?? ""}
-                    readOnly
-                    style={{
-                      width: "100%",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      padding: 8,
-                      fontSize: 13,
-                      background: "#f1f5f9",
-                      color: "#64748b",
-                    }}
-                  />
+                  >
+                    <option value="en">English (en)</option>
+                    <option value="es">Spanish (es)</option>
+                    <option value="fr">French (fr)</option>
+                  </select>
                 </div>
 
                 <div style={{ display: "grid", gap: 6 }}>
@@ -392,226 +561,272 @@ export default function EditLesson({
                 </div>
               </div>
             </div>
+          </div>
 
-            {/* Elements como JSON para edição flexível */}
+          {/* Conteúdo da Aula */}
+          <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
+            <h1 style={{ fontSize: 22, textAlign: "center", color: "#0f172a" }}>
+              Conteúdo da Aula
+            </h1>
 
-            <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
-              <div
-                style={{
-                  display: "inline-flex",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 10,
-                  overflow: "hidden",
-                  width: "fit-content",
-                }}
-                role="tablist"
-                aria-label="Modo de edição dos elementos"
-              >
-                <button
-                  role="tab"
-                  aria-selected={elementsMode === "inputs"}
-                  onClick={() => setElementsMode("inputs")}
-                  style={{
-                    padding: "6px 12px",
-                    border: "none",
-                    cursor: "pointer",
-                    background: elementsMode === "inputs" ? "#0ea5e9" : "white",
-                    color: elementsMode === "inputs" ? "white" : "#0f172a",
-                    fontSize: 13,
-                    fontWeight: 600,
-                  }}
-                >
-                  Editor por Inputs
-                </button>
-                <button
-                  role="tab"
-                  aria-selected={elementsMode === "json"}
-                  onClick={() => setElementsMode("json")}
-                  style={{
-                    padding: "6px 12px",
-                    border: "none",
-                    cursor: "pointer",
-                    background: elementsMode === "json" ? "#0ea5e9" : "white",
-                    color: elementsMode === "json" ? "white" : "#0f172a",
-                    fontSize: 13,
-                    fontWeight: 600,
-                    borderLeft: "1px solid #e2e8f0",
-                  }}
-                >
-                  JSON
-                </button>
-              </div>
-
-              {/* CONTEÚDO DOS MODOS */}
-              {elementsMode === "inputs" ? (
-                // >>> VAZIO POR ENQUANTO (placeholder)
-                <div style={{ display: "grid", gap: 12 }}>
-                  {elements.length === 0 && (
-                    <div
-                      style={{
-                        border: "1px dashed #94a3b8",
-                        borderRadius: 8,
-                        padding: 16,
-                        color: "#64748b",
-                      }}
-                    >
-                      Nenhum elemento. Altere para o modo JSON e cole seu array,
-                      depois volte para Inputs.
-                    </div>
-                  )}
-
-                  {elements.map((el, idx) => {
-                    if (el?.type === "sentences") {
-                      return (
-                        <SentencesEditor
-                          key={idx}
-                          value={el as SentencesBlock}
-                          onChange={(next) => updateElementAt(idx, next)}
-                          onRemove={() => removeElementAt(idx)}
-                        />
-                      );
-                    } else if (el?.type === "vocabulary") {
-                      return (
-                        <VocabularyEditor
-                          key={idx}
-                          value={el as SentencesBlock}
-                          onChange={(next) => updateElementAt(idx, next)}
-                          onRemove={() => removeElementAt(idx)}
-                        />
-                      );
-                    } else if (el?.type === "video") {
-                      return (
-                        <div key={idx} style={{ display: "grid", gap: 8 }}>
-                          {/* Controles do bloco (mover/remover) se você já usa isso */}
-                          {/* ... */}
-                          <VideoEditor
-                            value={el as VideoBlock}
-                            onChange={(next) => updateElementAt(idx, next)}
-                            onRemove={() => removeElementAt(idx)}
-                          />
-                        </div>
-                      );
-                    }
-
-                    // Outros tipos ainda não implementados
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          border: "1px solid #e2e8f0",
-                          borderRadius: 10,
-                          padding: 12,
-                          background: "#fff7ed",
-                          color: "#9a3412",
-                        }}
-                      >
-                        <strong>Tipo não suportado ainda:</strong>{" "}
-                        {String(el?.type)}
-                      </div>
-                    );
-                  })}
-
-                  {/* Opcional: botão para sincronizar de volta ao JSON antes de salvar */}
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      gap: 8,
-                    }}
-                  >
-                    <button
-                      onClick={() => {
-                        try {
-                          const str = JSON.stringify(elements, null, 2);
-                          setElementsJSON(str);
-                        } catch {}
-                      }}
-                      style={{
-                        borderRadius: 8,
-                        border: "1px solid #e2e8f0",
-                        backgroundColor: "white",
-                        color: "#0f172a",
-                        padding: "8px 12px",
-                        cursor: "pointer",
-                        fontSize: 13,
-                      }}
-                    >
-                      Atualizar JSON a partir dos Inputs
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                // >>> MODO JSON
-                <div style={{ display: "grid", gap: 8 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Elements (JSON)
-                  </label>
-                  <textarea
-                    value={elementsJSON}
-                    onChange={(e) => setElementsJSON(e.target.value)}
-                    spellCheck={false}
-                    rows={16}
-                    style={{
-                      width: "100%",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      padding: 10,
-                      fontFamily:
-                        'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-                      fontSize: 12.5,
-                      lineHeight: 1.45,
-                      whiteSpace: "pre",
-                    }}
-                  />
-                  <small style={{ color: "#64748b" }}>
-                    Edite o array <code>elements</code> em JSON. Ao salvar,
-                    validarei e enviarei.
-                  </small>
-                </div>
-              )}
-            </div>
-
-            {/* Ações */}
+            {/* Toolbar de adicionar bloco */}
             <div
               style={{
-                display: "flex",
+                display: "grid",
+                gridTemplateColumns: "minmax(220px, 1fr) auto auto",
                 gap: 8,
-                justifyContent: "flex-end",
-                marginTop: 16,
+                alignItems: "center",
+                marginBottom: 6,
               }}
             >
+              <select
+                value={newType}
+                onChange={(e) => setNewType(e.target.value as NewBlockType)}
+                style={{
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  padding: 8,
+                  fontSize: 13,
+                  background: "white",
+                  color: "#0f172a",
+                }}
+                title="Tipo do novo bloco"
+              >
+                <option value="explanation">Explanation/Introduction</option>
+                <option value="vocabulary">Vocabulary</option>
+                <option value="singleimages">Single Images</option>
+                <option value="sentences">Sentences</option>
+                <option value="audio">Text + Audio</option>
+                <option value="images">Images (Grid + Audio)</option>
+                <option value="video">Video</option>
+                <option value="exercise">Exercise (List of questions)</option>
+                <option value="dialogue">Dialogue</option>
+                <option value="selectexercise">Select Exercise</option>
+              </select>
+
               <button
-                onClick={() => setOpen(false)}
-                disabled={saving}
+                onClick={() => addBlock("start")}
                 style={{
                   borderRadius: 8,
                   border: "1px solid #e2e8f0",
                   backgroundColor: "white",
                   color: "#0f172a",
-                  padding: "8px 12px",
+                  padding: "8px 10px",
                   cursor: "pointer",
                   fontSize: 13,
                 }}
+                title="Adicionar no início"
               >
-                Cancelar
+                + Adicionar no início
               </button>
+
               <button
-                onClick={handleSave}
-                disabled={saving}
+                onClick={() => addBlock("end")}
                 style={{
                   borderRadius: 8,
                   border: "1px solid #0891b2",
                   backgroundColor: "#06b6d4",
                   color: "white",
-                  padding: "8px 12px",
-                  cursor: saving ? "not-allowed" : "pointer",
+                  padding: "8px 10px",
+                  cursor: "pointer",
                   fontSize: 13,
                   fontWeight: 600,
                 }}
+                title="Adicionar ao final"
               >
-                {saving ? "Salvando..." : "Salvar alterações"}
+                + Adicionar ao final
               </button>
             </div>
+
+            <div style={{ display: "grid", gap: 10 }}>
+              {elements.length === 0 && (
+                <div
+                  style={{
+                    border: "1px dashed #94a3b8",
+                    borderRadius: 8,
+                    padding: 16,
+                    color: "#64748b",
+                  }}
+                >
+                  Nenhum elemento cadastrado.
+                </div>
+              )}
+
+              {elements.map((el, idx) => {
+                if (el?.type === "sentences") {
+                  return (
+                    <div key={idx}>
+                      <SentencesEditor
+                        value={el as SentencesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "vocabulary") {
+                  return (
+                    <div key={idx}>
+                      <VocabularyEditor
+                        value={el as SentencesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "video") {
+                  return (
+                    <div key={idx}>
+                      <VideoEditor
+                        value={el as VideoBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "exercise") {
+                  return (
+                    <div key={idx}>
+                      <ExerciseEditor
+                        value={el as ExerciseBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "images") {
+                  return (
+                    <div key={idx}>
+                      <ImagesEditor
+                        value={el as ImagesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "audio") {
+                  return (
+                    <div key={idx}>
+                      <AudioAndTextEditor
+                        value={el as AudioBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "dialogue") {
+                  return (
+                    <div key={idx}>
+                      <DialogueEditor
+                        value={el as DialogueBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "selectexercise") {
+                  return (
+                    <div key={idx}>
+                      <SelectExerciseEditor
+                        value={el as SelectExerciseBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "explanation") {
+                  return (
+                    <div key={idx}>
+                      <ExplanationEditor
+                        value={el as ExplanationBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "singleimages") {
+                  return (
+                    <div key={idx}>
+                      <SingleImagesEditor
+                        value={el as SingleImagesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
+                }
+
+                return <></>;
+              })}
+            </div>
+          </div>
+
+          {/* Ações */}
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              justifyContent: "flex-end",
+              marginTop: 16,
+            }}
+          >
+            <button
+              onClick={() => {
+                setOpen(false);
+                setSeeEdit?.(false);
+              }}
+              disabled={saving}
+              style={{
+                borderRadius: 8,
+                border: "1px solid #e2e8f0",
+                backgroundColor: "white",
+                color: "#0f172a",
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: 13,
+              }}
+            >
+              Fechar editor
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              style={{
+                borderRadius: 8,
+                border: "1px solid #0891b2",
+                backgroundColor: "#06b6d4",
+                color: "white",
+                padding: "8px 12px",
+                cursor: saving ? "not-allowed" : "pointer",
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              {saving ? "Salvando..." : "Salvar alterações"}
+            </button>
           </div>
         </div>
       )}
