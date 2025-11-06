@@ -795,7 +795,7 @@ function ArvinLandingPageNew() {
                                 margin: "0 0 12px 0",
                                 fontFamily: "Plus Jakarta Sans",
                                 fontWeight: 700,
-                                fontSize: 16,
+                                fontSize: 14,
                                 lineHeight: "150%",
                                 letterSpacing: "-0.02em",
                                 color: "#FFFFFF",
@@ -847,7 +847,7 @@ function ArvinLandingPageNew() {
                                   margin: 0,
                                   fontFamily: "Plus Jakarta Sans",
                                   fontWeight: 700,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                   lineHeight: "150%",
                                   letterSpacing: "-0.03em",
                                   color: "#FFFFFF",
@@ -1799,7 +1799,7 @@ function ArvinLandingPageNew() {
                           margin: 0,
                           fontFamily: "Plus Jakarta Sans",
                           fontWeight: 700,
-                          fontSize: 16,
+                          fontSize: 14,
                           letterSpacing: "-0.02em",
                         }}
                       >
@@ -1886,7 +1886,7 @@ function ArvinLandingPageNew() {
                           margin: 0,
                           fontFamily: "Plus Jakarta Sans",
                           fontWeight: 700,
-                          fontSize: 16,
+                          fontSize: 14,
                           letterSpacing: "-0.02em",
                         }}
                       >

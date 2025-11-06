@@ -177,7 +177,7 @@ export default function SentencesEditor({
         border: "1px solid #e2e8f0",
         background: "linear-gradient(to right, #137f1a23, #ffffff)",
         borderRadius: 6,
-        padding: 10,
+        padding: "5px 12px",
         display: "grid",
         gap: 12,
       }}
@@ -194,7 +194,7 @@ export default function SentencesEditor({
           onClick={() => {
             setShowConfig(!showConfig);
           }}
-          style={{ fontSize: 16, cursor: "pointer", color: "#0f172a" }}
+          style={{ fontSize: 14, cursor: "pointer", color: "#0f172a" }}
         >
           Sentences - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
@@ -230,7 +230,7 @@ export default function SentencesEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

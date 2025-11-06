@@ -176,7 +176,7 @@ export default function VocabularyEditor({
         border: "1px solid #e2e8f0",
         background: "linear-gradient(to right, #0054c11f, #ffffff)",
         borderRadius: 6,
-        padding: 10,
+        padding: "5px 12px",
         display: "grid",
         gap: 12,
       }}
@@ -194,7 +194,7 @@ export default function VocabularyEditor({
             setShowConfig(!showConfig);
           }}
           style={{
-            fontSize: 16,
+            fontSize: 14,
             cursor: "pointer",
             color: "#0f172a",
           }}
@@ -232,7 +232,7 @@ export default function VocabularyEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

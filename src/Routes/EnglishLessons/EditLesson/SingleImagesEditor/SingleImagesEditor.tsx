@@ -126,7 +126,7 @@ export default function SingleImagesEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 8,
-        padding: 12,
+        padding: "5px 12px",
         background: "linear-gradient(to right, #eef2ff77, #ffffff)",
       }}
       onDragOver={(e) => e.preventDefault()}
@@ -141,7 +141,7 @@ export default function SingleImagesEditor({
         }}
       >
         <strong
-          style={{ cursor: "pointer", fontSize: 16, color: "#0f172a" }}
+          style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
           onClick={() => setShow(!show)}
         >
           Single Images {value.subtitle ? `- ${value.subtitle}` : ""}
@@ -162,7 +162,7 @@ export default function SingleImagesEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtn}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

@@ -192,7 +192,7 @@ export default function SelectExerciseEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 10,
+        padding: "5px 12px",
         background: "linear-gradient(to right, #3b50c655, #ffffff)",
       }}
     >
@@ -209,7 +209,7 @@ export default function SelectExerciseEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 16,
+            fontSize: 14,
             color: "#0f172a",
           }}
         >
@@ -236,7 +236,7 @@ export default function SelectExerciseEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtn}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

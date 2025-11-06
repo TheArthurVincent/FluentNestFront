@@ -123,7 +123,7 @@ export default function DialogueEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 10,
+        padding: "5px 12px",
         background: "linear-gradient(to right, #db9c3655, #ffffff)",
       }}
     >
@@ -139,7 +139,7 @@ export default function DialogueEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 16,
+            fontSize: 14,
             color: "#0f172a",
           }}
         >
@@ -164,7 +164,7 @@ export default function DialogueEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>
