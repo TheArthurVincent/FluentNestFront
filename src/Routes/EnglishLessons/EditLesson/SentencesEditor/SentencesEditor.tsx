@@ -168,13 +168,24 @@ export default function SentencesEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
+        background: "#e2e8f07a",
         borderRadius: 10,
         padding: 12,
         display: "grid",
         gap: 12,
-        background: "white",
       }}
     >
+      <div
+        style={{
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          textAlign: "center",
+        }}
+      >
+        <strong style={{ fontSize: 18, color: "#0f172a" }}>
+          Elemento tipo 'Sentences'
+        </strong>
+      </div>
       {/* header + ações */}
       <div
         style={{
@@ -285,7 +296,7 @@ export default function SentencesEditor({
           }}
         >
           <strong style={{ fontSize: 14, color: "#0f172a" }}>
-            Sentences ({value.sentences.length})
+            List ({value.sentences.length})
           </strong>
           <button onClick={addSentence} style={primaryBtnStyle}>
             + Adicionar sentença
@@ -457,6 +468,7 @@ const ghostBtnStyle: React.CSSProperties = {
 const dangerBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",
+  marginLeft: 20,
   backgroundColor: "#ef4444",
   color: "white",
   padding: "6px 10px",

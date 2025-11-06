@@ -93,13 +93,24 @@ export default function VideoEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
+        background: "#e2e8f07a",
         borderRadius: 10,
         padding: 12,
         display: "grid",
         gap: 12,
-        background: "white",
       }}
     >
+      <div
+        style={{
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          textAlign: "center",
+        }}
+      >
+        <strong style={{ fontSize: 18, color: "#0f172a" }}>
+          Elemento tipo Vídeo
+        </strong>
+      </div>
       {/* header + ações */}
       <div
         style={{

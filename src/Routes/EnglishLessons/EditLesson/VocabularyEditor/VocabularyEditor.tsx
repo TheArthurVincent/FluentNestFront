@@ -171,10 +171,21 @@ export default function VocabularyEditor({
         borderRadius: 10,
         padding: 12,
         display: "grid",
+        background: "#e2e8f07a",
         gap: 12,
-        background: "white",
       }}
     >
+      <div
+        style={{
+          justifyContent: "space-between",
+          alignItems: "baseline",
+          textAlign: "center",
+        }}
+      >
+        <strong style={{ fontSize: 18, color: "#0f172a" }}>
+          Elemento tipo 'Vocabulary'
+        </strong>
+      </div>
       {/* header + ações */}
       <div
         style={{
@@ -285,7 +296,7 @@ export default function VocabularyEditor({
           }}
         >
           <strong style={{ fontSize: 14, color: "#0f172a" }}>
-            Vocabulary ({value.sentences.length})
+            List ({value.sentences.length})
           </strong>
           <button onClick={addSentence} style={primaryBtnStyle}>
             + Adicionar vocabulário
@@ -309,12 +320,11 @@ export default function VocabularyEditor({
             <div
               key={idx}
               style={{
-                border: "1px solid #aaa",
                 borderRadius: 8,
                 padding: 10,
                 display: "grid",
                 gap: 10,
-                background: "#eee",
+                background: "#fff",
               }}
             >
               <div
