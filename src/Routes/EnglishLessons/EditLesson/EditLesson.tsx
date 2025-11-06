@@ -23,6 +23,9 @@ import SelectExerciseEditor, {
 import ExplanationEditor, {
   ExplanationBlock,
 } from "./ExplanationEditor/ExplanationEditor";
+import SingleImagesEditor, {
+  SingleImagesBlock,
+} from "./SingleImagesEditor/SingleImagesEditor";
 
 type ElementItem =
   | {
@@ -76,6 +79,13 @@ type ElementItem =
       type: "selectexercise";
       options: SelectExerciseBlock["options"];
     }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "singleimages";
+      images: string[];
+    }
   // 🔥 Novo tipo explanation no union principal
   | ExplanationBlock
   | Record<string, any>;
@@ -101,7 +111,6 @@ interface EditLessonModelProps {
   onUpdated?: (updated: ClassDetails) => void;
 }
 
-// 🔥 Adicionar "explanation" aqui
 type NewBlockType =
   | "sentences"
   | "vocabulary"
@@ -111,7 +120,8 @@ type NewBlockType =
   | "audio"
   | "dialogue"
   | "selectexercise"
-  | "explanation";
+  | "explanation"
+  | "singleimages";
 
 export default function EditLesson({
   classId,
@@ -284,6 +294,8 @@ export default function EditLesson({
     const base = { subtitle: "", order: getNextOrder() };
 
     switch (type) {
+      case "singleimages":
+        return { ...base, type: "singleimages", images: [] };
       case "sentences":
         return { ...base, type: "sentences", sentences: [] };
       case "vocabulary":
@@ -582,13 +594,14 @@ export default function EditLesson({
               >
                 <option value="explanation">Explanation/Introduction</option>
                 <option value="vocabulary">Vocabulary</option>
+                <option value="singleimages">Single Images</option>
                 <option value="sentences">Sentences</option>
-                <option value="audio">Audio (text/link)</option>
-                <option value="images">Images (grid)</option>
+                <option value="audio">Text + Audio</option>
+                <option value="images">Images (Grid + Audio)</option>
                 <option value="video">Video</option>
-                <option value="exercise">Exercise (items)</option>
+                <option value="exercise">Exercise (List of questions)</option>
                 <option value="dialogue">Dialogue</option>
-                <option value="selectexercise">Select Exercise (MC)</option>
+                <option value="selectexercise">Select Exercise</option>
               </select>
 
               <button
@@ -743,6 +756,19 @@ export default function EditLesson({
                     <div key={idx}>
                       <ExplanationEditor
                         value={el as ExplanationBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "singleimages") {
+                  return (
+                    <div key={idx}>
+                      <SingleImagesEditor
+                        value={el as SingleImagesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
                         onMoveUp={() => moveElementUp(idx)}

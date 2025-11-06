@@ -318,23 +318,23 @@ export default function ExerciseRunner({
   );
 
   const exerciseCatalog: ExerciseEntry[] = [
-    ...(exerciseElements.length > 0
-      ? [
-          {
-            key: "questions_unified",
-            title: "Questions",
-            render: () => (
-              <QuestionsExercise
-                key={`questions-${studentId}`} // Force re-render when student changes
-                headers={headers}
-                classId={classId}
-                exerciseElements={exerciseElements} // Pass all exercise elements
-                studentId={studentId || ""}
-              />
-            ),
-          },
-        ]
-      : []),
+    // ...(exerciseElements.length > 0
+    //   ? [
+    //       {
+    //         key: "questions_unified",
+    //         title: "Questions",
+    //         render: () => (
+    //           <QuestionsExercise
+    //             key={`questions-${studentId}`} // Force re-render when student changes
+    //             headers={headers}
+    //             classId={classId}
+    //             exerciseElements={exerciseElements} // Pass all exercise elements
+    //             studentId={studentId || ""}
+    //           />
+    //         ),
+    //       },
+    //     ]
+    //   : []),
     {
       key: "dictation_from_sentences",
       title: "Ditado",

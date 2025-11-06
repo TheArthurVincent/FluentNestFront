@@ -46,6 +46,7 @@ import AudioFile from "./Assets/LessonsModels/AudioSoundTrackGD";
 import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import ExerciseRunner from "./Exercises/Exercises";
 import EditLesson from "./EditLesson/EditLesson";
+import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
 
 interface EnglishClassCourse2ModelProps {
   headers: MyHeadersType | null;
@@ -3795,15 +3796,10 @@ export default function EnglishClassCourse2({
                                     headers={headers}
                                     element={element}
                                   />
-                                ) : element.type === "listenandcomplete" ? (
-                                  <ListenAndTranslateLessonModel
+                                ) : element.type === "exercise" ? (
+                                  <ExerciseLessonModel
                                     headers={headers}
-                                    element={element}
-                                  />
-                                ) : element.type === "listinenglish" ? (
-                                  <TextsWithTranslateLessonModel
-                                    headers={headers}
-                                    element={element}
+                                    item={element.items}
                                   />
                                 ) : (
                                   <></>
