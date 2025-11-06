@@ -3179,7 +3179,7 @@ export default function EnglishClassCourse2({
           <div
             style={{
               display: "flex",
-              margin: "1rem auto",
+              marginTop: "1rem",
               padding: "0 1rem",
               alignItems: "center",
               justifyContent: "space-between",
@@ -3234,14 +3234,14 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-          {thePermissions === "superadmin" ||
-            (thePermissions === "teacher" && (
+          {(thePermissions === "superadmin" ||
+            thePermissions === "teacher") && (
               <EditLesson
                 setSeeEdit={setSeeEdit}
                 headers={actualHeaders}
                 classId={classId}
               />
-            ))}
+            )}
           {!seeEdit && (
             <>
               {!seeBoard ? (

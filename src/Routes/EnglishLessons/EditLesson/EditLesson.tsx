@@ -362,44 +362,16 @@ export default function EditLesson({
       {open && (
         <div
           aria-label="Editor de aula"
-          style={{ marginTop: 12, borderRadius: 12, padding: 16 }}
+          style={{ borderRadius: 12, padding: 10 }}
         >
-          <div
+          <h2
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
-              alignItems: "center",
-              marginBottom: 12,
+              fontSize: 16,
+              textAlign: "center",
             }}
           >
-            <h2
-              style={{
-                fontFamily: "Inter, system-ui, sans-serif",
-                fontSize: 16,
-                margin: 0,
-              }}
-            >
-              Editar Aula
-            </h2>
-
-            <button
-              onClick={() => {
-                setOpen(false);
-                setSeeEdit?.(false);
-              }}
-              style={{
-                border: "none",
-                background: "transparent",
-                fontSize: 14,
-                cursor: "pointer",
-                color: "#64748b",
-              }}
-              aria-label="Fechar"
-              title="Fechar"
-            >
-              Fechar
-            </button>
-          </div>
+            Editar Aula
+          </h2>
 
           {error && (
             <div
@@ -780,7 +752,6 @@ export default function EditLesson({
                 setOpen(false);
                 setSeeEdit?.(false);
               }}
-              disabled={saving}
               style={{
                 borderRadius: 8,
                 border: "1px solid #e2e8f0",
@@ -790,8 +761,10 @@ export default function EditLesson({
                 cursor: "pointer",
                 fontSize: 13,
               }}
+              aria-label="Fechar"
+              title="Fechar"
             >
-              Fechar editor
+              Fechar sem salvar
             </button>
             <button
               onClick={handleSave}
