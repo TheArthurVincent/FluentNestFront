@@ -192,7 +192,7 @@ export default function SelectExerciseEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 12,
+        padding: 10,
         background: "linear-gradient(to right, #3b50c655, #ffffff)",
       }}
     >
@@ -289,7 +289,7 @@ export default function SelectExerciseEditor({
             {questions.length === 0 && (
               <div
                 style={{
-                  padding: 12,
+                  padding: 10,
                   border: "1px dashed #94a3b8",
                   borderRadius: 8,
                   color: "#64748b",
@@ -305,7 +305,7 @@ export default function SelectExerciseEditor({
                 style={{
                   border: "1px solid #e2e8f0",
                   borderRadius: 10,
-                  padding: 12,
+                  padding: 10,
                   display: "grid",
                   gap: 10,
                   background: "#fff",

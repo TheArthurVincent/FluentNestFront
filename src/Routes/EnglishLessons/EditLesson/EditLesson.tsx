@@ -582,7 +582,7 @@ export default function EditLesson({
                   //   style={{
                   //     border: "1px solid #e2e8f0",
                   //     borderRadius: 10,
-                  //     padding: 12,
+                  //     padding: 10,
                   //     background: "#fff7ed",
                   //     color: "#9a3412",
                   //   }}

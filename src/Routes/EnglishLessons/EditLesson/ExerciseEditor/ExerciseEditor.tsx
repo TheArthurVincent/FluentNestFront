@@ -83,7 +83,7 @@ export default function ExerciseEditor({
         border: "1px solid #e2e8f0",
         background: "linear-gradient(to right, #cddb3655, #ffffff)",
         borderRadius: 6,
-        padding: 12,
+        padding: 10,
         display: "grid",
         gap: 12,
       }}

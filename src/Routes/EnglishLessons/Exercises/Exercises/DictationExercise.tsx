@@ -252,7 +252,7 @@ export function DictationExercise({
               width: "100%",
               borderRadius: 6,
               border: "1px solid #D1D5DB",
-              padding: 12,
+              padding: 10,
               outline: "none",
               boxSizing: "border-box",
               fontSize: 14,
@@ -405,7 +405,7 @@ export function DictationExercise({
         <div
           style={{
             marginTop: 16,
-            padding: 12,
+            padding: 10,
             borderRadius: 6,
             background: "#FFFBEB",
             border: "1px solid #FDE68A",

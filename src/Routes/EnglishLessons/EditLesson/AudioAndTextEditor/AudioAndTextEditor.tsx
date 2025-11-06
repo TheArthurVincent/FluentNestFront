@@ -101,7 +101,7 @@ export default function AudioAndTextEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 12,
+        padding: 10,
         background: "linear-gradient(to right, #f7dbfe55, #ffffff)",
       }}
     >

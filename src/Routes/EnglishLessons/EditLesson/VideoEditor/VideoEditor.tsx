@@ -99,7 +99,7 @@ export default function VideoEditor({
         border: "1px solid #ece2f0ff",
         background: "linear-gradient(to right, #e455552c, #ffffff)",
         borderRadius: 6,
-        padding: 12,
+        padding: 10,
         display: "grid",
         gap: 12,
       }}

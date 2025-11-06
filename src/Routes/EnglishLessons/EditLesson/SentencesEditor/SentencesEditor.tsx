@@ -177,7 +177,7 @@ export default function SentencesEditor({
         border: "1px solid #e2e8f0",
         background: "linear-gradient(to right, #137f1a23, #ffffff)",
         borderRadius: 6,
-        padding: 12,
+        padding: 10,
         display: "grid",
         gap: 12,
       }}

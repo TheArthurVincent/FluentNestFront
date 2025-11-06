@@ -123,7 +123,7 @@ export default function DialogueEditor({
       style={{
         border: "1px solid #e2e8f0",
         borderRadius: 6,
-        padding: 12,
+        padding: 10,
         background: "linear-gradient(to right, #db9c3655, #ffffff)",
       }}
     >
@@ -262,7 +262,7 @@ export default function DialogueEditor({
             {lines.length === 0 && (
               <div
                 style={{
-                  padding: 12,
+                  padding: 10,
                   border: "1px dashed #94a3b8",
                   borderRadius: 8,
                   color: "#64748b",
