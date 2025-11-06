@@ -6,17 +6,31 @@ import SentencesEditor, {
 } from "./SentencesEditor/SentencesEditor";
 import VocabularyEditor from "./VocabularyEditor/VocabularyEditor";
 import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
-import TagsEditor from "./TagsEditor/TagsEditor";
 import ExerciseEditor, { ExerciseBlock } from "./ExerciseEditor/ExerciseEditor";
+import TagsEditor from "./TagsEditor/TagsEditor";
+import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
 
 type ElementItem =
   | {
       subtitle?: string;
       order?: number;
       grid?: number;
-      type: string; // "video" | "sentences" | "vocabulary" ...
+      type: "video";
       video?: string;
-      sentences?: Array<any>;
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "sentences" | "vocabulary";
+      sentences: Array<any>;
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "exercise";
+      items: string[];
     }
   | Record<string, any>;
 
@@ -57,47 +71,16 @@ export default function EditLesson({
   // cabeçalho
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(""); // URL atual (mostrada quando não há upload novo)
+  const [image, setImage] = useState(""); // URL atual (sempre URL)
   const [order, setOrder] = useState<number>(0);
   const [tags, setTags] = useState<string[]>([]);
 
   // elements por inputs
   const [elements, setElements] = useState<ElementItem[]>([]);
 
-  // upload de imagem (base64) — substitui principal ao salvar
-  const [uploadImageBase64, setUploadImageBase64] = useState<string | null>(
-    null
-  );
-  const [uploadImageName, setUploadImageName] = useState<string | null>(null);
-  const [uploadImageType, setUploadImageType] = useState<string | null>(null);
-
-  // helper: arquivo -> base64 (sem prefixo)
-  const fileToBase64NoPrefix = (
-    file: File
-  ): Promise<{ base64NoPrefix: string; mime: string }> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target?.result as string;
-        const [meta, raw] = dataUrl.split(",");
-        const mime = meta.match(/^data:(.*?);base64$/)?.[1] || "image/jpeg";
-        resolve({ base64NoPrefix: raw, mime });
-      };
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
-    });
-
-  const onPickLessonImage = async (f?: File | null) => {
-    if (!f) return;
-    try {
-      const { base64NoPrefix, mime } = await fileToBase64NoPrefix(f);
-      setUploadImageBase64(base64NoPrefix);
-      setUploadImageName(f.name || null);
-      setUploadImageType(mime || null);
-    } catch (e) {
-      console.error("Erro ao ler arquivo:", e);
-    }
-  };
+  // upload estado
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const getClass = async () => {
     setSeeEdit?.(true);
@@ -106,9 +89,7 @@ export default function EditLesson({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
-        {
-          headers,
-        }
+        { headers }
       );
       const data: ClassDetails =
         response?.data?.classDetails || response?.data || response?.data?.data;
@@ -122,9 +103,7 @@ export default function EditLesson({
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
 
-      const raw = Array.isArray(data.elements) ? data.elements : [];
-      setElements(raw);
-
+      setElements(Array.isArray(data.elements) ? data.elements : []);
       setOpen(true);
     } catch (err: any) {
       console.error(err);
@@ -139,50 +118,29 @@ export default function EditLesson({
     setSaving(true);
     setError(null);
 
-    // payload com upload opcional (base64)
-    const payload: ClassDetails & {
-      uploadImageBase64?: string;
-      uploadImageName?: string | null;
-      uploadImageType?: string | null;
-    } = {
+    const payload: ClassDetails = {
       ...lesson,
       title,
       description,
-      image, // backend deve sobrepor se receber uploadImageBase64
+      image, // URL (já vinda do upload genérico)
       order: Number(order),
       tags,
       elements,
-      ...(uploadImageBase64
-        ? {
-            uploadImageBase64,
-            uploadImageName,
-            uploadImageType,
-          }
-        : {}),
     };
 
     try {
       const res = await axios.put(
         `${backDomain}/api/v1/course/${classId}`,
         payload,
-        {
-          headers,
-        }
+        { headers }
       );
-
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
-      // atualiza tudo localmente (incluindo nova URL da imagem, se houver)
       setLesson(updated);
       if (updated?.image) setImage(updated.image);
       setTitle(updated?.title ?? title);
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
-
-      // limpa upload
-      setUploadImageBase64(null);
-      setUploadImageName(null);
-      setUploadImageType(null);
 
       onUpdated?.(updated);
     } catch (err: any) {
@@ -197,7 +155,30 @@ export default function EditLesson({
     }
   };
 
-  const updateElementAt = (index: number, next: any) => {
+  const onPickLessonImage = async (f?: File | null) => {
+    if (!f) return;
+    try {
+      setUploadError(null);
+      setUploadingImage(true);
+
+      // upload genérico -> backend -> ImageKit
+      const url = await uploadImageViaBackend(f, {
+        folder: "/lessons",
+        fileName: `lesson_${classId}_main_${Date.now()}.jpg`,
+        headers,
+      });
+
+      setImage(url);
+    } catch (e: any) {
+      console.error("Erro ao subir imagem da aula:", e?.message || e);
+      setUploadError("Falha ao fazer upload da imagem. Tente novamente.");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  // helpers elements
+  const updateElementAt = (index: number, next: ElementItem) => {
     setElements((prev) => {
       const clone = prev.slice();
       clone[index] = next;
@@ -253,11 +234,7 @@ export default function EditLesson({
       {open && (
         <div
           aria-label="Editor de aula"
-          style={{
-            marginTop: 12,
-            borderRadius: 12,
-            padding: 16,
-          }}
+          style={{ marginTop: 12, borderRadius: 12, padding: 16 }}
         >
           <div
             style={{
@@ -379,7 +356,7 @@ export default function EditLesson({
               {/* Upload + Preview */}
               <div style={{ display: "grid", gap: 6 }}>
                 <label style={{ fontSize: 12, color: "#334155" }}>
-                  Imagem da aula (enviada como base64 ao salvar)
+                  Imagem da aula (upload imediato)
                 </label>
                 <input
                   type="file"
@@ -387,27 +364,25 @@ export default function EditLesson({
                   onChange={(e) =>
                     onPickLessonImage(e.target.files?.[0] || null)
                   }
+                  disabled={uploadingImage}
                 />
-                {uploadImageBase64 && (
-                  <small style={{ color: "#16a34a" }}>
-                    Imagem pronta para envio ({uploadImageName})
-                  </small>
+                {uploadingImage && (
+                  <small style={{ color: "#0ea5e9" }}>Enviando imagem...</small>
                 )}
-                {(uploadImageBase64 || image) && (
+                {uploadError && (
+                  <small style={{ color: "#b91c1c" }}>{uploadError}</small>
+                )}
+                {image && (
                   <img
-                    src={
-                      uploadImageBase64
-                        ? `data:${
-                            uploadImageType || "image/jpeg"
-                          };base64,${uploadImageBase64}`
-                        : image
-                    }
+                    src={image}
                     alt="Lesson thumbnail"
                     style={{
-                      width: "200px",
-                      height: "200px",
+                      width: 200,
+                      height: 200,
                       display: "block",
                       objectFit: "cover",
+                      borderRadius: 8,
+                      border: "1px solid #e2e8f0",
                     }}
                     onError={(e) => (e.currentTarget.style.display = "none")}
                   />
@@ -472,7 +447,7 @@ export default function EditLesson({
               Conteúdo da Aula
             </h1>
 
-            <div style={{ display: "grid", gap: 20 }}>
+            <div style={{ display: "grid", gap: 10 }}>
               {elements.length === 0 && (
                 <div
                   style={{
