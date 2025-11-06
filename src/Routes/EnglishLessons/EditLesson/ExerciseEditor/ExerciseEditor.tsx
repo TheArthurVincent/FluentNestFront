@@ -99,7 +99,7 @@ export default function ExerciseEditor({
           onClick={() => {
             setShowConfig(!showConfig);
           }}
-          style={{ fontSize: 16, cursor: "pointer", color: "#0f172a" }}
+          style={{ fontSize: 14, cursor: "pointer", color: "#0f172a" }}
         >
           Exercises - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
@@ -135,7 +135,7 @@ export default function ExerciseEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>
@@ -163,7 +163,7 @@ export default function ExerciseEditor({
               {titleRightExtra}
               {onRemove && (
                 <button onClick={onRemove} style={dangerBtnStyle}>
-                  Remover bloco
+                  <i className="fa fa-trash" />
                 </button>
               )}
             </div>

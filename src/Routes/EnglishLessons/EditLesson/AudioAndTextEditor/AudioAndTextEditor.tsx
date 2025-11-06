@@ -117,7 +117,7 @@ export default function AudioAndTextEditor({
           onClick={() => setShowConfig(!showConfig)}
           style={{
             cursor: "pointer",
-            fontSize: 16,
+            fontSize: 14,
             color: "#0f172a",
           }}
         >
@@ -142,7 +142,7 @@ export default function AudioAndTextEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

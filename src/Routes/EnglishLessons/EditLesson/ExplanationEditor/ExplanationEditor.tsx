@@ -161,7 +161,7 @@ export default function ExplanationEditor({
       >
         <strong
           onClick={() => setOpen(!open)}
-          style={{ cursor: "pointer", fontSize: 16, color: "#0f172a" }}
+          style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
         >
           Explanation {value.subtitle ? `- ${value.subtitle}` : ""}
         </strong>
@@ -180,7 +180,7 @@ export default function ExplanationEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtn}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

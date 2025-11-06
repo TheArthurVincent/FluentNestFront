@@ -366,7 +366,7 @@ export default function EditLesson({
         >
           <h2
             style={{
-              fontSize: 16,
+              fontSize: 14,
               textAlign: "center",
             }}
           >

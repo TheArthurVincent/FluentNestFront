@@ -48,7 +48,7 @@ const imgBase = {
 };
 
 const priceBase = {
-  fontSize: 16,
+  fontSize: 14,
   color: "#475569",
   marginTop: 6,
 };

@@ -141,7 +141,7 @@ export default function SingleImagesEditor({
         }}
       >
         <strong
-          style={{ cursor: "pointer", fontSize: 16, color: "#0f172a" }}
+          style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
           onClick={() => setShow(!show)}
         >
           Single Images {value.subtitle ? `- ${value.subtitle}` : ""}
@@ -162,7 +162,7 @@ export default function SingleImagesEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtn}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

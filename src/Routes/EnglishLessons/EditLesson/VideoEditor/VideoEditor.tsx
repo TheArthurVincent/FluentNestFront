@@ -116,7 +116,7 @@ export default function VideoEditor({
           onClick={() => {
             setShowConfig(!showConfig);
           }}
-          style={{ fontSize: 16, cursor: "pointer", color: "#0f172a" }}
+          style={{ fontSize: 14, cursor: "pointer", color: "#0f172a" }}
         >
           Vídeo - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
@@ -154,7 +154,7 @@ export default function VideoEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>

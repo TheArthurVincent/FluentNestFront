@@ -194,7 +194,7 @@ export default function VocabularyEditor({
             setShowConfig(!showConfig);
           }}
           style={{
-            fontSize: 16,
+            fontSize: 14,
             cursor: "pointer",
             color: "#0f172a",
           }}
@@ -232,7 +232,7 @@ export default function VocabularyEditor({
           </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
-              Remover bloco
+              <i className="fa fa-trash" />
             </button>
           )}
         </span>
