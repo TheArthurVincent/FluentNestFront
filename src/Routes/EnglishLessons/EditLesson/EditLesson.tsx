@@ -7,6 +7,7 @@ import SentencesEditor, {
 import VocabularyEditor from "./VocabularyEditor/VocabularyEditor";
 import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
 import TagsEditor from "./TagsEditor/TagsEditor";
+import ExerciseEditor, { ExerciseBlock } from "./ExerciseEditor/ExerciseEditor";
 
 type ElementItem =
   | {
@@ -458,7 +459,7 @@ export default function EditLesson({
               Conteúdo da Aula
             </h1>
 
-            <div style={{ display: "grid", gap: 50 }}>
+            <div style={{ display: "grid", gap: 20 }}>
               {elements.length === 0 && (
                 <div
                   style={{
@@ -475,14 +476,7 @@ export default function EditLesson({
               {elements.map((el, idx) => {
                 if (el?.type === "sentences") {
                   return (
-                    <div
-                      key={idx}
-                      style={{
-                        paddingBottom: 20,
-                        marginBottom: 20,
-                        borderBottom: "2px solid #e2e8f0",
-                      }}
-                    >
+                    <div key={idx}>
                       <SentencesEditor
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
@@ -492,14 +486,7 @@ export default function EditLesson({
                   );
                 } else if (el?.type === "vocabulary") {
                   return (
-                    <div
-                      key={idx}
-                      style={{
-                        paddingBottom: 20,
-                        marginBottom: 20,
-                        borderBottom: "2px solid #e2e8f0",
-                      }}
-                    >
+                    <div key={idx}>
                       <VocabularyEditor
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
@@ -509,18 +496,26 @@ export default function EditLesson({
                   );
                 } else if (el?.type === "video") {
                   return (
+                    <div key={idx}>
+                      <VideoEditor
+                        value={el as VideoBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "exercise") {
+                  return (
                     <div
                       key={idx}
                       style={{
-                        display: "grid",
-                        gap: 8,
                         paddingBottom: 20,
                         marginBottom: 20,
                         borderBottom: "2px solid #e2e8f0",
                       }}
                     >
-                      <VideoEditor
-                        value={el as VideoBlock}
+                      <ExerciseEditor
+                        value={el as ExerciseBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
                       />

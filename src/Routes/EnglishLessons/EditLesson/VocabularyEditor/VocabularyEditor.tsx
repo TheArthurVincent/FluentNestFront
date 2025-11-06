@@ -40,6 +40,8 @@ export default function VocabularyEditor({
   defaultBlockLang2 = "pt",
 }: Props) {
   // defaults do bloco (usados ao criar novas sentenças)
+
+  const [showConfig, setShowConfig] = useState(false);
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
     (defaultBlockLang1 as LangCode) || "en"
   );
@@ -168,204 +170,240 @@ export default function VocabularyEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
+        background: "#0054c11f",
         borderRadius: 10,
         padding: 12,
         display: "grid",
-        background: "#e2e8f07a",
         gap: 12,
       }}
     >
       <div
+        onClick={() => {
+          setShowConfig(!showConfig);
+        }}
         style={{
+          display: "flex",
+          cursor: "pointer",
           justifyContent: "space-between",
-          alignItems: "baseline",
+          alignItems: "center",
           textAlign: "center",
         }}
       >
         <strong style={{ fontSize: 18, color: "#0f172a" }}>
-          Elemento tipo 'Vocabulary'
+          Vocabulary - {value.subtitle}
         </strong>
-      </div>
-      {/* header + ações */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        <div style={{ display: "grid", gap: 6 }}>
-          <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
-          <input
-            value={value.subtitle}
-            onChange={(e) => updateSubtitle(e.target.value)}
-            placeholder="Ex.: Groceries"
-            style={inputStyle}
-          />
-        </div>
 
-        <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
-          <button onClick={trimAll} style={ghostBtnStyle} title="Trim texto">
-            Trim
-          </button>
-          {titleRightExtra}
+        <span
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+          }}
+        >
+          <div>
+            <button
+            // onClick={() => moveUp(idx)} style={ghostBtnStyle}
+            >
+              ↑
+            </button>
+            <button
+            //  onClick={() => moveDown(idx)} style={ghostBtnStyle}
+            >
+              ↓
+            </button>
+          </div>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
               Remover bloco
             </button>
           )}
-        </div>
+        </span>
       </div>
-      {/* Lista de sentenças */}
-      <div style={{ display: "grid", gap: 8 }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "baseline",
-          }}
-        >
-          <strong style={{ fontSize: 14, color: "#0f172a" }}>
-            List ({value.sentences.length})
-          </strong>
-          <button onClick={addSentence} style={primaryBtnStyle}>
-            + Adicionar vocabulário
-          </button>
-        </div>
 
-        {value.sentences.length === 0 && (
-          <div style={emptyStyle}>
-            Nenhuma sentença. Use “Adicionar sentença”.
+      {showConfig && (
+        <>
+          {/* header + ações */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr auto",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
+              <input
+                value={value.subtitle}
+                onChange={(e) => updateSubtitle(e.target.value)}
+                placeholder="Ex.: Groceries"
+                style={inputStyle}
+              />
+            </div>
+
+            <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
+              {/* <button onClick={trimAll} style={ghostBtnStyle} title="Trim texto">
+            Trim
+          </button> */}
+              {titleRightExtra}
+            </div>
           </div>
-        )}
-
-        <div
-          style={{
-            display: "grid",
-            gap: 12,
-            gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
-          }}
-        >
-          {value.sentences.map((s, idx) => (
+          {/* Lista de sentenças */}
+          <div style={{ display: "grid", gap: 8 }}>
             <div
-              key={idx}
               style={{
-                borderRadius: 8,
-                padding: 10,
-                display: "grid",
-                gap: 10,
-                background: "#fff",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "baseline",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  gap: 6,
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                }}
-              >
-                {idx !== 0 && (
-                  <button onClick={() => moveUp(idx)} style={ghostBtnStyle}>
-                    ↑
-                  </button>
-                )}
-                Order: {idx + 1}
-                {idx !== value.sentences.length - 1 && (
-                  <button onClick={() => moveDown(idx)} style={ghostBtnStyle}>
-                    ↓
-                  </button>
-                )}
-                <button
-                  onClick={() => removeSentence(idx)}
-                  style={dangerBtnStyle}
-                >
-                  Remover
-                </button>
-              </div>
-
-              <div style={{ display: "grid", gap: 8 }}>
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Language 2 ({s.languages?.language1 || defaultLang1 || "en"}
-                    )
-                  </label>
-                  <input
-                    value={s.english}
-                    onChange={(e) =>
-                      updateSentence(idx, (prev) => ({
-                        ...prev,
-                        english: e.target.value,
-                      }))
-                    }
-                    placeholder="Ex.: She went to the supermarket to buy groceries."
-                    style={inputStyle}
-                  />
-                </div>
-
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Language 1 ({s.languages?.language2 || defaultLang2 || "pt"}
-                    )
-                  </label>
-                  <input
-                    value={s.portuguese}
-                    onChange={(e) =>
-                      updateSentence(idx, (prev) => ({
-                        ...prev,
-                        portuguese: e.target.value,
-                      }))
-                    }
-                    placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
-                    style={inputStyle}
-                  />
-                </div>
-              </div>
-
-              {/* Idiomas por sentença (sempre presente) */}
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
-                  gap: 12,
-                  background: "#f0f9ff",
-                  padding: 10,
-                  borderRadius: 8,
-                  border: "1px solid #e2e8f0",
-                }}
-              >
-                {renderLangSelect(
-                  s.languages?.language1,
-                  (code) =>
-                    updateSentence(idx, (prev) => ({
-                      ...prev,
-                      languages: {
-                        language1: code,
-                        language2:
-                          prev.languages?.language2 ?? (defaultLang2 || "pt"),
-                      },
-                    })),
-                  "language1 (para “english”)"
-                )}
-                {renderLangSelect(
-                  s.languages?.language2,
-                  (code) =>
-                    updateSentence(idx, (prev) => ({
-                      ...prev,
-                      languages: {
-                        language1:
-                          prev.languages?.language1 ?? (defaultLang1 || "en"),
-                        language2: code,
-                      },
-                    })),
-                  "language2 (para “portuguese”)"
-                )}
-              </div>
+              <strong style={{ fontSize: 14, color: "#0f172a" }}>
+                List ({value.sentences.length})
+              </strong>
+              <button onClick={addSentence} style={primaryBtnStyle}>
+                + Adicionar vocabulário
+              </button>
             </div>
-          ))}
-        </div>
-      </div>
+
+            {value.sentences.length === 0 && (
+              <div style={emptyStyle}>
+                Nenhuma sentença. Use “Adicionar sentença”.
+              </div>
+            )}
+
+            <div
+              style={{
+                display: "grid",
+                gap: 12,
+                gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
+              }}
+            >
+              {value.sentences.map((s, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    borderRadius: 8,
+                    padding: 10,
+                    display: "grid",
+                    gap: 10,
+                    background: "#fff",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 6,
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                    }}
+                  >
+                    {idx !== 0 && (
+                      <button onClick={() => moveUp(idx)} style={ghostBtnStyle}>
+                        ↑
+                      </button>
+                    )}
+                    Order: {idx + 1}
+                    {idx !== value.sentences.length - 1 && (
+                      <button
+                        onClick={() => moveDown(idx)}
+                        style={ghostBtnStyle}
+                      >
+                        ↓
+                      </button>
+                    )}
+                    <button
+                      onClick={() => removeSentence(idx)}
+                      style={dangerBtnStyle}
+                    >
+                      Remover
+                    </button>
+                  </div>
+
+                  <div style={{ display: "grid", gap: 8 }}>
+                    <div style={{ display: "grid", gap: 6 }}>
+                      <label style={{ fontSize: 12, color: "#334155" }}>
+                        Language 2 (
+                        {s.languages?.language1 || defaultLang1 || "en"})
+                      </label>
+                      <input
+                        value={s.english}
+                        onChange={(e) =>
+                          updateSentence(idx, (prev) => ({
+                            ...prev,
+                            english: e.target.value,
+                          }))
+                        }
+                        placeholder="Ex.: She went to the supermarket to buy groceries."
+                        style={inputStyle}
+                      />
+                    </div>
+
+                    <div style={{ display: "grid", gap: 6 }}>
+                      <label style={{ fontSize: 12, color: "#334155" }}>
+                        Language 1 (
+                        {s.languages?.language2 || defaultLang2 || "pt"})
+                      </label>
+                      <input
+                        value={s.portuguese}
+                        onChange={(e) =>
+                          updateSentence(idx, (prev) => ({
+                            ...prev,
+                            portuguese: e.target.value,
+                          }))
+                        }
+                        placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
+                        style={inputStyle}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Idiomas por sentença (sempre presente) */}
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: 12,
+                      background: "#f0f9ff",
+                      padding: 10,
+                      borderRadius: 8,
+                      border: "1px solid #e2e8f0",
+                    }}
+                  >
+                    {renderLangSelect(
+                      s.languages?.language1,
+                      (code) =>
+                        updateSentence(idx, (prev) => ({
+                          ...prev,
+                          languages: {
+                            language1: code,
+                            language2:
+                              prev.languages?.language2 ??
+                              (defaultLang2 || "pt"),
+                          },
+                        })),
+                      "language1 (para “english”)"
+                    )}
+                    {renderLangSelect(
+                      s.languages?.language2,
+                      (code) =>
+                        updateSentence(idx, (prev) => ({
+                          ...prev,
+                          languages: {
+                            language1:
+                              prev.languages?.language1 ??
+                              (defaultLang1 || "en"),
+                            language2: code,
+                          },
+                        })),
+                      "language2 (para “portuguese”)"
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -408,6 +446,7 @@ const ghostBtnStyle: React.CSSProperties = {
 const dangerBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",
+  zIndex: 2,
   backgroundColor: "#ef4444",
   color: "white",
   padding: "6px 10px",
