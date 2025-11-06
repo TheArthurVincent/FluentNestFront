@@ -174,8 +174,8 @@ export default function SentencesEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
-        background: "#137f1a23",
-        borderRadius: 10,
+        background: "linear-gradient(to right, #137f1a23, #ffffff)",
+        borderRadius: 6,
         padding: 12,
         display: "grid",
         gap: 12,

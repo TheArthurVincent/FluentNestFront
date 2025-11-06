@@ -213,6 +213,19 @@ export default function EditLesson({
     });
   };
 
+  const moveElement = (from: number, to: number) => {
+    setElements((prev) => {
+      if (to < 0 || to >= prev.length) return prev;
+      const clone = prev.slice();
+      const [item] = clone.splice(from, 1);
+      clone.splice(to, 0, item);
+      return clone;
+    });
+  };
+
+  const moveElementUp = (index: number) => moveElement(index, index - 1);
+  const moveElementDown = (index: number) => moveElement(index, index + 1);
+
   return (
     <>
       {!open && (
@@ -481,6 +494,8 @@ export default function EditLesson({
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
                       />
                     </div>
                   );
@@ -491,6 +506,8 @@ export default function EditLesson({
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
                       />
                     </div>
                   );
@@ -501,23 +518,20 @@ export default function EditLesson({
                         value={el as VideoBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
                       />
                     </div>
                   );
                 } else if (el?.type === "exercise") {
                   return (
-                    <div
-                      key={idx}
-                      style={{
-                        paddingBottom: 20,
-                        marginBottom: 20,
-                        borderBottom: "2px solid #e2e8f0",
-                      }}
-                    >
+                    <div key={idx}>
                       <ExerciseEditor
                         value={el as ExerciseBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
                       />
                     </div>
                   );

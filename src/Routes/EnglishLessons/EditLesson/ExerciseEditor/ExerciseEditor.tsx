@@ -13,13 +13,16 @@ type Props = {
   onChange: (next: ExerciseBlock) => void;
   onRemove?: () => void;
   titleRightExtra?: React.ReactNode;
+  onMoveUp?: () => void; // NOVO
+  onMoveDown?: () => void; // NOVO
 };
-
 export default function ExerciseEditor({
   value,
   onChange,
   onRemove,
   titleRightExtra,
+  onMoveUp,
+  onMoveDown,
 }: Props) {
   const setSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
   const setOrder = (order?: number) => onChange({ ...value, order });
@@ -77,8 +80,8 @@ export default function ExerciseEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
-        background: "#e2e8f07a",
-        borderRadius: 10,
+        background: "linear-gradient(to right, #cddb3655, #ffffff)",
+        borderRadius: 6,
         padding: 12,
         display: "grid",
         gap: 12,
@@ -109,12 +112,22 @@ export default function ExerciseEditor({
         >
           <div>
             <button
-            // onClick={() => moveUp(idx)} style={ghostBtnStyle}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveUp?.();
+              }}
+              style={ghostBtnStyle}
+              title="Mover bloco para cima"
             >
               ↑
             </button>
             <button
-            //  onClick={() => moveDown(idx)} style={ghostBtnStyle}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveDown?.();
+              }}
+              style={ghostBtnStyle}
+              title="Mover bloco para baixo"
             >
               ↓
             </button>

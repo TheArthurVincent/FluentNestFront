@@ -96,8 +96,8 @@ export default function VideoEditor({
     <div
       style={{
         border: "1px solid #ece2f0ff",
-        background: "#f0e2e262",
-        borderRadius: 10,
+        background: "linear-gradient(to right, #e455552c, #ffffff)",
+        borderRadius: 6,
         padding: 12,
         display: "grid",
         gap: 12,
