@@ -128,30 +128,17 @@ export default function VocabularyLesson({
                   <Tooltip title="Ouvir" placement="top" arrow>
                     <button
                       style={{
-                        border: "none",
                         color: partnerColor(),
+                        padding: 0,
+                        border: "none",
                         cursor: "pointer",
-                        padding: "0",
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
                         fontSize: "13px",
                         background: "none",
-                        boxShadow:
-                          "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                         transition: "all 0.2s",
-                        opacity: 0.6,
                       }}
                       onClick={(e) => {
                         e.stopPropagation();
                         readText(sentence.english, true, "en", selectedVoice);
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.opacity = "1";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.opacity = "0.6";
                       }}
                     >
                       <i className="fa fa-volume-up" aria-hidden="true" />
@@ -190,10 +177,10 @@ export default function VocabularyLesson({
                     >
                       <button
                         style={{
-                          backgroundColor: textpartnerColorContrast(),
+                          backgroundColor: "none",
                           color: partnerColor(),
-                          width: "10px",
-                          height: "10px",
+                          width: "5px",
+                          height: "5px",
                           border: "none",
                           borderRadius: "50%",
                           display: "flex",
@@ -202,8 +189,6 @@ export default function VocabularyLesson({
                           fontWeight: "bold",
                           fontSize: "15px",
                           cursor: "pointer",
-                          boxShadow:
-                            "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                           transition: "all 0.2s",
                           opacity: 0.7,
                         }}
@@ -215,12 +200,6 @@ export default function VocabularyLesson({
                             i,
                             sentence.languages ? sentence.languages : null
                           );
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.opacity = "1";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.opacity = "0.7";
                         }}
                       >
                         +

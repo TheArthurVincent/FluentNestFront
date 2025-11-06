@@ -85,7 +85,6 @@ export default function SentenceLessonModel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
           gap: "10px",
         }}
       >
@@ -106,7 +105,7 @@ export default function SentenceLessonModel({
                 justifyContent: "flex-start",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f3f3f3ff";
+                e.currentTarget.style.background = "#f3f3f38a";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.background = "#fff";
@@ -121,41 +120,71 @@ export default function SentenceLessonModel({
                   marginBottom: 4,
                 }}
               >
-                <span
-                  style={{ display: "flex", alignItems: "center", gap: 12 }}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 15,
+                  }}
                 >
-                  <Tooltip title="Ouvir" placement="top" arrow>
-                    <button
+                  <span
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: 12,
+                    }}
+                  >
+                    <Tooltip title="Ouvir" placement="top" arrow>
+                      <button
+                        style={{
+                          all: "unset",
+                          border: "none",
+                          color: partnerColor(),
+                          cursor: "pointer",
+                          padding: "0",
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "13px",
+                          background: "none",
+                          transition: "all 0.2s",
+                          opacity: 0.6,
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          readText(sentence.english, true, "en", selectedVoice);
+                        }}
+                      >
+                        <i className="fa fa-volume-up" aria-hidden="true" />
+                      </button>
+                    </Tooltip>
+                  </span>
+                  <div>
+                    <div
                       style={{
-                        border: "none",
-                        color: partnerColor(),
-                        cursor: "pointer",
-                        padding: "0",
-                        borderRadius: "50%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "13px",
-                        background: "none",
-                        boxShadow: "0 1px 2px #e3e6ea",
-                        transition: "all 0.2s",
-                        opacity: 0.6,
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        readText(sentence.english, true, "en", selectedVoice);
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.opacity = "1";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.opacity = "0.6";
+                        fontWeight: 500,
+                        color: "#222",
+                        fontSize: "18px",
+                        marginBottom: 2,
+                        wordBreak: "break-word",
                       }}
                     >
-                      <i className="fa fa-volume-up" aria-hidden="true" />
-                    </button>
-                  </Tooltip>
-                </span>
+                      {sentence.english}
+                    </div>
+                    <div
+                      style={{
+                        color: "#6c757d",
+                        fontStyle: "italic",
+                        fontSize: "14px",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {sentence.portuguese}
+                    </div>
+                  </div>
+                </div>
                 <span>
                   {!clickedButtons.has(i) && (
                     <Tooltip
@@ -165,18 +194,16 @@ export default function SentenceLessonModel({
                     >
                       <button
                         style={{
+                          all: "unset",
+                          cursor: "pointer",
+                          padding: "6px 10px",
                           backgroundColor: textpartnerColorContrast(),
                           color: partnerColor(),
-                          width: "10px",
-                          height: "10px",
                           border: "none",
-                          borderRadius: "50%",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
                           fontSize: "15px",
-                          cursor: "pointer",
-                          boxShadow: "0 1px 2px #e3e6ea",
                           transition: "all 0.2s",
                           opacity: 0.7,
                         }}
@@ -189,41 +216,12 @@ export default function SentenceLessonModel({
                             sentence.languages ? sentence.languages : null
                           );
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.opacity = "1";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.opacity = "0.7";
-                        }}
                       >
                         +
                       </button>
                     </Tooltip>
                   )}
                 </span>
-              </div>
-              <div>
-                <div
-                  style={{
-                    fontWeight: 500,
-                    color: "#222",
-                    fontSize: "18px",
-                    marginBottom: 2,
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {sentence.english}
-                </div>
-                <div
-                  style={{
-                    color: "#6c757d",
-                    fontStyle: "italic",
-                    fontSize: "14px",
-                    wordBreak: "break-word",
-                  }}
-                >
-                  {sentence.portuguese}
-                </div>
               </div>
             </div>
           ))}

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import SentencesEditor, {
@@ -6,6 +6,7 @@ import SentencesEditor, {
 } from "./SentencesEditor/SentencesEditor";
 import VocabularyEditor from "./VocabularyEditor/VocabularyEditor";
 import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
+import TagsEditor from "./TagsEditor/TagsEditor";
 
 type ElementItem =
   | {
@@ -24,10 +25,11 @@ interface ClassDetails {
   elements: ElementItem[];
   image: string;
   language: string;
-  mainTag: string;
   module: string;
   moduleId?: string;
   order: number;
+  title?: string;
+  tags?: string[];
   [k: string]: any;
 }
 
@@ -47,19 +49,54 @@ export default function EditLesson({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [open, setOpen] = useState(false); // agora só controla o painel inline
-  const [elementsMode, setElementsMode] = useState<"inputs" | "json">("inputs");
+  const [open, setOpen] = useState(false);
 
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
 
-  // campos editáveis no form principal
+  // cabeçalho
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState("");
-  const [mainTag, setMainTag] = useState("");
+  const [image, setImage] = useState(""); // URL atual (mostrada quando não há upload novo)
   const [order, setOrder] = useState<number>(0);
-  const [elementsJSON, setElementsJSON] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
 
-  const [elements, setElements] = useState<any[]>([]);
+  // elements por inputs
+  const [elements, setElements] = useState<ElementItem[]>([]);
+
+  // upload de imagem (base64) — substitui principal ao salvar
+  const [uploadImageBase64, setUploadImageBase64] = useState<string | null>(
+    null
+  );
+  const [uploadImageName, setUploadImageName] = useState<string | null>(null);
+  const [uploadImageType, setUploadImageType] = useState<string | null>(null);
+
+  // helper: arquivo -> base64 (sem prefixo)
+  const fileToBase64NoPrefix = (
+    file: File
+  ): Promise<{ base64NoPrefix: string; mime: string }> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target?.result as string;
+        const [meta, raw] = dataUrl.split(",");
+        const mime = meta.match(/^data:(.*?);base64$/)?.[1] || "image/jpeg";
+        resolve({ base64NoPrefix: raw, mime });
+      };
+      reader.onerror = (err) => reject(err);
+      reader.readAsDataURL(file);
+    });
+
+  const onPickLessonImage = async (f?: File | null) => {
+    if (!f) return;
+    try {
+      const { base64NoPrefix, mime } = await fileToBase64NoPrefix(f);
+      setUploadImageBase64(base64NoPrefix);
+      setUploadImageName(f.name || null);
+      setUploadImageType(mime || null);
+    } catch (e) {
+      console.error("Erro ao ler arquivo:", e);
+    }
+  };
 
   const getClass = async () => {
     setSeeEdit?.(true);
@@ -68,7 +105,9 @@ export default function EditLesson({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
-        { headers }
+        {
+          headers,
+        }
       );
       const data: ClassDetails =
         response?.data?.classDetails || response?.data || response?.data?.data;
@@ -76,16 +115,16 @@ export default function EditLesson({
       if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
       setLesson(data);
+      setTitle(data.title ?? "");
       setDescription(data.description ?? "");
       setImage(data.image ?? "");
-      setMainTag(data.mainTag ?? "");
       setOrder(Number(data.order ?? 0));
+      setTags(Array.isArray(data.tags) ? data.tags : []);
 
       const raw = Array.isArray(data.elements) ? data.elements : [];
-      setElementsJSON(JSON.stringify(raw, null, 2));
-      if (elementsMode === "inputs") setElements(raw);
+      setElements(raw);
 
-      setOpen(true); // exibe painel inline
+      setOpen(true);
     } catch (err: any) {
       console.error(err);
       setError("Erro ao obter aula. Verifique o ID e as credenciais.");
@@ -99,41 +138,52 @@ export default function EditLesson({
     setSaving(true);
     setError(null);
 
-    // Valida JSON dos elements
-    let parsedElements: ElementItem[] = [];
-    try {
-      const parsed = JSON.parse(elementsJSON);
-      if (!Array.isArray(parsed))
-        throw new Error("O campo 'elements' precisa ser um array JSON.");
-      parsedElements = parsed;
-    } catch (e: any) {
-      setSaving(false);
-      setError(`Elements inválido: ${e.message}`);
-      return;
-    }
-
-    const payload: ClassDetails = {
+    // payload com upload opcional (base64)
+    const payload: ClassDetails & {
+      uploadImageBase64?: string;
+      uploadImageName?: string | null;
+      uploadImageType?: string | null;
+    } = {
       ...lesson,
+      title,
       description,
-      image,
-      mainTag,
+      image, // backend deve sobrepor se receber uploadImageBase64
       order: Number(order),
-      elements: parsedElements,
+      tags,
+      elements,
+      ...(uploadImageBase64
+        ? {
+            uploadImageBase64,
+            uploadImageName,
+            uploadImageType,
+          }
+        : {}),
     };
 
     try {
       const res = await axios.put(
         `${backDomain}/api/v1/course/${classId}`,
         payload,
-        { headers }
+        {
+          headers,
+        }
       );
+
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
+      // atualiza tudo localmente (incluindo nova URL da imagem, se houver)
       setLesson(updated);
+      if (updated?.image) setImage(updated.image);
+      setTitle(updated?.title ?? title);
+      setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
+
+      // limpa upload
+      setUploadImageBase64(null);
+      setUploadImageName(null);
+      setUploadImageType(null);
+
       onUpdated?.(updated);
-      // mantém aberto para continuar editando; feche se quiser:
-      // setOpen(false);
     } catch (err: any) {
       console.error(err);
       const msg =
@@ -145,19 +195,6 @@ export default function EditLesson({
       setSaving(false);
     }
   };
-
-  // Quando alternar para "inputs", sincroniza a partir do JSON atual
-  useEffect(() => {
-    if (elementsMode === "inputs") {
-      try {
-        const parsed = JSON.parse(elementsJSON);
-        if (Array.isArray(parsed)) setElements(parsed);
-      } catch {
-        /* ignora */
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elementsMode]);
 
   const updateElementAt = (index: number, next: any) => {
     setElements((prev) => {
@@ -260,7 +297,7 @@ export default function EditLesson({
             </div>
           )}
 
-          {/* Campos principais */}
+          {/* Cabeçalho */}
           <div
             style={{
               display: "grid",
@@ -269,6 +306,34 @@ export default function EditLesson({
               marginBottom: 12,
             }}
           >
+            {/* Título */}
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Título da aula
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="Ex.: Business Essentials — Vocabulary & Usage"
+                style={{
+                  width: "100%",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  padding: 8,
+                  fontSize: 13,
+                }}
+              />
+            </div>
+
+            {/* Tags */}
+            <TagsEditor
+              value={tags}
+              onChange={setTags}
+              helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
+            />
+
+            {/* Descrição */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Description
@@ -288,323 +353,198 @@ export default function EditLesson({
               />
             </div>
 
+            {/* Grid: Upload/Preview + Idioma/Order */}
             <div
               style={{
                 display: "grid",
-                gap: 12,
-                gridTemplateColumns: "1fr 1fr",
+                gridTemplateColumns: "repeat(auto-fit, minmax(390px, 1fr))",
+                alignItems: "start",
+                gap: 20,
               }}
             >
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>Image</label>
-                <input
-                  type="url"
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  placeholder="https://..."
-                  style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 13,
-                  }}
-                />
-
-                {image && (
-                  <div
-                    style={{
-                      marginTop: 8,
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      overflow: "hidden",
-                      maxHeight: 180,
-                      display: "grid",
-                      placeItems: "center",
-                      background: "#f8fafc",
-                    }}
-                  >
-                    <img
-                      src={image}
-                      alt="Lesson thumbnail"
-                      style={{
-                        width: "300px",
-                        height: "300px",
-                        objectFit: "cover",
-                        display: "block",
-                      }}
-                      onError={(e) => (e.currentTarget.style.display = "none")}
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>Main Tag</label>
-              <input
-                value={mainTag}
-                onChange={(e) => setMainTag(e.target.value)}
-                placeholder="businessenglish"
-                style={{
-                  width: "100%",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
-              />
-            </div>
-
-            <div
-              style={{
-                display: "grid",
-                gap: 12,
-                gridTemplateColumns: "1fr 1fr",
-              }}
-            >
+              {/* Upload + Preview */}
               <div style={{ display: "grid", gap: 6 }}>
                 <label style={{ fontSize: 12, color: "#334155" }}>
-                  Language
+                  Imagem da aula (enviada como base64 ao salvar)
                 </label>
-                <select
-                  value={lesson?.language ?? "en"}
+                <input
+                  type="file"
+                  accept="image/*"
                   onChange={(e) =>
-                    setLesson((prev) =>
-                      prev ? { ...prev, language: e.target.value } : prev
-                    )
+                    onPickLessonImage(e.target.files?.[0] || null)
                   }
-                  style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 13,
-                    background: "white",
-                    color: "#0f172a",
-                  }}
-                >
-                  <option value="en">English (en)</option>
-                  <option value="es">Spanish (es)</option>
-                  <option value="fr">French (fr)</option>
-                </select>
+                />
+                {uploadImageBase64 && (
+                  <small style={{ color: "#16a34a" }}>
+                    Imagem pronta para envio ({uploadImageName})
+                  </small>
+                )}
+                {(uploadImageBase64 || image) && (
+                  <img
+                    src={
+                      uploadImageBase64
+                        ? `data:${
+                            uploadImageType || "image/jpeg"
+                          };base64,${uploadImageBase64}`
+                        : image
+                    }
+                    alt="Lesson thumbnail"
+                    style={{
+                      width: "200px",
+                      height: "200px",
+                      display: "block",
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
+                )}
               </div>
 
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>Order</label>
-                <input
-                  type="number"
-                  value={order}
-                  onChange={(e) => setOrder(Number(e.target.value))}
-                  style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 13,
-                  }}
-                />
+              {/* Language + Order */}
+              <div
+                style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr" }}
+              >
+                <div style={{ display: "grid", gap: 6 }}>
+                  <label style={{ fontSize: 12, color: "#334155" }}>
+                    Language
+                  </label>
+                  <select
+                    value={lesson?.language ?? "en"}
+                    onChange={(e) =>
+                      setLesson((prev) =>
+                        prev ? { ...prev, language: e.target.value } : prev
+                      )
+                    }
+                    style={{
+                      width: "100%",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 8,
+                      padding: 8,
+                      fontSize: 13,
+                      background: "white",
+                      color: "#0f172a",
+                    }}
+                  >
+                    <option value="en">English (en)</option>
+                    <option value="es">Spanish (es)</option>
+                    <option value="fr">French (fr)</option>
+                  </select>
+                </div>
+
+                <div style={{ display: "grid", gap: 6 }}>
+                  <label style={{ fontSize: 12, color: "#334155" }}>
+                    Order
+                  </label>
+                  <input
+                    type="number"
+                    value={order}
+                    onChange={(e) => setOrder(Number(e.target.value))}
+                    style={{
+                      width: "100%",
+                      border: "1px solid #e2e8f0",
+                      borderRadius: 8,
+                      padding: 8,
+                      fontSize: 13,
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Seletor de modo */}
-          <div style={{ display: "grid", gap: 12, marginTop: 10 }}>
-            <div
-              style={{
-                display: "inline-flex",
-                border: "1px solid #e2e8f0",
-                borderRadius: 10,
-                // overflow: "hidden",
-                width: "fit-content",
-              }}
-              role="tablist"
-              aria-label="Modo de edição dos elementos"
-            >
-              <button
-                role="tab"
-                aria-selected={elementsMode === "inputs"}
-                onClick={() => setElementsMode("inputs")}
-                style={{
-                  padding: "6px 12px",
-                  border: "none",
-                  cursor: "pointer",
-                  background: elementsMode === "inputs" ? "#0ea5e9" : "white",
-                  color: elementsMode === "inputs" ? "white" : "#0f172a",
-                  fontSize: 13,
-                  fontWeight: 600,
-                }}
-              >
-                Editor por Inputs
-              </button>
-              <button
-                role="tab"
-                aria-selected={elementsMode === "json"}
-                onClick={() => setElementsMode("json")}
-                style={{
-                  padding: "6px 12px",
-                  border: "none",
-                  cursor: "pointer",
-                  background: elementsMode === "json" ? "#0ea5e9" : "white",
-                  color: elementsMode === "json" ? "white" : "#0f172a",
-                  fontSize: 13,
-                  fontWeight: 600,
-                  borderLeft: "1px solid #e2e8f0",
-                }}
-              >
-                JSON
-              </button>
-            </div>
+          {/* Conteúdo da Aula */}
+          <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
             <h1 style={{ fontSize: 22, textAlign: "center", color: "#0f172a" }}>
               Conteúdo da Aula
             </h1>
-            {/* Conteúdo dos modos */}
-            {elementsMode === "inputs" ? (
-              <div style={{ display: "grid", gap: 50 }}>
-                {elements.length === 0 && (
-                  <div
-                    style={{
-                      border: "1px dashed #94a3b8",
-                      borderRadius: 8,
-                      padding: 16,
-                      color: "#64748b",
-                    }}
-                  >
-                    Nenhum elemento. Altere para o modo JSON e cole seu array,
-                    depois volte para Inputs.
-                  </div>
-                )}
 
-                {elements.map((el, idx) => {
-                  if (el?.type === "sentences") {
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          paddingBottom: 20,
-                          marginBottom: 20,
-                          borderBottom: "2px solid #e2e8f0",
-                        }}
-                      >
-                        <SentencesEditor
-                          key={idx}
-                          value={el as SentencesBlock}
-                          onChange={(next) => updateElementAt(idx, next)}
-                          onRemove={() => removeElementAt(idx)}
-                        />
-                      </div>
-                    );
-                  } else if (el?.type === "vocabulary") {
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          paddingBottom: 20,
-                          marginBottom: 20,
-                          borderBottom: "2px solid #e2e8f0",
-                        }}
-                      >
-                        <VocabularyEditor
-                          key={idx}
-                          value={el as SentencesBlock}
-                          onChange={(next) => updateElementAt(idx, next)}
-                          onRemove={() => removeElementAt(idx)}
-                        />
-                      </div>
-                    );
-                  } else if (el?.type === "video") {
-                    return (
-                      <div
-                        key={idx}
-                        style={{
-                          display: "grid",
-                          gap: 8,
-                          paddingBottom: 20,
-                          marginBottom: 20,
-                          borderBottom: "2px solid #e2e8f0",
-                        }}
-                      >
-                        <VideoEditor
-                          value={el as VideoBlock}
-                          onChange={(next) => updateElementAt(idx, next)}
-                          onRemove={() => removeElementAt(idx)}
-                        />
-                      </div>
-                    );
-                  }
+            <div style={{ display: "grid", gap: 50 }}>
+              {elements.length === 0 && (
+                <div
+                  style={{
+                    border: "1px dashed #94a3b8",
+                    borderRadius: 8,
+                    padding: 16,
+                    color: "#64748b",
+                  }}
+                >
+                  Nenhum elemento cadastrado.
+                </div>
+              )}
 
+              {elements.map((el, idx) => {
+                if (el?.type === "sentences") {
                   return (
                     <div
                       key={idx}
                       style={{
-                        border: "1px solid #e2e8f0",
-                        borderRadius: 10,
-                        padding: 12,
-                        background: "#fff7ed",
-                        color: "#9a3412",
+                        paddingBottom: 20,
+                        marginBottom: 20,
+                        borderBottom: "2px solid #e2e8f0",
                       }}
                     >
-                      <strong>Tipo não suportado ainda:</strong>{" "}
-                      {String(el?.type)}
+                      <SentencesEditor
+                        value={el as SentencesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                      />
                     </div>
                   );
-                })}
+                } else if (el?.type === "vocabulary") {
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        paddingBottom: 20,
+                        marginBottom: 20,
+                        borderBottom: "2px solid #e2e8f0",
+                      }}
+                    >
+                      <VocabularyEditor
+                        value={el as SentencesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "video") {
+                  return (
+                    <div
+                      key={idx}
+                      style={{
+                        display: "grid",
+                        gap: 8,
+                        paddingBottom: 20,
+                        marginBottom: 20,
+                        borderBottom: "2px solid #e2e8f0",
+                      }}
+                    >
+                      <VideoEditor
+                        value={el as VideoBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                      />
+                    </div>
+                  );
+                }
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    gap: 8,
-                  }}
-                >
-                  <button
-                    onClick={() => {
-                      try {
-                        const str = JSON.stringify(elements, null, 2);
-                        setElementsJSON(str);
-                      } catch {}
-                    }}
+                return (
+                  <div
+                    key={idx}
                     style={{
-                      borderRadius: 8,
                       border: "1px solid #e2e8f0",
-                      backgroundColor: "white",
-                      color: "#0f172a",
-                      padding: "8px 12px",
-                      cursor: "pointer",
-                      fontSize: 13,
+                      borderRadius: 10,
+                      padding: 12,
+                      background: "#fff7ed",
+                      color: "#9a3412",
                     }}
                   >
-                    Atualizar JSON a partir dos Inputs
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div style={{ display: "grid", gap: 8 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Elements (JSON)
-                </label>
-                <textarea
-                  value={elementsJSON}
-                  onChange={(e) => setElementsJSON(e.target.value)}
-                  spellCheck={false}
-                  rows={16}
-                  style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 10,
-                    fontFamily:
-                      'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-                    fontSize: 12.5,
-                    lineHeight: 1.45,
-                    whiteSpace: "pre",
-                  }}
-                />
-                <small style={{ color: "#64748b" }}>
-                  Edite o array <code>elements</code> em JSON. Ao salvar,
-                  validarei e enviarei.
-                </small>
-              </div>
-            )}
+                    <strong>Tipo não suportado ainda:</strong>{" "}
+                    {String(el?.type)}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           {/* Ações */}
