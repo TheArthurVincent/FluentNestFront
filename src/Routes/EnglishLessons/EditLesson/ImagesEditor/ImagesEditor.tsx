@@ -312,10 +312,10 @@ export default function ImagesEditor({
                       style={{
                         display: "grid",
                         gap: 6,
-                        gridTemplateColumns: "50px 1fr",
+                        gridTemplateColumns: "1fr",
                       }}
                     >
-                      <select
+                      {/* <select
                         value={withLang.languages!.language1}
                         onChange={(e) =>
                           updateImageAt(idx, {
@@ -336,7 +336,7 @@ export default function ImagesEditor({
                             {code}
                           </option>
                         ))}
-                      </select>
+                      </select> */}
                       <input
                         value={withLang.english ?? ""}
                         onChange={(e) =>
@@ -345,9 +345,7 @@ export default function ImagesEditor({
                             text: e.target.value,
                           })
                         }
-                        placeholder={
-                          "Language 1: " + withLang.languages!.language1
-                        }
+                        placeholder={"Image description"}
                         style={{
                           border: "1px solid #e2e8f0",
                           borderRadius: 8,
@@ -360,10 +358,10 @@ export default function ImagesEditor({
                       style={{
                         display: "grid",
                         gap: 6,
-                        gridTemplateColumns: "50px 1fr",
+                        gridTemplateColumns: "1fr",
                       }}
                     >
-                      <select
+                      {/* <select
                         value={withLang.languages!.language2}
                         onChange={(e) =>
                           updateImageAt(idx, {
@@ -386,15 +384,13 @@ export default function ImagesEditor({
                             {code}
                           </option>
                         ))}
-                      </select>
+                      </select> */}
                       <input
                         value={withLang.portuguese ?? ""}
                         onChange={(e) =>
                           updateImageAt(idx, { portuguese: e.target.value })
                         }
-                        placeholder={
-                          "Language 2: " + withLang.languages!.language2
-                        }
+                        placeholder={"Meaning/Description"}
                         style={{
                           border: "1px solid #e2e8f0",
                           borderRadius: 8,

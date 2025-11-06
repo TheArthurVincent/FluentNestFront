@@ -84,75 +84,85 @@ export default function ExplanationLesson({
                     }}
                   />
                 </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gap: "15px",
+                    gridTemplateColumns: explanationItem.image
+                      ? "0.5fr 2fr"
+                      : "1fr",
+                    alignItems: "center",
+                  }}
+                >
+                  {/* Imagem se existir */}
+                  {explanationItem.image && (
+                    <div
+                      style={{
+                        position: "relative",
+                        zIndex: 1,
+                        textAlign: "center",
+                      }}
+                    >
+                      <img
+                        src={explanationItem.image}
+                        alt={explanationItem.title}
+                        style={{
+                          width: "200px",
+                          height: "auto",
+                          borderRadius: "4px",
+                          boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
+                        }}
+                      />
+                    </div>
+                  )}
 
-                {/* Imagem se existir */}
-                {explanationItem.image && (
+                  {/* Lista de explicações */}
                   <div
                     style={{
                       position: "relative",
                       zIndex: 1,
-                      textAlign: "center",
+                      display: "grid",
+                      gap: "10px",
                     }}
                   >
-                    <img
-                      src={explanationItem.image}
-                      alt={explanationItem.title}
-                      style={{
-                        maxWidth: "100%",
-                        height: "auto",
-                        borderRadius: "4px",
-                        boxShadow: "0 8px 30px rgba(0, 0, 0, 0.12)",
-                      }}
-                    />
-                  </div>
-                )}
-
-                {/* Lista de explicações */}
-                <div
-                  style={{
-                    position: "relative",
-                    zIndex: 1,
-                    display: "grid",
-                    gap: "10px",
-                  }}
-                >
-                  {explanationItem.list.map(
-                    (listItem: string, listIndex: number) => (
-                      <div
-                        key={listIndex}
-                        style={{
-                          backgroundColor: "#ffffff",
-                          borderRadius: "4px",
-                          border: "1px solid #f1f5f9",
-                          borderLeft: `5px solid ${partnerColor()}`,
-                          transition:
-                            "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                          padding: "5px 10px",
-                        }}
-                      >
-                        {/* Conteúdo da explicação */}
+                    {explanationItem.list.map(
+                      (listItem: string, listIndex: number) => (
                         <div
+                          key={listIndex}
                           style={{
-                            display: "flex",
-                            alignItems: "flex-start",
-                            gap: "20px",
+                            backgroundColor: "#ffffff",
+                            borderRadius: "4px",
+                            border: "1px solid #f1f5f9",
+                            borderLeft: `5px solid ${partnerColor()}`,
+                            transition:
+                              "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
+                            padding: "5px 10px",
                           }}
                         >
-                          {/* Texto da explicação */}
+                          {/* Conteúdo da explicação */}
                           <div
                             style={{
-                              // fontSize: "17px",
-                              fontWeight: "400",
-                              lineHeight: "1.7",
-                              flex: 1,
+                              display: "flex",
+                              alignItems: "flex-start",
+                              gap: "20px",
                             }}
                           >
-                            {listItem}
+                            {/* Texto da explicação */}
+                            <div
+                              style={{
+                                // fontSize: "17px",
+                                fontWeight: "400",
+                                lineHeight: "1.7",
+                                flex: 1,
+                              }}
+                            >
+                              {listItem}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    )
-                  )}
+                      )
+                    )}
+                  </div>
                 </div>
               </div>
             )

@@ -340,8 +340,7 @@ export default function VocabularyEditor({
                   <div style={{ display: "grid", gap: 8 }}>
                     <div style={{ display: "grid", gap: 6 }}>
                       <label style={{ fontSize: 12, color: "#334155" }}>
-                        Language 2 (
-                        {s.languages?.language1 || defaultLang1 || "en"})
+                        Front
                       </label>
                       <input
                         value={s.english}
@@ -351,15 +350,14 @@ export default function VocabularyEditor({
                             english: e.target.value,
                           }))
                         }
-                        placeholder="Ex.: She went to the supermarket to buy groceries."
+                        placeholder="Ex.: Supermarket"
                         style={inputStyle}
                       />
                     </div>
 
                     <div style={{ display: "grid", gap: 6 }}>
                       <label style={{ fontSize: 12, color: "#334155" }}>
-                        Language 1 (
-                        {s.languages?.language2 || defaultLang2 || "pt"})
+                        Back
                       </label>
                       <input
                         value={s.portuguese}
@@ -369,14 +367,14 @@ export default function VocabularyEditor({
                             portuguese: e.target.value,
                           }))
                         }
-                        placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
+                        placeholder="Ex.: Supermercado"
                         style={inputStyle}
                       />
                     </div>
                   </div>
 
                   {/* Idiomas por sentença (sempre presente) */}
-                  <div
+                  {/* <div
                     style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
@@ -415,7 +413,7 @@ export default function VocabularyEditor({
                         })),
                       "language2 (para “portuguese”)"
                     )}
-                  </div>
+                  </div> */}
                 </div>
               ))}
             </div>

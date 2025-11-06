@@ -539,9 +539,7 @@ export default function EnglishClassCourse2({
       }
 
       if (theclass.elements && Array.isArray(theclass.elements)) {
-        const sortedElements = theclass.elements.sort(
-          (a: any, b: any) => (a.order || 0) - (b.order || 0)
-        );
+        const sortedElements = theclass.elements;
 
         for (const element of sortedElements) {
           try {

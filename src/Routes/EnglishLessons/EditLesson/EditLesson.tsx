@@ -9,12 +9,20 @@ import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
 import ExerciseEditor, { ExerciseBlock } from "./ExerciseEditor/ExerciseEditor";
 import TagsEditor from "./TagsEditor/TagsEditor";
 import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
-import ImagesEditor, { ImagesBlock } from "./ImagesEditor/ImagesEditor";
+import ImagesEditor, {
+  ImagesBlock,
+  ImageEntry,
+} from "./ImagesEditor/ImagesEditor";
 import AudioAndTextEditor, {
   AudioBlock,
 } from "./AudioAndTextEditor/AudioAndTextEditor";
 import DialogueEditor, { DialogueBlock } from "./DialogueEditor/DialogueEditor";
-import SelectExerciseEditor, { SelectExerciseBlock } from "./SelectExercise/SelectExercise";
+import SelectExerciseEditor, {
+  SelectExerciseBlock,
+} from "./SelectExercise/SelectExercise";
+import ExplanationEditor, {
+  ExplanationBlock,
+} from "./ExplanationEditor/ExplanationEditor";
 
 type ElementItem =
   | {
@@ -43,8 +51,33 @@ type ElementItem =
       order?: number;
       grid?: number;
       type: "images";
-      images: import("./ImagesEditor/ImagesEditor").ImageEntry[];
+      images: ImageEntry[];
     }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "audio";
+      text: string;
+      link: string;
+      image?: string;
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "dialogue";
+      dialogue: string[];
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "selectexercise";
+      options: SelectExerciseBlock["options"];
+    }
+  // 🔥 Novo tipo explanation no union principal
+  | ExplanationBlock
   | Record<string, any>;
 
 interface ClassDetails {
@@ -68,6 +101,18 @@ interface EditLessonModelProps {
   onUpdated?: (updated: ClassDetails) => void;
 }
 
+// 🔥 Adicionar "explanation" aqui
+type NewBlockType =
+  | "sentences"
+  | "vocabulary"
+  | "video"
+  | "exercise"
+  | "images"
+  | "audio"
+  | "dialogue"
+  | "selectexercise"
+  | "explanation";
+
 export default function EditLesson({
   classId,
   headers,
@@ -84,7 +129,7 @@ export default function EditLesson({
   // cabeçalho
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(""); // URL atual (sempre URL)
+  const [image, setImage] = useState("");
   const [order, setOrder] = useState<number>(0);
   const [tags, setTags] = useState<string[]>([]);
 
@@ -94,6 +139,12 @@ export default function EditLesson({
   // upload estado
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // estado do “adicionar bloco”
+  const [newType, setNewType] = useState<NewBlockType>("sentences");
+
+  // (opcional) validade global
+  const [isValid, setIsValid] = useState(true);
 
   const getClass = async () => {
     setSeeEdit?.(true);
@@ -115,7 +166,6 @@ export default function EditLesson({
       setImage(data.image ?? "");
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
-
       setElements(Array.isArray(data.elements) ? data.elements : []);
       setOpen(true);
     } catch (err: any) {
@@ -128,6 +178,11 @@ export default function EditLesson({
 
   const handleSave = async () => {
     if (!lesson) return;
+
+    if (!isValid) {
+      alert("Por favor, corrija os erros nos elementos antes de salvar.");
+      return;
+    }
     setSaving(true);
     setError(null);
 
@@ -135,7 +190,7 @@ export default function EditLesson({
       ...lesson,
       title,
       description,
-      image, // URL (já vinda do upload genérico)
+      image,
       order: Number(order),
       tags,
       elements,
@@ -143,9 +198,11 @@ export default function EditLesson({
 
     try {
       const res = await axios.put(
-        `${backDomain}/api/v1/course/${classId}`,
+        `${backDomain}/api/v1/class-edit/${classId}`,
         payload,
-        { headers }
+        {
+          headers,
+        }
       );
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
@@ -156,6 +213,7 @@ export default function EditLesson({
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
 
       onUpdated?.(updated);
+      window.location.reload();
     } catch (err: any) {
       console.error(err);
       const msg =
@@ -174,7 +232,6 @@ export default function EditLesson({
       setUploadError(null);
       setUploadingImage(true);
 
-      // upload genérico -> backend -> ImageKit
       const url = await uploadImageViaBackend(f, {
         folder: "/lessons",
         fileName: `lesson_${classId}_main_${Date.now()}.jpg`,
@@ -219,6 +276,52 @@ export default function EditLesson({
 
   const moveElementUp = (index: number) => moveElement(index, index - 1);
   const moveElementDown = (index: number) => moveElement(index, index + 1);
+
+  // ---------- Adicionar novo bloco ----------
+  const getNextOrder = () => (elements?.length ?? 0) + 1;
+
+  const makeEmptyBlock = (type: NewBlockType): ElementItem => {
+    const base = { subtitle: "", order: getNextOrder() };
+
+    switch (type) {
+      case "sentences":
+        return { ...base, type: "sentences", sentences: [] };
+      case "vocabulary":
+        return { ...base, type: "vocabulary", sentences: [] };
+      case "video":
+        return { ...base, type: "video", video: "" };
+      case "exercise":
+        return { ...base, type: "exercise", items: [] };
+      case "images":
+        return { ...base, type: "images", images: [] as ImageEntry[] };
+      case "audio":
+        return { ...base, type: "audio", text: "", link: "", image: "" };
+      case "dialogue":
+        return { ...base, type: "dialogue", dialogue: [] };
+      case "selectexercise":
+        return { ...base, type: "selectexercise", options: [] };
+      // 🔥 Novo: bloco Explanation (casca vazia)
+      case "explanation":
+        return {
+          ...base,
+          type: "explanation",
+          subtitle: "",
+          explanation: [
+            { image: null, title: "", list: [""] }, // 1 seção inicial vazia
+          ],
+        } as ExplanationBlock;
+      default:
+        return base as any;
+    }
+  };
+
+  const addBlock = (pos: "start" | "end" = "end") => {
+    const block = makeEmptyBlock(newType);
+    setElements((prev) => {
+      if (pos === "start") return [block, ...prev];
+      return [...prev, block];
+    });
+  };
 
   return (
     <>
@@ -310,7 +413,6 @@ export default function EditLesson({
               marginBottom: 12,
             }}
           >
-            {/* Título */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Título da aula
@@ -330,14 +432,12 @@ export default function EditLesson({
               />
             </div>
 
-            {/* Tags */}
             <TagsEditor
               value={tags}
               onChange={setTags}
               helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
             />
 
-            {/* Descrição */}
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Description
@@ -357,7 +457,6 @@ export default function EditLesson({
               />
             </div>
 
-            {/* Grid: Upload/Preview + Idioma/Order */}
             <div
               style={{
                 display: "grid",
@@ -366,7 +465,6 @@ export default function EditLesson({
                 gap: 20,
               }}
             >
-              {/* Upload + Preview */}
               <div style={{ display: "grid", gap: 6 }}>
                 <label style={{ fontSize: 12, color: "#334155" }}>
                   Imagem da aula (upload imediato)
@@ -402,7 +500,6 @@ export default function EditLesson({
                 )}
               </div>
 
-              {/* Language + Order */}
               <div
                 style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr" }}
               >
@@ -459,6 +556,74 @@ export default function EditLesson({
             <h1 style={{ fontSize: 22, textAlign: "center", color: "#0f172a" }}>
               Conteúdo da Aula
             </h1>
+
+            {/* Toolbar de adicionar bloco */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "minmax(220px, 1fr) auto auto",
+                gap: 8,
+                alignItems: "center",
+                marginBottom: 6,
+              }}
+            >
+              <select
+                value={newType}
+                onChange={(e) => setNewType(e.target.value as NewBlockType)}
+                style={{
+                  border: "1px solid #e2e8f0",
+                  borderRadius: 8,
+                  padding: 8,
+                  fontSize: 13,
+                  background: "white",
+                  color: "#0f172a",
+                }}
+                title="Tipo do novo bloco"
+              >
+                <option value="explanation">Explanation/Introduction</option>
+                <option value="vocabulary">Vocabulary</option>
+                <option value="sentences">Sentences</option>
+                <option value="audio">Audio (text/link)</option>
+                <option value="images">Images (grid)</option>
+                <option value="video">Video</option>
+                <option value="exercise">Exercise (items)</option>
+                <option value="dialogue">Dialogue</option>
+                <option value="selectexercise">Select Exercise (MC)</option>
+              </select>
+
+              <button
+                onClick={() => addBlock("start")}
+                style={{
+                  borderRadius: 8,
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "white",
+                  color: "#0f172a",
+                  padding: "8px 10px",
+                  cursor: "pointer",
+                  fontSize: 13,
+                }}
+                title="Adicionar no início"
+              >
+                + Adicionar no início
+              </button>
+
+              <button
+                onClick={() => addBlock("end")}
+                style={{
+                  borderRadius: 8,
+                  border: "1px solid #0891b2",
+                  backgroundColor: "#06b6d4",
+                  color: "white",
+                  padding: "8px 10px",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+                title="Adicionar ao final"
+              >
+                + Adicionar ao final
+              </button>
+            </div>
 
             <div style={{ display: "grid", gap: 10 }}>
               {elements.length === 0 && (
@@ -573,24 +738,22 @@ export default function EditLesson({
                       />
                     </div>
                   );
+                } else if (el?.type === "explanation") {
+                  return (
+                    <div key={idx}>
+                      <ExplanationEditor
+                        value={el as ExplanationBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
                 }
 
-                return (
-                  <></>
-                  // <div
-                  //   key={idx}
-                  //   style={{
-                  //     border: "1px solid #e2e8f0",
-                  //     borderRadius: 10,
-                  //     padding: 10,
-                  //     background: "#fff7ed",
-                  //     color: "#9a3412",
-                  //   }}
-                  // >
-                  //   <strong>Tipo não suportado ainda:</strong>{" "}
-                  //   {String(el?.type)}
-                  // </div>
-                );
+                return <></>;
               })}
             </div>
           </div>

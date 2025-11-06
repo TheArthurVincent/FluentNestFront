@@ -321,8 +321,7 @@ export default function SentencesEditor({
                 <div style={{ display: "grid", gap: 8 }}>
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, color: "#334155" }}>
-                      Language 2 (
-                      {s.languages?.language1 || defaultLang1 || "en"})
+                      Front
                     </label>
                     <input
                       value={s.english}
@@ -339,8 +338,7 @@ export default function SentencesEditor({
 
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, color: "#334155" }}>
-                      Language 2 (
-                      {s.languages?.language2 || defaultLang2 || "pt"})
+                      Back
                     </label>
                     <input
                       value={s.portuguese}
@@ -357,7 +355,7 @@ export default function SentencesEditor({
                 </div>
 
                 {/* Idiomas por sentença (sempre presente) */}
-                <div
+                {/* <div
                   style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
@@ -394,7 +392,7 @@ export default function SentencesEditor({
                       })),
                     "language2 (para “portuguese”)"
                   )}
-                </div>
+                </div> */}
               </div>
             ))}
           </div>
