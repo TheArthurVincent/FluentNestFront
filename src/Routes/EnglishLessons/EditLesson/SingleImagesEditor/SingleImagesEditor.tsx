@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { uploadImageViaBackend } from "../../../../Resources/ImgUpload";
 
 export type SingleImagesBlock = {
   type: "singleimages";
   subtitle?: string;
   order?: number;
-  images: string[]; // array de URLs
+  images: string[]; // URLs geradas via upload
 };
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
   onRemove?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
-  headers?: any; // p/ upload autenticado, se necessário
+  headers?: any; // para uploads autenticados, se necessário
 };
 
 const ghostBtn: React.CSSProperties = {
@@ -46,19 +46,11 @@ export default function SingleImagesEditor({
   headers,
 }: Props) {
   const [show, setShow] = useState(true);
-  const [urlInput, setUrlInput] = useState("");
   const [uploading, setUploading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
   const update = (patch: Partial<SingleImagesBlock>) =>
     onChange({ ...value, ...patch });
-
-  const addUrl = () => {
-    if (!urlInput.trim()) return;
-    const next = [...(value.images || []), urlInput.trim()];
-    update({ images: next });
-    setUrlInput("");
-  };
 
   const removeAt = (i: number) => {
     const next = [...(value.images || [])];
@@ -74,13 +66,12 @@ export default function SingleImagesEditor({
     update({ images: imgs });
   };
 
-  const onPickFiles = async (files: FileList | null) => {
+  const addByUpload = async (files: FileList | null) => {
     if (!files || !files.length) return;
     setErr(null);
     setUploading(true);
     try {
       const uploaded: string[] = [];
-      // aceita múltiplos
       for (const f of Array.from(files)) {
         const url = await uploadImageViaBackend(f, {
           folder: "/lessons/singleimages",
@@ -98,6 +89,38 @@ export default function SingleImagesEditor({
     }
   };
 
+  const replaceAt = async (i: number, file: File | null) => {
+    if (!file) return;
+    setErr(null);
+    setUploading(true);
+    try {
+      const url = await uploadImageViaBackend(file, {
+        folder: "/lessons/singleimages",
+        fileName: `single_replace_${Date.now()}_${file.name}`,
+        headers,
+      });
+      const next = [...(value.images || [])];
+      next[i] = url;
+      update({ images: next });
+    } catch (e: any) {
+      console.error(e);
+      setErr("Falha ao substituir a imagem.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // opcional: suporte a arrastar-e-soltar
+  const onDrop = useCallback(
+    async (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      if (uploading) return;
+      const files = e.dataTransfer.files;
+      await addByUpload(files);
+    },
+    [uploading]
+  );
+
   return (
     <div
       style={{
@@ -106,6 +129,8 @@ export default function SingleImagesEditor({
         padding: 12,
         background: "linear-gradient(to right, #eef2ff77, #ffffff)",
       }}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={onDrop}
     >
       {/* Header */}
       <div
@@ -161,39 +186,10 @@ export default function SingleImagesEditor({
             />
           </div>
 
-          {/* Adicionar por URL */}
+          {/* Upload múltiplo (adicionar) */}
           <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>
-              Adicionar imagem por URL
-            </label>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr auto",
-                gap: 8,
-              }}
-            >
-              <input
-                value={urlInput}
-                onChange={(e) => setUrlInput(e.target.value)}
-                placeholder="https://..."
-                style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
-              />
-              <button onClick={addUrl} style={ghostBtn}>
-                + Adicionar
-              </button>
-            </div>
-          </div>
-
-          {/* Upload múltiplo */}
-          <div style={{ display: "grid", gap: 6 }}>
-            <label style={{ fontSize: 12, color: "#334155" }}>
-              Upload (múltiplas imagens)
+              Upload (múltiplas imagens) — obrigatório para gerar a URL
             </label>
             <label
               style={{
@@ -208,10 +204,13 @@ export default function SingleImagesEditor({
                 accept="image/*"
                 multiple
                 style={{ display: "none" }}
-                onChange={(e) => onPickFiles(e.target.files)}
+                onChange={(e) => addByUpload(e.target.files)}
                 disabled={uploading}
               />
             </label>
+            <small style={{ color: "#64748b" }}>
+              Você também pode arrastar e soltar as imagens aqui.
+            </small>
             {err && <small style={{ color: "#b91c1c" }}>{err}</small>}
           </div>
 
@@ -227,7 +226,6 @@ export default function SingleImagesEditor({
               <div
                 key={i}
                 style={{
-                  border: "1px solid #e2e8f0",
                   borderRadius: 8,
                   overflow: "hidden",
                   background: "white",
@@ -244,7 +242,19 @@ export default function SingleImagesEditor({
                     placeItems: "center",
                   }}
                 >
-                  {/* preview */}
+                  <a
+                    style={{
+                      fontSize: 12,
+                      margin: 4,
+                      color: "#2563eb",
+                      textDecoration: "underline",
+                    }}
+                    href={img}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Abrir imagem
+                  </a>
                   <img
                     src={img}
                     alt={`img-${i}`}
@@ -261,28 +271,28 @@ export default function SingleImagesEditor({
                 </div>
 
                 <div style={{ padding: 8, display: "grid", gap: 6 }}>
-                  <input
-                    value={img}
-                    onChange={(e) => {
-                      const next = [...(value.images || [])];
-                      next[i] = e.target.value;
-                      update({ images: next });
-                    }}
-                    style={{
-                      width: "100%",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 6,
-                      padding: "6px 8px",
-                      fontSize: 12,
-                    }}
-                  />
                   <div
                     style={{
                       display: "flex",
                       gap: 6,
                       justifyContent: "space-between",
+                      flexWrap: "wrap",
                     }}
                   >
+                    {/* Substituir por upload */}
+                    <label style={{ ...ghostBtn }}>
+                      Substituir
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={(e) =>
+                          replaceAt(i, e.target.files?.[0] || null)
+                        }
+                        disabled={uploading}
+                      />
+                    </label>
+
                     <button style={ghostBtn} onClick={() => moveImg(i, i - 1)}>
                       ↑
                     </button>
@@ -298,10 +308,9 @@ export default function SingleImagesEditor({
             ))}
           </div>
 
-          {/* Dica */}
           <small style={{ color: "#64748b" }}>
-            Dica: use imagens quadradas ou retangulares com boa resolução (ex.:
-            800px+ no maior lado).
+            Dica: use imagens quadradas/retangulares com boa resolução (≥ 800px
+            no maior lado).
           </small>
         </div>
       )}
