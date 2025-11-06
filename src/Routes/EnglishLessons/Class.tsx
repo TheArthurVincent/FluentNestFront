@@ -505,7 +505,7 @@ export default function EnglishClassCourse2({
         y: subtitleY,
         w: 9,
         h: 0.8,
-        fontSize: 18,
+        fontSize: 16,
         align: "center",
         color: darkGreyColor().replace("#", ""),
       });
@@ -605,7 +605,7 @@ export default function EnglishClassCourse2({
                     y: 4.2,
                     w: 8,
                     h: 1.5,
-                    fontSize: 18,
+                    fontSize: 16,
                     align: "center",
                     color: darkGreyColor().replace("#", ""),
                   });
@@ -779,7 +779,7 @@ export default function EnglishClassCourse2({
                           y: yPos,
                           w: 9,
                           h: 0.6,
-                          fontSize: 18,
+                          fontSize: 16,
                           bold: true,
                           color: partnerColor().replace("#", ""),
                         });
@@ -1182,7 +1182,7 @@ export default function EnglishClassCourse2({
                           y: yPos,
                           w: 9,
                           h: 0.6,
-                          fontSize: 18,
+                          fontSize: 16,
                           bold: true,
                           color: partnerColor().replace("#", ""),
                         });
@@ -1374,7 +1374,7 @@ export default function EnglishClassCourse2({
                             y: yPos,
                             w: 1,
                             h: 0.6,
-                            fontSize: 18,
+                            fontSize: 16,
                             bold: true,
                             align: "center",
                             color: partnerColor().replace("#", ""),
@@ -1546,7 +1546,7 @@ export default function EnglishClassCourse2({
                       y: 4,
                       w: 8,
                       h: 2,
-                      fontSize: 18,
+                      fontSize: 16,
                       align: "center",
                       color: darkGreyColor().replace("#", ""),
                     });

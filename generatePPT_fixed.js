@@ -57,7 +57,7 @@ const generatePPT = async () => {
       y: 6,
       w: 8,
       h: 1,
-      fontSize: 18,
+      fontSize: 16,
       align: "center",
       color: darkGreyColor().replace("#", ""),
     });

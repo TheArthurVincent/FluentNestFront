@@ -1,4 +1,5 @@
 import React from "react";
+import { truncateString } from "../../../../Resources/UniversalComponents";
 
 export type ExerciseBlock = {
   type: "exercise";
@@ -88,19 +89,19 @@ export default function ExerciseEditor({
       }}
     >
       <div
-        onClick={() => {
-          setShowConfig(!showConfig);
-        }}
         style={{
           display: "flex",
-          cursor: "pointer",
           justifyContent: "space-between",
           alignItems: "center",
-          textAlign: "center",
         }}
       >
-        <strong style={{ fontSize: 18, color: "#0f172a" }}>
-          Exercises - {value.subtitle}
+        <strong
+          onClick={() => {
+            setShowConfig(!showConfig);
+          }}
+          style={{ fontSize: 16, cursor: "pointer", color: "#0f172a" }}
+        >
+          Exercises - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
 
         <span

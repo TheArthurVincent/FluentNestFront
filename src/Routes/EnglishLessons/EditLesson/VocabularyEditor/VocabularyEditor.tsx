@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { truncateString } from "../../../../Resources/UniversalComponents";
 
 export type Languages = {
   language1: string; // idioma do campo "english"
@@ -181,21 +182,25 @@ export default function VocabularyEditor({
       }}
     >
       <div
-        onClick={() => {
-          setShowConfig(!showConfig);
-        }}
         style={{
           display: "flex",
-          cursor: "pointer",
           justifyContent: "space-between",
           alignItems: "center",
           textAlign: "center",
         }}
       >
-        <strong style={{ fontSize: 18, color: "#0f172a" }}>
-          Vocabulary - {value.subtitle}
+        <strong
+          onClick={() => {
+            setShowConfig(!showConfig);
+          }}
+          style={{
+            fontSize: 16,
+            cursor: "pointer",
+            color: "#0f172a",
+          }}
+        >
+          Vocabulary - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
-
         <span
           style={{
             display: "flex",

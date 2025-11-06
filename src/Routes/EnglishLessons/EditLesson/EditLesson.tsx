@@ -9,6 +9,7 @@ import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
 import ExerciseEditor, { ExerciseBlock } from "./ExerciseEditor/ExerciseEditor";
 import TagsEditor from "./TagsEditor/TagsEditor";
 import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
+import ImagesEditor, { ImagesBlock } from "./ImagesEditor/ImagesEditor";
 
 type ElementItem =
   | {
@@ -31,6 +32,13 @@ type ElementItem =
       grid?: number;
       type: "exercise";
       items: string[];
+    }
+  | {
+      subtitle?: string;
+      order?: number;
+      grid?: number;
+      type: "images";
+      images: import("./ImagesEditor/ImagesEditor").ImageEntry[];
     }
   | Record<string, any>;
 
@@ -247,7 +255,7 @@ export default function EditLesson({
             <h2
               style={{
                 fontFamily: "Inter, system-ui, sans-serif",
-                fontSize: 18,
+                fontSize: 16,
                 margin: 0,
               }}
             >
@@ -510,8 +518,20 @@ export default function EditLesson({
                       />
                     </div>
                   );
+                } else if (el?.type === "images") {
+                  return (
+                    <div key={idx}>
+                      <ImagesEditor
+                        value={el as ImagesBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
                 }
-
                 return (
                   <div
                     key={idx}

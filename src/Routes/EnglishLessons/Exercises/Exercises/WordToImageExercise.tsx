@@ -177,7 +177,7 @@ export default function WordToImageExercise({
       <p
         style={{
           textAlign: "center",
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 600,
           height: 50,
           display: "flex",

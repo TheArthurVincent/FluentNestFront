@@ -847,7 +847,7 @@ function ArvinLandingPageNew() {
                                   margin: 0,
                                   fontFamily: "Plus Jakarta Sans",
                                   fontWeight: 700,
-                                  fontSize: 18,
+                                  fontSize: 16,
                                   lineHeight: "150%",
                                   letterSpacing: "-0.03em",
                                   color: "#FFFFFF",
@@ -1799,7 +1799,7 @@ function ArvinLandingPageNew() {
                           margin: 0,
                           fontFamily: "Plus Jakarta Sans",
                           fontWeight: 700,
-                          fontSize: 18,
+                          fontSize: 16,
                           letterSpacing: "-0.02em",
                         }}
                       >
@@ -1886,7 +1886,7 @@ function ArvinLandingPageNew() {
                           margin: 0,
                           fontFamily: "Plus Jakarta Sans",
                           fontWeight: 700,
-                          fontSize: 18,
+                          fontSize: 16,
                           letterSpacing: "-0.02em",
                         }}
                       >
