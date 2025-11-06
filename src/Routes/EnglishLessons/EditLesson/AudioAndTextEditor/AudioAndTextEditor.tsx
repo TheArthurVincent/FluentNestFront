@@ -47,7 +47,7 @@ export default function AudioAndTextEditor({
   onMoveDown,
   headers,
 }: Props) {
-  const [showConfig, setShowConfig] = useState(true);
+  const [showConfig, setShowConfig] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const [coverError, setCoverError] = useState<string | null>(null);
 

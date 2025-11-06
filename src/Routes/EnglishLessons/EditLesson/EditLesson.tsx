@@ -13,6 +13,8 @@ import ImagesEditor, { ImagesBlock } from "./ImagesEditor/ImagesEditor";
 import AudioAndTextEditor, {
   AudioBlock,
 } from "./AudioAndTextEditor/AudioAndTextEditor";
+import DialogueEditor, { DialogueBlock } from "./DialogueEditor/DialogueEditor";
+import SelectExerciseEditor, { SelectExerciseBlock } from "./SelectExercise/SelectExercise";
 
 type ElementItem =
   | {
@@ -544,6 +546,30 @@ export default function EditLesson({
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "dialogue") {
+                  return (
+                    <div key={idx}>
+                      <DialogueEditor
+                        value={el as DialogueBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                      />
+                    </div>
+                  );
+                } else if (el?.type === "selectexercise") {
+                  return (
+                    <div key={idx}>
+                      <SelectExerciseEditor
+                        value={el as SelectExerciseBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
                       />
                     </div>
                   );

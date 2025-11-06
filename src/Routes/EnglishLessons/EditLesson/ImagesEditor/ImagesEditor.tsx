@@ -82,7 +82,7 @@ export default function ImagesEditor({
   onMoveDown,
   headers,
 }: Props) {
-  const [showConfig, setShowConfig] = useState(true);
+  const [showConfig, setShowConfig] = useState(false);
   const images = useMemo(() => value.images ?? [], [value.images]);
 
   const ensureLanguages = (item: ImageEntry): ImageEntry => {
@@ -151,7 +151,7 @@ export default function ImagesEditor({
     <div
       style={{
         border: "1px solid #e2e8f0",
-        borderRadius: 12,
+        borderRadius: 6,
         padding: 12,
         background: "linear-gradient(to right, #36dbd355, #ffffff)",
       }}
