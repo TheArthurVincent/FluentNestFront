@@ -20,12 +20,13 @@ type Props = {
 };
 
 const ghostBtnStyle: React.CSSProperties = {
+  borderRadius: 8,
   border: "1px solid #e2e8f0",
-  background: "#fff",
-  padding: "4px 8px",
-  borderRadius: 6,
+  backgroundColor: "white",
+  color: "#0f172a",
+  padding: "6px 10px",
   cursor: "pointer",
-  fontSize: 12,
+  fontSize: 13,
 };
 
 const dangerBtnStyle: React.CSSProperties = {

@@ -301,7 +301,6 @@ const ghostBtnStyle: React.CSSProperties = {
   cursor: "pointer",
   fontSize: 13,
 };
-
 const dangerBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",

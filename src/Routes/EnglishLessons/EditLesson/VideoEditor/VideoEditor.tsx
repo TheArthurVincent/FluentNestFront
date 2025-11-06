@@ -266,7 +266,7 @@ const ghostBtnStyle: React.CSSProperties = {
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
   color: "#0f172a",
-  padding: "8px 12px",
+  padding: "6px 10px",
   cursor: "pointer",
   fontSize: 13,
 };
