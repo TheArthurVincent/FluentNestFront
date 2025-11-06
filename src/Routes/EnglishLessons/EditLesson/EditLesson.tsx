@@ -4,6 +4,8 @@ import { backDomain } from "../../../Resources/UniversalComponents";
 import SentencesEditor, {
   SentencesBlock,
 } from "./SentencesEditor/SentencesEditor";
+import VocabularyEditor from "./VocabularyEditor/VocabularyEditor";
+import VideoEditor, { VideoBlock } from "./VideoEditor/VideoEditor";
 
 type ElementItem =
   | {
@@ -467,6 +469,27 @@ export default function EditLesson({
                           onChange={(next) => updateElementAt(idx, next)}
                           onRemove={() => removeElementAt(idx)}
                         />
+                      );
+                    } else if (el?.type === "vocabulary") {
+                      return (
+                        <VocabularyEditor
+                          key={idx}
+                          value={el as SentencesBlock}
+                          onChange={(next) => updateElementAt(idx, next)}
+                          onRemove={() => removeElementAt(idx)}
+                        />
+                      );
+                    } else if (el?.type === "video") {
+                      return (
+                        <div key={idx} style={{ display: "grid", gap: 8 }}>
+                          {/* Controles do bloco (mover/remover) se você já usa isso */}
+                          {/* ... */}
+                          <VideoEditor
+                            value={el as VideoBlock}
+                            onChange={(next) => updateElementAt(idx, next)}
+                            onRemove={() => removeElementAt(idx)}
+                          />
+                        </div>
                       );
                     }
 

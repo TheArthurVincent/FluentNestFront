@@ -31,7 +31,7 @@ type Props = {
 const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
-export default function SentencesEditor({
+export default function VocabularyEditor({
   value,
   onChange,
   onRemove,
@@ -285,10 +285,10 @@ export default function SentencesEditor({
           }}
         >
           <strong style={{ fontSize: 14, color: "#0f172a" }}>
-            Sentences ({value.sentences.length})
+            Vocabulary ({value.sentences.length})
           </strong>
           <button onClick={addSentence} style={primaryBtnStyle}>
-            + Adicionar sentença
+            + Adicionar vocabulário
           </button>
         </div>
 
@@ -298,122 +298,132 @@ export default function SentencesEditor({
           </div>
         )}
 
-        {value.sentences.map((s, idx) => (
-          <div
-            key={idx}
-            style={{
-              border: "1px solid #e2e8f0",
-              borderRadius: 8,
-              padding: 10,
-              display: "grid",
-              gap: 10,
-              background: "#fff",
-            }}
-          >
+        <div
+          style={{
+            display: "grid",
+            gap: 12,
+            gridTemplateColumns: "repeat(auto-fit, minmax(270px, 1fr))",
+          }}
+        >
+          {value.sentences.map((s, idx) => (
             <div
+              key={idx}
               style={{
-                display: "flex",
-                gap: 6,
-                justifyContent: "flex-end",
-                alignItems: "center",
-              }}
-            >
-              {idx !== 0 && (
-                <button onClick={() => moveUp(idx)} style={ghostBtnStyle}>
-                  ↑
-                </button>
-              )}
-              Order :{idx + 1}
-              {idx !== value.sentences.length - 1 && (
-                <button onClick={() => moveDown(idx)} style={ghostBtnStyle}>
-                  ↓
-                </button>
-              )}
-              <button
-                onClick={() => removeSentence(idx)}
-                style={dangerBtnStyle}
-              >
-                Remover
-              </button>
-            </div>
-
-            <div style={{ display: "grid", gap: 8 }}>
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Language 2 ({s.languages?.language1 || defaultLang1 || "en"})
-                </label>
-                <input
-                  value={s.english}
-                  onChange={(e) =>
-                    updateSentence(idx, (prev) => ({
-                      ...prev,
-                      english: e.target.value,
-                    }))
-                  }
-                  placeholder="Ex.: She went to the supermarket to buy groceries."
-                  style={inputStyle}
-                />
-              </div>
-
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Language 2 ({s.languages?.language2 || defaultLang2 || "pt"})
-                </label>
-                <input
-                  value={s.portuguese}
-                  onChange={(e) =>
-                    updateSentence(idx, (prev) => ({
-                      ...prev,
-                      portuguese: e.target.value,
-                    }))
-                  }
-                  placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
-                  style={inputStyle}
-                />
-              </div>
-            </div>
-
-            {/* Idiomas por sentença (sempre presente) */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: 12,
-                background: "#f0f9ff",
-                padding: 10,
+                border: "1px solid #aaa",
                 borderRadius: 8,
-                border: "1px solid #e2e8f0",
+                padding: 10,
+                display: "grid",
+                gap: 10,
+                background: "#eee",
               }}
             >
-              {renderLangSelect(
-                s.languages?.language1,
-                (code) =>
-                  updateSentence(idx, (prev) => ({
-                    ...prev,
-                    languages: {
-                      language1: code,
-                      language2:
-                        prev.languages?.language2 ?? (defaultLang2 || "pt"),
-                    },
-                  })),
-                "language1 (para “english”)"
-              )}
-              {renderLangSelect(
-                s.languages?.language2,
-                (code) =>
-                  updateSentence(idx, (prev) => ({
-                    ...prev,
-                    languages: {
-                      language1:
-                        prev.languages?.language1 ?? (defaultLang1 || "en"),
-                      language2: code,
-                    },
-                  })),
-                "language2 (para “portuguese”)"
-              )}
+              <div
+                style={{
+                  display: "flex",
+                  gap: 6,
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                }}
+              >
+                {idx !== 0 && (
+                  <button onClick={() => moveUp(idx)} style={ghostBtnStyle}>
+                    ↑
+                  </button>
+                )}
+                Order: {idx + 1}
+                {idx !== value.sentences.length - 1 && (
+                  <button onClick={() => moveDown(idx)} style={ghostBtnStyle}>
+                    ↓
+                  </button>
+                )}
+                <button
+                  onClick={() => removeSentence(idx)}
+                  style={dangerBtnStyle}
+                >
+                  Remover
+                </button>
+              </div>
+
+              <div style={{ display: "grid", gap: 8 }}>
+                <div style={{ display: "grid", gap: 6 }}>
+                  <label style={{ fontSize: 12, color: "#334155" }}>
+                    Language 2 ({s.languages?.language1 || defaultLang1 || "en"}
+                    )
+                  </label>
+                  <input
+                    value={s.english}
+                    onChange={(e) =>
+                      updateSentence(idx, (prev) => ({
+                        ...prev,
+                        english: e.target.value,
+                      }))
+                    }
+                    placeholder="Ex.: She went to the supermarket to buy groceries."
+                    style={inputStyle}
+                  />
+                </div>
+
+                <div style={{ display: "grid", gap: 6 }}>
+                  <label style={{ fontSize: 12, color: "#334155" }}>
+                    Language 1 ({s.languages?.language2 || defaultLang2 || "pt"}
+                    )
+                  </label>
+                  <input
+                    value={s.portuguese}
+                    onChange={(e) =>
+                      updateSentence(idx, (prev) => ({
+                        ...prev,
+                        portuguese: e.target.value,
+                      }))
+                    }
+                    placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
+                    style={inputStyle}
+                  />
+                </div>
+              </div>
+
+              {/* Idiomas por sentença (sempre presente) */}
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap: 12,
+                  background: "#f0f9ff",
+                  padding: 10,
+                  borderRadius: 8,
+                  border: "1px solid #e2e8f0",
+                }}
+              >
+                {renderLangSelect(
+                  s.languages?.language1,
+                  (code) =>
+                    updateSentence(idx, (prev) => ({
+                      ...prev,
+                      languages: {
+                        language1: code,
+                        language2:
+                          prev.languages?.language2 ?? (defaultLang2 || "pt"),
+                      },
+                    })),
+                  "language1 (para “english”)"
+                )}
+                {renderLangSelect(
+                  s.languages?.language2,
+                  (code) =>
+                    updateSentence(idx, (prev) => ({
+                      ...prev,
+                      languages: {
+                        language1:
+                          prev.languages?.language1 ?? (defaultLang1 || "en"),
+                        language2: code,
+                      },
+                    })),
+                  "language2 (para “portuguese”)"
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
