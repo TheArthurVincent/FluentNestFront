@@ -24,10 +24,11 @@ type Props = {
   onChange: (next: SentencesBlock) => void;
   onRemove?: () => void;
   titleRightExtra?: React.ReactNode;
-  defaultBlockLang1?: string; // default: "en"
-  defaultBlockLang2?: string; // default: "pt"
+  defaultBlockLang1?: string;
+  defaultBlockLang2?: string;
+  onMoveUp?: () => void; // NOVO
+  onMoveDown?: () => void; // NOVO
 };
-
 const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
@@ -35,6 +36,8 @@ export default function VocabularyEditor({
   value,
   onChange,
   onRemove,
+  onMoveUp,
+  onMoveDown,
   titleRightExtra,
   defaultBlockLang1 = "en",
   defaultBlockLang2 = "pt",
@@ -202,12 +205,22 @@ export default function VocabularyEditor({
         >
           <div>
             <button
-            // onClick={() => moveUp(idx)} style={ghostBtnStyle}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveUp?.();
+              }}
+              style={ghostBtnStyle}
+              title="Mover bloco para cima"
             >
               ↑
             </button>
             <button
-            //  onClick={() => moveDown(idx)} style={ghostBtnStyle}
+              onClick={(e) => {
+                e.stopPropagation();
+                onMoveDown?.();
+              }}
+              style={ghostBtnStyle}
+              title="Mover bloco para baixo"
             >
               ↓
             </button>
