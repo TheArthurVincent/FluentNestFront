@@ -3186,7 +3186,7 @@ export default function EnglishClassCourse2({
           >
             <span
               style={{
-                color: previousClass !== "123456" ? partnerColor() : "#888888",
+                color: previousClass !== "123456" ? partnerColor() : "#eee",
                 cursor: previousClass !== "123456" ? "pointer" : "default",
               }}
               onClick={PVSClass}
@@ -3204,7 +3204,7 @@ export default function EnglishClassCourse2({
             </HOne>
             <span
               style={{
-                color: nextClass !== "123456" ? partnerColor() : "#888888",
+                color: nextClass !== "123456" ? partnerColor() : "#eee",
                 cursor: nextClass !== "123456" ? "pointer" : "default",
               }}
               onClick={NXTClass}
@@ -4309,7 +4309,7 @@ export default function EnglishClassCourse2({
                 <span
                   style={{
                     color:
-                      previousClass !== "123456" ? partnerColor() : "#888888",
+                      previousClass !== "123456" ? partnerColor() : "#eee",
                     cursor: previousClass !== "123456" ? "pointer" : "default",
                   }}
                   onClick={PVSClass}
@@ -4319,7 +4319,7 @@ export default function EnglishClassCourse2({
 
                 <span
                   style={{
-                    color: nextClass !== "123456" ? partnerColor() : "#888888",
+                    color: nextClass !== "123456" ? partnerColor() : "#eee",
                     cursor: nextClass !== "123456" ? "pointer" : "default",
                   }}
                   onClick={NXTClass}
