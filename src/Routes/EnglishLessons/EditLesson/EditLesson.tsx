@@ -541,24 +541,6 @@ export default function EditLesson({
                     <option value="fr">French (fr)</option>
                   </select>
                 </div>
-
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Order
-                  </label>
-                  <input
-                    type="number"
-                    value={order}
-                    onChange={(e) => setOrder(Number(e.target.value))}
-                    style={{
-                      width: "100%",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      padding: 8,
-                      fontSize: 13,
-                    }}
-                  />
-                </div>
               </div>
             </div>
           </div>
