@@ -26,6 +26,7 @@ import ExplanationEditor, {
 import SingleImagesEditor, {
   SingleImagesBlock,
 } from "./SingleImagesEditor/SingleImagesEditor";
+import { partnerColor } from "../../../Styles/Styles";
 
 type ElementItem =
   | {
@@ -86,7 +87,6 @@ type ElementItem =
       type: "singleimages";
       images: string[];
     }
-  // 🔥 Novo tipo explanation no union principal
   | ExplanationBlock
   | Record<string, any>;
 
@@ -135,26 +135,29 @@ export default function EditLesson({
   const [open, setOpen] = useState(false);
 
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
-
-  // cabeçalho
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
   const [order, setOrder] = useState<number>(0);
   const [tags, setTags] = useState<string[]>([]);
-
-  // elements por inputs
   const [elements, setElements] = useState<ElementItem[]>([]);
-
-  // upload estado
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
-
-  // estado do “adicionar bloco”
   const [newType, setNewType] = useState<NewBlockType>("sentences");
-
-  // (opcional) validade global
   const [isValid, setIsValid] = useState(true);
+
+  // --- mobile awareness (sem libs)
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mq = window.matchMedia("(max-width: 640px)");
+    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
+      setIsMobile("matches" in e ? e.matches : (e as MediaQueryList).matches);
+    };
+    onChange(mq);
+    mq.addEventListener?.("change", onChange as any);
+    return () => mq.removeEventListener?.("change", onChange as any);
+  }, []);
 
   const getClass = async () => {
     setSeeEdit?.(true);
@@ -167,7 +170,6 @@ export default function EditLesson({
       );
       const data: ClassDetails =
         response?.data?.classDetails || response?.data || response?.data?.data;
-
       if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
 
       setLesson(data);
@@ -188,7 +190,6 @@ export default function EditLesson({
 
   const handleSave = async () => {
     if (!lesson) return;
-
     if (!isValid) {
       alert("Por favor, corrija os erros nos elementos antes de salvar.");
       return;
@@ -210,18 +211,14 @@ export default function EditLesson({
       const res = await axios.put(
         `${backDomain}/api/v1/class-edit/${classId}`,
         payload,
-        {
-          headers,
-        }
+        { headers }
       );
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
-
       setLesson(updated);
       if (updated?.image) setImage(updated.image);
       setTitle(updated?.title ?? title);
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
-
       onUpdated?.(updated);
       window.location.reload();
     } catch (err: any) {
@@ -241,13 +238,11 @@ export default function EditLesson({
     try {
       setUploadError(null);
       setUploadingImage(true);
-
       const url = await uploadImageViaBackend(f, {
         folder: "/lessons",
         fileName: `lesson_${classId}_main_${Date.now()}.jpg`,
         headers,
       });
-
       setImage(url);
     } catch (e: any) {
       console.error("Erro ao subir imagem da aula:", e?.message || e);
@@ -265,7 +260,6 @@ export default function EditLesson({
       return clone;
     });
   };
-
   const removeElementAt = (index: number) => {
     setElements((prev) => {
       const clone = prev.slice();
@@ -273,7 +267,6 @@ export default function EditLesson({
       return clone;
     });
   };
-
   const moveElement = (from: number, to: number) => {
     setElements((prev) => {
       if (to < 0 || to >= prev.length) return prev;
@@ -283,16 +276,13 @@ export default function EditLesson({
       return clone;
     });
   };
-
   const moveElementUp = (index: number) => moveElement(index, index - 1);
   const moveElementDown = (index: number) => moveElement(index, index + 1);
 
   // ---------- Adicionar novo bloco ----------
   const getNextOrder = () => (elements?.length ?? 0) + 1;
-
   const makeEmptyBlock = (type: NewBlockType): ElementItem => {
-    const base = { subtitle: "", order: getNextOrder() };
-
+    const base = { subtitle: "", order: getNextOrder() } as any;
     switch (type) {
       case "singleimages":
         return { ...base, type: "singleimages", images: [] };
@@ -312,27 +302,64 @@ export default function EditLesson({
         return { ...base, type: "dialogue", dialogue: [] };
       case "selectexercise":
         return { ...base, type: "selectexercise", options: [] };
-      // 🔥 Novo: bloco Explanation (casca vazia)
       case "explanation":
         return {
           ...base,
           type: "explanation",
           subtitle: "",
-          explanation: [
-            { image: null, title: "", list: [""] }, // 1 seção inicial vazia
-          ],
+          explanation: [{ image: null, title: "", list: [""] }],
         } as ExplanationBlock;
       default:
         return base as any;
     }
   };
-
   const addBlock = (pos: "start" | "end" = "end") => {
     const block = makeEmptyBlock(newType);
-    setElements((prev) => {
-      if (pos === "start") return [block, ...prev];
-      return [...prev, block];
-    });
+    setElements((prev) =>
+      pos === "start" ? [block, ...prev] : [...prev, block]
+    );
+  };
+
+  // ------- estilos utilitários responsivos -------
+  const outerWrapStyle: React.CSSProperties = {
+    borderRadius: 12,
+    padding: isMobile ? 10 : 12,
+    maxWidth: 1100,
+    margin: "0 auto",
+    boxSizing: "border-box",
+    overflowX: "hidden", // rede de segurança
+  };
+
+  const oneColGrid: React.CSSProperties = {
+    display: "grid",
+    gap: 12,
+    gridTemplateColumns: "1fr",
+  };
+
+  const headerSplitGrid: React.CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
+    alignItems: "start",
+    gap: 16,
+  };
+
+  const toolbarGrid: React.CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: isMobile ? "1fr" : "minmax(220px, 1fr) auto auto",
+    gap: 8,
+    alignItems: "center",
+    marginBottom: 6,
+  };
+
+  const fullWidthBtn: React.CSSProperties = {
+    borderRadius: 8,
+    border: "1px solid #e2e8f0",
+    backgroundColor: "white",
+    color: "#0f172a",
+    padding: "8px 10px",
+    cursor: "pointer",
+    fontSize: 13,
+    width: isMobile ? "100%" : undefined,
   };
 
   return (
@@ -342,10 +369,10 @@ export default function EditLesson({
           onClick={open ? () => setOpen(false) : getClass}
           disabled={loading}
           style={{
-            borderRadius: "4px",
+            borderRadius: 4,
             border: "1px solid #e2e8f0",
             backgroundColor: "#f8fafc",
-            fontSize: "11px",
+            fontSize: 11,
             fontWeight: 400,
             color: "#64748b",
             padding: "4px 6px",
@@ -353,6 +380,7 @@ export default function EditLesson({
             outline: "none",
             cursor: "pointer",
             display: "block",
+            maxWidth: 200,
           }}
         >
           {loading ? "Carregando..." : open ? "Fechar editor" : "Editar Aula"}
@@ -360,15 +388,9 @@ export default function EditLesson({
       )}
 
       {open && (
-        <div
-          aria-label="Editor de aula"
-          style={{ borderRadius: 12, padding: 10 }}
-        >
+        <div aria-label="Editor de aula" style={outerWrapStyle}>
           <h2
-            style={{
-              fontSize: 14,
-              textAlign: "center",
-            }}
+            style={{ fontSize: "clamp(14px, 2vw, 16px)", textAlign: "center" }}
           >
             Editar Aula
           </h2>
@@ -389,33 +411,63 @@ export default function EditLesson({
           )}
 
           {/* Cabeçalho */}
-          <div
-            style={{
-              display: "grid",
-              gap: 12,
-              gridTemplateColumns: "1fr",
-              marginBottom: 12,
-            }}
-          >
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>
-                Título da aula
-              </label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Ex.: Business Essentials — Vocabulary & Usage"
-                style={{
-                  width: "100%",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                }}
-              />
-            </div>
+          <div style={{ ...oneColGrid, marginBottom: 12 }}>
+            <div
+              style={{
+                display: "grid",
+                gap: 12,
+                gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ display: "grid", gap: 6 }}>
+                <label style={{ fontSize: 12, color: "#334155" }}>
+                  Título da aula
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Ex.: Business Essentials — Vocabulary & Usage"
+                  style={{
+                    width: "100%",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 8,
+                    padding: 8,
+                    fontSize: 13,
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
 
+              <div style={{ display: "grid", gap: 6 }}>
+                <label style={{ fontSize: 12, color: "#334155" }}>
+                  Language
+                </label>
+                <select
+                  value={lesson?.language ?? "en"}
+                  onChange={(e) =>
+                    setLesson((prev) =>
+                      prev ? { ...prev, language: e.target.value } : prev
+                    )
+                  }
+                  style={{
+                    width: "100%",
+                    border: "1px solid #e2e8f0",
+                    borderRadius: 8,
+                    padding: 8,
+                    fontSize: 13,
+                    background: "white",
+                    color: "#0f172a",
+                    boxSizing: "border-box",
+                  }}
+                >
+                  <option value="en">English (en)</option>
+                  <option value="es">Spanish (es)</option>
+                  <option value="fr">French (fr)</option>
+                </select>
+              </div>
+            </div>
             <TagsEditor
               value={tags}
               onChange={setTags}
@@ -437,102 +489,71 @@ export default function EditLesson({
                   borderRadius: 8,
                   padding: 8,
                   fontSize: 13,
+                  boxSizing: "border-box",
+                  resize: "vertical",
                 }}
               />
             </div>
-
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(390px, 1fr))",
-                alignItems: "start",
-                gap: 20,
-              }}
-            >
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Imagem da aula (upload imediato)
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    onPickLessonImage(e.target.files?.[0] || null)
-                  }
-                  disabled={uploadingImage}
+            <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Imagem da aula
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={(e) => onPickLessonImage(e.target.files?.[0] || null)}
+                disabled={uploadingImage}
+              />
+              {uploadingImage && (
+                <small style={{ color: "#0ea5e9" }}>Enviando imagem...</small>
+              )}
+              {uploadError && (
+                <small style={{ color: "#b91c1c" }}>{uploadError}</small>
+              )}
+              {image && (
+                <img
+                  src={image}
+                  alt="Lesson thumbnail"
+                  style={{
+                    maxWidth: 240,
+                    width: "250px",
+                    height: "250px",
+                    margin: "auto",
+                    display: "block",
+                    objectFit: "cover",
+                    borderRadius: 8,
+                    border: "1px solid #e2e8f0",
+                  }}
+                  onError={(e) => (e.currentTarget.style.display = "none")}
                 />
-                {uploadingImage && (
-                  <small style={{ color: "#0ea5e9" }}>Enviando imagem...</small>
-                )}
-                {uploadError && (
-                  <small style={{ color: "#b91c1c" }}>{uploadError}</small>
-                )}
-                {image && (
-                  <img
-                    src={image}
-                    alt="Lesson thumbnail"
-                    style={{
-                      width: 200,
-                      height: 200,
-                      display: "block",
-                      objectFit: "cover",
-                      borderRadius: 8,
-                      border: "1px solid #e2e8f0",
-                    }}
-                    onError={(e) => (e.currentTarget.style.display = "none")}
-                  />
-                )}
-              </div>
-
-              <div
-                style={{ display: "grid", gap: 12, gridTemplateColumns: "1fr" }}
-              >
-                <div style={{ display: "grid", gap: 6 }}>
-                  <label style={{ fontSize: 12, color: "#334155" }}>
-                    Language
-                  </label>
-                  <select
-                    value={lesson?.language ?? "en"}
-                    onChange={(e) =>
-                      setLesson((prev) =>
-                        prev ? { ...prev, language: e.target.value } : prev
-                      )
-                    }
-                    style={{
-                      width: "100%",
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 8,
-                      padding: 8,
-                      fontSize: 13,
-                      background: "white",
-                      color: "#0f172a",
-                    }}
-                  >
-                    <option value="en">English (en)</option>
-                    <option value="es">Spanish (es)</option>
-                    <option value="fr">French (fr)</option>
-                  </select>
-                </div>
-              </div>
+              )}
+              {image && (
+                <button
+                  onClick={() => {
+                    setImage("");
+                  }}
+                >
+                  Remover imagem
+                </button>
+              )}
             </div>
           </div>
 
           {/* Conteúdo da Aula */}
           <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
-            <h1 style={{ fontSize: 22, textAlign: "center", color: "#0f172a" }}>
+            <h1
+              style={{
+                fontSize: "clamp(18px, 3.2vw, 22px)",
+                textAlign: "center",
+                color: "#0f172a",
+                margin: "8px 0",
+              }}
+            >
               Conteúdo da Aula
             </h1>
 
             {/* Toolbar de adicionar bloco */}
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "minmax(220px, 1fr) auto auto",
-                gap: 8,
-                alignItems: "center",
-                marginBottom: 6,
-              }}
-            >
+            <div style={toolbarGrid}>
               <select
                 value={newType}
                 onChange={(e) => setNewType(e.target.value as NewBlockType)}
@@ -543,6 +564,8 @@ export default function EditLesson({
                   fontSize: 13,
                   background: "white",
                   color: "#0f172a",
+                  width: "100%",
+                  boxSizing: "border-box",
                 }}
                 title="Tipo do novo bloco"
               >
@@ -560,15 +583,7 @@ export default function EditLesson({
 
               <button
                 onClick={() => addBlock("start")}
-                style={{
-                  borderRadius: 8,
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "white",
-                  color: "#0f172a",
-                  padding: "8px 10px",
-                  cursor: "pointer",
-                  fontSize: 13,
-                }}
+                style={fullWidthBtn}
                 title="Adicionar no início"
               >
                 + Adicionar no início
@@ -577,13 +592,9 @@ export default function EditLesson({
               <button
                 onClick={() => addBlock("end")}
                 style={{
-                  borderRadius: 8,
-                  border: "1px solid #0891b2",
-                  backgroundColor: "#06b6d4",
+                  ...fullWidthBtn,
+                  backgroundColor: partnerColor(),
                   color: "white",
-                  padding: "8px 10px",
-                  cursor: "pointer",
-                  fontSize: 13,
                   fontWeight: 600,
                 }}
                 title="Adicionar ao final"
@@ -732,7 +743,6 @@ export default function EditLesson({
                     </div>
                   );
                 }
-
                 return <></>;
               })}
             </div>
@@ -741,9 +751,10 @@ export default function EditLesson({
           {/* Ações */}
           <div
             style={{
-              display: "flex",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
               gap: 8,
-              justifyContent: "flex-end",
+              justifyContent: isMobile ? "stretch" : "flex-end",
               marginTop: 16,
             }}
           >
@@ -760,27 +771,28 @@ export default function EditLesson({
                 padding: "8px 12px",
                 cursor: "pointer",
                 fontSize: 13,
+                width: isMobile ? "100%" : undefined,
               }}
               aria-label="Fechar"
               title="Fechar"
             >
-              Fechar sem salvar
+              Cancelar
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
               style={{
                 borderRadius: 8,
-                border: "1px solid #0891b2",
-                backgroundColor: "#06b6d4",
+                backgroundColor: partnerColor(),
                 color: "white",
                 padding: "8px 12px",
                 cursor: saving ? "not-allowed" : "pointer",
                 fontSize: 13,
                 fontWeight: 600,
+                width: isMobile ? "100%" : undefined,
               }}
             >
-              {saving ? "Salvando..." : "Salvar alterações"}
+              {saving ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </div>
