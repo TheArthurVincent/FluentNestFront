@@ -23,8 +23,6 @@ export default function VideoEditor({
   const [forcePreviewKey, setForcePreviewKey] = useState(0); // para recarregar preview
 
   const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
-  const updateOrder = (order: number | undefined) =>
-    onChange({ ...value, order });
   const updateVideo = (video: string) => onChange({ ...value, video });
 
   const trimAll = () => {
