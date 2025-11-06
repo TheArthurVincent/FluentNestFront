@@ -3234,15 +3234,14 @@ export default function EnglishClassCourse2({
               </span>
             )}
           </div>
-          {
-            //   thePermissions === "superadmin" ||
-            // thePermissions === "teacher" &&
-            <EditLesson
-              setSeeEdit={setSeeEdit}
-              headers={actualHeaders}
-              classId={classId}
-            />
-          }
+          {thePermissions === "superadmin" ||
+            (thePermissions === "teacher" && (
+              <EditLesson
+                setSeeEdit={setSeeEdit}
+                headers={actualHeaders}
+                classId={classId}
+              />
+            ))}
           {!seeEdit && (
             <>
               {!seeBoard ? (
@@ -3487,7 +3486,7 @@ export default function EnglishClassCourse2({
                       </div>
                     </span>
 
-                    {!seeBoard && (
+                    {!seeBoard && !exercise && (
                       <span
                         style={{
                           backgroundColor: "#fff",
@@ -3495,7 +3494,7 @@ export default function EnglishClassCourse2({
                           display: "block", // ⬅️ adicionado
                           width: "100%",
                           boxShadow:
-                            "inset 0 4px 4px rgba(197, 197, 197, 0.17)",
+                            "inset 6px 2px 8px rgba(197, 197, 197, 0.35)",
                           boxSizing: "border-box",
                           borderRadius: "6px",
                           overflowX: "auto",
@@ -3851,18 +3850,51 @@ export default function EnglishClassCourse2({
                           gap: 8,
                         }}
                       >
-                        {(thePermissions === "superadmin" ||
-                          thePermissions === "teacher") && (
-                          <>
+                        <>
+                          <button
+                            onClick={() => {
+                              const template = generateInitialBoardContent();
+                              setEditorKey((v) => v + 1);
+                              setNewHWDescription(template);
+                              setEditorContent(template);
+                              setConfirm(true);
+                            }}
+                            title="Restaurar"
+                            style={{
+                              border: "1px solid #e5e7eb",
+                              background: "#fff",
+                              color: "#111827",
+                              padding: "6px 10px",
+                              borderRadius: 4,
+                              fontSize: 12,
+                              cursor: "pointer",
+                            }}
+                          >
+                            Restaurar
+                          </button>
+
+                          {confirm && (
                             <button
-                              onClick={() => {
-                                const template = generateInitialBoardContent();
-                                setEditorKey((v) => v + 1);
-                                setNewHWDescription(template);
-                                setEditorContent(template);
-                                setConfirm(true);
+                              onClick={handleSaveBoard}
+                              style={{
+                                border: `1px solid ${
+                                  partnerColor?.() || "#2563eb"
+                                }`,
+                                background: partnerColor?.() || "#2563eb",
+                                color: "#fff",
+                                padding: "6px 10px",
+                                borderRadius: 4,
+                                fontSize: 12,
+                                cursor: "pointer",
                               }}
-                              title="Restaurar"
+                            >
+                              Salvar Lousa de {truncateString(studentName, 8)}
+                            </button>
+                          )}
+
+                          {hasAudioElement && (
+                            <button
+                              onClick={() => setSeeAudios((v) => !v)}
                               style={{
                                 border: "1px solid #e5e7eb",
                                 background: "#fff",
@@ -3873,76 +3905,41 @@ export default function EnglishClassCourse2({
                                 cursor: "pointer",
                               }}
                             >
-                              Restaurar
+                              Áudios
                             </button>
-
-                            {confirm && (
-                              <button
-                                onClick={handleSaveBoard}
-                                style={{
-                                  border: `1px solid ${
-                                    partnerColor?.() || "#2563eb"
-                                  }`,
-                                  background: partnerColor?.() || "#2563eb",
-                                  color: "#fff",
-                                  padding: "6px 10px",
-                                  borderRadius: 4,
-                                  fontSize: 12,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Salvar Lousa de {truncateString(studentName, 8)}
-                              </button>
-                            )}
-
-                            {hasAudioElement && (
-                              <button
-                                onClick={() => setSeeAudios((v) => !v)}
-                                style={{
-                                  border: "1px solid #e5e7eb",
-                                  background: "#fff",
-                                  color: "#111827",
-                                  padding: "6px 10px",
-                                  borderRadius: 4,
-                                  fontSize: 12,
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Áudios
-                              </button>
-                            )}
-                            <button
-                              onClick={downloadBoardPDF}
-                              title="Baixar PDF"
+                          )}
+                          <button
+                            onClick={downloadBoardPDF}
+                            title="Baixar PDF"
+                            style={{
+                              all: "unset",
+                            }}
+                          >
+                            <img
+                              src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                              alt="PDF"
                               style={{
-                                all: "unset",
+                                width: 14,
+                                cursor: "pointer",
+                                height: 14,
                               }}
-                            >
-                              <img
-                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                                alt="PDF"
-                                style={{
-                                  width: 14,
-                                  cursor: "pointer",
-                                  height: 14,
-                                }}
-                              />
-                            </button>
-                            {seeCheck && (
-                              <i
-                                className="fa fa-check"
-                                style={{
-                                  padding: 6,
-                                  borderRadius: "999px",
-                                  backgroundColor: "#fff",
-                                  color: "green",
-                                  fontSize: 12,
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              />
-                            )}
-                          </>
-                        )}
+                            />
+                          </button>
+                          {seeCheck && (
+                            <i
+                              className="fa fa-check"
+                              style={{
+                                padding: 6,
+                                borderRadius: "999px",
+                                backgroundColor: "#fff",
+                                color: "green",
+                                fontSize: 12,
+                                border: "1px solid #e5e7eb",
+                              }}
+                            />
+                          )}
+                        </>
+
                         {boardDate && (
                           <span
                             style={{
@@ -4087,60 +4084,43 @@ export default function EnglishClassCourse2({
                             transition: "transform 0.2s ease-in-out",
                           }}
                         >
-                          {thePermissions === "teacher" ||
-                          thePermissions === "superadmin" ? (
-                            <div
-                              style={{
-                                height: "100%",
-                                width:
-                                  boardZoom == 100
-                                    ? "99%"
-                                    : boardZoom == 110
-                                    ? "90%"
-                                    : boardZoom == 120
-                                    ? "83%"
-                                    : boardZoom == 130
-                                    ? "77%"
-                                    : boardZoom == 140
-                                    ? "71%"
-                                    : boardZoom == 150
-                                    ? "66%"
-                                    : boardZoom == 160
-                                    ? "62%"
-                                    : boardZoom == 170
-                                    ? "58%"
-                                    : boardZoom == 180
-                                    ? "55%"
-                                    : boardZoom == 190
-                                    ? "53%"
-                                    : boardZoom == 200
-                                    ? "50%"
-                                    : "80%",
-                                transformOrigin: "top left",
-                                transform: `scale(${boardZoom / 100})`,
-                              }}
-                            >
-                              <HTMLEditor
-                                key={editorKey}
-                                initialContent={editorContent}
-                                onChange={handleHWDescriptionChange}
-                              />
-                            </div>
-                          ) : (
-                            <div
-                              style={{
-                                height: "100%",
-                                overflow: "auto",
-                                paddingRight: 6,
-                              }}
-                            >
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: editorContent,
-                                }}
-                              />
-                            </div>
-                          )}
+                          <div
+                            style={{
+                              height: "100%",
+                              width:
+                                boardZoom == 100
+                                  ? "99%"
+                                  : boardZoom == 110
+                                  ? "90%"
+                                  : boardZoom == 120
+                                  ? "83%"
+                                  : boardZoom == 130
+                                  ? "77%"
+                                  : boardZoom == 140
+                                  ? "71%"
+                                  : boardZoom == 150
+                                  ? "66%"
+                                  : boardZoom == 160
+                                  ? "62%"
+                                  : boardZoom == 170
+                                  ? "58%"
+                                  : boardZoom == 180
+                                  ? "55%"
+                                  : boardZoom == 190
+                                  ? "53%"
+                                  : boardZoom == 200
+                                  ? "50%"
+                                  : "80%",
+                              transformOrigin: "top left",
+                              transform: `scale(${boardZoom / 100})`,
+                            }}
+                          >
+                            <HTMLEditor
+                              key={editorKey}
+                              initialContent={editorContent}
+                              onChange={handleHWDescriptionChange}
+                            />
+                          </div>
                         </div>
                       ) : (
                         <div
