@@ -408,7 +408,7 @@ export default function EditLesson({
           </div>
 
           {/* Seletor de modo */}
-          <div style={{ display: "grid", gap: 12, marginTop: 8 }}>
+          <div style={{ display: "grid", gap: 12, marginTop: 10 }}>
             <div
               style={{
                 display: "inline-flex",
@@ -454,18 +454,12 @@ export default function EditLesson({
                 JSON
               </button>
             </div>
-            <div
-              style={{
-                textAlign: "center",
-              }}
-            >
-              <h1 style={{ fontSize: 22, color: "#0f172a" }}>
-                Conteúdo da Aula
-              </h1>
-            </div>
+            <h1 style={{ fontSize: 22, textAlign: "center", color: "#0f172a" }}>
+              Conteúdo da Aula
+            </h1>
             {/* Conteúdo dos modos */}
             {elementsMode === "inputs" ? (
-              <div style={{ display: "grid", gap: 12 }}>
+              <div style={{ display: "grid", gap: 50 }}>
                 {elements.length === 0 && (
                   <div
                     style={{
@@ -483,25 +477,52 @@ export default function EditLesson({
                 {elements.map((el, idx) => {
                   if (el?.type === "sentences") {
                     return (
-                      <SentencesEditor
+                      <div
                         key={idx}
-                        value={el as SentencesBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                      />
+                        style={{
+                          paddingBottom: 20,
+                          marginBottom: 20,
+                          borderBottom: "2px solid #e2e8f0",
+                        }}
+                      >
+                        <SentencesEditor
+                          key={idx}
+                          value={el as SentencesBlock}
+                          onChange={(next) => updateElementAt(idx, next)}
+                          onRemove={() => removeElementAt(idx)}
+                        />
+                      </div>
                     );
                   } else if (el?.type === "vocabulary") {
                     return (
-                      <VocabularyEditor
+                      <div
                         key={idx}
-                        value={el as SentencesBlock}
-                        onChange={(next) => updateElementAt(idx, next)}
-                        onRemove={() => removeElementAt(idx)}
-                      />
+                        style={{
+                          paddingBottom: 20,
+                          marginBottom: 20,
+                          borderBottom: "2px solid #e2e8f0",
+                        }}
+                      >
+                        <VocabularyEditor
+                          key={idx}
+                          value={el as SentencesBlock}
+                          onChange={(next) => updateElementAt(idx, next)}
+                          onRemove={() => removeElementAt(idx)}
+                        />
+                      </div>
                     );
                   } else if (el?.type === "video") {
                     return (
-                      <div key={idx} style={{ display: "grid", gap: 8 }}>
+                      <div
+                        key={idx}
+                        style={{
+                          display: "grid",
+                          gap: 8,
+                          paddingBottom: 20,
+                          marginBottom: 20,
+                          borderBottom: "2px solid #e2e8f0",
+                        }}
+                      >
                         <VideoEditor
                           value={el as VideoBlock}
                           onChange={(next) => updateElementAt(idx, next)}
