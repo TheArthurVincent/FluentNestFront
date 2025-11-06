@@ -3532,11 +3532,7 @@ export default function EnglishClassCourse2({
                             <style>{`.topbar-sections::-webkit-scrollbar { display: none; }`}</style>
                             {sectionElems.map((s: any, i: number) => {
                               // Só renderiza se tiver subtitle e não for exercise/selectexercise
-                              if (
-                                !s.subtitle ||
-                                s.type === "exercise" ||
-                                s.type === "selectexercise"
-                              )
+                              if (!s.subtitle || s.type === "selectexercise")
                                 return null;
 
                               const id = makeId(s.subtitle, i);
@@ -3648,7 +3644,6 @@ export default function EnglishClassCourse2({
                                 }}
                               >
                                 {element.subtitle &&
-                                  element.type !== "exercise" &&
                                   element.type !== "selectexercise" && (
                                     <div
                                       style={{
