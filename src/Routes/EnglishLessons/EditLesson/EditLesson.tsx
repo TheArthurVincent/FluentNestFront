@@ -10,6 +10,9 @@ import ExerciseEditor, { ExerciseBlock } from "./ExerciseEditor/ExerciseEditor";
 import TagsEditor from "./TagsEditor/TagsEditor";
 import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
 import ImagesEditor, { ImagesBlock } from "./ImagesEditor/ImagesEditor";
+import AudioAndTextEditor, {
+  AudioBlock,
+} from "./AudioAndTextEditor/AudioAndTextEditor";
 
 type ElementItem =
   | {
@@ -531,21 +534,36 @@ export default function EditLesson({
                       />
                     </div>
                   );
+                } else if (el?.type === "audio") {
+                  return (
+                    <div key={idx}>
+                      <AudioAndTextEditor
+                        value={el as AudioBlock}
+                        onChange={(next) => updateElementAt(idx, next)}
+                        onRemove={() => removeElementAt(idx)}
+                        onMoveUp={() => moveElementUp(idx)}
+                        onMoveDown={() => moveElementDown(idx)}
+                        headers={headers}
+                      />
+                    </div>
+                  );
                 }
+
                 return (
-                  <div
-                    key={idx}
-                    style={{
-                      border: "1px solid #e2e8f0",
-                      borderRadius: 10,
-                      padding: 12,
-                      background: "#fff7ed",
-                      color: "#9a3412",
-                    }}
-                  >
-                    <strong>Tipo não suportado ainda:</strong>{" "}
-                    {String(el?.type)}
-                  </div>
+                  <></>
+                  // <div
+                  //   key={idx}
+                  //   style={{
+                  //     border: "1px solid #e2e8f0",
+                  //     borderRadius: 10,
+                  //     padding: 12,
+                  //     background: "#fff7ed",
+                  //     color: "#9a3412",
+                  //   }}
+                  // >
+                  //   <strong>Tipo não suportado ainda:</strong>{" "}
+                  //   {String(el?.type)}
+                  // </div>
                 );
               })}
             </div>

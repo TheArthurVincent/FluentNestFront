@@ -3729,10 +3729,7 @@ export default function EnglishClassCourse2({
                                     selectedVoice={selectedVoice}
                                   />
                                 ) : element.type === "audio" ? (
-                                  <AudioFile
-                                    element={element}
-                                    selectedVoice={selectedVoice}
-                                  />
+                                  <AudioFile element={element} />
                                 ) : element.type === "text" ? (
                                   <TextLessonModel
                                     headers={headers}
@@ -4329,11 +4326,7 @@ export default function EnglishClassCourse2({
                                 </div>
 
                                 {currentAudio.type === "audio" ? (
-                                  <AudioFile
-                                    hideText
-                                    element={currentAudio}
-                                    selectedVoice={selectedVoice}
-                                  />
+                                  <AudioFile hideText element={currentAudio} />
                                 ) : (
                                   <AudioSoundTrack
                                     headers={headers}

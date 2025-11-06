@@ -153,7 +153,7 @@ export default function ImagesEditor({
         border: "1px solid #e2e8f0",
         borderRadius: 12,
         padding: 12,
-        background: "white",
+        background: "linear-gradient(to right, #36dbd355, #ffffff)",
       }}
     >
       {/* Header do bloco */}
