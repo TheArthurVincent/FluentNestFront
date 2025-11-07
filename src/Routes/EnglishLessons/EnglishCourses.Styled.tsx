@@ -24,38 +24,4 @@ export const CourseItem = styled.div`
     font-weight: 700;
   }
 `;
-export const CourseCard = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f5f5f5;
-  color: #333;
-  padding: 0.2rem;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  &:hover {
-    background-color: #f3f3f3;
-    img {
-      transform: scale(1.1);
-      filter: grayscale(100%);
-    }
-  }
 
-  img {
-    border-radius: 4px;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    margin-right: 1rem;
-    transition: transform 0.3s ease, filter 0.3s ease;
-  }
-
-  p {
-    flex-grow: 1;
-    margin: 0;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: left;
-  }
-`;

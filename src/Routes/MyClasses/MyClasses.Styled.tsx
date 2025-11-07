@@ -44,7 +44,7 @@ export const HThreeModule = styled.h3`
   cursor: pointer;
   color: ${"#000"};
   background-color: #f8f8f8;
-  border-left: 5px solid ${"#000"};
+  border-left: 2px solid ${"#000"};
   font-size: 1.1rem;
   font-weight: bold;
   border-radius: 4px;
