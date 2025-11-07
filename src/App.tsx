@@ -28,7 +28,6 @@ import {
   logoPartner,
 } from "./Styles/Styles";
 
-import Login from "./Routes/Login/Login";
 import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
 import RequestResetPassword from "./Routes/ChangePassword/RequestResetPassword";
@@ -41,12 +40,9 @@ import SendMail from "./Routes/LeadsCapture/LeadsCapture";
 import SignUpTeacher from "./Routes/SignUp/SignUpTeacher";
 import HomePageResponsibleArea from "./Routes/ResponsibleArea/HomePageResponsibleArea";
 import SubscriptionExpired from "./Routes/SubscriptionExpired";
-import TeacherSubscription from "./Routes/LandingPage/SubscriptionTeacher/NewTeacherAsaas";
 import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinLandingPageNew";
 import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
-import LandingPage from "./Routes/LandingPage/LandingPage";
-import path from "path";
 import LoginComponent from "./Routes/LoginComponent/LoginComponent";
 
 export var currentUrl = window.location.href;

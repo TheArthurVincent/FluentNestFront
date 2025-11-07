@@ -35,11 +35,7 @@ import BlogPosts from "./HomePage/BlogPosts";
 // import WordOfTheDayList from "./WordOfTheDay/WordOfTheDayList";
 import Login from "./Login/Login";
 import MyCalendar from "./MyCalendar/MyCalendar";
-import {
-  partnerColor,
-  textPrimaryColorContrast,
-  logoPartner,
-} from "../Styles/Styles";
+import { textPrimaryColorContrast, logoPartner } from "../Styles/Styles";
 import Redirect from "../Redirect";
 import Tokens from "./Tokens";
 import MyCalendarNew from "./MyCalendar/MyCalendarNew";

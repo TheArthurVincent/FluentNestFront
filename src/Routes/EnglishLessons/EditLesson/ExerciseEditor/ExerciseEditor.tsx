@@ -169,55 +169,54 @@ export default function ExerciseEditor({
             </div>
           </div>
           {/* Ferramentas de lista */}
-          {/* <div
-        style={{
-          display: "grid",
-          gap: 8,
-          background: "#f8fafc",
-          border: "1px solid #e2e8f0",
-          borderRadius: 8,
-          padding: 10,
-        }}
-      >
-        <details>
-          <summary style={{ cursor: "pointer", color: "#0f172a" }}>
-            Colar lista em massa
-          </summary>
-          <div style={{ display: "grid", gap: 8, marginTop: 8 }}>
-            <textarea
-              placeholder={"Cole cada pergunta em uma linha..."}
-              rows={5}
-              style={textareaStyle}
-              onPaste={(e) => {
-                // permite colar e processar após o event loop
-                setTimeout(
-                  () => pasteBulk((e.target as HTMLTextAreaElement).value),
-                  0
-                );
-              }}
-              onBlur={(e) => {
-                const v = e.currentTarget.value;
-                if (v.trim()) pasteBulk(v);
-                e.currentTarget.value = "";
-              }}
-            />
-            <small style={{ color: "#64748b" }}>
-              Dica: cole linhas e feche/saia do campo para adicionar à lista.
-            </small>
+          <div
+            style={{
+              display: "grid",
+              gap: 8,
+              background: "#f8fafc",
+              border: "1px solid #e2e8f0",
+              borderRadius: 8,
+              padding: 10,
+            }}
+          >
+            <details>
+              <summary style={{ cursor: "pointer", color: "#0f172a" }}>
+                Colar lista em massa
+              </summary>
+              <div style={{ display: "grid", gap: 8, marginTop: 8 }}>
+                <textarea
+                  placeholder={"Cole cada pergunta em uma linha..."}
+                  rows={5}
+                  style={textareaStyle}
+                  onPaste={(e) => {
+                    // permite colar e processar após o event loop
+                    setTimeout(
+                      () => pasteBulk((e.target as HTMLTextAreaElement).value),
+                      0
+                    );
+                  }}
+                  onBlur={(e) => {
+                    const v = e.currentTarget.value;
+                    if (v.trim()) pasteBulk(v);
+                    e.currentTarget.value = "";
+                  }}
+                />
+                <small style={{ color: "#64748b" }}>
+                  Dica: cole linhas e feche/saia do campo para adicionar à
+                  lista.
+                </small>
+              </div>
+            </details>
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button onClick={() => addItem("")} style={primaryBtnStyle}>
+                + Adicionar item
+              </button>
+            </div>
           </div>
-        </details>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <button onClick={() => addItem("")} style={primaryBtnStyle}>
-            + Adicionar item
-          </button>
-        </div>
-      </div> */}
-
           <div style={{ display: "grid", gap: 8 }}>
             {value.items.length === 0 && (
               <div style={emptyStyle}>Nenhum item. Use “Adicionar item”.</div>
             )}
-
             {value.items.map((q, idx) => (
               <div
                 key={idx}

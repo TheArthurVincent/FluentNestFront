@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, Routes, Route, Outlet, useLocation } from "react-router-dom";
+import {
+  Link,
+  Routes,
+  Route,
+  Outlet,
+  useLocation,
+  useParams,
+} from "react-router-dom";
 import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { partnerColor, darkGreyColor } from "../../Styles/Styles";
 import {
@@ -10,10 +17,35 @@ import {
   truncateString,
 } from "../../Resources/UniversalComponents";
 import EnglishClassCourse2 from "./Class";
-import { CircularProgress } from "@mui/material";
 import { HOne } from "../../Resources/Components/RouteBox";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import styled from "styled-components";
+
+/* ===== Spinner (no-MUI) ===== */
+const Spinner: React.FC<{ size?: number; color?: string }> = ({
+  size = 28,
+  color = partnerColor(),
+}) => (
+  <div
+    role="status"
+    aria-label="Carregando"
+    style={{
+      width: size,
+      height: size,
+      border: `${Math.max(2, Math.floor(size / 9))}px solid rgba(0,0,0,0.1)`,
+      borderTopColor: color,
+      borderRadius: "50%",
+      animation: "spin 0.8s linear infinite",
+      margin: "12px 0",
+    }}
+  />
+);
+if (!document.getElementById("spin-kf")) {
+  const st = document.createElement("style");
+  st.id = "spin-kf";
+  st.innerHTML = `@keyframes spin{to{transform:rotate(360deg)}}`;
+  document.head.appendChild(st);
+}
 
 // ===== styled =====
 const CourseCard = styled.div`
@@ -54,7 +86,7 @@ const CourseCard = styled.div`
   }
 `;
 
-// ===== tipos básicos para evitar any em excesso =====
+// ===== tipos =====
 interface ClassItem {
   _id: string;
   title?: string;
@@ -72,10 +104,39 @@ interface ModuleItem {
 }
 
 interface ModulesHomeProps {
-  headers?: Record<string, any>;
+  headers?: any;
   courseId: string;
   title: string;
 }
+
+/* Wrapper que lê o :moduleKey e injeta no Class */
+const ClassByParam: React.FC<{
+  headers?: any;
+  courseId: string;
+  courseTitle: string;
+  modulesRef: ModuleItem[];
+}> = ({ headers, courseId, courseTitle, modulesRef }) => {
+  const { moduleKey } = useParams();
+  // tenta achar vizinhos pelo array local quando possível
+  const flat = modulesRef.flatMap((m) =>
+    (m.classes || []).map((c) => ({ ...c, __module: m }))
+  );
+  const idx = flat.findIndex((c) => c._id === moduleKey);
+  const prev = idx > 0 ? flat[idx - 1]?._id : undefined;
+  const next =
+    idx >= 0 && idx < flat.length - 1 ? flat[idx + 1]?._id : undefined;
+
+  return (
+    <EnglishClassCourse2
+      headers={headers}
+      classId={moduleKey || ""} // <<< puxa pelo ID vindo da URL (ou slug se você tratar no back)
+      course={courseId}
+      previousClass={prev ?? "123456"}
+      nextClass={next ?? "123456"}
+      courseTitle={courseTitle}
+    />
+  );
+};
 
 export default function Modules({
   headers,
@@ -87,6 +148,18 @@ export default function Modules({
   const [studentID, setStudentID] = useState<string>("");
   const [studentName, setStudentName] = useState<string>("");
 
+  const [modules, setModules] = useState<ModuleItem[]>([]);
+  const [visibleModules, setVisibleModules] = useState<boolean[]>([]);
+  const [filtered, setFiltered] = useState<ModuleItem[]>([]);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [thePermissions, setPermissions] = useState<string>("");
+
+  const actualHeaders = headers || {};
+  const USE_BULK = true;
+
+  const safeClone = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
+
+  // ===== alunos =====
   const fetchStudents = async () => {
     const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
     try {
@@ -97,39 +170,25 @@ export default function Modules({
         }
       );
       setStudentsList(response.data.listOfStudents);
-    } catch (error) {
+    } catch {
       notifyAlert("Erro ao encontrar alunos");
     }
   };
   useEffect(() => {
     fetchStudents();
-  }, [title]);
+  }, [title]); // mantém seu comportamento
 
   const handleStudentChange = (event: any) => {
-    var theid = event.target.value;
-    const selectedStudent = studentsList.find(
-      (student: any) => student.id === theid
-    );
+    const theid = event.target.value;
+    const selectedStudent = studentsList.find((s: any) => s.id === theid);
     setStudentID(theid);
     localStorage.setItem("selectedStudentID", theid);
-
     if (selectedStudent) {
       setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
     }
   };
 
-  const [modules, setModules] = useState<ModuleItem[]>([]);
-  const [visibleModules, setVisibleModules] = useState<boolean[]>([]);
-  const [filtered, setFiltered] = useState<ModuleItem[]>([]);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [thePermissions, setPermissions] = useState<string>("");
-
-  const actualHeaders = headers || {};
-  const USE_BULK = true;
-
-  // clone seguro para estados (evita depender do structuredClone)
-  const safeClone = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
-
+  // ===== módulos =====
   const getModules = async () => {
     setLoading(true);
     try {
@@ -140,36 +199,32 @@ export default function Modules({
       const mod = res.data?.modules || [];
       setModules(mod);
       setVisibleModules(new Array(mod.length).fill(true));
-    } catch (e) {
+    } catch {
       onLoggOut();
     } finally {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     getModules();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ===== chamadas de reorder =====
-  const patchOrder = async (id: string, order: number) => {
-    return axios.patch(
+  // ===== reorder =====
+  const patchOrder = async (id: string, order: number) =>
+    axios.patch(
       `${backDomain}/api/v1/class/${id}`,
       { order },
       { headers: actualHeaders }
     );
-  };
 
-  const bulkReorder = async (pairs: Array<{ id: string; order: number }>) => {
-    return axios.post(
+  const bulkReorder = async (pairs: Array<{ id: string; order: number }>) =>
+    axios.post(
       `${backDomain}/api/v1/classes/reorder`,
       { pairs },
       { headers: actualHeaders }
     );
-  };
 
-  // troca 'order' entre vizinhos dentro do mesmo módulo (otimista + persistência)
   const moveClass = async (moduleIdx: number, viewIdx: number, dir: 1 | -1) => {
     const snapshot = modules[moduleIdx];
     if (!snapshot) return;
@@ -185,22 +240,19 @@ export default function Modules({
     const aNewOrder = to.order ?? 0;
     const bNewOrder = from.order ?? 0;
 
-    // Update otimista
+    // otimista
     setModules((prev) => {
       const next = safeClone(prev);
       const moduleCopy = next[moduleIdx];
       const sortedLocal = (moduleCopy.classes || [])
         .slice()
         .sort((a: ClassItem, b: ClassItem) => (a.order ?? 0) - (b.order ?? 0));
-
       const A = sortedLocal[viewIdx];
       const B = sortedLocal[viewIdx + dir];
       if (!A || !B) return prev;
-
       const tmp = A.order;
       A.order = B.order;
       B.order = tmp;
-
       moduleCopy.classes = sortedLocal;
       return next;
     });
@@ -217,9 +269,9 @@ export default function Modules({
           patchOrder(to._id, bNewOrder),
         ]);
       }
-    } catch (err) {
+    } catch {
       notifyAlert("Falha ao atualizar ordem. Recarregando…");
-      await getModules(); // rollback simples
+      await getModules();
     }
   };
 
@@ -236,13 +288,12 @@ export default function Modules({
         localStorage.getItem("selectedStudentID") || "null";
       setStudentID(selectedStudentID);
     } catch {
-      // ignora falha de parse
+      // ignore
     }
   }, []);
 
   useEffect(() => {
     const q = (searchQuery || "").toLowerCase();
-
     const filteredModules = modules.map((module: ModuleItem) => ({
       ...module,
       classes: (module.classes || []).filter((cls: ClassItem) => {
@@ -253,18 +304,19 @@ export default function Modules({
         return t || g;
       }),
     }));
-
     setFiltered(filteredModules);
   }, [searchQuery, modules]);
 
+  // ===== visibilidade do cabeçalho desta página =====
   const loc = useLocation();
   const [displayRouteDiv, setDisplayRouteDiv] = useState(true);
-
   useEffect(() => {
-    const base = `/teaching-materials/${pathGenerator(title)}`;
-    const isRootPath = loc.pathname === `${base}/` || loc.pathname === base;
-    setDisplayRouteDiv(isRootPath);
-  }, [loc.pathname, title]);
+    // aceita /teaching-materials/<courseKey> e /teaching-materials/<courseKey>/
+    const isRootOfCourse = /^\/teaching-materials\/[^/]+\/?$/.test(
+      loc.pathname
+    );
+    setDisplayRouteDiv(isRootOfCourse);
+  }, [loc.pathname]);
 
   return (
     <div
@@ -275,25 +327,20 @@ export default function Modules({
         boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
       }}
     >
+      {/* ROTA ÚNICA: aceita id OU slug via :moduleKey.
+          O componente interno puxa o classId direto do parâmetro. */}
       <Routes>
-        {modules.flatMap((module: ModuleItem, ix: number) =>
-          (module.classes || []).map((cl: ClassItem, jx: number) => (
-            <Route
-              key={`${ix}-${jx}`}
-              path={`${cl._id}/`}
-              element={
-                <EnglishClassCourse2
-                  headers={headers}
-                  classId={cl._id}
-                  course={courseId}
-                  previousClass={module.classes?.[jx - 1]?._id ?? "123456"}
-                  nextClass={module.classes?.[jx + 1]?._id ?? "123456"}
-                  courseTitle={title}
-                />
-              }
+        <Route
+          path=":moduleKey/*"
+          element={
+            <ClassByParam
+              headers={headers}
+              courseId={courseId}
+              courseTitle={title}
+              modulesRef={modules}
             />
-          ))
-        )}
+          }
+        />
       </Routes>
 
       {displayRouteDiv && (
@@ -301,7 +348,7 @@ export default function Modules({
           <HOne>{title}</HOne>
 
           {loading ? (
-            <CircularProgress style={{ color: partnerColor() }} />
+            <Spinner />
           ) : (
             <div className="flex-grid" style={{ display: "grid", gap: 8 }}>
               <div
@@ -333,6 +380,8 @@ export default function Modules({
                   {title}
                 </span>
               </div>
+
+              {/* seletor de aluno */}
               <select
                 onChange={(e) => handleStudentChange(e)}
                 value={studentID}
@@ -365,6 +414,8 @@ export default function Modules({
                   </option>
                 ))}
               </select>
+
+              {/* busca */}
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
                   type="text"
@@ -430,6 +481,7 @@ export default function Modules({
                             gap: 5,
                           }}
                         >
+                          {/* Link SEMPRE por ID */}
                           <Link
                             to={`${cls._id}`}
                             style={{ textDecoration: "none" }}
@@ -447,7 +499,6 @@ export default function Modules({
                                   display: "inline-flex",
                                 }}
                               >
-                                {/* Usa classes FA se estiverem carregadas no app */}
                                 <i
                                   className={
                                     cls.studentsWhoCompletedIt?.includes?.(
