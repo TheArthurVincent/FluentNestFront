@@ -11,7 +11,6 @@ import {
 } from "docx";
 import { saveAs } from "file-saver";
 import jsPDF from "jspdf";
-import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import {
   backDomain,
   formatDateBrWithHour,
@@ -32,8 +31,6 @@ import MultipleTextsLessonModel from "./Assets/LessonsModels/MultipleTextsLesson
 import ImageLessonModel from "./Assets/LessonsModels/ImageLessonModel";
 import DialogueLessonModel from "./Assets/LessonsModels/DialogueLessonModel";
 import SingleImageLessonModel from "./Assets/LessonsModels/SingleImageLessonModel";
-import ListenAndTranslateLessonModel from "./Assets/LessonsModels/ListenAndTranslateLessonModel";
-import TextsWithTranslateLessonModel from "./Assets/LessonsModels/TextWithNoAudio";
 import { CircularProgress } from "@mui/material";
 import NoFlashcardsSentenceLessonModel from "./Assets/LessonsModels/NoFlashcardsSentenceLessonModel";
 import AudioSoundTrack from "./Assets/LessonsModels/AudioSoundTrack";
@@ -2782,7 +2779,6 @@ export default function EnglishClassCourse2({
     }
   };
 
-  
   const NXTClass = () => {
     window.location.assign(
       `/teaching-materials/${pathGenerator(courseTitle)}/${nextClass}`
