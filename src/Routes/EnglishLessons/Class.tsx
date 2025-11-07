@@ -49,7 +49,7 @@ import EditLesson from "./EditLesson/EditLesson";
 import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
 
 interface EnglishClassCourse2ModelProps {
-  headers: MyHeadersType | null;
+  headers: any;
   classId: any;
   course: any;
   courseTitle: any;
