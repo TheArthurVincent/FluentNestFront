@@ -386,7 +386,7 @@ export function HomePage({ headers }: HeadersProps) {
             justifyContent: "center",
             alignItems: "center",
             minHeight: "100vh",
-            background: `linear-gradient(135deg, ${partnerColor()} 0%, black 100%)`,
+            background: `white`,
             position: "relative",
             overflow: "hidden",
           }}
@@ -397,8 +397,6 @@ export function HomePage({ headers }: HeadersProps) {
               position: "absolute",
               width: "200px",
               height: "200px",
-              borderRadius: "50%",
-              background: `${textPrimaryColorContrast()}20`,
               top: "10%",
               left: "10%",
               animation: "float 6s ease-in-out infinite",
@@ -451,7 +449,6 @@ export function HomePage({ headers }: HeadersProps) {
                 alignItems: "center",
                 justifyContent: "center",
                 backdropFilter: "blur(10px)",
-                boxShadow: `0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)`,
                 border: `2px solid ${textPrimaryColorContrast()}30`,
                 animation: "pulse 2s ease-in-out infinite",
                 overflow: "hidden",
@@ -464,7 +461,6 @@ export function HomePage({ headers }: HeadersProps) {
                   width: "100%",
                   height: "100%",
                   objectFit: "scale-down",
-                  filter: `drop-shadow(0 0 10px ${textPrimaryColorContrast()}50)`,
                 }}
                 onError={(e) => {
                   e.currentTarget.style.display = "none";
@@ -483,16 +479,6 @@ export function HomePage({ headers }: HeadersProps) {
               />
             </div>
 
-            {/* Loading text */}
-            <div
-              style={{
-                color: textPrimaryColorContrast(),
-                fontSize: "2rem",
-                animation: "fadeInOut 2s ease-in-out infinite",
-              }}
-            >
-              Loading...
-            </div>
             {/* Loading dots */}
             <div
               style={{

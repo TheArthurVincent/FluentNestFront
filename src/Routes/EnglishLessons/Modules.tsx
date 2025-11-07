@@ -83,12 +83,46 @@ export default function Modules({
   title,
 }: ModulesHomeProps) {
   const [loading, setLoading] = useState<boolean>(false);
+  const [studentsList, setStudentsList] = useState<any>([]);
+  const [studentID, setStudentID] = useState<string>("");
+  const [studentName, setStudentName] = useState<string>("");
+
+  const fetchStudents = async () => {
+    const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/students/${myId}`,
+        {
+          headers: actualHeaders,
+        }
+      );
+      setStudentsList(response.data.listOfStudents);
+    } catch (error) {
+      notifyAlert("Erro ao encontrar alunos");
+    }
+  };
+  useEffect(() => {
+    fetchStudents();
+  }, [title]);
+
+  const handleStudentChange = (event: any) => {
+    var theid = event.target.value;
+    const selectedStudent = studentsList.find(
+      (student: any) => student.id === theid
+    );
+    setStudentID(theid);
+    localStorage.setItem("selectedStudentID", theid);
+
+    if (selectedStudent) {
+      setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
+    }
+  };
+
   const [modules, setModules] = useState<ModuleItem[]>([]);
   const [visibleModules, setVisibleModules] = useState<boolean[]>([]);
   const [filtered, setFiltered] = useState<ModuleItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [thePermissions, setPermissions] = useState<string>("");
-  const [theStudentID, setStudentID] = useState<string>("");
 
   const actualHeaders = headers || {};
   const USE_BULK = true;
@@ -299,7 +333,38 @@ export default function Modules({
                   {title}
                 </span>
               </div>
-
+              <select
+                onChange={(e) => handleStudentChange(e)}
+                value={studentID}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "11px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "4px 6px",
+                  height: "28px",
+                  maxWidth: "70px",
+                  outline: "none",
+                  cursor: "pointer",
+                  display:
+                    thePermissions === "superadmin" ||
+                    thePermissions === "teacher"
+                      ? "block"
+                      : "none",
+                }}
+                onFocus={(e) =>
+                  (e.currentTarget.style.borderColor = partnerColor())
+                }
+                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
+              >
+                {studentsList.map((student: any, index: number) => (
+                  <option key={index} value={student.id}>
+                    {truncateString(student.name + " " + student.lastname, 15)}
+                  </option>
+                ))}
+              </select>
               <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                 <input
                   type="text"
@@ -386,7 +451,7 @@ export default function Modules({
                                 <i
                                   className={
                                     cls.studentsWhoCompletedIt?.includes?.(
-                                      theStudentID
+                                      studentID
                                     )
                                       ? "fa fa-check"
                                       : "fa fa-circle"
@@ -395,13 +460,11 @@ export default function Modules({
                                     color: "white",
                                     backgroundColor: partnerColor(),
                                     borderRadius: "50%",
-                                    margin: "0 0.5rem",
-                                    width: 18,
-                                    height: 18,
+                                    width: 12,
+                                    height: 12,
                                     display: "inline-flex",
                                     alignItems: "center",
                                     justifyContent: "center",
-                                    fontSize: 10,
                                   }}
                                 />
                               </span>

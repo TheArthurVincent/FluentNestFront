@@ -2782,9 +2782,7 @@ export default function EnglishClassCourse2({
     }
   };
 
-  const backToCourses = () => {
-    window.location.assign(`/teaching-materials/${pathGenerator(courseTitle)}`);
-  };
+  
   const NXTClass = () => {
     window.location.assign(
       `/teaching-materials/${pathGenerator(courseTitle)}/${nextClass}`
