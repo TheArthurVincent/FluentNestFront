@@ -12,7 +12,6 @@ import { notifyAlert } from "./Assets/Functions/FunctionLessons";
 import { partnerColor, darkGreyColor } from "../../Styles/Styles";
 import {
   backDomain,
-  pathGenerator,
   onLoggOut,
   truncateString,
 } from "../../Resources/UniversalComponents";
@@ -54,7 +53,7 @@ const CourseCard = styled.div`
   justify-content: space-between;
   background-color: #f5f5f5;
   color: #333;
-  padding: 0.2rem;
+  padding: 0.5rem;
   font-size: 12px;
   border-radius: 4px;
   cursor: pointer;
@@ -146,6 +145,7 @@ export default function Modules({
   const [loading, setLoading] = useState<boolean>(false);
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
+
   const [studentName, setStudentName] = useState<string>("");
 
   const [modules, setModules] = useState<ModuleItem[]>([]);
@@ -154,10 +154,70 @@ export default function Modules({
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [thePermissions, setPermissions] = useState<string>("");
 
-  const actualHeaders = headers || {};
-  const USE_BULK = true;
+  const [toggling, setToggling] = useState<Record<string, boolean>>({});
 
+  const actualHeaders = headers || {};
   const safeClone = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
+
+  const isCompletedFor = (cls: ClassItem) =>
+    Array.isArray(cls.studentsWhoCompletedIt) &&
+    studentID &&
+    cls.studentsWhoCompletedIt.includes(studentID);
+
+  const toggleCompletion = async (cls: ClassItem) => {
+    if (!studentID) {
+      notifyAlert("Selecione um aluno antes de marcar a aula como feita.");
+      return;
+    }
+    const id = cls._id;
+
+    setToggling((p) => ({ ...p, [id]: true }));
+
+    // (opcional) UI otimista:
+    setModules((prev) => {
+      const next = safeClone(prev);
+      next.forEach((m) =>
+        (m.classes || []).forEach((c) => {
+          if (c._id === id) {
+            const set = new Set(c.studentsWhoCompletedIt || []);
+            if (set.has(studentID)) set.delete(studentID);
+            else set.add(studentID);
+            c.studentsWhoCompletedIt = Array.from(set);
+          }
+        })
+      );
+      return next;
+    });
+
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/course/${id}`,
+        { studentID },
+        { headers: actualHeaders }
+      );
+      const updated = response.data.studentsWhoCompletedIt;
+
+      // garante que fica igual ao back:
+      setModules((prev) => {
+        const next = safeClone(prev);
+        next.forEach((m) =>
+          (m.classes || []).forEach((c) => {
+            if (c._id === id) c.studentsWhoCompletedIt = updated;
+          })
+        );
+        return next;
+      });
+    } catch (error) {
+      console.error("Erro ao atualizar o status:", error);
+      notifyAlert("Não foi possível atualizar. Tente novamente.");
+      // rollback do otimista:
+      await getModules();
+    } finally {
+      setToggling((p) => ({ ...p, [id]: false }));
+    }
+  };
+
+  const USE_BULK = true;
 
   // ===== alunos =====
   const fetchStudents = async () => {
@@ -470,7 +530,7 @@ export default function Modules({
                   </HThreeModule>
 
                   {visibleModules[moduleIdx] && (
-                    <div style={{ display: "grid", gap: 2, margin: "0 10px" }}>
+                    <div style={{ display: "grid", margin: "0 10px" }}>
                       {sorted.map((cls: ClassItem, viewIdx: number) => (
                         <div
                           key={cls._id}
@@ -493,32 +553,43 @@ export default function Modules({
                                 gap: 8,
                               }}
                             >
-                              <span
+                              <label
+                                title={
+                                  isCompletedFor(cls)
+                                    ? "Marcar como não feito"
+                                    : "Marcar como feito"
+                                }
                                 style={{
-                                  padding: "10px 5px",
                                   display: "inline-flex",
+                                  alignItems: "center",
+                                  gap: 6,
+                                  cursor: toggling[cls._id]
+                                    ? "not-allowed"
+                                    : "pointer",
+                                  fontSize: 11,
+                                  fontWeight: 400,
+                                  color: "#64748b",
+                                  userSelect: "none",
                                 }}
+                                onClick={(e) => e.stopPropagation()}
                               >
-                                <i
-                                  className={
-                                    cls.studentsWhoCompletedIt?.includes?.(
-                                      studentID
-                                    )
-                                      ? "fa fa-check"
-                                      : "fa fa-circle"
-                                  }
+                                <input
+                                  type="checkbox"
+                                  checked={!!isCompletedFor(cls)}
+                                  disabled={!!toggling[cls._id] || !studentID}
+                                  onChange={() => toggleCompletion(cls)}
                                   style={{
-                                    color: "white",
-                                    backgroundColor: partnerColor(),
-                                    borderRadius: "50%",
+                                    cursor:
+                                      !!toggling[cls._id] || !studentID
+                                        ? "not-allowed"
+                                        : "pointer",
                                     width: 12,
                                     height: 12,
-                                    display: "inline-flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
+                                    accentColor: partnerColor(),
                                   }}
+                                  aria-label="Marcar aula como feita"
                                 />
-                              </span>
+                              </label>
 
                               <p
                                 className="hoverable-paragraph"
