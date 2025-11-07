@@ -461,8 +461,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     };
   }, [listOfNonAllowedCoursesFromDatabase]);
 
-  const canEdit = permissions === "superadmin" || permissions === "teacher";
-
+  const canEdit = permissions === "superadmin"
+  
   /** ==================== GRID / CARD ==================== */
   const gridStyle: React.CSSProperties = {
     display: "grid",
