@@ -49,7 +49,7 @@ import EditLesson from "./EditLesson/EditLesson";
 import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
 
 interface EnglishClassCourse2ModelProps {
-  headers: MyHeadersType | null;
+  headers: any;
   classId: any;
   course: any;
   courseTitle: any;
@@ -2782,9 +2782,7 @@ export default function EnglishClassCourse2({
     }
   };
 
-  const backToCourses = () => {
-    window.location.assign(`/teaching-materials/${pathGenerator(courseTitle)}`);
-  };
+  
   const NXTClass = () => {
     window.location.assign(
       `/teaching-materials/${pathGenerator(courseTitle)}/${nextClass}`
@@ -3212,8 +3210,7 @@ export default function EnglishClassCourse2({
               <i className="fa fa-arrow-right" aria-hidden="true" />
             </span>
           </div>
-          {(thePermissions === "superadmin" ||
-            thePermissions === "teacher") && (
+          {thePermissions === "superadmin" && (
             <EditLesson
               setSeeEdit={setSeeEdit}
               headers={actualHeaders}
@@ -4308,8 +4305,7 @@ export default function EnglishClassCourse2({
               >
                 <span
                   style={{
-                    color:
-                      previousClass !== "123456" ? partnerColor() : "#eee",
+                    color: previousClass !== "123456" ? partnerColor() : "#eee",
                     cursor: previousClass !== "123456" ? "pointer" : "default",
                   }}
                   onClick={PVSClass}
