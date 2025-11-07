@@ -432,8 +432,7 @@ export default function Modules({
                             </CourseCard>
                           </Link>
 
-                          {(thePermissions === "superadmin" ||
-                            thePermissions === "teacher") && (
+                          {thePermissions === "superadmin" && (
                             <div
                               onClick={(e) => e.preventDefault()}
                               style={{

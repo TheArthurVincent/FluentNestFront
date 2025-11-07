@@ -3212,8 +3212,7 @@ export default function EnglishClassCourse2({
               <i className="fa fa-arrow-right" aria-hidden="true" />
             </span>
           </div>
-          {(thePermissions === "superadmin" ||
-            thePermissions === "teacher") && (
+          {thePermissions === "superadmin" && (
             <EditLesson
               setSeeEdit={setSeeEdit}
               headers={actualHeaders}
@@ -4308,8 +4307,7 @@ export default function EnglishClassCourse2({
               >
                 <span
                   style={{
-                    color:
-                      previousClass !== "123456" ? partnerColor() : "#eee",
+                    color: previousClass !== "123456" ? partnerColor() : "#eee",
                     cursor: previousClass !== "123456" ? "pointer" : "default",
                   }}
                   onClick={PVSClass}
