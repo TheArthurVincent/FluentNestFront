@@ -237,7 +237,8 @@ export default function Modules({
     }
   };
   useEffect(() => {
-    fetchStudents();
+    if (thePermissions === "superadmin" || thePermissions === "teacher")
+      fetchStudents();
   }, [title]); // mantém seu comportamento
 
   const handleStudentChange = (event: any) => {
