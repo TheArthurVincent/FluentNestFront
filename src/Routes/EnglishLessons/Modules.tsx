@@ -20,6 +20,7 @@ import { HOne } from "../../Resources/Components/RouteBox";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import styled from "styled-components";
 import NewModuleButton from "./NewModule/NewModule";
+import CreateClassButton from "./NewLesson/NewLesson";
 
 /* ===== Spinner (no-MUI) ===== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
@@ -99,6 +100,7 @@ interface ClassItem {
 interface ModuleItem {
   moduleTitle?: string;
   order?: number;
+  id: string;
   classes?: ClassItem[];
   [k: string]: any;
 }
@@ -154,7 +156,6 @@ export default function Modules({
   const [filtered, setFiltered] = useState<ModuleItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [thePermissions, setPermissions] = useState<string>("");
-
   const [toggling, setToggling] = useState<Record<string, boolean>>({});
 
   const actualHeaders = headers || {};
@@ -358,6 +359,7 @@ export default function Modules({
     const q = (searchQuery || "").toLowerCase();
     const filteredModules = modules.map((module: ModuleItem) => ({
       ...module,
+      id: module.id,
       classes: (module.classes || []).filter((cls: ClassItem) => {
         const t = (cls.title || "").toLowerCase().includes(q);
         const g =
@@ -558,7 +560,12 @@ export default function Modules({
                     {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
                     {sorted.length} Lessons
                   </HThreeModule>
-
+                  <CreateClassButton
+                    courseId={courseId}
+                    studentId={studentID}
+                    moduleId={module.id}
+                    headers={actualHeaders}
+                  />
                   {visibleModules[moduleIdx] && (
                     <div style={{ display: "grid", margin: "0 10px" }}>
                       {sorted.map((cls: ClassItem, viewIdx: number) => (

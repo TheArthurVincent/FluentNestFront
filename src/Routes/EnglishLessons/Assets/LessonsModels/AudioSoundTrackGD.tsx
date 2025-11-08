@@ -74,18 +74,7 @@ export default function AudioFile({ element, hideText }: AudioFileProps) {
       }}
     >
       {/* Caso link ausente */}
-      {!link && (
-        <div
-          style={{
-            width: "100%",
-            textAlign: "center",
-            fontSize: "0.95rem",
-            color: "#666",
-          }}
-        >
-          Áudio indisponível.
-        </div>
-      )}
+      {!link && <></>}
 
       {/* Caso não seja Drive OU não foi possível extrair o ID */}
       {link && (!drive || !fileId) && LinkOnly}

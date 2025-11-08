@@ -3208,12 +3208,16 @@ export default function EnglishClassCourse2({
           </div>
           {thePermissions === "superadmin" && (
             <EditLesson
+              buttonText={"Editar Aula"}
               setSeeEdit={setSeeEdit}
               headers={actualHeaders}
               classId={classId}
             />
           )}
-          {!seeEdit && (
+
+
+
+          {!seeEdit &&  (
             <>
               {!seeBoard ? (
                 <>
@@ -4321,7 +4325,15 @@ export default function EnglishClassCourse2({
               </div>
             </>
           )}
+
+
+
+
+
+
         </>
+
+
       )}
     </div>
   );

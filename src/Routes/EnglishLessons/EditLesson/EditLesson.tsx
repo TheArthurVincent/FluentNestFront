@@ -108,6 +108,7 @@ interface EditLessonModelProps {
   classId: string;
   setSeeEdit?: (v: boolean) => void;
   headers?: any;
+  buttonText?: any;
   onUpdated?: (updated: ClassDetails) => void;
 }
 
@@ -128,6 +129,7 @@ export default function EditLesson({
   headers,
   onUpdated,
   setSeeEdit,
+  buttonText,
 }: EditLessonModelProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -375,15 +377,15 @@ export default function EditLesson({
             fontSize: 11,
             fontWeight: 400,
             color: "#64748b",
-            padding: "4px 6px",
+            padding: "4px",
             height: 28,
             outline: "none",
             cursor: "pointer",
             display: "block",
-            maxwidth: 100,
+            maxWidth: 100,
           }}
         >
-          {loading ? "Carregando..." : open ? "Fechar editor" : "Editar Aula"}
+          {loading ? "Carregando..." : open ? "Fechar editor" : buttonText}
         </button>
       )}
 
@@ -392,7 +394,7 @@ export default function EditLesson({
           <h2
             style={{ fontSize: "clamp(14px, 2vw, 16px)", textAlign: "center" }}
           >
-            Editar Aula
+            {buttonText}
           </h2>
 
           {error && (
