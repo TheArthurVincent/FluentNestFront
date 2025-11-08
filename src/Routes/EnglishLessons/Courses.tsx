@@ -159,7 +159,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       const classesDB: CourseWithCreator[] = response.data.courses || [];
       const classesNADB: CourseWithCreator[] =
         response.data.coursesNonAuth || [];
-
+      console.log("coursesNADB", response.data);
       setListOfCoursesFromDatabase(classesDB);
       if (permissions === "superadmin" || permissions === "teacher") {
         setListOfNonAllowedCoursesFromDatabase(classesNADB);
@@ -180,9 +180,35 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
 
   // ===== helpers =====
   const normalizeLang = (lang?: string) => (lang || "en").toLowerCase();
+
+  const sortByCreatorName = (arr: CourseWithCreator[]) =>
+    [...arr].sort((a, b) => {
+      const nameA = a.creatorFullName?.trim().toLowerCase() || "";
+      const nameB = b.creatorFullName?.trim().toLowerCase() || "";
+      return nameA.localeCompare(nameB, undefined, { sensitivity: "base" });
+    });
+
   const sortByOrder = (arr: CourseWithCreator[]) =>
     [...arr].sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
 
+  const UNKNOWN_CREATOR = "Criador desconhecido";
+
+  const sortByTitle = (arr: CourseWithCreator[]) =>
+    [...arr].sort((a, b) =>
+      (a.title || "").localeCompare(b.title || "", undefined, {
+        sensitivity: "base",
+      })
+    );
+
+  const groupByCreator = (arr: CourseWithCreator[]) => {
+    const groups: Record<string, CourseWithCreator[]> = {};
+    for (const c of arr) {
+      const key = (c.creatorFullName || "").trim() || UNKNOWN_CREATOR;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(c);
+    }
+    return groups;
+  };
   // Não-originais (cursos do professor), ignorar idioma
   const allowedNonOriginal = useMemo(
     () =>
@@ -196,7 +222,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
 
   const nonAllowedNonOriginal = useMemo(
     () =>
-      sortByOrder(
+      sortByCreatorName(
         (listOfNonAllowedCoursesFromDatabase || []).filter(
           (c: any) => c && c.isOriginal === false
         )
@@ -571,8 +597,10 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                 <LangSection
                   title={
                     permissions == "superadmin"
-                      ? "Cursos de Outros Criadores"
-                      : `Cursos de ${teacherName}`
+                      ? "Materiais de Outros Criadores"
+                      : permissions == "teacher"
+                      ? `Materiais de ${teacherName}`
+                      : "Materiais disponíveis"
                   }
                   allowed={allowedNonOriginal}
                   nonAllowed={nonAllowedNonOriginal}
