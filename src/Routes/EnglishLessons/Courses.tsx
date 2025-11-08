@@ -1,84 +1,39 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { HOne } from "../../Resources/Components/RouteBox";
+import {
+  Link,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useParams,
+} from "react-router-dom";
+import axios from "axios";
+
+// ==== App resources (ajuste os paths conforme seu projeto) ====
 import Helmets from "../../Resources/Helmets";
+import { HOne } from "../../Resources/Components/RouteBox";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
-import { Link, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import {
   backDomain,
   onLoggOut,
   pathGenerator,
 } from "../../Resources/UniversalComponents";
-import axios from "axios";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { partnerColor } from "../../Styles/Styles";
-import { uploadImageViaBackend } from "../../Resources/ImgUpload";
-import { useParams } from "react-router-dom";
-import Modules from "./Modules"; // garanta o import correto
+import Modules from "./Modules";
+import NewCourseButton from "./NewCourse/NewCourse";
+import EditCourseModal, { Course } from "./EditCourse/EditCourse";
 
-function findCourseByKey(
-  courses: Array<{ _id: string; title: string }>,
-  key: string
-) {
-  const byId = courses.find((c) => c._id === key);
-  if (byId) return byId;
-  const bySlug = courses.find((c) => pathGenerator(c.title) === key);
-  return bySlug || null;
-}
-
-const CourseRouter: React.FC<{
-  headers: any;
-  courses: Array<{ _id: string; title: string }>;
-}> = ({ headers, courses }) => {
-  const { courseKey } = useParams();
-  const course =
-    courseKey && courses.length ? findCourseByKey(courses, courseKey) : null;
-
-  if (!courses.length) {
-    // ainda carregando os cursos
-    return <div style={{ padding: 16 }}>Carregando cursos…</div>;
-  }
-
-  if (!course) {
-    return (
-      <div style={{ padding: 16 }}>
-        Curso não encontrado para: <code>{courseKey}</code>
-      </div>
-    );
-  }
-
-  return (
-    <Modules
-      headers={headers}
-      courseId={course._id} // <<< passa o ID real
-      title={course.title} // <<< para breadcrumb e título
-    />
-  );
-};
+// ==== Modal isolado ====
 
 /** ==================== TYPES ==================== */
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
 }
 
-type Course = {
-  _id: string;
-  title: string;
-  image: string;
-  order?: number;
-  language?: "en" | "es" | "fr" | string;
-};
-
 type Permissions = "superadmin" | "teacher" | "student" | string;
 
-type EditCourseModalProps = {
-  open: boolean;
-  onClose: () => void;
-  course: Course | null;
-  headers: any;
-  onSaved: () => void;
-};
-
-/** ---------- Helpers ---------- */
+/** ==================== HELPERS & UI PRIMITIVES ==================== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
   size = 36,
   color = partnerColor(),
@@ -98,27 +53,14 @@ const Spinner: React.FC<{ size?: number; color?: string }> = ({
   />
 );
 
-const injectKeyframes = () => {
-  if (document.getElementById("no-mui-keyframes")) return;
+const injectBaseStyles = () => {
+  if (document.getElementById("courses-base-styles")) return;
   const style = document.createElement("style");
-  style.id = "no-mui-keyframes";
+  style.id = "courses-base-styles";
   style.innerHTML = `
   @keyframes spin{to{transform:rotate(360deg)}}
-  .btn{appearance:none;border:1px solid #d1d5db;background:#fff;color:#111827;border-radius:6px;padding:8px 12px;cursor:pointer;font-weight:600}
-  .btn:disabled{opacity:.6;cursor:not-allowed}
-  .btn.primary{background:${partnerColor()};border-color:${partnerColor()};color:#fff}
   .iconbtn{border:none;background:transparent;padding:6px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
   .iconbtn:hover{background:#f3f4f6}
-  .input{width:100%;padding:10px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:14px}
-  .label{font-size:12px;color:#6b7280;margin-bottom:4px;display:block}
-  .stack{display:flex;gap:12px}
-  .stack.col{flex-direction:column}
-  .stack.row{flex-direction:row}
-  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000;padding:16px}
-  .modal{width:100%;max-width:640px;background:#fff;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.25);overflow:hidden}
-  .modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid #eee;font-weight:700}
-  .modal-content{padding:16px;max-height:70vh;overflow:auto}
-  .modal-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid #eee}
   `;
   document.head.appendChild(style);
 };
@@ -134,219 +76,41 @@ const SvgEdit = ({ size = 18 }) => (
     <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
   </svg>
 );
-const SvgUpload = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path d="M5 20h14v-2H5v2zM12 2 6.5 7.5l1.4 1.4L11 5.8V16h2V5.8l3.1 3.1 1.4-1.4L12 2z" />
-  </svg>
-);
-const SvgCheck = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-  </svg>
-);
-const SvgClose = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path d="M18.3 5.71 12 12l6.3 6.29-1.41 1.42L10.59 13.4 4.3 19.71 2.89 18.3 9.18 12 2.89 5.71 4.3 4.29l6.29 6.3 6.29-6.3z" />
-  </svg>
-);
 
-/** ---------- Modal (edição de curso) ---------- */
-const EditCourseModal: React.FC<EditCourseModalProps> = ({
-  open,
-  onClose,
-  course,
-  headers,
-  onSaved,
-}) => {
-  const [title, setTitle] = useState<string>("");
-  const [imageUrl, setImageUrl] = useState<string>("");
-  const [file, setFile] = useState<File | null>(null);
-  const [saving, setSaving] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
+/** ==================== BUSCA CURSO POR KEY (id ou slug) ==================== */
+function findCourseByKey(
+  courses: Array<{ _id: string; title: string }>,
+  key: string
+) {
+  const byId = courses.find((c) => c._id === key);
+  if (byId) return byId;
+  const bySlug = courses.find((c) => pathGenerator(c.title) === key);
+  return bySlug || null;
+}
 
-  useEffect(() => injectKeyframes(), []);
-  useEffect(() => {
-    if (course) {
-      setTitle(course.title || "");
-      setImageUrl(course.image || "");
-      setFile(null);
-      setError("");
-    }
-  }, [course]);
+const CourseRouter: React.FC<{
+  headers: any;
+  courses: Array<{ _id: string; title: string }>;
+}> = ({ headers, courses }) => {
+  const { courseKey } = useParams();
+  const course =
+    courseKey && courses.length ? findCourseByKey(courses, courseKey) : null;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0] || null;
-    setFile(f);
-    if (f) {
-      const reader = new FileReader();
-      reader.onload = () => setImageUrl(String(reader.result));
-      reader.readAsDataURL(f);
-    }
-  };
-
-  const handleSave = async () => {
-    if (!course) return;
-    setSaving(true);
-    setError("");
-    try {
-      let finalImage = course.image;
-      if (file) {
-        finalImage = await uploadImageViaBackend(file, {
-          folder: "/courses",
-          fileName: `course_${course._id}_${Date.now()}.jpg`,
-          headers,
-        });
-      }
-      const payload = { title: title.trim(), image: finalImage };
-      await axios.put(
-        `${backDomain}/api/v1/course-edit/${course._id}`,
-        payload,
-        { headers }
-      );
-      onSaved();
-      onClose();
-    } catch (e: any) {
-      setError(e?.response?.data?.error || "Erro ao salvar");
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (!open) return null;
+  if (!courses.length)
+    return <div style={{ padding: 16 }}>Carregando cursos…</div>;
+  if (!course)
+    return (
+      <div style={{ padding: 16 }}>
+        Curso não encontrado para: <code>{courseKey}</code>
+      </div>
+    );
 
   return (
-    <div
-      className="modal-backdrop"
-      onClick={() => (!saving ? onClose() : null)}
-    >
-      <div
-        className="modal"
-        role="dialog"
-        aria-modal="true"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="modal-header">
-          <span>Editar curso</span>
-          <button
-            className="iconbtn"
-            aria-label="Fechar"
-            onClick={onClose}
-            disabled={saving}
-            title="Fechar"
-          >
-            <SvgClose />
-          </button>
-        </div>
-
-        <div className="modal-content">
-          <div className="stack col">
-            <label className="label" htmlFor="course-title">
-              Título
-            </label>
-            <input
-              id="course-title"
-              className="input"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Digite o título"
-            />
-
-            <div className="stack row" style={{ alignItems: "center" }}>
-              <label
-                className="btn"
-                style={{ display: "inline-flex", gap: 8, alignItems: "center" }}
-              >
-                <SvgUpload />
-                <span>Trocar imagem</span>
-                <input
-                  type="file"
-                  hidden
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-              </label>
-              {file && (
-                <div
-                  style={{ fontSize: 12, color: "#374151" }}
-                  title={file.name}
-                >
-                  {file.name}
-                </div>
-              )}
-            </div>
-
-            {imageUrl && (
-              <div
-                style={{
-                  border: "1px solid rgba(0,0,0,0.1)",
-                  borderRadius: 8,
-                  overflow: "hidden",
-                }}
-              >
-                <img
-                  src={imageUrl}
-                  alt="Preview"
-                  style={{ width: "100%", height: 180, objectFit: "cover" }}
-                />
-              </div>
-            )}
-
-            {error && (
-              <div style={{ color: "#b91c1c", fontSize: 14 }}>{error}</div>
-            )}
-          </div>
-        </div>
-
-        <div className="modal-actions">
-          <button className="btn" onClick={onClose} disabled={saving}>
-            <div
-              style={{ display: "inline-flex", gap: 6, alignItems: "center" }}
-            >
-              <SvgClose />
-              <span>Cancelar</span>
-            </div>
-          </button>
-          <button
-            className="btn primary"
-            onClick={handleSave}
-            disabled={saving || !title.trim()}
-          >
-            {saving ? (
-              <span>Salvando...</span>
-            ) : (
-              <div
-                style={{ display: "inline-flex", gap: 6, alignItems: "center" }}
-              >
-                <SvgCheck />
-                <span>Salvar</span>
-              </div>
-            )}
-          </button>
-        </div>
-      </div>
-    </div>
+    <Modules headers={headers} courseId={course._id} title={course.title} />
   );
 };
 
-/** ---------- Página principal ---------- */
+/** ==================== PÁGINA PRINCIPAL ==================== */
 export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [listOfCoursesFromDatabase, setListOfCoursesFromDatabase] = useState<
@@ -356,27 +120,40 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     listOfNonAllowedCoursesFromDatabase,
     setListOfNonAllowedCoursesFromDatabase,
   ] = useState<Course[]>([]);
+
   const [editOpen, setEditOpen] = useState<boolean>(false);
   const [courseToEdit, setCourseToEdit] = useState<Course | null>(null);
+
   const [permissions, setPermissions] = useState<Permissions>("student");
+  const [studentID, setStudentID] = useState<string>("");
+
   const actualHeaders = headers || {};
+  const { UniversalTexts } = useUserContext(); // mantido, caso seja usado no layout
+  const location = useLocation();
+
+  useEffect(() => {
+    injectBaseStyles();
+  }, []);
 
   const getCourses = async () => {
     setLoading(true);
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     const studentId = getLoggedUser.id;
-    const { permissions } = getLoggedUser as { permissions?: Permissions };
+    const { permissions } =
+      (getLoggedUser as { permissions?: Permissions }) || {};
+    const { id } = getLoggedUser || {};
+
+    setStudentID((id as string) || "");
     setPermissions((permissions as Permissions) || "student");
 
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/courses/${studentId}`,
-        {
-          headers: actualHeaders,
-        }
+        { headers: actualHeaders }
       );
       const classesDB: Course[] = response.data.courses || [];
       const classesNADB: Course[] = response.data.coursesNonAuth || [];
+
       setListOfCoursesFromDatabase(classesDB);
       if (permissions === "superadmin" || permissions === "teacher") {
         setListOfNonAllowedCoursesFromDatabase(classesNADB);
@@ -391,28 +168,17 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
   };
 
   useEffect(() => {
-    injectKeyframes();
     getCourses();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const loc = useLocation();
-  const [displayRouteDiv, setDisplayRouteDiv] = useState<boolean>(true);
-  useEffect(() => {
-    const isRootPath =
-      loc.pathname === "/teaching-materials" ||
-      loc.pathname === "/teaching-materials/";
-    setDisplayRouteDiv(isRootPath);
-  }, [loc.pathname]);
-
-  const { UniversalTexts } = useUserContext();
-
+  // ===== helpers de idioma & ordenação =====
   const normalizeLang = (lang?: string) => (lang || "en").toLowerCase();
   const sortByOrder = (arr: Course[]) =>
     [...arr].sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
 
-  const groupedAllowed = useMemo(() => {
-    return {
+  const groupedAllowed = useMemo(
+    () => ({
       en: sortByOrder(
         listOfCoursesFromDatabase.filter(
           (c) => normalizeLang(c.language) === "en"
@@ -433,11 +199,12 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
           (c) => !["en", "es", "fr"].includes(normalizeLang(c.language))
         )
       ),
-    };
-  }, [listOfCoursesFromDatabase]);
+    }),
+    [listOfCoursesFromDatabase]
+  );
 
-  const groupedNonAllowed = useMemo(() => {
-    return {
+  const groupedNonAllowed = useMemo(
+    () => ({
       en: sortByOrder(
         listOfNonAllowedCoursesFromDatabase.filter(
           (c) => normalizeLang(c.language) === "en"
@@ -458,11 +225,12 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
           (c) => !["en", "es", "fr"].includes(normalizeLang(c.language))
         )
       ),
-    };
-  }, [listOfNonAllowedCoursesFromDatabase]);
+    }),
+    [listOfNonAllowedCoursesFromDatabase]
+  );
 
-  const canEdit = permissions === "superadmin"
-  
+  const canEdit = permissions === "superadmin";
+
   /** ==================== GRID / CARD ==================== */
   const gridStyle: React.CSSProperties = {
     display: "grid",
@@ -534,7 +302,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     setEditOpen(true);
   };
 
-  /** ==================== CARD ==================== */
   const CourseCard: React.FC<{ course: Course; locked?: boolean }> = ({
     course,
     locked,
@@ -593,7 +360,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
         <h3 style={titleStyle} title={course.title}>
           {course.title}
         </h3>
-
         {canEdit && (
           <button
             className="iconbtn"
@@ -623,12 +389,11 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       </li>
     );
 
-    // === Link padrão vai para /<courseId> (por padrão, usar ID)
     if (!locked) {
       return (
         <CardShell>
           <Link
-            to={`${course._id}/`} // <<<<<< ID por padrão
+            to={`${course._id}/`}
             style={{
               display: "block",
               textDecoration: "none",
@@ -642,7 +407,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       );
     }
 
-    // Bloqueado (sem link)
     return (
       <CardShell>
         <div
@@ -682,19 +446,15 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     );
   };
 
-  /** ==================== ROTEAMENTO ====================
-   * Aceita:
-   *   /teaching-materials/<courseId>/
-   *   /teaching-materials/<courseSlug>/
-   *   /teaching-materials/<courseId>/<moduleId>
-   *   /teaching-materials/<courseSlug>/<moduleSlug>
-   *
-   * Mantém também as rotas antigas por título do curso (compatibilidade).
-   */
+  /** ==================== ROTEAMENTO & LAYOUT ==================== */
+  const isRootPath =
+    location.pathname === "/teaching-materials" ||
+    location.pathname === "/teaching-materials/";
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+      {/* Rotas específicas por curso (slug) e rota genérica por :courseKey */}
       <Routes>
-        {/* mantém compat de rotas antigas por título se quiser */}
         {listOfCoursesFromDatabase.map((route) => (
           <Route
             key={`old-${route._id}`}
@@ -708,8 +468,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             }
           />
         ))}
-
-        {/* NOVO: aceita id ou slug e renderiza Modules corretamente */}
         <Route
           path=":courseKey/*"
           element={
@@ -723,9 +481,12 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
 
       <Helmets text="Courses" />
 
-      {displayRouteDiv ? (
-        !loading ? (
-          <div>
+      {/* Listagem (só na raiz teaching-materials) */}
+      {isRootPath && (
+        <div>
+          {loading ? (
+            <Spinner />
+          ) : (
             <div
               style={{
                 padding: "10px",
@@ -739,6 +500,10 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
               }}
             >
               <HOne> Cursos </HOne>
+
+              {/* Novo curso */}
+              <NewCourseButton studentId={studentID} headers={actualHeaders} />
+
               <LangSection
                 title="English"
                 allowed={groupedAllowed.en}
@@ -763,20 +528,20 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                 />
               )}
             </div>
-          </div>
-        ) : (
-          <Spinner />
-        )
-      ) : null}
+          )}
+        </div>
+      )}
 
       <Outlet />
 
+      {/* Modal de edição (isolado) */}
       <EditCourseModal
         open={editOpen}
         onClose={() => setEditOpen(false)}
         course={courseToEdit}
         headers={actualHeaders}
         onSaved={getCourses}
+        studentId={studentID}
       />
     </div>
   );

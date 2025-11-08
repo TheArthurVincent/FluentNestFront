@@ -10,7 +10,6 @@ import Helmets from "../../Resources/Helmets";
 import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import Contract from "./AdmComponents/Contract/Contract";
 import Invoice from "./AdmComponents/Invoice/Invoice";
-// import AllComments from "./AdmComponents/AnswerComments/AnswerComments";
 import WhiteLabelPreview from "./AdmComponents/WhiteLabel/WhiteLabel";
 import { isArthurVincent, localStorageLoggedIn } from "../../App";
 import { Tooltip } from "@mui/material";
@@ -104,14 +103,6 @@ export function Adm({ headers }: HeadersProps) {
       component: <FindTeacher plan={plan} id={id} headers={headers} />,
       displayArthur: "block",
     },
-    // isArthurVincent && {
-    //   title: "Comentários",
-    //   value: "9",
-    //   tooltip:
-    //     "Visualize e responda aos comentários enviados pelos alunos. Utilize este espaço para esclarecer dúvidas, dar feedbacks e manter uma comunicação ativa.",
-    //   component: <AllComments headers={headers} />,
-    //   displayArthur: "block",
-    // },
     isArthurVincent && {
       title: "Arthur Section",
       value: "10",
