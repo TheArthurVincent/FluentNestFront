@@ -150,8 +150,7 @@ const cardBase: React.CSSProperties = {
 };
 
 const cardHover: React.CSSProperties = {
-  transform: "translateY(-1px)",
-  boxShadow: "0 4px 10px rgba(0,0,0,0.12)",
+  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)",
 };
 
 const thumbWrap: React.CSSProperties = {
