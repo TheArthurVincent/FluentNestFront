@@ -135,7 +135,7 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
           headers,
         });
       }
-      const payload = { title: title.trim(), image: finalImage };
+      const payload = { title: title.trim(), image: finalImage, studentId };
       await axios.put(
         `${backDomain}/api/v1/course-edit/${course._id}`,
         payload,
