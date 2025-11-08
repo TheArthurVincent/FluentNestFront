@@ -429,7 +429,7 @@ export function DictationExercise({
           alignItems: "center",
         }}
       >
-        {index < pool.length - 1 ? (
+        {index < pool.length ? (
           <>
             {" "}
             {checked && (

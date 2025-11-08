@@ -3206,18 +3206,20 @@ export default function EnglishClassCourse2({
               <i className="fa fa-arrow-right" aria-hidden="true" />
             </span>
           </div>
-          {thePermissions === "superadmin" && (
-            <EditLesson
-              buttonText={"Editar Aula"}
-              setSeeEdit={setSeeEdit}
-              headers={actualHeaders}
-              classId={classId}
-            />
+          {!exercise && (
+            <>
+              {thePermissions === "superadmin" && (
+                <EditLesson
+                  buttonText={"Editar Aula"}
+                  setSeeEdit={setSeeEdit}
+                  headers={actualHeaders}
+                  classId={classId}
+                />
+              )}
+            </>
           )}
 
-
-
-          {!seeEdit &&  (
+          {!seeEdit && (
             <>
               {!seeBoard ? (
                 <>
@@ -3253,32 +3255,34 @@ export default function EnglishClassCourse2({
                           gap: "8px",
                         }}
                       >
-                        <button
-                          title="Ver Quadro"
-                          onClick={() => {
-                            handleGetBoard(studentID);
-                            setTimeout(() => {
-                              setSeeBoard(!seeBoard);
-                              setConfirm(false);
-                            }, 500);
-                          }}
-                          style={{
-                            borderRadius: "4px",
-                            border: "1px solid #e2e8f0",
+                        {!exercise && (
+                          <button
+                            title="Ver Quadro"
+                            onClick={() => {
+                              handleGetBoard(studentID);
+                              setTimeout(() => {
+                                setSeeBoard(!seeBoard);
+                                setConfirm(false);
+                              }, 500);
+                            }}
+                            style={{
+                              borderRadius: "4px",
+                              border: "1px solid #e2e8f0",
 
-                            backgroundColor: "#f8fafc",
-                            fontSize: "11px",
-                            fontWeight: "400",
-                            color: "#64748b",
-                            padding: "4px 6px",
-                            height: "28px",
-                            maxWidth: "70px",
-                            outline: "none",
-                            cursor: "pointer",
-                          }}
-                        >
-                          Lousa
-                        </button>
+                              backgroundColor: "#f8fafc",
+                              fontSize: "11px",
+                              fontWeight: "400",
+                              color: "#64748b",
+                              padding: "4px 6px",
+                              height: "28px",
+                              maxWidth: "70px",
+                              outline: "none",
+                              cursor: "pointer",
+                            }}
+                          >
+                            Lousa
+                          </button>
+                        )}
 
                         <select
                           onChange={(e) => handleStudentChange(e)}
@@ -3350,114 +3354,116 @@ export default function EnglishClassCourse2({
                         >
                           {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
                         </button>
-                        <div
-                          className="isMobileDisapear"
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "8px",
-                          }}
-                        >
-                          <button
-                            title="Gerar PowerPoint"
-                            style={{
-                              all: "unset",
-                              cursor: "pointer",
-                              padding: "4px 6px",
-                              backgroundColor: "#f8fafc",
-                              borderRadius: "4px",
-                            }}
-                            onClick={generatePPT}
-                            onMouseEnter={(e) => {
-                              const target = e.target as HTMLElement;
-                              target.style.background = "#f1f5f9";
-                            }}
-                            onMouseLeave={(e) => {
-                              const target = e.target as HTMLElement;
-                              target.style.background = "#f8fafc";
-                            }}
-                          >
-                            <img
-                              src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                              alt="PowerPoint"
-                              style={{ width: "12px", height: "12px" }}
-                            />
-                          </button>
-                          <button
-                            title="Gerar Word"
-                            style={{
-                              all: "unset",
-                              cursor: "pointer",
-                              padding: "4px 6px",
-                              backgroundColor: "#f8fafc",
-                              borderRadius: "4px",
-                            }}
-                            onClick={generateWord}
-                            onMouseEnter={(e) => {
-                              const target = e.target as HTMLElement;
-                              target.style.background = "#f1f5f9";
-                            }}
-                            onMouseLeave={(e) => {
-                              const target = e.target as HTMLElement;
-                              target.style.background = "#f8fafc";
-                            }}
-                          >
-                            <img
-                              src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                              alt="Word"
-                              style={{ width: "12px", height: "12px" }}
-                            />
-                          </button>
-                          <button
-                            title="Gerar PDF"
-                            style={{
-                              all: "unset",
-                              cursor: "pointer",
-                              padding: "4px 6px",
-                              backgroundColor: "#f8fafc",
-                              borderRadius: "4px",
-                            }}
-                            onClick={generatePDF}
-                            onMouseEnter={(e) => {
-                              const target = e.target as HTMLElement;
-                              target.style.background = "#f1f5f9";
-                            }}
-                            onMouseLeave={(e) => {
-                              const target = e.target as HTMLElement;
-                              target.style.background = "#f8fafc";
-                            }}
-                          >
-                            <img
-                              src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                              alt="PDF"
-                              style={{ width: "12px", height: "12px" }}
-                            />
-                          </button>
-                          <label
+                        {!exercise && (
+                          <div
+                            className="isMobileDisapear"
                             style={{
                               display: "flex",
                               alignItems: "center",
-                              gap: "6px",
-                              cursor: "pointer",
-                              fontSize: "11px",
-                              fontWeight: "400",
-                              color: "#64748b",
+                              gap: "8px",
                             }}
                           >
-                            <input
+                            <button
+                              title="Gerar PowerPoint"
                               style={{
+                                all: "unset",
                                 cursor: "pointer",
-                                width: "12px",
-                                height: "12px",
-                                accentColor: partnerColor(),
+                                padding: "4px 6px",
+                                backgroundColor: "#f8fafc",
+                                borderRadius: "4px",
                               }}
-                              type="checkbox"
-                              checked={isCompleted}
-                              onChange={handleToggle}
-                              disabled={loading}
-                            />
-                          </label>
-                        </div>
+                              onClick={generatePPT}
+                              onMouseEnter={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f1f5f9";
+                              }}
+                              onMouseLeave={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f8fafc";
+                              }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                                alt="PowerPoint"
+                                style={{ width: "12px", height: "12px" }}
+                              />
+                            </button>
+                            <button
+                              title="Gerar Word"
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 6px",
+                                backgroundColor: "#f8fafc",
+                                borderRadius: "4px",
+                              }}
+                              onClick={generateWord}
+                              onMouseEnter={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f1f5f9";
+                              }}
+                              onMouseLeave={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f8fafc";
+                              }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                                alt="Word"
+                                style={{ width: "12px", height: "12px" }}
+                              />
+                            </button>
+                            <button
+                              title="Gerar PDF"
+                              style={{
+                                all: "unset",
+                                cursor: "pointer",
+                                padding: "4px 6px",
+                                backgroundColor: "#f8fafc",
+                                borderRadius: "4px",
+                              }}
+                              onClick={generatePDF}
+                              onMouseEnter={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f1f5f9";
+                              }}
+                              onMouseLeave={(e) => {
+                                const target = e.target as HTMLElement;
+                                target.style.background = "#f8fafc";
+                              }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                                alt="PDF"
+                                style={{ width: "12px", height: "12px" }}
+                              />
+                            </button>
+                            <label
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "6px",
+                                cursor: "pointer",
+                                fontSize: "11px",
+                                fontWeight: "400",
+                                color: "#64748b",
+                              }}
+                            >
+                              <input
+                                style={{
+                                  cursor: "pointer",
+                                  width: "12px",
+                                  height: "12px",
+                                  accentColor: partnerColor(),
+                                }}
+                                type="checkbox"
+                                checked={isCompleted}
+                                onChange={handleToggle}
+                                disabled={loading}
+                              />
+                            </label>
+                          </div>
+                        )}
                       </div>
                     </span>
 
@@ -4325,15 +4331,7 @@ export default function EnglishClassCourse2({
               </div>
             </>
           )}
-
-
-
-
-
-
         </>
-
-
       )}
     </div>
   );
