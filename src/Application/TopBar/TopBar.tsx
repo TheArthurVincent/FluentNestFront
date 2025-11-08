@@ -68,13 +68,12 @@ export const TopBar: FC = () => {
   };
 
   useEffect(() => {
-    socket.on("receive_notification", (data) => {
-      updateNumberOfNotifications(id);
-    });
+    const handler = () => updateNumberOfNotifications(id);
+    socket.on("receive_notification", handler);
     return () => {
-      socket.off("receive_notification");
+      socket.off("receive_notification", handler);
     };
-  }, [myNotifications]);
+  }, [id]); // ou []
 
   const updateViewed = async (id: any) => {
     try {
@@ -87,17 +86,20 @@ export const TopBar: FC = () => {
   };
 
   useEffect(() => {
-    const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-    const notifications = JSON.parse(
-      localStorage.getItem("notifications") || "{}"
-    );
-    setPermissions(getLoggedUser.permissions);
-    setNotifications(notifications);
-    setid(getLoggedUser.id);
-    setTimeout(() => {
-      updateNumberOfNotifications(getLoggedUser.id);
-    }, 1000);
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    setPermissions(logged.permissions);
+    setid(logged.id);
+    const saved = JSON.parse(localStorage.getItem("notifications") || "0");
+    setNotifications(saved || 0);
   }, []);
+
+  useEffect(() => {
+    const handler = () => updateNumberOfNotifications(id);
+    socket.on("receive_notification", handler);
+    return () => {
+      socket.off("receive_notification", handler);
+    };
+  }, [id]);
 
   const toAdm: LinkItem[] = [
     {

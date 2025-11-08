@@ -2,14 +2,16 @@ import { io } from "socket.io-client";
 import { backDomain } from "../../Resources/UniversalComponents";
 
 const socket = io(backDomain, {
-  transports: ["websocket"],
-  reconnection: true,
-  reconnectionAttempts: 5,
-  reconnectionDelay: 3000,
+  path: "/socket.io",
+  withCredentials: true,
 });
 
+socket.on("connect", () => console.log("SOCKET CONNECTED", socket.id));
+socket.on("connect_error", (e) => console.log("CONNECT_ERROR", e.message));
+
 export const registerUser = (studentID) => {
-  socket.emit("register", studentID);
+  if (socket.connected) socket.emit("register", studentID);
+  else socket.once("connect", () => socket.emit("register", studentID));
 };
 
 export default socket;
