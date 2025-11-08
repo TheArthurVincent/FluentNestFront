@@ -1711,14 +1711,17 @@ export const ButtonButton = (text) => {
 
 export function isDev() {
   if (window.location.hostname === "localhost") {
+    console.log("Ambiente de desenvolvimento");
     return "http://localhost:3502";
   } else if (
     window.location.hostname === "arvin-staging.9kwq6c.easypanel.host" ||
     window.location.hostname.includes("easypanel") ||
     window.location.hostname.includes("backoffice")
   ) {
+    console.log("stg");
     return "https://arvin-backstagin.9kwq6c.easypanel.host";
   } else {
+    console.log(".");
     return "https://arvin-backprod.9kwq6c.easypanel.host";
   }
 }
