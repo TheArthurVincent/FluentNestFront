@@ -60,6 +60,7 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
       const url = await uploadImageViaBackend(file, {
         folder: "/courses",
         fileName: `course_${Date.now()}_${file.name}`,
+        headers,
       });
       setImageUrl(url);
     } catch (err: any) {
