@@ -17,9 +17,7 @@ import {
   backDomain,
   onLoggOut,
   pathGenerator,
-  verifyTeacherPermissionsForCourses,
 } from "../../Resources/UniversalComponents";
-import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { partnerColor } from "../../Styles/Styles";
 import Modules from "./Modules";
 import NewCourseButton from "./NewCourse/NewCourse";
@@ -33,9 +31,9 @@ type Permissions = "superadmin" | "teacher" | "student" | string;
 
 // Estende o Course apenas para campos vindos do backend
 type CourseWithCreator = Course & {
-  creatorFullName?: string | null; // novo campo para exibição
+  creatorFullName?: string | null; // exibição do criador
   isOriginal?: boolean;
-  createdBy?: string; // permanece como ID
+  createdBy?: string; // ID do criador no BD
 };
 
 /** ==================== UTILS / BASE STYLES ==================== */
@@ -70,7 +68,7 @@ const Spinner: React.FC<{ size?: number; color?: string }> = ({
   />
 );
 
-/** ==================== BUSCA CURSO POR KEY (id ou slug) ==================== */
+/** ==================== HELPERS ==================== */
 function findCourseByKey(
   courses: Array<{ _id: string; title: string }>,
   key: string
@@ -81,13 +79,308 @@ function findCourseByKey(
   return bySlug || null;
 }
 
+const normalizeLang = (lang?: string) => (lang || "en").toLowerCase();
+
+const sortByOrder = (arr: CourseWithCreator[]) =>
+  [...arr].sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+
+const sortByTitle = (arr: CourseWithCreator[]) =>
+  [...arr].sort((a, b) =>
+    (a.title || "").localeCompare(b.title || "", undefined, {
+      sensitivity: "base",
+    })
+  );
+
+const sortByCreatorName = (arr: CourseWithCreator[]) =>
+  [...arr].sort((a, b) => {
+    const nameA = a.creatorFullName?.trim().toLowerCase() || "";
+    const nameB = b.creatorFullName?.trim().toLowerCase() || "";
+    return nameA.localeCompare(nameB, undefined, { sensitivity: "base" });
+  });
+
+// Usa creatorFullName quando houver; caso contrário, cai para order
+const sortByCreatorThenOrder = (arr: CourseWithCreator[]) =>
+  [...arr].sort((a, b) => {
+    const aName = a.creatorFullName?.trim();
+    const bName = b.creatorFullName?.trim();
+    if (aName && bName) {
+      return aName.localeCompare(bName, undefined, { sensitivity: "base" });
+    }
+    if (aName && !bName) return -1;
+    if (!aName && bName) return 1;
+    // ambos sem nome: usa order
+    return (a.order ?? 9999) - (b.order ?? 9999);
+  });
+
+/** Pode editar este curso? (helper central) */
+const canEditCourseFor = (
+  course: CourseWithCreator,
+  permissions: Permissions,
+  studentID: string
+) => {
+  if (permissions === "superadmin") return true;
+  if (permissions === "teacher") {
+    return (
+      course.isOriginal === false &&
+      String(course.createdBy || "") === String(studentID || "")
+    );
+  }
+  return false;
+};
+
+/** ==================== SUBCOMPONENTES ==================== */
+// Grid / Card styles
+const gridStyle: React.CSSProperties = {
+  display: "grid",
+  gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
+  gap: "12px",
+  padding: 0,
+  listStyle: "none",
+};
+
+const cardBase: React.CSSProperties = {
+  listStyle: "none",
+  borderRadius: 5,
+  overflow: "hidden",
+  border: "1px solid rgba(0,0,0,0.08)",
+  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+  background: "#fff",
+  transition: "transform 160ms ease, box-shadow 160ms ease",
+  willChange: "transform",
+};
+
+const cardHover: React.CSSProperties = {
+  transform: "translateY(-1px)",
+  boxShadow: "0 4px 10px rgba(0,0,0,0.12)",
+};
+
+const thumbWrap: React.CSSProperties = {
+  position: "relative",
+  height: 120,
+  background: "#f3f4f6",
+  overflow: "hidden",
+};
+
+const titleWrap: React.CSSProperties = { padding: "8px 10px 10px" };
+
+const titleStyle: React.CSSProperties = {
+  margin: 0,
+  fontSize: "0.95rem",
+  lineHeight: 1.25,
+  display: "-webkit-box" as any,
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: "vertical",
+  overflow: "hidden",
+};
+
+const badgeBase: React.CSSProperties = {
+  position: "absolute",
+  top: 8,
+  padding: "2px 6px",
+  fontSize: 12,
+  background: "rgba(0,0,0,0.7)",
+  color: "#fff",
+  letterSpacing: 0.2,
+  textTransform: "uppercase" as const,
+  borderRadius: 4,
+};
+
+const langBadge: React.CSSProperties = { ...badgeBase, left: 8 };
+const lockBadge: React.CSSProperties = {
+  ...badgeBase,
+  right: 8,
+  display: "flex",
+  alignItems: "center",
+  gap: 6,
+  background: "rgba(0,0,0,0.65)",
+};
+
+const CourseCard: React.FC<{
+  course: CourseWithCreator;
+  locked?: boolean;
+  canEdit: boolean;
+  onEdit: (c: CourseWithCreator) => void;
+}> = ({ course, locked, canEdit, onEdit }) => {
+  const [hover, setHover] = useState(false);
+  const lang = (normalizeLang(course.language) || "en") as
+    | "en"
+    | "es"
+    | "fr"
+    | string;
+  const langLabel =
+    lang === "en" ? "EN" : lang === "es" ? "ES" : lang === "fr" ? "FR" : "OT";
+
+  const Thumb = (
+    <div style={thumbWrap}>
+      <img
+        src={course.image}
+        alt={`${course.title}img`}
+        loading="lazy"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
+          opacity: locked ? 0.75 : 1,
+          transition: "opacity 160ms ease",
+        }}
+      />
+      <span style={langBadge}>{langLabel}</span>
+      {locked && (
+        <span style={lockBadge} aria-label="locked">
+          <i className="fa fa-lock" aria-hidden="true" />
+          Bloqueado
+        </span>
+      )}
+    </div>
+  );
+
+  const TitleRow = (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: 8,
+      }}
+    >
+      <h3 style={titleStyle} title={course.title}>
+        {course.title}
+      </h3>
+      {canEdit && (
+        <button
+          className="iconbtn"
+          title="Editar curso"
+          aria-label="Editar curso"
+          onClick={(e) => {
+            e.preventDefault();
+            onEdit(course);
+          }}
+        >
+          <i className="fa fa-pencil" aria-hidden="true" />
+        </button>
+      )}
+    </div>
+  );
+
+  // Byline: exibe nome do criador para materiais não-originais
+  const Byline =
+    !course.isOriginal && course.creatorFullName ? (
+      <div
+        style={{
+          marginTop: 4,
+          fontSize: 12,
+          color: "#64748b",
+          lineHeight: 1.2,
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+        title={course.creatorFullName}
+      >
+        {course.creatorFullName}
+      </div>
+    ) : null;
+
+  const Body = (
+    <div style={titleWrap}>
+      {TitleRow}
+      {Byline}
+    </div>
+  );
+
+  const CardShell = ({ children }: { children: React.ReactNode }) => (
+    <li
+      style={{ ...cardBase, ...(hover ? cardHover : {}) }}
+      className="card"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {children}
+    </li>
+  );
+
+  if (!locked) {
+    return (
+      <CardShell>
+        <Link
+          to={`${course._id}/`}
+          style={{
+            display: "block",
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
+          {Thumb}
+          {Body}
+        </Link>
+      </CardShell>
+    );
+  }
+
+  return (
+    <CardShell>
+      <div
+        style={{
+          display: "block",
+          textDecoration: "none",
+          color: "inherit",
+          cursor: "default",
+        }}
+      >
+        {Thumb}
+        {Body}
+      </div>
+    </CardShell>
+  );
+};
+
+const LangSection: React.FC<{
+  title: string;
+  allowed: CourseWithCreator[];
+  nonAllowed: CourseWithCreator[];
+  computeCanEdit: (c: CourseWithCreator) => boolean;
+  onEdit: (c: CourseWithCreator) => void;
+}> = ({ title, allowed, nonAllowed, computeCanEdit, onEdit }) => {
+  if (allowed.length === 0 && nonAllowed.length === 0) return null;
+  return (
+    <section style={{ marginTop: "1.25rem" }}>
+      <h2 style={{ margin: "0 0 10px 0", fontSize: "1.1rem" }}>{title}</h2>
+      <ul style={gridStyle}>
+        {allowed.map((course) => (
+          <CourseCard
+            key={`a-${course._id}`}
+            course={course}
+            canEdit={computeCanEdit(course)}
+            onEdit={onEdit}
+          />
+        ))}
+        {nonAllowed.map((course) => (
+          <CourseCard
+            key={`n-${course._id}`}
+            course={course}
+            locked
+            canEdit={false}
+            onEdit={onEdit}
+          />
+        ))}
+      </ul>
+    </section>
+  );
+};
+
+/** ==================== ROTEADOR POR :courseKey ==================== */
 const CourseRouter: React.FC<{
   headers: any;
-  courses: Array<{ _id: string; title: string }>;
-}> = ({ headers, courses }) => {
+  courses: CourseWithCreator[];
+  permissions: Permissions;
+  studentID: string;
+}> = ({ headers, courses, permissions, studentID }) => {
   const { courseKey } = useParams();
   const course =
-    courseKey && courses.length ? findCourseByKey(courses, courseKey) : null;
+    courseKey && courses.length
+      ? (findCourseByKey(courses, courseKey) as CourseWithCreator | null)
+      : null;
 
   if (!courses.length)
     return <div style={{ padding: 16 }}>Carregando cursos…</div>;
@@ -99,7 +392,12 @@ const CourseRouter: React.FC<{
     );
 
   return (
-    <Modules headers={headers} courseId={course._id} title={course.title} />
+    <Modules
+      canEditCourse={canEditCourseFor(course, permissions, studentID)}
+      headers={headers}
+      courseId={course._id}
+      title={course.title}
+    />
   );
 };
 
@@ -137,8 +435,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
 
     const studentId = getLoggedUser.id;
-    const { permissions } =
-      (getLoggedUser as { permissions?: Permissions }) || {};
+    const userPermissions: Permissions =
+      (getLoggedUser?.permissions as Permissions) || "student";
     const { id } = getLoggedUser || {};
 
     // capturar name/lastname para título
@@ -148,7 +446,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     setTeacherName(fullName || "Professor(a)");
 
     setStudentID((id as string) || "");
-    setPermissions((permissions as Permissions) || "student");
+    setPermissions(userPermissions);
 
     try {
       const response = await axios.get(
@@ -159,9 +457,9 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       const classesDB: CourseWithCreator[] = response.data.courses || [];
       const classesNADB: CourseWithCreator[] =
         response.data.coursesNonAuth || [];
-      console.log("coursesNADB", response.data);
+
       setListOfCoursesFromDatabase(classesDB);
-      if (permissions === "superadmin" || permissions === "teacher") {
+      if (userPermissions === "superadmin" || userPermissions === "teacher") {
         setListOfNonAllowedCoursesFromDatabase(classesNADB);
       } else {
         setListOfNonAllowedCoursesFromDatabase([]);
@@ -178,41 +476,12 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ===== helpers =====
-  const normalizeLang = (lang?: string) => (lang || "en").toLowerCase();
-
-  const sortByCreatorName = (arr: CourseWithCreator[]) =>
-    [...arr].sort((a, b) => {
-      const nameA = a.creatorFullName?.trim().toLowerCase() || "";
-      const nameB = b.creatorFullName?.trim().toLowerCase() || "";
-      return nameA.localeCompare(nameB, undefined, { sensitivity: "base" });
-    });
-
-  const sortByOrder = (arr: CourseWithCreator[]) =>
-    [...arr].sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
-
-  const UNKNOWN_CREATOR = "Criador desconhecido";
-
-  const sortByTitle = (arr: CourseWithCreator[]) =>
-    [...arr].sort((a, b) =>
-      (a.title || "").localeCompare(b.title || "", undefined, {
-        sensitivity: "base",
-      })
-    );
-
-  const groupByCreator = (arr: CourseWithCreator[]) => {
-    const groups: Record<string, CourseWithCreator[]> = {};
-    for (const c of arr) {
-      const key = (c.creatorFullName || "").trim() || UNKNOWN_CREATOR;
-      if (!groups[key]) groups[key] = [];
-      groups[key].push(c);
-    }
-    return groups;
-  };
-  // Não-originais (cursos do professor), ignorar idioma
+  /** ==================== DERIVADOS ==================== */
+  // NÃO-ORIGINAIS (do professor / terceiros), ignorando idioma
+  // Permitidos (do próprio user ou superadmin)
   const allowedNonOriginal = useMemo(
     () =>
-      sortByOrder(
+      sortByCreatorThenOrder(
         (listOfCoursesFromDatabase || []).filter(
           (c: any) => c && c.isOriginal === false
         )
@@ -220,6 +489,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     [listOfCoursesFromDatabase]
   );
 
+  // Não permitidos (visíveis mas bloqueados)
   const nonAllowedNonOriginal = useMemo(
     () =>
       sortByCreatorName(
@@ -230,7 +500,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     [listOfNonAllowedCoursesFromDatabase]
   );
 
-  // Originais (true/undefined tratados como originais), por idioma
+  // ORIGINAIS (true/undefined)
   const allowedOriginalOnly = useMemo(
     () =>
       (listOfCoursesFromDatabase || []).filter(
@@ -287,249 +557,16 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     [nonAllowedOriginalOnly]
   );
 
-  const canEdit = permissions === "superadmin";
-
-  /** ==================== GRID / CARD ==================== */
-  const gridStyle: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-    gap: "12px",
-    padding: 0,
-    listStyle: "none",
-  };
-
-  const cardBase: React.CSSProperties = {
-    listStyle: "none",
-    borderRadius: 5,
-    overflow: "hidden",
-    border: "1px solid rgba(0,0,0,0.08)",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-    background: "#fff",
-    transition: "transform 160ms ease, box-shadow 160ms ease",
-    willChange: "transform",
-  };
-
-  const cardHover: React.CSSProperties = {
-    transform: "translateY(-1px)",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.12)",
-  };
-
-  const thumbWrap: React.CSSProperties = {
-    position: "relative",
-    height: 120,
-    background: "#f3f4f6",
-    overflow: "hidden",
-  };
-
-  const titleWrap: React.CSSProperties = { padding: "8px 10px 10px" };
-
-  const titleStyle: React.CSSProperties = {
-    margin: 0,
-    fontSize: "0.95rem",
-    lineHeight: 1.25,
-    display: "-webkit-box" as any,
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: "vertical",
-    overflow: "hidden",
-  };
-
-  const badgeBase: React.CSSProperties = {
-    position: "absolute",
-    top: 8,
-    padding: "2px 6px",
-    fontSize: 12,
-    background: "rgba(0,0,0,0.7)",
-    color: "#fff",
-    letterSpacing: 0.2,
-    textTransform: "uppercase" as const,
-    borderRadius: 4,
-  };
-
-  const langBadge: React.CSSProperties = { ...badgeBase, left: 8 };
-  const lockBadge: React.CSSProperties = {
-    ...badgeBase,
-    right: 8,
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    background: "rgba(0,0,0,0.65)",
-  };
-
+  /** ==================== CALLBACKS ==================== */
   const openEdit = (course: CourseWithCreator) => {
     setCourseToEdit(course);
     setEditOpen(true);
   };
 
-  const CourseCard: React.FC<{
-    course: CourseWithCreator;
-    locked?: boolean;
-  }> = ({ course, locked }) => {
-    const [hover, setHover] = useState(false);
-    const lang = (normalizeLang(course.language) || "en") as
-      | "en"
-      | "es"
-      | "fr"
-      | string;
-    const langLabel =
-      lang === "en" ? "EN" : lang === "es" ? "ES" : lang === "fr" ? "FR" : "OT";
+  const computeCanEdit = (course: CourseWithCreator) =>
+    canEditCourseFor(course, permissions, studentID);
 
-    const canEditCourse = (() => {
-      if (permissions === "superadmin") return true;
-      if (permissions === "teacher") {
-        const isOriginal = (course as any)?.isOriginal;
-        const createdBy = String((course as any)?.createdBy || "");
-        return !isOriginal && createdBy === String(studentID);
-      }
-      return false;
-    })();
-
-    const Thumb = (
-      <div style={thumbWrap}>
-        <img
-          src={course.image}
-          alt={`${course.title}img`}
-          loading="lazy"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center",
-            opacity: locked ? 0.75 : 1,
-            transition: "opacity 160ms ease",
-          }}
-        />
-        <span style={langBadge}>{langLabel}</span>
-        {locked && (
-          <span style={lockBadge} aria-label="locked">
-            <i className="fa fa-lock" aria-hidden="true" />
-            Bloqueado
-          </span>
-        )}
-      </div>
-    );
-
-    const TitleRow = (
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-        }}
-      >
-        <h3 style={titleStyle} title={course.title}>
-          {course.title}
-        </h3>
-        {canEditCourse && (
-          <button
-            className="iconbtn"
-            title="Editar curso"
-            aria-label="Editar curso"
-            onClick={(e) => {
-              e.preventDefault();
-              openEdit(course);
-            }}
-          >
-            <i className="fa fa-pencil" aria-hidden="true" />
-          </button>
-        )}
-      </div>
-    );
-
-    // byline: só se !isOriginal e houver nome
-    const Byline =
-      !course.isOriginal && course.creatorFullName ? (
-        <div
-          style={{
-            marginTop: 4,
-            fontSize: 12,
-            color: "#64748b",
-            lineHeight: 1.2,
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          }}
-          title={course.creatorFullName}
-        >
-          {course.creatorFullName}
-        </div>
-      ) : null;
-
-    const Body = (
-      <div style={titleWrap}>
-        {TitleRow}
-        {Byline}
-      </div>
-    );
-
-    const CardShell = ({ children }: { children: React.ReactNode }) => (
-      <li
-        style={{ ...cardBase, ...(hover ? cardHover : {}) }}
-        className="card"
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-      >
-        {children}
-      </li>
-    );
-
-    if (!locked) {
-      return (
-        <CardShell>
-          <Link
-            to={`${course._id}/`}
-            style={{
-              display: "block",
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            {Thumb}
-            {Body}
-          </Link>
-        </CardShell>
-      );
-    }
-
-    return (
-      <CardShell>
-        <div
-          style={{
-            display: "block",
-            textDecoration: "none",
-            color: "inherit",
-            cursor: "default",
-          }}
-        >
-          {Thumb}
-          {Body}
-        </div>
-      </CardShell>
-    );
-  };
-
-  /** ==================== SEÇÃO POR IDIOMA ==================== */
-  const LangSection: React.FC<{
-    title: string;
-    allowed: CourseWithCreator[];
-    nonAllowed: CourseWithCreator[];
-  }> = ({ title, allowed, nonAllowed }) => {
-    if (allowed.length === 0 && nonAllowed.length === 0) return null;
-    return (
-      <section style={{ marginTop: "1.25rem" }}>
-        <h2 style={{ margin: "0 0 10px 0", fontSize: "1.1rem" }}>{title}</h2>
-        <ul style={gridStyle}>
-          {allowed.map((route) => (
-            <CourseCard key={`a-${route._id}`} course={route} />
-          ))}
-          {nonAllowed.map((route) => (
-            <CourseCard key={`n-${route._id}`} course={route} locked />
-          ))}
-        </ul>
-      </section>
-    );
-  };
-
+  /** ==================== ROTAS ==================== */
   const isRootPath =
     location.pathname === "/teaching-materials" ||
     location.pathname === "/teaching-materials/";
@@ -544,6 +581,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             path={`${pathGenerator(route.title)}/*`}
             element={
               <Modules
+                canEditCourse={computeCanEdit(route)}
                 headers={actualHeaders}
                 courseId={route._id}
                 title={route.title}
@@ -557,6 +595,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             <CourseRouter
               headers={actualHeaders}
               courses={listOfCoursesFromDatabase}
+              permissions={permissions}
+              studentID={studentID}
             />
           }
         />
@@ -596,14 +636,16 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                 nonAllowedNonOriginal.length > 0) && (
                 <LangSection
                   title={
-                    permissions == "superadmin"
+                    permissions === "superadmin"
                       ? "Materiais de Outros Criadores"
-                      : permissions == "teacher"
+                      : permissions === "teacher"
                       ? `Materiais de ${teacherName}`
                       : "Materiais disponíveis"
                   }
                   allowed={allowedNonOriginal}
                   nonAllowed={nonAllowedNonOriginal}
+                  computeCanEdit={computeCanEdit}
+                  onEdit={openEdit}
                 />
               )}
 
@@ -612,16 +654,22 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                 title="English"
                 allowed={groupedAllowed.en}
                 nonAllowed={groupedNonAllowed.en}
+                computeCanEdit={computeCanEdit}
+                onEdit={openEdit}
               />
               <LangSection
                 title="Español"
                 allowed={groupedAllowed.es}
                 nonAllowed={groupedNonAllowed.es}
+                computeCanEdit={computeCanEdit}
+                onEdit={openEdit}
               />
               <LangSection
                 title="Français"
                 allowed={groupedAllowed.fr}
                 nonAllowed={groupedNonAllowed.fr}
+                computeCanEdit={computeCanEdit}
+                onEdit={openEdit}
               />
               {(groupedAllowed.other.length > 0 ||
                 groupedNonAllowed.other.length > 0) && (
@@ -629,6 +677,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
                   title="🌐 Outros idiomas"
                   allowed={groupedAllowed.other}
                   nonAllowed={groupedNonAllowed.other}
+                  computeCanEdit={computeCanEdit}
+                  onEdit={openEdit}
                 />
               )}
             </div>

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Link,
   Routes,
@@ -8,21 +7,23 @@ import {
   useLocation,
   useParams,
 } from "react-router-dom";
-import { notifyAlert } from "./Assets/Functions/FunctionLessons";
+import axios from "axios";
+import styled from "styled-components";
+
+import { HOne } from "../../Resources/Components/RouteBox";
+import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import { partnerColor, darkGreyColor } from "../../Styles/Styles";
 import {
   backDomain,
   onLoggOut,
   truncateString,
 } from "../../Resources/UniversalComponents";
-import EnglishClassCourse2 from "./Class";
-import { HOne } from "../../Resources/Components/RouteBox";
-import { HThreeModule } from "../MyClasses/MyClasses.Styled";
-import styled from "styled-components";
+
 import NewModuleButton from "./NewModule/NewModule";
 import CreateClassButton from "./NewLesson/NewLesson";
+import EnglishClassCourse2 from "./Class";
 
-/* ===== Spinner (no-MUI) ===== */
+/* =================== Spinner =================== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
   size = 28,
   color = partnerColor(),
@@ -48,7 +49,7 @@ if (!document.getElementById("spin-kf")) {
   document.head.appendChild(st);
 }
 
-// ===== styled =====
+/* =================== styled =================== */
 const CourseCard = styled.div`
   display: flex;
   align-items: center;
@@ -87,7 +88,7 @@ const CourseCard = styled.div`
   }
 `;
 
-// ===== tipos =====
+/* =================== Tipos =================== */
 interface ClassItem {
   _id: string;
   title?: string;
@@ -96,33 +97,39 @@ interface ClassItem {
   studentsWhoCompletedIt?: string[];
   [k: string]: any;
 }
-
 interface ModuleItem {
   moduleTitle?: string;
   order?: number;
-  id: string;
+  id: string; // id do MÓDULO
   classes?: ClassItem[];
   [k: string]: any;
 }
-
 interface ModulesHomeProps {
   headers?: any;
   courseId: string;
   title: string;
+  canEditCourse?: boolean; // << veio do pai (Courses)
 }
 
-/* Wrapper que lê o :moduleKey e injeta no Class */
+/* =================== Wrapper: lê :moduleKey e injeta na Aula =================== */
 const ClassByParam: React.FC<{
   headers?: any;
   courseId: string;
   courseTitle: string;
   modulesRef: ModuleItem[];
-}> = ({ headers, courseId, courseTitle, modulesRef }) => {
+  canEditCourse?: boolean;
+}> = ({ headers, courseId, courseTitle, modulesRef, canEditCourse }) => {
   const { moduleKey } = useParams();
-  // tenta achar vizinhos pelo array local quando possível
-  const flat = modulesRef.flatMap((m) =>
-    (m.classes || []).map((c) => ({ ...c, __module: m }))
+
+  // Flat para descobrir vizinhos (prev/next) num único array linear
+  const flat = useMemo(
+    () =>
+      modulesRef.flatMap((m) =>
+        (m.classes || []).map((c) => ({ ...c, __module: m }))
+      ),
+    [modulesRef]
   );
+
   const idx = flat.findIndex((c) => c._id === moduleKey);
   const prev = idx > 0 ? flat[idx - 1]?._id : undefined;
   const next =
@@ -131,24 +138,26 @@ const ClassByParam: React.FC<{
   return (
     <EnglishClassCourse2
       headers={headers}
-      classId={moduleKey || ""} // <<< puxa pelo ID vindo da URL (ou slug se você tratar no back)
+      canEditCourse={canEditCourse} // << NÃO recalcular
+      classId={moduleKey || ""} // << ID da aula via URL
       course={courseId}
-      previousClass={prev ?? "123456"}
-      nextClass={next ?? "123456"}
+      previousClass={prev}
+      nextClass={next}
       courseTitle={courseTitle}
     />
   );
 };
 
+/* =================== Componente Principal =================== */
 export default function Modules({
   headers,
   courseId,
   title,
+  canEditCourse,
 }: ModulesHomeProps) {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [studentsList, setStudentsList] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
+  const [studentsList, setStudentsList] = useState<any[]>([]);
   const [studentID, setStudentID] = useState<string>("");
-
   const [studentName, setStudentName] = useState<string>("");
 
   const [modules, setModules] = useState<ModuleItem[]>([]);
@@ -168,14 +177,12 @@ export default function Modules({
 
   const toggleCompletion = async (cls: ClassItem) => {
     if (!studentID) {
-      notifyAlert("Selecione um aluno antes de marcar a aula como feita.");
-      return;
+      // pequena UX
     }
     const id = cls._id;
-
     setToggling((p) => ({ ...p, [id]: true }));
 
-    // (opcional) UI otimista:
+    // UI otimista
     setModules((prev) => {
       const next = safeClone(prev);
       next.forEach((m) =>
@@ -198,8 +205,6 @@ export default function Modules({
         { headers: actualHeaders }
       );
       const updated = response.data.studentsWhoCompletedIt;
-
-      // garante que fica igual ao back:
       setModules((prev) => {
         const next = safeClone(prev);
         next.forEach((m) =>
@@ -209,19 +214,14 @@ export default function Modules({
         );
         return next;
       });
-    } catch (error) {
-      console.error("Erro ao atualizar o status:", error);
-      notifyAlert("Não foi possível atualizar. Tente novamente.");
-      // rollback do otimista:
-      await getModules();
+    } catch {
+      await getModules(); // rollback total
     } finally {
       setToggling((p) => ({ ...p, [id]: false }));
     }
   };
 
-  const USE_BULK = true;
-
-  // ===== alunos =====
+  /* ===== alunos ===== */
   const fetchStudents = async () => {
     const myId = JSON.parse(localStorage.getItem("loggedIn") || "null")?.id;
     try {
@@ -231,27 +231,40 @@ export default function Modules({
           headers: actualHeaders,
         }
       );
-      setStudentsList(response.data.listOfStudents);
+      setStudentsList(response.data.listOfStudents || []);
     } catch {
-      notifyAlert("Erro ao encontrar alunos");
+      // ignore
     }
   };
   useEffect(() => {
-    if (thePermissions === "superadmin" || thePermissions === "teacher")
+    try {
+      const user = localStorage.getItem("loggedIn");
+      if (user) {
+        const parsed = JSON.parse(user);
+        const permissions = parsed?.permissions ?? "";
+        setPermissions(permissions);
+      }
+      const selectedStudentID = localStorage.getItem("selectedStudentID") || "";
+      setStudentID(selectedStudentID);
+    } catch {}
+  }, []);
+  useEffect(() => {
+    if (thePermissions === "superadmin" || thePermissions === "teacher") {
       fetchStudents();
-  }, [title]); // mantém seu comportamento
+    }
+  }, [title]); // mantém seu comportamento original
 
-  const handleStudentChange = (event: any) => {
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
     const selectedStudent = studentsList.find((s: any) => s.id === theid);
     setStudentID(theid);
     localStorage.setItem("selectedStudentID", theid);
     if (selectedStudent) {
-      setStudentName(selectedStudent.name + " " + selectedStudent.lastname);
+      setStudentName(`${selectedStudent.name} ${selectedStudent.lastname}`);
     }
   };
 
-  // ===== módulos =====
+  /* ===== módulos ===== */
   const getModules = async () => {
     setLoading(true);
     try {
@@ -261,7 +274,6 @@ export default function Modules({
       );
       const mod = res.data?.modules || [];
       setModules(mod);
-      console.log(mod);
       setVisibleModules(new Array(mod.length).fill(true));
     } catch {
       onLoggOut();
@@ -272,9 +284,10 @@ export default function Modules({
   useEffect(() => {
     getModules();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [courseId]);
 
-  // ===== reorder =====
+  /* ===== reorder ===== */
+  const USE_BULK = true;
   const patchOrder = async (id: string, order: number) =>
     axios.patch(
       `${backDomain}/api/v1/class/${id}`,
@@ -295,7 +308,7 @@ export default function Modules({
 
     const sorted = (snapshot.classes || [])
       .slice()
-      .sort((a: ClassItem, b: ClassItem) => (a.order ?? 0) - (b.order ?? 0));
+      .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
     const from = sorted[viewIdx];
     const to = sorted[viewIdx + dir];
@@ -306,18 +319,18 @@ export default function Modules({
 
     // otimista
     setModules((prev) => {
-      const next = safeClone(prev);
-      const moduleCopy = next[moduleIdx];
-      const sortedLocal = (moduleCopy.classes || [])
+      const next = JSON.parse(JSON.stringify(prev)) as ModuleItem[];
+      const m = next[moduleIdx];
+      const localSorted = (m.classes || [])
         .slice()
-        .sort((a: ClassItem, b: ClassItem) => (a.order ?? 0) - (b.order ?? 0));
-      const A = sortedLocal[viewIdx];
-      const B = sortedLocal[viewIdx + dir];
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      const A = localSorted[viewIdx];
+      const B = localSorted[viewIdx + dir];
       if (!A || !B) return prev;
       const tmp = A.order;
       A.order = B.order;
       B.order = tmp;
-      moduleCopy.classes = sortedLocal;
+      m.classes = localSorted;
       return next;
     });
 
@@ -334,55 +347,37 @@ export default function Modules({
         ]);
       }
     } catch {
-      notifyAlert("Falha ao atualizar ordem. Recarregando…");
       await getModules();
     }
   };
 
-  // ===== busca / visibilidade =====
-  useEffect(() => {
-    try {
-      const user = localStorage.getItem("loggedIn");
-      if (user) {
-        const parsed = JSON.parse(user);
-        const permissions = parsed?.permissions ?? "";
-        setPermissions(permissions);
-      }
-      const selectedStudentID =
-        localStorage.getItem("selectedStudentID") || "null";
-      setStudentID(selectedStudentID);
-    } catch {
-      // ignore
-    }
-  }, []);
-
+  /* ===== busca ===== */
   useEffect(() => {
     const q = (searchQuery || "").toLowerCase();
-    const filteredModules = modules.map((module: ModuleItem) => ({
+    const filteredModules = modules.map((module) => ({
       ...module,
-      id: module.id,
-      classes: (module.classes || []).filter((cls: ClassItem) => {
+      classes: (module.classes || []).filter((cls) => {
         const t = (cls.title || "").toLowerCase().includes(q);
         const g =
           Array.isArray(cls.tags) &&
-          cls.tags.some((tag: string) => (tag || "").toLowerCase().includes(q));
+          cls.tags.some((tag) => (tag || "").toLowerCase().includes(q));
         return t || g;
       }),
     }));
     setFiltered(filteredModules);
   }, [searchQuery, modules]);
 
-  // ===== visibilidade do cabeçalho desta página =====
+  /* ===== visibilidade do cabeçalho ===== */
   const loc = useLocation();
   const [displayRouteDiv, setDisplayRouteDiv] = useState(true);
   useEffect(() => {
-    // aceita /teaching-materials/<courseKey> e /teaching-materials/<courseKey>/
     const isRootOfCourse = /^\/teaching-materials\/[^/]+\/?$/.test(
       loc.pathname
     );
     setDisplayRouteDiv(isRootOfCourse);
   }, [loc.pathname]);
 
+  /* ===== render ===== */
   return (
     <div
       style={{
@@ -392,8 +387,7 @@ export default function Modules({
         boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
       }}
     >
-      {/* ROTA ÚNICA: aceita id OU slug via :moduleKey.
-          O componente interno puxa o classId direto do parâmetro. */}
+      {/* Rota da AULA por ID (ou slug se o backend aceitar) */}
       <Routes>
         <Route
           path=":moduleKey/*"
@@ -403,6 +397,7 @@ export default function Modules({
               courseId={courseId}
               courseTitle={title}
               modulesRef={modules}
+              canEditCourse={canEditCourse}
             />
           }
         />
@@ -425,13 +420,7 @@ export default function Modules({
                   gap: "1rem",
                 }}
               >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center ",
-                    gap: 8,
-                  }}
-                >
+                <div style={{ display: "flex", alignItems: "center ", gap: 8 }}>
                   <span
                     style={{
                       fontSize: 10,
@@ -452,9 +441,18 @@ export default function Modules({
                       fontStyle: "italic",
                     }}
                   >
-                    {title}
+                    {title}{" "}
+                    {(thePermissions === "teacher" ||
+                      thePermissions === "superadmin") && (
+                      <span>
+                        {canEditCourse
+                          ? "(Editing Enabled)"
+                          : "(Editing Disabled)"}
+                      </span>
+                    )}
                   </span>
                 </div>
+
                 <div
                   style={{
                     display: "flex",
@@ -464,7 +462,6 @@ export default function Modules({
                     marginLeft: "auto",
                   }}
                 >
-                  {/* busca */}
                   <input
                     type="text"
                     placeholder="Search classes by name..."
@@ -478,26 +475,26 @@ export default function Modules({
                       color: "#64748b",
                       padding: "4px 6px",
                       height: 28,
-                      width: 100,
+                      width: 140,
                     }}
                   />
-                  {/* seletor de aluno */}
-                  {(thePermissions == "teacher" ||
-                    thePermissions == "superadmin") && (
+
+                  {(thePermissions === "teacher" ||
+                    thePermissions === "superadmin") && (
                     <>
                       <select
-                        onChange={(e) => handleStudentChange(e)}
+                        onChange={handleStudentChange}
                         value={studentID}
                         style={{
-                          borderRadius: "4px",
+                          borderRadius: 4,
                           border: "1px solid #e2e8f0",
                           backgroundColor: "#f8fafc",
-                          fontSize: "11px",
-                          width: 100,
-                          fontWeight: "400",
+                          fontSize: 11,
+                          width: 140,
+                          fontWeight: 400,
                           color: "#64748b",
                           padding: "4px 6px",
-                          height: "28px",
+                          height: 28,
                           outline: "none",
                           cursor: "pointer",
                           display: "block",
@@ -509,20 +506,24 @@ export default function Modules({
                           (e.currentTarget.style.borderColor = "#e2e8f0")
                         }
                       >
+                        <option value="">Selecione um aluno</option>
                         {studentsList.map((student: any, index: number) => (
                           <option key={index} value={student.id}>
                             {truncateString(
-                              student.name + " " + student.lastname,
-                              15
+                              `${student.name} ${student.lastname}`,
+                              22
                             )}
                           </option>
                         ))}
                       </select>
-                      <NewModuleButton
-                        courseId={courseId}
-                        studentId={studentID}
-                        headers={actualHeaders}
-                      />
+
+                      {canEditCourse && (
+                        <NewModuleButton
+                          courseId={courseId}
+                          studentId={studentID}
+                          headers={headers}
+                        />
+                      )}
                     </>
                   )}
                 </div>
@@ -533,21 +534,16 @@ export default function Modules({
           {/* LISTA DE MÓDULOS */}
           {filtered
             .slice()
-            .sort(
-              (a: ModuleItem, b: ModuleItem) => (a.order ?? 0) - (b.order ?? 0)
-            )
-            .map((module: ModuleItem, moduleIdx: number) => {
+            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+            .map((module, moduleIdx) => {
               const sorted = (module.classes || [])
                 .slice()
-                .sort(
-                  (a: ClassItem, b: ClassItem) =>
-                    (a.order ?? 0) - (b.order ?? 0)
-                );
+                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
               if (searchQuery && !sorted.length) return null;
 
               return (
-                <div key={moduleIdx}>
+                <div key={module.id || moduleIdx}>
                   <HThreeModule
                     onClick={() =>
                       setVisibleModules((prev) => {
@@ -561,15 +557,19 @@ export default function Modules({
                     {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
                     {sorted.length} Lessons
                   </HThreeModule>
-                  <CreateClassButton
-                    courseId={courseId}
-                    studentId={studentID}
-                    moduleId={module.id}
-                    headers={actualHeaders}
-                  />
+
+                  {canEditCourse && (
+                    <CreateClassButton
+                      courseId={courseId}
+                      studentId={studentID}
+                      moduleId={module.id}
+                      headers={headers}
+                    />
+                  )}
+
                   {visibleModules[moduleIdx] && (
                     <div style={{ display: "grid", margin: "0 10px" }}>
-                      {sorted.map((cls: ClassItem, viewIdx: number) => (
+                      {sorted.map((cls, viewIdx) => (
                         <div
                           key={cls._id}
                           style={{
@@ -579,18 +579,11 @@ export default function Modules({
                             gap: 5,
                           }}
                         >
-                          {/* Link SEMPRE por ID */}
                           <Link
                             to={`${cls._id}`}
                             style={{ textDecoration: "none" }}
                           >
-                            <CourseCard
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: 8,
-                              }}
-                            >
+                            <CourseCard style={{ gap: 8 }}>
                               <label
                                 title={
                                   isCompletedFor(cls)
@@ -629,15 +622,11 @@ export default function Modules({
                                 />
                               </label>
 
-                              <p
-                                className="hoverable-paragraph"
-                                style={{ margin: 0, flex: 1 }}
-                              >
+                              <p style={{ margin: 0, flex: 1 }}>
                                 {viewIdx + 1} - {cls.title}
                                 {Array.isArray(cls.tags) &&
                                   cls.tags.length > 0 && (
                                     <span
-                                      className="hidden-span"
                                       style={{
                                         fontStyle: "italic",
                                         fontWeight: 400,
@@ -646,8 +635,10 @@ export default function Modules({
                                       }}
                                     >
                                       {truncateString(
-                                        cls.tags.join(", ").toLowerCase(),
-                                        20
+                                        (cls.tags || [])
+                                          .join(", ")
+                                          .toLowerCase(),
+                                        28
                                       )}
                                     </span>
                                   )}
@@ -655,7 +646,7 @@ export default function Modules({
                             </CourseCard>
                           </Link>
 
-                          {thePermissions === "superadmin" && (
+                          {canEditCourse && (
                             <div
                               onClick={(e) => e.preventDefault()}
                               style={{
@@ -682,7 +673,6 @@ export default function Modules({
                               >
                                 ▲
                               </button>
-
                               <button
                                 title="Mover para baixo"
                                 disabled={viewIdx === sorted.length - 1}

@@ -52,6 +52,7 @@ interface EnglishClassCourse2ModelProps {
   courseTitle: any;
   previousClass: any;
   nextClass: any;
+  canEditCourse: boolean | undefined;
 }
 
 export default function EnglishClassCourse2({
@@ -60,6 +61,7 @@ export default function EnglishClassCourse2({
   previousClass,
   nextClass,
   courseTitle,
+  canEditCourse,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
@@ -2784,6 +2786,7 @@ export default function EnglishClassCourse2({
       `/teaching-materials/${pathGenerator(courseTitle)}/${nextClass}`
     );
   };
+
   const PVSClass = () => {
     window.location.assign(
       `/teaching-materials/${pathGenerator(courseTitle)}/${previousClass}`
@@ -2791,7 +2794,6 @@ export default function EnglishClassCourse2({
   };
 
   const [comment, setComment] = useState("");
-
   const [seeCheck, setSeeCheck] = useState(false);
   const [boardDate, setBoardDate] = useState<Date | any>(null);
 
@@ -2813,6 +2815,7 @@ export default function EnglishClassCourse2({
       console.error(error, "Erro ao buscar comentários");
     }
   };
+
   const [seeBoard, setSeeBoard] = useState(false);
 
   useEffect(() => {
@@ -2873,49 +2876,6 @@ export default function EnglishClassCourse2({
       setLoadingBoard(false);
 
       console.error(error, "Erro ao buscar comentários");
-    }
-  };
-  const sendComment = async () => {
-    try {
-      const response = await axios.post(
-        `${backDomain}/api/v1/comment/`,
-        {
-          studentID: myId,
-          lessonID: classId,
-          comment,
-          lesson: window.location.href,
-        },
-        { headers: actualHeaders }
-      );
-
-      notifyAlert(
-        "Comentário enviado. Você será respondido em breve!",
-        partnerColor()
-      );
-      setComment("");
-      // getComments();
-    } catch (error) {
-      console.error(error, "Erro ao comentar");
-      notifyAlert("Erro ao comentar");
-    }
-  };
-
-  // useEffect(() => {
-  //   getComments();
-  // }, [commentsTrigger]);
-
-  const deleteComment = async (id: any) => {
-    try {
-      const response = await axios.delete(
-        `${backDomain}/api/v1/comment/${id}`,
-        { headers: actualHeaders }
-      );
-
-      notifyAlert("Comentário excluído!", partnerColor());
-      setComment("");
-      // getComments();
-    } catch (error) {
-      console.error(error, "Erro ao comentar");
     }
   };
 
@@ -3208,7 +3168,7 @@ export default function EnglishClassCourse2({
           </div>
           {!exercise && (
             <>
-              {thePermissions === "superadmin" && (
+              {canEditCourse && (
                 <EditLesson
                   buttonText={"Editar Aula"}
                   setSeeEdit={setSeeEdit}
