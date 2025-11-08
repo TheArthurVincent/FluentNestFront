@@ -22,6 +22,7 @@ import {
 import NewModuleButton from "./NewModule/NewModule";
 import CreateClassButton from "./NewLesson/NewLesson";
 import EnglishClassCourse2 from "./Class";
+import ReorderModulesButton from "./EditLesson/EditOrderModule/EditOrderModule";
 
 /* =================== Spinner =================== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
@@ -518,11 +519,19 @@ export default function Modules({
                       </select>
 
                       {canEditCourse && (
-                        <NewModuleButton
-                          courseId={courseId}
-                          studentId={studentID}
-                          headers={headers}
-                        />
+                        <>
+                          {" "}
+                          <ReorderModulesButton
+                            courseId={courseId}
+                            headers={headers}
+                            onSaved={() => window.location.reload()} // atualiza lista após salvar
+                          />
+                          <NewModuleButton
+                            courseId={courseId}
+                            studentId={studentID}
+                            headers={headers}
+                          />
+                        </>
                       )}
                     </>
                   )}
