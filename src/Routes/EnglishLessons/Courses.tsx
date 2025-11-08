@@ -501,9 +501,9 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             >
               <HOne> Cursos </HOne>
 
-              {/* Novo curso */}
+              {/* Novo curso */}{permissions === "superadmin" &&
               <NewCourseButton studentId={studentID} headers={actualHeaders} />
-
+}
               <LangSection
                 title="English"
                 allowed={groupedAllowed.en}
