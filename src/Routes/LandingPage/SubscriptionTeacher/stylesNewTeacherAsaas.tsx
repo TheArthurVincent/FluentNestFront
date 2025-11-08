@@ -108,7 +108,7 @@ export const styles: any = {
   },
   tierButtonMinimal: {
     ...cardBase,
-    width: 150,
+    width: 100,
     minHeight: 150,
     padding: 12,
     border: "1px solid #e5e7eb",

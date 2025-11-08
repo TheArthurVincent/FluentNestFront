@@ -19,6 +19,7 @@ import EnglishClassCourse2 from "./Class";
 import { HOne } from "../../Resources/Components/RouteBox";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import styled from "styled-components";
+import NewModuleButton from "./NewModule/NewModule";
 
 /* ===== Spinner (no-MUI) ===== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
@@ -258,6 +259,7 @@ export default function Modules({
       );
       const mod = res.data?.modules || [];
       setModules(mod);
+      console.log(mod);
       setVisibleModules(new Array(mod.length).fill(true));
     } catch {
       onLoggOut();
@@ -414,85 +416,113 @@ export default function Modules({
               <div
                 style={{
                   display: "flex",
+                  flexWrap: "wrap",
                   alignItems: "center",
                   width: "90vw",
                   gap: "1rem",
                 }}
               >
-                <span
+                <div
                   style={{
-                    fontSize: 10,
-                    cursor: "pointer",
-                    color: darkGreyColor(),
-                  }}
-                  onClick={() => window.location.assign("/teaching-materials")}
-                >
-                  Materiais de Ensino
-                </span>
-                <span style={{ color: darkGreyColor() }}>-</span>
-                <span
-                  style={{
-                    color: partnerColor(),
-                    fontSize: 10,
-                    fontStyle: "italic",
+                    display: "flex",
+                    alignItems: "center ",
+                    gap: 8,
                   }}
                 >
-                  {title}
-                </span>
-              </div>
-
-              {/* seletor de aluno */}
-              <select
-                onChange={(e) => handleStudentChange(e)}
-                value={studentID}
-                style={{
-                  borderRadius: "4px",
-                  border: "1px solid #e2e8f0",
-                  backgroundColor: "#f8fafc",
-                  fontSize: "11px",
-                  fontWeight: "400",
-                  color: "#64748b",
-                  padding: "4px 6px",
-                  height: "28px",
-                  maxWidth: "70px",
-                  outline: "none",
-                  cursor: "pointer",
-                  display:
-                    thePermissions === "superadmin" ||
-                    thePermissions === "teacher"
-                      ? "block"
-                      : "none",
-                }}
-                onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = partnerColor())
-                }
-                onBlur={(e) => (e.currentTarget.style.borderColor = "#e2e8f0")}
-              >
-                {studentsList.map((student: any, index: number) => (
-                  <option key={index} value={student.id}>
-                    {truncateString(student.name + " " + student.lastname, 15)}
-                  </option>
-                ))}
-              </select>
-
-              {/* busca */}
-              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                <input
-                  type="text"
-                  placeholder="Search classes by name..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  <span
+                    style={{
+                      fontSize: 10,
+                      cursor: "pointer",
+                      color: darkGreyColor(),
+                    }}
+                    onClick={() =>
+                      window.location.assign("/teaching-materials")
+                    }
+                  >
+                    Materiais de Ensino
+                  </span>
+                  <span style={{ color: darkGreyColor() }}>-</span>
+                  <span
+                    style={{
+                      color: partnerColor(),
+                      fontSize: 10,
+                      fontStyle: "italic",
+                    }}
+                  >
+                    {title}
+                  </span>
+                </div>
+                <div
                   style={{
-                    borderRadius: 4,
-                    border: "1px solid #e2e8f0",
-                    backgroundColor: "#f8fafc",
-                    fontSize: 11,
-                    color: "#64748b",
-                    padding: "4px 6px",
-                    height: 28,
-                    minWidth: 200,
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 5,
+                    alignItems: "center",
+                    marginLeft: "auto",
                   }}
-                />
+                >
+                  {/* busca */}
+                  <input
+                    type="text"
+                    placeholder="Search classes by name..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{
+                      borderRadius: 4,
+                      border: "1px solid #e2e8f0",
+                      backgroundColor: "#f8fafc",
+                      fontSize: 11,
+                      color: "#64748b",
+                      padding: "4px 6px",
+                      height: 28,
+                      width: 100,
+                    }}
+                  />
+                  {/* seletor de aluno */}
+                  {(thePermissions == "teacher" ||
+                    thePermissions == "superadmin") && (
+                    <>
+                      <select
+                        onChange={(e) => handleStudentChange(e)}
+                        value={studentID}
+                        style={{
+                          borderRadius: "4px",
+                          border: "1px solid #e2e8f0",
+                          backgroundColor: "#f8fafc",
+                          fontSize: "11px",
+                          width: 100,
+                          fontWeight: "400",
+                          color: "#64748b",
+                          padding: "4px 6px",
+                          height: "28px",
+                          outline: "none",
+                          cursor: "pointer",
+                          display: "block",
+                        }}
+                        onFocus={(e) =>
+                          (e.currentTarget.style.borderColor = partnerColor())
+                        }
+                        onBlur={(e) =>
+                          (e.currentTarget.style.borderColor = "#e2e8f0")
+                        }
+                      >
+                        {studentsList.map((student: any, index: number) => (
+                          <option key={index} value={student.id}>
+                            {truncateString(
+                              student.name + " " + student.lastname,
+                              15
+                            )}
+                          </option>
+                        ))}
+                      </select>
+                      <NewModuleButton
+                        courseId={courseId}
+                        studentId={studentID}
+                        headers={actualHeaders}
+                      />
+                    </>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -511,7 +541,7 @@ export default function Modules({
                     (a.order ?? 0) - (b.order ?? 0)
                 );
 
-              if (!sorted.length) return null;
+              if (searchQuery && !sorted.length) return null;
 
               return (
                 <div key={moduleIdx}>

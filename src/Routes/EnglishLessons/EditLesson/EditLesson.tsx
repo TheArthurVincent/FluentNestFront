@@ -380,7 +380,7 @@ export default function EditLesson({
             outline: "none",
             cursor: "pointer",
             display: "block",
-            maxWidth: 200,
+            maxwidth: 100,
           }}
         >
           {loading ? "Carregando..." : open ? "Fechar editor" : "Editar Aula"}
