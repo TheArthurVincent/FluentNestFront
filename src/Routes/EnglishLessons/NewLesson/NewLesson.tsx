@@ -71,7 +71,8 @@ export default function CreateClassButton({
           opacity: loading ? 0.7 : 1,
         }}
       >
-        <i className="fa fa-plus" /> New Class
+        <i className="fa fa-plus" />
+        Nova Aula
       </button>
 
       {/* Modal */}
@@ -100,7 +101,7 @@ export default function CreateClassButton({
               gap: "16px",
             }}
           >
-            <h3 style={{ margin: 0, color: "#333" }}>Create New Class</h3>
+            <h3 style={{ margin: 0, color: "#333" }}>CreateNova Aula</h3>
             moduleId: {moduleId && moduleId}
             <br />
             courseId: {courseId && courseId}
@@ -118,7 +119,6 @@ export default function CreateClassButton({
                 fontSize: "14px",
               }}
             />
-
             <div
               style={{
                 display: "flex",
