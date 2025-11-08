@@ -104,10 +104,8 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
   const [error, setError] = useState<string>("");
 
   useEffect(() => injectKeyframes(), []);
-  
+
   useEffect(() => {
-  
-  console.log("Course changed:", course);
     if (course) {
       setTitle(course.title || "");
       setImageUrl(course.image || "");

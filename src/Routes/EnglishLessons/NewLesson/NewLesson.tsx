@@ -101,15 +101,10 @@ export default function CreateClassButton({
               gap: "16px",
             }}
           >
-            <h3 style={{ margin: 0, color: "#333" }}>CreateNova Aula</h3>
-            moduleId: {moduleId && moduleId}
-            <br />
-            courseId: {courseId && courseId}
-            <br />
-            studentId: {studentId && studentId}
+            <h3 style={{ margin: 0, color: "#333" }}>Criar Nova Aula</h3>
             <input
               type="text"
-              placeholder="Class title..."
+              placeholder="Título da aula..."
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               style={{
