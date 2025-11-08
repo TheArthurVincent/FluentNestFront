@@ -17,6 +17,7 @@ import {
   backDomain,
   onLoggOut,
   pathGenerator,
+  verifyTeacherPermissionsForCourses,
 } from "../../Resources/UniversalComponents";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import { partnerColor } from "../../Styles/Styles";
@@ -24,16 +25,32 @@ import Modules from "./Modules";
 import NewCourseButton from "./NewCourse/NewCourse";
 import EditCourseModal, { Course } from "./EditCourse/EditCourse";
 
-// ==== Modal isolado ====
-
 /** ==================== TYPES ==================== */
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
 }
-
 type Permissions = "superadmin" | "teacher" | "student" | string;
 
-/** ==================== HELPERS & UI PRIMITIVES ==================== */
+// Estende o Course apenas para campos vindos do backend
+type CourseWithCreator = Course & {
+  creatorFullName?: string | null; // novo campo para exibição
+  isOriginal?: boolean;
+  createdBy?: string; // permanece como ID
+};
+
+/** ==================== UTILS / BASE STYLES ==================== */
+const injectBaseStyles = () => {
+  if (document.getElementById("courses-base-styles")) return;
+  const style = document.createElement("style");
+  style.id = "courses-base-styles";
+  style.innerHTML = `
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .iconbtn{border:none;background:transparent;padding:6px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+    .iconbtn:hover{background:#f3f4f6}
+  `;
+  document.head.appendChild(style);
+};
+
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
   size = 36,
   color = partnerColor(),
@@ -51,30 +68,6 @@ const Spinner: React.FC<{ size?: number; color?: string }> = ({
       margin: "12px auto",
     }}
   />
-);
-
-const injectBaseStyles = () => {
-  if (document.getElementById("courses-base-styles")) return;
-  const style = document.createElement("style");
-  style.id = "courses-base-styles";
-  style.innerHTML = `
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .iconbtn{border:none;background:transparent;padding:6px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-  .iconbtn:hover{background:#f3f4f6}
-  `;
-  document.head.appendChild(style);
-};
-
-const SvgEdit = ({ size = 18 }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    aria-hidden="true"
-  >
-    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
-  </svg>
 );
 
 /** ==================== BUSCA CURSO POR KEY (id ou slug) ==================== */
@@ -114,21 +107,25 @@ const CourseRouter: React.FC<{
 export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [listOfCoursesFromDatabase, setListOfCoursesFromDatabase] = useState<
-    Course[]
+    CourseWithCreator[]
   >([]);
   const [
     listOfNonAllowedCoursesFromDatabase,
     setListOfNonAllowedCoursesFromDatabase,
-  ] = useState<Course[]>([]);
+  ] = useState<CourseWithCreator[]>([]);
 
   const [editOpen, setEditOpen] = useState<boolean>(false);
-  const [courseToEdit, setCourseToEdit] = useState<Course | null>(null);
+  const [courseToEdit, setCourseToEdit] = useState<CourseWithCreator | null>(
+    null
+  );
 
   const [permissions, setPermissions] = useState<Permissions>("student");
   const [studentID, setStudentID] = useState<string>("");
 
+  // Para o título “Cursos de ...”
+  const [teacherName, setTeacherName] = useState<string>("");
+
   const actualHeaders = headers || {};
-  const { UniversalTexts } = useUserContext(); // mantido, caso seja usado no layout
   const location = useLocation();
 
   useEffect(() => {
@@ -138,10 +135,17 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
   const getCourses = async () => {
     setLoading(true);
     const getLoggedUser = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+
     const studentId = getLoggedUser.id;
     const { permissions } =
       (getLoggedUser as { permissions?: Permissions }) || {};
     const { id } = getLoggedUser || {};
+
+    // capturar name/lastname para título
+    const firstName = (getLoggedUser?.name || "").toString().trim();
+    const lastName = (getLoggedUser?.lastname || "").toString().trim();
+    const fullName = [firstName, lastName].filter(Boolean).join(" ");
+    setTeacherName(fullName || "Professor(a)");
 
     setStudentID((id as string) || "");
     setPermissions((permissions as Permissions) || "student");
@@ -151,8 +155,10 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
         `${backDomain}/api/v1/courses/${studentId}`,
         { headers: actualHeaders }
       );
-      const classesDB: Course[] = response.data.courses || [];
-      const classesNADB: Course[] = response.data.coursesNonAuth || [];
+
+      const classesDB: CourseWithCreator[] = response.data.courses || [];
+      const classesNADB: CourseWithCreator[] =
+        response.data.coursesNonAuth || [];
 
       setListOfCoursesFromDatabase(classesDB);
       if (permissions === "superadmin" || permissions === "teacher") {
@@ -172,61 +178,87 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ===== helpers de idioma & ordenação =====
+  // ===== helpers =====
   const normalizeLang = (lang?: string) => (lang || "en").toLowerCase();
-  const sortByOrder = (arr: Course[]) =>
+  const sortByOrder = (arr: CourseWithCreator[]) =>
     [...arr].sort((a, b) => (a.order ?? 9999) - (b.order ?? 9999));
+
+  // Não-originais (cursos do professor), ignorar idioma
+  const allowedNonOriginal = useMemo(
+    () =>
+      sortByOrder(
+        (listOfCoursesFromDatabase || []).filter(
+          (c: any) => c && c.isOriginal === false
+        )
+      ),
+    [listOfCoursesFromDatabase]
+  );
+
+  const nonAllowedNonOriginal = useMemo(
+    () =>
+      sortByOrder(
+        (listOfNonAllowedCoursesFromDatabase || []).filter(
+          (c: any) => c && c.isOriginal === false
+        )
+      ),
+    [listOfNonAllowedCoursesFromDatabase]
+  );
+
+  // Originais (true/undefined tratados como originais), por idioma
+  const allowedOriginalOnly = useMemo(
+    () =>
+      (listOfCoursesFromDatabase || []).filter(
+        (c: any) => c && c.isOriginal !== false
+      ),
+    [listOfCoursesFromDatabase]
+  );
+
+  const nonAllowedOriginalOnly = useMemo(
+    () =>
+      (listOfNonAllowedCoursesFromDatabase || []).filter(
+        (c: any) => c && c.isOriginal !== false
+      ),
+    [listOfNonAllowedCoursesFromDatabase]
+  );
 
   const groupedAllowed = useMemo(
     () => ({
       en: sortByOrder(
-        listOfCoursesFromDatabase.filter(
-          (c) => normalizeLang(c.language) === "en"
-        )
+        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "en")
       ),
       es: sortByOrder(
-        listOfCoursesFromDatabase.filter(
-          (c) => normalizeLang(c.language) === "es"
-        )
+        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "es")
       ),
       fr: sortByOrder(
-        listOfCoursesFromDatabase.filter(
-          (c) => normalizeLang(c.language) === "fr"
-        )
+        allowedOriginalOnly.filter((c) => normalizeLang(c.language) === "fr")
       ),
       other: sortByOrder(
-        listOfCoursesFromDatabase.filter(
+        allowedOriginalOnly.filter(
           (c) => !["en", "es", "fr"].includes(normalizeLang(c.language))
         )
       ),
     }),
-    [listOfCoursesFromDatabase]
+    [allowedOriginalOnly]
   );
 
   const groupedNonAllowed = useMemo(
     () => ({
       en: sortByOrder(
-        listOfNonAllowedCoursesFromDatabase.filter(
-          (c) => normalizeLang(c.language) === "en"
-        )
+        nonAllowedOriginalOnly.filter((c) => normalizeLang(c.language) === "en")
       ),
       es: sortByOrder(
-        listOfNonAllowedCoursesFromDatabase.filter(
-          (c) => normalizeLang(c.language) === "es"
-        )
+        nonAllowedOriginalOnly.filter((c) => normalizeLang(c.language) === "es")
       ),
       fr: sortByOrder(
-        listOfNonAllowedCoursesFromDatabase.filter(
-          (c) => normalizeLang(c.language) === "fr"
-        )
+        nonAllowedOriginalOnly.filter((c) => normalizeLang(c.language) === "fr")
       ),
       other: sortByOrder(
-        listOfNonAllowedCoursesFromDatabase.filter(
+        nonAllowedOriginalOnly.filter(
           (c) => !["en", "es", "fr"].includes(normalizeLang(c.language))
         )
       ),
     }),
-    [listOfNonAllowedCoursesFromDatabase]
+    [nonAllowedOriginalOnly]
   );
 
   const canEdit = permissions === "superadmin";
@@ -297,15 +329,15 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     background: "rgba(0,0,0,0.65)",
   };
 
-  const openEdit = (course: Course) => {
+  const openEdit = (course: CourseWithCreator) => {
     setCourseToEdit(course);
     setEditOpen(true);
   };
 
-  const CourseCard: React.FC<{ course: Course; locked?: boolean }> = ({
-    course,
-    locked,
-  }) => {
+  const CourseCard: React.FC<{
+    course: CourseWithCreator;
+    locked?: boolean;
+  }> = ({ course, locked }) => {
     const [hover, setHover] = useState(false);
     const lang = (normalizeLang(course.language) || "en") as
       | "en"
@@ -314,6 +346,16 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       | string;
     const langLabel =
       lang === "en" ? "EN" : lang === "es" ? "ES" : lang === "fr" ? "FR" : "OT";
+
+    const canEditCourse = (() => {
+      if (permissions === "superadmin") return true;
+      if (permissions === "teacher") {
+        const isOriginal = (course as any)?.isOriginal;
+        const createdBy = String((course as any)?.createdBy || "");
+        return !isOriginal && createdBy === String(studentID);
+      }
+      return false;
+    })();
 
     const Thumb = (
       <div style={thumbWrap}>
@@ -333,15 +375,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
         <span style={langBadge}>{langLabel}</span>
         {locked && (
           <span style={lockBadge} aria-label="locked">
-            <svg
-              width="12"
-              height="12"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path d="M12 2a5 5 0 00-5 5v3H6a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2v-8a2 2 0 00-2-2h-1V7a5 5 0 00-5-5zm3 8H9V7a3 3 0 016 0v3z" />
-            </svg>
+            <i className="fa fa-lock" aria-hidden="true" />
             Bloqueado
           </span>
         )}
@@ -360,7 +394,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
         <h3 style={titleStyle} title={course.title}>
           {course.title}
         </h3>
-        {canEdit && (
+        {canEditCourse && (
           <button
             className="iconbtn"
             title="Editar curso"
@@ -370,13 +404,37 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
               openEdit(course);
             }}
           >
-            <SvgEdit />
+            <i className="fa fa-pencil" aria-hidden="true" />
           </button>
         )}
       </div>
     );
 
-    const Body = <div style={titleWrap}>{TitleRow}</div>;
+    // byline: só se !isOriginal e houver nome
+    const Byline =
+      !course.isOriginal && course.creatorFullName ? (
+        <div
+          style={{
+            marginTop: 4,
+            fontSize: 12,
+            color: "#64748b",
+            lineHeight: 1.2,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+          title={course.creatorFullName}
+        >
+          {course.creatorFullName}
+        </div>
+      ) : null;
+
+    const Body = (
+      <div style={titleWrap}>
+        {TitleRow}
+        {Byline}
+      </div>
+    );
 
     const CardShell = ({ children }: { children: React.ReactNode }) => (
       <li
@@ -427,8 +485,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
   /** ==================== SEÇÃO POR IDIOMA ==================== */
   const LangSection: React.FC<{
     title: string;
-    allowed: Course[];
-    nonAllowed: Course[];
+    allowed: CourseWithCreator[];
+    nonAllowed: CourseWithCreator[];
   }> = ({ title, allowed, nonAllowed }) => {
     if (allowed.length === 0 && nonAllowed.length === 0) return null;
     return (
@@ -446,7 +504,6 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
     );
   };
 
-  /** ==================== ROTEAMENTO & LAYOUT ==================== */
   const isRootPath =
     location.pathname === "/teaching-materials" ||
     location.pathname === "/teaching-materials/";
@@ -501,9 +558,28 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             >
               <HOne> Cursos </HOne>
 
-              {/* Novo curso */}{permissions === "superadmin" &&
-              <NewCourseButton studentId={studentID} headers={actualHeaders} />
-}
+              {(permissions === "superadmin" || permissions === "teacher") && (
+                <NewCourseButton
+                  studentId={studentID}
+                  headers={actualHeaders}
+                />
+              )}
+
+              {/* Primeira categoria — cursos NÃO originais (ignorando idioma) */}
+              {(allowedNonOriginal.length > 0 ||
+                nonAllowedNonOriginal.length > 0) && (
+                <LangSection
+                  title={
+                    permissions == "superadmin"
+                      ? "Cursos de Outros Criadores"
+                      : `Cursos de ${teacherName}`
+                  }
+                  allowed={allowedNonOriginal}
+                  nonAllowed={nonAllowedNonOriginal}
+                />
+              )}
+
+              {/* Originais por idioma */}
               <LangSection
                 title="English"
                 allowed={groupedAllowed.en}
@@ -538,7 +614,7 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
       <EditCourseModal
         open={editOpen}
         onClose={() => setEditOpen(false)}
-        course={courseToEdit}
+        course={courseToEdit as Course}
         headers={actualHeaders}
         onSaved={getCourses}
         studentId={studentID}

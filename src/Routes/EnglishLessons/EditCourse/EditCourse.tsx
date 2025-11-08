@@ -9,6 +9,8 @@ import { uploadImageViaBackend } from "../../../Resources/ImgUpload";
 export type Course = {
   _id: string;
   title: string;
+  isOriginal?: boolean;
+  createdBy?: string;
   image: string;
   order?: number;
   language?: "en" | "es" | "fr" | string;
@@ -102,7 +104,10 @@ const EditCourseModal: React.FC<EditCourseModalProps> = ({
   const [error, setError] = useState<string>("");
 
   useEffect(() => injectKeyframes(), []);
+  
   useEffect(() => {
+  
+  console.log("Course changed:", course);
     if (course) {
       setTitle(course.title || "");
       setImageUrl(course.image || "");

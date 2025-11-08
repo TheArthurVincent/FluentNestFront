@@ -1856,3 +1856,20 @@ export function isValidCPF(cpf) {
   secondCheck = secondCheck > 9 ? 0 : secondCheck;
   return secondCheck === parseInt(cpf.charAt(10));
 }
+
+export function verifyTeacherPermissionsForCourses(
+  isOriginal,
+  createdBy
+) {
+  const { permissions, id } = JSON.parse(
+    localStorage.getItem("loggedIn") || "[]"
+  );
+  console.log({ permissions, createdBy, teacherId, isOriginal });
+  if (permissions !== "superadmin" && permissions !== "teacher") {
+    return false;
+  } else if (permissions == "superadmin") {
+    return true;
+  } else if (!isOriginal && createdBy == id) {
+    return true;
+  }
+}
