@@ -193,7 +193,7 @@ export var verifyToken = () => {
       return false;
     }
 
-    console.log("[App] Token JWT válido");
+    console.log("[App] Token JWT válido...");
     return true;
   } catch (err) {
     console.error("[App] Erro ao verificar token:", err);
