@@ -27,6 +27,7 @@ import SingleImagesEditor, {
   SingleImagesBlock,
 } from "./SingleImagesEditor/SingleImagesEditor";
 import { partnerColor } from "../../../Styles/Styles";
+import DeleteClassButton from "./DeleteLesson/DeleteLesson";
 
 type ElementItem =
   | {
@@ -754,12 +755,21 @@ export default function EditLesson({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
+              gridTemplateColumns: "1fr 1fr 1fr",
               gap: 8,
               justifyContent: isMobile ? "stretch" : "flex-end",
               marginTop: 16,
             }}
           >
+            <DeleteClassButton
+              classId={classId}
+              headers={headers} // se precisar de Authorization
+              onDeleted={() => {
+                window.location.href = `/teaching-materials/${
+                  lesson?.courseId || ""
+                }`;
+              }}
+            />
             <button
               onClick={() => {
                 setOpen(false);
