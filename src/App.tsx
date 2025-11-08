@@ -3,9 +3,7 @@ try {
   const wl = localStorage.getItem("whiteLabel");
   if (!wl) {
     const defaultWL = {
-      backgroundType: "color",
       color: "#ed5914",
-      backgroundColor: "#eee",
       contrastColor: "#eee",
       logo: "https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Profile-White.png?updatedAt=1756235005135",
     };

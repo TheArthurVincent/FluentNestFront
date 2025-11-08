@@ -284,7 +284,6 @@ export default function WhiteLabelPreview({ headers }) {
     const finalFormData = {
       ...formData,
       logo: previewLogo,
-      background: previewBackground,
     };
 
     try {
