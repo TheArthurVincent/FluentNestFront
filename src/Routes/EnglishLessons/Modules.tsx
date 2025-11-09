@@ -23,6 +23,7 @@ import NewModuleButton from "./NewModule/NewModule";
 import CreateClassButton from "./NewLesson/NewLesson";
 import EnglishClassCourse2 from "./Class";
 import ReorderModulesButton from "./EditLesson/EditOrderModule/EditOrderModule";
+import ModuleActions from "./EditLesson/EditModule/EditModule";
 
 /* =================== Spinner =================== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
@@ -249,11 +250,12 @@ export default function Modules({
       setStudentID(selectedStudentID);
     } catch {}
   }, []);
+
   useEffect(() => {
     if (thePermissions === "superadmin" || thePermissions === "teacher") {
       fetchStudents();
     }
-  }, [title]); // mantém seu comportamento original
+  }, [title, thePermissions]); // mantém seu comportamento original
 
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
@@ -565,6 +567,15 @@ export default function Modules({
                     {moduleIdx + 1} |{" "}
                     {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
                     {sorted.length} Lessons
+                    {canEditCourse && (
+                      <ModuleActions
+                        moduleId={module.id}
+                        initialTitle={module.moduleTitle || ""}
+                        headers={headers}
+                        canEdit={canEditCourse}
+                        onChanged={getModules} // recarrega lista após salvar/excluir
+                      />
+                    )}{" "}
                   </HThreeModule>
 
                   {canEditCourse && (
