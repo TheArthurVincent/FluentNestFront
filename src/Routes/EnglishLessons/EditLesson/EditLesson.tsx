@@ -649,6 +649,9 @@ export default function EditLesson({
                       <VocabularyEditor
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
+                        changeTokens={change}
+                        studentId={studentId}
+                        setChangeTokens={setChange}
                         onRemove={() => removeElementAt(idx)}
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}

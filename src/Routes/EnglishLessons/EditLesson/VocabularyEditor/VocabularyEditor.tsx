@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { truncateString } from "../../../../Resources/UniversalComponents";
+import axios from "axios";
+import {
+  backDomain,
+  truncateString,
+} from "../../../../Resources/UniversalComponents";
+import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
 
+/* ===================== TYPES ===================== */
 export type Languages = {
   language1: string; // idioma do campo "english"
   language2: string; // idioma do campo "portuguese"
@@ -20,6 +27,8 @@ export type SentencesBlock = {
   grid?: number;
 };
 
+type HeadersLike = Record<string, string>;
+
 type Props = {
   value: SentencesBlock;
   onChange: (next: SentencesBlock) => void;
@@ -27,12 +36,26 @@ type Props = {
   titleRightExtra?: React.ReactNode;
   defaultBlockLang1?: string;
   defaultBlockLang2?: string;
-  onMoveUp?: () => void; // NOVO
-  onMoveDown?: () => void; // NOVO
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+
+  // IA / controle
+  studentId?: string;
+  headers?: HeadersLike | null;
+
+  setChange?: (v: any) => void;
+  change?: any;
+
+  // legado opcional, se quiser manter compat:
+  changeTokens?: any;
+  setChangeTokens?: (v: any) => void;
 };
+
+/* ===================== CONSTANTS ===================== */
 const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
+/* ===================== COMPONENT ===================== */
 export default function VocabularyEditor({
   value,
   onChange,
@@ -42,9 +65,11 @@ export default function VocabularyEditor({
   titleRightExtra,
   defaultBlockLang1 = "en",
   defaultBlockLang2 = "pt",
+  studentId,
+  headers,
+  setChange,
+  change,
 }: Props) {
-  // defaults do bloco (usados ao criar novas sentenças)
-
   const [showConfig, setShowConfig] = useState(false);
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
     (defaultBlockLang1 as LangCode) || "en"
@@ -52,10 +77,27 @@ export default function VocabularyEditor({
   const [defaultLang2, setDefaultLang2] = useState<LangCode>(
     (defaultBlockLang2 as LangCode) || "pt"
   );
+  const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
 
-  // Backfill AUTOMÁTICO na montagem: garante languages em todas as sentenças
+  /* ====== sincroniza idiomas padrão quando props mudam ====== */
   useEffect(() => {
-    const needsBackfill = value.sentences.some((s: any) => !s.languages);
+    if (
+      (LANG_OPTIONS as readonly string[]).includes(defaultBlockLang1) &&
+      defaultLang1 !== (defaultBlockLang1 as LangCode)
+    ) {
+      setDefaultLang1(defaultBlockLang1 as LangCode);
+    }
+    if (
+      (LANG_OPTIONS as readonly string[]).includes(defaultBlockLang2) &&
+      defaultLang2 !== (defaultBlockLang2 as LangCode)
+    ) {
+      setDefaultLang2(defaultBlockLang2 as LangCode);
+    }
+  }, [defaultBlockLang1, defaultBlockLang2]);
+
+  /* ====== backfill languages (quando faltar) ====== */
+  useEffect(() => {
+    const needsBackfill = value.sentences.some((s: any) => !s?.languages);
     if (needsBackfill) {
       const fixed = value.sentences.map((s: any) => ({
         english: s.english ?? "",
@@ -67,16 +109,10 @@ export default function VocabularyEditor({
       }));
       onChange({ ...value, sentences: fixed });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // apenas na montagem
+  }, [value.sentences, defaultLang1, defaultLang2]); // reavalia se defaults mudarem
 
+  /* ===================== UPDATERS ===================== */
   const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
-
-  const updateOrder = (order: number | undefined) =>
-    onChange({ ...value, order });
-
-  const updateGrid = (grid: number | undefined) => onChange({ ...value, grid });
-
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem
@@ -118,37 +154,57 @@ export default function VocabularyEditor({
     onChange({ ...value, sentences: next });
   };
 
-  const trimAll = () => {
-    const next = value.sentences.map((s) => ({
-      english: (s.english || "").trim(),
-      portuguese: (s.portuguese || "").trim(),
-      languages: {
-        language1: (s.languages?.language1 || defaultLang1 || "en").trim(),
-        language2: (s.languages?.language2 || defaultLang2 || "pt").trim(),
-      },
-    }));
-    onChange({ ...value, sentences: next, subtitle: value.subtitle.trim() });
+  /* ===================== IA: traduzir/definir o termo do FRONT para o BACK ===================== */
+  const handleAI = async (idx: number) => {
+    const s = value.sentences[idx];
+    const sentence = (s?.english || "").trim(); // no vocabulário, usamos o termo do FRONT
+    const language1 = (s?.languages?.language1 || defaultLang1 || "en").trim();
+    const language2 = (s?.languages?.language2 || defaultLang2 || "pt").trim();
+
+    if (!studentId) {
+      notifyAlert("ID do aluno não informado.", partnerColor());
+      return;
+    }
+    if (!sentence) {
+      notifyAlert("Preencha o Front antes de gerar o Back.", partnerColor());
+      return;
+    }
+
+    try {
+      setLoadingIdx(idx);
+      const url = `${backDomain}/api/v1/translateOrDefineSentence/${studentId}`;
+      const payload = { sentence, language1, language2 };
+
+      const response =
+        headers && Object.keys(headers).length > 0
+          ? await axios.post(url, payload, { headers })
+          : await axios.post(url, payload);
+
+      const backText = (response?.data?.backText || "").trim();
+      if (!backText) {
+        notifyAlert("Resposta vazia recebida do servidor.", partnerColor());
+        return;
+      }
+
+      updateSentence(idx, (prev) => ({
+        ...prev,
+        portuguese: backText,
+      }));
+
+      setChange?.(!change);
+    } catch (error: any) {
+      console.error(error);
+      const msg =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Erro ao gerar tradução/definição.";
+      notifyAlert(msg, partnerColor());
+    } finally {
+      setLoadingIdx(null);
+    }
   };
 
-  const backfillLanguagesAll = () => {
-    const next = value.sentences.map((s) => ({
-      ...s,
-      languages: {
-        language1: (LANG_OPTIONS as readonly string[]).includes(
-          s.languages?.language1
-        )
-          ? (s.languages!.language1 as LangCode)
-          : defaultLang1 || "en",
-        language2: (LANG_OPTIONS as readonly string[]).includes(
-          s.languages?.language2
-        )
-          ? (s.languages!.language2 as LangCode)
-          : defaultLang2 || "pt",
-      },
-    }));
-    onChange({ ...value, sentences: next });
-  };
-
+  /* ===================== RENDER HELPERS ===================== */
   const renderLangSelect = (
     current: string | undefined,
     onChangeLang: (code: LangCode) => void,
@@ -181,6 +237,7 @@ export default function VocabularyEditor({
         gap: 12,
       }}
     >
+      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -190,24 +247,13 @@ export default function VocabularyEditor({
         }}
       >
         <strong
-          onClick={() => {
-            setShowConfig(!showConfig);
-          }}
-          style={{
-            fontSize: 14,
-            cursor: "pointer",
-            color: "#0f172a",
-          }}
+          onClick={() => setShowConfig((v) => !v)}
+          style={{ fontSize: 14, cursor: "pointer", color: "#0f172a" }}
         >
-          Vocabulary - {value.subtitle && truncateString(value.subtitle, 15)}
+          Vocabulary{" "}
+          {value.subtitle ? `- ${truncateString(value.subtitle, 15)}` : ""}
         </strong>
-        <span
-          style={{
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-          }}
-        >
+        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <div>
             <button
               onClick={(e) => {
@@ -231,7 +277,11 @@ export default function VocabularyEditor({
             </button>
           </div>
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtnStyle}>
+            <button
+              onClick={onRemove}
+              style={dangerBtnStyle}
+              title="Remover bloco"
+            >
               <i className="fa fa-trash" />
             </button>
           )}
@@ -258,15 +308,12 @@ export default function VocabularyEditor({
                 style={inputStyle}
               />
             </div>
-
             <div style={{ display: "flex", gap: 6, alignItems: "flex-end" }}>
-              {/* <button onClick={trimAll} style={ghostBtnStyle} title="Trim texto">
-            Trim
-          </button> */}
               {titleRightExtra}
             </div>
           </div>
-          {/* Lista de sentenças */}
+
+          {/* Grid de cartões */}
           <div style={{ display: "grid", gap: 8 }}>
             <div
               style={{
@@ -285,7 +332,7 @@ export default function VocabularyEditor({
 
             {value.sentences.length === 0 && (
               <div style={emptyStyle}>
-                Nenhuma sentença. Use “Adicionar sentença”.
+                Nenhum item. Use “Adicionar vocabulário”.
               </div>
             )}
 
@@ -300,6 +347,7 @@ export default function VocabularyEditor({
                 <div
                   key={idx}
                   style={{
+                    border: "1px solid #e2e8f0",
                     borderRadius: 8,
                     padding: 10,
                     display: "grid",
@@ -307,6 +355,7 @@ export default function VocabularyEditor({
                     background: "#fff",
                   }}
                 >
+                  {/* Controles do item */}
                   <div
                     style={{
                       display: "flex",
@@ -337,6 +386,7 @@ export default function VocabularyEditor({
                     </button>
                   </div>
 
+                  {/* FRONT / BACK + IA */}
                   <div style={{ display: "grid", gap: 8 }}>
                     <div style={{ display: "grid", gap: 6 }}>
                       <label style={{ fontSize: 12, color: "#334155" }}>
@@ -359,22 +409,44 @@ export default function VocabularyEditor({
                       <label style={{ fontSize: 12, color: "#334155" }}>
                         Back
                       </label>
-                      <input
-                        value={s.portuguese}
-                        onChange={(e) =>
-                          updateSentence(idx, (prev) => ({
-                            ...prev,
-                            portuguese: e.target.value,
-                          }))
-                        }
-                        placeholder="Ex.: Supermercado"
-                        style={inputStyle}
-                      />
+
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 6,
+                          alignItems: "center",
+                          width: "100%",
+                        }}
+                      >
+                        <input
+                          value={s.portuguese}
+                          onChange={(e) =>
+                            updateSentence(idx, (prev) => ({
+                              ...prev,
+                              portuguese: e.target.value,
+                            }))
+                          }
+                          placeholder="Ex.: Supermercado"
+                          style={inputStyle}
+                        />
+                        <button
+                          style={{
+                            ...ghostBtnStyle,
+                            whiteSpace: "nowrap",
+                            opacity: loadingIdx === idx ? 0.6 : 1,
+                          }}
+                          onClick={() => handleAI(idx)}
+                          disabled={loadingIdx === idx}
+                          title="Gerar tradução/definição e preencher o Back (-1 token)"
+                        >
+                          {loadingIdx === idx ? "..." : "✨ (-1)"}
+                        </button>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Idiomas por sentença (sempre presente) */}
-                  {/* <div
+                  {/* Idiomas por item */}
+                  <div
                     style={{
                       display: "grid",
                       gridTemplateColumns: "1fr 1fr",
@@ -397,7 +469,7 @@ export default function VocabularyEditor({
                               (defaultLang2 || "pt"),
                           },
                         })),
-                      "language1 (para “english”)"
+                      'language1 (para "english")'
                     )}
                     {renderLangSelect(
                       s.languages?.language2,
@@ -411,9 +483,18 @@ export default function VocabularyEditor({
                             language2: code,
                           },
                         })),
-                      "language2 (para “portuguese”)"
+                      'language2 (para "portuguese")'
                     )}
-                  </div> */}
+                  </div>
+
+                  {/* aviso quando idiomas iguais */}
+                  {(s.languages?.language1 || defaultLang1) ===
+                    (s.languages?.language2 || defaultLang2) && (
+                    <span style={{ fontSize: 12, color: "#475569" }}>
+                      language1 e language2 iguais → a IA gera{" "}
+                      <strong>definição</strong> (não tradução).
+                    </span>
+                  )}
                 </div>
               ))}
             </div>
@@ -462,7 +543,6 @@ const ghostBtnStyle: React.CSSProperties = {
 const dangerBtnStyle: React.CSSProperties = {
   borderRadius: 8,
   border: "1px solid #ef4444",
-  zIndex: 2,
   backgroundColor: "#ef4444",
   color: "white",
   padding: "6px 10px",
