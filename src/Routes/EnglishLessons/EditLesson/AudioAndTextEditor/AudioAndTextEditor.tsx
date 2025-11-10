@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import { uploadImageViaBackend } from "../../../../Resources/ImgUpload";
+import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 export type AudioBlock = {
   type: "audio";
@@ -12,11 +16,16 @@ export type AudioBlock = {
 
 type Props = {
   value: AudioBlock;
+  studentId: any;
+  language: string;
   onChange: (next: AudioBlock) => void;
   onRemove?: () => void;
   onMoveUp?: () => void;
   onMoveDown?: () => void;
   headers?: any; // para envio autenticado se necessário
+  // opcional: disparar re-render no pai
+  setChange?: any;
+  change?: any;
 };
 
 const ghostBtnStyle: React.CSSProperties = {
@@ -39,6 +48,18 @@ const dangerBtnStyle: React.CSSProperties = {
   fontSize: 13,
   fontWeight: 600,
 };
+
+const primaryBtnStyle: React.CSSProperties = {
+  borderRadius: 8,
+  border: "1px solid #0891b2",
+  backgroundColor: "#06b6d4",
+  color: "white",
+  padding: "6px 10px",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: 600,
+};
+
 export default function AudioAndTextEditor({
   value,
   onChange,
@@ -46,6 +67,10 @@ export default function AudioAndTextEditor({
   onMoveUp,
   onMoveDown,
   headers,
+  studentId,
+  language,
+  setChange,
+  change,
 }: Props) {
   const [showConfig, setShowConfig] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
@@ -54,8 +79,10 @@ export default function AudioAndTextEditor({
   const [uploadingAudio, setUploadingAudio] = useState(false);
   const [audioError, setAudioError] = useState<string | null>(null);
 
+  const [aiOpen, setAiOpen] = useState(false);
+
   const update = (patch: Partial<AudioBlock>) =>
-    onChange({ ...value, ...patch });
+    onChange({ ...value, ...patch, type: "audio" });
 
   const onPickCover = async (file: File | null) => {
     if (!file) return;
@@ -76,7 +103,7 @@ export default function AudioAndTextEditor({
     }
   };
 
-  // OPCIONAL: upload do arquivo de áudio (usa o mesmo helper; seu backend deve aceitar)
+  // upload do arquivo de áudio (opcional)
   const onPickAudio = async (file: File | null) => {
     if (!file) return;
     try {
@@ -96,6 +123,119 @@ export default function AudioAndTextEditor({
     }
   };
 
+  // ===== Helpers IA
+  function parseMaybeJson(input: any): any {
+    if (Array.isArray(input) || (input && typeof input === "object"))
+      return input;
+    if (typeof input !== "string") return input;
+    const cleaned = input
+      .trim()
+      .replace(/^```json/i, "")
+      .replace(/^```/i, "")
+      .replace(/```$/, "")
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      return input;
+    }
+  }
+
+  // extrai src de iframes (ex.: SoundCloud embed)
+  function extractSrcFromIframe(linkOrHtml: string): string {
+    if (!linkOrHtml || typeof linkOrHtml !== "string") return linkOrHtml;
+    const html = linkOrHtml.trim();
+    if (!html.includes("<iframe")) return linkOrHtml;
+    const m = html.match(/src=["']([^"']+)["']/i);
+    return m?.[1] || linkOrHtml;
+  }
+
+  // normaliza campos típicos {text, link, image} ou similares
+  function normalizeAudioPayload(raw: any): Partial<AudioBlock> {
+    if (!raw) return {};
+    if (typeof raw === "string") {
+      // se for só texto longo, preenche text
+      return { text: raw };
+    }
+    if (Array.isArray(raw)) {
+      // se vier array, junta em parágrafos
+      return {
+        text: raw
+          .map((x) => (typeof x === "string" ? x : JSON.stringify(x)))
+          .join("\n\n"),
+      };
+    }
+    if (typeof raw === "object") {
+      const text =
+        raw.text ??
+        raw.body ??
+        raw.content ??
+        raw.transcript ??
+        raw.caption ??
+        raw.description ??
+        "";
+      let link = raw.link ?? raw.url ?? raw.audio ?? raw.src ?? raw.sound ?? "";
+      const image =
+        raw.image ?? raw.cover ?? raw.thumbnail ?? raw.icon ?? undefined;
+
+      link = typeof link === "string" ? extractSrcFromIframe(link) : link;
+
+      return {
+        text: typeof text === "string" ? text : JSON.stringify(text ?? ""),
+        link: typeof link === "string" ? link : "",
+        image: typeof image === "string" ? image : undefined,
+      };
+    }
+    return {};
+  }
+
+  const handleReceiveJson = (raw: any) => {
+    const json = parseMaybeJson(raw);
+
+    // suporta envelopes {data|result|json|item}
+    let payload: any = json;
+    if (json && typeof json === "object" && !Array.isArray(json)) {
+      const inner =
+        json.data ??
+        json.result ??
+        json.json ??
+        json.item ??
+        json.response ??
+        null;
+      if (inner) payload = parseMaybeJson(inner);
+    }
+
+    const norm = normalizeAudioPayload(payload);
+    if (!norm.text && !norm.link && !norm.image) {
+      notifyAlert(
+        "Não reconheci campos para Audio. Retorne { text, link?, image? } ou um texto simples.",
+        partnerColor()
+      );
+      console.warn("IA (bruto) audio:", raw);
+      return;
+    }
+
+    update({
+      text: norm.text ?? value.text,
+      link: norm.link ?? value.link,
+      image: norm.image ?? value.image,
+    });
+
+    setShowConfig(true);
+    setChange?.(!change);
+  };
+
+  // detecta se é embed de soundcloud player
+  const isSoundCloudEmbed =
+    typeof value.link === "string" &&
+    value.link.includes("w.soundcloud.com/player");
+
+  // preview de áudio genérico
+  const canHtml5Audio =
+    typeof value.link === "string" &&
+    /^https?:\/\//i.test(value.link) &&
+    !isSoundCloudEmbed;
+
   return (
     <div
       style={{
@@ -103,6 +243,8 @@ export default function AudioAndTextEditor({
         borderRadius: 6,
         padding: "5px 12px",
         background: "linear-gradient(to right, #f7dbfe55, #ffffff)",
+        display: "grid",
+        gap: 10,
       }}
     >
       {/* Header */}
@@ -111,6 +253,8 @@ export default function AudioAndTextEditor({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         <strong
@@ -123,7 +267,23 @@ export default function AudioAndTextEditor({
         >
           Text & Audio {value.subtitle ? `- ${value.subtitle}` : ""}
         </strong>
-        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <span
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          {/* IA */}
+          <button
+            style={primaryBtnStyle}
+            onClick={() => setAiOpen(true)}
+            title="Gerar texto/áudio por IA"
+          >
+            ✨ IA
+          </button>
+
           <div>
             {onMoveUp && (
               <button onClick={onMoveUp} style={ghostBtnStyle} title="Mover ↑">
@@ -148,9 +308,45 @@ export default function AudioAndTextEditor({
         </span>
       </div>
 
+      {/* Preview rápido do áudio/link (fora do config para facilitar checagem) */}
+      {value.link && (
+        <div
+          style={{
+            display: "grid",
+            gap: 8,
+            background: "#f8fafc",
+            border: "1px solid #e2e8f0",
+            borderRadius: 8,
+            padding: 10,
+          }}
+        >
+          {isSoundCloudEmbed && (
+            <iframe
+              title="SoundCloud Player"
+              width="100%"
+              height="166"
+              scrolling="no"
+              frameBorder="no"
+              allow="autoplay"
+              src={value.link}
+              style={{ borderRadius: 8 }}
+            />
+          )}
+
+          {canHtml5Audio && (
+            <audio
+              controls
+              preload="none"
+              src={value.link}
+              style={{ width: "100%" }}
+            />
+          )}
+        </div>
+      )}
+
       {showConfig && (
         <div style={{ display: "grid", gap: 12 }}>
-          {/* Linha: Subtitle / Order */}
+          {/* Subtitle */}
           <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
             <input
@@ -186,21 +382,17 @@ export default function AudioAndTextEditor({
           </div>
 
           {/* Área: Link do áudio + Upload opcional */}
-          <div
-            style={{
-              display: "grid",
-              gap: 12,
-              alignItems: "end",
-            }}
-          >
+          <div style={{ display: "grid", gap: 12, alignItems: "end" }}>
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Link do áudio
               </label>
               <input
                 value={value.link ?? ""}
-                onChange={(e) => update({ link: e.target.value })}
-                placeholder="Cole a URL do áudio (Drive, CDN, etc.)"
+                onChange={(e) =>
+                  update({ link: extractSrcFromIframe(e.target.value) })
+                }
+                placeholder='Cole a URL (Drive/CDN) ou um <iframe> de embed (pegarei o "src")'
                 style={{
                   border: "1px solid #e2e8f0",
                   borderRadius: 8,
@@ -211,6 +403,24 @@ export default function AudioAndTextEditor({
               {audioError && (
                 <small style={{ color: "#b91c1c" }}>{audioError}</small>
               )}
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <label
+                  style={{
+                    ...ghostBtnStyle,
+                    display: "inline-block",
+                    textAlign: "center",
+                  }}
+                >
+                  {uploadingAudio ? "Enviando áudio..." : "Upload de áudio"}
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    style={{ display: "none" }}
+                    onChange={(e) => onPickAudio(e.target.files?.[0] || null)}
+                    disabled={uploadingAudio}
+                  />
+                </label>
+              </div>
             </div>
           </div>
 
@@ -283,6 +493,18 @@ export default function AudioAndTextEditor({
           </div>
         </div>
       )}
+
+      {/* Modal IA: gera { text, link?, image? } */}
+      <SimpleAIGenerator
+        visible={aiOpen}
+        language1={language || "en"}
+        type="audio"
+        onClose={() => setAiOpen(false)}
+        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`} // seu endpoint: ajuste se preferir usar /:studentId
+        headers={headers}
+        onReceiveJson={handleReceiveJson}
+        title="Gerar Text & Audio por IA"
+      />
     </div>
   );
 }

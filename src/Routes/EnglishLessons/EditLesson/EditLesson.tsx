@@ -707,6 +707,8 @@ export default function EditLesson({
                         value={el as AudioBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
+                        language={lesson?.language || "en"}
+                        studentId={studentId}
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
