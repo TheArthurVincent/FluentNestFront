@@ -6,6 +6,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../../Styles/Styles";
+import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 /* ===================== TYPES ===================== */
 export type Languages = {
@@ -21,7 +22,8 @@ export type SentenceItem = {
 
 export type SentencesBlock = {
   subtitle: string;
-  type: "sentences";
+  // ✅ aceita os dois tipos (mantém compatibilidade com o pai e garante "vocabulary")
+  type: "sentences" | "vocabulary";
   sentences: SentenceItem[];
   order?: number;
   grid?: number;
@@ -69,6 +71,8 @@ export default function VocabularyEditor({
   headers,
   setChange,
   change,
+  changeTokens,
+  setChangeTokens,
 }: Props) {
   const [showConfig, setShowConfig] = useState(false);
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
@@ -78,6 +82,13 @@ export default function VocabularyEditor({
     (defaultBlockLang2 as LangCode) || "pt"
   );
   const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
+
+  // Modal IA (gerador isolado)
+  const [aiOpen, setAiOpen] = useState(false);
+
+  // helper p/ disparar re-render no pai, compatível com props novos e legados
+  const toggleChange = () =>
+    (setChange ?? setChangeTokens)?.(!(change ?? changeTokens));
 
   /* ====== sincroniza idiomas padrão quando props mudam ====== */
   useEffect(() => {
@@ -93,33 +104,36 @@ export default function VocabularyEditor({
     ) {
       setDefaultLang2(defaultBlockLang2 as LangCode);
     }
-  }, [defaultBlockLang1, defaultBlockLang2]);
+  }, [defaultBlockLang1, defaultBlockLang2]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* ====== backfill languages (quando faltar) ====== */
+  /* ====== backfill languages (quando faltar) + garantir type vocabulary ====== */
   useEffect(() => {
     const needsBackfill = value.sentences.some((s: any) => !s?.languages);
-    if (needsBackfill) {
+    if (needsBackfill || value.type !== "vocabulary") {
       const fixed = value.sentences.map((s: any) => ({
-        english: s.english ?? "",
-        portuguese: s.portuguese ?? "",
-        languages: s.languages ?? {
+        english: s?.english ?? "",
+        portuguese: s?.portuguese ?? "",
+        languages: s?.languages ?? {
           language1: defaultLang1 || "en",
           language2: defaultLang2 || "pt",
         },
       }));
-      onChange({ ...value, sentences: fixed });
+      onChange({ ...value, type: "vocabulary", sentences: fixed });
     }
-  }, [value.sentences, defaultLang1, defaultLang2]); // reavalia se defaults mudarem
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value.sentences, defaultLang1, defaultLang2]);
 
   /* ===================== UPDATERS ===================== */
-  const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
+  const updateSubtitle = (subtitle: string) =>
+    onChange({ ...value, subtitle, type: "vocabulary" });
+
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem
   ) => {
     const next = value.sentences.slice();
     next[index] = updater(next[index]);
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: next });
   };
 
   const addSentence = () => {
@@ -131,33 +145,33 @@ export default function VocabularyEditor({
         language2: defaultLang2 || "pt",
       },
     });
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: next });
   };
 
   const removeSentence = (index: number) => {
     const next = value.sentences.slice();
     next.splice(index, 1);
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: next });
   };
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
     const next = value.sentences.slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: next });
   };
 
   const moveDown = (index: number) => {
     if (index >= value.sentences.length - 1) return;
     const next = value.sentences.slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "vocabulary", sentences: next });
   };
 
-  /* ===================== IA: traduzir/definir o termo do FRONT para o BACK ===================== */
+  /* ===================== IA item a item (tradução/definição) ===================== */
   const handleAI = async (idx: number) => {
     const s = value.sentences[idx];
-    const sentence = (s?.english || "").trim(); // no vocabulário, usamos o termo do FRONT
+    const sentence = (s?.english || "").trim();
     const language1 = (s?.languages?.language1 || defaultLang1 || "en").trim();
     const language2 = (s?.languages?.language2 || defaultLang2 || "pt").trim();
 
@@ -180,7 +194,7 @@ export default function VocabularyEditor({
           ? await axios.post(url, payload, { headers })
           : await axios.post(url, payload);
 
-      const backText = (response?.data?.backText || "").trim();
+      const backText = String(response?.data?.backText || "").trim();
       if (!backText) {
         notifyAlert("Resposta vazia recebida do servidor.", partnerColor());
         return;
@@ -191,7 +205,7 @@ export default function VocabularyEditor({
         portuguese: backText,
       }));
 
-      setChange?.(!change);
+      toggleChange();
     } catch (error: any) {
       console.error(error);
       const msg =
@@ -202,6 +216,115 @@ export default function VocabularyEditor({
     } finally {
       setLoadingIdx(null);
     }
+  };
+
+  // helper: remove ```json ... ``` e tenta dar JSON.parse com fallback
+  function parseMaybeJson(input: any): any {
+    if (Array.isArray(input) || (input && typeof input === "object"))
+      return input;
+    if (typeof input !== "string") return input;
+    const cleaned = input
+      .trim()
+      .replace(/^```json/i, "")
+      .replace(/^```/i, "")
+      .replace(/```$/, "")
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      return input; // deixa seguir; o caller tenta outras chaves
+    }
+  }
+
+  const handleReceiveJson = (raw: any) => {
+    // 0) normalizar string → objeto/array quando possível
+    const json = parseMaybeJson(raw);
+
+    // 1) extrair a lista de itens independente do "envelope"
+    let arr: any[] = [];
+    if (Array.isArray(json)) {
+      arr = json;
+    } else if (json && typeof json === "object") {
+      const candidate =
+        json.vocabulary ||
+        json.sentences ||
+        json.items ||
+        json.list ||
+        json.data ||
+        null;
+
+      if (Array.isArray(candidate)) {
+        arr = candidate;
+      } else if (
+        // alguns backends mandam { result: "[{...}]" } etc.
+        typeof json.result === "string" ||
+        typeof json.json === "string"
+      ) {
+        const inner = parseMaybeJson(json.result ?? json.json);
+        if (Array.isArray(inner)) arr = inner;
+        else if (inner && typeof inner === "object") {
+          const innerCandidate =
+            inner.vocabulary ||
+            inner.sentences ||
+            inner.items ||
+            inner.list ||
+            inner.data;
+          if (Array.isArray(innerCandidate)) arr = innerCandidate;
+        }
+      }
+    } else if (typeof json === "string") {
+      // último esforço: pode ser um array stringificado direto
+      const maybe = parseMaybeJson(json);
+      if (Array.isArray(maybe)) arr = maybe;
+    }
+
+    if (!Array.isArray(arr) || arr.length === 0) {
+      notifyAlert(
+        "A IA gerou conteúdo, mas não reconheci a lista. Ajuste o prompt/retorno para ser um ARRAY de {english, portuguese}.",
+        partnerColor()
+      );
+      console.warn("Conteúdo recebido da IA (bruto):", raw);
+      return;
+    }
+
+    // 2) mapear chaves flexíveis
+    const mapped = arr.map((it: any) => {
+      const english =
+        it?.english ??
+        it?.front ??
+        it?.term ??
+        it?.word ??
+        it?.en ??
+        it?.source ??
+        "";
+      const portuguese =
+        it?.portuguese ??
+        it?.back ??
+        it?.translation ??
+        it?.pt ??
+        it?.target ??
+        "";
+
+      return {
+        english: String(english ?? ""),
+        portuguese: String(portuguese ?? ""),
+        languages: {
+          language1: defaultLang1 || "en",
+          language2: defaultLang2 || "pt",
+        },
+      };
+    });
+
+    // 3) injeta no bloco e garante o type correto
+    onChange({
+      ...value,
+      type: "vocabulary",
+      sentences: mapped,
+    });
+
+    // 4) abre a seção e força re-render do pai (compat: change ou changeTokens)
+    setShowConfig(true);
+    (setChange ?? setChangeTokens)?.(!(change ?? changeTokens));
   };
 
   /* ===================== RENDER HELPERS ===================== */
@@ -226,6 +349,7 @@ export default function VocabularyEditor({
     </div>
   );
 
+  /* ===================== RENDER ===================== */
   return (
     <div
       style={{
@@ -242,8 +366,10 @@ export default function VocabularyEditor({
         style={{
           display: "flex",
           justifyContent: "space-between",
+          gap: 8,
           alignItems: "center",
           textAlign: "center",
+          flexWrap: "wrap",
         }}
       >
         <strong
@@ -253,7 +379,15 @@ export default function VocabularyEditor({
           Vocabulary{" "}
           {value.subtitle ? `- ${truncateString(value.subtitle, 15)}` : ""}
         </strong>
-        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
+
+        <span
+          style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <div>
             <button
               onClick={(e) => {
@@ -276,6 +410,14 @@ export default function VocabularyEditor({
               ↓
             </button>
           </div>
+
+          {/* Botão que abre o gerador isolado */}
+          <button style={primaryBtnStyle} onClick={() => setAiOpen(true)}>
+            ✨ IA
+          </button>
+
+          {titleRightExtra}
+
           {onRemove && (
             <button
               onClick={onRemove}
@@ -386,7 +528,7 @@ export default function VocabularyEditor({
                     </button>
                   </div>
 
-                  {/* FRONT / BACK + IA */}
+                  {/* FRONT / BACK + IA (item a item) */}
                   <div style={{ display: "grid", gap: 8 }}>
                     <div style={{ display: "grid", gap: 6 }}>
                       <label style={{ fontSize: 12, color: "#334155" }}>
@@ -437,9 +579,9 @@ export default function VocabularyEditor({
                           }}
                           onClick={() => handleAI(idx)}
                           disabled={loadingIdx === idx}
-                          title="Gerar tradução/definição e preencher o Back (-1 token)"
+                          title="Gerar tradução/definição e preencher o Back"
                         >
-                          {loadingIdx === idx ? "..." : "✨ (-1)"}
+                          {loadingIdx === idx ? "..." : "✨"}
                         </button>
                       </div>
                     </div>
@@ -492,7 +634,7 @@ export default function VocabularyEditor({
                     (s.languages?.language2 || defaultLang2) && (
                     <span style={{ fontSize: 12, color: "#475569" }}>
                       language1 e language2 iguais → a IA gera{" "}
-                      <strong>definição</strong> (não tradução).
+                      <strong>definição</strong>.
                     </span>
                   )}
                 </div>
@@ -501,11 +643,23 @@ export default function VocabularyEditor({
           </div>
         </>
       )}
+
+      {/* Gerador isolado (tema + instruções → prompt; studentId nos params) */}
+      <SimpleAIGenerator
+        visible={aiOpen}
+        language1={defaultLang1}
+        type="vocabulary"
+        onClose={() => setAiOpen(false)}
+        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+        headers={headers}
+        onReceiveJson={handleReceiveJson}
+        title="Gerar Vocabulary por IA"
+      />
     </div>
   );
 }
 
-/* estilos reutilizáveis */
+/* ===================== estilos reutilizáveis ===================== */
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
