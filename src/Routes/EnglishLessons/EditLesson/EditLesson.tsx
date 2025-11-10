@@ -111,6 +111,7 @@ interface EditLessonModelProps {
   headers?: any;
   buttonText?: any;
   onUpdated?: (updated: ClassDetails) => void;
+  studentId?: string;
 }
 
 type NewBlockType =
@@ -131,12 +132,12 @@ export default function EditLesson({
   onUpdated,
   setSeeEdit,
   buttonText,
+  studentId,
 }: EditLessonModelProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -149,9 +150,10 @@ export default function EditLesson({
   const [newType, setNewType] = useState<NewBlockType>("sentences");
   const [isValid, setIsValid] = useState(true);
 
-  // --- mobile awareness (sem libs)
+  // --- mobile awaren[[[ess (sem libs)
   const [isMobile, setIsMobile] = useState<boolean>(false);
   useEffect(() => {
+    console.log("Setting up mobile listener...", studentId); 
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(max-width: 640px)");
     const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
@@ -625,6 +627,7 @@ export default function EditLesson({
                   return (
                     <div key={idx}>
                       <SentencesEditor
+                        studentId={studentId}
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}

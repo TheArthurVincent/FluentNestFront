@@ -39,7 +39,6 @@ const SentenceMining = ({
   headers,
   onChange,
   change,
-
   myPermissions,
 }: FlashCardsPropsRv) => {
   const { UniversalTexts } = useUserContext();

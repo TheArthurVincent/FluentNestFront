@@ -63,6 +63,7 @@ export default function EnglishClassCourse2({
   courseTitle,
   canEditCourse,
 }: EnglishClassCourse2ModelProps) {
+
   const [studentsList, setStudentsList] = useState<any>([]);
   const [studentID, setStudentID] = useState<string>("");
   const [myId, setId] = useState<string>("");
@@ -2754,13 +2755,14 @@ export default function EnglishClassCourse2({
 
   useEffect(() => {
     getClass();
-  }, []);
+      }, []);
 
   useEffect(() => {
     if (thePermissions === "superadmin" || thePermissions === "teacher") {
       fetchStudents();
     }
   }, [commentsTrigger]);
+
 
   const [confirm, setConfirm] = useState(false);
   const [seeConfirm, setSeeConfirm] = useState(false);
@@ -3170,6 +3172,7 @@ export default function EnglishClassCourse2({
             <>
               {canEditCourse && (
                 <EditLesson
+                  studentId={myId}
                   buttonText={"Editar Aula"}
                   setSeeEdit={setSeeEdit}
                   headers={actualHeaders}

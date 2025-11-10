@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { truncateString } from "../../../../Resources/UniversalComponents";
+import axios from "axios";
+import {
+  backDomain,
+  truncateString,
+} from "../../../../Resources/UniversalComponents";
+import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
 
+/* ===================== TYPES ===================== */
 export type Languages = {
-  language1: string; // idioma do campo "english"
-  language2: string; // idioma do campo "portuguese"
+  language1: string; 
+  language2: string; 
 };
 
 export type SentenceItem = {
   english: string;
   portuguese: string;
-  languages: Languages; // sempre presente
+  languages: Languages;
 };
 
 export type SentencesBlock = {
@@ -20,20 +27,26 @@ export type SentencesBlock = {
   grid?: number;
 };
 
+type HeadersLike = Record<string, string>;
+
 type Props = {
   value: SentencesBlock;
   onChange: (next: SentencesBlock) => void;
   onRemove?: () => void;
   titleRightExtra?: React.ReactNode;
-  defaultBlockLang1?: string;
-  defaultBlockLang2?: string;
-  onMoveUp?: () => void; // NOVO
-  onMoveDown?: () => void; // NOVO
+  defaultBlockLang1?: string; 
+  defaultBlockLang2?: string; 
+  onMoveUp?: () => void;
+  onMoveDown?: () => void;
+  studentId: any;
+  headers?: HeadersLike | null;
 };
 
+/* ===================== CONSTANTS ===================== */
 const LANG_OPTIONS = ["en", "pt", "es", "fr"] as const;
 type LangCode = (typeof LANG_OPTIONS)[number];
 
+/* ===================== COMPONENT ===================== */
 export default function SentencesEditor({
   value,
   onChange,
@@ -43,8 +56,10 @@ export default function SentencesEditor({
   titleRightExtra,
   defaultBlockLang1 = "en",
   defaultBlockLang2 = "pt",
+  studentId,
+  headers,
 }: Props) {
-  // defaults do bloco (usados ao criar novas sentenças)
+  
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
     (defaultBlockLang1 as LangCode) || "en"
   );
@@ -52,11 +67,29 @@ export default function SentencesEditor({
     (defaultBlockLang2 as LangCode) || "pt"
   );
 
+  
   const [showConfig, setShowConfig] = useState(false);
+  const [loadingIdx, setLoadingIdx] = useState<number | null>(null); 
 
-  // Backfill AUTOMÁTICO na montagem: garante languages em todas as sentenças
+  /* ====== sincroniza quando props de idioma padrão mudarem ====== */
   useEffect(() => {
-    const needsBackfill = value.sentences.some((s: any) => !s.languages);
+    if (
+      (LANG_OPTIONS as readonly string[]).includes(defaultBlockLang1) &&
+      defaultLang1 !== (defaultBlockLang1 as LangCode)
+    ) {
+      setDefaultLang1(defaultBlockLang1 as LangCode);
+    }
+    if (
+      (LANG_OPTIONS as readonly string[]).includes(defaultBlockLang2) &&
+      defaultLang2 !== (defaultBlockLang2 as LangCode)
+    ) {
+      setDefaultLang2(defaultBlockLang2 as LangCode);
+    }
+  }, [defaultBlockLang1, defaultBlockLang2]);
+
+  /* ====== backfill: garante languages em cada sentença ====== */
+  useEffect(() => {
+    const needsBackfill = value.sentences.some((s: any) => !s?.languages);
     if (needsBackfill) {
       const fixed = value.sentences.map((s: any) => ({
         english: s.english ?? "",
@@ -68,14 +101,13 @@ export default function SentencesEditor({
       }));
       onChange({ ...value, sentences: fixed });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // apenas na montagem
+    
+  }, [value.sentences, defaultLang1, defaultLang2]);
 
+  /* ===================== UPDATERS ===================== */
   const updateSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
-
   const updateOrder = (order: number | undefined) =>
     onChange({ ...value, order });
-
   const updateGrid = (grid: number | undefined) => onChange({ ...value, grid });
 
   const updateSentence = (
@@ -128,7 +160,11 @@ export default function SentencesEditor({
         language2: (s.languages?.language2 || defaultLang2 || "pt").trim(),
       },
     }));
-    onChange({ ...value, sentences: next, subtitle: value.subtitle.trim() });
+    onChange({
+      ...value,
+      sentences: next,
+      subtitle: (value.subtitle || "").trim(),
+    });
   };
 
   const backfillLanguagesAll = () => {
@@ -150,6 +186,61 @@ export default function SentencesEditor({
     onChange({ ...value, sentences: next });
   };
 
+  /* ===================== IA: enviar FRONT e preencher BACK ===================== */
+  const handleAI = async (idx: number) => {
+    const s = value.sentences[idx];
+    const sentence = (s?.english || "").trim();
+    const language1 = (s?.languages?.language1 || defaultLang1 || "en").trim();
+    const language2 = (s?.languages?.language2 || defaultLang2 || "pt").trim();
+
+    if (!studentId) {
+      notifyAlert("ID do aluno não informado.", partnerColor());
+      return;
+    }
+    if (!sentence) {
+      notifyAlert(
+        "Preencha o Front antes de gerar a tradução/definição.",
+        partnerColor()
+      );
+      return;
+    }
+
+    try {
+      setLoadingIdx(idx);
+console.log("studentId", studentId)
+      const url = `${backDomain}/api/v1/translateOrDefineSentence/${studentId}`;
+      const payload = { sentence, language1, language2 };
+
+      let response;
+      if (headers && Object.keys(headers).length > 0) {
+        response = await axios.post(url, payload, { headers });
+      } else {
+        response = await axios.post(url, payload);
+      }
+
+      const backText = (response?.data?.backText || "").trim();
+      if (!backText) {
+        notifyAlert("Resposta vazia recebida do servidor.", partnerColor());
+        return;
+      }
+
+      updateSentence(idx, (prev) => ({
+        ...prev,
+        portuguese: backText,
+      }));
+    } catch (error: any) {
+      console.error(error);
+      const msg =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Erro ao gerar tradução/definição.";
+      notifyAlert(msg, partnerColor());
+    } finally {
+      setLoadingIdx(null);
+    }
+  };
+
+  /* ===================== RENDER HELPERS ===================== */
   const renderLangSelect = (
     current: string | undefined,
     onChangeLang: (code: LangCode) => void,
@@ -171,6 +262,7 @@ export default function SentencesEditor({
     </div>
   );
 
+  /* ===================== RENDER ===================== */
   return (
     <div
       style={{
@@ -182,6 +274,7 @@ export default function SentencesEditor({
         gap: 12,
       }}
     >
+      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -191,21 +284,14 @@ export default function SentencesEditor({
         }}
       >
         <strong
-          onClick={() => {
-            setShowConfig(!showConfig);
-          }}
+          onClick={() => setShowConfig((v) => !v)}
           style={{ fontSize: 14, cursor: "pointer", color: "#0f172a" }}
         >
           Sentences - {value.subtitle && truncateString(value.subtitle, 15)}
         </strong>
 
-        <span
-          style={{
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-          }}
-        >
+        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {titleRightExtra}
           <div>
             <button
               onClick={(e) => {
@@ -229,33 +315,19 @@ export default function SentencesEditor({
             </button>
           </div>
           {onRemove && (
-            <button onClick={onRemove} style={dangerBtnStyle}>
+            <button
+              onClick={onRemove}
+              style={dangerBtnStyle}
+              title="Remover bloco"
+            >
               <i className="fa fa-trash" />
             </button>
           )}
         </span>
       </div>
-      {/* header + ações */}
+
       {showConfig && (
         <>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr auto",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <div style={{ display: "grid", gap: 6 }}>
-              {/* <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label> */}
-              <input
-                value={value.subtitle}
-                onChange={(e) => updateSubtitle(e.target.value)}
-                placeholder="Ex.: Groceries"
-                style={inputStyle}
-              />
-            </div>
-          </div>
           {/* Lista de sentenças */}
           <div style={{ display: "grid", gap: 8 }}>
             <div
@@ -268,9 +340,11 @@ export default function SentencesEditor({
               <strong style={{ fontSize: 14, color: "#0f172a" }}>
                 List ({value.sentences.length})
               </strong>
-              <button onClick={addSentence} style={primaryBtnStyle}>
-                + Adicionar sentença
-              </button>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button onClick={addSentence} style={primaryBtnStyle}>
+                  + Adicionar sentença
+                </button>
+              </div>
             </div>
 
             {value.sentences.length === 0 && (
@@ -291,6 +365,7 @@ export default function SentencesEditor({
                   background: "#fff",
                 }}
               >
+                {/* Controles de ordem/remover por item */}
                 <div
                   style={{
                     display: "flex",
@@ -304,7 +379,7 @@ export default function SentencesEditor({
                       ↑
                     </button>
                   )}
-                  Order :{idx + 1}
+                  Order: {idx + 1}
                   {idx !== value.sentences.length - 1 && (
                     <button onClick={() => moveDown(idx)} style={ghostBtnStyle}>
                       ↓
@@ -313,12 +388,15 @@ export default function SentencesEditor({
                   <button
                     onClick={() => removeSentence(idx)}
                     style={dangerBtnStyle}
+                    title="Remover sentença"
                   >
                     Remover
                   </button>
                 </div>
 
+                {/* FRONT / BACK */}
                 <div style={{ display: "grid", gap: 8 }}>
+                  {/* FRONT */}
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, color: "#334155" }}>
                       Front
@@ -336,26 +414,44 @@ export default function SentencesEditor({
                     />
                   </div>
 
+                  {/* BACK + IA */}
                   <div style={{ display: "grid", gap: 6 }}>
                     <label style={{ fontSize: 12, color: "#334155" }}>
                       Back
                     </label>
-                    <input
-                      value={s.portuguese}
-                      onChange={(e) =>
-                        updateSentence(idx, (prev) => ({
-                          ...prev,
-                          portuguese: e.target.value,
-                        }))
-                      }
-                      placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
-                      style={inputStyle}
-                    />
+                    <div
+                      style={{ display: "flex", gap: 6, alignItems: "center" }}
+                    >
+                      <input
+                        value={s.portuguese}
+                        onChange={(e) =>
+                          updateSentence(idx, (prev) => ({
+                            ...prev,
+                            portuguese: e.target.value,
+                          }))
+                        }
+                        placeholder="Ex.: Ela foi ao supermercado para comprar mantimentos."
+                        style={inputStyle}
+                      />
+                      <button
+                        style={{
+                          ...ghostBtnStyle,
+                          width: "fit-content",
+                          whiteSpace: "nowrap",
+                          opacity: loadingIdx === idx ? 0.6 : 1,
+                        }}
+                        onClick={() => handleAI(idx)}
+                        disabled={loadingIdx === idx}
+                        title="Gerar tradução/definição e preencher o Back (-1 token)"
+                      >
+                        {loadingIdx === idx ? "..." : "✨ (-1)"}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                {/* Idiomas por sentença (sempre presente) */}
-                {/* <div
+                {/* Idiomas por sentença */}
+                <div
                   style={{
                     display: "grid",
                     gridTemplateColumns: "1fr 1fr",
@@ -377,7 +473,7 @@ export default function SentencesEditor({
                             prev.languages?.language2 ?? (defaultLang2 || "pt"),
                         },
                       })),
-                    "language1 (para “english”)"
+                    'language1 (para "english")'
                   )}
                   {renderLangSelect(
                     s.languages?.language2,
@@ -390,11 +486,18 @@ export default function SentencesEditor({
                           language2: code,
                         },
                       })),
-                    "language2 (para “portuguese”)"
+                    'language2 (para "portuguese")'
                   )}
-                </div> */}
+                </div>
               </div>
             ))}
+
+            {defaultLang2 === defaultLang1 && (
+              <span style={{ fontSize: 12, color: "#475569" }}>
+                Se language1 e language2 forem iguais, a IA gera{" "}
+                <strong>definição</strong> (não tradução).
+              </span>
+            )}
           </div>
         </>
       )}
@@ -402,7 +505,7 @@ export default function SentencesEditor({
   );
 }
 
-/* estilos reutilizáveis */
+/* ===================== STYLES ===================== */
 const inputStyle: React.CSSProperties = {
   width: "100%",
   border: "1px solid #e2e8f0",
