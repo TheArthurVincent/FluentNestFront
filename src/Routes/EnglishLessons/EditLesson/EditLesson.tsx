@@ -112,6 +112,8 @@ interface EditLessonModelProps {
   buttonText?: any;
   onUpdated?: (updated: ClassDetails) => void;
   studentId?: string;
+  setChange?: any;
+  change?: any;
 }
 
 type NewBlockType =
@@ -133,6 +135,9 @@ export default function EditLesson({
   setSeeEdit,
   buttonText,
   studentId,
+
+  setChange,
+  change,
 }: EditLessonModelProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -153,7 +158,7 @@ export default function EditLesson({
   // --- mobile awaren[[[ess (sem libs)
   const [isMobile, setIsMobile] = useState<boolean>(false);
   useEffect(() => {
-    console.log("Setting up mobile listener...", studentId); 
+    console.log("Setting up mobile listener...", studentId);
     if (typeof window === "undefined") return;
     const mq = window.matchMedia("(max-width: 640px)");
     const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
@@ -627,6 +632,8 @@ export default function EditLesson({
                   return (
                     <div key={idx}>
                       <SentencesEditor
+                        setChange={setChange}
+                        change={change}
                         studentId={studentId}
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}

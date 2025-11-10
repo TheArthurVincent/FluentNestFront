@@ -40,6 +40,9 @@ type Props = {
   onMoveDown?: () => void;
   studentId: any;
   headers?: HeadersLike | null;
+
+  setChange?: any;
+  change?: any;
 };
 
 /* ===================== CONSTANTS ===================== */
@@ -58,6 +61,9 @@ const SentencesEditor: React.FC<Props> = ({
   defaultBlockLang2 = "pt",
   studentId,
   headers,
+
+  setChange,
+  change,
 }) => {
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
     (defaultBlockLang1 as LangCode) || "en"
@@ -181,6 +187,8 @@ const SentencesEditor: React.FC<Props> = ({
         ...prev,
         portuguese: backText,
       }));
+
+      setChange(!change);
     } catch (error: any) {
       console.error(error);
       const msg =

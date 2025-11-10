@@ -194,10 +194,6 @@ export function HomePage({ headers }: HeadersProps) {
       title: "My Classes",
       component: <MyClasses headers={headers} />,
     },
-    // {
-    //   title: "Words of The Day",
-    //   component: <WordOfTheDayList />,
-    // },
     {
       title: "Homework",
       levelcard: false,
@@ -245,7 +241,6 @@ export function HomePage({ headers }: HeadersProps) {
         />
       ),
     },
-
     {
       title: "Flash Cards",
       levelcard: true,
@@ -259,11 +254,17 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "English Courses",
-      component: <EnglishCourses headers={headers} />,
+      component: <EnglishCourses
+      setChange={setChange}
+      change={change}
+      headers={headers} />,
     },
     {
       title: "Teaching Materials",
-      component: <EnglishCourses headers={headers} />,
+      component: <EnglishCourses
+      setChange={setChange}
+      change={change}
+      headers={headers} />,
     },
     {
       levelcard: true,

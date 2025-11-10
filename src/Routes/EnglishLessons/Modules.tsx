@@ -110,6 +110,8 @@ interface ModulesHomeProps {
   headers?: any;
   courseId: string;
   title: string;
+  change?: any;
+  setChange?: any;
   canEditCourse?: boolean; // << veio do pai (Courses)
 }
 
@@ -120,7 +122,17 @@ const ClassByParam: React.FC<{
   courseTitle: string;
   modulesRef: ModuleItem[];
   canEditCourse?: boolean;
-}> = ({ headers, courseId, courseTitle, modulesRef, canEditCourse }) => {
+  setChange?: any;
+  change?: any;
+}> = ({
+  headers,
+  courseId,
+  courseTitle,
+  modulesRef,
+  canEditCourse,
+  setChange,
+  change,
+}) => {
   const { moduleKey } = useParams();
 
   // Flat para descobrir vizinhos (prev/next) num único array linear
@@ -139,6 +151,8 @@ const ClassByParam: React.FC<{
 
   return (
     <EnglishClassCourse2
+      setChange={setChange}
+      change={change}
       headers={headers}
       canEditCourse={canEditCourse} // << NÃO recalcular
       classId={moduleKey || ""} // << ID da aula via URL
@@ -155,6 +169,8 @@ export default function Modules({
   headers,
   courseId,
   title,
+  setChange,
+  change,
   canEditCourse,
 }: ModulesHomeProps) {
   const [loading, setLoading] = useState(false);
@@ -396,6 +412,8 @@ export default function Modules({
           path=":moduleKey/*"
           element={
             <ClassByParam
+              setChange={setChange}
+              change={change}
               headers={headers}
               courseId={courseId}
               courseTitle={title}

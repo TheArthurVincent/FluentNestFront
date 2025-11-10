@@ -26,6 +26,8 @@ import EditCourseModal, { Course } from "./EditCourse/EditCourse";
 /** ==================== TYPES ==================== */
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
+  change: any;
+  setChange: any;
 }
 type Permissions = "superadmin" | "teacher" | "student" | string;
 
@@ -401,7 +403,11 @@ const CourseRouter: React.FC<{
 };
 
 /** ==================== PÁGINA PRINCIPAL ==================== */
-export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
+export default function EnglishCourses({
+  headers,
+  change,
+  setChange,
+}: EnglishCoursesHomeProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [listOfCoursesFromDatabase, setListOfCoursesFromDatabase] = useState<
     CourseWithCreator[]
@@ -580,6 +586,8 @@ export default function EnglishCourses({ headers }: EnglishCoursesHomeProps) {
             path={`${pathGenerator(route.title)}/*`}
             element={
               <Modules
+                setChange={setChange}
+                change={change}
                 canEditCourse={computeCanEdit(route)}
                 headers={actualHeaders}
                 courseId={route._id}
