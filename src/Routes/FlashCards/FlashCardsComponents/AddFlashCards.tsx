@@ -21,10 +21,14 @@ interface AddFlashCardsProps {
   display: string | null;
   selectedStudentId: string;
   selectedStudentName: string;
+  change?: any;
+  setChange?: any;
 }
 const AddFlashCards = ({
   headers,
   display,
+  change,
+  setChange,
   selectedStudentId,
   selectedStudentName,
 }: AddFlashCardsProps) => {
@@ -35,6 +39,14 @@ const AddFlashCards = ({
   const [isAIMode, setIsAIMode] = useState<boolean>(false);
   const [textInput, setTextInput] = useState<string>("");
   const [numberOfCards, setNumberOfCards] = useState<number>(5);
+  const [myId, setMyId] = useState<string>("");
+
+  useEffect(() => {
+    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+    setMyId(id);
+  }, []);
+
+
   const [cards, setCards] = useState<FlashCard[]>([
     {
       frontCard: "",
@@ -358,6 +370,9 @@ const AddFlashCards = ({
                   {cards.map((card, index) => (
                     <AddOneFlashCard
                       key={index}
+                      studentId={myId}
+                      setChange={setChange}
+                      change={change}
                       index={index}
                       frontCard={card.frontCard}
                       backCard={card.backCard}

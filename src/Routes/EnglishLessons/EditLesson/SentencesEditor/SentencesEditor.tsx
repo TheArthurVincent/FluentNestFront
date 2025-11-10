@@ -40,7 +40,6 @@ type Props = {
   onMoveDown?: () => void;
   studentId: any;
   headers?: HeadersLike | null;
-
   setChange?: any;
   change?: any;
 };

@@ -135,7 +135,6 @@ export default function EditLesson({
   setSeeEdit,
   buttonText,
   studentId,
-
   setChange,
   change,
 }: EditLessonModelProps) {

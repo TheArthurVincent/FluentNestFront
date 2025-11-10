@@ -245,7 +245,13 @@ export function HomePage({ headers }: HeadersProps) {
       title: "Flash Cards",
       levelcard: true,
       component: (
-        <FlashCards change={change} onChange={setChange} headers={headers} />
+        <FlashCards
+          setChangeTokens={setChange}
+          changeTokens={change}
+          change={change}
+          onChange={setChange}
+          headers={headers}
+        />
       ),
     },
     {
@@ -254,17 +260,23 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "English Courses",
-      component: <EnglishCourses
-      setChange={setChange}
-      change={change}
-      headers={headers} />,
+      component: (
+        <EnglishCourses
+          setChange={setChange}
+          change={change}
+          headers={headers}
+        />
+      ),
     },
     {
       title: "Teaching Materials",
-      component: <EnglishCourses
-      setChange={setChange}
-      change={change}
-      headers={headers} />,
+      component: (
+        <EnglishCourses
+          setChange={setChange}
+          change={change}
+          headers={headers}
+        />
+      ),
     },
     {
       levelcard: true,

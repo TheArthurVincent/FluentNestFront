@@ -48,7 +48,8 @@ const footerStyle: React.CSSProperties = {
   borderTop: "1px solid #e2e8f0",
   display: "flex",
   gap: 8,
-  justifyContent: "flex-end",
+  justifyContent: "space-between",
+  alignItems: "center",
 };
 
 const btn: React.CSSProperties = {
@@ -67,6 +68,13 @@ const btnPrimary: React.CSSProperties = {
   color: "#fff",
 };
 
+const danger: React.CSSProperties = {
+  ...btn,
+  border: "1px solid #ef4444",
+  color: "#ef4444",
+  background: "#fff",
+};
+
 const iconBtn: React.CSSProperties = {
   border: "1px solid #e2e8f0",
   background: "#fff",
@@ -79,13 +87,6 @@ const iconBtn: React.CSSProperties = {
   gap: 6,
 };
 
-const danger: React.CSSProperties = {
-  ...btn,
-  border: "1px solid #ef4444",
-  color: "#ef4444",
-  background: "#fff",
-};
-
 const ModuleActions: React.FC<Props> = ({
   moduleId,
   initialTitle,
@@ -94,13 +95,13 @@ const ModuleActions: React.FC<Props> = ({
   onChanged,
 }) => {
   const [openEdit, setOpenEdit] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [title, setTitle] = useState(initialTitle || "");
   const [loading, setLoading] = useState(false);
 
   const closeAll = () => {
     setOpenEdit(false);
-    setOpenDelete(false);
+    setConfirmDelete(false);
     setLoading(false);
   };
 
@@ -115,7 +116,7 @@ const ModuleActions: React.FC<Props> = ({
       );
       closeAll();
       onChanged?.();
-    } catch (e) {
+    } catch {
       setLoading(false);
       alert("Não foi possível salvar o título do módulo.");
     }
@@ -130,7 +131,7 @@ const ModuleActions: React.FC<Props> = ({
       });
       closeAll();
       onChanged?.();
-    } catch (e) {
+    } catch {
       setLoading(false);
       alert("Não foi possível excluir o módulo.");
     }
@@ -138,7 +139,6 @@ const ModuleActions: React.FC<Props> = ({
 
   return (
     <span style={{ display: "inline-flex", gap: 6, marginLeft: 8 }}>
-      {/* Botão editar */}
       <button
         style={{
           ...iconBtn,
@@ -154,89 +154,87 @@ const ModuleActions: React.FC<Props> = ({
         <i className="fa fa-pencil" aria-hidden="true" />
       </button>
 
-      {/* Botão excluir */}
-      <button
-        style={{
-          ...iconBtn,
-          ...danger,
-          opacity: canEdit ? 1 : 0.4,
-          pointerEvents: canEdit ? "auto" : "none",
-        }}
-        onClick={() => setOpenDelete(true)}
-        title="Excluir módulo"
-      >
-        <i className="fa fa-trash" aria-hidden="true" />
-      </button>
-
-      {/* MODAL: Editar */}
       {openEdit && (
         <div style={overlayStyle} onClick={closeAll}>
           <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
             <div style={headerStyle}>Editar módulo</div>
             <div style={bodyStyle}>
-              <label style={{ display: "grid", gap: 6 }}>
-                <span style={{ fontSize: 12, color: "#64748b" }}>
-                  Nome do módulo
-                </span>
-                <input
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Digite o novo nome"
-                  style={{
-                    borderRadius: 6,
-                    border: "1px solid #e2e8f0",
-                    padding: "8px 10px",
-                    fontSize: 13,
-                    outline: "none",
-                  }}
-                  onFocus={(e) =>
-                    (e.currentTarget.style.borderColor = partnerColor())
-                  }
-                  onBlur={(e) =>
-                    (e.currentTarget.style.borderColor = "#e2e8f0")
-                  }
-                />
-              </label>
+              {!confirmDelete ? (
+                <>
+                  <label style={{ display: "grid", gap: 6 }}>
+                    <span style={{ fontSize: 12, color: "#64748b" }}>
+                      Nome do módulo
+                    </span>
+                    <input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="Digite o novo nome"
+                      style={{
+                        borderRadius: 6,
+                        border: "1px solid #e2e8f0",
+                        padding: "8px 10px",
+                        fontSize: 13,
+                        outline: "none",
+                      }}
+                      onFocus={(e) =>
+                        (e.currentTarget.style.borderColor = partnerColor())
+                      }
+                      onBlur={(e) =>
+                        (e.currentTarget.style.borderColor = "#e2e8f0")
+                      }
+                    />
+                  </label>
+                </>
+              ) : (
+                <>
+                  <p>
+                    Tem certeza que deseja excluir este módulo?
+                    <br />
+                    <small style={{ color: "#64748b" }}>
+                      Esta ação é irreversível e removerá o módulo.
+                    </small>
+                  </p>
+                </>
+              )}
             </div>
-            <div style={footerStyle}>
-              <button style={btn} onClick={closeAll} disabled={loading}>
-                Cancelar
-              </button>
-              <button
-                style={btnPrimary}
-                onClick={handleSave}
-                disabled={loading || !title.trim()}
-              >
-                {loading ? "Salvando..." : "Salvar"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
-      {/* MODAL: Confirmar exclusão */}
-      {openDelete && (
-        <div style={overlayStyle} onClick={closeAll}>
-          <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
-            <div style={headerStyle}>Excluir módulo</div>
-            <div style={bodyStyle}>
-              Tem certeza que deseja excluir este módulo?
-              <div style={{ marginTop: 6, fontSize: 12, color: "#475569" }}>
-                <b>Observação:</b> esta ação pode remover o módulo e suas
-                referências. Verifique as aulas antes.
-              </div>
-            </div>
             <div style={footerStyle}>
-              <button style={btn} onClick={closeAll} disabled={loading}>
-                Cancelar
-              </button>
-              <button
-                style={{ ...danger, fontWeight: 600 }}
-                onClick={handleDelete}
-                disabled={loading}
-              >
-                {loading ? "Excluindo..." : "Excluir módulo"}
-              </button>
+              {!confirmDelete ? (
+                <>
+                  <button style={danger} onClick={() => setConfirmDelete(true)}>
+                    Excluir módulo
+                  </button>
+                  <div>
+                    <button style={btn} onClick={closeAll} disabled={loading}>
+                      Cancelar
+                    </button>
+                    <button
+                      style={btnPrimary}
+                      onClick={handleSave}
+                      disabled={loading || !title.trim()}
+                    >
+                      {loading ? "Salvando..." : "Salvar"}
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <button
+                    style={btn}
+                    onClick={() => setConfirmDelete(false)}
+                    disabled={loading}
+                  >
+                    Voltar
+                  </button>
+                  <button
+                    style={{ ...danger, fontWeight: 600 }}
+                    onClick={handleDelete}
+                    disabled={loading}
+                  >
+                    {loading ? "Excluindo..." : "Confirmar exclusão"}
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

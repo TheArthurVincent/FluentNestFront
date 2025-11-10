@@ -17,8 +17,16 @@ interface FlashCardsProps {
   headers: MyHeadersType | null;
   onChange: any;
   change: boolean;
+  changeTokens: boolean;
+  setChangeTokens: any;
 }
-const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
+const FlashCards = ({
+  headers,
+  onChange,
+  change,
+  changeTokens,
+  setChangeTokens,
+}: FlashCardsProps) => {
   const [myId, setMyId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [value, setValue] = useState<string>("1");
@@ -111,6 +119,8 @@ const FlashCards = ({ headers, onChange, change }: FlashCardsProps) => {
       component: (
         <AddFlashCards
           display="block"
+          change={changeTokens}
+          setChange={setChangeTokens}
           selectedStudentName={selectedStudent}
           headers={headers}
           selectedStudentId={getCurrentStudentId()}
