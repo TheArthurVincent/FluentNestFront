@@ -237,21 +237,6 @@ export default function ExerciseEditor({
             flexWrap: "wrap",
           }}
         >
-          {/* IA */}
-          <button
-            style={primaryBtnStyle}
-            onClick={() => {
-              if (!studentId) {
-                notifyAlert("ID do aluno não informado.", partnerColor());
-                return;
-              }
-              setAiOpen(true);
-            }}
-            title="Gerar exercícios por IA"
-          >
-            ✨ IA
-          </button>
-
           <div>
             <button
               onClick={(e) => {
@@ -274,6 +259,21 @@ export default function ExerciseEditor({
               ↓
             </button>
           </div>
+          {/* IA */}
+          <button
+            style={primaryBtnStyle}
+            onClick={() => {
+              if (!studentId) {
+                notifyAlert("ID do aluno não informado.", partnerColor());
+                return;
+              }
+              setAiOpen(true);
+            }}
+            title="Gerar exercícios por IA"
+          >
+            ✨ IA
+          </button>
+
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
               <i className="fa fa-trash" />

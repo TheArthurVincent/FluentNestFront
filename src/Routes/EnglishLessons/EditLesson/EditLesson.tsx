@@ -720,6 +720,8 @@ export default function EditLesson({
                     <div key={idx}>
                       <DialogueEditor
                         value={el as DialogueBlock}
+                        language={lesson?.language || "en"}
+                        studentId={studentId}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
                         onMoveUp={() => moveElementUp(idx)}

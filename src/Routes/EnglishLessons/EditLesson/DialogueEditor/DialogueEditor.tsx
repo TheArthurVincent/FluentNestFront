@@ -1,5 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { truncateString } from "../../../../Resources/UniversalComponents";
+import {
+  truncateString,
+  backDomain,
+} from "../../../../Resources/UniversalComponents";
+import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 export type DialogueBlock = {
   type: "dialogue";
@@ -10,6 +14,8 @@ export type DialogueBlock = {
 
 type Props = {
   value: DialogueBlock;
+  studentId: any;
+  language: string;
   onChange: (next: DialogueBlock) => void;
   onRemove?: () => void;
   onMoveUp?: () => void;
@@ -37,6 +43,17 @@ const dangerBtnStyle: React.CSSProperties = {
   fontWeight: 600,
 };
 
+const primaryBtnStyle: React.CSSProperties = {
+  borderRadius: 8,
+  border: "1px solid #0891b2",
+  backgroundColor: "#06b6d4",
+  color: "white",
+  padding: "6px 10px",
+  cursor: "pointer",
+  fontSize: 13,
+  fontWeight: 600,
+};
+
 const lineBtnStyle: React.CSSProperties = {
   ...ghostBtnStyle,
   padding: "3px 6px",
@@ -48,14 +65,17 @@ export default function DialogueEditor({
   onChange,
   onRemove,
   onMoveUp,
+  studentId,
+  language,
   onMoveDown,
 }: Props) {
   const [showConfig, setShowConfig] = useState(false);
   const [bulkMode, setBulkMode] = useState(false);
   const [bulkText, setBulkText] = useState((value.dialogue ?? []).join("\n"));
+  const [aiOpen, setAiOpen] = useState(false);
 
   const update = (patch: Partial<DialogueBlock>) =>
-    onChange({ ...value, ...patch });
+    onChange({ ...value, ...patch, type: "dialogue" });
 
   const lines = useMemo(() => value.dialogue ?? [], [value.dialogue]);
 
@@ -88,7 +108,7 @@ export default function DialogueEditor({
 
   const applyBulk = () => {
     const parsed = bulkText
-      .split("\n")
+      .split(/\r?\n/)
       .map((s) => s.trim())
       .filter((s) => s.length > 0);
     update({ dialogue: parsed });
@@ -118,6 +138,97 @@ export default function DialogueEditor({
     );
   };
 
+  // ===== Helpers IA
+  function parseMaybeJson(input: any): any {
+    if (Array.isArray(input) || (input && typeof input === "object"))
+      return input;
+    if (typeof input !== "string") return input;
+    const cleaned = input
+      .trim()
+      .replace(/^```json/i, "")
+      .replace(/^```/i, "")
+      .replace(/```$/, "")
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      return input;
+    }
+  }
+
+  function normalizeDialoguePayload(raw: any): string[] {
+    // 1) já é lista de strings
+    if (Array.isArray(raw)) {
+      return raw
+        .map((x) => (typeof x === "string" ? x.trim() : ""))
+        .filter(Boolean);
+    }
+
+    // 2) objeto com chaves conhecidas
+    if (raw && typeof raw === "object") {
+      const inner =
+        raw.dialogue ??
+        raw.lines ??
+        raw.items ??
+        raw.list ??
+        raw.sentences ??
+        null;
+
+      if (Array.isArray(inner)) {
+        return inner
+          .map((x: any) => (typeof x === "string" ? x.trim() : ""))
+          .filter(Boolean);
+      }
+
+      // envelopes { data | result | json }
+      const wrapped =
+        raw.data ?? raw.result ?? raw.json ?? raw.response ?? null;
+      if (wrapped) return normalizeDialoguePayload(parseMaybeJson(wrapped));
+
+      // fallback: se tiver "text" único, quebra em linhas
+      const text =
+        raw.text ??
+        raw.body ??
+        raw.content ??
+        raw.transcript ??
+        raw.dialog ??
+        "";
+      if (typeof text === "string" && text.trim()) {
+        return text
+          .split(/\r?\n/)
+          .map((s) => s.trim())
+          .filter(Boolean);
+      }
+    }
+
+    // 3) string simples: quebra em linhas
+    if (typeof raw === "string" && raw.trim()) {
+      return raw
+        .split(/\r?\n/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+    }
+
+    return [];
+  }
+
+  const handleReceiveJson = (raw: any) => {
+    const json = parseMaybeJson(raw);
+    const dialogue = normalizeDialoguePayload(json);
+
+    if (!dialogue.length) {
+      // feedback suave (sem notifyAlert aqui pra manter o comp isolado)
+      console.warn(
+        "IA (dialogue) não reconheceu lista de falas. Retorne string[], { dialogue: string[] } ou um texto com quebras de linha."
+      );
+      return;
+    }
+
+    update({ dialogue });
+    setShowConfig(true);
+    setBulkText(dialogue.join("\n"));
+  };
+
   return (
     <div
       style={{
@@ -133,19 +244,25 @@ export default function DialogueEditor({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         <strong
           onClick={() => setShowConfig(!showConfig)}
+          style={{ cursor: "pointer", fontSize: 14, color: "#0f172a" }}
+        >
+          Dialogue{" "}
+          {value.subtitle ? `- ${truncateString(value.subtitle, 15)}` : ""}
+        </strong>
+        <span
           style={{
-            cursor: "pointer",
-            fontSize: 14,
-            color: "#0f172a",
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
-          Dialogue- {value.subtitle && truncateString(value.subtitle, 15)}
-        </strong>
-        <span style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <div>
             {onMoveUp && (
               <button onClick={onMoveUp} style={ghostBtnStyle} title="Mover ↑">
@@ -161,7 +278,14 @@ export default function DialogueEditor({
                 ↓
               </button>
             )}
-          </div>
+          </div>{" "}
+          <button
+            style={primaryBtnStyle}
+            onClick={() => setAiOpen(true)}
+            title="Gerar diálogo por IA"
+          >
+            ✨ IA
+          </button>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
               <i className="fa fa-trash" />
@@ -172,8 +296,7 @@ export default function DialogueEditor({
 
       {showConfig && (
         <div style={{ display: "grid", gap: 12 }}>
-          {/* Subtitle / Order */}
-
+          {/* Subtitle */}
           <div style={{ display: "grid", gap: 6 }}>
             <label style={{ fontSize: 12, color: "#334155" }}>Subtitle</label>
             <input
@@ -201,23 +324,25 @@ export default function DialogueEditor({
             }}
           >
             <strong>Regras de vozes:</strong> as falas <em>ímpares</em> (1, 3,
-            5, …) são <strong>masculinas</strong> e as falas <em>pares</em> (2,
-            4, 6, …) são <strong>femininas</strong>. Isso é definido pela{" "}
-            <u>posição</u> das falas no diálogo.
+            5, …) são
+            <strong> masculinas</strong> e as falas <em>pares</em> (2, 4, 6, …)
+            são
+            <strong> femininas</strong>. Isso é definido pela <u>posição</u> das
+            falas no diálogo.
           </div>
 
-          {/* Toggle bulk */}
-          {/* <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <button
-                style={ghostBtnStyle}
-                onClick={() => setBulkMode((v) => !v)}
-              >
-                {bulkMode ? "Esconder colagem em massa" : "Colar em massa"}
-              </button>
-              <button style={ghostBtnStyle} onClick={() => addLine("")}>
-                + Adicionar fala
-              </button>
-            </div> */}
+          {/* Ações principais */}
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <button
+              style={ghostBtnStyle}
+              onClick={() => setBulkMode((v) => !v)}
+            >
+              {bulkMode ? "Esconder colagem em massa" : "Colar em massa"}
+            </button>
+            <button style={ghostBtnStyle} onClick={() => addLine("")}>
+              + Adicionar fala
+            </button>
+          </div>
 
           {/* Bulk editor */}
           {bulkMode && (
@@ -292,6 +417,7 @@ export default function DialogueEditor({
                     justifyContent: "space-between",
                     alignItems: "center",
                     gap: 8,
+                    flexWrap: "wrap",
                   }}
                 >
                   <div
@@ -347,6 +473,18 @@ export default function DialogueEditor({
           </div>
         </div>
       )}
+
+      {/* Modal IA: gera diálogo (string[] ou texto quebrável em linhas) */}
+      <SimpleAIGenerator
+        visible={aiOpen}
+        language1={language || "en"}
+        type="dialogue"
+        onClose={() => setAiOpen(false)}
+        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+        headers={undefined}
+        onReceiveJson={handleReceiveJson}
+        title="Gerar Dialogue por IA"
+      />
     </div>
   );
 }

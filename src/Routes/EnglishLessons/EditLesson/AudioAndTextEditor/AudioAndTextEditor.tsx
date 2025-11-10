@@ -275,15 +275,6 @@ export default function AudioAndTextEditor({
             flexWrap: "wrap",
           }}
         >
-          {/* IA */}
-          <button
-            style={primaryBtnStyle}
-            onClick={() => setAiOpen(true)}
-            title="Gerar texto/áudio por IA"
-          >
-            ✨ IA
-          </button>
-
           <div>
             {onMoveUp && (
               <button onClick={onMoveUp} style={ghostBtnStyle} title="Mover ↑">
@@ -300,6 +291,14 @@ export default function AudioAndTextEditor({
               </button>
             )}
           </div>
+          {/* IA */}
+          <button
+            style={primaryBtnStyle}
+            onClick={() => setAiOpen(true)}
+            title="Gerar texto/áudio por IA"
+          >
+            ✨ IA
+          </button>
           {onRemove && (
             <button onClick={onRemove} style={dangerBtnStyle}>
               <i className="fa fa-trash" />
