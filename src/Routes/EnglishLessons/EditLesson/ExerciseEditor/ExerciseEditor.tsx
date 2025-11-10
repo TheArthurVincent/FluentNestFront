@@ -1,5 +1,11 @@
 import React from "react";
-import { truncateString } from "../../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  truncateString,
+} from "../../../../Resources/UniversalComponents";
+import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
+import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 export type ExerciseBlock = {
   type: "exercise";
@@ -9,6 +15,8 @@ export type ExerciseBlock = {
   grid?: number;
 };
 
+type HeadersLike = Record<string, string>;
+
 type Props = {
   value: ExerciseBlock;
   onChange: (next: ExerciseBlock) => void;
@@ -16,7 +24,16 @@ type Props = {
   titleRightExtra?: React.ReactNode;
   onMoveUp?: () => void; // NOVO
   onMoveDown?: () => void; // NOVO
+
+  // IA (opcional)
+  studentId?: string;
+  headers?: HeadersLike | null;
+  setChange?: any;
+  change?: any;
+  type: string;
+  language: string;
 };
+
 export default function ExerciseEditor({
   value,
   onChange,
@@ -24,38 +41,48 @@ export default function ExerciseEditor({
   titleRightExtra,
   onMoveUp,
   onMoveDown,
+  language,
+  type,
+  // IA
+  studentId,
+  headers,
+  setChange,
+  change,
 }: Props) {
-  const setSubtitle = (subtitle: string) => onChange({ ...value, subtitle });
-  const setOrder = (order?: number) => onChange({ ...value, order });
-  const setGrid = (grid?: number) => onChange({ ...value, grid });
+  const setSubtitle = (subtitle: string) =>
+    onChange({ ...value, subtitle, type: "exercise" });
+  const setOrder = (order?: number) =>
+    onChange({ ...value, order, type: "exercise" });
+  const setGrid = (grid?: number) =>
+    onChange({ ...value, grid, type: "exercise" });
 
   const updateItem = (idx: number, nextText: string) => {
     const next = value.items.slice();
     next[idx] = nextText;
-    onChange({ ...value, items: next });
+    onChange({ ...value, items: next, type: "exercise" });
   };
 
   const addItem = (text = "") =>
-    onChange({ ...value, items: value.items.concat(text) });
+    onChange({ ...value, items: value.items.concat(text), type: "exercise" });
 
   const removeItem = (idx: number) => {
     const next = value.items.slice();
     next.splice(idx, 1);
-    onChange({ ...value, items: next });
+    onChange({ ...value, items: next, type: "exercise" });
   };
 
   const moveUp = (idx: number) => {
     if (idx <= 0) return;
     const next = value.items.slice();
     [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
-    onChange({ ...value, items: next });
+    onChange({ ...value, items: next, type: "exercise" });
   };
 
   const moveDown = (idx: number) => {
     if (idx >= value.items.length - 1) return;
     const next = value.items.slice();
     [next[idx + 1], next[idx]] = [next[idx], next[idx + 1]];
-    onChange({ ...value, items: next });
+    onChange({ ...value, items: next, type: "exercise" });
   };
 
   const trimAll = () => {
@@ -63,20 +90,116 @@ export default function ExerciseEditor({
       ...value,
       subtitle: (value.subtitle || "").trim(),
       items: value.items.map((q) => (q || "").trim()),
+      type: "exercise",
     });
   };
 
   const pasteBulk = (bulkText: string) => {
-    // aceita quebras de linha; ignora linhas vazias
     const lines = (bulkText || "")
       .split(/\r?\n/)
       .map((l) => l.trim())
       .filter(Boolean);
     if (!lines.length) return;
-    onChange({ ...value, items: value.items.concat(lines) });
+    onChange({ ...value, items: value.items.concat(lines), type: "exercise" });
   };
 
   const [showConfig, setShowConfig] = React.useState(false);
+
+  // ===== IA: abrir/fechar modal
+  const [aiOpen, setAiOpen] = React.useState(false);
+
+  // ===== IA: normalizador de JSON (tolerante a code fences/envelopes)
+  function parseMaybeJson(input: any): any {
+    if (Array.isArray(input) || (input && typeof input === "object"))
+      return input;
+    if (typeof input !== "string") return input;
+    const cleaned = input
+      .trim()
+      .replace(/^```json/i, "")
+      .replace(/^```/i, "")
+      .replace(/```$/, "")
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      return input;
+    }
+  }
+
+  const handleReceiveJson = (raw: any) => {
+    const json = parseMaybeJson(raw);
+
+    // 1) extrair lista tolerante a envelopes
+    let arr: any[] = [];
+    if (Array.isArray(json)) {
+      arr = json;
+    } else if (json && typeof json === "object") {
+      const candidate =
+        json.items ||
+        json.questions ||
+        json.list ||
+        json.data ||
+        json.exercises ||
+        null;
+
+      if (Array.isArray(candidate)) {
+        arr = candidate;
+      } else if (
+        typeof json.result === "string" ||
+        typeof json.json === "string"
+      ) {
+        const inner = parseMaybeJson(json.result ?? json.json);
+        if (Array.isArray(inner)) arr = inner;
+        else if (inner && typeof inner === "object") {
+          const innerCandidate =
+            inner.items ||
+            inner.questions ||
+            inner.list ||
+            inner.data ||
+            inner.exercises;
+          if (Array.isArray(innerCandidate)) arr = innerCandidate;
+        }
+      }
+    } else if (typeof json === "string") {
+      const maybe = parseMaybeJson(json);
+      if (Array.isArray(maybe)) arr = maybe;
+    }
+
+    if (!Array.isArray(arr) || arr.length === 0) {
+      notifyAlert(
+        "Esperado um ARRAY de questões (strings) ou objetos com {text|question|q|item}.",
+        partnerColor()
+      );
+      console.warn("Conteúdo (bruto) recebido para exercises:", raw);
+      return;
+    }
+
+    // 2) mapear para strings
+    const mapped: string[] = arr
+      .map((it: any) => {
+        if (typeof it === "string") return it;
+        return (
+          it?.text ?? it?.question ?? it?.q ?? it?.item ?? it?.prompt ?? "" // fallback
+        );
+      })
+      .map((s) => String(s ?? "").trim())
+      .filter(Boolean);
+
+    if (mapped.length === 0) {
+      notifyAlert("Nada útil para adicionar aos exercícios.", partnerColor());
+      return;
+    }
+
+    onChange({
+      ...value,
+      type: "exercise",
+      items: mapped,
+    });
+
+    setShowConfig(true);
+    setChange?.(!change);
+  };
+
   return (
     <div
       style={{
@@ -93,6 +216,8 @@ export default function ExerciseEditor({
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          gap: 8,
+          flexWrap: "wrap",
         }}
       >
         <strong
@@ -109,8 +234,24 @@ export default function ExerciseEditor({
             display: "flex",
             gap: 8,
             alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
+          {/* IA */}
+          <button
+            style={primaryBtnStyle}
+            onClick={() => {
+              if (!studentId) {
+                notifyAlert("ID do aluno não informado.", partnerColor());
+                return;
+              }
+              setAiOpen(true);
+            }}
+            title="Gerar exercícios por IA"
+          >
+            ✨ IA
+          </button>
+
           <div>
             <button
               onClick={(e) => {
@@ -140,6 +281,7 @@ export default function ExerciseEditor({
           )}
         </span>
       </div>
+
       {showConfig && (
         <>
           {/* Header */}
@@ -168,6 +310,7 @@ export default function ExerciseEditor({
               )}
             </div>
           </div>
+
           {/* Ferramentas de lista */}
           <div
             style={{
@@ -189,7 +332,6 @@ export default function ExerciseEditor({
                   rows={5}
                   style={textareaStyle}
                   onPaste={(e) => {
-                    // permite colar e processar após o event loop
                     setTimeout(
                       () => pasteBulk((e.target as HTMLTextAreaElement).value),
                       0
@@ -213,9 +355,12 @@ export default function ExerciseEditor({
               </button>
             </div>
           </div>
+
           <div style={{ display: "grid", gap: 8 }}>
             {value.items.length === 0 && (
-              <div style={emptyStyle}>Nenhum item. Use “Adicionar item”.</div>
+              <div style={emptyStyle}>
+                Nenhum item. Use “Adicionar item” ou ✨ IA.
+              </div>
             )}
             {value.items.map((q, idx) => (
               <div
@@ -260,6 +405,18 @@ export default function ExerciseEditor({
           </div>
         </>
       )}
+
+      {/* Modal IA */}
+      <SimpleAIGenerator
+        visible={aiOpen}
+        language1={language}
+        type="exercises"
+        onClose={() => setAiOpen(false)}
+        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+        headers={headers}
+        onReceiveJson={handleReceiveJson}
+        title="Gerar Exercises por IA"
+      />
     </div>
   );
 }

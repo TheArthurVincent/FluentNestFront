@@ -6,6 +6,7 @@ import {
 } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../../Styles/Styles";
+import SimpleAIGenerator from "../AIGenerator/AIGenerator";
 
 /* ===================== TYPES ===================== */
 export type Languages = {
@@ -60,7 +61,6 @@ const SentencesEditor: React.FC<Props> = ({
   defaultBlockLang2 = "pt",
   studentId,
   headers,
-
   setChange,
   change,
 }) => {
@@ -72,6 +72,9 @@ const SentencesEditor: React.FC<Props> = ({
   );
   const [showConfig, setShowConfig] = useState(false);
   const [loadingIdx, setLoadingIdx] = useState<number | null>(null);
+
+  // Modal IA (gerador isolado)
+  const [aiOpen, setAiOpen] = useState(false);
 
   /* ====== sincroniza idiomas padrão ====== */
   useEffect(() => {
@@ -101,18 +104,21 @@ const SentencesEditor: React.FC<Props> = ({
           language2: defaultLang2 || "pt",
         },
       }));
-      onChange({ ...value, sentences: fixed });
+      onChange({ ...value, type: "sentences", sentences: fixed });
     }
-  }, [value.sentences, defaultLang1, defaultLang2]);
+  }, [value.sentences, defaultLang1, defaultLang2]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /* ===================== UPDATERS ===================== */
+  const updateSubtitle = (subtitle: string) =>
+    onChange({ ...value, type: "sentences", subtitle });
+
   const updateSentence = (
     index: number,
     updater: (prev: SentenceItem) => SentenceItem
   ) => {
     const next = value.sentences.slice();
     next[index] = updater(next[index]);
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "sentences", sentences: next });
   };
 
   const addSentence = () => {
@@ -124,27 +130,27 @@ const SentencesEditor: React.FC<Props> = ({
         language2: defaultLang2 || "pt",
       },
     });
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "sentences", sentences: next });
   };
 
   const removeSentence = (index: number) => {
     const next = value.sentences.slice();
     next.splice(index, 1);
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "sentences", sentences: next });
   };
 
   const moveUp = (index: number) => {
     if (index <= 0) return;
     const next = value.sentences.slice();
     [next[index - 1], next[index]] = [next[index], next[index - 1]];
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "sentences", sentences: next });
   };
 
   const moveDown = (index: number) => {
     if (index >= value.sentences.length - 1) return;
     const next = value.sentences.slice();
     [next[index + 1], next[index]] = [next[index], next[index + 1]];
-    onChange({ ...value, sentences: next });
+    onChange({ ...value, type: "sentences", sentences: next });
   };
 
   /* ===================== IA: enviar FRONT e preencher BACK ===================== */
@@ -176,7 +182,7 @@ const SentencesEditor: React.FC<Props> = ({
           ? await axios.post(url, payload, { headers })
           : await axios.post(url, payload);
 
-      const backText = (response?.data?.backText || "").trim();
+      const backText = String(response?.data?.backText || "").trim();
       if (!backText) {
         notifyAlert("Resposta vazia recebida do servidor.", partnerColor());
         return;
@@ -187,7 +193,7 @@ const SentencesEditor: React.FC<Props> = ({
         portuguese: backText,
       }));
 
-      setChange(!change);
+      setChange?.(!change);
     } catch (error: any) {
       console.error(error);
       const msg =
@@ -198,6 +204,112 @@ const SentencesEditor: React.FC<Props> = ({
     } finally {
       setLoadingIdx(null);
     }
+  };
+
+  /* ============ IA (lista inteira via gerador isolado) ============ */
+  // helper: remove ```json ... ``` e tenta dar JSON.parse com fallback
+  function parseMaybeJson(input: any): any {
+    if (Array.isArray(input) || (input && typeof input === "object"))
+      return input;
+    if (typeof input !== "string") return input;
+    const cleaned = input
+      .trim()
+      .replace(/^```json/i, "")
+      .replace(/^```/i, "")
+      .replace(/```$/, "")
+      .trim();
+    try {
+      return JSON.parse(cleaned);
+    } catch {
+      return input;
+    }
+  }
+
+  const handleReceiveJson = (raw: any) => {
+    const json = parseMaybeJson(raw);
+
+    // 1) extrair array (tolerante a envelopes)
+    let arr: any[] = [];
+    if (Array.isArray(json)) {
+      arr = json;
+    } else if (json && typeof json === "object") {
+      const candidate =
+        json.sentences ||
+        json.items ||
+        json.list ||
+        json.data ||
+        json.vocabulary || // caso o prompt gere "vocabulary" por engano
+        null;
+
+      if (Array.isArray(candidate)) {
+        arr = candidate;
+      } else if (
+        typeof json.result === "string" ||
+        typeof json.json === "string"
+      ) {
+        const inner = parseMaybeJson(json.result ?? json.json);
+        if (Array.isArray(inner)) arr = inner;
+        else if (inner && typeof inner === "object") {
+          const innerCandidate =
+            inner.sentences ||
+            inner.items ||
+            inner.list ||
+            inner.data ||
+            inner.vocabulary;
+          if (Array.isArray(innerCandidate)) arr = innerCandidate;
+        }
+      }
+    } else if (typeof json === "string") {
+      const maybe = parseMaybeJson(json);
+      if (Array.isArray(maybe)) arr = maybe;
+    }
+
+    if (!Array.isArray(arr) || arr.length === 0) {
+      notifyAlert(
+        "Esperado um ARRAY de objetos {english, portuguese} (ou equivalente). Ajuste o prompt/retorno.",
+        partnerColor()
+      );
+      console.warn("Conteúdo recebido (bruto):", raw);
+      return;
+    }
+
+    // 2) mapear chaves flexíveis
+    const mapped: SentenceItem[] = arr
+      .map((it: any) => {
+        const english =
+          it?.english ??
+          it?.front ??
+          it?.sentence ??
+          it?.text ??
+          it?.en ??
+          it?.source ??
+          "";
+        const portuguese =
+          it?.portuguese ??
+          it?.back ??
+          it?.translation ??
+          it?.pt ??
+          it?.target ??
+          "";
+        return {
+          english: String(english ?? ""),
+          portuguese: String(portuguese ?? ""),
+          languages: {
+            language1: defaultLang1 || "en",
+            language2: defaultLang2 || "pt",
+          },
+        };
+      })
+      // evita inserir linhas totalmente vazias
+      .filter((it) => (it.english || it.portuguese).trim().length > 0);
+
+    onChange({
+      ...value,
+      type: "sentences",
+      sentences: mapped,
+    });
+    setShowConfig(true);
+    setChange?.(!change);
   };
 
   /* ===================== RENDER HELPERS ===================== */
@@ -318,9 +430,10 @@ const SentencesEditor: React.FC<Props> = ({
           gap: 8px;
         }
 
-        .se-back-row {
-          display: grid;
+        .se-back-row-inline {
+          display: flex;
           gap: 6px;
+          align-items: stretch;
         }
 
         .se-label {
@@ -369,9 +482,6 @@ const SentencesEditor: React.FC<Props> = ({
           .se-item-controls {
             justify-content: space-between;
           }
-          .se-back-actions {
-            width: 100%;
-          }
           .se-language-note {
             display: block;
           }
@@ -388,18 +498,6 @@ const SentencesEditor: React.FC<Props> = ({
             width: 100%;
             justify-content: flex-start;
           }
-          .se-back-row {
-            /* input e botão de IA viram coluna */
-          }
-          .se-back-row-inline {
-            display: flex;
-            gap: 6px;
-            align-items: stretch;
-          }
-          .se-back-row-inline > .se-input {
-            flex: 1 1 auto;
-            min-width: 0;
-          }
           .se-btn {
             padding: 8px 10px;
           }
@@ -408,56 +506,59 @@ const SentencesEditor: React.FC<Props> = ({
       </style>
 
       {/* Header */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
+      <div className="se-header">
         <strong onClick={() => setShowConfig((v) => !v)} className="se-title">
           Sentences
           {value.subtitle ? ` - ${truncateString(value.subtitle, 15)}` : ""}
         </strong>
 
-        <span style={{ display: "flex", alignItems: "center" }}>
+        <span className="se-actions">
+          {/* IA: abre modal */}
+
           {titleRightExtra}
+
           <div
             style={{
-              borderRadius: 8,
               display: "flex",
-              gap: 1,
-              color: "#0f172a",
-              padding: "6px 10px",
-              cursor: "pointer",
-              fontSize: 13,
+              gap: 8,
             }}
           >
+            <div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveUp?.();
+                }}
+                className="se-btn"
+                title="Mover bloco para cima"
+                aria-label="Mover bloco para cima"
+              >
+                ↑
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onMoveDown?.();
+                }}
+                className="se-btn"
+                title="Mover bloco para baixo"
+                aria-label="Mover bloco para baixo"
+              >
+                ↓
+              </button>
+            </div>
             <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMoveUp?.();
-              }}
-              className="se-btn"
-              title="Mover bloco para cima"
+              className="se-btn se-btn--primary"
+              onClick={() => setAiOpen(true)}
             >
-              ↑
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onMoveDown?.();
-              }}
-              className="se-btn"
-              title="Mover bloco para baixo"
-            >
-              ↓
+              ✨ IA
             </button>
             {onRemove && (
               <button
                 onClick={onRemove}
                 className="se-btn se-btn--danger"
                 title="Remover bloco"
+                aria-label="Remover bloco"
               >
                 <i className="fa fa-trash" />
               </button>
@@ -468,11 +569,22 @@ const SentencesEditor: React.FC<Props> = ({
 
       {showConfig && (
         <div className="se-list">
-          <div className="se-topbar">
-            <strong style={{ fontSize: 14, color: "#0f172a" }}>
-              List ({value.sentences.length})
-            </strong>
+          {/* Topbar + Subtitle + Add */}
+          <div className="se-topbar" style={{ alignItems: "end" }}>
+            <div style={{ display: "grid", gap: 6, minWidth: 220 }}>
+              <label className="se-label">Subtitle</label>
+              <input
+                value={value.subtitle}
+                onChange={(e) => updateSubtitle(e.target.value)}
+                placeholder="Ex.: Daily Routine (A2)"
+                className="se-input"
+              />
+            </div>
+
             <div className="se-actions">
+              <strong style={{ fontSize: 14, color: "#0f172a" }}>
+                List ({value.sentences.length})
+              </strong>
               <button onClick={addSentence} className="se-btn se-btn--primary">
                 + Adicionar sentença
               </button>
@@ -481,7 +593,7 @@ const SentencesEditor: React.FC<Props> = ({
 
           {value.sentences.length === 0 && (
             <div className="se-empty">
-              Nenhuma sentença. Use “Adicionar sentença”.
+              Nenhuma sentença. Use “Adicionar sentença” ou ✨ IA.
             </div>
           )}
 
@@ -490,7 +602,11 @@ const SentencesEditor: React.FC<Props> = ({
               {/* Controles do item */}
               <div className="se-item-controls">
                 {idx !== 0 && (
-                  <button onClick={() => moveUp(idx)} className="se-btn">
+                  <button
+                    onClick={() => moveUp(idx)}
+                    className="se-btn"
+                    aria-label="Mover item para cima"
+                  >
                     ↑
                   </button>
                 )}
@@ -498,7 +614,11 @@ const SentencesEditor: React.FC<Props> = ({
                   Order: {idx + 1}
                 </span>
                 {idx !== value.sentences.length - 1 && (
-                  <button onClick={() => moveDown(idx)} className="se-btn">
+                  <button
+                    onClick={() => moveDown(idx)}
+                    className="se-btn"
+                    aria-label="Mover item para baixo"
+                  >
                     ↓
                   </button>
                 )}
@@ -506,6 +626,7 @@ const SentencesEditor: React.FC<Props> = ({
                   onClick={() => removeSentence(idx)}
                   className="se-btn se-btn--danger"
                   title="Remover sentença"
+                  aria-label="Remover sentença"
                 >
                   Remover
                 </button>
@@ -529,10 +650,9 @@ const SentencesEditor: React.FC<Props> = ({
                   />
                 </div>
 
-                {/* BACK + IA */}
+                {/* BACK + IA item-a-item */}
                 <div className="se-field">
                   <label className="se-label">Back</label>
-                  {/* em telas grandes, mantém linha; em mobile, naturalmente quebra */}
                   <div className="se-back-row-inline">
                     <input
                       value={s.portuguese}
@@ -553,9 +673,10 @@ const SentencesEditor: React.FC<Props> = ({
                       }}
                       onClick={() => handleAI(idx)}
                       disabled={loadingIdx === idx}
-                      title="Gerar tradução/definição e preencher o Back (-1 token)"
+                      title="Gerar tradução/definição e preencher o Back"
+                      aria-label="Gerar tradução/definição"
                     >
-                      {loadingIdx === idx ? "..." : "✨ (-1)"}
+                      {loadingIdx === idx ? "..." : "✨"}
                     </button>
                   </div>
                 </div>
@@ -604,6 +725,18 @@ const SentencesEditor: React.FC<Props> = ({
           )}
         </div>
       )}
+
+      {/* Gerador isolado (tema + instruções → prompt; studentId nos params) */}
+      <SimpleAIGenerator
+        visible={aiOpen}
+        language1={defaultLang1}
+        type="sentences"
+        onClose={() => setAiOpen(false)}
+        postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}
+        headers={headers}
+        onReceiveJson={handleReceiveJson}
+        title="Gerar Sentences por IA"
+      />
     </div>
   );
 };

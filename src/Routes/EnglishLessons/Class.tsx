@@ -3557,6 +3557,21 @@ export default function EnglishClassCourse2({
                           alt={theclass.subtitle}
                         />
                       )}
+
+                      {theclass.description && (
+                        <div
+                          style={{
+                            margin: "1rem auto",
+                            maxWidth: "800px",
+                            fontSize: "16px",
+                            textAlign: "center",
+                            color: darkGreyColor(),
+                            lineHeight: 1.5,
+                          }}
+                        >
+                          {theclass.description}
+                        </div>
+                      )}
                       {theclass.video && isArthurVincent && (
                         <div
                           style={{

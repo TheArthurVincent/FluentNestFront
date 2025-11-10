@@ -676,6 +676,9 @@ export default function EditLesson({
                   return (
                     <div key={idx}>
                       <ExerciseEditor
+                        language={lesson?.language || "en"}
+                        studentId={studentId}
+                        type="exercises"
                         value={el as ExerciseBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
