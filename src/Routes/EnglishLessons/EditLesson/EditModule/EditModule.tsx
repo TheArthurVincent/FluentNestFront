@@ -108,7 +108,7 @@ const ModuleActions: React.FC<Props> = ({
     if (!title.trim() || loading) return;
     setLoading(true);
     try {
-      await axios.patch(
+      await axios.put(
         `${backDomain}/api/v1/module/${moduleId}`,
         { title: title.trim() },
         { headers: headers || {} }
@@ -139,7 +139,7 @@ const ModuleActions: React.FC<Props> = ({
   return (
     <span style={{ display: "inline-flex", gap: 6, marginLeft: 8 }}>
       {/* Botão editar */}
-      {/* <button
+      <button
         style={{
           ...iconBtn,
           opacity: canEdit ? 1 : 0.4,
@@ -152,7 +152,7 @@ const ModuleActions: React.FC<Props> = ({
         title="Editar nome do módulo"
       >
         <i className="fa fa-pencil" aria-hidden="true" />
-      </button> */}
+      </button>
 
       {/* Botão excluir */}
       <button
