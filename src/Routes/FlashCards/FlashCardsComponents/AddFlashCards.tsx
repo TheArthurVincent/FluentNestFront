@@ -46,7 +46,6 @@ const AddFlashCards = ({
     setMyId(id);
   }, []);
 
-
   const [cards, setCards] = useState<FlashCard[]>([
     {
       frontCard: "",
