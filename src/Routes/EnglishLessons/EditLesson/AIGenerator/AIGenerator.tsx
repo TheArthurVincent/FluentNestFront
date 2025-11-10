@@ -122,7 +122,7 @@ export default function SimpleAIGenerator({
   if (!visible) return null;
 
   return (
-    <div style={overlayStyle} onClick={onClose}>
+    <div style={overlayStyle} onClick={loading ? undefined : onClose}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
         <div
           style={{
@@ -134,9 +134,11 @@ export default function SimpleAIGenerator({
           }}
         >
           <strong style={{ fontSize: 14, color: "#0f172a" }}>{title}</strong>
-          <button style={ghostBtnStyle} onClick={onClose}>
-            Fechar
-          </button>
+          {!loading && (
+            <button style={ghostBtnStyle} onClick={onClose}>
+              Fechar
+            </button>
+          )}
         </div>
 
         <div style={{ padding: 12, display: "grid", gap: 10 }}>

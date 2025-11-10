@@ -43,6 +43,7 @@ type Props = {
   headers?: HeadersLike | null;
   setChange?: any;
   change?: any;
+  language: string;
 };
 
 /* ===================== CONSTANTS ===================== */
@@ -63,6 +64,7 @@ const SentencesEditor: React.FC<Props> = ({
   headers,
   setChange,
   change,
+  language,
 }) => {
   const [defaultLang1, setDefaultLang1] = useState<LangCode>(
     (defaultBlockLang1 as LangCode) || "en"
@@ -729,7 +731,7 @@ const SentencesEditor: React.FC<Props> = ({
       {/* Gerador isolado (tema + instruções → prompt; studentId nos params) */}
       <SimpleAIGenerator
         visible={aiOpen}
-        language1={defaultLang1}
+        language1={language}
         type="sentences"
         onClose={() => setAiOpen(false)}
         postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}

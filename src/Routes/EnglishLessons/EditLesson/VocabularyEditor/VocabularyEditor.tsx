@@ -33,6 +33,7 @@ type HeadersLike = Record<string, string>;
 
 type Props = {
   value: SentencesBlock;
+  language: string;
   onChange: (next: SentencesBlock) => void;
   onRemove?: () => void;
   titleRightExtra?: React.ReactNode;
@@ -69,6 +70,7 @@ export default function VocabularyEditor({
   defaultBlockLang2 = "pt",
   studentId,
   headers,
+  language,
   setChange,
   change,
   changeTokens,
@@ -647,7 +649,7 @@ export default function VocabularyEditor({
       {/* Gerador isolado (tema + instruções → prompt; studentId nos params) */}
       <SimpleAIGenerator
         visible={aiOpen}
-        language1={defaultLang1}
+        language1={language}
         type="vocabulary"
         onClose={() => setAiOpen(false)}
         postUrl={`${backDomain}/api/v1/generateSection/${studentId}`}

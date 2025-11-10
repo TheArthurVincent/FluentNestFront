@@ -114,6 +114,7 @@ interface EditLessonModelProps {
   studentId?: string;
   setChange?: any;
   change?: any;
+  language: string;
 }
 
 type NewBlockType =
@@ -137,6 +138,7 @@ export default function EditLesson({
   studentId,
   setChange,
   change,
+  language,
 }: EditLessonModelProps) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -343,13 +345,6 @@ export default function EditLesson({
     display: "grid",
     gap: 12,
     gridTemplateColumns: "1fr",
-  };
-
-  const headerSplitGrid: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: isMobile ? "1fr" : "repeat(2, minmax(0, 1fr))",
-    alignItems: "start",
-    gap: 16,
   };
 
   const toolbarGrid: React.CSSProperties = {
@@ -633,6 +628,7 @@ export default function EditLesson({
                       <SentencesEditor
                         setChange={setChange}
                         change={change}
+                        language={language}
                         studentId={studentId}
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
@@ -650,6 +646,7 @@ export default function EditLesson({
                         onChange={(next) => updateElementAt(idx, next)}
                         change={change}
                         setChange={setChange}
+                        language={language}
                         changeTokens={change}
                         setChangeTokens={setChange}
                         studentId={studentId}
@@ -676,7 +673,7 @@ export default function EditLesson({
                   return (
                     <div key={idx}>
                       <ExerciseEditor
-                        language={lesson?.language || "en"}
+                        language={language}
                         studentId={studentId}
                         type="exercises"
                         value={el as ExerciseBlock}
@@ -707,7 +704,7 @@ export default function EditLesson({
                         value={el as AudioBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
-                        language={lesson?.language || "en"}
+                        language={language}
                         studentId={studentId}
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
@@ -720,7 +717,7 @@ export default function EditLesson({
                     <div key={idx}>
                       <DialogueEditor
                         value={el as DialogueBlock}
-                        language={lesson?.language || "en"}
+                        language={language}
                         studentId={studentId}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}

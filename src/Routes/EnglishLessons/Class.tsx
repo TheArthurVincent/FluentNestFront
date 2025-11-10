@@ -3181,6 +3181,7 @@ export default function EnglishClassCourse2({
                   setSeeEdit={setSeeEdit}
                   headers={actualHeaders}
                   classId={classId}
+                  language={classLanguage}
                 />
               )}
             </>
