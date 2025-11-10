@@ -102,7 +102,7 @@ const AddFlashCards = ({
     setLoadingFlashcardsAI(true);
     try {
       const response = await axios.put(
-        `${backDomain}/api/v1/ai-flashcards-from-text`,
+        `${backDomain}/api/v1/ai-flashcards-from-text/${myId}`,
         { textInput, numberOfCards }
       );
 
@@ -124,7 +124,7 @@ const AddFlashCards = ({
 
         // Limpar o texto de entrada
         setTextInput("");
-
+        setChange && setChange(!change);
         notifyAlert(
           `${aiCards.length} flashcards gerados com sucesso!`,
           "green"
@@ -307,8 +307,8 @@ const AddFlashCards = ({
                       }
                       disabled={
                         loadingFlashcardsAI ||
-                        //verificar se textimput está vazio ou é menor que 30 palavras
-                        textInput.trim().split(" ").length < 30 ||
+                        //verificar se textimput está vazio ou é menor que 5 palavras
+                        textInput.trim().split(" ").length < 5 ||
                         textInput.trim() === ""
                       }
                       onClick={() => {
@@ -317,8 +317,8 @@ const AddFlashCards = ({
                       style={{
                         backgroundColor:
                           loadingFlashcardsAI ||
-                          //verificar se textimput está vazio ou é menor que 30 palavras
-                          textInput.trim().split(" ").length < 30 ||
+                          //verificar se textimput está vazio ou é menor que 5 palavras
+                          textInput.trim().split(" ").length < 5 ||
                           textInput.trim() === ""
                             ? "#ccc"
                             : partnerColor(),
@@ -330,7 +330,7 @@ const AddFlashCards = ({
                         flex: 1,
                       }}
                     >
-                      ✨ Gerar {numberOfCards} Flashcards
+                      ✨ Gerar {numberOfCards} Flashcards (-{numberOfCards * 2})
                     </button>
                     <div
                       style={{
