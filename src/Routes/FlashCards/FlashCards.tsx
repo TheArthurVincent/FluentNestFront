@@ -153,8 +153,11 @@ const FlashCards = ({
       ? "block"
       : "none";
   return (
-    <RouteDiv
+    <div
       style={{
+        backgroundColor: "#f8fafc",
+        padding: "1rem",
+        borderRadius: "16px",
         maxWidth: "90vw",
       }}
     >
@@ -286,7 +289,7 @@ const FlashCards = ({
           );
         })}
       </TabContext>
-    </RouteDiv>
+    </div>
   );
 };
 

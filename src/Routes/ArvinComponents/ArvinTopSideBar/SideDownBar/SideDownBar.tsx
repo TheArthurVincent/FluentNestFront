@@ -22,6 +22,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
+        height: isDesktop ? "calc(90vh - 128px)" : "auto",
       }}
       aria-label="Menu inferior"
     >
@@ -56,7 +57,6 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
           padding: 0,
           margin: 0,
           gap: 6,
-          marginTop: "45vh",
         }}
       >
         {menuItems

@@ -360,10 +360,10 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
   ];
 
-  const isDesktop = useIsDesktop(700);
+  const isDesktop = useIsDesktop(500);
 
   return (
-    <>
+    <div>
       {!loading ? (
         <div
           style={{
@@ -726,7 +726,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     `}</style>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

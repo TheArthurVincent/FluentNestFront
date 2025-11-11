@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 import { logoPartner } from "../../../Styles/Styles";
 import { NotificationsArvin } from "./Notifications/NotificationsArvin";
 import { ArvinSideDownBar } from "./SideDownBar/SideDownBar";
@@ -9,10 +9,7 @@ interface ArvinTopBarProps {
   admin?: boolean;
 }
 
-export const ArvinTopBar: FC<ArvinTopBarProps> = ({
-  appLoaded,
-  admin,
-}) => {
+export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded, admin }) => {
   const isDesktop = useIsDesktop(700);
   const studentPicture =
     JSON.parse(localStorage.getItem("loggedIn") || "{}").picture || "";
@@ -28,11 +25,12 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
       >
         <aside
           style={{
-            borderRadius: "16px ",
+            borderRadius: "16px",
             position: "sticky",
             top: 0,
             left: 0,
             width: 260,
+            height: "90vh",
             backgroundColor: "#ffffff",
             display: "flex",
             border: "1px solid #E3E8F0",
@@ -74,7 +72,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
   // ===== Topbar 100% (Mobile) =====
   return (
     <>
-      {" "}
       <div
         style={{
           backgroundColor: "#ffffff",
@@ -88,7 +85,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           boxShadow: "0px 5px 100px rgba(155, 155, 155, 0.3)",
         }}
       >
-        {" "}
         <img
           style={{
             height: "48px",

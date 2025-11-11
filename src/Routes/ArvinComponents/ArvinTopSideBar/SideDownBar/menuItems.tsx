@@ -160,7 +160,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Configurações",
     Icon: GearIcon,
-    path: "/configuracoes",
+    path: "/adm-businessmanagement",
     justBottom: true,
     showInBottomBar: true,
     admin: true,
