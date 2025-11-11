@@ -370,7 +370,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             display: "flex",
             flexDirection: isDesktop ? "row" : "column",
             height: "100vh",
-            overflow: "hidden",
             justifyContent: "space-between",
           }}
         >
