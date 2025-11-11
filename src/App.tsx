@@ -1,4 +1,3 @@
-// WhiteLabel: protege localStorage
 try {
   const wl = localStorage.getItem("whiteLabel");
   if (!wl) {
@@ -10,7 +9,6 @@ try {
     localStorage.setItem("whiteLabel", JSON.stringify(defaultWL));
   }
 } catch (err) {
-  // Não trava a página
   console.warn("[App] WhiteLabel localStorage falhou:", err);
 }
 
@@ -42,6 +40,7 @@ import ArvinLandingPageNew from "./Routes/LandingPage/ArvinLandingPageNew/ArvinL
 import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
 import LoginComponent from "./Routes/LoginComponent/LoginComponent";
+import ArvinNewHomePage from "./Routes/ArvinNewHomePage";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -285,6 +284,23 @@ function App() {
             <Redirect to={"/lp"} />
           ) : verifyToken() ? (
             <HomePage headers={headers} />
+          ) : (
+            <Redirect to={"/login"} />
+          );
+        } catch (err) {
+          console.error("[App] Erro ao definir rota /*:", err);
+          return <NotFound />;
+        }
+      })(),
+    },
+    {
+      path: "/newhp",
+      element: (() => {
+        try {
+          return isArvinLandingPage ? (
+            <Redirect to={"/lp"} />
+          ) : verifyToken() ? (
+            <ArvinNewHomePage headers={headers} />
           ) : (
             <Redirect to={"/login"} />
           );
