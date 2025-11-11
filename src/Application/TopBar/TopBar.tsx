@@ -196,7 +196,6 @@ export const TopBar: FC = () => {
   };
   const location = useLocation();
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
-
   const [selectedNotification, setSelectedNotification] = useState<any>({});
 
   const openModal = (notification: any) => {
