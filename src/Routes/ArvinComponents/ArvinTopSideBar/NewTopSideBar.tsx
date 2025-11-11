@@ -65,12 +65,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           </div>
           {/* Navegação vertical (seu componente de navegação inferior pode ser usado aqui como coluna) */}
           <div style={{ padding: "16px" }}>
-            <ArvinSideDownBar
-              admin={admin}
-              teacher={teacher}
-              isDesktop={isDesktop}
-              appLoaded={appLoaded}
-            />
+            <ArvinSideDownBar admin={admin} isDesktop={isDesktop} />
           </div>
         </aside>
       </div>
@@ -127,7 +122,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           />{" "}
         </div>{" "}
       </div>{" "}
-      <ArvinSideDownBar appLoaded={appLoaded} />{" "}
+      <ArvinSideDownBar admin={admin} isDesktop={isDesktop} />{" "}
     </>
   );
 };

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
 import { isArthurVincent, verifyToken } from "../App";
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Link, Outlet, Route, Routes } from "react-router-dom";
 import {
   backDomain,
   onLoggOut,
@@ -37,6 +37,7 @@ import Redirect from "../Redirect";
 import Tokens from "./Tokens";
 import MyCalendarNew from "./MyCalendar/MyCalendarNew";
 import { ArvinTopBar } from "./ArvinComponents/ArvinTopSideBar/NewTopSideBar";
+import { menuItems } from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
 
 export const useIsDesktop = (breakpoint = 700) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -374,7 +375,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                       ? component.path
                       : pathGenerator(component.title)
                   }/*`}
-                  element={verifyToken() ? <>oi</> : <Login />}
+                  element={verifyToken() ? <></> : <Login />}
                 />
               );
             })}
@@ -382,6 +383,45 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           {(thePermissions == "superadmin" || thePermissions == "teacher") && (
             <Tokens id={_StudentId} headers={headers} change={change} />
           )}
+
+          <footer
+            style={{
+              display: isDesktop ? "none" : "flex",
+              position: "fixed",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: 70,
+              background: "#ffffff",
+              borderTop: "1px solid #e5e7eb",
+              justifyContent: "space-around",
+              alignItems: "center",
+              zIndex: 100,
+            }}
+            className="footer-arvin-mobile"
+          >
+            {menuItems.map((item, index) => (
+              <Link
+                key={index}
+                to={item.path}
+                style={{
+                  textDecoration: "none",
+                  color: "#111827",
+                  display: item.isMobile ? "flex" : "none",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 12,
+                }}
+              >
+                <span style={{ fontSize: 22, marginBottom: 4 }}>
+                  <item.Icon />
+                </span>
+                <span>{item.label}</span>
+              </Link>
+            ))}
+          </footer>
+
           <Outlet />
         </div>
       ) : (

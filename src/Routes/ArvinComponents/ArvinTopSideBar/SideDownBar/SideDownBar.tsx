@@ -1,89 +1,20 @@
 import React, { FC } from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  CalendarIcon,
-  TrophyIcon,
-  UserCircleIcon,
-} from "@phosphor-icons/react/dist/ssr";
-import {
-  BookIcon,
-  CardsIcon,
-  GearIcon,
-  NotebookIcon,
-  SignOutIcon,
-} from "@phosphor-icons/react";
 import { partnerColor } from "../../../../Styles/Styles";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
+import { MenuItem, menuItems } from "./menuItems";
 
 interface ArvinSideDownBarProps {
-  appLoaded?: boolean;
   isDesktop?: boolean;
   admin?: boolean;
-  teacher?: boolean;
 }
-
-type MenuItem = {
-  label: string;
-  path: string;
-  Icon: any;
-  justBottom?: boolean;
-  admin?: boolean;
-};
 
 export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
   isDesktop,
-  appLoaded,
   admin,
-  teacher,
 }) => {
   const location = useLocation();
   const currentPath = location.pathname;
-
-  const menuItems: MenuItem[] = [
-    {
-      label: "Lições & Aula",
-      Icon: NotebookIcon,
-      path: "/my-homework-and-lessons",
-    },
-    {
-      label: "Ranking",
-      Icon: TrophyIcon,
-      path: "/ranking",
-    },
-    {
-      label: "Materiais de Aula",
-      Icon: BookIcon,
-      path: "/teaching-materials",
-    },
-    {
-      label: "Flashcards",
-      Icon: CardsIcon,
-      path: "/flash-cards",
-    },
-    {
-      label: "Calendário",
-      Icon: CalendarIcon,
-      path: "/my-calendar",
-    },
-    {
-      label: "Perfil",
-      Icon: UserCircleIcon,
-      path: "/my-profile",
-    },
-    {
-      label: "Configurações",
-      Icon: GearIcon,
-      path: "/configuracoes",
-      justBottom: true,
-      admin: true,
-    },
-    {
-      label: "Sair",
-      Icon: SignOutIcon,
-      path: "/login",
-      justBottom: true,
-    },
-  ];
 
   const bgActive = `${partnerColor()}09`; // usa alpha baixo para bg ativo
   const baseTextColor = "#030303";
