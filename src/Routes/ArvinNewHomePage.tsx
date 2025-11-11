@@ -370,6 +370,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             display: "flex",
             flexDirection: isDesktop ? "row" : "column",
             height: "100vh",
+            overflow: "hidden",
             justifyContent: "space-between",
           }}
         >
@@ -384,7 +385,21 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                       ? component.path
                       : pathGenerator(component.title)
                   }/*`}
-                  element={verifyToken() ? <></> : <Login />}
+                  element={
+                    verifyToken() ? (
+                      <div
+                        style={{
+                          height: "100%",
+                          borderRadius: "16px",
+                          padding: isDesktop ? "20px 20px 20px 0" : "20px",
+                        }}
+                      >
+                        {component.component}
+                      </div>
+                    ) : (
+                      <Login />
+                    )
+                  }
                 />
               );
             })}
