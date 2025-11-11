@@ -195,8 +195,8 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
               role="menu"
               style={{
                 position: "absolute",
-                top: 48,
-                right: "-50px",
+                top: 50,
+                right: "-70px",
                 background: UI.bg,
                 border: `1px solid ${UI.border}`,
                 borderRadius: UI.radiusLg,
