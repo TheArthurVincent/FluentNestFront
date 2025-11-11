@@ -2,25 +2,11 @@ import React, { FC, useEffect, useState } from "react";
 import { logoPartner } from "../../../Styles/Styles";
 import { NotificationsArvin } from "./Notifications/NotificationsArvin";
 import { ArvinSideDownBar } from "./SideDownBar/SideDownBar";
+import { useIsDesktop } from "../../ArvinNewHomePage";
 
 interface ArvinTopBarProps {
   appLoaded?: boolean;
 }
-
-/** Hook simples para detectar desktop (largura > 700px) */
-const useIsDesktop = (breakpoint = 700) => {
-  const [isDesktop, setIsDesktop] = useState(
-    typeof window !== "undefined" ? window.innerWidth > breakpoint : false
-  );
-
-  useEffect(() => {
-    const onResize = () => setIsDesktop(window.innerWidth > breakpoint);
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [breakpoint]);
-
-  return isDesktop;
-};
 
 export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
   const isDesktop = useIsDesktop(700);
@@ -124,7 +110,10 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
               objectFit: "cover",
               marginLeft: "27px",
             }}
-            src={studentPicture}
+            src={
+              studentPicture ||
+              "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+            }
             alt=""
           />{" "}
         </div>{" "}

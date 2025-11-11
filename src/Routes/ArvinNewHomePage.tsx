@@ -18,27 +18,39 @@ import Faq from "./Faq/Faq";
 import MyClasses from "./MyClasses/MyClasses";
 import Adm from "./Adm/Adm";
 import Blog from "./HomePage/HomePageContent";
-import { LevelCard } from "./LevelCard/LevelCard";
-import {
-  BlogRouteSizeControlBox,
-  RouteDiv,
-} from "../Resources/Components/RouteBox";
+import { RouteDiv } from "../Resources/Components/RouteBox";
 import { HeadersProps } from "../Resources/types.universalInterfaces";
-import { TopBar } from "../Application/TopBar/TopBar";
 import FlashCards from "./FlashCards/FlashCards";
 import Homework from "./Homework/Homework";
-import AppFooter from "../Application/Footer/Footer";
 import EnglishCourses from "./EnglishLessons/Courses";
 import Listening from "./ListeningExercise/Listening";
 import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import Login from "./Login/Login";
 import MyCalendar from "./MyCalendar/MyCalendar";
-import { textPrimaryColorContrast, logoPartner, primaryColor, partnerColor } from "../Styles/Styles";
+import {
+  textPrimaryColorContrast,
+  logoPartner,
+  partnerColor,
+} from "../Styles/Styles";
 import Redirect from "../Redirect";
 import Tokens from "./Tokens";
 import MyCalendarNew from "./MyCalendar/MyCalendarNew";
 import { ArvinTopBar } from "./ArvinComponents/ArvinTopSideBar/NewTopSideBar";
+
+export const useIsDesktop = (breakpoint = 700) => {
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.innerWidth > breakpoint : false
+  );
+
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth > breakpoint);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [breakpoint]);
+
+  return isDesktop;
+};
 
 export function ArvinNewHomePage({ headers }: HeadersProps) {
   var [loading, setLoading] = useState<boolean>(true);
@@ -338,13 +350,15 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
   ];
 
+  const isDesktop = useIsDesktop(700);
+
   return (
     <>
       {!loading ? (
         <div
           style={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection: isDesktop ? "row" : "column",
             height: "100vh",
             justifyContent: "space-between",
           }}
@@ -369,7 +383,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           {(thePermissions == "superadmin" || thePermissions == "teacher") && (
             <Tokens id={_StudentId} headers={headers} change={change} />
           )}
-          <AppFooter see={see} />
           <Outlet />
         </div>
       ) : (

@@ -9,9 +9,6 @@ import {
 import { Modal } from "@mui/material";
 import { Link } from "react-router-dom";
 
-/* =========================================================
-   UI TOKENS (cores, raios, sombras) — NÃO ALTERAR ESTILO
-   ========================================================= */
 const UI = {
   bg: "#ffffff",
   border: "#E3E8F0",
@@ -22,9 +19,6 @@ const UI = {
   shadow: "0 1px 3px rgba(0,0,0,0.06), 0 10px 20px rgba(2,6,23,0.06)",
 };
 
-/* =========================================================
-   COMPONENTE
-   ========================================================= */
 type NotificationsArvinProps = {
   appLoaded?: boolean;
   isDesktop?: boolean; // pode manter, mas não é mais usado para posição
@@ -187,7 +181,6 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
               role="menu"
               style={{
                 position: "absolute",
-                // abre abaixo do botão/área, sempre relativo ao wrapper
                 top: "calc(100% + 10px)",
                 right: isDesktop ? 0 : "-5px",
                 background: UI.bg,
