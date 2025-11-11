@@ -363,8 +363,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             justifyContent: "space-between",
           }}
         >
-          {/* <TopBar /> */}
-          <ArvinTopBar appLoaded={appLoaded} />
+          <ArvinTopBar admin={admin} teacher={teacher} appLoaded={appLoaded} />
           <Routes>
             {appRoutes.map((component, index) => {
               return (

@@ -6,9 +6,15 @@ import { useIsDesktop } from "../../ArvinNewHomePage";
 
 interface ArvinTopBarProps {
   appLoaded?: boolean;
+  admin?: boolean;
+  teacher?: boolean;
 }
 
-export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
+export const ArvinTopBar: FC<ArvinTopBarProps> = ({
+  appLoaded,
+  admin,
+  teacher,
+}) => {
   const isDesktop = useIsDesktop(700);
   const studentPicture =
     JSON.parse(localStorage.getItem("loggedIn") || "{}").picture || "";
@@ -33,7 +39,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
             display: "flex",
             border: "1px solid #E3E8F0",
             flexDirection: "column",
-            gap: 16,
           }}
         >
           {/* Topo do sidebar: logo */}
@@ -61,7 +66,12 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
           </div>
           {/* Navegação vertical (seu componente de navegação inferior pode ser usado aqui como coluna) */}
           <div style={{ marginTop: 8, padding: "16px" }}>
-            <ArvinSideDownBar isDesktop={isDesktop} appLoaded={appLoaded} />
+            <ArvinSideDownBar
+              admin={admin}
+              teacher={teacher}
+              isDesktop={isDesktop}
+              appLoaded={appLoaded}
+            />
           </div>
         </aside>
       </div>

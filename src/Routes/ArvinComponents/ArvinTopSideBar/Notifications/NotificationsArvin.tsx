@@ -221,13 +221,12 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                   Fechar
                 </button>
               </div>
-
               {/* Lista de notificações */}
               {myNotifications.length > 0 ? (
                 <ul
                   style={{
                     listStyle: "none",
-                    maxHeight: "80vh",
+                    height: "79vh",
                     overflow: "auto",
                     padding: 5,
                     margin: 0,
