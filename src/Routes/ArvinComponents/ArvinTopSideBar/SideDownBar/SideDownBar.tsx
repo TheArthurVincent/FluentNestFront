@@ -81,7 +81,6 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
       label: "Sair",
       Icon: SignOutIcon,
       path: "/login",
-
       justBottom: true,
     },
   ];

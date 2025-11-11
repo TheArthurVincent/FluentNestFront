@@ -33,7 +33,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
             position: "sticky",
             top: 0,
             left: 0,
-            height: "100vh",
             width: 260,
             backgroundColor: "#ffffff",
             display: "flex",
@@ -65,7 +64,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
             <NotificationsArvin appLoaded={appLoaded} />
           </div>
           {/* Navegação vertical (seu componente de navegação inferior pode ser usado aqui como coluna) */}
-          <div style={{ marginTop: 8, padding: "16px" }}>
+          <div style={{ padding: "16px" }}>
             <ArvinSideDownBar
               admin={admin}
               teacher={teacher}
