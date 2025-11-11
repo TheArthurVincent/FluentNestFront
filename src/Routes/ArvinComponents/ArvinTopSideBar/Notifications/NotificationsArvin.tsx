@@ -194,7 +194,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                 border: isDesktop ? `1px solid ${UI.border}` : "none",
                 borderRadius: isDesktop ? UI.radiusLg : 0,
                 padding: 12,
-                minWidth: isDesktop ? 420 : "260px",
+                minWidth: isDesktop ? 420 : "220px",
                 maxWidth: isDesktop ? "min(92vw, 400px)" : "450px",
                 boxShadow: isDesktop ? UI.shadow : "none",
                 zIndex: 100000000,
