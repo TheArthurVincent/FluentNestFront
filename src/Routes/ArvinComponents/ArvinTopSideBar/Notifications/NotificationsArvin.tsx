@@ -189,12 +189,12 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                 position: "absolute",
                 // abre abaixo do botão/área, sempre relativo ao wrapper
                 top: "calc(100% + 10px)",
-                right: isDesktop ? 0 : "-10px",
+                right: isDesktop ? 0 : "-5px",
                 background: UI.bg,
                 border: isDesktop ? `1px solid ${UI.border}` : "none",
                 borderRadius: isDesktop ? UI.radiusLg : 0,
-                padding: 12,
-                minWidth: isDesktop ? 420 : "220px",
+                padding: isDesktop ? 0 : 6,
+                minWidth: isDesktop ? 420 : "230px",
                 maxWidth: isDesktop ? "min(92vw, 400px)" : "450px",
                 boxShadow: isDesktop ? UI.shadow : "none",
                 zIndex: 100000000,
@@ -234,9 +234,9 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                 <ul
                   style={{
                     listStyle: "none",
-                    maxHeight: 520,
+                    maxHeight: "80vh",
                     overflow: "auto",
-                    padding: 0,
+                    padding: 5,
                     margin: 0,
                   }}
                 >
@@ -253,6 +253,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                           padding: "10px 12px",
                           cursor: "pointer",
                           transition: "background 120ms ease",
+                          display: "grid",
                         }}
                       >
                         <p
@@ -262,7 +263,6 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                         </p>
                         <p
                           style={{
-                            margin: "4px 0 0",
                             fontSize: 13,
                             color: UI.text,
                           }}
