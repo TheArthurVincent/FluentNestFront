@@ -27,33 +27,26 @@ const UI = {
    ========================================================= */
 type NotificationsArvinProps = {
   appLoaded?: boolean;
+  isDesktop?: boolean; // pode manter, mas não é mais usado para posição
 };
 
 export const NotificationsArvin: FC<NotificationsArvinProps> = ({
   appLoaded,
+  isDesktop,
 }) => {
   /* ---------------- State ---------------- */
-  // Visibilidade do dropdown (popover) com a lista de notificações.
   const [dropdownNotificationsVisible, setDropdownNotificationsVisible] =
     useState(false);
-
-  // ID do usuário logado (obtido do localStorage).
   const { id } = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-
-  // Contador para badge (total de notificações não lidas).
   const [theNotifications, setTheNotifications] = useState(0);
-
-  // Lista de notificações retornadas pelo backend.
   const [myNotifications, setMyNotifications] = useState<any[]>([]);
-
-  // Notificação selecionada para abrir no modal.
   const [selectedNotification, setSelectedNotification] = useState<any>({});
-
-  // Visibilidade do modal de “Notificação”.
   const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  // Ref para detectar clique fora do popover.
+  // wrapper do popover, base para posicionamento relativo
   const popoverRef = useRef<HTMLDivElement | null>(null);
+  // botão do sino (ancora do dropdown)
+  const bellRef = useRef<HTMLDivElement | null>(null);
 
   /* ---------------- API: Atualiza contador e lista ---------------- */
   const updateNumberOfNotifications = async (userId: any) => {
@@ -62,14 +55,13 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
         `${backDomain}/api/v1/numberofnotifications/${userId}`
       );
 
-      const notifications = response.data.notifications; // número p/ badge
-      const listOfNotifications = response.data.listOfNotifications; // lista p/ dropdown
+      const notifications = response.data.notifications;
+      const listOfNotifications = response.data.listOfNotifications;
 
       localStorage.setItem("notifications", JSON.stringify(notifications));
       setTheNotifications(notifications);
       setMyNotifications(listOfNotifications);
 
-      // Registro do usuário (mantido conforme lógica existente)
       registerUser(userId);
     } catch (error) {
       console.log(error, "Erro ao atualizar dados");
@@ -98,14 +90,12 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
     }
   };
 
-  /* ---------------- Handlers (cliques / interações) ---------------- */
-  // Fecha o modal e atualiza contadores/listas.
+  /* ---------------- Handlers ---------------- */
   const handleClose = () => {
     updateNumberOfNotifications(id);
     setModalOpen(false);
   };
 
-  // Abre modal de uma notificação específica e marca-a como vista.
   const openModal = (notification: any) => {
     setSelectedNotification(notification);
     updateViewed(notification._id);
@@ -113,11 +103,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
     setDropdownNotificationsVisible(false);
   };
 
-  /* ---------------- Efeito: Clique-fora para fechar dropdown ----------------
-     Mantido o comportamento original: sempre que houver 'mousedown', chamamos
-     handleSeeAll(); e se o clique for fora do popover enquanto ele estiver aberto,
-     fechamos o dropdown e atualizamos as notificações.
-  ----------------------------------------------------------------------------- */
+  /* ---------------- Clique-fora ---------------- */
   useEffect(() => {
     function onClickOutside(e: MouseEvent) {
       if (
@@ -145,10 +131,14 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
         {/* --------- POPOVER / DROPDOWN DE NOTIFICAÇÕES --------- */}
         <div
           ref={popoverRef}
-          style={{ position: "relative", display: "inline-block" }}
+          style={{
+            position: "relative", // <-- ANCORAGEM: tudo absoluto aqui é relativo a este wrapper
+            display: "inline-block",
+          }}
         >
           {/* Botão do sino (abre/fecha dropdown) + badge */}
           <div
+            ref={bellRef}
             onClick={() => {
               setDropdownNotificationsVisible(!dropdownNotificationsVisible);
               updateNumberOfNotifications(id);
@@ -156,9 +146,11 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
             aria-haspopup="menu"
             aria-expanded={dropdownNotificationsVisible}
             style={{
-              position: "relative",
+              position: "relative", // badge se ancora neste botão
               cursor: "pointer",
-              display: "inline-block",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <BellIcon weight="bold" color="#65748C" size={24} />
@@ -167,8 +159,8 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
               <span
                 style={{
                   position: "absolute",
-                  top: -6,
-                  right: 15,
+                  top: -6, // posição sempre relativa ao botão
+                  right: isDesktop ? -2 : -6, // ajuste fino sem depender da tela
                   backgroundColor: "red",
                   color: "white",
                   fontSize: 8,
@@ -189,21 +181,22 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
             )}
           </div>
 
-          {/* Conteúdo do dropdown (lista) */}
+          {/* Conteúdo do dropdown (lista) — sempre ancorado ao WRAPPER */}
           {dropdownNotificationsVisible && (
             <div
               role="menu"
               style={{
                 position: "absolute",
-                top: 50,
-                right: "-70px",
+                // abre abaixo do botão/área, sempre relativo ao wrapper
+                top: "calc(100% + 10px)",
+                right: isDesktop ? 0 : "-10px",
                 background: UI.bg,
-                border: `1px solid ${UI.border}`,
-                borderRadius: UI.radiusLg,
+                border: isDesktop ? `1px solid ${UI.border}` : "none",
+                borderRadius: isDesktop ? UI.radiusLg : 0,
                 padding: 12,
-                minWidth: 320,
-                maxWidth: 360,
-                boxShadow: UI.shadow,
+                minWidth: isDesktop ? 420 : "260px",
+                maxWidth: isDesktop ? "min(92vw, 400px)" : "450px",
+                boxShadow: isDesktop ? UI.shadow : "none",
                 zIndex: 100000000,
               }}
             >
@@ -241,20 +234,14 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
                 <ul
                   style={{
                     listStyle: "none",
-                    maxHeight: 320,
+                    maxHeight: 520,
                     overflow: "auto",
                     padding: 0,
                     margin: 0,
                   }}
                 >
                   {myNotifications.map((n: any, i: number) => (
-                    <li
-                      key={i}
-                      style={{
-                        marginBottom: 6,
-                        listStyle: "none",
-                      }}
-                    >
+                    <li key={i} style={{ marginBottom: 6, listStyle: "none" }}>
                       <button
                         onClick={() => openModal(n)}
                         style={{
@@ -311,7 +298,7 @@ export const NotificationsArvin: FC<NotificationsArvinProps> = ({
             width: "100vw",
             height: "100vh",
             transform: "translate(-50%, -50%)",
-            bgcolor: "UI.bg", // mantido como estava
+            bgcolor: UI.bg, // <— usar o valor, não a string "UI.bg"
             boxShadow: UI.shadow,
             p: 0,
             borderRadius: `${UI.radiusLg}px`,
