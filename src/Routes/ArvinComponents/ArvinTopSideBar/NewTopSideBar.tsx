@@ -30,20 +30,24 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
   if (isDesktop) {
     // ===== Sidebar à esquerda (PC) =====
     return (
-      <>
+      <div
+        style={{
+          padding: "16px",
+        }}
+      >
         <aside
           style={{
+            borderRadius: "16px ",
             position: "sticky",
             top: 0,
             left: 0,
             height: "100vh",
             width: 260,
             backgroundColor: "#ffffff",
-            borderRight: "1px solid #E3E8F0",
             boxShadow: "0px 5px 100px rgba(155, 155, 155, 0.12)",
             display: "flex",
+            border: "1px solid #E3E8F0",
             flexDirection: "column",
-            padding: 16,
             gap: 16,
           }}
         >
@@ -53,8 +57,9 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
+              padding: 16,
               paddingBottom: 8,
-              borderBottom: "1px solid #EEF2F7",
+              borderBottom: "2px solid #EEF2F7",
             }}
           >
             <img
@@ -70,27 +75,11 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
             <NotificationsArvin appLoaded={appLoaded} />
           </div>
           {/* Navegação vertical (seu componente de navegação inferior pode ser usado aqui como coluna) */}
-          <div style={{ marginTop: 8 }}>
-            <ArvinSideDownBar appLoaded={appLoaded} />
-          </div>
-
-          {/* Espaçador para “empurrar” conteúdo extra para o fim */}
-          <div style={{ flex: 1 }} />
-
-          {/* Rodapé opcional do sidebar */}
-          <div
-            style={{
-              fontSize: 12,
-              color: "#65748C",
-              paddingTop: 8,
-              borderTop: "1px solid #EEF2F7",
-              textAlign: "center",
-            }}
-          >
-            v1.0
+          <div style={{ marginTop: 8, padding: "16px" }}>
+            <ArvinSideDownBar isDesktop={isDesktop} appLoaded={appLoaded} />
           </div>
         </aside>
-      </>
+      </div>
     );
   }
 

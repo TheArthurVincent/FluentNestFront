@@ -1,13 +1,22 @@
 import React, { FC } from "react";
 import { Link } from "react-router-dom";
 import { TrophyIcon, UserCircleIcon } from "@phosphor-icons/react/dist/ssr";
-import { GearIcon, NotebookIcon, SignOutIcon } from "@phosphor-icons/react";
+import {
+  BookIcon,
+  GearIcon,
+  NotebookIcon,
+  SignOutIcon,
+} from "@phosphor-icons/react";
 
 interface ArvinSideDownBarProps {
   appLoaded?: boolean;
+  isDesktop?: boolean;
 }
 
-export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({ appLoaded }) => {
+export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
+  isDesktop,
+  appLoaded,
+}) => {
   const menuItems = [
     {
       label: "Lições & Aula",
@@ -20,6 +29,11 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({ appLoaded }) => {
       path: "/ranking",
     },
     {
+      label: "Materiais de Aula",
+      icon: <BookIcon color="#030303" weight="bold" size={20} />,
+      path: "/materiais",
+    },
+    {
       label: "Perfil",
       icon: <UserCircleIcon color="#030303" weight="bold" size={20} />,
       path: "/perfil",
@@ -28,11 +42,13 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({ appLoaded }) => {
       label: "Configurações",
       icon: <GearIcon color="#030303" weight="bold" size={20} />,
       path: "/configuracoes",
+      justBottom: true,
     },
     {
       label: "Sair",
       icon: <SignOutIcon color="#030303" weight="bold" size={20} />,
       path: "/logout",
+      justBottom: true,
     },
   ];
 
@@ -51,7 +67,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({ appLoaded }) => {
             key={index}
             style={{
               listStyleType: "none",
-              display: "flex",
+              display: isDesktop && item.justBottom ? "none" : "flex",
               alignItems: "center",
             }}
           >
