@@ -175,7 +175,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   }, []);
 
   useEffect(() => {
-    document.body.style.backgroundColor = `${partnerColor()}06`;
+    document.body.style.backgroundColor = `${partnerColor()}09`;
     // document.body.style.backgroundColor = "#FAFBFD";
     setTimeout(() => {
       setLoading(false);
