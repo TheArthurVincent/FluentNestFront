@@ -34,7 +34,7 @@ import SentenceMining from "./SentenceMining/SentenceMining";
 import BlogPosts from "./HomePage/BlogPosts";
 import Login from "./Login/Login";
 import MyCalendar from "./MyCalendar/MyCalendar";
-import { textPrimaryColorContrast, logoPartner } from "../Styles/Styles";
+import { textPrimaryColorContrast, logoPartner, primaryColor, partnerColor } from "../Styles/Styles";
 import Redirect from "../Redirect";
 import Tokens from "./Tokens";
 import MyCalendarNew from "./MyCalendar/MyCalendarNew";
@@ -175,14 +175,11 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   }, []);
 
   useEffect(() => {
+    document.body.style.backgroundColor = `${partnerColor()}06`;
+    // document.body.style.backgroundColor = "#FAFBFD";
     setTimeout(() => {
-      var WL = localStorage.getItem("whiteLabel");
-      if (WL) {
-        document.body.style.backgroundColor =
-          JSON.parse(WL).backgroundColor || "#FAFBFD";
-        setLoading(false);
-      }
-    }, 2000);
+      setLoading(false);
+    }, 150);
   }, []);
 
   var appRoutes = [
