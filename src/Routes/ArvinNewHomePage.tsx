@@ -179,7 +179,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       var WL = localStorage.getItem("whiteLabel");
       if (WL) {
         document.body.style.backgroundColor =
-          JSON.parse(WL).backgroundColor || "#e3e3e3ff";
+          JSON.parse(WL).backgroundColor || "#FAFBFD";
         setLoading(false);
       }
     }, 2000);

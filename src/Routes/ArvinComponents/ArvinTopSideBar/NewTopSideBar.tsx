@@ -44,7 +44,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded }) => {
             height: "100vh",
             width: 260,
             backgroundColor: "#ffffff",
-            boxShadow: "0px 5px 100px rgba(155, 155, 155, 0.12)",
             display: "flex",
             border: "1px solid #E3E8F0",
             flexDirection: "column",
