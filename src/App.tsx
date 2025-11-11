@@ -283,23 +283,6 @@ function App() {
           return isArvinLandingPage ? (
             <Redirect to={"/lp"} />
           ) : verifyToken() ? (
-            <HomePage headers={headers} />
-          ) : (
-            <Redirect to={"/login"} />
-          );
-        } catch (err) {
-          console.error("[App] Erro ao definir rota /*:", err);
-          return <NotFound />;
-        }
-      })(),
-    },
-    {
-      path: "/newhp",
-      element: (() => {
-        try {
-          return isArvinLandingPage ? (
-            <Redirect to={"/lp"} />
-          ) : verifyToken() ? (
             <ArvinNewHomePage headers={headers} />
           ) : (
             <Redirect to={"/login"} />
@@ -310,6 +293,23 @@ function App() {
         }
       })(),
     },
+    // {
+    //   path: "/newhp",
+    //   element: (() => {
+    //     try {
+    //       return isArvinLandingPage ? (
+    //         <Redirect to={"/lp"} />
+    //       ) : verifyToken() ? (
+    //         <ArvinNewHomePage headers={headers} />
+    //       ) : (
+    //         <Redirect to={"/login"} />
+    //       );
+    //     } catch (err) {
+    //       console.error("[App] Erro ao definir rota /*:", err);
+    //       return <NotFound />;
+    //     }
+    //   })(),
+    // },
     {
       path: "/lp",
       element: (() => {

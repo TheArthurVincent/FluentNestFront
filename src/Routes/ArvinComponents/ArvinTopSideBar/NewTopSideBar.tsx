@@ -7,13 +7,11 @@ import { useIsDesktop } from "../../ArvinNewHomePage";
 interface ArvinTopBarProps {
   appLoaded?: boolean;
   admin?: boolean;
-  teacher?: boolean;
 }
 
 export const ArvinTopBar: FC<ArvinTopBarProps> = ({
   appLoaded,
   admin,
-  teacher,
 }) => {
   const isDesktop = useIsDesktop(700);
   const studentPicture =
@@ -25,6 +23,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
       <div
         style={{
           padding: "16px",
+          zIndex: 100,
         }}
       >
         <aside
@@ -102,10 +101,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
         />{" "}
         <div style={{ display: "flex", alignItems: "center" }}>
           {" "}
-          <NotificationsArvin
-            isDesktop={isDesktop}
-            appLoaded={appLoaded}
-          />{" "}
+          <NotificationsArvin isDesktop={isDesktop} appLoaded={appLoaded} />
           <img
             style={{
               height: "40px",
@@ -122,7 +118,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           />{" "}
         </div>{" "}
       </div>{" "}
-      <ArvinSideDownBar admin={admin} isDesktop={isDesktop} />{" "}
     </>
   );
 };

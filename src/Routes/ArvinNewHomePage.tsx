@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
 import { isArthurVincent, verifyToken } from "../App";
-import { Link, Outlet, Route, Routes } from "react-router-dom";
+import { Link, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import {
   backDomain,
   onLoggOut,
@@ -37,7 +37,11 @@ import Redirect from "../Redirect";
 import Tokens from "./Tokens";
 import MyCalendarNew from "./MyCalendar/MyCalendarNew";
 import { ArvinTopBar } from "./ArvinComponents/ArvinTopSideBar/NewTopSideBar";
-import { menuItems } from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
+import {
+  ItemRow,
+  menuItems,
+} from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
+import { DotsThreeCircleIcon } from "@phosphor-icons/react";
 
 export const useIsDesktop = (breakpoint = 700) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -62,9 +66,13 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   var [picture, setPicture] = useState<string>("");
   var [change, setChange] = useState<boolean>(true);
   var [see, setSee] = useState(false);
-
+  var [seeMenuDown, setSeeMenuDown] = useState(false);
   var [appLoaded, setAppLoaded] = useState<boolean>(false);
 
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const bgActive = `${partnerColor()}09`; // usa alpha baixo para bg ativo
+  const baseTextColor = "#030303";
   useEffect(() => {
     setAppLoaded(!appLoaded);
     // Verificar se o token JWT é válido antes de prosseguir
@@ -82,8 +90,9 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       setPermissions(permissions);
       setStudentId(id || _StudentId);
       setPicture(picture);
-      setAdmin(permissions === "superadmin" ? true : false);
-      setTeacher(permissions === "teacher" ? true : false);
+      setAdmin(permissions == "superadmin" ? true : false);
+      setTeacher(permissions == "teacher" ? true : false);
+
       updateInfo(id, headers);
     } else {
       onLoggOut();
@@ -364,7 +373,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             justifyContent: "space-between",
           }}
         >
-          <ArvinTopBar admin={admin} teacher={teacher} appLoaded={appLoaded} />
+          <ArvinTopBar admin={admin || teacher} appLoaded={appLoaded} />
           <Routes>
             {appRoutes.map((component, index) => {
               return (
@@ -380,47 +389,156 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               );
             })}
           </Routes>
-          {(thePermissions == "superadmin" || thePermissions == "teacher") && (
+          {/* {(thePermissions == "superadmin" || thePermissions == "teacher") && (
             <Tokens id={_StudentId} headers={headers} change={change} />
-          )}
+          )} */}
 
           <footer
             style={{
               display: isDesktop ? "none" : "flex",
               position: "fixed",
               bottom: 0,
+              zIndex: 100,
               left: 0,
+              boxShadow: "0 -2px 60px rgba(0, 0, 0, 0.1)",
               width: "100%",
               height: 70,
               background: "#ffffff",
               borderTop: "1px solid #e5e7eb",
               justifyContent: "space-around",
               alignItems: "center",
-              zIndex: 100,
             }}
             className="footer-arvin-mobile"
           >
-            {menuItems.map((item, index) => (
-              <Link
-                key={index}
-                to={item.path}
+            {menuItems
+              .sort((a, b) => (a.orderMobile || 0) - (b.orderMobile || 0))
+              .map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  style={{
+                    textDecoration: "none",
+                    color: "#111827",
+                    display: item.isMobile ? "flex" : "none",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    borderTop: `4px solid ${
+                      window.location.href.includes(item.path)
+                        ? partnerColor()
+                        : "transparent"
+                    }`,
+                    borderRadius: "8px",
+                    padding: "8px ",
+                    justifyContent: "center",
+                    fontSize: 12,
+                  }}
+                >
+                  <span style={{ fontSize: 22, marginBottom: 4 }}>
+                    <item.Icon
+                      color={
+                        window.location.href.includes(item.path)
+                          ? partnerColor()
+                          : "#111827"
+                      }
+                      weight="bold"
+                      size={20}
+                    />
+                  </span>
+                  <b>{item.label}</b>
+                </Link>
+              ))}
+            <div
+              style={{
+                borderTop: `4px solid transparent`,
+                borderRadius: "8px",
+                padding: "8px ",
+                textDecoration: "none",
+                color: "#111827",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: 12,
+              }}
+            >
+              <span
+                onClick={() => {
+                  setSeeMenuDown(!seeMenuDown);
+                }}
+                style={{ fontSize: 22, marginBottom: 4 }}
+              >
+                <DotsThreeCircleIcon
+                  color={"#111827"}
+                  weight="bold"
+                  size={20}
+                />
+              </span>
+              <b>Menu</b>
+            </div>
+          </footer>
+
+          {!isDesktop && (
+            <>
+              <div
                 style={{
-                  textDecoration: "none",
-                  color: "#111827",
-                  display: item.isMobile ? "flex" : "none",
+                  backgroundColor: "#00000080",
+                  width: 100000,
+                  height: 100000,
+                  position: "fixed",
+                  zIndex: 98,
+                  display: seeMenuDown ? "block" : "none",
+                }}
+                onClick={() => setSeeMenuDown(false)}
+              />
+              <ul
+                style={{
+                  display: seeMenuDown ? "flex" : "none",
                   flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: 12,
+                  backgroundColor: "#ffffff",
+                  padding: "16px",
+                  position: "fixed",
+                  bottom: 70,
+                  zIndex: 99,
+                  height: "50vh",
+                  width: "100%", // ✅ evita overflow lateral
+                  left: 0, // ✅ garante alinhamento à esquerda
+                  right: 0, // ✅ garante que ocupe toda a largura visível
+                  borderRadius: "16px 16px 0 0",
+                  borderTop: "1px solid #e5e7eb",
+                  boxSizing: "border-box", // ✅ padding incluso no cálculo da largura
+                  overflowX: "hidden", // ✅ previne rolagem horizontal
                 }}
               >
-                <span style={{ fontSize: 22, marginBottom: 4 }}>
-                  <item.Icon />
-                </span>
-                <span>{item.label}</span>
-              </Link>
-            ))}
-          </footer>
+                {menuItems
+                  .filter((item) => {
+                    // console.log(item, "showInBottomBar");
+                    if (item.showInBottomBar) {
+                      return true;
+                    }
+                  })
+                  .map((item, idx) => (
+                    <span
+                      key={idx}
+                      style={{
+                        display: "grid",
+                        alignItems: "center",
+                        borderRadius: "8px",
+                      }}
+                    >
+                      <ItemRow
+                        key={`side-${item.path}-${idx}`}
+                        item={item}
+                        admin={admin || teacher}
+                        currentPath={currentPath}
+                        bgActive={bgActive}
+                        baseTextColor={baseTextColor}
+                        partnerColor={partnerColor}
+                      />
+                    </span>
+                  ))}
+              </ul>
+            </>
+          )}
 
           <Outlet />
         </div>
