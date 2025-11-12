@@ -57,7 +57,14 @@ import {
 } from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions.Styles";
 import { display, fontSize } from "@mui/system";
 
-function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
+function MyCalendar({
+  headers,
+  isDesktop,
+  thePermissions,
+  myId,
+  setChange,
+  change,
+}) {
   const [seePlusButtons, setSeePlusButtons] = useState(false);
   const [shouldScrollToToday, setShouldScrollToToday] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
@@ -1619,9 +1626,18 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
   return (
     <>
       {headers ? (
-        <RouteDiv
+        <div
           style={{
-            width: "96vw",
+            margin: !isDesktop ? "4.5rem auto" : "16px auto",
+            fontFamily: "Plus Jakarta Sans",
+            fontWeight: 600,
+            fontStyle: "SemiBold",
+            fontSize: "14px",
+            backgroundColor: "#ffffff",
+            borderRadius: "12px",
+            border: "1px solid #e8eaed",
+            padding: isDesktop ? "2rem" : "5px 1rem ",
+            maxWidth: isDesktop ? "800px" : "95vw",
           }}
         >
           <div>
@@ -6805,15 +6821,11 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
               )}
             </div>
           </>
-
           <div
             style={{
               marginBottom: "1rem",
-              background: "#ffffff",
               borderRadius: "4px",
-              border: "1px solid #e1e5e9",
-              boxShadow: "0 1px 3px rgba(0, 0, 0, 0.05)",
-              padding: "12px 16px",
+              marginTop: "12px",
             }}
           >
             <div
@@ -6898,7 +6910,6 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
 
               <div
                 style={{
-                  position: "relative",
                   background: "#f8f9fa",
                   borderRadius: "4px",
                   border: "1px solid #e9ecef",
@@ -6928,7 +6939,15 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
                 {/* Ações rápidas - Compactas */}
 
                 <div
-                  style={{ display: "flex", gap: "6px", alignItems: "center" }}
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: isDesktop
+                      ? "auto auto auto auto"
+                      : "auto auto",
+                    gridAutoFlow: isDesktop ? "column" : "row",
+                    gap: "6px",
+                    alignItems: "center",
+                  }}
                 >
                   {/* Botão Hoje */}
 
@@ -6989,7 +7008,7 @@ function MyCalendar({ headers, thePermissions, myId, setChange, change }) {
               </div>
             </div>
           </div>
-        </RouteDiv>
+        </div>
       ) : (
         <RouteSizeControlBox>
           {UniversalTexts.calendarModal.noLoggedUser}

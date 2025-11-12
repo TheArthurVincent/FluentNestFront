@@ -251,6 +251,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       title: "My Calendar",
       component: (
         <MyCalendar
+          isDesktop={isDesktop}
           change={change}
           setChange={setChange}
           myId={_StudentId}
