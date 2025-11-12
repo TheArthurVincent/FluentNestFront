@@ -365,7 +365,12 @@ const AddFlashCards = ({
                 </div>
               ) : (
                 /* Manual Mode - Individual Cards */
-                <div>
+                <div
+                  style={{
+                    maxHeight: "400px",
+                    overflowY: "auto",
+                  }}
+                >
                   {cards.map((card, index) => (
                     <AddOneFlashCard
                       key={index}

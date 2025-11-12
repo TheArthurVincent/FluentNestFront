@@ -276,6 +276,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       levelcard: true,
       component: (
         <FlashCards
+          isDesktop={isDesktop}
           setChangeTokens={setChange}
           changeTokens={change}
           change={change}
@@ -408,7 +409,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                 verifyToken() ? (
                   <div
                     style={{
-                      width: "100%",
                       transform: isDesktop
                         ? "translateY(0)"
                         : "translateY(-70px)",

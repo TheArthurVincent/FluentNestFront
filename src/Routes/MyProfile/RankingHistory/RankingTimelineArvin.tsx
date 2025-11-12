@@ -19,76 +19,119 @@ export default function RankingTimelineArvin({
   name,
   permissions,
 }: RankingTimeLineArvinProps) {
-  const [localTimeline, setLocalTimeline] = useState<any>([]);
-  const [studentsList, setStudentsList] = useState<any>([]);
+  const [localTimeline, setLocalTimeline] = useState<any[]>([]);
+  const [studentsList, setStudentsList] = useState<any[]>([]);
   const [actualName, setActualName] = useState<string>(name);
   const [newID, setNewID] = useState<string>(id);
-  const [loading, setLoading] = useState<boolean>(true);
-  const { UniversalTexts } = useUserContext();
 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
+
+  const [page, setPage] = useState<number>(1);
+  const [pageSize] = useState<number>(10);
+  const [total, setTotal] = useState<number>(0);
+
+  const { UniversalTexts } = useUserContext();
   const actualHeaders = headers || {};
 
+  /* ========================= Helpers ========================= */
+  const canLoadMore = localTimeline.length < total;
+
+  /* ========================= API Calls ========================= */
   const fetchStudents = async () => {
     if (permissions === "superadmin" || permissions === "teacher") {
       try {
         const response = await axios.get(
           `${backDomain}/api/v1/students/${id}`,
-          { headers: actualHeaders }
+          {
+            headers: actualHeaders,
+          }
         );
         setStudentsList(response.data.listOfStudents);
-      } catch (error) {
+      } catch {
         alert("Erro ao encontrar alunos");
       }
     }
   };
 
-  const seeScore = async () => {
-    setLoading(true);
-    fetchStudents();
-    const { id } = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-
+  const seeName = async (studentId: string) => {
     try {
-      const response = await axios.get(`${backDomain}/api/v1/score/${id}`, {
-        headers: actualHeaders,
-      });
-      setLocalTimeline(response.data.history);
-      setLoading(false);
-      setNewID(id);
-      seeName(id);
+      const response = await axios.get(
+        `${backDomain}/api/v1/studentname/${studentId}`,
+        {
+          headers: actualHeaders,
+        }
+      );
+      setActualName(response.data.name);
     } catch (error) {
       alert(error as any);
       console.error(error);
     }
   };
 
-  const seeName = async (id: string) => {
-    setLoading(true);
+  const seeScore = async (pageToLoad = 1, selectedId?: string) => {
+    // id alvo: prioridade para selectedId; se não, tenta localStorage; por fim, newID atual
+    const fallbackId =
+      JSON.parse(localStorage.getItem("loggedIn") || "{}")?.id || newID;
+    const targetId = selectedId || fallbackId;
+
+    // loading principal na primeira página; "leve" quando for load more
+    if (pageToLoad === 1) setLoading(true);
+    else setLoadingMore(true);
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/studentname/${id}`,
-        { headers: actualHeaders }
+        `${backDomain}/api/v1/score/${targetId}`,
+        {
+          headers: actualHeaders,
+          params: { page: pageToLoad, limit: pageSize },
+        }
       );
-      setActualName(response.data.name);
-      setLoading(false);
+
+      const { history = [], total: serverTotal = 0 } = response.data || {};
+
+      if (pageToLoad === 1) setLocalTimeline(history);
+      else setLocalTimeline((prev) => [...prev, ...history]);
+
+      setTotal(serverTotal);
+      setPage(pageToLoad);
+      setNewID(targetId); // mantém controle de qual aluno estamos vendo
+
+      // atualiza nome mostrado
+      seeName(targetId);
     } catch (error) {
       alert(error as any);
       console.error(error);
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
     }
   };
 
+  /* ========================= Effects ========================= */
   useEffect(() => {
-    seeScore();
-
+    // sempre que trocar "id" vindo de props/rota, reseta paginação e refaz busca
+    setLocalTimeline([]);
+    setTotal(0);
+    setPage(1);
+    setNewID(id);
+    setActualName(name);
+    seeScore(1, id);
     fetchStudents();
-  }, [newID, id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-  const handleStudentChange = (event: any) => {
-    setNewID(event.target.value);
-    seeName(event.target.value);
+  const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = event.target.value;
+    setNewID(selected);
+    setLocalTimeline([]);
+    setTotal(0);
+    setPage(1);
+    seeName(selected);
+    seeScore(1, selected);
   };
 
-  /* ======== estilos base coerentes com seu padrão ======== */
+  /* ========================= Estilos base ========================= */
   const fontBase = {
     margin: "0 auto",
     fontFamily: "Plus Jakarta Sans",
@@ -111,6 +154,7 @@ export default function RankingTimelineArvin({
     ...fontBase,
   };
 
+  /* ========================= Render ========================= */
   return (
     <div
       style={{
@@ -146,30 +190,28 @@ export default function RankingTimelineArvin({
         </h1>
 
         <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-          {permissions === "superadmin" ||
-            (permissions === "teacher" && (
-              <select
-                onChange={handleStudentChange}
-                value={newID}
-                style={{
-                  // visual do input/seleção padronizado
-                  width: "312px",
-                  padding: "10px 12px",
-                  borderRadius: "12px",
-                  border: "1px solid #e5e7eb",
-                  outline: "none",
-                  background: "#fff",
-                  color: "#111827",
-                  ...fontBase,
-                }}
-              >
-                {studentsList.map((student: any, index: number) => (
-                  <option key={index} value={student.id}>
-                    {student.name + " " + student.lastname}
-                  </option>
-                ))}
-              </select>
-            ))}
+          {(permissions === "superadmin" || permissions === "teacher") && (
+            <select
+              onChange={handleStudentChange}
+              value={newID}
+              style={{
+                width: "312px",
+                padding: "10px 12px",
+                borderRadius: "12px",
+                border: "1px solid #e5e7eb",
+                outline: "none",
+                background: "#fff",
+                color: "#111827",
+                ...fontBase,
+              }}
+            >
+              {studentsList.map((student: any, index: number) => (
+                <option key={index} value={student.id}>
+                  {student.name + " " + student.lastname}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 
@@ -182,64 +224,110 @@ export default function RankingTimelineArvin({
           border: "1px solid #e5e7eb",
           maxHeight: "28rem",
           display: "grid",
-          gridTemplateRows: "auto 1fr",
+          gridTemplateRows: "auto 1fr auto",
         }}
       >
+        {/* Loading principal */}
         {loading ? (
           <div style={{ textAlign: "center", padding: "2rem" }}>
             <CircularProgress style={{ color: partnerColor() }} />
           </div>
         ) : (
-          <div style={{ overflow: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                minWidth: 600,
-              }}
-            >
-              <thead>
-                <tr
-                  style={{
-                    backgroundColor: partnerColor(),
-                    color: textPrimaryColorContrast(),
-                  }}
-                >
-                  <th style={tableHeaderStyle}>Score</th>
-                  <th style={tableHeaderStyle}>Data</th>
-                  <th style={tableHeaderStyle}>Descrição</th>
-                </tr>
-              </thead>
-              <tbody>
-                {localTimeline.map((item: any, index: number) => (
+          <>
+            <div style={{ overflow: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  minWidth: 600,
+                }}
+              >
+                <thead>
                   <tr
-                    key={index}
                     style={{
-                      backgroundColor: index % 2 === 0 ? "#fff" : "#fafafa",
+                      backgroundColor: partnerColor(),
+                      color: textPrimaryColorContrast(),
                     }}
                   >
-                    <td
+                    <th style={tableHeaderStyle}>Score</th>
+                    <th style={tableHeaderStyle}>Data</th>
+                    <th style={tableHeaderStyle}>Descrição</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {localTimeline.map((item: any, index: number) => (
+                    <tr
+                      key={`${item?._id || index}-${index}`}
                       style={{
-                        ...tableCellStyle,
-                        backgroundColor: partnerColor(),
-                        color: textPrimaryColorContrast(),
-                        fontWeight: 700,
-                        textAlign: "center",
-                        whiteSpace: "nowrap",
-                        borderLeft: "1px solid transparent",
+                        backgroundColor: index % 2 === 0 ? "#fff" : "#fafafa",
                       }}
                     >
-                      {item.score}
-                    </td>
-                    <td style={{ ...tableCellStyle, whiteSpace: "nowrap" }}>
-                      {formatDate(item.date)}
-                    </td>
-                    <td style={tableCellStyle}>{item.description}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      <td
+                        style={{
+                          ...tableCellStyle,
+                          backgroundColor: partnerColor(),
+                          color: textPrimaryColorContrast(),
+                          fontWeight: 700,
+                          textAlign: "center",
+                          whiteSpace: "nowrap",
+                          borderLeft: "1px solid transparent",
+                        }}
+                      >
+                        {item.score}
+                      </td>
+                      <td style={{ ...tableCellStyle, whiteSpace: "nowrap" }}>
+                        {formatDate(item.date)}
+                      </td>
+                      <td style={tableCellStyle}>{item.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Paginação */}
+            <div
+              style={{
+                padding: "1rem",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "0.75rem",
+                borderTop: "1px solid #eef0f2",
+              }}
+            >
+              {canLoadMore && (
+                <button
+                  onClick={() => seeScore(page + 1, newID)}
+                  disabled={loadingMore}
+                  style={{
+                    padding: "10px 16px",
+                    borderRadius: 12,
+                    border: "1px solid #e5e7eb",
+                    background: "#fff",
+                    cursor: "pointer",
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 600,
+                  }}
+                  aria-label="Carregar mais itens do histórico"
+                >
+                  {loadingMore ? "Carregando..." : "Carregar mais"}
+                </button>
+              )}
+
+              {!canLoadMore && (
+                <span
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 600,
+                    opacity: 0.8,
+                  }}
+                >
+                  Fim do histórico
+                </span>
+              )}
+            </div>
+          </>
         )}
       </div>
     </div>

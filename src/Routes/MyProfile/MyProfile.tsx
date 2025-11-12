@@ -18,7 +18,6 @@ import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
 import { HOne } from "../../Resources/Components/RouteBox";
 import RankingTimelineArvin from "./RankingHistory/RankingTimelineArvin";
-import LevelCardBlog from "../LevelCard/LevelCardBlog";
 
 const styles = {
   container: {

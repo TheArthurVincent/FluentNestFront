@@ -8,7 +8,6 @@ import AddFlashCards from "./FlashCardsComponents/AddFlashCards";
 import ReviewFlashCards from "./FlashCardsComponents/ReviewFlashCards";
 import AllCards from "./FlashCardsComponents/AllCards";
 import { onLoggOut, backDomain } from "../../Resources/UniversalComponents";
-import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import "./flashcards.css";
 import axios from "axios";
@@ -19,14 +18,34 @@ interface FlashCardsProps {
   change: boolean;
   changeTokens: boolean;
   setChangeTokens: any;
+  isDesktop?: boolean;
 }
+
+/* ===============================
+   Hook responsivo (fallback)
+   =============================== */
+const useIsDesktop = (bp = 700) => {
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.innerWidth > bp : true
+  );
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth > bp);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [bp]);
+  return isDesktop;
+};
+
 const FlashCards = ({
   headers,
   onChange,
   change,
   changeTokens,
+  isDesktop: isDesktopProp,
   setChangeTokens,
 }: FlashCardsProps) => {
+  const isDesktop = isDesktopProp ?? useIsDesktop(700);
+
   const [myId, setMyId] = useState<string>("");
   const [myPermissions, setPermissions] = useState<string>("");
   const [value, setValue] = useState<string>("1");
@@ -135,39 +154,30 @@ const FlashCards = ({
         <AllCards headers={headers} selectedStudentId={getCurrentStudentId()} />
       ),
     },
-    {
-      title: UniversalTexts.history,
-      value: "4",
-      adm: false,
-      component: (
-        <FlashcardsHistory
-          headers={headers}
-          selectedStudentId={getCurrentStudentId()}
-        />
-      ),
-    },
   ];
 
   const displayIsAdm =
     myPermissions === "superadmin" || myPermissions == "teacher"
       ? "block"
       : "none";
+
   return (
     <div
       style={{
-        borderRadius: "16px",
-        position: "sticky",
-        top: 0,
-        left: 0,
-        height: "85vh",
+        margin: !isDesktop ? "4.5rem auto" : "16px auto",
+        fontFamily: "Plus Jakarta Sans",
+        fontWeight: 600,
+        fontStyle: "SemiBold",
+        fontSize: "14px",
         backgroundColor: "#ffffff",
-        display: "flex",
-        border: "1px solid #E3E8F0",
-        flexDirection: "column",
-        paddingTop: "5rem",
+        borderRadius: "12px",
+        border: "1px solid #e8eaed",
+        padding: "2rem",
+        width: isDesktop ? "50vw" : "",
       }}
     >
       <Helmets text="Flashcards" />
+
       {(myPermissions === "superadmin" || myPermissions === "teacher") && (
         <div
           style={{
@@ -175,9 +185,9 @@ const FlashCards = ({
             backgroundColor: alwaysWhite(),
             borderBottom: "1px solid #e2e8f0",
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
             gap: "0.5rem",
+            justifyContent: "center",
           }}
         >
           {loadingStudents ? (
@@ -189,9 +199,15 @@ const FlashCards = ({
                 const studentSelected = students.find(
                   (student) => student.id === e.target.value
                 );
-                setSelectedStudent(
-                  studentSelected.name + " " + studentSelected.lastname
-                );
+                if (studentSelected) {
+                  setSelectedStudent(
+                    (studentSelected.name || "") +
+                      " " +
+                      (studentSelected.lastname || "")
+                  );
+                } else {
+                  setSelectedStudent("");
+                }
               }}
               value={selectedStudentId}
               style={{
@@ -202,8 +218,9 @@ const FlashCards = ({
                 fontWeight: "400",
                 color: "#64748b",
                 padding: "6px 8px",
-                minWidth: "200px",
-                maxWidth: "300px",
+                minWidth: isDesktop ? "200px" : "unset",
+                maxWidth: isDesktop ? "300px" : "unset",
+                width: isDesktop ? "auto" : "100%",
                 outline: "none",
                 cursor: "pointer",
               }}
@@ -231,6 +248,7 @@ const FlashCards = ({
           )}
         </div>
       )}
+
       <TabContext value={value}>
         <TabList
           onChange={handleChange}
@@ -240,23 +258,25 @@ const FlashCards = ({
           sx={() => {
             const color = partnerColor();
             return {
+              width: "100%",
+              fontFamily: "Plus Jakarta Sans",
+              fontWeight: 600,
+              fontStyle: "SemiBold",
               justifyContent: "space-between",
               display: "flex",
               color,
               "& .MuiTab-root": {
                 color,
-                padding: "0px",
-                fontSize: "12px",
+                padding: 0, // mantém seu padding original
+                minHeight: 44,
               },
               "& .Mui-selected": {
                 color,
-                padding: "0px",
-                fontSize: "12px",
+                padding: 0, // mantém seu padding original
               },
               "& .MuiTabs-indicator": {
                 backgroundColor: color,
-                padding: "0px",
-                fontSize: "12px",
+                height: 2,
               },
             };
           }}
@@ -270,6 +290,8 @@ const FlashCards = ({
                   color,
                   fontWeight: (index + 1).toString() === value ? 800 : 500,
                   display: component.adm === false ? "block" : displayIsAdm,
+                  // RESPONSIVO: tabs mais “clicáveis” no mobile
+                  flex: isDesktop ? "0 0 auto" : "1 0 auto",
                 }}
                 label={component.title}
                 value={component.value}
@@ -277,12 +299,13 @@ const FlashCards = ({
             );
           })}
         </TabList>
+
         {componentsToRender.map((component, index) => {
           return (
             <TabPanel
               style={{
                 padding: 0,
-                margin: "1rem auto",
+                margin: isDesktop ? "1rem auto" : "0.75rem auto",
               }}
               key={index + component.value}
               value={component.value}
