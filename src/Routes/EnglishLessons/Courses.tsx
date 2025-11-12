@@ -182,17 +182,12 @@ const cardHover: React.CSSProperties = {
 
 const thumbWrap: React.CSSProperties = {
   position: "relative",
-  height: 150,
+  // ALTURA responsiva (evita vazar em telas estreitas)
+  height: "clamp(140px, 38vw, 180px)",
   background: "#f3f4f6",
-  padding: 16,
-  display: "grid",
-  gap: 8,
-  alignItems: "center",
-  justifyContent: "space-between",
-  borderRadius: 16,
-  backdropFilter: "saturate(1.2) blur(6px)", // 👈 agradável
-  backgroundColor: "#ffffff",
-  border: "1px solid #E3E8F0",
+  padding: 0,
+  overflow: "hidden",
+  borderRadius: "12px 12px 0 0",
 };
 
 const titleWrap: React.CSSProperties = { padding: "10px 12px 12px" };

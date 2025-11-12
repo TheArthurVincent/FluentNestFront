@@ -68,6 +68,28 @@ export default function EnglishClassCourse2({
   canEditCourse,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
+
+   const [isDesktop, setIsDesktop] = React.useState(
+    typeof window !== "undefined" ? window.innerWidth > 700 : false
+  );
+
+  React.useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth > 700);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const baseBtnStyle: React.CSSProperties = {
+    border: "1px solid #e5e7eb",
+    background: "#fff",
+    color: "#111827",
+    padding: isDesktop ? "6px 10px" : "10px 16px",
+    borderRadius: 4,
+    fontSize: isDesktop ? 12 : 14,
+    cursor: "pointer",
+    margin: isDesktop ? "0 4px" : "4px 0",
+    width: isDesktop ? "auto" : "100%",
+  };
   const [studentID, setStudentID] = useState<string>("");
   const [myId, setId] = useState<string>("");
   const [thePermissions, setPermissions] = useState<string>("");
@@ -75,7 +97,7 @@ export default function EnglishClassCourse2({
   const [newHWDescription, setNewHWDescription] = useState("");
   const [loadingBoard, setLoadingBoard] = useState<boolean>(false);
   const [boardZoom, setBoardZoom] = useState<number>(100); // Estado para controlar o zoom da lousa em %
-
+  const [seeOptions, setSeeOptions] = useState<boolean>(false);
   const handleHWDescriptionChange = (htmlContent: any) => {
     setConfirm(true);
     setNewHWDescription(htmlContent);
@@ -3082,7 +3104,9 @@ export default function EnglishClassCourse2({
     <div
       style={{
         backgroundColor: "white",
-        width: "1000px",
+        maxWidth: "1000px",
+        padding: "1rem",
+        margin: "1rem auto",
         boxSizing: "border-box",
       }}
     >
@@ -3092,48 +3116,48 @@ export default function EnglishClassCourse2({
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <>
-          <div
-            style={{
-              display: "flex",
-              gap: "1rem",
-              alignItems: "center",
-            }}
-          >
-            <Link
-              style={{
-                textDecoration: "none",
-                fontSize: "10px",
-                color: "#000",
-              }}
-              to="/teaching-materials"
-            >
-              Materiais de Ensino
-            </Link>{" "}
-            -{" "}
-            <Link
-              style={{
-                textDecoration: "none",
-                fontSize: "10px",
-                color: "#000",
-              }}
-              to={`/teaching-materials/${pathGenerator(courseTitle || "")}`}
-            >
-              {courseTitle ? truncateString(courseTitle, 25) : "..."}
-            </Link>{" "}
-            <span style={{ color: darkGreyColor() }}>-</span>
-            <span
-              style={{
-                textDecoration: "none",
-                fontStyle: "italic",
-                fontSize: "10px",
-                color: partnerColor(),
-              }}
-            >
-              {theclass?.title ? truncateString(theclass.title, 25) : "..."}
-            </span>
-          </div>
-          {!exercise && (
+          {!seeEdit && (
             <>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "1rem",
+                  alignItems: "center",
+                }}
+              >
+                <Link
+                  style={{
+                    textDecoration: "none",
+                    fontSize: "10px",
+                    color: "#000",
+                  }}
+                  to="/teaching-materials"
+                >
+                  Materiais de Ensino
+                </Link>{" "}
+                -{" "}
+                <Link
+                  style={{
+                    textDecoration: "none",
+                    fontSize: "10px",
+                    color: "#000",
+                  }}
+                  to={`/teaching-materials/${pathGenerator(courseTitle || "")}`}
+                >
+                  {courseTitle ? truncateString(courseTitle, 25) : "..."}
+                </Link>{" "}
+                <span style={{ color: darkGreyColor() }}>-</span>
+                <span
+                  style={{
+                    textDecoration: "none",
+                    fontStyle: "italic",
+                    fontSize: "10px",
+                    color: partnerColor(),
+                  }}
+                >
+                  {theclass?.title ? truncateString(theclass.title, 25) : "..."}
+                </span>
+              </div>
               <div
                 style={{
                   display: !exercise ? "flex" : "none",
@@ -3171,7 +3195,11 @@ export default function EnglishClassCourse2({
                   <i className="fa fa-arrow-right" aria-hidden="true" />
                 </span>
               </div>
-              {canEditCourse && (
+            </>
+          )}
+          {!exercise && (
+            <>
+              {canEditCourse && !seeBoard && (
                 <EditLesson
                   setChange={setChange}
                   change={change}
@@ -3813,96 +3841,83 @@ export default function EnglishClassCourse2({
                           gap: 8,
                         }}
                       >
-                        <>
-                          <button
-                            onClick={() => {
-                              const template = generateInitialBoardContent();
-                              setEditorKey((v) => v + 1);
-                              setNewHWDescription(template);
-                              setEditorContent(template);
-                              setConfirm(true);
-                            }}
-                            title="Restaurar"
-                            style={{
-                              border: "1px solid #e5e7eb",
-                              background: "#fff",
-                              color: "#111827",
-                              padding: "6px 10px",
-                              borderRadius: 4,
-                              fontSize: 12,
-                              cursor: "pointer",
-                            }}
-                          >
-                            Restaurar
-                          </button>
+               
+               <button onClick={() => {setSeeOptions(!seeOptions)}}>{seeOptions ? "Ocultar Opções" : "Mostrar Opções"}</button>
+               {
+               seeOptions &&
+                 <div
+      style={{
+        display: "flex",
+        flexDirection: "column" ,
+        alignItems: "center",
+        justifyContent: isDesktop ? "flex-end" : "center",
+        gap: isDesktop ? 6 : 10,
+        width: "100%",
+      }}
+    >
+      <button
+        onClick={() => {
+          const template = generateInitialBoardContent();
+          setEditorKey((v) => v + 1);
+          setNewHWDescription(template);
+          setEditorContent(template);
+          setConfirm(true);
+        }}
+        title="Restaurar"
+        style={baseBtnStyle}
+      >
+        Restaurar
+      </button>
 
-                          {confirm && (
-                            <button
-                              onClick={handleSaveBoard}
-                              style={{
-                                border: `1px solid ${
-                                  partnerColor?.() || "#2563eb"
-                                }`,
-                                background: partnerColor?.() || "#2563eb",
-                                color: "#fff",
-                                padding: "6px 10px",
-                                borderRadius: 4,
-                                fontSize: 12,
-                                cursor: "pointer",
-                              }}
-                            >
-                              Salvar Lousa de {truncateString(studentName, 8)}
-                            </button>
-                          )}
+      {confirm && (
+        <button
+          onClick={handleSaveBoard}
+          style={{
+            ...baseBtnStyle,
+            border: `1px solid ${partnerColor?.() || "#2563eb"}`,
+            background: partnerColor?.() || "#2563eb",
+            color: "#fff",
+          }}
+        >
+          Salvar
+        </button>
+      )}
 
-                          {hasAudioElement && (
-                            <button
-                              onClick={() => setSeeAudios((v) => !v)}
-                              style={{
-                                border: "1px solid #e5e7eb",
-                                background: "#fff",
-                                color: "#111827",
-                                padding: "6px 10px",
-                                borderRadius: 4,
-                                fontSize: 12,
-                                cursor: "pointer",
-                              }}
-                            >
-                              Áudios
-                            </button>
-                          )}
-                          <button
-                            onClick={downloadBoardPDF}
-                            title="Baixar PDF"
-                            style={{
-                              all: "unset",
-                            }}
-                          >
-                            <img
-                              src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                              alt="PDF"
-                              style={{
-                                width: 14,
-                                cursor: "pointer",
-                                height: 14,
-                              }}
-                            />
-                          </button>
-                          {seeCheck && (
-                            <i
-                              className="fa fa-check"
-                              style={{
-                                padding: 6,
-                                borderRadius: "999px",
-                                backgroundColor: "#fff",
-                                color: "green",
-                                fontSize: 12,
-                                border: "1px solid #e5e7eb",
-                              }}
-                            />
-                          )}
-                        </>
+      {hasAudioElement && (
+        <button
+          onClick={() => setSeeAudios((v) => !v)}
+          style={baseBtnStyle}
+        >
+          Áudios
+        </button>
+      )}
 
+      <button
+        onClick={downloadBoardPDF}
+        title="Baixar PDF"
+        style={{ all: "unset", cursor: "pointer" }}
+      >
+        <img
+          src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+          alt="PDF"
+          style={{ width: 18, height: 18 }}
+        />
+      </button>
+
+      {seeCheck && (
+        <i
+          className="fa fa-check"
+          style={{
+            padding: 6,
+            borderRadius: "999px",
+            backgroundColor: "#fff",
+            color: "green",
+            fontSize: 12,
+            border: "1px solid #e5e7eb",
+          }}
+        />
+      )}
+    </div>}
                         {boardDate && (
                           <span
                             style={{
@@ -3972,7 +3987,7 @@ export default function EnglishClassCourse2({
                         }}
                       >
                         {seeConfirm ? (
-                          <div style={{ display: "flex", gap: 8 }}>
+                          <div style={{ display:isDesktop ? "flex" : "block", gap: 8 }}>
                             <button
                               onClick={() => {
                                 setSeeAudios(false);
