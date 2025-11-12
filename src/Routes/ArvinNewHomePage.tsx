@@ -3,7 +3,14 @@ import React, { useEffect, useState } from "react";
 import Ranking from "./Ranking/Ranking";
 import GroupClasses from "./GroupClasses/GroupClasses";
 import { isArthurVincent, verifyToken } from "../App";
-import { Link, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+} from "react-router-dom";
 import {
   backDomain,
   onLoggOut,
@@ -361,7 +368,20 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         ),
     },
   ];
+  const normalize = (p: string) =>
+    typeof p === "string" ? p.replace(/\/+$/, "") : "";
+  const { pathname } = useLocation();
+  const curr = pathname.replace(/\/+$/, "") || "/";
 
+  const isActivePath = (targetPath?: string) => {
+    if (!targetPath) return false; // sem path, nunca ativo
+    const target = normalize(targetPath) || "/";
+
+    if (target === "/") return curr === "/"; // Home só é ativo em "/"
+
+    // Ativo se é exatamente o alvo OU se está dentro dele (alvo + "/...")
+    return curr === target || curr.startsWith(`${target}/`);
+  };
   return !loading ? (
     <div
       style={{
@@ -423,63 +443,78 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         className="footer-arvin-mobile"
       >
         {menuItems
-          .sort((a, b) => (a.orderMobile || 0) - (b.orderMobile || 0))
-          .map((item, index) => (
-            <Link
-              key={index}
-              to={item.path}
-              style={{
-                textDecoration: "none",
-                color: "#111827",
-                display: item.isMobile ? "flex" : "none",
-                flexDirection: "column",
-                alignItems: "center",
-                borderTop: `4px solid ${
-                  window.location.href.includes(item.path)
-                    ? partnerColor()
-                    : "transparent"
-                }`,
-                borderRadius: "8px",
-                padding: "8px ",
-                justifyContent: "center",
-                fontSize: 12,
-              }}
-            >
-              <span style={{ fontSize: 22, marginBottom: 4 }}>
-                <item.Icon
-                  color={
-                    window.location.href.includes(item.path)
-                      ? partnerColor()
-                      : "#111827"
-                  }
-                  weight="bold"
-                  size={20}
-                />
-              </span>
-              <b>{item.label}</b>
-            </Link>
-          ))}
+          .filter((it) => it.isMobile && !!it.path) // garante path válido
+          .sort((a, b) => (a.orderMobile ?? 9999) - (b.orderMobile ?? 9999))
+          .map((item) => {
+            const active = isActivePath(item.path);
+            return (
+              <NavLink
+                key={item.path}
+                to={item.path!}
+                end={item.path === "/"}
+                onClick={() => setSeeMenuDown(false)}
+                style={{
+                  textDecoration: "none",
+                  color: "#111827",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  borderTop: `4px solid ${
+                    active ? partnerColor() : "transparent"
+                  }`,
+                  borderRadius: "8px",
+                  padding: "8px",
+                  justifyContent: "center",
+                  fontSize: 12,
+                  background: active ? `${partnerColor()}14` : "transparent",
+                  opacity: active ? 1 : 0.6,
+                  transform: active ? "translateY(-2px)" : "none",
+                  transition: "all .15s ease-in-out",
+                }}
+              >
+                <span style={{ fontSize: 22, marginBottom: 4 }}>
+                  <item.Icon
+                    color={active ? partnerColor() : "#111827"}
+                    weight="bold"
+                    size={20}
+                  />
+                </span>
+                <b style={{ fontWeight: active ? 800 : 600 }}>{item.label}</b>
+              </NavLink>
+            );
+          })}
+
+        {/* Botão "Menu" extra (não participa do ativo/desmarcado dos links) */}
         <div
           style={{
-            borderTop: `4px solid transparent`,
-            borderRadius: "8px",
-            padding: "8px ",
             textDecoration: "none",
             color: "#111827",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            borderTop: `4px solid ${
+              seeMenuDown ? partnerColor() : "transparent"
+            }`,
+            borderRadius: "8px",
+            padding: "8px",
             justifyContent: "center",
             fontSize: 12,
+            // pinta o ativo e “desmarca” os outros
+            background: seeMenuDown ? `${partnerColor()}14` : "transparent",
+            opacity: seeMenuDown ? 1 : 0.6,
+            transform: seeMenuDown ? "translateY(-2px)" : "none",
+            transition: "all .15s ease-in-out",
           }}
         >
           <span
-            onClick={() => {
-              setSeeMenuDown(!seeMenuDown);
-            }}
-            style={{ fontSize: 22, marginBottom: 4 }}
+            onClick={() => setSeeMenuDown(!seeMenuDown)}
+            style={{ fontSize: 22, marginBottom: 4, cursor: "pointer" }}
           >
-            <DotsThreeCircleIcon color={"#111827"} weight="bold" size={20} />
+            <DotsThreeCircleIcon
+              color={seeMenuDown ? partnerColor() : "#111827"}
+              weight="bold"
+              size={20}
+            />
           </span>
           <b>Menu</b>
         </div>
@@ -525,6 +560,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               })
               .map((item, idx) => (
                 <span
+                  onClick={() => setSeeMenuDown(false)}
                   key={idx}
                   style={{
                     display: "grid",

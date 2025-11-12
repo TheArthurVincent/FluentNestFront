@@ -9,7 +9,7 @@ import {
   TrophyIcon,
   UserCircleIcon,
 } from "@phosphor-icons/react";
-import React, { FC } from "react";
+import React, { act, FC } from "react";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
 import { Link } from "react-router-dom";
 
@@ -36,15 +36,22 @@ export const ItemRow: FC<{
   baseTextColor: string;
   partnerColor: () => string;
 }> = ({ item, admin, currentPath, bgActive, baseTextColor, partnerColor }) => {
-  const active = currentPath.startsWith(item.path);
+  // normaliza removendo barra final (exceto a raiz)
+  const normalize = (p: string) => p.replace(/\/+$/, "") || "/";
+
+  const curr = normalize(currentPath);
+  const target = normalize(item.path);
+
+  // ativo: exato ou subrota (ex.: /ranking e /ranking/top10)
+  const active =
+    target === "/"
+      ? curr === "/"
+      : curr === target || curr.startsWith(`${target}/`);
+
   return (
     <li
       onClick={() => {
-        if (item.label === "Sair") {
-          onLoggOut();
-        } else {
-          null;
-        }
+        if (item.label === "Sair") onLoggOut();
       }}
       style={{
         listStyleType: "none",
@@ -74,7 +81,6 @@ export const ItemRow: FC<{
         }}
       >
         <item.Icon
-          // Ícone fica colorido quando ativo; caso contrário, preto padrão
           color={active ? partnerColor() : baseTextColor}
           weight="bold"
           size={20}
@@ -97,6 +103,7 @@ export const ItemRow: FC<{
     </li>
   );
 };
+
 export const menuItems: MenuItem[] = [
   {
     label: "Início",
