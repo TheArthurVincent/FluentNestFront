@@ -3137,7 +3137,7 @@ export default function EnglishClassCourse2({
             <>
               <div
                 style={{
-                  display: "flex",
+                  display: !exercise ? "flex" : "none",
                   margin: "1rem auto",
                   padding: "0 1rem",
                   alignItems: "center",
