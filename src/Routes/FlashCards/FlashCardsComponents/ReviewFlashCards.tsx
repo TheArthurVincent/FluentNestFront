@@ -276,36 +276,7 @@ const ReviewFlashCards = ({
   const cardRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section
-      id="review"
-      style={{
-        width: "80%",
-        margin: "0 auto",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "0 1rem",
-        }}
-      >
-        <a
-          style={{
-            fontSize: "12px",
-            color: "#666",
-            textDecoration: "none",
-            marginBottom: "1rem",
-          }}
-          href="/sentence-mining"
-        >
-          {UniversalTexts?.addWordsToFlashcards ||
-            "Adicione palavras em seus flashcards"}
-        </a>
-      </div>
-
+    <section>
       {loading ? (
         <div
           style={{

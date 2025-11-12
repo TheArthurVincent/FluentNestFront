@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { RouteDiv } from "../../Resources/Components/RouteBox";
 import Helmets from "../../Resources/Helmets";
 import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import { Tab, CircularProgress } from "@mui/material";
@@ -11,6 +10,7 @@ import AllCards from "./FlashCardsComponents/AllCards";
 import { onLoggOut, backDomain } from "../../Resources/UniversalComponents";
 import FlashcardsHistory from "./FlashCardsComponents/FlashcardsHistory";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
+import "./flashcards.css";
 import axios from "axios";
 
 interface FlashCardsProps {
@@ -155,10 +155,16 @@ const FlashCards = ({
   return (
     <div
       style={{
-        backgroundColor: "#f8fafc",
-        padding: "1rem",
         borderRadius: "16px",
-        maxWidth: "90vw",
+        position: "sticky",
+        top: 0,
+        left: 0,
+        height: "85vh",
+        backgroundColor: "#ffffff",
+        display: "flex",
+        border: "1px solid #E3E8F0",
+        flexDirection: "column",
+        paddingTop: "5rem",
       }}
     >
       <Helmets text="Flashcards" />
@@ -226,54 +232,51 @@ const FlashCards = ({
         </div>
       )}
       <TabContext value={value}>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            backgroundColor: alwaysWhite(),
-            justifyContent: "space-between",
-          }}
-        >
-          <TabList
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="scrollable auto tabs example"
-            sx={{
-              color: partnerColor(),
+        <TabList
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label="scrollable auto tabs example"
+          sx={() => {
+            const color = partnerColor();
+            return {
+              justifyContent: "space-between",
+              display: "flex",
+              color,
               "& .MuiTab-root": {
-                color: partnerColor(),
+                color,
                 padding: "0px",
                 fontSize: "12px",
               },
               "& .Mui-selected": {
-                color: partnerColor(),
+                color,
                 padding: "0px",
                 fontSize: "12px",
               },
               "& .MuiTabs-indicator": {
-                backgroundColor: partnerColor(),
+                backgroundColor: color,
                 padding: "0px",
                 fontSize: "12px",
               },
-            }}
-          >
-            {componentsToRender.map((component, index) => {
-              return (
-                <Tab
-                  key={index + component.value}
-                  style={{
-                    color: partnerColor(),
-                    fontWeight: (index + 1).toString() === value ? 800 : 500,
-                    display: component.adm === false ? "block" : displayIsAdm,
-                  }}
-                  label={component.title}
-                  value={component.value}
-                />
-              );
-            })}
-          </TabList>
-        </div>
+            };
+          }}
+        >
+          {componentsToRender.map((component, index) => {
+            const color = partnerColor();
+            return (
+              <Tab
+                key={index + component.value}
+                style={{
+                  color,
+                  fontWeight: (index + 1).toString() === value ? 800 : 500,
+                  display: component.adm === false ? "block" : displayIsAdm,
+                }}
+                label={component.title}
+                value={component.value}
+              />
+            );
+          })}
+        </TabList>
         {componentsToRender.map((component, index) => {
           return (
             <TabPanel
