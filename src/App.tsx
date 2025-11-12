@@ -23,7 +23,6 @@ import {
   textPrimaryColorContrast,
   logoPartner,
 } from "./Styles/Styles";
-
 import HomePage from "./Routes/HomePage";
 import NotFound from "./Routes/NotFound/NotFound";
 import RequestResetPassword from "./Routes/ChangePassword/RequestResetPassword";

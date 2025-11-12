@@ -1,16 +1,17 @@
 import styled from "styled-components";
-import {
-  alwaysBlack,
-  lightGreyColor,
-  partnerColor,
-  textPrimaryColorContrast,
-} from "../../Styles/Styles";
+import { partnerColor } from "../../Styles/Styles";
+
+/* =========================
+   Grids e cartões
+   ========================= */
 
 export const EventsCardsContainer = styled.div`
   display: grid;
-  gap: 1rem;
-  justify-content: center;
-  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
 
   @media (max-width: 1000px) {
     grid-template-columns: 1fr;
@@ -18,73 +19,103 @@ export const EventsCardsContainer = styled.div`
 `;
 
 export const EventsCard = styled.div`
-  display: grid;
-  gap: 1rem;
-  justify-content: center;
-  text-align: center;
-  padding: 1rem 0;
-  background-color: ${lightGreyColor()};
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  padding: 12px;
+  background-color: #ffffff;
+  border: 1px solid #e3e8f0;
+  border-radius: 12px;
+  overflow: hidden;
 `;
+
+/* =========================
+   Títulos
+   ========================= */
 
 export const HThree = styled.h3`
-  padding: 0.5rem;
-  margin: 0.5rem 0;
-  color: ${"#000"};
+  margin: 8px 0 0;
+  padding: 8px 0;
+  color: #000;
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.1rem);
+  font-weight: 600;
+  line-height: 1.25;
+
   @media (max-width: 900px) {
-    margin: 10px auto;
+    margin: 10px 0 0;
   }
+
   @media (max-width: 500px) {
-    max-width: 22rem;
+    max-width: 100%;
   }
 `;
 
+/* Cabeçalho “abrível” de módulo — liso, sem sombra, com borda lateral */
 export const HThreeModule = styled.h3`
-  padding: 0.75rem 1rem;
-  margin: 1rem 0;
+  padding: 12px 14px;
+  margin: 12px 0;
   cursor: pointer;
-  color: ${"#000"};
-  background-color: #f8f8f8;
-  border-left: 2px solid ${"#000"};
-  font-size: 1.1rem;
-  font-weight: bold;
-  border-radius: 4px;
-  transition: background-color 0.1s ease, color 0.3s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  color: #000;
+  background-color: #ffffff;
+  border-left: 3px solid ${partnerColor()};
+  border-radius: 10px;
+  border: 1px solid #e3e8f0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  transition: background-color 0.12s ease, color 0.12s ease;
 
   &:hover {
+    background-color: #eeeeee05;
     color: ${partnerColor()};
   }
 
+  &:focus-visible {
+    outline: 2px solid ${partnerColor()};
+    outline-offset: 2px;
+  }
+
   @media (max-width: 900px) {
-    font-size: 1.1rem;
-    padding: 0.5rem;
-    margin: 0.75rem 0;
+    font-size: 1.05rem;
+    padding: 10px 12px;
+    margin: 10px 0;
   }
 
   @media (max-width: 500px) {
     font-size: 1rem;
-    padding: 0.5rem;
-    margin: 0.5rem 0;
+    padding: 10px 12px;
+    margin: 8px 0;
   }
 `;
 
+/* FAQ destacado, mas minimalista */
 export const H3FAQ = styled.h3`
-  padding: 0.5rem;
-  margin: 0.5rem;
-  background-color: ${"#000"};
-  color: ${textPrimaryColorContrast()};
-  @media (max-width: 900px) {
-    margin: 10px auto;
-  }
-  @media (max-width: 500px) {
-    max-width: 22rem;
-  }
+  padding: 10px 12px;
+  margin: 8px 0;
+  background-color: #000;
+  color: white;
+  border-radius: 10px;
+  border: 1px solid #111827;
+
   &:hover {
-    background-color: ${alwaysBlack()};
+    background-color: #000;
     color: ${partnerColor()};
-    transition: 0.2s;
+    transition: color 0.15s ease;
+  }
+
+  @media (max-width: 900px) {
+    margin: 10px 0;
+  }
+
+  @media (max-width: 500px) {
+    max-width: 100%;
   }
 `;
+
+/* =========================
+   Aparição suave opcional
+   ========================= */
+
 export const DivAppear = styled.div`
   &.smooth {
     animation-name: slideUpDown;
@@ -93,24 +124,36 @@ export const DivAppear = styled.div`
   }
 `;
 
+/* =========================
+   Listagem de aulas / caixas
+   ========================= */
+
 export const ClassBox = styled.div`
   display: grid;
-  gap: 0.5rem;
-  justify-content: space-evenly;
-  padding-bottom: 4rem;
-  border-bottom: solid 1px ${"#000"};
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e3e8f0;
+
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
   }
 `;
 
+/* =========================
+   Barra de ações / filtros
+   ========================= */
+
 export const TransectionMenu = styled.div`
   display: flex;
   align-items: center;
-  margin: 1rem;
   justify-content: space-between;
+  gap: 8px;
+  margin: 12px 0;
+
   @media (max-width: 1000px) {
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: stretch;
+    gap: 10px;
   }
 `;

@@ -3083,7 +3083,6 @@ export default function EnglishClassCourse2({
       style={{
         backgroundColor: "white",
         width: "1000px",
-        maxWidth: "93vw",
         boxSizing: "border-box",
       }}
     >

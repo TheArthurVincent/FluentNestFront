@@ -8,14 +8,16 @@ type Props = {
   initialTitle: string;
   headers?: any;
   canEdit?: boolean;
-  onChanged?: () => void; // chame getModules() no pai
+  onChanged?: () => void;
 };
 
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
+  cursor: "default",
   background: "rgba(0,0,0,0.35)",
   display: "flex",
+  flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
   zIndex: 9999,

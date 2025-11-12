@@ -22,12 +22,14 @@ import { partnerColor } from "../../Styles/Styles";
 import Modules from "./Modules";
 import NewCourseButton from "./NewCourse/NewCourse";
 import EditCourseModal, { Course } from "./EditCourse/EditCourse";
+import { newArvinTitleStyle } from "../ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 
 /** ==================== TYPES ==================== */
 interface EnglishCoursesHomeProps {
   headers: MyHeadersType | null;
   change: any;
   setChange: any;
+  isDesktop: boolean;
 }
 type Permissions = "superadmin" | "teacher" | "student" | string;
 
@@ -44,30 +46,54 @@ const injectBaseStyles = () => {
   const style = document.createElement("style");
   style.id = "courses-base-styles";
   style.innerHTML = `
-    @keyframes spin{to{transform:rotate(360deg)}}
-    .iconbtn{border:none;background:transparent;padding:6px;border-radius:6px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-    .iconbtn:hover{background:#f3f4f6}
+    @keyframes spin { to { transform: rotate(360deg) } }
+
+    .iconbtn {
+      border: none; background: transparent; padding: 8px; border-radius: 10px;
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    }
+    .iconbtn:hover { background: #f3f4f6 }
+    .iconbtn:focus-visible {
+      outline: 2px solid ${partnerColor()}; outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none !important; }
+    }
+
+    .card a:focus-visible {
+      outline: 2px solid ${partnerColor()};
+      outline-offset: 2px;
+      border-radius: 10px;
+    }
   `;
   document.head.appendChild(style);
 };
 
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
-  size = 36,
+  size = 32,
   color = partnerColor(),
 }) => (
   <div
-    role="status"
-    aria-label="Carregando"
     style={{
-      width: size,
-      height: size,
-      border: `${Math.max(2, Math.floor(size / 9))}px solid rgba(0,0,0,0.1)`,
-      borderTopColor: color,
-      borderRadius: "50%",
-      animation: "spin 0.8s linear infinite",
-      margin: "12px auto",
+      display: "grid",
+      placeItems: "center",
+      minHeight: "40vh",
     }}
-  />
+  >
+    <div
+      role="status"
+      aria-label="Carregando"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        border: "3px solid #e5e7eb",
+        borderTopColor: color,
+        animation: "spin 0.8s linear infinite",
+      }}
+    />
+  </div>
 );
 
 /** ==================== HELPERS ==================== */
@@ -130,44 +156,53 @@ const canEditCourseFor = (
   return false;
 };
 
-/** ==================== SUBCOMPONENTES ==================== */
-// Grid / Card styles
+/** ==================== SUBCOMPONENTES (style-only) ==================== */
+// Grid / Card styles — alinhados ao “estilinho” do MyHomePage
 const gridStyle: React.CSSProperties = {
   display: "grid",
-  gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
-  gap: "12px",
+  gridTemplateColumns: "repeat(auto-fill, minmax(210px, 1fr))",
+  gap: 12,
   padding: 0,
   listStyle: "none",
 };
 
 const cardBase: React.CSSProperties = {
   listStyle: "none",
-  borderRadius: 5,
+  borderRadius: 12,
   overflow: "hidden",
-  border: "1px solid rgba(0,0,0,0.08)",
-  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+  border: "1px solid #E3E8F0",
   background: "#fff",
   transition: "transform 160ms ease, box-shadow 160ms ease",
   willChange: "transform",
 };
 
 const cardHover: React.CSSProperties = {
-  boxShadow: "0 4px 10px rgba(0, 0, 0, 0.08)",
+  transform: "translateY(-1px)",
 };
 
 const thumbWrap: React.CSSProperties = {
   position: "relative",
-  height: 120,
+  height: 150,
   background: "#f3f4f6",
-  overflow: "hidden",
+  padding: 16,
+  display: "grid",
+  gap: 8,
+  alignItems: "center",
+  justifyContent: "space-between",
+  borderRadius: 16,
+  backdropFilter: "saturate(1.2) blur(6px)", // 👈 agradável
+  backgroundColor: "#ffffff",
+  border: "1px solid #E3E8F0",
 };
 
-const titleWrap: React.CSSProperties = { padding: "8px 10px 10px" };
+const titleWrap: React.CSSProperties = { padding: "10px 12px 12px" };
 
 const titleStyle: React.CSSProperties = {
   margin: 0,
-  fontSize: "0.95rem",
+  fontSize: "0.98rem",
   lineHeight: 1.25,
+  fontFamily: "Plus Jakarta Sans", // tipografia do estilinho
+  fontWeight: 600,
   display: "-webkit-box" as any,
   WebkitLineClamp: 2,
   WebkitBoxOrient: "vertical",
@@ -177,13 +212,16 @@ const titleStyle: React.CSSProperties = {
 const badgeBase: React.CSSProperties = {
   position: "absolute",
   top: 8,
-  padding: "2px 6px",
+  padding: "2px 8px",
   fontSize: 12,
-  background: "rgba(0,0,0,0.7)",
+  background: "rgba(17,24,39,0.8)", // melhor contraste que 0,72
   color: "#fff",
   letterSpacing: 0.2,
   textTransform: "uppercase" as const,
-  borderRadius: 4,
+  borderRadius: 999,
+  fontFamily: "Plus Jakarta Sans",
+  fontWeight: 600,
+  backdropFilter: "blur(2px)", // texto mais legível sobre imagem
 };
 
 const langBadge: React.CSSProperties = { ...badgeBase, left: 8 };
@@ -193,9 +231,58 @@ const lockBadge: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   gap: 6,
-  background: "rgba(0,0,0,0.65)",
 };
 
+const SectionTitleStyle: React.CSSProperties = {
+  margin: "0 0 10px 0",
+  fontSize: "1.1rem",
+  fontFamily: "Plus Jakarta Sans",
+  fontWeight: 600,
+  letterSpacing: 0,
+};
+
+/** Header da lista no “estilinho” do MyHomePage */
+const headerAll: React.CSSProperties = {
+  padding: 16,
+  display: "grid",
+  gap: 8,
+  zIndex: 100,
+  alignItems: "center",
+  justifyContent: "space-between",
+  borderRadius: 16,
+  position: "sticky",
+  top: "max(0px, env(safe-area-inset-top))", // 👈 iOS notch friendly
+  left: 0,
+  backdropFilter: "saturate(1.2) blur(6px)", // 👈 agradável
+  backgroundColor: "#ffffff",
+  border: "1px solid #E3E8F0",
+};
+
+const headerLeftStyle: React.CSSProperties = {
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  paddingLeft: 8,
+};
+
+const headerRightStyle: React.CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+};
+
+const searchInputStyle: React.CSSProperties = {
+  // opcional/visual apenas (não altera comportamento)
+  fontFamily: "Plus Jakarta Sans",
+  fontSize: 14,
+  border: "1px solid #E3E8F0",
+  borderRadius: 10,
+  padding: "10px 12px",
+  outline: "none",
+  width: 220,
+};
+
+/** ==================== Course Card ==================== */
 const CourseCard: React.FC<{
   course: CourseWithCreator;
   locked?: boolean;
@@ -217,6 +304,8 @@ const CourseCard: React.FC<{
         src={course.image}
         alt={`${course.title}img`}
         loading="lazy"
+        decoding="async"
+        sizes="(max-width: 600px) 100vw, 210px"
         style={{
           width: "100%",
           height: "100%",
@@ -226,6 +315,7 @@ const CourseCard: React.FC<{
           transition: "opacity 160ms ease",
         }}
       />
+
       <span style={langBadge}>{langLabel}</span>
       {locked && (
         <span style={lockBadge} aria-label="locked">
@@ -264,7 +354,6 @@ const CourseCard: React.FC<{
     </div>
   );
 
-  // Byline: exibe nome do criador para materiais não-originais
   const Byline =
     !course.isOriginal && course.creatorFullName ? (
       <div
@@ -276,6 +365,7 @@ const CourseCard: React.FC<{
           whiteSpace: "nowrap",
           overflow: "hidden",
           textOverflow: "ellipsis",
+          fontFamily: "Plus Jakarta Sans",
         }}
         title={course.creatorFullName}
       >
@@ -306,11 +396,7 @@ const CourseCard: React.FC<{
       <CardShell>
         <Link
           to={`${course._id}/`}
-          style={{
-            display: "block",
-            textDecoration: "none",
-            color: "inherit",
-          }}
+          style={{ display: "block", textDecoration: "none", color: "inherit" }}
         >
           {Thumb}
           {Body}
@@ -346,7 +432,7 @@ const LangSection: React.FC<{
   if (allowed.length === 0 && nonAllowed.length === 0) return null;
   return (
     <section style={{ marginTop: "1.25rem" }}>
-      <h2 style={{ margin: "0 0 10px 0", fontSize: "1.1rem" }}>{title}</h2>
+      <h2 style={SectionTitleStyle}>{title}</h2>
       <ul style={gridStyle}>
         {allowed.map((course) => (
           <CourseCard
@@ -406,6 +492,7 @@ const CourseRouter: React.FC<{
 export default function EnglishCourses({
   headers,
   change,
+  isDesktop,
   setChange,
 }: EnglishCoursesHomeProps) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -482,8 +569,6 @@ export default function EnglishCourses({
   }, []);
 
   /** ==================== DERIVADOS ==================== */
-  // NÃO-ORIGINAIS (do professor / terceiros), ignorando idioma
-  // Permitidos (do próprio user ou superadmin)
   const allowedNonOriginal = useMemo(
     () =>
       sortByCreatorThenOrder(
@@ -494,7 +579,6 @@ export default function EnglishCourses({
     [listOfCoursesFromDatabase]
   );
 
-  // Não permitidos (visíveis mas bloqueados)
   const nonAllowedNonOriginal = useMemo(
     () =>
       sortByCreatorName(
@@ -505,7 +589,6 @@ export default function EnglishCourses({
     [listOfNonAllowedCoursesFromDatabase]
   );
 
-  // ORIGINAIS (true/undefined)
   const allowedOriginalOnly = useMemo(
     () =>
       (listOfCoursesFromDatabase || []).filter(
@@ -579,25 +662,14 @@ export default function EnglishCourses({
   return (
     <div
       style={{
-        paddingTop: "1.5rem",
         display: "flex",
+        marginTop: !isDesktop ? "3rem" : "0",
         flexDirection: "column",
         gap: "1rem",
+        width: "100%",
+        maxWidth: "100%",
       }}
     >
-      <Link
-        style={{
-          marginLeft: 16,
-          marginBottom: -10,
-          fontSize: 14,
-          cursor: "pointer",
-          color: partnerColor(),
-          textDecoration: "none",
-        }}
-        to="/"
-      >
-        Voltar para Home Page
-      </Link>
       {/* Rotas específicas por curso (slug) e rota genérica por :courseKey */}
       <Routes>
         {listOfCoursesFromDatabase.map((route) => (
@@ -639,24 +711,52 @@ export default function EnglishCourses({
           ) : (
             <div
               style={{
-                padding: "10px",
-                boxShadow:
-                  "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)",
-                backgroundColor: "white",
-                borderRadius: 4,
-                width: "90vw",
-                maxWidth: 1200,
-                marginInline: "auto",
+                width: "min(1200px, 92vw)",
+                margin: "0 auto",
+                marginTop: "1.2rem",
+                padding: "16px",
               }}
             >
-              <HOne> Cursos </HOne>
+              {/* Header igual ao MyHomePage */}
+              <div style={headerAll}>
+                <section style={headerLeftStyle}>
+                  <span style={newArvinTitleStyle}>Cursos</span>
+                </section>
 
-              {(permissions === "superadmin" || permissions === "teacher") && (
-                <NewCourseButton
-                  studentId={studentID}
-                  headers={actualHeaders}
-                />
-              )}
+                {/* Mantive apenas visual – sem lógica de busca */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: 10,
+                  }}
+                >
+                  <div style={headerRightStyle}>
+                    {(permissions === "superadmin" ||
+                      permissions === "teacher") && (
+                      <NewCourseButton
+                        studentId={studentID}
+                        headers={actualHeaders}
+                      />
+                    )}
+                  </div>
+
+                  <Link
+                    style={{
+                      marginLeft: 16,
+                      marginBottom: -10,
+                      fontSize: 14,
+                      cursor: "pointer",
+                      color: partnerColor(),
+                      textDecoration: "none",
+                      fontFamily: "Plus Jakarta Sans", // style-only
+                    }}
+                    to="/"
+                  >
+                    Voltar para Home Page
+                  </Link>
+                </div>
+              </div>
 
               {/* Primeira categoria — cursos NÃO originais (ignorando idioma) */}
               {(allowedNonOriginal.length > 0 ||

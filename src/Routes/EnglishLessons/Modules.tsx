@@ -8,7 +8,6 @@ import {
   useParams,
 } from "react-router-dom";
 import axios from "axios";
-import styled from "styled-components";
 
 import { HOne } from "../../Resources/Components/RouteBox";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
@@ -25,70 +24,99 @@ import EnglishClassCourse2 from "./Class";
 import ReorderModulesButton from "./EditLesson/EditOrderModule/EditOrderModule";
 import ModuleActions from "./EditLesson/EditModule/EditModule";
 
-/* =================== Spinner =================== */
+/* =================== Base CSS (sem sombras, foco visível, reduce motion) =================== */
+const injectBaseStyles = () => {
+  if (document.getElementById("modules-base-styles")) return;
+  const st = document.createElement("style");
+  st.id = "modules-base-styles";
+  st.innerHTML = `
+    @keyframes spin { to { transform: rotate(360deg) } }
+
+    .focusable:focus-visible {
+      outline: 2px solid ${partnerColor()};
+      outline-offset: 2px;
+      border-radius: 10px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .no-motion { transition: none !important; animation: none !important; }
+    }
+
+    .btn-ghost {
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      padding: 2px 6px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn-ghost:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    .input-slim {
+      border-radius: 10px;
+      border: 1px solid #E3E8F0;
+      background: #f8fafc;
+      font-size: 12px;
+      color: #475569;
+      padding: 8px 10px;
+      height: 34px;
+      outline: none;
+    }
+    .input-slim:focus {
+      border-color: ${partnerColor()};
+      background: #ffffff;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 400;
+      color: #64748b;
+      user-select: none;
+    }
+
+    .card-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .list-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .no-overflow-x { overflow-x: hidden; }
+  `;
+  document.head.appendChild(st);
+};
+
+/* =================== Spinner consistente =================== */
 const Spinner: React.FC<{ size?: number; color?: string }> = ({
   size = 28,
   color = partnerColor(),
 }) => (
-  <div
-    role="status"
-    aria-label="Carregando"
-    style={{
-      width: size,
-      height: size,
-      border: `${Math.max(2, Math.floor(size / 9))}px solid rgba(0,0,0,0.1)`,
-      borderTopColor: color,
-      borderRadius: "50%",
-      animation: "spin 0.8s linear infinite",
-      margin: "12px 0",
-    }}
-  />
+  <div style={{ display: "grid", placeItems: "center", minHeight: "25vh" }}>
+    <div
+      className="no-motion"
+      role="status"
+      aria-label="Carregando"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: "50%",
+        border: "3px solid #e5e7eb",
+        borderTopColor: color,
+        animation: "spin .8s linear infinite",
+      }}
+    />
+  </div>
 );
-if (!document.getElementById("spin-kf")) {
-  const st = document.createElement("style");
-  st.id = "spin-kf";
-  st.innerHTML = `@keyframes spin{to{transform:rotate(360deg)}}`;
-  document.head.appendChild(st);
-}
-
-/* =================== styled =================== */
-const CourseCard = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #f5f5f5;
-  color: #333;
-  padding: 0.5rem;
-  font-size: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #f3f3f3;
-
-    img {
-      transform: scale(1.1);
-      filter: grayscale(100%);
-    }
-  }
-
-  img {
-    border-radius: 4px;
-    width: 40px;
-    height: 40px;
-    object-fit: cover;
-    margin-right: 1rem;
-    transition: transform 0.3s ease, filter 0.3s ease;
-  }
-
-  p {
-    flex-grow: 1;
-    margin: 0;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: left;
-  }
-`;
 
 /* =================== Tipos =================== */
 interface ClassItem {
@@ -114,6 +142,30 @@ interface ModulesHomeProps {
   setChange?: any;
   canEditCourse?: boolean; // << veio do pai (Courses)
 }
+
+/* =================== Card “liso” da aula (sem sombra) =================== */
+const LessonCard: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  return (
+    <div
+      className="focusable"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        backgroundColor: "#f7f7f8",
+        color: "#0f172a",
+        padding: "10px 12px",
+        fontSize: 13,
+        borderRadius: 12,
+        border: "1px solid #e5e7eb",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 /* =================== Wrapper: lê :moduleKey e injeta na Aula =================== */
 const ClassByParam: React.FC<{
@@ -188,6 +240,10 @@ export default function Modules({
   const actualHeaders = headers || {};
   const safeClone = <T,>(obj: T): T => JSON.parse(JSON.stringify(obj));
 
+  useEffect(() => {
+    injectBaseStyles();
+  }, []);
+
   const isCompletedFor = (cls: ClassItem) =>
     Array.isArray(cls.studentsWhoCompletedIt) &&
     studentID &&
@@ -195,7 +251,7 @@ export default function Modules({
 
   const toggleCompletion = async (cls: ClassItem) => {
     if (!studentID) {
-      // pequena UX
+      // pequena UX opcional
     }
     const id = cls._id;
     setToggling((p) => ({ ...p, [id]: true }));
@@ -271,7 +327,7 @@ export default function Modules({
     if (thePermissions === "superadmin" || thePermissions === "teacher") {
       fetchStudents();
     }
-  }, [title, thePermissions]); // mantém seu comportamento original
+  }, [title, thePermissions]); // mantém comportamento original
 
   const handleStudentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const theid = event.target.value;
@@ -396,16 +452,41 @@ export default function Modules({
     setDisplayRouteDiv(isRootOfCourse);
   }, [loc.pathname]);
 
+  /* ===== estilos “estilinho” comuns ===== */
+  const pageWrapStyle: React.CSSProperties = {
+    backgroundColor: "#ffffff",
+    padding: 12,
+    borderRadius: 16,
+    border: "1px solid #E3E8F0",
+    maxWidth: "min(1200px, 94vw)",
+    margin: "0 auto",
+    marginTop: "max(8px, env(safe-area-inset-top))",
+  };
+
+  const headerRowStyle: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "12px",
+    width: "100%",
+  };
+
+  const toolsRightStyle: React.CSSProperties = {
+    display: "flex",
+    flexWrap: "wrap",
+    gap: 8,
+    alignItems: "center",
+    marginLeft: "auto",
+  };
+
+  const lessonsListWrap: React.CSSProperties = {
+    display: "grid",
+    gap: 8,
+  };
+
   /* ===== render ===== */
   return (
-    <div
-      style={{
-        backgroundColor: "white",
-        padding: 10,
-        borderRadius: 4,
-        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-      }}
-    >
+    <div className="no-overflow-x" style={{ width: "100%", maxWidth: "100%" }}>
       {/* Rota da AULA por ID (ou slug se o backend aceitar) */}
       <Routes>
         <Route
@@ -426,321 +507,259 @@ export default function Modules({
 
       {displayRouteDiv && (
         <>
-          <HOne>{title}</HOne>
+          <div style={pageWrapStyle}>
+            <HOne>{title}</HOne>
 
-          {loading ? (
-            <Spinner />
-          ) : (
-            <div className="flex-grid" style={{ display: "grid", gap: 8 }}>
-              <div
-                style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  alignItems: "center",
-                  width: "90vw",
-                  gap: "1rem",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "center ", gap: 8 }}>
-                  <span
-                    style={{
-                      fontSize: 10,
-                      cursor: "pointer",
-                      color: darkGreyColor(),
-                    }}
-                    onClick={() =>
-                      window.location.assign("/teaching-materials")
-                    }
+            {loading ? (
+              <Spinner />
+            ) : (
+              <div className="list-grid" style={{ gap: 12 }}>
+                <div style={headerRowStyle}>
+                  {/* Breadcrumb leve */}
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
                   >
-                    Materiais de Ensino
-                  </span>
-                  <span style={{ color: darkGreyColor() }}>-</span>
-                  <span
-                    style={{
-                      color: partnerColor(),
-                      fontSize: 10,
-                      fontStyle: "italic",
-                    }}
-                  >
-                    {title}{" "}
+                    <span
+                      style={{
+                        fontSize: 11,
+                        cursor: "pointer",
+                        color: darkGreyColor(),
+                      }}
+                      onClick={() =>
+                        window.location.assign("/teaching-materials")
+                      }
+                    >
+                      Materiais de Ensino
+                    </span>
+                    <span style={{ color: darkGreyColor() }}>›</span>
+                    <span
+                      style={{
+                        color: partnerColor(),
+                        fontSize: 11,
+                        fontStyle: "italic",
+                        display: "inline-flex",
+                        gap: 8,
+                        alignItems: "center",
+                      }}
+                    >
+                      {title}
+                      {(thePermissions === "teacher" ||
+                        thePermissions === "superadmin") && (
+                        <span style={{ color: "#64748b", fontSize: 10 }}>
+                          {canEditCourse
+                            ? "(Editing Enabled)"
+                            : "(Editing Disabled)"}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+
+                  {/* Ferramentas à direita */}
+                  <div style={toolsRightStyle}>
+                    <input
+                      type="text"
+                      placeholder="Search classes by name..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="input-slim"
+                      style={{ width: 180 }}
+                    />
+
                     {(thePermissions === "teacher" ||
                       thePermissions === "superadmin") && (
-                      <span>
-                        {canEditCourse
-                          ? "(Editing Enabled)"
-                          : "(Editing Disabled)"}
-                      </span>
+                      <>
+                        <select
+                          onChange={handleStudentChange}
+                          value={studentID}
+                          className="input-slim"
+                          style={{ width: 200, fontWeight: 400 }}
+                        >
+                          <option value="">Selecione um aluno</option>
+                          {studentsList.map((student: any, index: number) => (
+                            <option key={index} value={student.id}>
+                              {truncateString(
+                                `${student.name} ${student.lastname}`,
+                                28
+                              )}
+                            </option>
+                          ))}
+                        </select>
+
+                        {canEditCourse && (
+                          <>
+                            <ReorderModulesButton
+                              courseId={courseId}
+                              headers={headers}
+                              onSaved={() => window.location.reload()}
+                            />
+                            <NewModuleButton
+                              courseId={courseId}
+                              studentId={studentID}
+                              headers={headers}
+                            />
+                          </>
+                        )}
+                      </>
                     )}
-                  </span>
-                </div>
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 5,
-                    alignItems: "center",
-                    marginLeft: "auto",
-                  }}
-                >
-                  <input
-                    type="text"
-                    placeholder="Search classes by name..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{
-                      borderRadius: 4,
-                      border: "1px solid #e2e8f0",
-                      backgroundColor: "#f8fafc",
-                      fontSize: 11,
-                      color: "#64748b",
-                      padding: "4px 6px",
-                      height: 28,
-                      width: 140,
-                    }}
-                  />
-
-                  {(thePermissions === "teacher" ||
-                    thePermissions === "superadmin") && (
-                    <>
-                      <select
-                        onChange={handleStudentChange}
-                        value={studentID}
-                        style={{
-                          borderRadius: 4,
-                          border: "1px solid #e2e8f0",
-                          backgroundColor: "#f8fafc",
-                          fontSize: 11,
-                          width: 140,
-                          fontWeight: 400,
-                          color: "#64748b",
-                          padding: "4px 6px",
-                          height: 28,
-                          outline: "none",
-                          cursor: "pointer",
-                          display: "block",
-                        }}
-                        onFocus={(e) =>
-                          (e.currentTarget.style.borderColor = partnerColor())
-                        }
-                        onBlur={(e) =>
-                          (e.currentTarget.style.borderColor = "#e2e8f0")
-                        }
-                      >
-                        <option value="">Selecione um aluno</option>
-                        {studentsList.map((student: any, index: number) => (
-                          <option key={index} value={student.id}>
-                            {truncateString(
-                              `${student.name} ${student.lastname}`,
-                              22
-                            )}
-                          </option>
-                        ))}
-                      </select>
-
-                      {canEditCourse && (
-                        <>
-                          {" "}
-                          <ReorderModulesButton
-                            courseId={courseId}
-                            headers={headers}
-                            onSaved={() => window.location.reload()} // atualiza lista após salvar
-                          />
-                          <NewModuleButton
-                            courseId={courseId}
-                            studentId={studentID}
-                            headers={headers}
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* LISTA DE MÓDULOS */}
-          {filtered
-            .slice()
-            .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-            .map((module, moduleIdx) => {
-              const sorted = (module.classes || [])
-                .slice()
-                .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+            {/* LISTA DE MÓDULOS */}
+            {filtered
+              .slice()
+              .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+              .map((module, moduleIdx) => {
+                const sorted = (module.classes || [])
+                  .slice()
+                  .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-              if (searchQuery && !sorted.length) return null;
+                if (searchQuery && !sorted.length) return null;
 
-              return (
-                <div key={module.id || moduleIdx}>
-                  <HThreeModule
-                    onClick={() =>
-                      setVisibleModules((prev) => {
-                        const n = prev.slice();
-                        n[moduleIdx] = !n[moduleIdx];
-                        return n;
-                      })
-                    }
-                  >
-                    {moduleIdx + 1} |{" "}
-                    {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
-                    {sorted.length} Lessons
-                    {canEditCourse && (
-                      <ModuleActions
-                        moduleId={module.id}
-                        initialTitle={module.moduleTitle || ""}
-                        headers={headers}
-                        canEdit={canEditCourse}
-                        onChanged={getModules} // recarrega lista após salvar/excluir
-                      />
-                    )}{" "}
-                  </HThreeModule>
+                return (
+                  <div key={module.id || moduleIdx} style={{ marginTop: 8 }}>
+                    <HThreeModule
+                      onClick={() =>
+                        setVisibleModules((prev) => {
+                          const n = prev.slice();
+                          n[moduleIdx] = !n[moduleIdx];
+                          return n;
+                        })
+                      }
+                    >
+                      {moduleIdx + 1} |{" "}
+                      {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
+                      {sorted.length} Lessons
+                      {canEditCourse && (
+                        <ModuleActions
+                          moduleId={module.id}
+                          initialTitle={module.moduleTitle || ""}
+                          headers={headers}
+                          canEdit={canEditCourse}
+                          onChanged={getModules}
+                        />
+                      )}{" "}
+                    </HThreeModule>
 
-                  {canEditCourse && (
-                    <CreateClassButton
-                      courseId={courseId}
-                      studentId={studentID}
-                      moduleId={module.id}
-                      headers={headers}
-                    />
-                  )}
-
-                  {visibleModules[moduleIdx] && (
-                    <div style={{ display: "grid", margin: "0 10px" }}>
-                      {sorted.map((cls, viewIdx) => (
-                        <div
-                          key={cls._id}
-                          style={{
-                            display: "grid",
-                            gridTemplateColumns: "1fr auto",
-                            alignItems: "center",
-                            gap: 5,
-                          }}
-                        >
-                          <Link
-                            to={`${cls._id}`}
-                            style={{ textDecoration: "none" }}
-                          >
-                            <CourseCard style={{ gap: 8 }}>
-                              <label
-                                title={
-                                  isCompletedFor(cls)
-                                    ? "Marcar como não feito"
-                                    : "Marcar como feito"
-                                }
-                                style={{
-                                  display: "inline-flex",
-                                  alignItems: "center",
-                                  gap: 6,
-                                  cursor: toggling[cls._id]
-                                    ? "not-allowed"
-                                    : "pointer",
-                                  fontSize: 11,
-                                  fontWeight: 400,
-                                  color: "#64748b",
-                                  userSelect: "none",
-                                }}
-                                onClick={(e) => e.stopPropagation()}
-                              >
-                                <input
-                                  type="checkbox"
-                                  checked={!!isCompletedFor(cls)}
-                                  disabled={!!toggling[cls._id] || !studentID}
-                                  onChange={() => toggleCompletion(cls)}
-                                  style={{
-                                    cursor:
-                                      !!toggling[cls._id] || !studentID
-                                        ? "not-allowed"
-                                        : "pointer",
-                                    width: 12,
-                                    height: 12,
-                                    accentColor: partnerColor(),
-                                  }}
-                                  aria-label="Marcar aula como feita"
-                                />
-                              </label>
-
-                              <p style={{ margin: 0, flex: 1 }}>
-                                {viewIdx + 1} - {cls.title}
-                                {Array.isArray(cls.tags) &&
-                                  cls.tags.length > 0 && (
-                                    <span
-                                      style={{
-                                        fontStyle: "italic",
-                                        fontWeight: 400,
-                                        fontSize: 10,
-                                        marginLeft: "1rem",
-                                      }}
-                                    >
-                                      {truncateString(
-                                        (cls.tags || [])
-                                          .join(", ")
-                                          .toLowerCase(),
-                                        28
-                                      )}
-                                    </span>
-                                  )}
-                              </p>
-                            </CourseCard>
-                          </Link>
-
-                          {canEditCourse && (
-                            <div
-                              onClick={(e) => e.preventDefault()}
+                    {visibleModules[moduleIdx] && (
+                      <div style={lessonsListWrap}>
+                        {sorted.map((cls, viewIdx) => (
+                          <div className="card-row" key={cls._id}>
+                            <Link
+                              to={`${cls._id}`}
+                              className="focusable"
                               style={{
-                                display: "flex",
-                                gap: 6,
-                                alignItems: "center",
-                                marginLeft: "auto",
+                                textDecoration: "none",
+
+                                width: "100%",
                               }}
                             >
-                              <button
-                                title="Mover para cima"
-                                disabled={viewIdx === 0}
-                                onClick={async () =>
-                                  await moveClass(moduleIdx, viewIdx, -1)
-                                }
-                                style={{
-                                  border: "1px solid #e2e8f0",
-                                  background: "#fff",
-                                  padding: "2px 6px",
-                                  borderRadius: 4,
-                                  cursor:
-                                    viewIdx === 0 ? "not-allowed" : "pointer",
-                                }}
-                              >
-                                ▲
-                              </button>
-                              <button
-                                title="Mover para baixo"
-                                disabled={viewIdx === sorted.length - 1}
-                                onClick={async () =>
-                                  await moveClass(moduleIdx, viewIdx, +1)
-                                }
-                                style={{
-                                  border: "1px solid #e2e8f0",
-                                  background: "#fff",
-                                  padding: "2px 6px",
-                                  borderRadius: 4,
-                                  cursor:
-                                    viewIdx === sorted.length - 1
-                                      ? "not-allowed"
-                                      : "pointer",
-                                }}
-                              >
-                                ▼
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+                              <LessonCard>
+                                <label
+                                  title={
+                                    isCompletedFor(cls)
+                                      ? "Marcar como não feito"
+                                      : "Marcar como feito"
+                                  }
+                                  className="pill"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={!!isCompletedFor(cls)}
+                                    disabled={!!toggling[cls._id] || !studentID}
+                                    onChange={() => toggleCompletion(cls)}
+                                    style={{
+                                      cursor:
+                                        !!toggling[cls._id] || !studentID
+                                          ? "not-allowed"
+                                          : "pointer",
+                                      width: 14,
+                                      height: 14,
+                                      accentColor: partnerColor(),
+                                    }}
+                                    aria-label="Marcar aula como feita"
+                                  />
+                                </label>
 
-          <Outlet />
+                                <p style={{ margin: 0, flex: 1 }}>
+                                  {viewIdx + 1} - {cls.title}
+                                  {Array.isArray(cls.tags) &&
+                                    cls.tags.length > 0 && (
+                                      <span
+                                        style={{
+                                          fontStyle: "italic",
+                                          fontWeight: 400,
+                                          fontSize: 11,
+                                          marginLeft: "0.8rem",
+                                          color: "#64748b",
+                                        }}
+                                      >
+                                        {truncateString(
+                                          (cls.tags || [])
+                                            .join(", ")
+                                            .toLowerCase(),
+                                          32
+                                        )}
+                                      </span>
+                                    )}
+                                </p>
+                              </LessonCard>
+                            </Link>
+
+                            {canEditCourse && (
+                              <div
+                                onClick={(e) => e.preventDefault()}
+                                style={{
+                                  display: "flex",
+                                  gap: 6,
+                                  alignItems: "center",
+                                  marginLeft: "auto",
+                                }}
+                              >
+                                <button
+                                  title="Mover para cima"
+                                  disabled={viewIdx === 0}
+                                  onClick={async () =>
+                                    await moveClass(moduleIdx, viewIdx, -1)
+                                  }
+                                  className="btn-ghost focusable"
+                                  aria-label="Mover para cima"
+                                >
+                                  ▲
+                                </button>
+                                <button
+                                  title="Mover para baixo"
+                                  disabled={viewIdx === sorted.length - 1}
+                                  onClick={async () =>
+                                    await moveClass(moduleIdx, viewIdx, +1)
+                                  }
+                                  className="btn-ghost focusable"
+                                  aria-label="Mover para baixo"
+                                >
+                                  ▼
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                        {canEditCourse && (
+                          <CreateClassButton
+                            courseId={courseId}
+                            studentId={studentID}
+                            moduleId={module.id}
+                            headers={headers}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+            <Outlet />
+          </div>
         </>
       )}
     </div>

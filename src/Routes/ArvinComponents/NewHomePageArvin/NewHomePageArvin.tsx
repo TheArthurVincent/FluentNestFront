@@ -5,6 +5,15 @@ type MyHomePageProps = HeadersProps & {
   change?: boolean;
   setChange?: any;
 };
+
+export var newArvinTitleStyle = {
+  fontFamily: "Plus Jakarta Sans",
+  fontWeight: 600,
+  fontStyle: "SemiBold",
+  fontSize: 24,
+  lineHeight: "100%",
+  letterSpacing: "0%",
+};
 export function MyHomePage({ headers, change, setChange }: MyHomePageProps) {
   return (
     <div
@@ -26,18 +35,7 @@ export function MyHomePage({ headers, change, setChange }: MyHomePageProps) {
           fontSize: "1.5rem",
         }}
       >
-        <span
-          style={{
-            fontFamily: "Plus Jakarta Sans",
-            fontWeight: 600,
-            fontStyle: "SemiBold",
-            fontSize: 24,
-            lineHeight: "100%",
-            letterSpacing: "0%",
-          }}
-        >
-          Início
-        </span>
+        <span style={newArvinTitleStyle}>Início</span>
       </section>
       <input type="text" name="" id="" />
     </div>
