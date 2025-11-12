@@ -551,7 +551,9 @@ const SentencesEditor: React.FC<Props> = ({
             </div>
             <button
               className="se-btn se-btn--primary"
-              onClick={() => setAiOpen(true)}
+              onClick={() =>{ setAiOpen(true);
+                console.log("clicou") 
+              }}
             >
               ✨ IA
             </button>

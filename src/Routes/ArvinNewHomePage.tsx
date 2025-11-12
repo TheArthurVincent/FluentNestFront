@@ -42,6 +42,7 @@ import {
   menuItems,
 } from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
 import { DotsThreeCircleIcon } from "@phosphor-icons/react";
+import MyHomePage from "./ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 
 export const useIsDesktop = (breakpoint = 700) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -210,7 +211,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       path: "/",
       levelcard: true,
       component: (
-        <Blog change={change} headers={headers} setChange={setChange} />
+        <MyHomePage change={change} headers={headers} setChange={setChange} />
       ),
     },
     {
@@ -294,6 +295,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Teaching Materials",
+      topbar: false,
       component: (
         <EnglishCourses
           setChange={setChange}
@@ -355,7 +357,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         verifyToken() && (admin || teacher) ? (
           <Adm headers={headers} />
         ) : (
-          <Blog change={change} headers={headers} setChange={setChange} />
+          <MyHomePage change={change} headers={headers} setChange={setChange} />
         ),
     },
   ];
@@ -370,9 +372,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             display: "flex",
             flexDirection: isDesktop ? "row" : "column",
             height: "100vh",
+            width: "100%",
           }}
         >
-          <ArvinTopBar admin={admin || teacher} appLoaded={appLoaded} />
+          {window.location.href.includes("teaching") ? null : (
+            <ArvinTopBar admin={admin || teacher} appLoaded={appLoaded} />
+          )}
           <Routes>
             {appRoutes.map((component, index) => {
               return (
@@ -387,8 +392,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                     verifyToken() ? (
                       <div
                         style={{
-                          height: "90%",
-                          padding: isDesktop ? "20px 20px 20px 0" : "0",
+                          width: "100%",
                           transform: isDesktop
                             ? "translateY(0)"
                             : "translateY(-70px)",

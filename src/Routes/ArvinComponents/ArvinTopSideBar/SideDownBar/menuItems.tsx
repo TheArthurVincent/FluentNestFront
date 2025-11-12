@@ -23,7 +23,9 @@ export type MenuItem = {
   isMobile?: boolean;
   orderMobile?: number;
   currentPath?: string;
+  showSideBarOnly?: boolean;
   bgActive?: string;
+  orderSideBar?: number;
 };
 
 export const ItemRow: FC<{
@@ -100,15 +102,28 @@ export const menuItems: MenuItem[] = [
     label: "Início",
     Icon: SparkleIcon,
     justBottom: false,
-    path: "/home",
+    path: "/",
     isMobile: true,
     orderMobile: 1,
+    showSideBarOnly: true,
+    orderSideBar: 1,
     showInBottomBar: false,
+  },
+  {
+    label: "Flashcards",
+    Icon: CardsIcon,
+    showInBottomBar: false,
+    orderSideBar: 2,
+    path: "/flash-cards",
+    isMobile: true,
+    orderMobile: 2,
+    justBottom: false,
   },
   {
     showInBottomBar: true,
     justBottom: false,
     label: "Lições & Aula",
+    orderSideBar: 3,
     Icon: NotebookIcon,
     path: "/my-homework-and-lessons",
     isMobile: false,
@@ -116,10 +131,22 @@ export const menuItems: MenuItem[] = [
   {
     label: "Ranking",
     showInBottomBar: true,
+    orderSideBar: 4,
     Icon: TrophyIcon,
     path: "/ranking",
     justBottom: false,
     isMobile: false,
+  },
+
+  {
+    label: "Calendário",
+    Icon: CalendarIcon,
+    path: "/my-calendar",
+    showInBottomBar: false,
+    isMobile: true,
+    orderMobile: 3,
+    orderSideBar: 5,
+    justBottom: false,
   },
   {
     showInBottomBar: false,
@@ -129,36 +156,19 @@ export const menuItems: MenuItem[] = [
     isMobile: true,
     justBottom: false,
     orderMobile: 4,
-  },
-  {
-    label: "Flashcards",
-    Icon: CardsIcon,
-    showInBottomBar: false,
-
-    path: "/flash-cards",
-    isMobile: true,
-    orderMobile: 2,
-    justBottom: false,
-  },
-  {
-    label: "Calendário",
-    Icon: CalendarIcon,
-    path: "/my-calendar",
-    showInBottomBar: false,
-
-    isMobile: true,
-    orderMobile: 3,
-    justBottom: false,
+    orderSideBar: 6,
   },
   {
     label: "Perfil",
     Icon: UserCircleIcon,
     justBottom: false,
+    orderSideBar: 7,
     showInBottomBar: true,
     path: "/my-profile",
   },
   {
     label: "Configurações",
+    orderSideBar: 8,
     Icon: GearIcon,
     path: "/adm-businessmanagement",
     justBottom: true,
@@ -168,6 +178,7 @@ export const menuItems: MenuItem[] = [
   {
     label: "Sair",
     Icon: SignOutIcon,
+    orderSideBar: 9,
     path: "/login",
     showInBottomBar: true,
     justBottom: true,
