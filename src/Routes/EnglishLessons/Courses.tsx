@@ -234,7 +234,7 @@ const lockBadge: React.CSSProperties = {
 };
 
 const SectionTitleStyle: React.CSSProperties = {
-  margin: "0 0 10px 0",
+  margin: "8px",
   fontSize: "1.1rem",
   fontFamily: "Plus Jakarta Sans",
   fontWeight: 600,
@@ -250,7 +250,7 @@ const headerAll: React.CSSProperties = {
   alignItems: "center",
   justifyContent: "space-between",
   borderRadius: 16,
-  position: "sticky",
+  // position: "sticky",
   top: "max(0px, env(safe-area-inset-top))", // 👈 iOS notch friendly
   left: 0,
   backdropFilter: "saturate(1.2) blur(6px)", // 👈 agradável
@@ -431,7 +431,7 @@ const LangSection: React.FC<{
 }> = ({ title, allowed, nonAllowed, computeCanEdit, onEdit }) => {
   if (allowed.length === 0 && nonAllowed.length === 0) return null;
   return (
-    <section style={{ marginTop: "1.25rem" }}>
+    <section style={{ marginTop: "1rem" }}>
       <h2 style={SectionTitleStyle}>{title}</h2>
       <ul style={gridStyle}>
         {allowed.map((course) => (
