@@ -3840,21 +3840,22 @@ export default function EnglishClassCourse2({
                           alignItems: "center",
                           gap: 8,
                         }}
-                      >        {hasAudioElement && (
-                              <button
-                                onClick={() => setSeeAudios((v) => !v)}
-                                style={baseBtnStyle}
-                              >
-                                Áudios
-                              </button>
-                            )}
+                      >
+                        {" "}
+                        {hasAudioElement && (
+                          <button
+                            onClick={() => setSeeAudios((v) => !v)}
+                            style={baseBtnStyle}
+                          >
+                            Áudios
+                          </button>
+                        )}
                         <button
                           style={{ width: "fit-content" }}
                           onClick={() => {
                             setSeeOptions(!seeOptions);
                           }}
                         >
-                          
                           {seeOptions ? "Ocultar Opções" : "Mostrar Opções"}
                         </button>
                         {seeOptions && (
@@ -3898,8 +3899,6 @@ export default function EnglishClassCourse2({
                               </button>
                             )}
 
-                    
-
                             <button
                               onClick={downloadBoardPDF}
                               title="Baixar PDF"
@@ -3940,7 +3939,7 @@ export default function EnglishClassCourse2({
                           </span>
                         )}
                       </div>
-            
+
                       <div
                         style={{
                           display: "flex",
@@ -4012,54 +4011,54 @@ export default function EnglishClassCourse2({
                         )}
                       </div>
                     </div>
-                              <div
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        padding: "8px 12px",
+                        borderRadius: "8px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <button
+                        onClick={() =>
+                          setBoardZoom((prev) => Math.max(prev - 10, 100))
+                        }
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                          padding: "8px 12px",
-                          borderRadius: "8px",
-                          fontSize: "12px",
+                          all: "unset",
+                          cursor: "pointer",
+                          padding: "4px 8px",
+                          background: "#f3f4f6",
+                          borderRadius: "4px",
+                          fontSize: "14px",
+                          fontWeight: "bold",
                         }}
+                        title="Diminuir zoom (Ctrl + -)"
                       >
-                        <button
-                          onClick={() =>
-                            setBoardZoom((prev) => Math.max(prev - 10, 100))
-                          }
-                          style={{
-                            all: "unset",
-                            cursor: "pointer",
-                            padding: "4px 8px",
-                            background: "#f3f4f6",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                          title="Diminuir zoom (Ctrl + -)"
-                        >
-                          -
-                        </button>
-                        <span style={{ minWidth: "45px", textAlign: "center" }}>
-                          {Math.round(boardZoom)}%
-                        </span>
-                        <button
-                          onClick={() =>
-                            setBoardZoom((prev) => Math.min(prev + 10, 200))
-                          }
-                          style={{
-                            all: "unset",
-                            cursor: "pointer",
-                            padding: "4px 8px",
-                            background: "#f3f4f6",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                          title="Aumentar zoom (Ctrl + +)"
-                        >
-                          +
-                        </button>
-                      </div>
+                        -
+                      </button>
+                      <span style={{ minWidth: "45px", textAlign: "center" }}>
+                        {Math.round(boardZoom)}%
+                      </span>
+                      <button
+                        onClick={() =>
+                          setBoardZoom((prev) => Math.min(prev + 10, 200))
+                        }
+                        style={{
+                          all: "unset",
+                          cursor: "pointer",
+                          padding: "4px 8px",
+                          background: "#f3f4f6",
+                          borderRadius: "4px",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                        }}
+                        title="Aumentar zoom (Ctrl + +)"
+                      >
+                        +
+                      </button>
+                    </div>
 
                     {/* Editor / Read-only */}
                     <div
