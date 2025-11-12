@@ -3133,45 +3133,45 @@ export default function EnglishClassCourse2({
               {theclass?.title ? truncateString(theclass.title, 25) : "..."}
             </span>
           </div>
-          <div
-            style={{
-              display: "flex",
-              margin: "1rem auto",
-              padding: "0 1rem",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <span
-              style={{
-                color: previousClass !== "123456" ? partnerColor() : "#eee",
-                cursor: previousClass !== "123456" ? "pointer" : "default",
-              }}
-              onClick={PVSClass}
-            >
-              <i className="fa fa-arrow-left" aria-hidden="true" />
-            </span>
-            <HOne
-              style={{
-                textAlign: "center",
-                fontSize: "18px",
-                fontWeight: "600",
-              }}
-            >
-              {theclass.title}
-            </HOne>
-            <span
-              style={{
-                color: nextClass !== "123456" ? partnerColor() : "#eee",
-                cursor: nextClass !== "123456" ? "pointer" : "default",
-              }}
-              onClick={NXTClass}
-            >
-              <i className="fa fa-arrow-right" aria-hidden="true" />
-            </span>
-          </div>
           {!exercise && (
             <>
+              <div
+                style={{
+                  display: "flex",
+                  margin: "1rem auto",
+                  padding: "0 1rem",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
+              >
+                <span
+                  style={{
+                    color: previousClass !== "123456" ? partnerColor() : "#eee",
+                    cursor: previousClass !== "123456" ? "pointer" : "default",
+                  }}
+                  onClick={PVSClass}
+                >
+                  <i className="fa fa-arrow-left" aria-hidden="true" />
+                </span>
+                <HOne
+                  style={{
+                    textAlign: "center",
+                    fontSize: "18px",
+                    fontWeight: "600",
+                  }}
+                >
+                  {theclass.title}
+                </HOne>
+                <span
+                  style={{
+                    color: nextClass !== "123456" ? partnerColor() : "#eee",
+                    cursor: nextClass !== "123456" ? "pointer" : "default",
+                  }}
+                  onClick={NXTClass}
+                >
+                  <i className="fa fa-arrow-right" aria-hidden="true" />
+                </span>
+              </div>
               {canEditCourse && (
                 <EditLesson
                   setChange={setChange}
@@ -4283,35 +4283,39 @@ export default function EnglishClassCourse2({
                   </div>
                 </>
               )}
-              <div
-                style={{
-                  display: "flex",
-                  margin: "1rem auto",
-                  padding: "0 1rem",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span
+              {!exercise && (
+                <div
                   style={{
-                    color: previousClass !== "123456" ? partnerColor() : "#eee",
-                    cursor: previousClass !== "123456" ? "pointer" : "default",
+                    display: "flex",
+                    margin: "1rem auto",
+                    padding: "0 1rem",
+                    alignItems: "center",
+                    justifyContent: "space-between",
                   }}
-                  onClick={PVSClass}
                 >
-                  <i className="fa fa-arrow-left" aria-hidden="true" />
-                </span>
+                  <span
+                    style={{
+                      color:
+                        previousClass !== "123456" ? partnerColor() : "#eee",
+                      cursor:
+                        previousClass !== "123456" ? "pointer" : "default",
+                    }}
+                    onClick={PVSClass}
+                  >
+                    <i className="fa fa-arrow-left" aria-hidden="true" />
+                  </span>
 
-                <span
-                  style={{
-                    color: nextClass !== "123456" ? partnerColor() : "#eee",
-                    cursor: nextClass !== "123456" ? "pointer" : "default",
-                  }}
-                  onClick={NXTClass}
-                >
-                  <i className="fa fa-arrow-right" aria-hidden="true" />
-                </span>
-              </div>
+                  <span
+                    style={{
+                      color: nextClass !== "123456" ? partnerColor() : "#eee",
+                      cursor: nextClass !== "123456" ? "pointer" : "default",
+                    }}
+                    onClick={NXTClass}
+                  >
+                    <i className="fa fa-arrow-right" aria-hidden="true" />
+                  </span>
+                </div>
+              )}
             </>
           )}
         </>

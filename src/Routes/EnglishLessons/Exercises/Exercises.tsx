@@ -4,7 +4,6 @@ import { HOne } from "../../../Resources/Components/RouteBox";
 import { DictationExercise } from "./Exercises/DictationExercise";
 import WordToImageExercise from "./Exercises/WordToImageExercise";
 import ImageToWordExercise from "./Exercises/ImageToWordExercise";
-import { QuestionsExercise } from "./Exercises/Questions";
 import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
 import VocabularyMatchExercise from "./Exercises/VocabularyMatchExercise";
@@ -328,10 +327,12 @@ export default function ExerciseRunner({
 }: ExerciseRunnerProps) {
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
+
   const vocabularyItems = useMemo(
     () => getVocabularySentences(safeEls),
     [safeEls]
   );
+
   const sentences = useMemo(() => getAllSentences(safeEls), [safeEls]);
   const imgs = useMemo(() => getFirstImagesBlock(safeEls), [safeEls]);
   const exerciseElements = useMemo(
@@ -445,13 +446,13 @@ export default function ExerciseRunner({
   ];
 
   const available = exerciseCatalog.filter((e) => {
-    if (e.key === "vocabulary_match") return sentences.length > 0;
+    if (e.key === "vocabulary_match") return vocabularyItems.length > 0; // <- AQUI
     if (e.key === "dictation_from_sentences") return sentences.length > 0;
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
-    if (e.key === "questions_unified") return exerciseElements.length > 0; // Unified questions section
-    if (e.key.startsWith("listen_")) return true; // Exercícios de listening já foram filtrados na criação
-    if (e.key.startsWith("select_")) return true; // Exercícios de seleção já foram filtrados na criação
+    if (e.key === "questions_unified") return exerciseElements.length > 0;
+    if (e.key.startsWith("listen_")) return true;
+    if (e.key.startsWith("select_")) return true;
     return true;
   });
 

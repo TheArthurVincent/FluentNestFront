@@ -416,6 +416,27 @@ export default function EditLesson({
 
           {/* Cabeçalho */}
           <div style={{ ...oneColGrid, marginBottom: 12 }}>
+            <button
+              onClick={() => {
+                setOpen(false);
+                setSeeEdit?.(false);
+              }}
+              style={{
+                borderRadius: 8,
+                marginRight: "auto",
+                border: "1px solid #e2e8f0",
+                backgroundColor: "white",
+                color: "#0f172a",
+                padding: "8px 12px",
+                cursor: "pointer",
+                fontSize: 13,
+                width: "fit-content",
+              }}
+              aria-label="Fechar"
+              title="Fechar"
+            >
+              Fechar sem salvar
+            </button>
             <div
               style={{
                 display: "grid",
