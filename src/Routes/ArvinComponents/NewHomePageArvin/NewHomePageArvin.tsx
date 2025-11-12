@@ -39,7 +39,7 @@ export function MyHomePage({ headers, change, setChange }: MyHomePageProps) {
           Início
         </span>
       </section>
-        <input type="text" name="" id="" />
+      <input type="text" name="" id="" />
     </div>
   );
 }
