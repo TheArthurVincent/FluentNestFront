@@ -36,6 +36,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
         }}
       >
         {menuItems
+          .sort((a, b) => (a.orderSideBar || 0) - (b.orderSideBar || 0))
           .filter((item) => !(isDesktop && item.justBottom))
           .map((item, idx) => (
             <ItemRow

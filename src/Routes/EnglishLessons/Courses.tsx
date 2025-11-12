@@ -577,7 +577,24 @@ export default function EnglishCourses({
     location.pathname === "/teaching-materials/";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+    <div
+      style={{
+        paddingTop: "1.5rem",
+        display: "flex",
+        flexDirection: "column",
+        gap: "1rem",
+      }}
+    >
+      <Link
+      style={{
+        marginLeft: 16,
+        marginBottom: -10,
+        fontSize: 14,
+        cursor: "pointer",
+        color: partnerColor(),
+        textDecoration: "none",
+      }}
+      to="/">Voltar para Home Page</Link>
       {/* Rotas específicas por curso (slug) e rota genérica por :courseKey */}
       <Routes>
         {listOfCoursesFromDatabase.map((route) => (

@@ -7,6 +7,7 @@ import ImageToWordExercise from "./Exercises/ImageToWordExercise";
 import { QuestionsExercise } from "./Exercises/Questions";
 import { ListenInEnglishExercise } from "./Exercises/ListenInEnglishExercise";
 import { SelectExercise } from "./Exercises/SelectExercise";
+import VocabularyMatchExercise from "./Exercises/VocabularyMatchExercise";
 
 type SentenceItem = { portuguese: string; english?: string };
 type ImageItem = {
@@ -318,23 +319,21 @@ export default function ExerciseRunner({
   );
 
   const exerciseCatalog: ExerciseEntry[] = [
-    // ...(exerciseElements.length > 0
-    //   ? [
-    //       {
-    //         key: "questions_unified",
-    //         title: "Questions",
-    //         render: () => (
-    //           <QuestionsExercise
-    //             key={`questions-${studentId}`} // Force re-render when student changes
-    //             headers={headers}
-    //             classId={classId}
-    //             exerciseElements={exerciseElements} // Pass all exercise elements
-    //             studentId={studentId || ""}
-    //           />
-    //         ),
-    //       },
-    //     ]
-    //   : []),
+    {
+      key: "vocabulary_match",
+      title: "Match de Vocabulário",
+      render: () => {
+        if (!sentences.length) return null;
+        return (
+          <VocabularyMatchExercise
+            sentences={sentences}
+            selectedVoice={selectedVoice}
+            language={language}
+            exerciseScore={exerciseScore}
+          />
+        );
+      },
+    },
     {
       key: "dictation_from_sentences",
       title: "Ditado",

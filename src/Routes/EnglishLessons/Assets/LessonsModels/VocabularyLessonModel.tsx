@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { notifyAlert, readText } from "../Functions/FunctionLessons";
 import {
@@ -20,6 +20,22 @@ interface VocabularyLessonProps {
   selectedVoice: any;
 }
 
+type MatchState = {
+  isMatchMode: boolean;
+  selectedFront: number | null; // índice do front selecionado
+  matched: Set<number>; // índices já acertados
+  shuffledIdx: number[]; // mapeia posição -> índice real do back
+};
+
+function shuffleArray<T>(arr: T[]): T[] {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function VocabularyLesson({
   headers,
   element,
@@ -29,6 +45,76 @@ export default function VocabularyLesson({
 }: VocabularyLessonProps) {
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
+  const [seeFront, setSeeFront] = useState(true);
+  // ======== NOVO: estado do exercício de match ========
+  const [match, setMatch] = useState<MatchState>({
+    isMatchMode: false,
+    selectedFront: null,
+    matched: new Set(),
+    shuffledIdx: [],
+  });
+
+  const sentences: any[] = Array.isArray(element?.sentences)
+    ? element.sentences
+    : [];
+
+  // Embaralhamos apenas quando entramos no modo match ou quando a lista muda
+  const shuffledBackIndices = useMemo(() => {
+    const base = sentences.map((_, i) => i);
+    return shuffleArray(base);
+  }, [sentences]);
+
+  // Se ativar/desativar o modo, resetar seleção/embaralhamento
+  const toggleMatchMode = () => {
+    if (!match.isMatchMode) {
+      setMatch({
+        isMatchMode: true,
+        selectedFront: null,
+        matched: new Set(),
+        shuffledIdx: shuffledBackIndices,
+      });
+    } else {
+      setMatch({
+        isMatchMode: false,
+        selectedFront: null,
+        matched: new Set(),
+        shuffledIdx: [],
+      });
+    }
+  };
+
+  const onPickFront = (frontIndex: number) => {
+    if (match.matched.has(frontIndex)) return; // já acertado
+    setMatch((prev) => ({ ...prev, selectedFront: frontIndex }));
+  };
+
+  const onPickBack = (backSlotPosition: number) => {
+    const realBackIndex = match.shuffledIdx[backSlotPosition];
+    const { selectedFront } = match;
+    if (selectedFront === null) {
+      notifyAlert(
+        "Selecione primeiro um item da coluna da esquerda.",
+        "orange"
+      );
+      return;
+    }
+    if (selectedFront === realBackIndex) {
+      // ACERTOU
+      const newMatched = new Set(match.matched);
+      newMatched.add(selectedFront);
+      setMatch((prev) => ({
+        ...prev,
+        selectedFront: null,
+        matched: newMatched,
+      }));
+      notifyAlert("✔ Par correto!", "green");
+    } else {
+      // ERROU
+      notifyAlert("❌ Não é o par correspondente.", "red");
+      // mantém o selectedFront para tentar novamente ou desmarca:
+      setMatch((prev) => ({ ...prev, selectedFront: null }));
+    }
+  };
 
   const addNewCards = async (
     frontText: string,
@@ -65,13 +151,36 @@ export default function VocabularyLesson({
         `${response.data.invalidNewCards ? response.data.invalidNewCards : ""}`;
 
       notifyAlert(showThis, "green");
-
-      // Adicionar o índice do botão clicado ao conjunto
       setClickedButtons((prev) => new Set(prev).add(index));
     } catch (error) {
       alert("Erro ao enviar cards");
       onLoggOut();
     }
+  };
+
+  // ======== ESTILOS UTILITÁRIOS LOCAIS ========
+  const cardStyle: React.CSSProperties = {
+    border: "1px solid #e3e6ea",
+    borderRadius: "4px",
+    padding: "8px 12px 8px 12px",
+    position: "relative",
+    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+    minHeight: "40px",
+    display: "flex",
+    flexDirection: "column",
+    background: "#fff",
+    justifyContent: "flex-start",
+    cursor: "pointer",
+  };
+
+  const selectedStyle: React.CSSProperties = {
+    outline: `2px solid ${partnerColor()}`,
+    outlineOffset: 2,
+  };
+
+  const matchedStyle: React.CSSProperties = {
+    background: "#f0fff4",
+    borderColor: "#86efac",
   };
 
   return (
@@ -81,136 +190,355 @@ export default function VocabularyLesson({
         minHeight: "100px",
       }}
     >
+      {/* ======== NOVO: Toggle Lista/Match ======== */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
-          gap: "10px",
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: 10,
+          gap: 8,
         }}
       >
-        {element.sentences &&
-          element.sentences.map((sentence: any, i: number) => (
-            <div
-              key={i}
-              style={{
-                border: "1px solid #e3e6ea",
-                borderRadius: "4px",
-                padding: "8px 12px 8px 12px",
-                position: "relative",
-                boxShadow:
-                  "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
-                minHeight: "40px",
-                display: "flex",
-                flexDirection: "column",
-                background: "#fff",
-                justifyContent: "flex-start",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = "#f3f3f3ff";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = "#fff";
-              }}
-            >
+        {match.isMatchMode && (
+          <button
+            onClick={() => setSeeFront(!seeFront)}
+            style={{
+              border: `1px solid ${partnerColor()}`,
+              background: match.isMatchMode ? partnerColor() : "#ffffff",
+              color: match.isMatchMode
+                ? textpartnerColorContrast()
+                : partnerColor(),
+              padding: "6px 10px",
+              borderRadius: 6,
+              fontSize: 13,
+              cursor: "pointer",
+              transition: "all .2s",
+            }}
+          >
+            <i
+              className={`fa ${seeFront ? "fa-eye" : "fa-eye-slash"}`}
+              aria-hidden="true"
+            ></i>
+          </button>
+        )}
+
+        <button
+          onClick={toggleMatchMode}
+          style={{
+            border: `1px solid ${partnerColor()}`,
+            background: match.isMatchMode ? partnerColor() : "#ffffff",
+            color: match.isMatchMode
+              ? textpartnerColorContrast()
+              : partnerColor(),
+            padding: "6px 10px",
+            borderRadius: 6,
+            fontSize: 13,
+            cursor: "pointer",
+            transition: "all .2s",
+          }}
+        >
+          {match.isMatchMode ? "Ver definições" : "Modo Match"}
+        </button>
+      </div>
+
+      {/* ======== MODO LISTA (ORIGINAL — NÃO ALTERADO) ======== */}
+      {!match.isMatchMode && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
+            gap: "10px",
+          }}
+        >
+          {element.sentences &&
+            element.sentences.map((sentence: any, i: number) => (
               <div
+                key={i}
                 style={{
+                  border: "1px solid #e3e6ea",
+                  borderRadius: "4px",
+                  padding: "8px 12px 8px 12px",
+                  position: "relative",
+                  boxShadow:
+                    "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
+                  minHeight: "40px",
                   display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  justifyContent: "space-between",
+                  flexDirection: "column",
+                  background: "#fff",
+                  justifyContent: "flex-start",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "#f3f3f3ff";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "#fff";
                 }}
               >
-                {/* Botão + para adicionar aos flashcards */}
-                <span
-                  style={{ display: "flex", alignItems: "center", gap: 12 }}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    justifyContent: "space-between",
+                  }}
                 >
-                  {/* Botão de áudio */}
-                  <Tooltip title="Ouvir" placement="top" arrow>
-                    <button
-                      style={{
-                        color: partnerColor(),
-                        padding: 0,
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "13px",
-                        background: "none",
-                        transition: "all 0.2s",
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        readText(sentence.english, true, "en", selectedVoice);
-                      }}
-                    >
-                      <i className="fa fa-volume-up" aria-hidden="true" />
-                    </button>
-                  </Tooltip>
-                  <div style={{ marginLeft: 10 }}>
-                    <div
-                      style={{
-                        fontWeight: 500,
-                        color: "#222",
-                        fontSize: "14px",
-                        marginBottom: 2,
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {sentence.english}
-                    </div>
-                    <div
-                      style={{
-                        color: "#6c757d",
-                        fontStyle: "italic",
-                        fontSize: "13px",
-                        wordBreak: "break-word",
-                      }}
-                    >
-                      {sentence.portuguese}
-                    </div>
-                  </div>
-                </span>
-                <span>
-                  {!clickedButtons.has(i) && (
-                    <Tooltip
-                      title="Adicionar ao flashcard"
-                      placement="top"
-                      arrow
-                    >
+                  {/* Botão + para adicionar aos flashcards */}
+                  <span
+                    style={{ display: "flex", alignItems: "center", gap: 12 }}
+                  >
+                    {/* Botão de áudio */}
+                    <Tooltip title="Ouvir" placement="top" arrow>
                       <button
                         style={{
-                          backgroundColor: "none",
                           color: partnerColor(),
-                          width: "5px",
-                          height: "5px",
+                          padding: 0,
                           border: "none",
-                          borderRadius: "50%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          fontWeight: "bold",
-                          fontSize: "15px",
                           cursor: "pointer",
+                          fontSize: "13px",
+                          background: "none",
                           transition: "all 0.2s",
-                          opacity: 0.7,
                         }}
                         onClick={(e) => {
                           e.stopPropagation();
-                          addNewCards(
-                            sentence.english,
-                            sentence.portuguese,
-                            i,
-                            sentence.languages ? sentence.languages : null
-                          );
+                          readText(sentence.english, true, "en", selectedVoice);
                         }}
                       >
-                        +
+                        <i className="fa fa-volume-up" aria-hidden="true" />
                       </button>
                     </Tooltip>
-                  )}
-                </span>
+                    <div style={{ marginLeft: 10 }}>
+                      <div
+                        style={{
+                          fontWeight: 500,
+                          color: "#222",
+                          fontSize: "14px",
+                          marginBottom: 2,
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {sentence.english}
+                      </div>
+                      <div
+                        style={{
+                          color: "#6c757d",
+                          fontStyle: "italic",
+                          fontSize: "13px",
+                          wordBreak: "break-word",
+                        }}
+                      >
+                        {sentence.portuguese}
+                      </div>
+                    </div>
+                  </span>
+                  <span>
+                    {!clickedButtons.has(i) && (
+                      <Tooltip
+                        title="Adicionar ao flashcard"
+                        placement="top"
+                        arrow
+                      >
+                        <button
+                          style={{
+                            backgroundColor: "none",
+                            color: partnerColor(),
+                            width: "5px",
+                            height: "5px",
+                            border: "none",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            fontWeight: "bold",
+                            fontSize: "15px",
+                            cursor: "pointer",
+                            transition: "all 0.2s",
+                            opacity: 0.7,
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addNewCards(
+                              sentence.english,
+                              sentence.portuguese,
+                              i,
+                              sentence.languages ? sentence.languages : null
+                            );
+                          }}
+                        >
+                          +
+                        </button>
+                      </Tooltip>
+                    )}
+                  </span>
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+        </div>
+      )}
+
+      {/* ======== MODO MATCH (NOVO) ======== */}
+      {match.isMatchMode && (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 12,
+          }}
+        >
+          {/* Coluna LEFT: FRONTS (inglês) */}
+          <div style={{ display: "grid", gap: 10 }}>
+            {sentences.map((s, idx) => {
+              const isSelected = match.selectedFront === idx;
+              const isDone = match.matched.has(idx);
+              return (
+                <div
+                  key={`front-${idx}`}
+                  style={{
+                    ...cardStyle,
+                    ...(isSelected ? selectedStyle : {}),
+                    ...(isDone ? matchedStyle : {}),
+                  }}
+                  onClick={() => onPickFront(idx)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? "#f0fff4"
+                      : "#f3f3f3ff";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? "#f0fff4"
+                      : "#fff";
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <Tooltip title="Ouvir" placement="top" arrow>
+                        <button
+                          style={{
+                            color: partnerColor(),
+                            padding: 0,
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "13px",
+                            background: "none",
+                            transition: "all 0.2s",
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            readText(s.english, true, "en", selectedVoice);
+                          }}
+                        >
+                          <i className="fa fa-volume-up" aria-hidden="true" />
+                        </button>
+                      </Tooltip>
+                      <div style={{ marginLeft: 5 }}>
+                        {seeFront && (
+                          <div
+                            style={{
+                              fontWeight: 600,
+                              color: "#222",
+                              fontSize: "14px",
+                              wordBreak: "break-word",
+                            }}
+                          >
+                            {s.english}
+                          </div>
+                        )}
+                      </div>
+                    </span>
+                    {isDone && (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#16a34a",
+                          fontWeight: 600,
+                        }}
+                      >
+                        ✔
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Coluna RIGHT: BACKS (português) embaralhados */}
+          <div style={{ display: "grid", gap: 10 }}>
+            {match.shuffledIdx.map((realIndex, slot) => {
+              const isDone = match.matched.has(realIndex);
+              // realIndex = índice do item correto que está nessa posição embaralhada
+              return (
+                <div
+                  key={`back-${slot}`}
+                  style={{
+                    ...cardStyle,
+                    ...(isDone ? matchedStyle : {}),
+                  }}
+                  onClick={() => {
+                    if (!isDone) onPickBack(slot);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? "#f0fff4"
+                      : "#f3f3f3ff";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = isDone
+                      ? "#f0fff4"
+                      : "#fff";
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
+                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                    >
+                      <div style={{ marginLeft: 10 }}>
+                        <div
+                          style={{
+                            color: "#6c757d",
+                            fontStyle: "italic",
+                            fontSize: "13px",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {sentences[realIndex]?.portuguese}
+                        </div>
+                      </div>
+                    </span>
+                    {isDone && (
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#16a34a",
+                          fontWeight: 600,
+                        }}
+                      >
+                        ✔
+                      </span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
