@@ -228,7 +228,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       title: "Homework",
       levelcard: false,
       component: (
-        <Homework change={change} setChange={setChange} headers={headers} />
+        <Homework
+          isDesktop={isDesktop}
+          change={change}
+          setChange={setChange}
+          headers={headers}
+        />
       ),
     },
     {
@@ -236,7 +241,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       title: "Homework",
       levelcard: false,
       component: (
-        <Homework change={change} setChange={setChange} headers={headers} />
+        <Homework
+          isDesktop={isDesktop}
+          change={change}
+          setChange={setChange}
+          headers={headers}
+        />
       ),
     },
     {
@@ -244,7 +254,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       levelcard: false,
       path: "/my-classes",
       component: (
-        <Homework change={change} setChange={setChange} headers={headers} />
+        <Homework
+          isDesktop={isDesktop}
+          change={change}
+          setChange={setChange}
+          headers={headers}
+        />
       ),
     },
     {
@@ -288,7 +303,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Ranking",
-      component: <Ranking headers={headers} />,
+      component: <Ranking isDesktop={isDesktop} headers={headers} />,
     },
     {
       title: "English Courses",

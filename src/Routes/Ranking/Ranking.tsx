@@ -14,7 +14,12 @@ import Countdown from "./RankingComponents/Countdown";
 import { monthInQuestion } from "./RankingComponents/RankingComponents";
 import { onLoggOut } from "../../Resources/UniversalComponents";
 
-export default function Ranking({ headers }: HeadersProps) {
+type Props = {
+  headers: any;
+  isDesktop: boolean;
+};
+
+export default function Ranking({ headers, isDesktop }: Props) {
   const { UniversalTexts } = useUserContext();
 
   const [value, setValue] = useState<string>("1");
@@ -34,13 +39,13 @@ export default function Ranking({ headers }: HeadersProps) {
       title: UniversalTexts.monthlyRanking + " " + monthInQuestion,
       value: "1",
       component: (
-        <StudentsRanking monthNow={monthInQuestion} headers={headers} />
+        <StudentsRanking monthNow={monthInQuestion} headers={headers || {}} />
       ),
     },
     {
       title: UniversalTexts.totalRanking,
       value: "2",
-      component: <StudentsRankingTotal headers={headers} />,
+      component: <StudentsRankingTotal headers={headers || {}} />,
     },
     {
       title: UniversalTexts.timeline,
@@ -50,7 +55,7 @@ export default function Ranking({ headers }: HeadersProps) {
           id={user.id}
           permissions={user.permissions}
           name={user.name + " " + user.lastname}
-          headers={headers}
+          headers={headers || {}}
         />
       ),
     },
@@ -68,7 +73,20 @@ export default function Ranking({ headers }: HeadersProps) {
   const targetDate = new Date(import.meta.env.VITE_TARGET_DATABASE);
 
   return (
-    <RouteDiv>
+    <div
+      style={{
+        margin: !isDesktop ? "4.5rem auto" : "16px auto",
+        fontFamily: "Plus Jakarta Sans",
+        fontWeight: 600,
+        fontStyle: "SemiBold",
+        fontSize: "14px",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        border: "1px solid #e8eaed",
+        padding: isDesktop ? "2rem" : "5px 1rem ",
+        maxWidth: isDesktop ? "800px" : "95vw",
+      }}
+    >
       <Helmets text="Ranking" />
       <HOne>Ranking</HOne>
       <TabContext value={value}>
@@ -129,6 +147,6 @@ export default function Ranking({ headers }: HeadersProps) {
           );
         })}
       </TabContext>
-    </RouteDiv>
+    </div>
   );
 }

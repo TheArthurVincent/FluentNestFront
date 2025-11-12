@@ -25,9 +25,10 @@ interface HWProps {
   headers: MyHeadersType | null;
   setChange: any;
   change: boolean;
+  isDesktop: boolean;
 }
 
-export default function Homework({ headers, setChange, change }: HWProps) {
+export default function Homework({ headers, setChange, change,isDesktop }: HWProps) {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isGroupClass, setIsGroupClass] = useState<boolean>(false);
   const [both, setBoth] = useState<boolean>(true);
@@ -432,7 +433,21 @@ export default function Homework({ headers, setChange, change }: HWProps) {
 
   const isAllowed = myPermissions == "superadmin" || myPermissions == "teacher";
   return (
-    <RouteDiv>
+    
+       <div
+      style={{
+        margin: !isDesktop ? "4.5rem auto" : "16px auto",
+        fontFamily: "Plus Jakarta Sans",
+        fontWeight: 600,
+        fontStyle: "SemiBold",
+        fontSize: "14px",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        border: "1px solid #e8eaed",
+        padding: isDesktop ? "2rem" : "5px 1rem ",
+        maxWidth: isDesktop ? "800px" : "95vw",
+      }}
+    >
       <Helmets text="Classes & Homework" />
       <div>
         {tabValue === 0 && (
@@ -2842,6 +2857,6 @@ export default function Homework({ headers, setChange, change }: HWProps) {
         )}
         {tabValue === 1 && <MyClasses headers={headers} />}
       </div>
-    </RouteDiv>
+    </div>
   );
 }
