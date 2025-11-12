@@ -80,8 +80,18 @@ type ElementSelectExercise = {
   }[];
   order?: number;
 };
+type ElementVocabulary = {
+  type: "vocabulary";
+  subtitle?: string;
+  sentences: { english: string; portuguese: string }[];
+  image?: string;
+  grid?: number;
+  order?: number;
+};
 
+// adicione no union:
 type ElementItem =
+  | ElementVocabulary
   | ElementSentences
   | ElementImages
   | ElementDialogue
@@ -90,6 +100,21 @@ type ElementItem =
   | ElementListenInEnglish
   | ElementSelectExercise;
 ///
+function getVocabularySentences(elements?: ElementItem[]): SentenceItem[] {
+  const list: SentenceItem[] = [];
+  const els = safeElements(elements);
+  for (const el of els) {
+    if (
+      (el as any)?.type === "vocabulary" &&
+      Array.isArray((el as any).sentences)
+    ) {
+      for (const s of (el as ElementVocabulary).sentences) {
+        if (s?.english?.trim() && s?.portuguese?.trim()) list.push(s);
+      }
+    }
+  }
+  return list;
+}
 type ExerciseRunnerProps = {
   elements?: ElementItem[];
   count?: number;
@@ -303,6 +328,10 @@ export default function ExerciseRunner({
 }: ExerciseRunnerProps) {
   const labels = { ...defaultLabels, ...(labelsProp || {}) };
   const safeEls = safeElements(elements);
+  const vocabularyItems = useMemo(
+    () => getVocabularySentences(safeEls),
+    [safeEls]
+  );
   const sentences = useMemo(() => getAllSentences(safeEls), [safeEls]);
   const imgs = useMemo(() => getFirstImagesBlock(safeEls), [safeEls]);
   const exerciseElements = useMemo(
@@ -323,10 +352,10 @@ export default function ExerciseRunner({
       key: "vocabulary_match",
       title: "Match de Vocabulário",
       render: () => {
-        if (!sentences.length) return null;
+        if (!vocabularyItems.length) return null; // só aparece com type "vocabulary"
         return (
           <VocabularyMatchExercise
-            sentences={sentences}
+            sentences={vocabularyItems}
             selectedVoice={selectedVoice}
             language={language}
             exerciseScore={exerciseScore}
@@ -416,6 +445,7 @@ export default function ExerciseRunner({
   ];
 
   const available = exerciseCatalog.filter((e) => {
+    if (e.key === "vocabulary_match") return sentences.length > 0;
     if (e.key === "dictation_from_sentences") return sentences.length > 0;
     if (e.key === "images_to_word" || e.key === "word_to_images")
       return imgs.length > 0;
