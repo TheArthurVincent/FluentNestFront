@@ -347,7 +347,9 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "My Profile",
-      component: <MyProfile headers={headers} />,
+      component: (
+        <MyProfile headers={headers} change={change} setChange={setChange} />
+      ),
     },
     {
       title: "Posts",

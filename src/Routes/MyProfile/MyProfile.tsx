@@ -16,8 +16,10 @@ import Helmets from "../../Resources/Helmets";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
 import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
-// import { isArthurVincent } from "../../App";
 import { HOne } from "../../Resources/Components/RouteBox";
+import RankingTimelineArvin from "./RankingHistory/RankingTimelineArvin";
+import LevelCardBlog from "../LevelCard/LevelCardBlog";
+
 const styles = {
   container: {
     display: "flex",
@@ -31,8 +33,7 @@ const styles = {
     gap: "16px",
     padding: "32px",
     backgroundColor: "#ffffff",
-    borderRadius: "4px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06)",
+    borderRadius: "12px",
     border: "1px solid #e8eaed",
     maxWidth: "480px",
     textAlign: "center" as const,
@@ -44,15 +45,14 @@ const styles = {
     backgroundColor: partnerColor(),
     color: "#fff",
     border: "none",
-    borderRadius: "4px",
+    borderRadius: "12px",
     cursor: "pointer",
     transition: "all 0.2s ease",
     textDecoration: "none",
   },
   modernSection: {
     backgroundColor: "#ffffff",
-    borderRadius: "4px",
-    boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
+    borderRadius: "12px",
     border: "1px solid #e8eaed",
     padding: "24px",
     marginBottom: "16px",
@@ -79,17 +79,53 @@ const styles = {
   },
 };
 
-export function MyProfile({ headers }: HeadersProps) {
-  //@ts-ignore
-  const [copied, setCopied] = useState(false);
+/* ===============================
+   Hook responsivo igual ao padrão
+   =============================== */
+const useIsDesktop = (bp = 700) => {
+  const [isDesktop, setIsDesktop] = useState(
+    typeof window !== "undefined" ? window.innerWidth > bp : true
+  );
+  useEffect(() => {
+    const onResize = () => setIsDesktop(window.innerWidth > bp);
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [bp]);
+  return isDesktop;
+};
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(user.username).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
-  };
+export function MyProfile({
+  headers,
+  change,
+  setChange,
+}: HeadersProps & {
+  change: boolean;
+  setChange: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  //@ts-ignore
   const { UniversalTexts } = useUserContext();
+  const isDesktop = useIsDesktop(700);
+
+  // base de botões (mesmo padrão do componente anterior)
+  const baseBtnStyle: React.CSSProperties = {
+    border: "1px solid #e5e7eb",
+    background: "#fff",
+    color: "#111827",
+    padding: isDesktop ? "6px 10px" : "10px 16px",
+    borderRadius: 4,
+    fontSize: isDesktop ? 12 : 14,
+    cursor: "pointer",
+    margin: isDesktop ? "0 4px" : "4px 0",
+    width: isDesktop ? "auto" : "100%",
+  };
+
+  const basePrimaryBtnStyle: React.CSSProperties = {
+    ...baseBtnStyle,
+    border: `1px solid ${partnerColor()}`,
+    background: partnerColor(),
+    color: "#fff",
+  };
+
   const [user, setUser] = useState<User>({} as User);
   const [newPassword, setNewPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -164,8 +200,7 @@ export function MyProfile({ headers }: HeadersProps) {
 
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-        // Converte com qualidade reduzida (de 0.5 a 0.9 é razoável)
-        const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7); // 70% da qualidade
+        const resizedBase64 = canvas.toDataURL("image/jpeg", 0.7);
         const base64WithoutPrefix = resizedBase64.replace(
           /^data:image\/jpeg;base64,/,
           ""
@@ -282,8 +317,11 @@ export function MyProfile({ headers }: HeadersProps) {
   return (
     <div
       style={{
-        width: "1000px",
-        maxWidth: "93vw",
+        margin: !isDesktop ? "4.5rem auto" : "auto",
+        fontFamily: "Plus Jakarta Sans",
+        fontWeight: 600,
+        fontStyle: "SemiBold",
+        fontSize: "14px",
       }}
     >
       {/* Modal de alterar senha */}
@@ -306,10 +344,9 @@ export function MyProfile({ headers }: HeadersProps) {
             style={{
               background: "#fff",
               padding: "32px 24px",
-              borderRadius: "4px",
+              borderRadius: "12px",
               width: "90%",
               maxWidth: "400px",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
             }}
           >
             <h2
@@ -321,6 +358,7 @@ export function MyProfile({ headers }: HeadersProps) {
             >
               Alterar Senha
             </h2>
+
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -350,40 +388,26 @@ export function MyProfile({ headers }: HeadersProps) {
               <div
                 style={{
                   display: "flex",
-                  gap: "12px",
+                  gap: isDesktop ? "12px" : 0,
                   marginTop: "10px",
                   justifyContent: "center",
+                  flexDirection: isDesktop ? "row" : "column",
+                  width: "100%",
                 }}
               >
                 <button
                   type="button"
                   onClick={() => setShowPasswordModal(false)}
                   style={{
-                    padding: "10px 20px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    backgroundColor: "#6c757d",
+                    ...baseBtnStyle,
+                    background: "#6c757d",
+                    border: "1px solid #6c757d",
                     color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
                   }}
                 >
                   Cancelar
                 </button>
-                <button
-                  type="submit"
-                  style={{
-                    padding: "10px 20px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    backgroundColor: partnerColor(),
-                    color: "#fff",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                  }}
-                >
+                <button type="submit" style={basePrimaryBtnStyle}>
                   Salvar
                 </button>
               </div>
@@ -391,16 +415,11 @@ export function MyProfile({ headers }: HeadersProps) {
           </div>
         </div>
       )}
+
       {headers ? (
         // @ts-ignore
         <div
-          style={{
-            maxWidth: "800px",
-            margin: "0 auto",
-            padding: "24px 16px",
-            backgroundColor: "#fafbfc",
-            minHeight: "100vh",
-          }}
+          style={{ padding: "16px", margin: "0 auto", marginBottom: "40px" }}
         >
           <Helmets text="My Profile" />
           {loading ? (
@@ -421,8 +440,10 @@ export function MyProfile({ headers }: HeadersProps) {
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: isDesktop ? "center" : "flex-start",
                     marginBottom: "20px",
+                    gap: 12,
+                    flexDirection: isDesktop ? "row" : "column",
                   }}
                 >
                   {showEditModal && (
@@ -444,10 +465,9 @@ export function MyProfile({ headers }: HeadersProps) {
                         style={{
                           background: "#fff",
                           padding: "32px 24px",
-                          borderRadius: "4px",
+                          borderRadius: "12px",
                           width: "90%",
                           maxWidth: "400px",
-                          boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
                         }}
                       >
                         <h2
@@ -511,40 +531,26 @@ export function MyProfile({ headers }: HeadersProps) {
                           <div
                             style={{
                               display: "flex",
-                              gap: "12px",
+                              gap: isDesktop ? "12px" : 0,
                               marginTop: "10px",
                               justifyContent: "center",
+                              flexDirection: isDesktop ? "row" : "column",
+                              width: "100%",
                             }}
                           >
                             <button
                               type="button"
                               onClick={() => setShowEditModal(false)}
                               style={{
-                                padding: "10px 20px",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                backgroundColor: "#6c757d",
+                                ...baseBtnStyle,
+                                background: "#6c757d",
+                                border: "1px solid #6c757d",
                                 color: "#fff",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer",
                               }}
                             >
                               Cancelar
                             </button>
-                            <button
-                              type="submit"
-                              style={{
-                                padding: "10px 20px",
-                                fontSize: "14px",
-                                fontWeight: "500",
-                                backgroundColor: partnerColor(),
-                                color: "#fff",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                              }}
-                            >
+                            <button type="submit" style={basePrimaryBtnStyle}>
                               Salvar
                             </button>
                           </div>
@@ -552,6 +558,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       </div>
                     </div>
                   )}
+
                   <div>
                     <HOne>{UniversalTexts.myProfile}</HOne>
                     <p
@@ -564,36 +571,40 @@ export function MyProfile({ headers }: HeadersProps) {
                       Gerencie suas informações pessoais
                     </p>
                   </div>
-                  <button
-                    onClick={() => {
-                      alert("Atualizando Perfil");
-                      updateInfo(user.id, headers);
-                      window.location.reload();
-                    }}
+
+                  {/* Botão Atualizar com o mesmo padrão responsivo */}
+                  <div
                     style={{
-                      padding: "8px 12px",
-                      backgroundColor: partnerColor(),
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "14px",
-                      fontWeight: "500",
-                      transition: "all 0.2s ease",
+                      display: "flex",
+                      width: isDesktop ? "auto" : "100%",
+                      justifyContent: isDesktop ? "flex-end" : "stretch",
                     }}
                   >
-                    <i
-                      className="fa fa-refresh"
-                      aria-hidden="true"
-                      style={{ marginRight: "6px" }}
-                    />
-                    Atualizar
-                  </button>
+                    <button
+                      onClick={() => {
+                        alert("Atualizando Perfil");
+                        updateInfo(user.id, headers);
+                        window.location.reload();
+                      }}
+                      style={basePrimaryBtnStyle}
+                      title="Atualizar"
+                    >
+                      <i
+                        className="fa fa-refresh"
+                        aria-hidden="true"
+                        style={{ marginRight: "6px" }}
+                      />
+                      Atualizar
+                    </button>
+                  </div>
                 </div>
 
                 <AvatarUpload
                   user={user}
                   setUser={setUser}
+                  change={change}
+                  headers={headers}
+                  _StudentId={user.id}
                   uploadStudentPhoto={uploadStudentPhoto}
                 />
               </div>
@@ -610,6 +621,7 @@ export function MyProfile({ headers }: HeadersProps) {
                 >
                   Informações Pessoais
                 </h2>
+
                 <div>
                   {myProfileList.map((item, index) => (
                     <div key={index} style={styles.profileItem}>
@@ -624,7 +636,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       style={{
                         ...styles.profileValue,
                         padding: "4px 8px",
-                        borderRadius: "4px",
+                        borderRadius: "12px",
                         fontSize: "12px",
                         backgroundColor: user.tutoree ? "#e8f5e8" : "#f1f3f5",
                         color: user.tutoree ? "#388e3c" : "#6c757d",
@@ -633,58 +645,6 @@ export function MyProfile({ headers }: HeadersProps) {
                       {user.tutoree ? "Sim" : "Não"}
                     </span>
                   </div>
-
-                  {/* {new Date(user.limitCancelDate) > new Date() &&
-                  !user.subscriptionAsaas &&
-                  !user.tutoree &&
-                  isArthurVincent ? (
-                    <div style={styles.container}>
-                      <div style={styles.card}>
-                        <button
-                          onClick={() =>
-                            window.location.assign(
-                              "https://wa.me/5511915857807"
-                            )
-                          }
-                          style={styles.button}
-                        >
-                          💬 Falar  via WhatsApp
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      {!user.askedToCancel && !user.tutoree && (
-                        <div style={{ textAlign: "center" }}>
-                          <h3
-                            style={{
-                              fontSize: "16px",
-                              fontWeight: "600",
-                              margin: "0 0 16px 0",
-                            }}
-                          >
-                            Gerenciar Assinatura
-                          </h3>
-                          <button
-                            onClick={() => setShowModal(true)}
-                            style={{
-                              padding: "10px 20px",
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              backgroundColor: "#dc3545",
-                              color: "#fff",
-                              border: "none",
-                              borderRadius: "4px",
-                              cursor: "pointer",
-                              transition: "all 0.2s ease",
-                            }}
-                          >
-                            Cancelar Minha Assinatura
-                          </button>
-                        </div>
-                      )}
-                    </>
-                  )} */}
 
                   {showModal && (
                     <div
@@ -705,11 +665,10 @@ export function MyProfile({ headers }: HeadersProps) {
                         style={{
                           background: "#fff",
                           padding: "32px",
-                          borderRadius: "4px",
+                          borderRadius: "12px",
                           width: "90%",
                           maxWidth: "400px",
                           textAlign: "center",
-                          boxShadow: "0 10px 40px rgba(0,0,0,0.15)",
                         }}
                       >
                         <h2
@@ -726,20 +685,18 @@ export function MyProfile({ headers }: HeadersProps) {
                           style={{
                             display: "flex",
                             justifyContent: "center",
-                            gap: "12px",
+                            gap: isDesktop ? "12px" : 0,
+                            flexDirection: isDesktop ? "row" : "column",
+                            width: "100%",
                           }}
                         >
                           <button
                             onClick={() => setShowModal(false)}
                             style={{
-                              padding: "10px 20px",
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              backgroundColor: "#28a745",
+                              ...baseBtnStyle,
+                              background: "#28a745",
+                              border: "1px solid #28a745",
                               color: "#fff",
-                              border: "none",
-                              borderRadius: "4px",
-                              cursor: "pointer",
                             }}
                           >
                             Não
@@ -747,14 +704,10 @@ export function MyProfile({ headers }: HeadersProps) {
                           <button
                             onClick={cancelSubscription}
                             style={{
-                              padding: "10px 20px",
-                              fontSize: "14px",
-                              fontWeight: "500",
-                              backgroundColor: "#dc3545",
+                              ...baseBtnStyle,
+                              background: "#dc3545",
+                              border: "1px solid #dc3545",
                               color: "#fff",
-                              border: "none",
-                              borderRadius: "4px",
-                              cursor: "pointer",
                             }}
                           >
                             Sim
@@ -763,6 +716,7 @@ export function MyProfile({ headers }: HeadersProps) {
                       </div>
                     </div>
                   )}
+
                   {user.permissions == "teacher" && (
                     <div
                       style={{ ...styles.profileItem, borderBottom: "none" }}
@@ -784,34 +738,44 @@ export function MyProfile({ headers }: HeadersProps) {
                     </div>
                   )}
                 </div>
+
+                {/* AÇÃO: Editar / Alterar Senha — mesmo padrão responsivo */}
                 <div
                   style={{
                     display: "flex",
-                    justifyContent: "right",
-                    gap: "1rem",
-                    marginTop: "1rem",
+                    justifyContent: isDesktop ? "flex-end" : "stretch",
+                    gap: isDesktop ? 6 : 10,
+                    marginTop: "16px",
+                    flexDirection: isDesktop ? "row" : "column",
+                    width: "100%",
                   }}
                 >
                   <button
                     onClick={() => setShowEditModal(true)}
                     style={{
-                      backgroundColor: partnerColor(),
+                      ...basePrimaryBtnStyle,
+                      background: partnerColor(),
+                      border: `1px solid ${partnerColor()}`,
                       color: textpartnerColorContrast(),
                     }}
                   >
                     Editar Dados
                   </button>
+
                   <button
                     onClick={() => setShowPasswordModal(true)}
                     style={{
-                      backgroundColor: "#2c3e50",
-                      color: "white",
+                      ...baseBtnStyle,
+                      background: "#2c3e50",
+                      border: "1px solid #2c3e50",
+                      color: "#fff",
                     }}
                   >
                     Alterar Senha
                   </button>
                 </div>
               </div>
+
               {user.askedToCancel && (
                 <div style={styles.modernSection}>
                   <div style={styles.container}>
@@ -836,6 +800,12 @@ export function MyProfile({ headers }: HeadersProps) {
               )}
             </>
           )}
+          <RankingTimelineArvin
+            headers={headers}
+            id={user.id}
+            name={user.name}
+            permissions={user.permissions}
+          />
         </div>
       ) : (
         <div

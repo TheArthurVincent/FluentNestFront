@@ -1,12 +1,24 @@
 import React, { useRef } from "react";
 import { notifyAlert } from "../EnglishLessons/Assets/Functions/FunctionLessons";
+import LevelCardBlog from "../LevelCard/LevelCardBlog";
+
 interface Av {
   user: any;
   setUser: any;
-  uploadStudentPhoto: any;
+  change?: boolean;
+  headers: any;
+  _StudentId: string;
+  uploadStudentPhoto: (file: File) => Promise<string>;
 }
 
-export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
+export function AvatarUpload({
+  user,
+  setUser,
+  change,
+  headers,
+  _StudentId,
+  uploadStudentPhoto,
+}: Av) {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,45 +34,94 @@ export function AvatarUpload({ user, setUser, uploadStudentPhoto }: Av) {
     }
   };
 
+  // estilos padrão
+  const fontBase: React.CSSProperties = {
+    margin: "0 auto",
+    fontFamily: "Plus Jakarta Sans",
+    fontWeight: 600,
+    fontStyle: "SemiBold",
+    fontSize: "14px",
+  };
+
+  const buttonStyle: React.CSSProperties = {
+    ...fontBase,
+    cursor: "pointer",
+    padding: "10px 14px",
+    borderRadius: "12px",
+    border: "1px solid #e5e7eb",
+    background: "#fff",
+    color: "#111827",
+    lineHeight: 1.2,
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "8px",
+    boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+  };
+
   return (
     <div
       style={{
+        position: "relative",
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
         alignItems: "center",
         paddingBottom: "1.5rem",
+        zIndex: 1, // garante que o container fique acima
       }}
     >
       {/* Avatar clicável */}
-      <img
-        src={
-          user.picture ||
-          "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
-        }
-        alt="Profile"
-        onClick={() => fileInputRef.current?.click()}
-        style={{
-          width: "8rem",
-          height: "8rem",
-          borderRadius: "50%",
-          objectFit: "cover",
-          cursor: "pointer",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        }}
+      <LevelCardBlog
+        picture={user.picture}
+        change={change ?? false}
+        headers={headers}
+        _StudentId={user.id}
       />
 
-      {/* Input de arquivo (único e com ref funcional) */}
+      {/* Botão que dispara o input pelo ref */}
+      <button
+        type="button"
+        style={{
+          opacity: 0,
+        }}
+        onClick={() => {
+          // proteção: se algum overlay bloquear, o label abaixo funciona como fallback
+          fileInputRef.current?.click();
+        }}
+      >
+        Nova foto
+      </button>
+      {/* Fallback 100% nativo: label estilizada como botão */}
+      <label
+        htmlFor="avatar-file"
+        style={{
+          ...buttonStyle,
+          userSelect: "none",
+          translate: "transformY(-40px)",
+        }}
+      >
+        Escolher do dispositivo
+      </label>
+
+      {/* Input de arquivo (único, com ref e id pro label) */}
       <input
+        id="avatar-file"
         type="file"
         accept="image/*"
         ref={fileInputRef}
         onChange={handleFileChange}
-        style={{ display: "none" }}
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: "hidden",
+          clip: "rect(0,0,0,0)",
+          whiteSpace: "nowrap",
+          border: 0,
+        }}
       />
-
-      {/* Botão alternativo de upload */}
-      <button onClick={() => fileInputRef.current?.click()}>Nova foto</button>
     </div>
   );
 }
