@@ -69,7 +69,7 @@ export default function EnglishClassCourse2({
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
 
-   const [isDesktop, setIsDesktop] = React.useState(
+  const [isDesktop, setIsDesktop] = React.useState(
     typeof window !== "undefined" ? window.innerWidth > 700 : false
   );
 
@@ -3840,84 +3840,93 @@ export default function EnglishClassCourse2({
                           alignItems: "center",
                           gap: 8,
                         }}
-                      >
-               
-               <button onClick={() => {setSeeOptions(!seeOptions)}}>{seeOptions ? "Ocultar Opções" : "Mostrar Opções"}</button>
-               {
-               seeOptions &&
-                 <div
-      style={{
-        display: "flex",
-        flexDirection: "column" ,
-        alignItems: "center",
-        justifyContent: isDesktop ? "flex-end" : "center",
-        gap: isDesktop ? 6 : 10,
-        width: "100%",
-      }}
-    >
-      <button
-        onClick={() => {
-          const template = generateInitialBoardContent();
-          setEditorKey((v) => v + 1);
-          setNewHWDescription(template);
-          setEditorContent(template);
-          setConfirm(true);
-        }}
-        title="Restaurar"
-        style={baseBtnStyle}
-      >
-        Restaurar
-      </button>
+                      >        {hasAudioElement && (
+                              <button
+                                onClick={() => setSeeAudios((v) => !v)}
+                                style={baseBtnStyle}
+                              >
+                                Áudios
+                              </button>
+                            )}
+                        <button
+                          style={{ width: "fit-content" }}
+                          onClick={() => {
+                            setSeeOptions(!seeOptions);
+                          }}
+                        >
+                          
+                          {seeOptions ? "Ocultar Opções" : "Mostrar Opções"}
+                        </button>
+                        {seeOptions && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              justifyContent: isDesktop ? "flex-end" : "center",
+                              gap: isDesktop ? 6 : 10,
+                              width: "100%",
+                            }}
+                          >
+                            <button
+                              onClick={() => {
+                                const template = generateInitialBoardContent();
+                                setEditorKey((v) => v + 1);
+                                setNewHWDescription(template);
+                                setEditorContent(template);
+                                setConfirm(true);
+                              }}
+                              title="Restaurar"
+                              style={baseBtnStyle}
+                            >
+                              Restaurar
+                            </button>
 
-      {confirm && (
-        <button
-          onClick={handleSaveBoard}
-          style={{
-            ...baseBtnStyle,
-            border: `1px solid ${partnerColor?.() || "#2563eb"}`,
-            background: partnerColor?.() || "#2563eb",
-            color: "#fff",
-          }}
-        >
-          Salvar
-        </button>
-      )}
+                            {confirm && (
+                              <button
+                                onClick={handleSaveBoard}
+                                style={{
+                                  ...baseBtnStyle,
+                                  border: `1px solid ${
+                                    partnerColor?.() || "#2563eb"
+                                  }`,
+                                  background: partnerColor?.() || "#2563eb",
+                                  color: "#fff",
+                                }}
+                              >
+                                Salvar
+                              </button>
+                            )}
 
-      {hasAudioElement && (
-        <button
-          onClick={() => setSeeAudios((v) => !v)}
-          style={baseBtnStyle}
-        >
-          Áudios
-        </button>
-      )}
+                    
 
-      <button
-        onClick={downloadBoardPDF}
-        title="Baixar PDF"
-        style={{ all: "unset", cursor: "pointer" }}
-      >
-        <img
-          src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-          alt="PDF"
-          style={{ width: 18, height: 18 }}
-        />
-      </button>
+                            <button
+                              onClick={downloadBoardPDF}
+                              title="Baixar PDF"
+                              style={{ all: "unset", cursor: "pointer" }}
+                            >
+                              <img
+                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                                alt="PDF"
+                                style={{ width: 18, height: 18 }}
+                              />
+                            </button>
 
-      {seeCheck && (
-        <i
-          className="fa fa-check"
-          style={{
-            padding: 6,
-            borderRadius: "999px",
-            backgroundColor: "#fff",
-            color: "green",
-            fontSize: 12,
-            border: "1px solid #e5e7eb",
-          }}
-        />
-      )}
-    </div>}
+                            {seeCheck && (
+                              <i
+                                className="fa fa-check"
+                                style={{
+                                  padding: 6,
+                                  borderRadius: "999px",
+                                  backgroundColor: "#fff",
+                                  color: "green",
+                                  fontSize: 12,
+                                  border: "1px solid #e5e7eb",
+                                }}
+                              />
+                            )}
+                          </div>
+                        )}
                         {boardDate && (
                           <span
                             style={{
@@ -3931,54 +3940,7 @@ export default function EnglishClassCourse2({
                           </span>
                         )}
                       </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                          padding: "8px 12px",
-                          borderRadius: "8px",
-                          fontSize: "12px",
-                        }}
-                      >
-                        <button
-                          onClick={() =>
-                            setBoardZoom((prev) => Math.max(prev - 10, 100))
-                          }
-                          style={{
-                            all: "unset",
-                            cursor: "pointer",
-                            padding: "4px 8px",
-                            background: "#f3f4f6",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                          title="Diminuir zoom (Ctrl + -)"
-                        >
-                          -
-                        </button>
-                        <span style={{ minWidth: "45px", textAlign: "center" }}>
-                          {Math.round(boardZoom)}%
-                        </span>
-                        <button
-                          onClick={() =>
-                            setBoardZoom((prev) => Math.min(prev + 10, 200))
-                          }
-                          style={{
-                            all: "unset",
-                            cursor: "pointer",
-                            padding: "4px 8px",
-                            background: "#f3f4f6",
-                            borderRadius: "4px",
-                            fontSize: "14px",
-                            fontWeight: "bold",
-                          }}
-                          title="Aumentar zoom (Ctrl + +)"
-                        >
-                          +
-                        </button>
-                      </div>
+            
                       <div
                         style={{
                           display: "flex",
@@ -3987,7 +3949,12 @@ export default function EnglishClassCourse2({
                         }}
                       >
                         {seeConfirm ? (
-                          <div style={{ display:isDesktop ? "flex" : "block", gap: 8 }}>
+                          <div
+                            style={{
+                              display: isDesktop ? "flex" : "block",
+                              gap: 8,
+                            }}
+                          >
                             <button
                               onClick={() => {
                                 setSeeAudios(false);
@@ -4045,6 +4012,54 @@ export default function EnglishClassCourse2({
                         )}
                       </div>
                     </div>
+                              <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "8px",
+                          padding: "8px 12px",
+                          borderRadius: "8px",
+                          fontSize: "12px",
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            setBoardZoom((prev) => Math.max(prev - 10, 100))
+                          }
+                          style={{
+                            all: "unset",
+                            cursor: "pointer",
+                            padding: "4px 8px",
+                            background: "#f3f4f6",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                          }}
+                          title="Diminuir zoom (Ctrl + -)"
+                        >
+                          -
+                        </button>
+                        <span style={{ minWidth: "45px", textAlign: "center" }}>
+                          {Math.round(boardZoom)}%
+                        </span>
+                        <button
+                          onClick={() =>
+                            setBoardZoom((prev) => Math.min(prev + 10, 200))
+                          }
+                          style={{
+                            all: "unset",
+                            cursor: "pointer",
+                            padding: "4px 8px",
+                            background: "#f3f4f6",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            fontWeight: "bold",
+                          }}
+                          title="Aumentar zoom (Ctrl + +)"
+                        >
+                          +
+                        </button>
+                      </div>
 
                     {/* Editor / Read-only */}
                     <div
@@ -4056,7 +4071,7 @@ export default function EnglishClassCourse2({
                       {!loadingBoard ? (
                         <div
                           style={{
-                            height: "100%",
+                            height: "60vh",
                             overflow: "auto",
                             width: "100%",
                             transition: "transform 0.2s ease-in-out",
