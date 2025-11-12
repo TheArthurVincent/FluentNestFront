@@ -1,0 +1,119 @@
+/* --- Flashcards Styles Copiados de styles.css --- */
+.flashcard {
+  position: relative;
+  width: 250px;
+  height: 175px;
+  transform-style: preserve-3d;
+  transition: transform 0.3s;
+}
+
+.isMobileDisapear {
+  display: flex;
+}
+
+.flashcard.flip {
+  transform: rotateY(180deg);
+}
+
+.flashcard-front,
+.flashcard-back {
+  border-radius: 4px;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.flashcard-front-vocabulary,
+.flashcard-back-vocabulary {
+  border-radius: 4px;
+  font-size: 20px;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1rem;
+}
+
+.flashcard-front {
+  background-color: white;
+  box-shadow: 5px 5px 10px #555;
+}
+
+.flashcard-back {
+  box-shadow: 5px 5px 10px #555;
+  background-color: #fff;
+  transform: rotateY(180deg);
+}
+
+.hidden {
+  display: none;
+}
+
+.flashcard-history-upper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.flashcard-history-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.flashcard-history-list {
+  font-size: 12px;
+  list-style: none;
+  padding: 0;
+}
+
+.flashcard-day {
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+}
+
+.flashcard-date {
+  cursor: pointer;
+  font-size: 1.5em;
+  border-bottom: 1px solid #ddd;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flashcard-date:hover {
+  transition: 0.1s;
+  background-color: #eee;
+}
+
+.flashcard-total-points {
+  font-size: 1em;
+  color: #666;
+  margin: 5px 0 10px 0;
+}
+
+.flashcard-items {
+  margin-left: 20px;
+  max-height: 500px;
+  overflow: auto;
+  transition: max-height 0.3s ease-out;
+}
+
+.flashcard-item {
+  margin-bottom: 10px;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.flashcard-item p {
+  margin: 5px 0;
+}

@@ -370,7 +370,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             display: "flex",
             flexDirection: isDesktop ? "row" : "column",
             height: "100vh",
-            justifyContent: "space-between",
           }}
         >
           <ArvinTopBar admin={admin || teacher} appLoaded={appLoaded} />
@@ -388,9 +387,11 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                     verifyToken() ? (
                       <div
                         style={{
-                          height: "100%",
-                          borderRadius: "16px",
-                          padding: isDesktop ? "20px 20px 20px 0" : "20px",
+                          height: "90%",
+                          padding: isDesktop ? "20px 20px 20px 0" : "0",
+                          transform: isDesktop
+                            ? "translateY(0)"
+                            : "translateY(-70px)",
                         }}
                       >
                         {component.component}

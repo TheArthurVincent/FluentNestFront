@@ -81,8 +81,9 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded, admin }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          zIndex: 100,
           justifyItems: "center",
-          boxShadow: "0px 5px 100px rgba(155, 155, 155, 0.3)",
+          boxShadow: " rgba(155, 155, 155, 0.07) 0px 5px 5px",
         }}
       >
         <img
