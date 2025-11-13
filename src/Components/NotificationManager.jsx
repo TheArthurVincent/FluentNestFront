@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import OneSignal from 'react-onesignal';
-import { OneSignalService } from '../services/oneSignalConfig';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import OneSignal from "react-onesignal";
+import { OneSignalService } from "../services/oneSignalConfig";
+import styled from "styled-components";
 
 const NotificationManager = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [userId, setUserId] = useState(null);
   const [showPrompt, setShowPrompt] = useState(false);
-  const [permission, setPermission] = useState('default');
+  const [permission, setPermission] = useState("default");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     checkSubscriptionStatus();
-    
+
     // Mostrar prompt após 5 segundos se não estiver inscrito
     const timer = setTimeout(() => {
-      if (!isSubscribed && permission === 'default') {
+      if (!isSubscribed && permission === "default") {
         setShowPrompt(true);
       }
     }, 5000);
@@ -28,12 +28,12 @@ const NotificationManager = () => {
       const subscribed = await OneSignalService.isSubscribed();
       const id = await OneSignalService.getUserId();
       const perm = await OneSignalService.getNotificationPermission();
-      
+
       setIsSubscribed(subscribed);
       setUserId(id);
       setPermission(perm);
     } catch (error) {
-      console.error('Erro ao verificar status:', error);
+      console.error("Erro ao verificar status:", error);
     }
   };
 
@@ -41,32 +41,32 @@ const NotificationManager = () => {
     setLoading(true);
     try {
       const success = await OneSignalService.requestPermission();
-      
+
       if (success) {
         // Adicionar tags básicas do usuário
         await OneSignalService.setTags({
-          fonte: 'pwa',
-          plataforma: 'web',
+          fonte: "pwa",
+          plataforma: "web",
           dataInscricao: new Date().toISOString(),
-          idioma: navigator.language || 'pt-BR'
+          idioma: navigator.language || "pt-BR",
         });
 
         // Enviar evento de conversão
-        await OneSignalService.sendOutcome('notification_subscribed');
+        await OneSignalService.sendOutcome("notification_subscribed");
 
         await checkSubscriptionStatus();
         setShowPrompt(false);
       }
     } catch (error) {
-      console.error('Erro ao inscrever:', error);
-      alert('Erro ao ativar notificações. Tente novamente.');
+      console.error("Erro ao inscrever:", error);
+      alert("Erro ao ativar notificações. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleUnsubscribe = async () => {
-    if (!window.confirm('Deseja realmente desativar as notificações?')) {
+    if (!window.confirm("Deseja realmente desativar as notificações?")) {
       return;
     }
 
@@ -76,8 +76,8 @@ const NotificationManager = () => {
       await checkSubscriptionStatus();
       setShowPrompt(false);
     } catch (error) {
-      console.error('Erro ao cancelar:', error);
-      alert('Erro ao desativar notificações. Tente novamente.');
+      console.error("Erro ao cancelar:", error);
+      alert("Erro ao desativar notificações. Tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -86,13 +86,16 @@ const NotificationManager = () => {
   const handleDismiss = () => {
     setShowPrompt(false);
     // Salvar no localStorage para não mostrar por 7 dias
-    const dismissedUntil = Date.now() + (7 * 24 * 60 * 60 * 1000);
-    localStorage.setItem('notification-prompt-dismissed', dismissedUntil.toString());
+    const dismissedUntil = Date.now() + 7 * 24 * 60 * 60 * 1000;
+    localStorage.setItem(
+      "notification-prompt-dismissed",
+      dismissedUntil.toString()
+    );
   };
 
   // Verificar se o prompt foi dispensado recentemente
   useEffect(() => {
-    const dismissed = localStorage.getItem('notification-prompt-dismissed');
+    const dismissed = localStorage.getItem("notification-prompt-dismissed");
     if (dismissed) {
       const dismissedUntil = parseInt(dismissed);
       if (Date.now() < dismissedUntil) {
@@ -102,29 +105,30 @@ const NotificationManager = () => {
   }, []);
 
   // Não mostrar nada se já negou ou se está inscrito
-  if (permission === 'denied' || (isSubscribed && !showPrompt)) {
+  if (permission === "denied" || (isSubscribed && !showPrompt)) {
     return null;
   }
 
   return (
     <>
       {/* Prompt de Inscrição */}
-      {showPrompt && !isSubscribed && permission !== 'denied' && (
+      {showPrompt && !isSubscribed && permission !== "denied" && (
         <PromptContainer>
           <PromptContent>
             <CloseButton onClick={handleDismiss} aria-label="Fechar">
               ✕
             </CloseButton>
-            
+
             <IconContainer>
               <BellIcon>🔔</BellIcon>
               <PulseRing />
             </IconContainer>
-            
+
             <TextContent>
               <Title>Ativar Notificações Push?</Title>
               <Description>
-                Receba lembretes de aulas, novidades e conteúdos exclusivos do <strong>ARVIN</strong>
+                Receba lembretes de aulas, novidades e conteúdos exclusivos do{" "}
+                <strong>ARVIN</strong>
               </Description>
               <Benefits>
                 <Benefit>✓ Novas aulas disponíveis</Benefit>
@@ -132,23 +136,17 @@ const NotificationManager = () => {
                 <Benefit>✓ Conteúdos exclusivos</Benefit>
               </Benefits>
             </TextContent>
-            
+
             <ButtonGroup>
-              <Button 
-                onClick={handleSubscribe} 
-                primary 
-                disabled={loading}
-              >
-                {loading ? 'Ativando...' : '🔔 Sim, quero receber!'}
+              <Button onClick={handleSubscribe} primary disabled={loading}>
+                {loading ? "Ativando..." : "🔔 Sim, quero receber!"}
               </Button>
               <Button onClick={handleDismiss} disabled={loading}>
                 Agora não
               </Button>
             </ButtonGroup>
 
-            <PrivacyNote>
-              Você pode cancelar a qualquer momento
-            </PrivacyNote>
+            <PrivacyNote>Você pode cancelar a qualquer momento</PrivacyNote>
           </PromptContent>
         </PromptContainer>
       )}
@@ -159,7 +157,10 @@ const NotificationManager = () => {
           <BadgeContent>
             <CheckIcon>✓</CheckIcon>
             <BadgeText>Notificações ativadas</BadgeText>
-            <SettingsButton onClick={handleUnsubscribe} title="Desativar notificações">
+            <SettingsButton
+              onClick={handleUnsubscribe}
+              title="Desativar notificações"
+            >
               ⚙️
             </SettingsButton>
           </BadgeContent>
@@ -245,10 +246,21 @@ const BellIcon = styled.div`
   animation: bellRing 2s ease-in-out infinite;
 
   @keyframes bellRing {
-    0%, 100% { transform: rotate(0deg); }
-    10%, 30% { transform: rotate(-10deg); }
-    20%, 40% { transform: rotate(10deg); }
-    50% { transform: rotate(0deg); }
+    0%,
+    100% {
+      transform: rotate(0deg);
+    }
+    10%,
+    30% {
+      transform: rotate(-10deg);
+    }
+    20%,
+    40% {
+      transform: rotate(10deg);
+    }
+    50% {
+      transform: rotate(0deg);
+    }
   }
 `;
 
@@ -335,7 +347,9 @@ const Button = styled.button`
   justify-content: center;
   gap: 8px;
 
-  ${props => props.primary ? `
+  ${(props) =>
+    props.primary
+      ? `
     background: white;
     color: #667eea;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -344,7 +358,8 @@ const Button = styled.button`
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     }
-  ` : `
+  `
+      : `
     background: rgba(255, 255, 255, 0.2);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.3);
@@ -379,8 +394,14 @@ const StatusBadge = styled.div`
   animation: fadeIn 0.3s ease-out;
 
   @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
 
   @media (max-width: 768px) {
@@ -440,4 +461,3 @@ const SettingsButton = styled.button`
 `;
 
 export default NotificationManager;
-
