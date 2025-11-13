@@ -10,7 +10,8 @@ import { partnerColor } from "../../../Styles/Styles";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
-  setChange?: any;isDesktop: boolean;
+  setChange?: any;
+  isDesktop: boolean;
 };
 
 export var newArvinTitleStyle = {
@@ -20,7 +21,12 @@ export var newArvinTitleStyle = {
   fontSize: 24,
   letterSpacing: "0%",
 };
-export function MyHomePage({ headers, change, setChange, isDesktop }: MyHomePageProps) {
+export function MyHomePage({
+  headers,
+  change,
+  setChange,
+  isDesktop,
+}: MyHomePageProps) {
   const [monthlyScore, setMonthlyScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
   const [studentPicture, setStudentPicture] = useState("");
@@ -159,6 +165,9 @@ export function MyHomePage({ headers, change, setChange, isDesktop }: MyHomePage
               </span>
             </span>
             <img
+              onClick={() => {
+                window.location.assign("/my-profile");
+              }}
               style={{
                 height: "40px",
                 width: "40px",
