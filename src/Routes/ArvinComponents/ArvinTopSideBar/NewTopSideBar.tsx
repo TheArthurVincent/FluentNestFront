@@ -7,12 +7,13 @@ interface ArvinTopBarProps {
   appLoaded?: boolean;
   admin?: boolean;
   isDesktop: boolean;
+  showLeftBar: boolean;
 }
 
 export const ArvinTopBar: FC<ArvinTopBarProps> = ({
   isDesktop,
   appLoaded,
-  admin,
+  admin,showLeftBar
 }) => {
   const studentPicture =
     JSON.parse(localStorage.getItem("loggedIn") || "{}").picture || "";
@@ -20,7 +21,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
   // controla se o sidebar está “fininho” (apenas ícones)
   const [collapsed, setCollapsed] = useState(false);
 
-  if (isDesktop) {
+  if (isDesktop && showLeftBar) {
     // ===== Sidebar à esquerda (PC) =====
     return (
       <div

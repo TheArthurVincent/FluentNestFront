@@ -215,6 +215,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       title: "Blog",
       path: "/",
       levelcard: true,
+      showLeftBar: true,
       component: (
         <MyHomePage
           isDesktop={isDesktop}
@@ -227,10 +228,13 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       path: "/dispose",
       title: "My Classes",
+      showLeftBar: true,
+
       component: <MyClasses headers={headers} />,
     },
     {
       title: "Homework",
+      showLeftBar: true,
       levelcard: false,
       component: (
         <Homework
@@ -243,6 +247,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       path: "my-homework-and-lessons",
+      showLeftBar: false,
       title: "Homework",
       levelcard: false,
       component: (
@@ -257,6 +262,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       title: "Homework",
       levelcard: false,
+      showLeftBar: true,
       path: "/my-classes",
       component: (
         <Homework
@@ -269,6 +275,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "My Calendar",
+      showLeftBar: false,
       component: (
         <MyCalendar
           isDesktop={isDesktop}
@@ -282,6 +289,8 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "My Calendar Ref",
+      showLeftBar: true,
+
       component: (
         <MyCalendarNew
           change={change}
@@ -294,6 +303,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Flash Cards",
+      showLeftBar: false,
       levelcard: true,
       component: (
         <FlashCards
@@ -308,10 +318,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Ranking",
+      showLeftBar: true,
       component: <Ranking isDesktop={isDesktop} headers={headers} />,
     },
     {
       title: "English Courses",
+      showLeftBar: false,
       component: (
         <EnglishCourses
           setChange={setChange}
@@ -323,6 +335,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Teaching Materials",
+      showLeftBar: false,
       component: (
         <EnglishCourses
           isDesktop={isDesktop}
@@ -335,6 +348,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Listening",
+      showLeftBar: false,
       component: isArthurVincent ? (
         <Listening change={change} onChange={setChange} headers={headers} />
       ) : (
@@ -344,6 +358,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Sentence Mining",
+      showLeftBar: false,
       component:
         thePermissions === "teacher" ||
         thePermissions === "superadmin" ||
@@ -360,20 +375,27 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Live Classes",
+      showLeftBar: true,
+
       component: <GroupClasses headers={headers} />,
     },
     {
       title: "FAQ",
+      showLeftBar: true,
+
       component: <Faq headers={headers} />,
     },
     {
       title: "My Profile",
+      showLeftBar: true,
       component: (
         <MyProfile headers={headers} change={change} setChange={setChange} />
       ),
     },
     {
       title: "Posts",
+      showLeftBar: true,
+
       component: (
         <RouteDiv>
           <BlogPosts headers={headers} />
@@ -383,6 +405,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       path: "/adm-businessmanagement",
       title: "Adm",
+      showLeftBar: true,
       component:
         verifyToken() && (admin || teacher) ? (
           <Adm headers={headers} />
@@ -431,8 +454,9 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               element={
                 verifyToken() ? (
                   <>
-                    {component.levelcard !== false && (
+                    {component.showLeftBar !== false && (
                       <ArvinTopBar
+                        showLeftBar={component.showLeftBar || false}
                         isDesktop={isDesktop}
                         admin={admin || teacher}
                         appLoaded={appLoaded}
