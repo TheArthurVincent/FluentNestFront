@@ -29,7 +29,7 @@ O sistema de Push Notifications com OneSignal foi implementado com sucesso no se
 ### Passo 2: Configurar Web Push
 1. Selecione **"Web Push"** como plataforma
 2. Configure:
-   - **Site Name**: ARVIN - Inglês de Negócios
+   - **Site Name**: ARVIN - Plataforma de Ensino
    - **Site URL**: `https://seudominio.com` (seu domínio em produção)
    - **Auto Resubscribe**: ON
    - **Default Notification Icon**: Upload do seu logo (192x192)
