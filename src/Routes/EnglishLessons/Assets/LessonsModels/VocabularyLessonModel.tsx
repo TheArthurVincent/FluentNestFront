@@ -27,6 +27,30 @@ type MatchState = {
   shuffledIdx: number[]; // mapeia posição -> índice real do back
 };
 
+// Paleta de cores para os pares
+const pairColors = [
+  "#ff6b6b", // vermelho
+  "#4dabf7", // azul
+  "#51cf66", // verde
+  "#ffa94d", // laranja
+  "#845ef7", // roxo
+  "#f06595", // rosa
+  "#20c997", // turquesa
+  "#fcc419", // amarelo
+  "#339af0", // azul claro
+  "#ff922b", // laranja escuro
+  "#7950f2", // violeta
+  "#e64980", // magenta
+  "#12b886", // verde esmeralda
+  "#f783ac", // salmão
+  "#228be6", // azul royal
+  "#000000", // preto
+  "#495057", // cinza escuro
+  "#f03e3e", // vermelho forte
+  "#5c7cfa", // azul vibrante
+  "#37b24d", // verde vibrante
+];
+
 function shuffleArray<T>(arr: T[]): T[] {
   const a = arr.slice();
   for (let i = a.length - 1; i > 0; i--) {
@@ -46,7 +70,8 @@ export default function VocabularyLesson({
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
   const [seeFront, setSeeFront] = useState(true);
-  // ======== NOVO: estado do exercício de match ========
+
+  // ======== ESTADO DO EXERCÍCIO DE MATCH ========
   const [match, setMatch] = useState<MatchState>({
     isMatchMode: false,
     selectedFront: null,
@@ -64,7 +89,7 @@ export default function VocabularyLesson({
     return shuffleArray(base);
   }, [sentences]);
 
-  // Se ativar/desativar o modo, resetar seleção/embaralhamento
+  // Ativar/desativar o modo match
   const toggleMatchMode = () => {
     if (!match.isMatchMode) {
       setMatch({
@@ -91,6 +116,7 @@ export default function VocabularyLesson({
   const onPickBack = (backSlotPosition: number) => {
     const realBackIndex = match.shuffledIdx[backSlotPosition];
     const { selectedFront } = match;
+
     if (selectedFront === null) {
       notifyAlert(
         "Selecione primeiro um item da coluna da esquerda.",
@@ -98,6 +124,7 @@ export default function VocabularyLesson({
       );
       return;
     }
+
     if (selectedFront === realBackIndex) {
       // ACERTOU
       const newMatched = new Set(match.matched);
@@ -111,7 +138,6 @@ export default function VocabularyLesson({
     } else {
       // ERROU
       notifyAlert("❌ Não é o par correspondente.", "red");
-      // mantém o selectedFront para tentar novamente ou desmarca:
       setMatch((prev) => ({ ...prev, selectedFront: null }));
     }
   };
@@ -162,25 +188,24 @@ export default function VocabularyLesson({
   const cardStyle: React.CSSProperties = {
     border: "1px solid #e3e6ea",
     borderRadius: "4px",
-    padding: "8px 12px 8px 12px",
+    padding: "8px",
     position: "relative",
     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     minHeight: "40px",
     display: "flex",
-    flexDirection: "column",
     background: "#fff",
     justifyContent: "flex-start",
     cursor: "pointer",
   };
 
   const selectedStyle: React.CSSProperties = {
-    outline: `2px solid ${partnerColor()}`,
+    outline: `3px solid ${partnerColor()}`,
     outlineOffset: 2,
   };
 
+  // não mexe na borda para não matar a cor do par
   const matchedStyle: React.CSSProperties = {
     background: "#f0fff4",
-    borderColor: "#86efac",
   };
 
   return (
@@ -190,7 +215,7 @@ export default function VocabularyLesson({
         minHeight: "100px",
       }}
     >
-      {/* ======== NOVO: Toggle Lista/Match ======== */}
+      {/* ======== Toggle Lista/Match ======== */}
       <div
         style={{
           display: "flex",
@@ -241,7 +266,7 @@ export default function VocabularyLesson({
         </button>
       </div>
 
-      {/* ======== MODO LISTA (ORIGINAL — NÃO ALTERADO) ======== */}
+      {/* ======== MODO LISTA (ORIGINAL) ======== */}
       {!match.isMatchMode && (
         <div
           style={{
@@ -375,7 +400,7 @@ export default function VocabularyLesson({
         </div>
       )}
 
-      {/* ======== MODO MATCH (NOVO) ======== */}
+      {/* ======== MODO MATCH ======== */}
       {match.isMatchMode && (
         <div
           style={{
@@ -389,15 +414,22 @@ export default function VocabularyLesson({
             {sentences.map((s, idx) => {
               const isSelected = match.selectedFront === idx;
               const isDone = match.matched.has(idx);
+              const color = pairColors[idx % pairColors.length];
+
               return (
                 <div
                   key={`front-${idx}`}
                   style={{
                     ...cardStyle,
+                    border: `3px solid ${isDone ? color : "transparent"}`, // borda colorida do par
+                    position: "relative",
                     ...(isSelected ? selectedStyle : {}),
                     ...(isDone ? matchedStyle : {}),
                   }}
-                  onClick={() => onPickFront(idx)}
+                  onClick={() => {
+                    onPickFront(idx);
+                    readText(s.english, true, "en", selectedVoice);
+                  }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = isDone
                       ? "#f0fff4"
@@ -418,10 +450,14 @@ export default function VocabularyLesson({
                     }}
                   >
                     <span
-                      style={{ display: "flex", alignItems: "center", gap: 12 }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 12,
+                      }}
                     >
                       <Tooltip title="Ouvir" placement="top" arrow>
-                        <button
+                        <div
                           style={{
                             color: partnerColor(),
                             padding: 0,
@@ -431,13 +467,9 @@ export default function VocabularyLesson({
                             background: "none",
                             transition: "all 0.2s",
                           }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            readText(s.english, true, "en", selectedVoice);
-                          }}
                         >
                           <i className="fa fa-volume-up" aria-hidden="true" />
-                        </button>
+                        </div>
                       </Tooltip>
                       <div style={{ marginLeft: 5 }}>
                         {seeFront && (
@@ -475,12 +507,15 @@ export default function VocabularyLesson({
           <div style={{ display: "grid", gap: 10 }}>
             {match.shuffledIdx.map((realIndex, slot) => {
               const isDone = match.matched.has(realIndex);
-              // realIndex = índice do item correto que está nessa posição embaralhada
+              const color = pairColors[realIndex % pairColors.length];
+
               return (
                 <div
                   key={`back-${slot}`}
                   style={{
                     ...cardStyle,
+                    border: `3px solid ${isDone ? color : "transparent"}`, // borda colorida do par
+                    position: "relative",
                     ...(isDone ? matchedStyle : {}),
                   }}
                   onClick={() => {
