@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { logoPartner } from "../../../Styles/Styles";
 import { NotificationsArvin } from "./Notifications/NotificationsArvin";
 import { ArvinSideDownBar } from "./SideDownBar/SideDownBar";
@@ -17,12 +17,15 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
   const studentPicture =
     JSON.parse(localStorage.getItem("loggedIn") || "{}").picture || "";
 
+  // controla se o sidebar está “fininho” (apenas ícones)
+  const [collapsed, setCollapsed] = useState(false);
+
   if (isDesktop) {
     // ===== Sidebar à esquerda (PC) =====
     return (
       <div
         style={{
-          padding: "16px",
+          padding: "16px 20px 16px 16px",
           zIndex: 100,
         }}
       >
@@ -32,40 +35,100 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
             position: "sticky",
             top: 0,
             left: 0,
-            width: 260,
+            width: collapsed ? 72 : 260, // largura menor quando colapsado
             height: "90vh",
             backgroundColor: "#ffffff",
             display: "flex",
             border: "1px solid #E3E8F0",
             flexDirection: "column",
+            transition: "width 0.2s ease-in-out",
           }}
         >
-          {/* Topo do sidebar: logo */}
+          {/* Topo do sidebar */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
+              justifyContent: collapsed ? "center" : "space-between",
               padding: 16,
               paddingBottom: 8,
               borderBottom: "2px solid #EEF2F7",
+              gap: 8,
             }}
           >
-            <img
+            {/* Logo só aparece quando NÃO está colapsado */}
+            {!collapsed && (
+              <img
+                style={{
+                  height: 48,
+                  width: "auto",
+                  maxWidth: "100%",
+                  objectFit: "contain",
+                }}
+                src={logoPartner()}
+                alt="Logo"
+              />
+            )}
+
+            <div
               style={{
-                height: 48,
-                width: "auto",
-                maxWidth: "100%",
-                objectFit: "contain",
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
               }}
-              src={logoPartner()}
-              alt="Logo"
-            />
-            <NotificationsArvin appLoaded={appLoaded} />
+            >
+              {/* Notification sempre no topo */}
+              <NotificationsArvin appLoaded={appLoaded} />
+            </div>
           </div>
-          {/* Navegação vertical (seu componente de navegação inferior pode ser usado aqui como coluna) */}
-          <div style={{ padding: "16px" }}>
-            <ArvinSideDownBar admin={admin} isDesktop={isDesktop} />
+          <button
+            type="button"
+            onClick={() => setCollapsed((prev) => !prev)}
+            style={{
+              border: "1px solid #E3E8F0",
+              background: "white",
+              cursor: "pointer",
+              height: 20,
+              position: "fixed",
+              width: 20,
+              borderRadius: 12,
+              zIndex: 100,
+              color: "#000000",
+              transform: `${
+                collapsed ? "translateY(35px)" : "translateY(56px)"
+              } ${collapsed ? "translateX(56px)" : "translateX(225px)"}`,
+              display: "flex",
+            }}
+            aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+          >
+            {collapsed ? (
+              <i
+                className="fa fa-expand"
+                style={{
+                  color: "#030303",
+                }}
+              />
+            ) : (
+              <i
+                className="fa fa-compress"
+                style={{
+                  color: "#030303",
+                }}
+              />
+            )}
+          </button>
+
+          {/* Navegação vertical */}
+          <div
+            style={{
+              padding: "16px",
+            }}
+          >
+            <ArvinSideDownBar
+              admin={admin}
+              isDesktop={isDesktop}
+              collapsed={collapsed}
+            />
           </div>
         </aside>
       </div>
@@ -98,9 +161,8 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           }}
           src={logoPartner()}
           alt=""
-        />{" "}
+        />
         <div style={{ display: "flex", alignItems: "center" }}>
-          {" "}
           <NotificationsArvin isDesktop={isDesktop} appLoaded={appLoaded} />
           <img
             onClick={() => {
@@ -118,9 +180,9 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
               "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
             }
             alt=""
-          />{" "}
-        </div>{" "}
-      </div>{" "}
+          />
+        </div>
+      </div>
     </>
   );
 };

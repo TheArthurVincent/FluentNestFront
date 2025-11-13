@@ -323,7 +323,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Teaching Materials",
-      topbar: false,
       component: (
         <EnglishCourses
           isDesktop={isDesktop}
@@ -421,13 +420,11 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         width: isDesktop ? "99vw" : "100vw",
       }}
     >
-      {window.location.href.includes("teaching") ? null : (
-        <ArvinTopBar
-          isDesktop={isDesktop}
-          admin={admin || teacher}
-          appLoaded={appLoaded}
-        />
-      )}
+      <ArvinTopBar
+        isDesktop={isDesktop}
+        admin={admin || teacher}
+        appLoaded={appLoaded}
+      />
       <Routes>
         {appRoutes.map((component, index) => {
           return (
