@@ -6,16 +6,19 @@ import { ItemRow, menuItems } from "./menuItems";
 interface ArvinSideDownBarProps {
   isDesktop?: boolean;
   admin?: boolean;
+  collapsed?: boolean;
 }
 
 export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
   isDesktop,
   admin,
+  collapsed,
 }) => {
   const location = useLocation();
   const currentPath = location.pathname;
   const bgActive = `${partnerColor()}09`; // usa alpha baixo para bg ativo
   const baseTextColor = "#030303";
+
   return (
     <nav
       style={{
@@ -47,6 +50,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
               bgActive={bgActive}
               baseTextColor={baseTextColor}
               partnerColor={partnerColor}
+              collapsed={!!collapsed}
             />
           ))}
       </ul>
@@ -71,6 +75,7 @@ export const ArvinSideDownBar: FC<ArvinSideDownBarProps> = ({
               bgActive={bgActive}
               baseTextColor={baseTextColor}
               partnerColor={partnerColor}
+              collapsed={!!collapsed}
             />
           ))}
       </ul>

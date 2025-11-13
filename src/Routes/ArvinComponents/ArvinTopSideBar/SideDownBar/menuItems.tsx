@@ -9,7 +9,7 @@ import {
   TrophyIcon,
   UserCircleIcon,
 } from "@phosphor-icons/react";
-import React, { act, FC } from "react";
+import React, { FC } from "react";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
 import { Link } from "react-router-dom";
 
@@ -35,7 +35,16 @@ export const ItemRow: FC<{
   bgActive: string;
   baseTextColor: string;
   partnerColor: () => string;
-}> = ({ item, admin, currentPath, bgActive, baseTextColor, partnerColor }) => {
+  collapsed?: boolean;
+}> = ({
+  item,
+  admin,
+  currentPath,
+  bgActive,
+  baseTextColor,
+  partnerColor,
+  collapsed,
+}) => {
   // normaliza removendo barra final (exceto a raiz)
   const normalize = (p: string) => p.replace(/\/+$/, "") || "/";
 
@@ -48,6 +57,8 @@ export const ItemRow: FC<{
       ? curr === "/"
       : curr === target || curr.startsWith(`${target}/`);
 
+  const showItem = item.admin ? !!admin : true;
+
   return (
     <li
       onClick={() => {
@@ -55,12 +66,14 @@ export const ItemRow: FC<{
       }}
       style={{
         listStyleType: "none",
-        display: item.admin ? (admin ? "grid" : "none") : "grid",
+        display: showItem ? "grid" : "none",
         alignItems: "center",
         borderRadius: "8px",
-        padding: "8px 12px",
+        padding: collapsed ? "10px 0" : "8px 12px",
         backgroundColor: active ? bgActive : "transparent",
-        transition: "background-color 0.15s ease-in-out",
+        transition:
+          "background-color 0.15s ease-in-out, padding 0.15s ease-in-out",
+        justifyItems: collapsed ? "center" : "stretch",
       }}
       onMouseOver={(e) => {
         e.currentTarget.style.backgroundColor = bgActive;
@@ -76,6 +89,7 @@ export const ItemRow: FC<{
         style={{
           display: "flex",
           alignItems: "center",
+          justifyContent: collapsed ? "center" : "flex-start",
           textDecoration: "none",
           cursor: "pointer",
         }}
@@ -85,20 +99,23 @@ export const ItemRow: FC<{
           weight="bold"
           size={20}
         />
-        <span
-          style={{
-            fontFamily: "Plus Jakarta Sans",
-            fontWeight: 600,
-            fontStyle: "SemiBold",
-            fontSize: 14,
-            lineHeight: "100%",
-            letterSpacing: "0%",
-            color: baseTextColor,
-            marginLeft: "12px",
-          }}
-        >
-          {item.label}
-        </span>
+        {!collapsed && (
+          <span
+            style={{
+              fontFamily: "Plus Jakarta Sans",
+              fontWeight: 600,
+              fontStyle: "SemiBold",
+              fontSize: 14,
+              lineHeight: "100%",
+              letterSpacing: "0%",
+              color: baseTextColor,
+              marginLeft: "12px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {item.label}
+          </span>
+        )}
       </Link>
     </li>
   );
@@ -144,7 +161,6 @@ export const menuItems: MenuItem[] = [
     justBottom: false,
     isMobile: false,
   },
-
   {
     label: "Calendário",
     Icon: CalendarIcon,
