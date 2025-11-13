@@ -92,6 +92,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
             style={{
               padding: collapsed ? "12px 8px 0" : "16px",
               display: "flex",
+              flexDirection: collapsed ? "column" : "row",
               justifyContent: collapsed ? "space-around" : "space-between",
               height: "100%",
             }}
@@ -110,8 +111,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
                 background: "transparent",
                 cursor: "pointer",
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
               }}
               aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
             >
