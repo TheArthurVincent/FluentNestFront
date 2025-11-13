@@ -103,6 +103,9 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           {" "}
           <NotificationsArvin isDesktop={isDesktop} appLoaded={appLoaded} />
           <img
+            onClick={() => {
+              window.location.assign("/my-profile");
+            }}
             style={{
               height: "40px",
               width: "40px",

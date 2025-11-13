@@ -48,20 +48,8 @@ export default function Ranking({ headers, isDesktop }: Props) {
       component: <StudentsRankingTotal headers={headers || {}} />,
     },
     {
-      title: UniversalTexts.timeline,
-      value: "3",
-      component: (
-        <RankingTimeline
-          id={user.id}
-          permissions={user.permissions}
-          name={user.name + " " + user.lastname}
-          headers={headers || {}}
-        />
-      ),
-    },
-    {
       title: UniversalTexts.rankingExplanation,
-      value: "4",
+      value: "3",
       component: <RankingExplanation />,
     },
   ];

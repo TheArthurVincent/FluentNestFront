@@ -77,50 +77,33 @@ export function AvatarUpload({
         headers={headers}
         _StudentId={user.id}
       />
-
-      {/* Botão que dispara o input pelo ref */}
-      <button
-        type="button"
-        style={{
-          opacity: 0,
-        }}
-        onClick={() => {
-          // proteção: se algum overlay bloquear, o label abaixo funciona como fallback
-          fileInputRef.current?.click();
-        }}
-      >
-        Nova foto
-      </button>
-      {/* Fallback 100% nativo: label estilizada como botão */}
-      <label
-        htmlFor="avatar-file"
-        style={{
-          ...buttonStyle,
-          userSelect: "none",
-          translate: "transformY(-40px)",
-        }}
-      >
-        Escolher do dispositivo
+      <label htmlFor="avatar-file">
+        <div
+          style={{ ...buttonStyle, position: "relative", overflow: "hidden" }}
+        >
+          <i className="fa fa-upload" aria-hidden="false" />
+          Alterar foto
+        </div>
       </label>
-
-      {/* Input de arquivo (único, com ref e id pro label) */}
       <input
         id="avatar-file"
         type="file"
         accept="image/*"
         ref={fileInputRef}
-        onChange={handleFileChange}
         style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          border: "none",
+          outline: "none",
           position: "absolute",
-          width: 1,
-          height: 1,
-          padding: 0,
-          margin: -1,
-          overflow: "hidden",
-          clip: "rect(0,0,0,0)",
-          whiteSpace: "nowrap",
-          border: 0,
+          top: 0,
+          left: 0,
+          width: "100%",
+          opacity: 0,
+          fontStyle: "SemiBold",
+          fontSize: "14px",
         }}
+        onChange={handleFileChange}
       />
     </div>
   );
