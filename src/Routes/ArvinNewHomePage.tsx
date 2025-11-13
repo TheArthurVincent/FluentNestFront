@@ -420,11 +420,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         width: isDesktop ? "99vw" : "100vw",
       }}
     >
-      <ArvinTopBar
-        isDesktop={isDesktop}
-        admin={admin || teacher}
-        appLoaded={appLoaded}
-      />
       <Routes>
         {appRoutes.map((component, index) => {
           return (
@@ -435,16 +430,25 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               }/*`}
               element={
                 verifyToken() ? (
-                  <div
-                    style={{
-                      width: "100%",
-                      transform: isDesktop
-                        ? "translateY(0)"
-                        : "translateY(-70px)",
-                    }}
-                  >
-                    {component.component}
-                  </div>
+                  <>
+                    {component.levelcard !== false && (
+                      <ArvinTopBar
+                        isDesktop={isDesktop}
+                        admin={admin || teacher}
+                        appLoaded={appLoaded}
+                      />
+                    )}
+                    <div
+                      style={{
+                        width: "100%",
+                        transform: isDesktop
+                          ? "translateY(0)"
+                          : "translateY(-70px)",
+                      }}
+                    >
+                      {component.component}
+                    </div>
+                  </>
                 ) : (
                   <Login />
                 )
