@@ -2,10 +2,6 @@ import React, { FC, useState } from "react";
 import { logoPartner } from "../../../Styles/Styles";
 import { NotificationsArvin } from "./Notifications/NotificationsArvin";
 import { ArvinSideDownBar } from "./SideDownBar/SideDownBar";
-import {
-  CaretDoubleLeftIcon,
-  CaretDoubleRightIcon,
-} from "@phosphor-icons/react";
 
 interface ArvinTopBarProps {
   appLoaded?: boolean;
@@ -29,7 +25,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
     return (
       <div
         style={{
-          padding: "16px",
+          padding: "16px 20px 16px 16px",
           zIndex: 100,
         }}
       >
@@ -46,7 +42,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
             border: "1px solid #E3E8F0",
             flexDirection: "column",
             transition: "width 0.2s ease-in-out",
-            overflow: "hidden",
           }}
         >
           {/* Topo do sidebar */}
@@ -86,15 +81,47 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
               <NotificationsArvin appLoaded={appLoaded} />
             </div>
           </div>
+          <button
+            type="button"
+            onClick={() => setCollapsed((prev) => !prev)}
+            style={{
+              border: "1px solid #E3E8F0",
+              background: "white",
+              cursor: "pointer",
+              height: 20,
+              position: "fixed",
+              width: 20,
+              borderRadius: 12,
+              zIndex: 100,
+              color: "#000000",
+              transform: `${
+                collapsed ? "translateY(35px)" : "translateY(56px)"
+              } ${collapsed ? "translateX(56px)" : "translateX(225px)"}`,
+              display: "flex",
+            }}
+            aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
+          >
+            {collapsed ? (
+              <i
+                className="fa fa-expand"
+                style={{
+                  color: "#030303",
+                }}
+              />
+            ) : (
+              <i
+                className="fa fa-compress"
+                style={{
+                  color: "#030303",
+                }}
+              />
+            )}
+          </button>
 
           {/* Navegação vertical */}
           <div
             style={{
-              padding: collapsed ? "12px 8px 0" : "16px",
-              display: "flex",
-              flexDirection: collapsed ? "column" : "row",
-              justifyContent: collapsed ? "space-around" : "space-between",
-              height: "100%",
+              padding: "16px",
             }}
           >
             <ArvinSideDownBar
@@ -102,24 +129,6 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
               isDesktop={isDesktop}
               collapsed={collapsed}
             />
-            <button
-              type="button"
-              onClick={() => setCollapsed((prev) => !prev)}
-              style={{
-                border: "none",
-                padding: 0,
-                background: "transparent",
-                cursor: "pointer",
-                display: "flex",
-              }}
-              aria-label={collapsed ? "Expandir menu" : "Recolher menu"}
-            >
-              {collapsed ? (
-                <CaretDoubleRightIcon size={14} weight="bold" />
-              ) : (
-                <CaretDoubleLeftIcon size={14} weight="bold" />
-              )}
-            </button>
           </div>
         </aside>
       </div>
