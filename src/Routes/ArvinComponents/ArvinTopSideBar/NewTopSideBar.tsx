@@ -2,15 +2,18 @@ import React, { FC } from "react";
 import { logoPartner } from "../../../Styles/Styles";
 import { NotificationsArvin } from "./Notifications/NotificationsArvin";
 import { ArvinSideDownBar } from "./SideDownBar/SideDownBar";
-import { useIsDesktop } from "../../ArvinNewHomePage";
 
 interface ArvinTopBarProps {
   appLoaded?: boolean;
   admin?: boolean;
+  isDesktop: boolean;
 }
 
-export const ArvinTopBar: FC<ArvinTopBarProps> = ({ appLoaded, admin }) => {
-  const isDesktop = useIsDesktop(700);
+export const ArvinTopBar: FC<ArvinTopBarProps> = ({
+  isDesktop,
+  appLoaded,
+  admin,
+}) => {
   const studentPicture =
     JSON.parse(localStorage.getItem("loggedIn") || "{}").picture || "";
 

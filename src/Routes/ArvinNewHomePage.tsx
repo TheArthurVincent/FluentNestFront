@@ -208,7 +208,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     }, 150);
   }, []);
 
-  const isDesktop = useIsDesktop(500);
+  const isDesktop = useIsDesktop(1000);
 
   var appRoutes = [
     {
@@ -216,7 +216,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       path: "/",
       levelcard: true,
       component: (
-        <MyHomePage change={change} headers={headers} setChange={setChange} />
+        <MyHomePage
+          isDesktop={isDesktop}
+          change={change}
+          headers={headers}
+          setChange={setChange}
+        />
       ),
     },
     {
@@ -383,7 +388,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         verifyToken() && (admin || teacher) ? (
           <Adm headers={headers} />
         ) : (
-          <MyHomePage change={change} headers={headers} setChange={setChange} />
+          <MyHomePage
+            isDesktop={isDesktop}
+            change={change}
+            headers={headers}
+            setChange={setChange}
+          />
         ),
     },
   ];
@@ -407,11 +417,16 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         display: "flex",
         flexDirection: isDesktop ? "row" : "column",
         height: "100vh",
-        width: "100%",
+        justifyContent: "space-between",
+        width: isDesktop ? "99vw" : "100vw",
       }}
     >
       {window.location.href.includes("teaching") ? null : (
-        <ArvinTopBar admin={admin || teacher} appLoaded={appLoaded} />
+        <ArvinTopBar
+          isDesktop={isDesktop}
+          admin={admin || teacher}
+          appLoaded={appLoaded}
+        />
       )}
       <Routes>
         {appRoutes.map((component, index) => {
@@ -425,6 +440,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                 verifyToken() ? (
                   <div
                     style={{
+                      width: "100%",
                       transform: isDesktop
                         ? "translateY(0)"
                         : "translateY(-70px)",
