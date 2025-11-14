@@ -248,7 +248,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       path: "my-homework-and-lessons",
-      showLeftBar: false,
+      showLeftBar: true,
       title: "Homework",
       levelcard: false,
       component: (
@@ -276,7 +276,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "My Calendar",
-      showLeftBar: false,
+      showLeftBar: true,
       component: (
         <MyCalendar
           isDesktop={isDesktop}
@@ -304,7 +304,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Flash Cards",
-      showLeftBar: false,
+      showLeftBar: true,
       levelcard: true,
       component: (
         <FlashCards
@@ -349,7 +349,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Listening",
-      showLeftBar: false,
+      showLeftBar: true,
       component: isArthurVincent ? (
         <Listening change={change} onChange={setChange} headers={headers} />
       ) : (
@@ -359,7 +359,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       levelcard: true,
       title: "Sentence Mining",
-      showLeftBar: false,
+      showLeftBar: true,
       component:
         thePermissions === "teacher" ||
         thePermissions === "superadmin" ||
@@ -377,7 +377,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       title: "Live Classes",
       showLeftBar: true,
-
       component: <GroupClasses headers={headers} />,
     },
     {
