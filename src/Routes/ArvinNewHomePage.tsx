@@ -218,6 +218,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: (
         <MyHomePage
+          actualHeaders={headers}
           isDesktop={isDesktop}
           change={change}
           headers={headers}
@@ -411,6 +412,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           <Adm headers={headers} />
         ) : (
           <MyHomePage
+            actualHeaders={headers}
             isDesktop={isDesktop}
             change={change}
             headers={headers}
@@ -438,8 +440,8 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       style={{
         display: "flex",
         flexDirection: isDesktop ? "row" : "column",
+        justifyContent: isDesktop ? "space-between" : "flex-start",
         height: "100vh",
-        justifyContent: "space-between",
         width: isDesktop ? "99vw" : "100vw",
       }}
     >

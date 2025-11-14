@@ -28,6 +28,7 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
       <div
         style={{
           padding: "16px 20px 16px 16px",
+          margin: !isDesktop ? "16px" : "0px",
           zIndex: 100,
         }}
       >

@@ -13,6 +13,7 @@ type MyHomePageProps = HeadersProps & {
   change?: boolean;
   setChange?: any;
   isDesktop: boolean;
+  actualHeaders?: any;
 };
 
 export var newArvinTitleStyle = {
@@ -27,6 +28,7 @@ export function MyHomePage({
   change,
   setChange,
   isDesktop,
+  actualHeaders,
 }: MyHomePageProps) {
   const [monthlyScore, setMonthlyScore] = useState(0);
   const [totalScore, setTotalScore] = useState(0);
@@ -74,16 +76,20 @@ export function MyHomePage({
   }, [change]);
 
   return (
-    <>
-      <div
-        style={{
-          paddingTop: 29,
-          paddingBottom: 17,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        {isDesktop && (
+    <div
+      style={{
+        margin: !isDesktop ? "16px" : "0px",
+      }}
+    >
+      {isDesktop && (
+        <div
+          style={{
+            paddingTop: 29,
+            paddingBottom: 17,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <section
             style={{
               display: "flex",
@@ -184,10 +190,14 @@ export function MyHomePage({
               />{" "}
             </span>
           </section>
-        )}
-      </div>
-      <Continue appLoaded={true} />
-    </>
+        </div>
+      )}
+      <Continue
+        isDesktop={isDesktop}
+        actualHeaders={actualHeaders}
+        appLoaded={true}
+      />
+    </div>
   );
 }
 
