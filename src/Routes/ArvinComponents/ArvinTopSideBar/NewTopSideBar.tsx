@@ -13,7 +13,8 @@ interface ArvinTopBarProps {
 export const ArvinTopBar: FC<ArvinTopBarProps> = ({
   isDesktop,
   appLoaded,
-  admin,showLeftBar
+  admin,
+  showLeftBar,
 }) => {
   const studentPicture =
     JSON.parse(localStorage.getItem("loggedIn") || "{}").picture || "";
