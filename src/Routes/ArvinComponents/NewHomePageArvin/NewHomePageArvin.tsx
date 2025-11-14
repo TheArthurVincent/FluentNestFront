@@ -8,6 +8,14 @@ import {
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import { Continue } from "../Continue/Continue";
+import { NextClass } from "../GridHomePageComponents/NextClass";
+import { FlashcardsReview } from "../GridHomePageComponents/FlashcardsReview";
+import { PracticalTipsTarget } from "../GridHomePageComponents/PracticalTipsTarget";
+import { HomeworkCard } from "../GridHomePageComponents/HomeworkCard";
+import { CalendarCard } from "../GridHomePageComponents/CalendarCard";
+import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
+import { RankingCard } from "../GridHomePageComponents/RankingCard";
+import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMaterials";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -197,6 +205,108 @@ export function MyHomePage({
         actualHeaders={actualHeaders}
         appLoaded={true}
       />
+      <div
+        style={{
+          gap: "16px",
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "start",
+          justifyItems: "center",
+          marginTop: "32px",
+        }}
+      >
+        {[
+          {
+            component: (
+              <NextClass
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <FlashcardsReview
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <PracticalTipsTarget
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <HomeworkCard
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <CalendarCard
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <WeeklyProgress
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <RecommendedMaterials
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+          {
+            component: (
+              <RankingCard
+                isDesktop={isDesktop}
+                actualHeaders={actualHeaders}
+                appLoaded={true}
+              />
+            ),
+          },
+        ].map((item, index) => {
+          return (
+            <div
+              key={index}
+              style={{
+                display: "grid",
+                backgroundColor: "white",
+                borderRadius: "16px",
+                width: 360,
+                alignItems: "start",
+                border: "1px solid #E3E8F0",
+                padding: "20px",
+              }}
+            >
+              {item.component}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
