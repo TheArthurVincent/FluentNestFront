@@ -472,6 +472,9 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                       }}
                     >
                       {component.component}
+                      {isDesktop ? null : (
+                        <span style={{ marginBottom: isDesktop ? 0 : 10000 }} />
+                      )}
                     </div>
                   </>
                 ) : (
