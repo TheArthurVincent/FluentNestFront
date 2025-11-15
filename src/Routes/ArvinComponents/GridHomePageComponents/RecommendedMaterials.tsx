@@ -39,7 +39,7 @@ export const RecommendedMaterials: FC<RecommendedMaterialsProps> = ({
 
   useEffect(() => {
     seeLessons();
-  }, [appLoaded, actualHeaders]);
+  }, [appLoaded, actualHeaders, studentId]);
 
   const styleLi = {
     fontFamily: "Plus Jakarta Sans",
