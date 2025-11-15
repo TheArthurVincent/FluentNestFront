@@ -7,13 +7,44 @@ interface HomeworkCardProps {
   appLoaded?: boolean;
   actualHeaders?: any;
   isDesktop?: boolean;
+  studentId?: string;
 }
 
 export const HomeworkCard: FC<HomeworkCardProps> = ({
   appLoaded,
   actualHeaders,
   isDesktop,
+  studentId,
 }) => {
+  // ====== GET recommended classes ======
+
+  const [studentIdState, setStudentIdState] = React.useState<string | null>(
+    null
+  );
+  const [loading, setLoading] = React.useState(true);
+  const [homeworkData, setHomeworkData] = React.useState<any>(null);
+
+  const seeLastHw = async () => {
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/last-hw/${studentId}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+        }
+      );
+      console.log(response.data);
+      setHomeworkData(response.data.homework[0].description);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    seeLastHw();
+  }, [appLoaded, actualHeaders, studentId]);
+
   return (
     <>
       <span
@@ -39,7 +70,46 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
           <span>Trabalhos de casa</span>
         </span>
       </span>
-      <div></div>
+      <div
+        style={{
+          marginTop: "16px",
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 500,
+          fontSize: "12px",
+          border: " 1px solid #E3E8F0",
+          borderRadius: "8px",
+          color: "#030303",
+          maxWidth: "100%",
+          maxHeight: "150px",
+          overflowY: "auto",
+          scrollbarColor: `${partnerColor()}50 #FFFFFF`,
+          scrollbarWidth: "thin",
+        }}
+      >
+        <div dangerouslySetInnerHTML={{ __html: homeworkData }} />
+      </div>
+      <a
+        href={"/my-homework-and-lessons"}
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 700,
+          fontStyle: "Bold",
+          marginTop: "20px",
+          fontSize: "12px",
+          lineHeight: "100%",
+          textTransform: "uppercase",
+          letterSpacing: "0%",
+          cursor: "pointer",
+          textDecoration: "none",
+          display: "flex",
+          color: partnerColor(),
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        Acessar
+        <i className="fa fa-chevron-right" />
+      </a>
     </>
   );
 };

@@ -233,6 +233,7 @@ export function MyHomePage({
             component: (
               <HomeworkCard
                 isDesktop={isDesktop}
+                studentId={id}
                 actualHeaders={actualHeaders}
                 appLoaded={true}
               />
