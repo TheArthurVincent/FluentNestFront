@@ -284,6 +284,8 @@ export function MyHomePage({
                 borderRadius: "16px",
                 flex: 1,
                 minWidth: "320px",
+                alignItems: "start",
+                height: "130px",
                 border: "1px solid #E3E8F0",
                 padding: "20px",
               }}
