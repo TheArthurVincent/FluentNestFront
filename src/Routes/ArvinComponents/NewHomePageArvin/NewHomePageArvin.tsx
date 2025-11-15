@@ -46,7 +46,6 @@ export function MyHomePage({
   const [level, setLevel] = useState<number>(9);
 
   const seeScore = async (id: string) => {
-    // setLoading(true);
     try {
       updateInfo(id, headers);
     } catch (e) {
@@ -82,8 +81,7 @@ export function MyHomePage({
   return (
     <div
       style={{
-        margin: !isDesktop ? "16px" : "0px",
-        marginRight: "16px",
+        margin: !isDesktop ? "16px" : "0px 16px 0px 0px",
       }}
     >
       {isDesktop && (
@@ -284,9 +282,8 @@ export function MyHomePage({
                 display: "grid",
                 backgroundColor: "white",
                 borderRadius: "16px",
-                flex: 1, // ⬅️ AGORA ELE ESTICA
-                minWidth: "320px", // ⬅️ PARA RESPONSIVIDADE
-                maxWidth: "600px", // ⬅️ PREENCHER MAS SEM FICAR ENOsRME
+                flex: 1,
+                minWidth: "320px",
                 border: "1px solid #E3E8F0",
                 padding: "20px",
               }}
