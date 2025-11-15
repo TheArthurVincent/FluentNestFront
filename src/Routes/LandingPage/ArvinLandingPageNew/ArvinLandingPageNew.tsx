@@ -1124,7 +1124,7 @@ function ArvinLandingPageNew() {
                           },
                           {
                             check: true,
-                            text: "1.000 tokens de IA por mês",
+                            text: "25 tokens de IA por mês",
                           },
                           {
                             check: true,
@@ -1328,7 +1328,7 @@ function ArvinLandingPageNew() {
                           },
                           {
                             check: true,
-                            text: "25 tokens de IA por mês",
+                            text: "1.000 tokens de IA por mês",
                           },
                           {
                             check: true,

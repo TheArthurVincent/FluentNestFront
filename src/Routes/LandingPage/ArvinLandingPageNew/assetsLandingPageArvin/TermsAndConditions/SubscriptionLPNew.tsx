@@ -240,7 +240,7 @@ export default function TeacherSignupSection({ id, headers }: any) {
               margin: 0,
             }}
           >
-            Comece a pagar apenas na próxima fatura!
+            Passe o cartão apenas no mês que vem!
           </p>
           <p
             style={{

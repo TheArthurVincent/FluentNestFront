@@ -83,6 +83,7 @@ export function MyHomePage({
     <div
       style={{
         margin: !isDesktop ? "16px" : "0px",
+        marginRight: "16px",
       }}
     >
       {isDesktop && (
@@ -203,7 +204,7 @@ export function MyHomePage({
           display: "flex",
           flexWrap: "wrap",
           alignItems: "start",
-          justifyItems: "center",
+          justifyContent: "center",
           marginTop: "32px",
         }}
       >
@@ -283,8 +284,9 @@ export function MyHomePage({
                 display: "grid",
                 backgroundColor: "white",
                 borderRadius: "16px",
-                width: 360,
-                alignItems: "start",
+                flex: 1, // ⬅️ AGORA ELE ESTICA
+                minWidth: "320px", // ⬅️ PARA RESPONSIVIDADE
+                maxWidth: "600px", // ⬅️ PREENCHER MAS SEM FICAR ENOsRME
                 border: "1px solid #E3E8F0",
                 padding: "20px",
               }}
