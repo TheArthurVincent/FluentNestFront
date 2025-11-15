@@ -192,8 +192,6 @@ export const NextClass: FC<NextClassProps> = ({
 
       <a
         href={NXTCLASS ? NXTCLASS.link : "/my-calendar"}
-        target="_blank"
-        rel="noreferrer"
         style={{
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 700,
