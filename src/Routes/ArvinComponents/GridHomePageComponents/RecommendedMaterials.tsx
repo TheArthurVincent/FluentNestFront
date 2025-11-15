@@ -2,7 +2,12 @@ import React, { FC, useEffect } from "react";
 import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
-import { BooksIcon, ChartBarIcon, FileTextIcon, PresentationIcon } from "@phosphor-icons/react";
+import {
+  BooksIcon,
+  ChartBarIcon,
+  FileTextIcon,
+  PresentationIcon,
+} from "@phosphor-icons/react";
 interface RecommendedMaterialsProps {
   appLoaded?: boolean;
   actualHeaders?: any;
@@ -14,30 +19,6 @@ export const RecommendedMaterials: FC<RecommendedMaterialsProps> = ({
   actualHeaders,
   isDesktop,
 }) => {
-  const fetchLastClassId = async (classid: string) => {
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/lesson/${classid}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-
-      console.log("Fetched lesson:", response.data);
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    const { lastClassId } = JSON.parse(
-      localStorage.getItem("loggedIn") || '""'
-    );
-    if (lastClassId) {
-      console.log("loaded", lastClassId);
-      fetchLastClassId(lastClassId);
-    }
-    console.log("RecommendedMaterials component loaded", lastClassId);
-  }, []);
-
   return (
     <>
       <span

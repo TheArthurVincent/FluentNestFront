@@ -14,30 +14,6 @@ export const WeeklyProgress: FC<WeeklyProgressProps> = ({
   actualHeaders,
   isDesktop,
 }) => {
-  const fetchLastClassId = async (classid: string) => {
-    try {
-      const response = await axios.get(
-        `${backDomain}/api/v1/lesson/${classid}`,
-        {
-          headers: actualHeaders,
-        }
-      );
-
-      console.log("Fetched lesson:", response.data);
-    } catch (error) {}
-  };
-
-  useEffect(() => {
-    const { lastClassId } = JSON.parse(
-      localStorage.getItem("loggedIn") || '""'
-    );
-    if (lastClassId) {
-      console.log("loaded", lastClassId);
-      fetchLastClassId(lastClassId);
-    }
-    console.log("WeeklyProgress component loaded", lastClassId);
-  }, []);
-
   return (
     <>
       <span

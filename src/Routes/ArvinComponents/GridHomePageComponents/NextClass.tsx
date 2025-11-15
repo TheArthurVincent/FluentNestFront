@@ -1,42 +1,88 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
-import { backDomain } from "../../../Resources/UniversalComponents";
+import {
+  backDomain,
+  formatDate,
+  formatDateBr,
+} from "../../../Resources/UniversalComponents";
 import { PresentationIcon } from "@phosphor-icons/react";
+import { ChevronRight } from "@mui/icons-material";
+
 interface NextClassProps {
   appLoaded?: boolean;
   actualHeaders?: any;
   isDesktop?: boolean;
+  studentId?: string;
 }
 
 export const NextClass: FC<NextClassProps> = ({
   appLoaded,
   actualHeaders,
   isDesktop,
+  studentId,
 }) => {
-  const fetchLastClassId = async (classid: string) => {
+  const [NXTCLASS, setNXTCLASS] = useState<any>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [now, setNow] = useState<Date>(new Date());
+  const [thePermissions, setPermissions] = useState<any>("");
+  const [teacher, setTeacher] = useState<any>("");
+  const [student, setStudent] = useState<any>("");
+  const fetchLastClassId = async () => {
+    if (!studentId) return;
+    setLoading(true);
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/lesson/${classid}`,
+        `${backDomain}/api/v1/next-event/${studentId}`,
         {
           headers: actualHeaders,
         }
       );
-
-      console.log("Fetched lesson:", response.data);
-    } catch (error) {}
+      setNXTCLASS(response.data.nextEvent);
+      setTeacher(response.data.teacherName);
+      setStudent(response.data.nextEvent.student);
+      setPermissions(response.data.permissions);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
+  // Atualiza "now" periodicamente para o "ao vivo" funcionar em tempo real
   useEffect(() => {
-    const { lastClassId } = JSON.parse(
-      localStorage.getItem("loggedIn") || '""'
-    );
-    if (lastClassId) {
-      console.log("loaded", lastClassId);
-      fetchLastClassId(lastClassId);
-    }
-    console.log("NextClass component loaded", lastClassId);
+    fetchLastClassId();
+  }, [studentId]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNow(new Date());
+    }, 30_000); // a cada 30s
+    return () => clearInterval(interval);
   }, []);
+
+  const formatTime = (date: Date) => {
+    const h = String(date.getHours()).padStart(2, "0");
+    const m = String(date.getMinutes()).padStart(2, "0");
+    return `${h}:${m}`;
+  };
+
+  // Cálculos de horário e "ao vivo"
+  let isLive = false;
+  let endTimeStr = "";
+  let durationLabel = "";
+
+  if (NXTCLASS && NXTCLASS.date && NXTCLASS.time && NXTCLASS.duration != null) {
+    const [year, month, day] = NXTCLASS.date.split("-").map(Number);
+    const [hour, minute] = NXTCLASS.time.split(":").map(Number);
+
+    const start = new Date(year, month - 1, day, hour, minute);
+    const end = new Date(start.getTime() + NXTCLASS.duration * 60_000);
+
+    endTimeStr = formatTime(end);
+    durationLabel = `${NXTCLASS.duration} min`;
+
+    isLive = now >= start && now <= end;
+  }
 
   return (
     <>
@@ -62,21 +108,112 @@ export const NextClass: FC<NextClassProps> = ({
           <PresentationIcon size={20} color={"#030303"} weight="bold" />
           <span>Próxima aula</span>
         </span>
-        <span
-          style={{
-            borderRadius: "16px",
-            fontSize: "12px",
-            backgroundColor: partnerColor(),
-            color: "white",
-            fontWeight: "500",
-            padding: "8px 12px",
-          }}
-        >
-          <i className="fa fa-circle" style={{ marginRight: "6px" }} />
-          Ao vivo
-        </span>
+
+        {isLive && (
+          <span
+            style={{
+              borderRadius: "16px",
+              fontSize: "12px",
+              backgroundColor: partnerColor(),
+              color: "white",
+              fontWeight: "500",
+              padding: "8px 12px",
+            }}
+          >
+            <i className="fa fa-circle" style={{ marginRight: "6px" }} />
+            Ao vivo
+          </span>
+        )}
       </span>
-      <div></div>
+
+      <div
+        style={{
+          marginTop: "20px",
+          borderLeft: `4px solid ${partnerColor()}`,
+          padding: "0px 12px",
+        }}
+      >
+        {loading || NXTCLASS === "" ? (
+          <span
+            style={{
+              fontFamily: "Plus Jakarta Sans",
+              fontWeight: 700,
+              fontStyle: "Bold",
+              fontSize: "16px",
+              lineHeight: "100%",
+              color: "#030303",
+              letterSpacing: "0%",
+            }}
+          >
+            Verificar no Calendário
+          </span>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gap: "4px",
+            }}
+          >
+            <span
+              style={{
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 700,
+                fontStyle: "Bold",
+                fontSize: "16px",
+                lineHeight: "100%",
+                color: "#030303",
+                letterSpacing: "0%",
+              }}
+            >
+              {thePermissions == "teacher" || thePermissions == "superadmin"
+                ? `Aula com ${student}`
+                : `Aula com ${teacher}`}
+            </span>
+
+            {/* Horário inicial - horário final (duração em min) */}
+            <span
+              style={{
+                marginTop: "4px",
+                fontSize: "14px",
+                color: "#606060",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 500,
+                letterSpacing: "0%",
+              }}
+            >
+              {formatDateBr(NXTCLASS.date)}
+              <br />
+              {NXTCLASS.time}
+              {endTimeStr && ` - ${endTimeStr}`}
+            </span>
+          </div>
+        )}
+      </div>
+
+      <a
+        href={NXTCLASS ? NXTCLASS.link : "/my-calendar"}
+        target="_blank"
+        rel="noreferrer"
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 700,
+          fontStyle: "Bold",
+          marginTop: "20px",
+          fontSize: "12px",
+          lineHeight: "100%",
+          textTransform: "uppercase",
+          letterSpacing: "0%",
+          cursor: "pointer",
+          textDecoration: "none",
+          display: "flex",
+          color: partnerColor(),
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        {loading ? "Acessar calendário" : "Acessar aula"}{" "}
+        <i className="fa fa-chevron-right" />
+      </a>
     </>
   );
 };

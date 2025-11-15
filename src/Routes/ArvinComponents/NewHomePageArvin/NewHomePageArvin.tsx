@@ -219,6 +219,7 @@ export function MyHomePage({
           {
             component: (
               <NextClass
+                studentId={id}
                 isDesktop={isDesktop}
                 actualHeaders={actualHeaders}
                 appLoaded={true}

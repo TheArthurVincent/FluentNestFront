@@ -4,8 +4,11 @@ import "./Styles/styles.css";
 import App from "./App";
 import { initializeOneSignal } from "./services/oneSignalConfig";
 
-ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-// ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
 
 if (typeof window !== "undefined") {
   window.addEventListener("load", () => {
