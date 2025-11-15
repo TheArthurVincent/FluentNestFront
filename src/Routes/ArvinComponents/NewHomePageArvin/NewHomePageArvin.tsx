@@ -285,7 +285,7 @@ export function MyHomePage({
                 flex: 1,
                 minWidth: "320px",
                 alignItems: "start",
-                height: "130px",
+                height: "fit-content",
                 border: "1px solid #E3E8F0",
                 padding: "20px",
               }}
