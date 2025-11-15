@@ -259,6 +259,7 @@ export function MyHomePage({
           {
             component: (
               <RecommendedMaterials
+                studentId={id}
                 isDesktop={isDesktop}
                 actualHeaders={actualHeaders}
                 appLoaded={true}

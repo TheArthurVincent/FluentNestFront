@@ -1,5 +1,7 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useMemo } from "react";
 import { BooksIcon } from "@phosphor-icons/react";
+import { backDomain } from "../../../Resources/UniversalComponents";
+import axios from "axios";
 
 const tipsLesson = [
   "Faça 10 frases na sessão 'Dictation' de sua última aula.",
@@ -32,14 +34,30 @@ interface RecommendedMaterialsProps {
   appLoaded?: boolean;
   actualHeaders?: any;
   isDesktop?: boolean;
+  studentId?: string;
 }
 
 export const RecommendedMaterials: FC<RecommendedMaterialsProps> = ({
   appLoaded,
   actualHeaders,
   isDesktop,
+  studentId,
 }) => {
-  // 0 = Domingo, 1 = Segunda, etc
+  const seeLessons = async () => {
+    try {
+      // const response = await axios.get(`${backDomain}/api/v1/score/${studentId}`, {
+      //   headers: actualHeaders ? { ...actualHeaders } : {},
+      // });
+      console.log("response.data");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    seeLessons();
+  }, [appLoaded, actualHeaders]);
+
   const today = new Date().getDay();
 
   const selectedTips = useMemo(() => {
