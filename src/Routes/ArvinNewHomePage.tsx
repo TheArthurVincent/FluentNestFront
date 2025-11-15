@@ -65,6 +65,7 @@ export const useIsDesktop = (breakpoint = 700) => {
 };
 
 export function ArvinNewHomePage({ headers }: HeadersProps) {
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // <- NOVO
   var [loading, setLoading] = useState<boolean>(true);
   var [thePermissions, setPermissions] = useState<string>("");
   var [admin, setAdmin] = useState<boolean>(false);
@@ -324,7 +325,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "English Courses",
-      showLeftBar: false,
+      showLeftBar: true,
       component: (
         <EnglishCourses
           setChange={setChange}
@@ -336,7 +337,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     },
     {
       title: "Teaching Materials",
-      showLeftBar: false,
+      showLeftBar: true,
       component: (
         <EnglishCourses
           isDesktop={isDesktop}
@@ -395,7 +396,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       title: "Posts",
       showLeftBar: true,
-
       component: (
         <RouteDiv>
           <BlogPosts headers={headers} />
@@ -441,11 +441,13 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         flexDirection: isDesktop ? "row" : "column",
         justifyContent: isDesktop ? "space-between" : "flex-start",
         height: "100vh",
-        width: isDesktop ? "99vw" : "100vw",
+        width: "100%", // em vez de "99vw"
       }}
     >
       <Routes>
         {appRoutes.map((component, index) => {
+          const showLeftBar = component.showLeftBar !== false;
+
           return (
             <Route
               key={index}
@@ -455,17 +457,38 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
               element={
                 verifyToken() ? (
                   <>
-                    {component.showLeftBar !== false && (
-                      <ArvinTopBar
-                        showLeftBar={component.showLeftBar || false}
-                        isDesktop={isDesktop}
-                        admin={admin || teacher}
-                        appLoaded={appLoaded}
-                      />
+                    {showLeftBar && (
+                      <div
+                        style={{
+                          // padding: "16px 20px 16px 16px",
+                          margin: isDesktop ? "16px" : "0px",
+                          zIndex: 10,
+                        }}
+                      >
+                        <ArvinTopBar
+                          showLeftBar={showLeftBar}
+                          isDesktop={isDesktop}
+                          admin={admin || teacher}
+                          appLoaded={appLoaded}
+                          collapsed={sidebarCollapsed} // <- NOVO
+                          onToggleCollapsed={
+                            () => setSidebarCollapsed((prev) => !prev) // <- NOVO
+                          }
+                        />
+                      </div>
                     )}
+
                     <div
                       style={{
                         width: "100%",
+                        // aqui o truque: conteúdo “reage” à largura do sidebar fixo
+                        marginLeft:
+                          isDesktop && showLeftBar
+                            ? sidebarCollapsed
+                              ? 88 // 72 do aside + um respiro
+                              : 280 // 260 do aside + um respiro
+                            : 0,
+                        transition: "margin-left 0.2s ease-in-out",
                         transform: isDesktop
                           ? "translateY(0)"
                           : "translateY(-70px)",
@@ -485,6 +508,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
           );
         })}
       </Routes>
+
       {/* {(thePermissions == "superadmin" || thePermissions == "teacher") && (
             <Tokens id={_StudentId} headers={headers} change={change} />
           )} */}
