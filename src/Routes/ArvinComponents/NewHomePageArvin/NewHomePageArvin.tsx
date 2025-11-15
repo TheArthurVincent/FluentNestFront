@@ -196,11 +196,7 @@ export function MyHomePage({
           </section>
         </div>
       )}
-      <Continue
-        isDesktop={isDesktop}
-        actualHeaders={actualHeaders}
-        appLoaded={true}
-      />
+      <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
       <div
         style={{
           gap: "16px",
@@ -223,13 +219,7 @@ export function MyHomePage({
             ),
           },
           {
-            component: (
-              <FlashcardsReview
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
+            component: <FlashcardsReview actualHeaders={actualHeaders} />,
           },
           {
             component: (

@@ -2,24 +2,22 @@ import React, { FC, useEffect } from "react";
 import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
+import { PlayIcon } from "@phosphor-icons/react";
+
 interface ContinueProps {
-  appLoaded?: boolean;
   actualHeaders?: any;
   isDesktop?: boolean;
 }
 
-export const Continue: FC<ContinueProps> = ({
-  appLoaded,
-  actualHeaders,
-  isDesktop,
-}) => {
-  const [course, setCourse] = React.useState("");
-  const [lesson, setLesson] = React.useState("");
+export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
+  const [courseTitle, setCourseTitle] = React.useState("");
+  const [courseId, setCourseId] = React.useState("");
+  const [classId, setClassId] = React.useState<string>("");
   const [img, setImg] = React.useState(
     "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512"
   );
   const [loadingLESSON, setLoadingLESSON] = React.useState(false);
-  const [no, setNo] = React.useState(true);
+  const [hasData, setHasData] = React.useState(false);
 
   const fetchLastClassId = async (classid: string) => {
     setLoadingLESSON(true);
@@ -31,31 +29,49 @@ export const Continue: FC<ContinueProps> = ({
         }
       );
 
-      var cour = response.data.course.title;
-      var less = response.data.classDetails.title;
-      var imgg = response.data.classDetails.image
-        ? response.data.classDetails.image
-        : "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512";
-      setCourse(cour);
-      setLesson(less);
-      setImg(imgg);
+      console.log("Last class data:", response.data);
+
+      const courseTitleResp = response.data?.classDetails?.title || "";
+      const courseResp = response.data?.classDetails?.courseId || "";
+      const theImg =
+        response.data?.classDetails?.image ||
+        "https://ik.imagekit.io/vjz75qw96/assets/icons/mustshould.png?updatedAt=1748264443512";
+
+      setImg(theImg);
+      setCourseTitle(courseTitleResp);
+      setCourseId(courseResp);
+      setClassId(classid);
+
+      setHasData(true);
       setLoadingLESSON(false);
     } catch (error) {
-      setNo(false);
+      console.error("Erro ao buscar última aula:", error);
+      setHasData(false);
       setLoadingLESSON(false);
     }
   };
 
   useEffect(() => {
-    const { lastClassId } = JSON.parse(
-      localStorage.getItem("loggedIn") || '""'
-    );
-    if (lastClassId) {
-      console.log("loaded", lastClassId);
-      fetchLastClassId(lastClassId);
+    try {
+      const stored = localStorage.getItem("loggedIn");
+      if (!stored) return;
+
+      const parsed = JSON.parse(stored);
+      const lastClassId = parsed?.lastClassId;
+
+      if (lastClassId) {
+        console.log("loaded lastClassId:", lastClassId);
+        fetchLastClassId(lastClassId);
+      }
+    } catch (err) {
+      console.error("Erro ao ler lastClassId do localStorage:", err);
     }
-    console.log("Continue component loaded", lastClassId);
   }, []);
+
+  const href =
+    hasData && courseId && classId
+      ? `/teaching-materials/${courseId}/${classId}`
+      : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b";
 
   return (
     <div
@@ -93,14 +109,14 @@ export const Continue: FC<ContinueProps> = ({
         >
           PLANO DO DIA
         </p>
+
         <div>
           <p
             style={{
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 700,
               fontStyle: "Bold",
-              fontSize: 28,
-              lineHeight: "100%",
+              fontSize: isDesktop ? 28 : 20,
               letterSpacing: "0%",
               color: "#030303",
             }}
@@ -119,52 +135,95 @@ export const Continue: FC<ContinueProps> = ({
               color: "#65748C",
             }}
           >
-            Retome sua última aula e mantenha o foco na meta de hoje.
+            Retome sua última aula.
           </p>
-          <a
-            href=""
-            style={{
-              textDecoration: "none",
-              padding: "16px 11px",
-              borderRadius: "8px",
-              border: `1px solid ${partnerColor()}45`,
-              marginTop: 16,
-              display: "flex",
-              cursor: "pointer",
-              width: "fit-content",
-              backgroundColor: `${partnerColor()}20`,
-            }}
-          >
-            <span
+
+          {loadingLESSON ? (
+            <p
               style={{
                 fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontStyle: "SemiBold",
-                fontSize: 14,
-                lineHeight: "100%",
-                letterSpacing: "0%",
-                color: "#030303",
+                fontSize: 12,
+                color: "#65748C",
+                marginTop: 12,
               }}
             >
-              Última aula acessada
-            </span>
-          </a>
+              Carregando última aula...
+            </p>
+          ) : (
+            <>
+              {hasData && (
+                <div
+                  style={{
+                    marginTop: 12,
+                    marginBottom: 8,
+                    fontFamily: "Plus Jakarta Sans",
+                    fontSize: 13,
+                    color: "#4B5563",
+                  }}
+                >
+                  {courseTitle && <div>Aula: {courseTitle}</div>}
+                </div>
+              )}
+
+              <a
+                href={href}
+                style={{
+                  textDecoration: "none",
+                  padding: "16px 11px",
+                  borderRadius: "8px",
+                  border: `1px solid ${partnerColor()}45`,
+                  marginTop: 16,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "8px",
+                  textAlign: isDesktop ? "center" : "left",
+                  cursor: "pointer",
+                  width: isDesktop ? "fit-content" : "100%",
+                  backgroundColor: `${partnerColor()}30`,
+                }}
+              >
+                <PlayIcon color="#030303" weight="bold" size={16} />
+                <span
+                  style={{
+                    fontFamily: "Plus Jakarta Sans",
+                    fontWeight: 600,
+                    fontStyle: "SemiBold",
+                    fontSize: 14,
+                    lineHeight: "100%",
+                    letterSpacing: "0%",
+                    color: "#030303",
+                    display: "flex",
+                  }}
+                >
+                  Última aula acessada
+                </span>
+              </a>
+            </>
+          )}
         </div>
       </div>
-      <img
-        src={img}
-        alt={`Imagem da aula ${lesson}`}
-        style={{
-          borderRadius: "8px",
-          maxWidth: "150px",
-          width: "100%",
-          objectFit: "cover",
-          WebkitMaskImage:
-            "linear-gradient(to left, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
-          maskImage:
-            "linear-gradient(to left, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
-        }}
-      />
+
+      {isDesktop && (
+        <img
+          src={img}
+          alt={
+            courseTitle
+              ? `Imagem da aula ${courseTitle}`
+              : "Imagem da última aula"
+          }
+          style={{
+            borderRadius: "8px",
+            maxWidth: "150px",
+            width: "100%",
+            objectFit: "cover",
+            WebkitMaskImage:
+              "linear-gradient(to left, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+            maskImage:
+              "linear-gradient(to left, rgba(0,0,0,1) 10%, rgba(0,0,0,0) 100%)",
+          }}
+        />
+      )}
     </div>
   );
 };
