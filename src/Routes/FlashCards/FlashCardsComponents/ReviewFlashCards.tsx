@@ -107,7 +107,6 @@ const ReviewFlashCards = ({
         );
         setCards(response.data.dueFlashcards);
         setFlashcardsToday(response.data.flashcardsToday);
-
         localStorage.setItem(
           "flashcardsToday",
           JSON.stringify(response.data.flashcardsToday)

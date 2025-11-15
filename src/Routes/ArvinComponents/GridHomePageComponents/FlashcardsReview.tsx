@@ -20,16 +20,17 @@ export const FlashcardsReview: FC<FlashcardsReviewProps> = ({
   const [seeConf, setSeeConf] = useState<boolean>(false);
 
   const seeCardsToReview = async () => {
-    const selectedStudent = localStorage.getItem("flashcardsToday");
-    setFlashcardsToday(selectedStudent || 0);
+    const flashcardsTODAY = localStorage.getItem("flashcardsToday");
+    console.log("flashcardsTODAY", flashcardsTODAY);
+    setFlashcardsToday(flashcardsTODAY);
   };
 
   useEffect(() => {
-    seeCardsToReview();
     setTimeout(() => {
+      seeCardsToReview();
       setSeeConf(seeConf);
     }, 1000);
-  }, []);
+  }, [flashcardsToday]);
 
   return (
     <>

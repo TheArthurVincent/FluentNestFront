@@ -57,12 +57,12 @@ export function LoginComponent() {
       "loggedIn",
       "selectedStudentID",
       "authorization",
-      "whiteLabel",
       "notifications",
       "voiceGender",
       "voiceLang",
       "voiceOption",
       "flashcardsToday",
+      "lastFlashcardReviewed",
     ];
     keysToDrop.forEach((key) => localStorage.removeItem(key));
   }, []);

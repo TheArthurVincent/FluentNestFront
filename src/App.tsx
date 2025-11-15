@@ -121,7 +121,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -132,7 +131,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -143,7 +141,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -153,7 +150,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -164,7 +160,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -174,7 +169,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 
@@ -185,7 +179,6 @@ export var verifyToken = () => {
       localStorage.removeItem("authorization");
       localStorage.removeItem("loggedIn");
       localStorage.removeItem("studentData");
-      localStorage.removeItem("whiteLabel");
       return false;
     }
 

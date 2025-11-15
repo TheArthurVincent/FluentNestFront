@@ -36,10 +36,19 @@ export const NextClass: FC<NextClassProps> = ({
           headers: actualHeaders,
         }
       );
-      setNXTCLASS(response.data.nextEvent);
-      setTeacher(response.data.teacherName);
-      setStudent(response.data.nextEvent.student);
-      setPermissions(response.data.permissions);
+      if (response.data.nextEvent) {
+        setNXTCLASS(response.data.nextEvent);
+      }
+
+      if (response.data.teacherName) {
+        setTeacher(response.data.teacherName);
+      }
+      if (response.data.nextEvent && response.data.nextEvent.student) {
+        setStudent(response.data.nextEvent.student);
+      }
+      if (response.data.permissions) {
+        setPermissions(response.data.permissions);
+      }
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -67,7 +76,6 @@ export const NextClass: FC<NextClassProps> = ({
   // Cálculos de horário e "ao vivo"
   let isLive = false;
   let endTimeStr = "";
-  let durationLabel = "";
 
   if (NXTCLASS && NXTCLASS.date && NXTCLASS.time && NXTCLASS.duration != null) {
     const [year, month, day] = NXTCLASS.date.split("-").map(Number);
@@ -77,8 +85,6 @@ export const NextClass: FC<NextClassProps> = ({
     const end = new Date(start.getTime() + NXTCLASS.duration * 60_000);
 
     endTimeStr = formatTime(end);
-    durationLabel = `${NXTCLASS.duration} min`;
-
     isLive = now >= start && now <= end;
   }
 
@@ -203,7 +209,7 @@ export const NextClass: FC<NextClassProps> = ({
           gap: "8px",
         }}
       >
-        {loading ? "Acessar calendário" : "Acessar aula"}{" "}
+        {loading || !NXTCLASS ? "Acessar calendário" : "Acessar aula"}{" "}
         <i className="fa fa-chevron-right" />
       </a>
     </>
