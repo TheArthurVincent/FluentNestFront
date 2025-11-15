@@ -3,11 +3,9 @@ import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
 import {
   backDomain,
-  formatDate,
   formatDateBr,
 } from "../../../Resources/UniversalComponents";
 import { PresentationIcon } from "@phosphor-icons/react";
-import { ChevronRight } from "@mui/icons-material";
 
 interface NextClassProps {
   appLoaded?: boolean;
@@ -108,7 +106,6 @@ export const NextClass: FC<NextClassProps> = ({
           <PresentationIcon size={20} color={"#030303"} weight="bold" />
           <span>Próxima aula</span>
         </span>
-
         {isLive && (
           <span
             style={{
@@ -125,7 +122,6 @@ export const NextClass: FC<NextClassProps> = ({
           </span>
         )}
       </span>
-
       <div
         style={{
           marginTop: "20px",
@@ -169,7 +165,6 @@ export const NextClass: FC<NextClassProps> = ({
                 ? `Aula com ${student}`
                 : `Aula com ${teacher}`}
             </span>
-
             {/* Horário inicial - horário final (duração em min) */}
             <span
               style={{
@@ -189,7 +184,6 @@ export const NextClass: FC<NextClassProps> = ({
           </div>
         )}
       </div>
-
       <a
         href={NXTCLASS ? NXTCLASS.link : "/my-calendar"}
         style={{
