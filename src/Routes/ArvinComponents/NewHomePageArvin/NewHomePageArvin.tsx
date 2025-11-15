@@ -65,8 +65,6 @@ export function MyHomePage({
         response.data.flashcards25Reviews,
         response.data.homeworkAssignmentsDone
       );
-      console.log("Using headers:", response.data);
-
       const levelDone = newValue.level;
       setLevel(levelDone - 1);
     } catch (error) {
@@ -78,8 +76,6 @@ export function MyHomePage({
     const user = JSON.parse(localStorage.getItem("loggedIn") || "");
     const id = user.id;
     setId(id);
-    console.log("Fetching score for user ID:", id);
-    console.log("Using headers:", headers);
     seeScore(id);
   }, [change]);
 

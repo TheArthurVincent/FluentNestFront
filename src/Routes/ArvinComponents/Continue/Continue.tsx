@@ -39,7 +39,6 @@ export const Continue: FC<ContinueProps> = ({
       setCourse(cour);
       setLesson(less);
       setImg(imgg);
-      console.log("Fetched lesson:", response.data);
       setLoadingLESSON(false);
     } catch (error) {
       setNo(false);

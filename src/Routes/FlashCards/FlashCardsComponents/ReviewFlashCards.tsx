@@ -100,6 +100,7 @@ const ReviewFlashCards = ({
           );
         }, 200);
       }
+      console.log("response.data.dueFlashcards", response.data.dueFlashcards);
       if (response.data.dueFlashcards.length > 0) {
         localStorage.setItem(
           "lastFlashcardReviewed",

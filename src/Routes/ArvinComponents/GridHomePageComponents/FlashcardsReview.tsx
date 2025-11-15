@@ -20,9 +20,27 @@ export const FlashcardsReview: FC<FlashcardsReviewProps> = ({
   const [seeConf, setSeeConf] = useState<boolean>(false);
 
   const seeCardsToReview = async () => {
-    const flashcardsTODAY = localStorage.getItem("flashcardsToday");
-    console.log("flashcardsTODAY", flashcardsTODAY);
-    setFlashcardsToday(flashcardsTODAY);
+    const student = JSON.parse(localStorage.getItem("loggedIn") || "0");
+    var selectedStudentId;
+
+    if (student.id) {
+      selectedStudentId = student.id;
+      updateInfo(selectedStudentId, actualHeaders);
+    }
+
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/flashcards/${selectedStudentId}`,
+        {
+          headers: actualHeaders,
+          params: { category: null, lang: "en" },
+        }
+      );
+
+      setFlashcardsToday(response.data.flashcardsToday);
+    } catch (error) {
+      notifyAlert("Erro ao enviar cards");
+    }
   };
 
   useEffect(() => {
