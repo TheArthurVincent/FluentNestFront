@@ -6,11 +6,13 @@ import { partnerColor } from "../../Styles/Styles";
 interface ProgressCounterProps {
   flashcardsToday: number;
   see?: boolean;
+  nSeeM?: boolean;
 }
 
 export const ProgressCounter: React.FC<ProgressCounterProps> = ({
   flashcardsToday,
   see,
+  nSeeM,
 }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -36,7 +38,9 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
           borderRadius: "4px",
           transition: "background-color 0.2s",
         }}
-        onClick={() => setShowModal(true)}
+        onClick={() =>
+          nSeeM ? window.location.assign("/flash-cards") : setShowModal(true)
+        }
         onMouseEnter={(e) =>
           (e.currentTarget.style.backgroundColor = "#f5f5f5")
         }
