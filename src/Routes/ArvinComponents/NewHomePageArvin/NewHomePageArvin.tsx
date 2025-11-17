@@ -31,6 +31,7 @@ export var newArvinTitleStyle = {
   fontSize: 24,
   letterSpacing: "0%",
 };
+
 export function MyHomePage({
   headers,
   change,
@@ -39,7 +40,9 @@ export function MyHomePage({
   actualHeaders,
 }: MyHomePageProps) {
   const [monthlyScore, setMonthlyScore] = useState(0);
-  const [totalScore, setTotalScore] = useState(0);
+  const [PERMISSIONS, setPERMISSIONS] = useState<
+    "student" | "teacher" | "superadmin" | ""
+  >("");
   const [studentPicture, setStudentPicture] = useState("");
   const [id, setId] = useState<string>("");
 
@@ -52,11 +55,16 @@ export function MyHomePage({
       console.log(e);
     }
 
+    // Pega permissões do localStorage
+    const { permissions } = JSON.parse(
+      localStorage.getItem("loggedIn") || "{}"
+    );
+    setPERMISSIONS(permissions || "");
+
     try {
       const response = await axios.get(`${backDomain}/api/v1/score/${id}`, {
         headers: headers ? { ...headers } : {},
       });
-      setTotalScore(response.data.totalScore);
       setMonthlyScore(response.data.monthlyScore);
       setStudentPicture(response.data.picture);
       var newValue = updateScore(
@@ -72,11 +80,102 @@ export function MyHomePage({
   };
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedIn") || "");
+    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     const id = user.id;
     setId(id);
     seeScore(id);
   }, [change]);
+
+  // ====== LÓGICA DE PERMISSÕES ======
+  const cards = [
+    {
+      showToStudent: true,
+      showToTeacher: true,
+      component: <NextClass studentId={id} actualHeaders={actualHeaders} />,
+    },
+    {
+      showToStudent: true,
+      showToTeacher: false,
+      component: <FlashcardsReview actualHeaders={actualHeaders} />,
+    },
+    {
+      showToStudent: true,
+      showToTeacher: false,
+      component: (
+        <PracticalTipsTarget
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+          appLoaded={true}
+        />
+      ),
+    },
+    {
+      showToTeacher: false,
+      showToStudent: true,
+      component: (
+        <HomeworkCard
+          isDesktop={isDesktop}
+          studentId={id}
+          actualHeaders={actualHeaders}
+          appLoaded={true}
+        />
+      ),
+    },
+    {
+      showToStudent: false,
+      showToTeacher: true,
+      component: (
+        <CalendarCard
+          studentId={id}
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+        />
+      ),
+    },
+    {
+      showToStudent: true,
+      showToTeacher: false,
+      component: (
+        <WeeklyProgress
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+          appLoaded={true}
+        />
+      ),
+    },
+    {
+      showToStudent: true,
+      showToTeacher: false,
+      component: (
+        <RecommendedMaterials
+          studentId={id}
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+          appLoaded={true}
+        />
+      ),
+    },
+    {
+      showToTeacher: true,
+      showToStudent: true,
+      component: (
+        <RankingCard
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+          appLoaded={true}
+        />
+      ),
+    },
+  ];
+
+  const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
+    // Teacher e superadmin usam showToTeacher
+    if (PERMISSIONS === "teacher" || PERMISSIONS === "superadmin") {
+      return item.showToTeacher;
+    }
+    // Qualquer outro caso (student / vazio) usa showToStudent
+    return item.showToStudent;
+  };
 
   return (
     <div
@@ -195,7 +294,9 @@ export function MyHomePage({
           </section>
         </div>
       )}
+
       <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
+
       <div
         style={{
           gap: "16px",
@@ -206,72 +307,9 @@ export function MyHomePage({
           marginTop: "32px",
         }}
       >
-        {[
-          {
-            component: (
-              <NextClass studentId={id} actualHeaders={actualHeaders} />
-            ),
-          },
-          {
-            component: <FlashcardsReview actualHeaders={actualHeaders} />,
-          },
-          {
-            component: (
-              <PracticalTipsTarget
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
-          },
-          {
-            component: (
-              <HomeworkCard
-                isDesktop={isDesktop}
-                studentId={id}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
-          },
-          {
-            component: (
-              <CalendarCard
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
-          },
-          {
-            component: (
-              <WeeklyProgress
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
-          },
-          {
-            component: (
-              <RecommendedMaterials
-                studentId={id}
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
-          },
-          {
-            component: (
-              <RankingCard
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
-            ),
-          },
-        ].map((item, index) => {
+        {cards.map((item, index) => {
+          if (!canSee(item)) return null; // não renderiza nada se não tiver permissão
+
           return (
             <div
               key={index}
