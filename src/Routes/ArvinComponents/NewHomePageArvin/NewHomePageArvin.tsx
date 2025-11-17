@@ -189,7 +189,7 @@ export function MyHomePage({
                   studentPicture ||
                   "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
                 }
-                alt=""
+                alt={studentPicture}
               />{" "}
             </span>
           </section>
@@ -209,12 +209,7 @@ export function MyHomePage({
         {[
           {
             component: (
-              <NextClass
-                studentId={id}
-                isDesktop={isDesktop}
-                actualHeaders={actualHeaders}
-                appLoaded={true}
-              />
+              <NextClass studentId={id} actualHeaders={actualHeaders} />
             ),
           },
           {

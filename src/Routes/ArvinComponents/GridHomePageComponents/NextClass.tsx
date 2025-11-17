@@ -8,18 +8,11 @@ import {
 import { PresentationIcon } from "@phosphor-icons/react";
 
 interface NextClassProps {
-  appLoaded?: boolean;
   actualHeaders?: any;
-  isDesktop?: boolean;
   studentId?: string;
 }
 
-export const NextClass: FC<NextClassProps> = ({
-  appLoaded,
-  actualHeaders,
-  isDesktop,
-  studentId,
-}) => {
+export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
   const [NXTCLASS, setNXTCLASS] = useState<any>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [now, setNow] = useState<Date>(new Date());
@@ -49,6 +42,7 @@ export const NextClass: FC<NextClassProps> = ({
       if (response.data.permissions) {
         setPermissions(response.data.permissions);
       }
+      console.log("NEXT CLASS DATA:", response.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
