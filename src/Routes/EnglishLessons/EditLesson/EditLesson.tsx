@@ -144,6 +144,7 @@ export default function EditLesson({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+
   const [lesson, setLesson] = useState<ClassDetails | null>(null);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -156,24 +157,25 @@ export default function EditLesson({
   const [newType, setNewType] = useState<NewBlockType>("sentences");
   const [isValid, setIsValid] = useState(true);
 
-  // --- mobile awaren[[[ess (sem libs)
+  // --- Responsividade simples (mobile)
   const [isMobile, setIsMobile] = useState<boolean>(false);
+
   useEffect(() => {
-    console.log("Setting up mobile listener...", studentId);
     if (typeof window === "undefined") return;
-    const mq = window.matchMedia("(max-width: 640px)");
-    const onChange = (e: MediaQueryListEvent | MediaQueryList) => {
-      setIsMobile("matches" in e ? e.matches : (e as MediaQueryList).matches);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
     };
-    onChange(mq);
-    mq.addEventListener?.("change", onChange as any);
-    return () => mq.removeEventListener?.("change", onChange as any);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // ===================== CARREGAR AULA =====================
   const getClass = async () => {
     setSeeEdit?.(true);
     setLoading(true);
     setError(null);
+
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/course/${classId}`,
@@ -181,7 +183,10 @@ export default function EditLesson({
       );
       const data: ClassDetails =
         response?.data?.classDetails || response?.data || response?.data?.data;
-      if (!data) throw new Error("Resposta sem dados de aula (classDetails).");
+
+      if (!data) {
+        throw new Error("Resposta sem dados de aula (classDetails).");
+      }
 
       setLesson(data);
       setTitle(data.title ?? "");
@@ -199,12 +204,14 @@ export default function EditLesson({
     }
   };
 
+  // ===================== SALVAR AULA =====================
   const handleSave = async () => {
     if (!lesson) return;
     if (!isValid) {
       alert("Por favor, corrija os erros nos elementos antes de salvar.");
       return;
     }
+
     setSaving(true);
     setError(null);
 
@@ -224,13 +231,17 @@ export default function EditLesson({
         payload,
         { headers }
       );
+
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
+
       setLesson(updated);
       if (updated?.image) setImage(updated.image);
       setTitle(updated?.title ?? title);
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
       onUpdated?.(updated);
+
+      // mantém teu comportamento atual
       window.location.reload();
     } catch (err: any) {
       console.error(err);
@@ -244,6 +255,7 @@ export default function EditLesson({
     }
   };
 
+  // ===================== IMAGEM PRINCIPAL =====================
   const onPickLessonImage = async (f?: File | null) => {
     if (!f) return;
     try {
@@ -263,37 +275,42 @@ export default function EditLesson({
     }
   };
 
-  // helpers elements
+  // ===================== HELPERS ELEMENTS =====================
   const updateElementAt = (index: number, next: ElementItem) => {
     setElements((prev) => {
-      const clone = prev.slice();
+      const clone = [...prev];
       clone[index] = next;
       return clone;
     });
   };
+
   const removeElementAt = (index: number) => {
     setElements((prev) => {
-      const clone = prev.slice();
+      const clone = [...prev];
       clone.splice(index, 1);
       return clone;
     });
   };
+
   const moveElement = (from: number, to: number) => {
     setElements((prev) => {
       if (to < 0 || to >= prev.length) return prev;
-      const clone = prev.slice();
+      const clone = [...prev];
       const [item] = clone.splice(from, 1);
       clone.splice(to, 0, item);
       return clone;
     });
   };
+
   const moveElementUp = (index: number) => moveElement(index, index - 1);
   const moveElementDown = (index: number) => moveElement(index, index + 1);
 
   // ---------- Adicionar novo bloco ----------
   const getNextOrder = () => (elements?.length ?? 0) + 1;
+
   const makeEmptyBlock = (type: NewBlockType): ElementItem => {
     const base = { subtitle: "", order: getNextOrder() } as any;
+
     switch (type) {
       case "singleimages":
         return { ...base, type: "singleimages", images: [] };
@@ -324,6 +341,7 @@ export default function EditLesson({
         return base as any;
     }
   };
+
   const addBlock = (pos: "start" | "end" = "end") => {
     const block = makeEmptyBlock(newType);
     setElements((prev) =>
@@ -331,144 +349,164 @@ export default function EditLesson({
     );
   };
 
-  // ------- estilos utilitários responsivos -------
+  // ===================== ESTILOS BASE (MOBILE-FIRST) =====================
   const outerWrapStyle: React.CSSProperties = {
-    borderRadius: 12,
-    padding: isMobile ? 10 : 12,
+    width: "100%",
     maxWidth: 1100,
     margin: "0 auto",
+    padding: isMobile ? 12 : 16,
     boxSizing: "border-box",
-    overflowX: "hidden", // rede de segurança
+    borderRadius: 12,
   };
 
-  const oneColGrid: React.CSSProperties = {
-    display: "grid",
-    gap: 12,
-    gridTemplateColumns: "1fr",
+  const sectionCard: React.CSSProperties = {
+    borderRadius: 12,
+    padding: isMobile ? 10 : 14,
+    boxSizing: "border-box",
+    border: "1px solid #e2e8f0",
   };
 
-  const toolbarGrid: React.CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: isMobile ? "1fr" : "minmax(220px, 1fr) auto auto",
-    gap: 8,
-    alignItems: "center",
-    marginBottom: 6,
+  const labelStyle: React.CSSProperties = {
+    fontSize: 12,
+    color: "#334155",
+    marginBottom: 4,
   };
 
-  const fullWidthBtn: React.CSSProperties = {
+  const inputBase: React.CSSProperties = {
+    width: "100%",
+    border: "1px solid #e2e8f0",
+    borderRadius: 8,
+    padding: 8,
+    fontSize: 13,
+    boxSizing: "border-box",
+  };
+
+  const fullWidthButton: React.CSSProperties = {
     borderRadius: 8,
     border: "1px solid #e2e8f0",
-    backgroundColor: "white",
     color: "#0f172a",
-    padding: "8px 10px",
+    padding: "8px 12px",
     cursor: "pointer",
     fontSize: 13,
-    width: isMobile ? "100%" : undefined,
+    width: "100%",
+    boxSizing: "border-box",
   };
 
+  const primaryButton: React.CSSProperties = {
+    ...fullWidthButton,
+    backgroundColor: partnerColor(),
+    color: "white",
+    fontWeight: 600,
+    border: "none",
+  };
+
+  // =====================================================================
+  // RENDER
+  // =====================================================================
   return (
     <>
       {!open && (
         <button
-          onClick={open ? () => setOpen(false) : getClass}
+          onClick={getClass}
           disabled={loading}
           style={{
-            borderRadius: 4,
+            borderRadius: 6,
             border: "1px solid #e2e8f0",
             backgroundColor: "#f8fafc",
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 400,
             color: "#64748b",
-            padding: "4px",
-            height: 28,
+            padding: "6px 10px",
+            height: 32,
             outline: "none",
             cursor: "pointer",
             display: "block",
-            maxWidth: 100,
+            maxWidth: isMobile ? "100%" : 120,
           }}
         >
-          {loading ? "Carregando..." : open ? "Fechar editor" : buttonText}
+          {loading ? "Carregando..." : buttonText || "Editar aula"}
         </button>
       )}
 
       {open && (
         <div aria-label="Editor de aula" style={outerWrapStyle}>
-          <h2
-            style={{ fontSize: "clamp(14px, 2vw, 16px)", textAlign: "center" }}
-          >
-            {buttonText}
-          </h2>
+          {/* TÍTULO / ERRO */}
+          <div style={{ marginBottom: 12 }}>
+            <h2
+              style={{
+                fontSize: "clamp(16px, 3.2vw, 20px)",
+                textAlign: "center",
+                margin: 0,
+                color: "#0f172a",
+              }}
+            >
+              {buttonText || "Editar aula"}
+            </h2>
 
-          {error && (
+            {error && (
+              <div
+                style={{
+                  background: "#fee2e2",
+                  color: "#991b1b",
+                  padding: 8,
+                  borderRadius: 8,
+                  marginTop: 10,
+                  fontSize: 12,
+                }}
+              >
+                {error}
+              </div>
+            )}
+          </div>
+
+          {/* CABEÇALHO E METADADOS */}
+          <div style={{ ...sectionCard, marginBottom: 12 }}>
             <div
               style={{
-                background: "#fee2e2",
-                color: "#991b1b",
-                padding: 8,
-                borderRadius: 8,
-                marginBottom: 12,
-                fontSize: 12,
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                gap: 8,
+                marginBottom: 10,
               }}
             >
-              {error}
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  setSeeEdit?.(false);
+                }}
+                style={{
+                  ...fullWidthButton,
+                  width: isMobile ? "100%" : "auto",
+                  maxWidth: isMobile ? "100%" : 180,
+                }}
+              >
+                Fechar sem salvar
+              </button>
             </div>
-          )}
 
-          {/* Cabeçalho */}
-          <div style={{ ...oneColGrid, marginBottom: 12 }}>
-            <button
-              onClick={() => {
-                setOpen(false);
-                setSeeEdit?.(false);
-              }}
-              style={{
-                borderRadius: 8,
-                marginRight: "auto",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "white",
-                color: "#0f172a",
-                padding: "8px 12px",
-                cursor: "pointer",
-                fontSize: 13,
-                width: "fit-content",
-              }}
-              aria-label="Fechar"
-              title="Fechar"
-            >
-              Fechar sem salvar
-            </button>
             <div
               style={{
                 display: "grid",
-                gap: 12,
-                gridTemplateColumns: isMobile ? "1fr" : "2fr 1fr",
-                alignItems: "center",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "minmax(0, 2fr) minmax(0, 1fr)",
+                gap: 10,
+                marginBottom: 10,
               }}
             >
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Título da aula
-                </label>
+              <div>
+                <div style={labelStyle}>Título da aula</div>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="Ex.: Business Essentials — Vocabulary & Usage"
-                  style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 13,
-                    boxSizing: "border-box",
-                  }}
+                  style={inputBase}
                 />
               </div>
 
-              <div style={{ display: "grid", gap: 6 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Language
-                </label>
+              <div>
+                <div style={labelStyle}>Language</div>
                 <select
                   value={lesson?.language ?? "en"}
                   onChange={(e) =>
@@ -477,14 +515,9 @@ export default function EditLesson({
                     )
                   }
                   style={{
-                    width: "100%",
-                    border: "1px solid #e2e8f0",
-                    borderRadius: 8,
-                    padding: 8,
-                    fontSize: 13,
+                    ...inputBase,
                     background: "white",
-                    color: "#0f172a",
-                    boxSizing: "border-box",
+                    paddingRight: 24,
                   }}
                 >
                   <option value="en">English (en)</option>
@@ -493,36 +526,26 @@ export default function EditLesson({
                 </select>
               </div>
             </div>
+
             <TagsEditor
               value={tags}
               onChange={setTags}
               helperText="Pressione Enter ou vírgula para adicionar. Clique no × para remover."
             />
 
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>
-                Description
-              </label>
+            <div style={{ marginTop: 10 }}>
+              <div style={labelStyle}>Description</div>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
                 placeholder="Descrição da aula"
-                style={{
-                  width: "100%",
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
-                  boxSizing: "border-box",
-                  resize: "vertical",
-                }}
+                style={{ ...inputBase, resize: "vertical" }}
               />
             </div>
-            <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>
-                Imagem da aula
-              </label>
+
+            <div style={{ marginTop: 10 }}>
+              <div style={labelStyle}>Imagem da aula</div>
               <input
                 type="file"
                 accept="image/*"
@@ -535,62 +558,76 @@ export default function EditLesson({
               {uploadError && (
                 <small style={{ color: "#b91c1c" }}>{uploadError}</small>
               )}
+
               {image && (
-                <img
-                  src={image}
-                  alt="Lesson thumbnail"
+                <div
                   style={{
-                    maxWidth: 240,
-                    width: "250px",
-                    height: "250px",
-                    margin: "auto",
-                    display: "block",
-                    objectFit: "cover",
-                    borderRadius: 8,
-                    border: "1px solid #e2e8f0",
-                  }}
-                  onError={(e) => (e.currentTarget.style.display = "none")}
-                />
-              )}
-              {image && (
-                <button
-                  onClick={() => {
-                    setImage("");
+                    marginTop: 8,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                 >
-                  Remover imagem
-                </button>
+                  <img
+                    src={image}
+                    alt="Lesson thumbnail"
+                    style={{
+                      width: isMobile ? "100%" : 240,
+                      maxWidth: 300,
+                      height: isMobile ? "auto" : 240,
+                      objectFit: "cover",
+                      borderRadius: 8,
+                      border: "1px solid #e2e8f0",
+                    }}
+                    onError={(e) => (e.currentTarget.style.display = "none")}
+                  />
+                  <button
+                    onClick={() => setImage("")}
+                    style={{
+                      ...fullWidthButton,
+                      maxWidth: 180,
+                      fontSize: 12,
+                    }}
+                  >
+                    Remover imagem
+                  </button>
+                </div>
               )}
             </div>
           </div>
 
-          {/* Conteúdo da Aula */}
-          <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
-            <h1
+          {/* CONTEÚDO DA AULA / BLOCOS */}
+          <div style={{ ...sectionCard, marginBottom: 12 }}>
+            <h3
               style={{
-                fontSize: "clamp(18px, 3.2vw, 22px)",
+                fontSize: "clamp(16px, 3vw, 18px)",
                 textAlign: "center",
+                margin: "0 0 12px 0",
                 color: "#0f172a",
-                margin: "8px 0",
               }}
             >
               Conteúdo da Aula
-            </h1>
+            </h3>
 
             {/* Toolbar de adicionar bloco */}
-            <div style={toolbarGrid}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: isMobile
+                  ? "1fr"
+                  : "minmax(0, 2fr) auto auto",
+                gap: 8,
+                marginBottom: 12,
+              }}
+            >
               <select
                 value={newType}
                 onChange={(e) => setNewType(e.target.value as NewBlockType)}
                 style={{
-                  border: "1px solid #e2e8f0",
-                  borderRadius: 8,
-                  padding: 8,
-                  fontSize: 13,
+                  ...inputBase,
                   background: "white",
-                  color: "#0f172a",
-                  width: "100%",
-                  boxSizing: "border-box",
+                  paddingRight: 24,
                 }}
                 title="Tipo do novo bloco"
               >
@@ -608,7 +645,10 @@ export default function EditLesson({
 
               <button
                 onClick={() => addBlock("start")}
-                style={fullWidthBtn}
+                style={{
+                  ...fullWidthButton,
+                  width: "100%",
+                }}
                 title="Adicionar no início"
               >
                 + Adicionar no início
@@ -616,26 +656,24 @@ export default function EditLesson({
 
               <button
                 onClick={() => addBlock("end")}
-                style={{
-                  ...fullWidthBtn,
-                  backgroundColor: partnerColor(),
-                  color: "white",
-                  fontWeight: 600,
-                }}
+                style={primaryButton}
                 title="Adicionar ao final"
               >
                 + Adicionar ao final
               </button>
             </div>
 
-            <div style={{ display: "grid", gap: 10 }}>
+            {/* Lista de blocos */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {elements.length === 0 && (
                 <div
                   style={{
                     border: "1px dashed #94a3b8",
                     borderRadius: 8,
-                    padding: 16,
+                    padding: 14,
                     color: "#64748b",
+                    fontSize: 13,
+                    textAlign: "center",
                   }}
                 >
                   Nenhum elemento cadastrado.
@@ -659,7 +697,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "vocabulary") {
+                }
+
+                if (el?.type === "vocabulary") {
                   return (
                     <div key={idx}>
                       <VocabularyEditor
@@ -678,7 +718,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "video") {
+                }
+
+                if (el?.type === "video") {
                   return (
                     <div key={idx}>
                       <VideoEditor
@@ -690,7 +732,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "exercise") {
+                }
+
+                if (el?.type === "exercise") {
                   return (
                     <div key={idx}>
                       <ExerciseEditor
@@ -705,7 +749,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "images") {
+                }
+
+                if (el?.type === "images") {
                   return (
                     <div key={idx}>
                       <ImagesEditor
@@ -718,7 +764,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "audio") {
+                }
+
+                if (el?.type === "audio") {
                   return (
                     <div key={idx}>
                       <AudioAndTextEditor
@@ -733,7 +781,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "dialogue") {
+                }
+
+                if (el?.type === "dialogue") {
                   return (
                     <div key={idx}>
                       <DialogueEditor
@@ -747,7 +797,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "selectexercise") {
+                }
+
+                if (el?.type === "selectexercise") {
                   return (
                     <div key={idx}>
                       <SelectExerciseEditor
@@ -759,7 +811,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "explanation") {
+                }
+
+                if (el?.type === "explanation") {
                   return (
                     <div key={idx}>
                       <ExplanationEditor
@@ -772,7 +826,9 @@ export default function EditLesson({
                       />
                     </div>
                   );
-                } else if (el?.type === "singleimages") {
+                }
+
+                if (el?.type === "singleimages") {
                   return (
                     <div key={idx}>
                       <SingleImagesEditor
@@ -786,66 +842,68 @@ export default function EditLesson({
                     </div>
                   );
                 }
-                return <></>;
+
+                return null;
               })}
             </div>
           </div>
 
-          {/* Ações */}
+          {/* AÇÕES FINAIS */}
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr 1fr",
+              ...sectionCard,
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
               gap: 8,
               justifyContent: isMobile ? "stretch" : "flex-end",
-              marginTop: 16,
             }}
           >
-            <DeleteClassButton
-              classId={classId}
-              headers={headers} // se precisar de Authorization
-              onDeleted={() => {
-                window.location.href = `/teaching-materials/${
-                  lesson?.courseId || ""
-                }`;
-              }}
-            />
-            <button
-              onClick={() => {
-                setOpen(false);
-                setSeeEdit?.(false);
-              }}
+            {/* Delete sempre visível, mas empilhado no mobile */}
+            <div style={{ flex: isMobile ? "unset" : 0 }}>
+              <DeleteClassButton
+                classId={classId}
+                headers={headers}
+                onDeleted={() => {
+                  window.location.href = `/teaching-materials/${
+                    lesson?.courseId || ""
+                  }`;
+                }}
+              />
+            </div>
+
+            <div
               style={{
-                borderRadius: 8,
-                border: "1px solid #e2e8f0",
-                backgroundColor: "white",
-                color: "#0f172a",
-                padding: "8px 12px",
-                cursor: "pointer",
-                fontSize: 13,
-                width: isMobile ? "100%" : undefined,
-              }}
-              aria-label="Fechar"
-              title="Fechar"
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              style={{
-                borderRadius: 8,
-                backgroundColor: partnerColor(),
-                color: "white",
-                padding: "8px 12px",
-                cursor: saving ? "not-allowed" : "pointer",
-                fontSize: 13,
-                fontWeight: 600,
-                width: isMobile ? "100%" : undefined,
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row",
+                gap: 8,
+                width: isMobile ? "100%" : "auto",
+                marginLeft: isMobile ? 0 : "auto",
               }}
             >
-              {saving ? "Salvando..." : "Salvar"}
-            </button>
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  setSeeEdit?.(false);
+                }}
+                style={{
+                  ...fullWidthButton,
+                }}
+              >
+                Cancelar
+              </button>
+
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                style={{
+                  ...primaryButton,
+                  opacity: saving ? 0.8 : 1,
+                  cursor: saving ? "not-allowed" : "pointer",
+                }}
+              >
+                {saving ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
           </div>
         </div>
       )}

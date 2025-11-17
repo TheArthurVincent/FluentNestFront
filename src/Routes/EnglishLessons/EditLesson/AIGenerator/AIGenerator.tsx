@@ -1,25 +1,19 @@
 import React from "react";
 import axios from "axios";
+import { createPortal } from "react-dom";
 import { notifyAlert } from "../../Assets/Functions/FunctionLessons";
 import { partnerColor } from "../../../../Styles/Styles";
 
 type HeadersLike = Record<string, string>;
 
 type Props = {
-  /** URL completa já com studentId nos params, ex.: `${backDomain}/api/v1/ai/generateRaw/${studentId}` */
   postUrl: string;
   language1: string;
   type: string;
-  /** Headers opcionais (auth, etc.) */
   headers?: HeadersLike | null;
-
-  /** Controle externo do modal */
   visible: boolean;
   onClose: () => void;
-
-  /** Devolve o JSON cru para o editor consumir */
   onReceiveJson: (json: any) => void;
-
   title?: string;
 };
 
@@ -59,7 +53,7 @@ const overlayStyle: React.CSSProperties = {
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  zIndex: 9999,
+  zIndex: 99999, // maior que sidebars/topbars
 };
 
 const modalStyle: React.CSSProperties = {
@@ -78,12 +72,14 @@ export default function SimpleAIGenerator({
   type,
   onClose,
   onReceiveJson,
+  headers,
   title = "Gerar por IA",
 }: Props) {
   const [theme, setTheme] = React.useState("");
   const [instructions, setInstructions] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [numberOfSentences, setNumberOfSentences] = React.useState(20);
+
   const handleGenerate = async () => {
     const t = theme.trim();
     const i = instructions.trim();
@@ -98,10 +94,10 @@ export default function SimpleAIGenerator({
       setLoading(true);
       const payload = { prompt, type, language1, numberOfSentences };
 
-      // ✅ usar headers quando fornecidos
-      const res = await axios.post(postUrl, payload);
+      const res = await axios.post(postUrl, payload, {
+        headers: headers ? { ...headers } : {},
+      });
 
-      // ✅ aceitar tanto { json } quanto o próprio json no body
       const raw = res?.data?.json ?? res?.data;
 
       onReceiveJson(raw);
@@ -121,7 +117,10 @@ export default function SimpleAIGenerator({
 
   if (!visible) return null;
 
-  return (
+  // SSR safety (se estiver em Next.js e esse componente for renderizado no server)
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <div style={overlayStyle} onClick={loading ? undefined : onClose}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
         <div
@@ -193,9 +192,7 @@ export default function SimpleAIGenerator({
                   : type == "text"
                   ? "Gere uma história curta e simples adequada para estudantes de inglês, com tradução para o português."
                   : ""
-              }
-                
-                `}
+              }`}
               style={{ ...inputStyle, resize: "vertical" }}
             />
           </div>
@@ -218,6 +215,7 @@ export default function SimpleAIGenerator({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
