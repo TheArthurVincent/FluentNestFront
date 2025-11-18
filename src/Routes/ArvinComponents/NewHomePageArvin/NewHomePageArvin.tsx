@@ -294,9 +294,7 @@ export function MyHomePage({
           </section>
         </div>
       )}
-
       <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
-
       <div
         style={{
           gap: "16px",
@@ -305,11 +303,11 @@ export function MyHomePage({
           alignItems: "start",
           justifyContent: "center",
           marginTop: "32px",
+          paddingBottom: "64px",
         }}
       >
         {cards.map((item, index) => {
           if (!canSee(item)) return null; // não renderiza nada se não tiver permissão
-
           return (
             <div
               key={index}
