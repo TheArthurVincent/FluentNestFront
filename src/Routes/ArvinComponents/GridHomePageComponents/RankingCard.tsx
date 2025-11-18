@@ -43,6 +43,26 @@ export const RankingCard: FC<RankingCardProps> = ({
       <div>
         <StudentsRanking headers={actualHeaders} />
       </div>
+      <div>
+        <a
+          href="/ranking"
+          style={{
+            fontFamily: "Plus Jakarta Sans",
+            fontWeight: 700,
+            marginTop: "20px",
+            fontSize: "12px",
+            textTransform: "uppercase",
+            textDecoration: "none",
+            display: "flex",
+            color: partnerColor(),
+            alignItems: "center",
+            gap: "8px",
+          }}
+        >
+          Ver ranking completo
+          <i className="fa fa-chevron-right" />
+        </a>
+      </div>
     </>
   );
 };
