@@ -172,6 +172,10 @@ export const CalendarCard: FC<CalendarCardProps> = ({
           display: "grid",
           gridTemplateColumns: "repeat(7, 1fr)",
           marginTop: "16px",
+          justifyItems: "center",
+          justifyContent: "center",
+          alignContent: "center",
+          alignItems: "center",
           marginBottom: "6px",
         }}
       >
@@ -195,7 +199,12 @@ export const CalendarCard: FC<CalendarCardProps> = ({
       <div
         style={{
           display: "grid",
+          marginTop: "8px",
           gridTemplateColumns: "repeat(7, 1fr)",
+          alignContent: "center",
+          justifyContent: "center",
+          justifyItems: "center",
+          alignItems: "center",
           gap: "8px",
         }}
       >
@@ -298,6 +307,7 @@ export const CalendarCard: FC<CalendarCardProps> = ({
                   style={{
                     display: "flex",
                     flexDirection: "column",
+
                     gap: "2px",
                   }}
                 >

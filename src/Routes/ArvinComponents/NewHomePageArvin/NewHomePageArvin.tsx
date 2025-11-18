@@ -94,6 +94,17 @@ export function MyHomePage({
       component: <NextClass studentId={id} actualHeaders={actualHeaders} />,
     },
     {
+      showToTeacher: true,
+      showToStudent: true,
+      component: (
+        <RankingCard
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+          appLoaded={true}
+        />
+      ),
+    },
+    {
       showToStudent: true,
       showToTeacher: false,
       component: <FlashcardsReview actualHeaders={actualHeaders} />,
@@ -150,17 +161,6 @@ export function MyHomePage({
       component: (
         <RecommendedMaterials
           studentId={id}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={true}
-        />
-      ),
-    },
-    {
-      showToTeacher: true,
-      showToStudent: true,
-      component: (
-        <RankingCard
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
           appLoaded={true}
@@ -298,28 +298,23 @@ export function MyHomePage({
       <Continue isDesktop={isDesktop} actualHeaders={actualHeaders} />
       <div
         style={{
-          gap: "16px",
-          display: "flex",
-          flexWrap: "wrap",
-          alignItems: "start",
-          justifyContent: "center",
+          columnCount: isDesktop ? 2 : 1, // 2 colunas no desktop, 1 no celular
+          columnGap: "16px",
           marginTop: "32px",
           paddingBottom: "64px",
         }}
       >
         {cards.map((item, index) => {
-          if (!canSee(item)) return null; // não renderiza nada se não tiver permissão
+          if (!canSee(item)) return null;
+
           return (
             <div
               key={index}
               style={{
-                display: "grid",
+                marginBottom: "16px",
+                breakInside: "avoid", // evita quebrar o card entre colunas
                 backgroundColor: "white",
                 borderRadius: "16px",
-                flex: 1,
-                minWidth: "320px",
-                alignItems: "start",
-                height: "fit-content",
                 border: "1px solid #E3E8F0",
                 padding: "20px",
               }}
