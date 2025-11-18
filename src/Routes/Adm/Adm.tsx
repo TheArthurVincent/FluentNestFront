@@ -22,7 +22,6 @@ import FindTeacher from "./AdmComponents/ArthurSection/FindTeacher";
 
 export function Adm({ headers }: HeadersProps) {
   const { id, plan } = localStorageLoggedIn;
-
   const componentsToRender = [
     {
       title: "Alunos",
@@ -125,7 +124,20 @@ export function Adm({ headers }: HeadersProps) {
   };
 
   return (
-    <RouteDiv>
+    <div
+      style={{
+        fontFamily: "Plus Jakarta Sans",
+        margin: "1.6rem auto",
+        fontWeight: 600,
+        fontStyle: "SemiBold",
+        fontSize: "14px",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        width: "95%",
+        border: "1px solid #e8eaed",
+        padding: "10px",
+      }}
+    >
       <Helmets text="Administrativo" />
       <TabContext value={value}>
         <span className="no-print">
@@ -197,7 +209,7 @@ export function Adm({ headers }: HeadersProps) {
           );
         })}
       </TabContext>
-    </RouteDiv>
+    </div>
   );
 }
 
