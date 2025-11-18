@@ -384,7 +384,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       title: "FAQ",
       showLeftBar: true,
-
       component: <Faq headers={headers} />,
     },
     {
@@ -401,6 +400,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       component: (
         <Students
           headers={headers}
+          myId={_StudentId}
           actualHeaders={headers}
           change={change}
           setChange={setChange}

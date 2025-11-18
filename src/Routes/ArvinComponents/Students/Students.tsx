@@ -13,6 +13,7 @@ type StudentsProps = HeadersProps & {
   change?: boolean;
   setChange?: any;
   isDesktop: boolean;
+  myId?: string;
   actualHeaders?: any;
 };
 
@@ -28,6 +29,7 @@ export function Students({
   actualHeaders,
   change,
   setChange,
+  myId,
   isDesktop,
 }: StudentsProps) {
   return (
@@ -61,10 +63,15 @@ export function Students({
       )}
       <div
         style={{
-          columnCount: isDesktop ? 2 : 1, // 2 colunas no desktop, 1 no celular
-          columnGap: "16px",
-          marginTop: "32px",
-          paddingBottom: "64px",
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          fontStyle: "SemiBold",
+          fontSize: "14px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          width: "95%",
+          border: "1px solid #e8eaed",
+          padding: "10px",
         }}
       >
         <ListOfStudentsToClick
