@@ -41,6 +41,7 @@ import NotificationManager from "./Components/NotificationManager";
 import LoginComponent from "./Routes/LoginComponent/LoginComponent";
 import ArvinNewHomePage from "./Routes/ArvinNewHomePage";
 import { Students } from "./Routes/ArvinComponents/Students/Students";
+import StudentPage from "./Routes/ArvinComponents/Students/TheStudent/TheStudent";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -322,6 +323,21 @@ function App() {
         }
       })(),
     },
+     {
+    path: "/students/:studentId",
+    element: (() => {
+      try {
+        return verifyToken() ? (
+          <StudentPage headers={headers} />
+        ) : (
+          <LoginComponent />
+        );
+      } catch (err) {
+        console.error("[App] Erro ao definir rota /students/:studentId:", err);
+        return <LoginComponent />;
+      }
+    })(),
+  },
     {
       path: "*",
       element: (() => {
