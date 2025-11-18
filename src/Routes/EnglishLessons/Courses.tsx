@@ -266,17 +266,6 @@ const headerRightStyle: React.CSSProperties = {
   gap: 8,
 };
 
-const searchInputStyle: React.CSSProperties = {
-  // opcional/visual apenas (não altera comportamento)
-  fontFamily: "Plus Jakarta Sans",
-  fontSize: 14,
-  border: "1px solid #E3E8F0",
-  borderRadius: 10,
-  padding: "10px 12px",
-  outline: "none",
-  width: 220,
-};
-
 /** ==================== Course Card ==================== */
 const CourseCard: React.FC<{
   course: CourseWithCreator;
@@ -475,6 +464,7 @@ const CourseRouter: React.FC<{
 
   return (
     <Modules
+      isDesktop={true}
       canEditCourse={canEditCourseFor(course, permissions, studentID)}
       headers={headers}
       courseId={course._id}
@@ -675,6 +665,7 @@ export default function EnglishCourses({
               <Modules
                 setChange={setChange}
                 change={change}
+                isDesktop={isDesktop}
                 canEditCourse={computeCanEdit(route)}
                 headers={actualHeaders}
                 courseId={route._id}
@@ -706,14 +697,22 @@ export default function EnglishCourses({
           ) : (
             <div
               style={{
-                width: "min(1200px, 92vw)",
-                margin: "0 auto",
-                marginTop: "1.2rem",
-                padding: "16px",
+                margin: !isDesktop ? "1rem auto" : "16px 0",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontStyle: "SemiBold",
+                fontSize: "14px",
+                backgroundColor: "#ffffff",
+                borderRadius: "12px",
+                border: "1px solid #e8eaed",
+                padding: "1rem",
+                width: isDesktop ? "90%" : "",
               }}
             >
               {/* Header igual ao MyHomePage */}
-              <div style={headerAll}>
+              <div
+              // style={headerAll}
+              >
                 <section style={headerLeftStyle}>
                   <span style={newArvinTitleStyle}>Cursos</span>
                 </section>

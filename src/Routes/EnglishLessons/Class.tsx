@@ -3103,11 +3103,16 @@ export default function EnglishClassCourse2({
   return (
     <div
       style={{
-        backgroundColor: "white",
-        maxWidth: "1000px",
-        padding: "1rem",
-        margin: "1rem auto",
-        boxSizing: "border-box",
+        margin: !isDesktop ? "1.6rem auto" : "16px auto",
+        fontFamily: "Plus Jakarta Sans",
+        fontWeight: 600,
+        fontStyle: "SemiBold",
+        fontSize: "14px",
+        backgroundColor: "#ffffff",
+        borderRadius: "12px",
+        width: "95%",
+        border: "1px solid #e8eaed",
+        padding: "10px",
       }}
     >
       <Helmets text={classTitle} />
@@ -3224,7 +3229,7 @@ export default function EnglishClassCourse2({
                       display: "grid",
                       zIndex: 2,
                       position: "sticky",
-                      top: "2.8rem",
+                      top: "-10px",
                       boxSizing: "border-box",
                     }}
                   >
@@ -3263,7 +3268,6 @@ export default function EnglishClassCourse2({
                             style={{
                               borderRadius: "4px",
                               border: "1px solid #e2e8f0",
-
                               backgroundColor: "#f8fafc",
                               fontSize: "11px",
                               fontWeight: "400",
@@ -3641,7 +3645,7 @@ export default function EnglishClassCourse2({
                                         display: element.subtitle
                                           ? "block"
                                           : "none",
-                                        top: "7.6rem",
+                                        top: "4rem",
                                         zIndex: 4,
                                         marginBottom: 8,
                                         background: "rgba(255,255,255,0.98)",
@@ -3713,7 +3717,10 @@ export default function EnglishClassCourse2({
                                     selectedVoice={selectedVoice}
                                   />
                                 ) : element.type === "audio" ? (
-                                  <AudioFile element={element} />
+                                  <AudioFile
+                                    selectedVoice={selectedVoice}
+                                    element={element}
+                                  />
                                 ) : element.type === "text" ? (
                                   <TextLessonModel
                                     headers={headers}
@@ -3814,144 +3821,189 @@ export default function EnglishClassCourse2({
                     style={{
                       display: "grid",
                       gap: 8,
-                      padding: 12,
-                      overflow: "hidden",
+                      padding: 10,
+                      maxWidth: "99%",
+                      margin: "0 auto",
+                      boxSizing: "border-box",
                     }}
                   >
                     {/* Header */}
                     <div
                       style={{
+                        position: "sticky",
                         top: 0,
-                        zIndex: 1,
+                        zIndex: 5,
                         display: "flex",
-                        alignItems: "center",
+                        flexDirection: isDesktop ? "row" : "column",
+                        alignItems: isDesktop ? "center" : "stretch",
                         justifyContent: "space-between",
-                        gap: 12,
-                        padding: 8,
+                        gap: isDesktop ? 12 : 8,
+                        padding: isDesktop ? 10 : 8,
                         background:
-                          "linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%)",
+                          "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.9) 100%)",
                         borderBottom: "1px solid #eef0f2",
                         backdropFilter: "saturate(1.1) blur(6px)",
+                        borderRadius: isDesktop ? 12 : 8,
+                        boxSizing: "border-box",
                       }}
                     >
+                      {/* Lado esquerdo: ações principais */}
                       <div
                         style={{
                           display: "flex",
+                          flex: 1,
+                          flexWrap: "wrap",
                           alignItems: "center",
-                          gap: 8,
+                          gap: isDesktop ? 8 : 6,
                         }}
                       >
-                        {" "}
                         {hasAudioElement && (
                           <button
                             onClick={() => setSeeAudios((v) => !v)}
-                            style={baseBtnStyle}
+                            style={{
+                              ...baseBtnStyle,
+                              padding: isDesktop ? "6px 10px" : "5px 8px",
+                              fontSize: 12,
+                              whiteSpace: "nowrap",
+                            }}
                           >
                             Áudios
                           </button>
                         )}
+
                         <button
-                          style={{ width: "fit-content" }}
+                          onClick={downloadBoardPDF}
+                          title="Baixar PDF"
+                          style={{
+                            all: "unset",
+                            cursor: "pointer",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: 4,
+                            borderRadius: 8,
+                            border: "1px solid #e5e7eb",
+                            backgroundColor: "#f9fafb",
+                          }}
+                        >
+                          <img
+                            src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                            alt="PDF"
+                            style={{ width: 18, height: 18 }}
+                          />
+                        </button>
+
+                        <button
+                          style={{
+                            ...baseBtnStyle,
+                            padding: isDesktop ? "6px 10px" : "5px 8px",
+                            fontSize: 12,
+                            whiteSpace: "nowrap",
+                          }}
                           onClick={() => {
                             setSeeOptions(!seeOptions);
                           }}
                         >
                           {seeOptions ? "Ocultar Opções" : "Mostrar Opções"}
                         </button>
-                        {seeOptions && (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: isDesktop ? "flex-end" : "center",
-                              gap: isDesktop ? 6 : 10,
-                              width: "100%",
+
+                        {/* Grupo Restaurar/Salvar + check + data */}
+                        <div
+                          style={{
+                            display: "flex",
+                            flex: 1,
+                            flexWrap: "wrap",
+                            alignItems: "center",
+                            justifyContent: isDesktop
+                              ? "flex-end"
+                              : "flex-start",
+                            gap: isDesktop ? 8 : 6,
+                          }}
+                        >
+                          <button
+                            onClick={() => {
+                              const template = generateInitialBoardContent();
+                              setEditorKey((v) => v + 1);
+                              setNewHWDescription(template);
+                              setEditorContent(template);
+                              setConfirm(true);
                             }}
-                          >
-                            <button
-                              onClick={() => {
-                                const template = generateInitialBoardContent();
-                                setEditorKey((v) => v + 1);
-                                setNewHWDescription(template);
-                                setEditorContent(template);
-                                setConfirm(true);
-                              }}
-                              title="Restaurar"
-                              style={baseBtnStyle}
-                            >
-                              Restaurar
-                            </button>
-
-                            {confirm && (
-                              <button
-                                onClick={handleSaveBoard}
-                                style={{
-                                  ...baseBtnStyle,
-                                  border: `1px solid ${
-                                    partnerColor?.() || "#2563eb"
-                                  }`,
-                                  background: partnerColor?.() || "#2563eb",
-                                  color: "#fff",
-                                }}
-                              >
-                                Salvar
-                              </button>
-                            )}
-
-                            <button
-                              onClick={downloadBoardPDF}
-                              title="Baixar PDF"
-                              style={{ all: "unset", cursor: "pointer" }}
-                            >
-                              <img
-                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                                alt="PDF"
-                                style={{ width: 18, height: 18 }}
-                              />
-                            </button>
-
-                            {seeCheck && (
-                              <i
-                                className="fa fa-check"
-                                style={{
-                                  padding: 6,
-                                  borderRadius: "999px",
-                                  backgroundColor: "#fff",
-                                  color: "green",
-                                  fontSize: 12,
-                                  border: "1px solid #e5e7eb",
-                                }}
-                              />
-                            )}
-                          </div>
-                        )}
-                        {boardDate && (
-                          <span
+                            title="Restaurar"
                             style={{
-                              color: "#6b7280",
+                              ...baseBtnStyle,
+                              padding: isDesktop ? "6px 10px" : "5px 8px",
                               fontSize: 12,
-                              fontStyle: "italic",
+                              whiteSpace: "nowrap",
                             }}
                           >
-                            Última edição:{" "}
-                            <strong>{formatDateBrWithHour(boardDate)}</strong>
-                          </span>
-                        )}
+                            Restaurar
+                          </button>
+
+                          {confirm && (
+                            <button
+                              onClick={handleSaveBoard}
+                              style={{
+                                ...baseBtnStyle,
+                                padding: isDesktop ? "6px 14px" : "5px 10px",
+                                fontSize: 12,
+                                border: `1px solid ${
+                                  partnerColor?.() || "#2563eb"
+                                }`,
+                                background: partnerColor?.() || "#2563eb",
+                                color: "#fff",
+                                fontWeight: 600,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              Salvar
+                            </button>
+                          )}
+
+                          {seeCheck && (
+                            <i
+                              className="fa fa-check"
+                              style={{
+                                padding: 6,
+                                borderRadius: "999px",
+                                backgroundColor: "#fff",
+                                color: "green",
+                                fontSize: 12,
+                                border: "1px solid #e5e7eb",
+                              }}
+                            />
+                          )}
+
+                          {boardDate && (
+                            <span
+                              style={{
+                                color: "#6b7280",
+                                fontSize: 11,
+                                fontStyle: "italic",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              Última edição:{" "}
+                              <strong>{formatDateBrWithHour(boardDate)}</strong>
+                            </span>
+                          )}
+                        </div>
                       </div>
 
+                      {/* Lado direito: fechar / confirmação */}
                       <div
                         style={{
                           display: "flex",
                           alignItems: "center",
+                          justifyContent: isDesktop ? "flex-end" : "flex-start",
                           gap: 8,
                         }}
                       >
                         {seeConfirm ? (
                           <div
                             style={{
-                              display: isDesktop ? "flex" : "block",
-                              gap: 8,
+                              display: "flex",
+                              flexDirection: isDesktop ? "row" : "column",
+                              gap: 6,
                             }}
                           >
                             <button
@@ -3964,6 +4016,9 @@ export default function EnglishClassCourse2({
                                 color: "#111827",
                                 fontSize: 12,
                                 cursor: "pointer",
+                                padding: "4px 8px",
+                                borderRadius: 6,
+                                border: "1px solid #e5e7eb",
                               }}
                             >
                               Cancelar
@@ -3981,9 +4036,10 @@ export default function EnglishClassCourse2({
                                 background: "#fee2e2",
                                 color: "#b91c1c",
                                 padding: "6px 10px",
-                                borderRadius: 4,
+                                borderRadius: 6,
                                 fontSize: 12,
                                 cursor: "pointer",
+                                border: "1px solid #fecaca",
                               }}
                             >
                               Fechar sem salvar
@@ -4002,8 +4058,14 @@ export default function EnglishClassCourse2({
                               background: "#fff",
                               cursor: "pointer",
                               color: "#b91c1c",
-                              width: 14,
-                              height: 14,
+                              width: 18,
+                              height: 18,
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              borderRadius: 999,
+                              border: "1px solid #fecaca",
+                              fontSize: 12,
                             }}
                           >
                             ✕
@@ -4011,14 +4073,17 @@ export default function EnglishClassCourse2({
                         )}
                       </div>
                     </div>
+
+                    {/* Controles de zoom */}
                     <div
                       style={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "8px",
-                        padding: "8px 12px",
-                        borderRadius: "8px",
-                        fontSize: "12px",
+                        justifyContent: "center",
+                        gap: 8,
+                        borderRadius: 8,
+                        fontSize: 12,
+                        backgroundColor: "#f9fafb",
                       }}
                     >
                       <button
@@ -4028,17 +4093,26 @@ export default function EnglishClassCourse2({
                         style={{
                           all: "unset",
                           cursor: "pointer",
-                          padding: "4px 8px",
+                          padding: "4px 10px",
                           background: "#f3f4f6",
-                          borderRadius: "4px",
-                          fontSize: "14px",
+                          borderRadius: 6,
+                          fontSize: 14,
                           fontWeight: "bold",
+                          lineHeight: 1,
                         }}
                         title="Diminuir zoom (Ctrl + -)"
                       >
                         -
                       </button>
-                      <span style={{ minWidth: "45px", textAlign: "center" }}>
+                      <span
+                        style={{
+                          minWidth: 48,
+                          textAlign: "center",
+                          fontVariantNumeric: "tabular-nums",
+                          fontSize: 12,
+                          color: "#4b5563",
+                        }}
+                      >
                         {Math.round(boardZoom)}%
                       </span>
                       <button
@@ -4048,11 +4122,12 @@ export default function EnglishClassCourse2({
                         style={{
                           all: "unset",
                           cursor: "pointer",
-                          padding: "4px 8px",
+                          padding: "4px 10px",
                           background: "#f3f4f6",
-                          borderRadius: "4px",
-                          fontSize: "14px",
+                          borderRadius: 6,
+                          fontSize: 14,
                           fontWeight: "bold",
+                          lineHeight: 1,
                         }}
                         title="Aumentar zoom (Ctrl + +)"
                       >
@@ -4063,61 +4138,46 @@ export default function EnglishClassCourse2({
                     {/* Editor / Read-only */}
                     <div
                       style={{
-                        overflow: "auto",
                         position: "relative",
+                        backgroundColor: "#ffffff",
                       }}
                     >
                       {!loadingBoard ? (
                         <div
                           style={{
-                            height: "60vh",
+                            height: isDesktop ? "70vh" : "60vh",
                             overflow: "auto",
                             width: "100%",
-                            transition: "transform 0.2s ease-in-out",
+                            padding: isDesktop ? 16 : 10,
+                            boxSizing: "border-box",
                           }}
                         >
                           <div
                             style={{
-                              height: "100%",
-                              width:
-                                boardZoom == 100
-                                  ? "99%"
-                                  : boardZoom == 110
-                                  ? "90%"
-                                  : boardZoom == 120
-                                  ? "83%"
-                                  : boardZoom == 130
-                                  ? "77%"
-                                  : boardZoom == 140
-                                  ? "71%"
-                                  : boardZoom == 150
-                                  ? "66%"
-                                  : boardZoom == 160
-                                  ? "62%"
-                                  : boardZoom == 170
-                                  ? "58%"
-                                  : boardZoom == 180
-                                  ? "55%"
-                                  : boardZoom == 190
-                                  ? "53%"
-                                  : boardZoom == 200
-                                  ? "50%"
-                                  : "80%",
-                              transformOrigin: "top left",
+                              display: "flex",
+                              justifyContent: "center",
                               transform: `scale(${boardZoom / 100})`,
+                              transformOrigin: "top center",
+                              transition: "transform 0.15s ease-in-out",
                             }}
                           >
-                            <HTMLEditor
-                              key={editorKey}
-                              initialContent={editorContent}
-                              onChange={handleHWDescriptionChange}
-                            />
+                            <div
+                              style={{
+                                width: "75vw",
+                              }}
+                            >
+                              <HTMLEditor
+                                key={editorKey}
+                                initialContent={editorContent}
+                                onChange={handleHWDescriptionChange}
+                              />
+                            </div>
                           </div>
                         </div>
                       ) : (
                         <div
                           style={{
-                            height: "100%",
+                            height: isDesktop ? "70vh" : "60vh",
                             display: "grid",
                             placeItems: "center",
                           }}
@@ -4133,15 +4193,18 @@ export default function EnglishClassCourse2({
                     {hasAudioElement && seeAudios && (
                       <div
                         style={{
-                          borderRadius: 4,
-                          padding: 10,
+                          borderRadius: isDesktop ? 12 : 10,
+                          padding: isDesktop ? 12 : 10,
                           overflow: "hidden",
                           display: "grid",
                           gridTemplateRows: "auto 1fr",
                           minHeight: 0,
+                          backgroundColor: "#f9fafb",
+                          border: "1px solid #e5e7eb",
+                          gap: 4,
                         }}
                       >
-                        <div style={{ overflow: "auto", paddingTop: 8 }}>
+                        <div style={{ overflow: "auto", paddingTop: 4 }}>
                           {(() => {
                             const audioElements =
                               (theclass?.elements || []).filter(
@@ -4153,20 +4216,26 @@ export default function EnglishClassCourse2({
                               audioElements[currentAudioIndex];
                             if (!currentAudio) return null;
 
+                            const total = audioElements.length;
+
                             return (
-                              <div style={{ display: "grid", gap: 3 }}>
+                              <div style={{ display: "grid", gap: 6 }}>
                                 <div
                                   style={{
                                     display: "flex",
-                                    alignItems: "center",
+                                    flexDirection: isDesktop ? "row" : "column",
+                                    alignItems: isDesktop
+                                      ? "center"
+                                      : "flex-start",
                                     justifyContent: "space-between",
+                                    gap: 6,
                                   }}
                                 >
                                   {currentAudio.subtitle && (
                                     <h4
                                       style={{
                                         margin: 0,
-                                        fontSize: 12,
+                                        fontSize: 13,
                                         color: partnerColor?.() || "#111827",
                                       }}
                                     >
@@ -4178,116 +4247,93 @@ export default function EnglishClassCourse2({
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
-                                      justifyContent: "space-between",
                                       gap: 8,
-                                      paddingBottom: 6,
+                                      paddingBottom: 4,
                                     }}
                                   >
-                                    {(() => {
-                                      const audioElements =
-                                        (theclass?.elements || []).filter(
-                                          (el: any) =>
-                                            el.type === "audio" ||
-                                            el.type === "audiosoundtrack"
-                                        ) || [];
-                                      const total = audioElements.length;
-
-                                      return (
-                                        <div
-                                          style={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 8,
-                                          }}
-                                        >
-                                          <button
-                                            onClick={() =>
-                                              setCurrentAudioIndex((i) =>
-                                                Math.max(0, i - 1)
-                                              )
-                                            }
-                                            disabled={currentAudioIndex === 0}
-                                            style={{
-                                              all: "unset",
-                                              cursor:
-                                                currentAudioIndex === 0
-                                                  ? "not-allowed"
-                                                  : "pointer",
-                                              color:
-                                                currentAudioIndex === 0
-                                                  ? "#cbd5e1"
-                                                  : partnerColor?.() ||
-                                                    "#111827",
-                                              fontSize: 16,
-                                              padding: 4,
-                                            }}
-                                            aria-label="Anterior"
-                                            title="Anterior"
-                                          >
-                                            ←
-                                          </button>
-                                          <span
-                                            style={{
-                                              fontSize: 12,
-                                              color: "#6b7280",
-                                            }}
-                                          >
-                                            {Math.min(
-                                              currentAudioIndex + 1,
-                                              total
-                                            )}{" "}
-                                            / {total}
-                                          </span>
-                                          <button
-                                            onClick={() =>
-                                              setCurrentAudioIndex((i) =>
-                                                Math.min(total - 1, i + 1)
-                                              )
-                                            }
-                                            disabled={
-                                              currentAudioIndex >= total - 1
-                                            }
-                                            style={{
-                                              all: "unset",
-                                              cursor:
-                                                currentAudioIndex >= total - 1
-                                                  ? "not-allowed"
-                                                  : "pointer",
-                                              color:
-                                                currentAudioIndex >= total - 1
-                                                  ? "#cbd5e1"
-                                                  : partnerColor?.() ||
-                                                    "#111827",
-                                              fontSize: 16,
-                                              padding: 4,
-                                            }}
-                                            aria-label="Próximo"
-                                            title="Próximo"
-                                          >
-                                            →
-                                          </button>
-                                          <button
-                                            style={{
-                                              all: "unset",
-                                              cursor: "pointer",
-                                              color: "#933232ff",
-                                              fontSize: 12,
-                                              padding: 2,
-                                            }}
-                                            onClick={() => {
-                                              setSeeAudios(false);
-                                            }}
-                                          >
-                                            ✕
-                                          </button>
-                                        </div>
-                                      );
-                                    })()}
+                                    <button
+                                      onClick={() =>
+                                        setCurrentAudioIndex((i) =>
+                                          Math.max(0, i - 1)
+                                        )
+                                      }
+                                      disabled={currentAudioIndex === 0}
+                                      style={{
+                                        all: "unset",
+                                        cursor:
+                                          currentAudioIndex === 0
+                                            ? "not-allowed"
+                                            : "pointer",
+                                        color:
+                                          currentAudioIndex === 0
+                                            ? "#cbd5e1"
+                                            : partnerColor?.() || "#111827",
+                                        fontSize: 16,
+                                        padding: 4,
+                                      }}
+                                      aria-label="Anterior"
+                                      title="Anterior"
+                                    >
+                                      ←
+                                    </button>
+                                    <span
+                                      style={{
+                                        fontSize: 12,
+                                        color: "#6b7280",
+                                        minWidth: 40,
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {Math.min(currentAudioIndex + 1, total)} /{" "}
+                                      {total}
+                                    </span>
+                                    <button
+                                      onClick={() =>
+                                        setCurrentAudioIndex((i) =>
+                                          Math.min(total - 1, i + 1)
+                                        )
+                                      }
+                                      disabled={currentAudioIndex >= total - 1}
+                                      style={{
+                                        all: "unset",
+                                        cursor:
+                                          currentAudioIndex >= total - 1
+                                            ? "not-allowed"
+                                            : "pointer",
+                                        color:
+                                          currentAudioIndex >= total - 1
+                                            ? "#cbd5e1"
+                                            : partnerColor?.() || "#111827",
+                                        fontSize: 16,
+                                        padding: 4,
+                                      }}
+                                      aria-label="Próximo"
+                                      title="Próximo"
+                                    >
+                                      →
+                                    </button>
+                                    <button
+                                      style={{
+                                        all: "unset",
+                                        cursor: "pointer",
+                                        color: "#933232ff",
+                                        fontSize: 12,
+                                        padding: 4,
+                                        borderRadius: 999,
+                                      }}
+                                      onClick={() => {
+                                        setSeeAudios(false);
+                                      }}
+                                    >
+                                      ✕
+                                    </button>
                                   </div>
                                 </div>
 
                                 {currentAudio.type === "audio" ? (
-                                  <AudioFile hideText element={currentAudio} />
+                                  <AudioFile hideText element={currentAudio}
+                                  selectedVoice={selectedVoice  }
+                                  />
                                 ) : (
                                   <AudioSoundTrack
                                     headers={headers}

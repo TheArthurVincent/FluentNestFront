@@ -57,6 +57,13 @@ export const notifyAlert = (
     timeEstablished ? timeEstablished : 2500
   );
 };
+let currentAudio: HTMLAudioElement | null = null;
+
+export let globalAudioController: {
+  currentAudio: HTMLAudioElement | null;
+} = {
+  currentAudio: null,
+};
 
 export const readText = async (
   text: string,
@@ -65,35 +72,36 @@ export const readText = async (
   chosenVoice?: string,
   rate?: number
 ) => {
-  if (restart && window?.speechSynthesis) {
-    window.speechSynthesis.cancel();
-  }
-  let voiceLang = localStorage.getItem("voiceLang");
-  let voiceGender = localStorage.getItem("voiceGender");
-
   try {
+    // Se já estiver tocando → parar
+    if (globalAudioController.currentAudio) {
+      globalAudioController.currentAudio.pause();
+      globalAudioController.currentAudio.currentTime = 0;
+      if (!restart) return;
+    }
+
+    let voiceLang = localStorage.getItem("voiceLang");
+    let voiceGender = localStorage.getItem("voiceGender");
+
     const response = await axios.post(`${backDomain}/api/v1/text-to-speech`, {
       text,
       languageCode: voiceLang || lang,
       gender: voiceGender,
       pitch: 0.6,
-      speakingRate: 0.9,
+      speakingRate: rate || 1,
     });
 
     const audioBase64 = response.data.audio;
+
     const audio = new Audio(`data:audio/mp3;base64,${audioBase64}`);
+
+    globalAudioController.currentAudio = audio;
     audio.play();
   } catch (error) {
     notifyAlert("Erro ao gerar áudio");
     console.error("Erro TTS:", error);
   }
 };
-export const listVoices = () => {
-  if ("speechSynthesis" in window) {
-    const voices = window.speechSynthesis.getVoices();
-    return voices;
-  } else {
-    console.error("speechSynthesis não está disponível no navegador.");
-    return [];
-  }
-};
+
+
+

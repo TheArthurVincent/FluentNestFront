@@ -202,7 +202,7 @@ function LandingPageArvin() {
                 src="https://ik.imagekit.io/vjz75qw96/assets/icons/Arvin/Horizontal-Black.png?updatedAt=1756124444679"
                 alt=""
                 style={{
-                  maxWidth: isMobile ? "80vw" : "40vw",
+                  maxWidth: isMobile ? "70vw" : "40vw",
                   marginBottom: "1rem",
                 }}
               />

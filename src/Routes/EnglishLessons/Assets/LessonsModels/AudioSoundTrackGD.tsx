@@ -1,4 +1,6 @@
 import React from "react";
+import { readText, globalAudioController } from "../Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
 
 interface AudioElement {
   subtitle: string;
@@ -11,9 +13,14 @@ interface AudioElement {
 interface AudioFileProps {
   element: AudioElement;
   hideText?: boolean;
+  selectedVoice: any;
 }
 
-export default function AudioFile({ element, hideText }: AudioFileProps) {
+export default function AudioFile({
+  element,
+  hideText,
+  selectedVoice,
+}: AudioFileProps) {
   const link = (element?.link || "").trim();
 
   // Verifica se a URL parece do Google Drive
@@ -63,6 +70,25 @@ export default function AudioFile({ element, hideText }: AudioFileProps) {
     </a>
   );
 
+  const handlePause = () => {
+    // Pausa qualquer áudio controlado globalmente
+    if (globalAudioController.currentAudio) {
+      globalAudioController.currentAudio.pause();
+      globalAudioController.currentAudio.currentTime = 0;
+    }
+
+    // Fallback: se ainda estiver usando speechSynthesis em algum lugar
+    if (typeof window !== "undefined" && window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+    }
+  };
+
+  const handlePlayText = () => {
+    if (!element.text) return;
+    // restart = true → mata o áudio anterior e toca este
+    readText(element.text, true, selectedVoice, undefined, 1.2);
+  };
+
   return (
     <div
       style={{
@@ -107,7 +133,6 @@ export default function AudioFile({ element, hideText }: AudioFileProps) {
             </a>
             .
           </div>
-          {/* Também mostro um link direto padrão (mesmo destino), se quiser manter o botão original */}
           <a
             href={`https://drive.google.com/file/d/${fileId}/preview`}
             target="_blank"
@@ -134,9 +159,41 @@ export default function AudioFile({ element, hideText }: AudioFileProps) {
               whiteSpace: "pre-wrap",
               color: "#0f172a",
               padding: "12px",
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
             }}
           >
-            {element.text}
+            <span>
+              {/* Botão PLAY (TTS) */}
+              <button
+                style={{
+                  all: "unset",
+                  cursor: "pointer",
+                  margin: "0 4px",
+                  fontSize: "0.8rem",
+                  color: partnerColor(),
+                }}
+                onClick={handlePlayText}
+              >
+                <i className="fa fa-volume-up" />
+              </button>
+
+              {/* Botão PAUSE (para qualquer áudio controlado globalmente) */}
+              <button
+                style={{
+                  all: "unset",
+                  cursor: "pointer",
+                  margin: "0 8px",
+                  fontSize: "0.8rem",
+                  color: "#555",
+                }}
+                onClick={handlePause}
+              >
+                <i className="fa fa-pause" />
+              </button>
+              {element.text}
+            </span>
           </div>
         </div>
       )}

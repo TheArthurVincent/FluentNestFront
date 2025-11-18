@@ -11,7 +11,7 @@ import axios from "axios";
 
 import { HOne } from "../../Resources/Components/RouteBox";
 import { HThreeModule } from "../MyClasses/MyClasses.Styled";
-import { partnerColor, darkGreyColor } from "../../Styles/Styles";
+import { partnerColor, darkGreyColor, logoPartner } from "../../Styles/Styles";
 import {
   backDomain,
   onLoggOut,
@@ -47,6 +47,7 @@ const injectBaseStyles = () => {
       padding: 2px 6px;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 11px;
     }
     .btn-ghost:disabled {
       opacity: .6;
@@ -81,7 +82,7 @@ const injectBaseStyles = () => {
     .card-row {
       display: grid;
       grid-template-columns: 1fr auto;
-      align-items: center;
+      align-items: stretch;
       gap: 8px;
     }
 
@@ -92,6 +93,35 @@ const injectBaseStyles = () => {
     }
 
     .no-overflow-x { overflow-x: hidden; }
+
+    /* ====== NOVO ESTILO DOS CARDS DE AULA (vibe ESL Brains) ====== */
+    .lesson-card {
+      position: relative;
+      display: block;
+      width: 100%;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #f8fafc, #ffffff);
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      transition:
+        transform .12s ease-out,
+        box-shadow .12s ease-out,
+        border-color .12s ease-out,
+        background .12s ease-out;
+    }
+
+    .lesson-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(15,23,42,.08);
+      border-color: ${partnerColor()};
+      background: linear-gradient(135deg, #f1f5f9, #ffffff);
+    }
+
+    @media (max-width: 768px) {
+      .card-row {
+        grid-template-columns: 1fr;
+      }
+    }
   `;
   document.head.appendChild(st);
 };
@@ -124,6 +154,8 @@ interface ClassItem {
   title?: string;
   order?: number;
   tags?: string[];
+  description?: string;
+  image?: string;
   studentsWhoCompletedIt?: string[];
   [k: string]: any;
 }
@@ -136,6 +168,7 @@ interface ModuleItem {
 }
 interface ModulesHomeProps {
   headers?: any;
+  isDesktop: any;
   courseId: string;
   title: string;
   change?: any;
@@ -143,28 +176,11 @@ interface ModulesHomeProps {
   canEditCourse?: boolean; // << veio do pai (Courses)
 }
 
-/* =================== Card “liso” da aula (sem sombra) =================== */
+/* =================== Card “liso” da aula (sem sombra, mas com hover legal) =================== */
 const LessonCard: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  return (
-    <div
-      className="focusable"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 10,
-        backgroundColor: "#f7f7f8",
-        color: "#0f172a",
-        padding: "10px 12px",
-        fontSize: 13,
-        borderRadius: 12,
-        border: "1px solid #e5e7eb",
-      }}
-    >
-      {children}
-    </div>
-  );
+  return <div className="focusable lesson-card">{children}</div>;
 };
 
 /* =================== Wrapper: lê :moduleKey e injeta na Aula =================== */
@@ -221,6 +237,7 @@ export default function Modules({
   headers,
   courseId,
   title,
+  isDesktop,
   setChange,
   change,
   canEditCourse,
@@ -458,7 +475,7 @@ export default function Modules({
     padding: 12,
     borderRadius: 16,
     border: "1px solid #E3E8F0",
-    maxWidth: "min(1200px, 94vw)",
+    maxWidth: "min(1200px, 96vw)",
     margin: "0 auto",
     marginTop: "max(8px, env(safe-area-inset-top))",
   };
@@ -481,13 +498,13 @@ export default function Modules({
 
   const lessonsListWrap: React.CSSProperties = {
     display: "grid",
-    gap: 8,
+    gap: 10,
   };
 
   /* ===== render ===== */
   return (
-    <div className="no-overflow-x" style={{ width: "100%", maxWidth: "100%" }}>
-      {/* Rota da AULA por ID (ou slug se o backend aceitar) */}
+    <div>
+      {/* Rota da AULA por ID */}
       <Routes>
         <Route
           path=":moduleKey/*"
@@ -507,9 +524,21 @@ export default function Modules({
 
       {displayRouteDiv && (
         <>
-          <div style={pageWrapStyle}>
+          <div
+            style={{
+              margin: !isDesktop ? "4.5rem auto" : "16px 0",
+              fontFamily: "Plus Jakarta Sans",
+              fontWeight: 600,
+              fontStyle: "SemiBold",
+              fontSize: "14px",
+              backgroundColor: "#ffffff",
+              borderRadius: "12px",
+              border: "1px solid #e8eaed",
+              padding: "2rem",
+              width: isDesktop ? "90%" : "",
+            }}
+          >
             <HOne>{title}</HOne>
-
             {loading ? (
               <Spinner />
             ) : (
@@ -644,106 +673,274 @@ export default function Modules({
 
                     {visibleModules[moduleIdx] && (
                       <div style={lessonsListWrap}>
-                        {sorted.map((cls, viewIdx) => (
-                          <div className="card-row" key={cls._id}>
-                            <Link
-                              to={`${cls._id}`}
-                              className="focusable"
-                              style={{
-                                textDecoration: "none",
-
-                                width: "100%",
-                              }}
-                            >
-                              <LessonCard>
-                                <label
-                                  title={
-                                    isCompletedFor(cls)
-                                      ? "Marcar como não feito"
-                                      : "Marcar como feito"
-                                  }
-                                  className="pill"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={!!isCompletedFor(cls)}
-                                    disabled={!!toggling[cls._id] || !studentID}
-                                    onChange={() => toggleCompletion(cls)}
-                                    style={{
-                                      cursor:
-                                        !!toggling[cls._id] || !studentID
-                                          ? "not-allowed"
-                                          : "pointer",
-                                      width: 14,
-                                      height: 14,
-                                      accentColor: partnerColor(),
-                                    }}
-                                    aria-label="Marcar aula como feita"
-                                  />
-                                </label>
-
-                                <p style={{ margin: 0, flex: 1 }}>
-                                  {viewIdx + 1} - {cls.title}
-                                  {Array.isArray(cls.tags) &&
-                                    cls.tags.length > 0 && (
-                                      <span
-                                        style={{
-                                          fontStyle: "italic",
-                                          fontWeight: 400,
-                                          fontSize: 11,
-                                          marginLeft: "0.8rem",
-                                          color: "#64748b",
-                                        }}
-                                      >
-                                        {truncateString(
-                                          (cls.tags || [])
-                                            .join(", ")
-                                            .toLowerCase(),
-                                          32
-                                        )}
-                                      </span>
-                                    )}
-                                </p>
-                              </LessonCard>
-                            </Link>
-
-                            {canEditCourse && (
-                              <div
-                                onClick={(e) => e.preventDefault()}
+                        {sorted.map((cls, viewIdx) => {
+                          const isCompleted = isCompletedFor(cls);
+                          return (
+                            <div className="card-row" key={cls._id}>
+                              <Link
+                                to={`${cls._id}`}
+                                className="focusable"
                                 style={{
-                                  display: "flex",
-                                  gap: 6,
-                                  alignItems: "center",
-                                  marginLeft: "auto",
+                                  textDecoration: "none",
+                                  width: "100%",
                                 }}
                               >
-                                <button
-                                  title="Mover para cima"
-                                  disabled={viewIdx === 0}
-                                  onClick={async () =>
-                                    await moveClass(moduleIdx, viewIdx, -1)
-                                  }
-                                  className="btn-ghost focusable"
-                                  aria-label="Mover para cima"
+                                <LessonCard>
+                                  <div
+                                    style={{
+                                      display: "grid",
+                                      gridTemplateColumns: "110px 1fr",
+                                      gap: 12,
+                                      alignItems: "stretch",
+                                    }}
+                                  >
+                                    {/* THUMB */}
+                                    <div>
+                                      <img
+                                        style={{
+                                          width: "100%",
+                                          height: 100,
+                                          objectFit: "cover",
+                                          borderRadius: 10,
+                                          backgroundColor: "#e2e8f0",
+                                        }}
+                                        src={cls.image || logoPartner()}
+                                        alt=""
+                                      />
+                                    </div>
+
+                                    {/* CONTEÚDO */}
+                                    <div
+                                      style={{
+                                        display: "grid",
+                                        gap: 6,
+                                        alignContent: "space-between",
+                                      }}
+                                    >
+                                      {/* Meta / topo */}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: 8,
+                                        }}
+                                      >
+                                        <span
+                                          style={{
+                                            fontSize: 11,
+                                            textTransform: "uppercase",
+                                            letterSpacing: ".08em",
+                                            color: "#94a3b8",
+                                            fontWeight: 600,
+                                          }}
+                                        >
+                                          Lesson {viewIdx + 1}
+                                        </span>
+
+                                        {Array.isArray(cls.tags) &&
+                                          cls.tags.length > 0 && (
+                                            <span
+                                              style={{
+                                                fontSize: 11,
+                                                color: "#64748b",
+                                                maxWidth: 140,
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                                textOverflow: "ellipsis",
+                                              }}
+                                            >
+                                              {truncateString(
+                                                cls.tags[0] || "",
+                                                22
+                                              )}
+                                            </span>
+                                          )}
+
+                                        <div
+                                          style={{
+                                            marginLeft: "auto",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: 6,
+                                          }}
+                                        >
+                                          {/* <span
+                                            style={{
+                                              fontSize: 11,
+                                              color: isCompleted
+                                                ? partnerColor()
+                                                : "#64748b",
+                                            }}
+                                          >
+                                            {isCompleted
+                                              ? "Done"
+                                              : "Mark as done"}
+                                          </span> */}
+
+                                          <label
+                                            title={
+                                              isCompleted
+                                                ? "Marcar como não feito"
+                                                : "Marcar como feito"
+                                            }
+                                            className="pill"
+                                            onClick={(e) => e.stopPropagation()}
+                                          >
+                                            <input
+                                              type="checkbox"
+                                              checked={!!isCompleted}
+                                              disabled={
+                                                !!toggling[cls._id] ||
+                                                !studentID
+                                              }
+                                              onChange={() =>
+                                                toggleCompletion(cls)
+                                              }
+                                              style={{
+                                                cursor:
+                                                  !!toggling[cls._id] ||
+                                                  !studentID
+                                                    ? "not-allowed"
+                                                    : "pointer",
+                                                width: 14,
+                                                height: 14,
+                                                accentColor: partnerColor(),
+                                              }}
+                                              aria-label="Marcar aula como feita"
+                                            />
+                                          </label>
+                                        </div>
+                                      </div>
+
+                                      {/* Título + descrição */}
+                                      <div>
+                                        <div
+                                          style={{
+                                            margin: 0,
+                                            fontWeight: 600,
+                                            fontSize: 14,
+                                            color: "#0f172a",
+                                            lineHeight: 1.3,
+                                          }}
+                                        >
+                                          {cls.title || `Lesson ${viewIdx + 1}`}
+                                        </div>
+                                        {cls.description && (
+                                          <p
+                                            style={{
+                                              margin: "4px 0 0 0",
+                                              fontSize: 12,
+                                              color: "#475569",
+                                              lineHeight: 1.5,
+                                            }}
+                                          >
+                                            {truncateString(
+                                              cls.description,
+                                              140
+                                            )}
+                                          </p>
+                                        )}
+                                      </div>
+
+                                      {/* Tags em chips, tipo ESL Brains */}
+                                      {Array.isArray(cls.tags) &&
+                                        cls.tags.length > 0 && (
+                                          <div
+                                            style={{
+                                              display: "flex",
+                                              flexWrap: "wrap",
+                                              gap: 6,
+                                              marginTop: 4,
+                                            }}
+                                          >
+                                            {cls.tags.slice(0, 4).map((tag) => (
+                                              <span
+                                                key={tag}
+                                                style={{
+                                                  fontSize: 10,
+                                                  borderRadius: 999,
+                                                  padding: "2px 8px",
+                                                  background: "#e2e8f0",
+                                                  color: "#334155",
+                                                  textTransform: "uppercase",
+                                                  letterSpacing: ".06em",
+                                                  fontWeight: 600,
+                                                }}
+                                              >
+                                                {tag}
+                                              </span>
+                                            ))}
+                                          </div>
+                                        )}
+                                    </div>
+                                  </div>
+                                </LessonCard>
+                              </Link>
+
+                              {canEditCourse && (
+                                <div
+                                  onClick={(e) => e.preventDefault()}
+                                  style={{
+                                    display: "flex",
+                                    position: "absolute",
+                                    gap: 6,
+                                    alignItems: "center",
+                                    backgroundColor: "#ffffff",
+                                    height: "fit-content",
+                                    padding: "4px 8px",
+                                    borderRadius: 8,
+                                    border: "1px solid #e2e8ef",
+                                    marginLeft: "auto",
+                                    zIndex: 5, // garante que fique acima do Link / card
+                                  }}
                                 >
-                                  ▲
-                                </button>
-                                <button
-                                  title="Mover para baixo"
-                                  disabled={viewIdx === sorted.length - 1}
-                                  onClick={async () =>
-                                    await moveClass(moduleIdx, viewIdx, +1)
-                                  }
-                                  className="btn-ghost focusable"
-                                  aria-label="Mover para baixo"
-                                >
-                                  ▼
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        ))}
+                                  <button
+                                    title="Mover para cima"
+                                    disabled={viewIdx === 0}
+                                    onClick={async () =>
+                                      await moveClass(moduleIdx, viewIdx, -1)
+                                    }
+                                    style={{
+                                      all: "unset",
+                                      cursor:
+                                        viewIdx === 0
+                                          ? "not-allowed"
+                                          : "pointer",
+                                      color:
+                                        viewIdx === 0
+                                          ? "#94a3b8"
+                                          : partnerColor(),
+                                    }}
+                                    aria-label="Mover para cima"
+                                  >
+                                    ▲
+                                  </button>
+                                  <button
+                                    title="Mover para baixo"
+                                    disabled={viewIdx === sorted.length - 1}
+                                    onClick={async () =>
+                                      await moveClass(moduleIdx, viewIdx, +1)
+                                    }
+                                    style={{
+                                      all: "unset",
+                                      cursor:
+                                        viewIdx === sorted.length - 1
+                                          ? "not-allowed"
+                                          : "pointer",
+                                      color:
+                                        viewIdx === sorted.length - 1
+                                          ? "#94a3b8"
+                                          : partnerColor(),
+                                    }}
+                                    aria-label="Mover para baixo"
+                                  >
+                                    ▼
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })}
                         {canEditCourse && (
                           <CreateClassButton
                             courseId={courseId}

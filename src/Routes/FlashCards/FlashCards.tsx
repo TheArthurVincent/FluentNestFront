@@ -173,11 +173,10 @@ const FlashCards = ({
         borderRadius: "12px",
         border: "1px solid #e8eaed",
         padding: "2rem",
-        width: isDesktop ? "50vw" : "",
+        width: isDesktop ? "70vw" : "",
       }}
     >
       <Helmets text="Flashcards" />
-
       {(myPermissions === "superadmin" || myPermissions === "teacher") && (
         <div
           style={{

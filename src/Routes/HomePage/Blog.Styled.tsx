@@ -6,7 +6,7 @@ export const DivModal = styled.div`
   z-index: 100;
   background-color: ${alwaysWhite()};
   padding: 1rem;
-  width: 50vw;
+  width: 70vw;
   height: 30rem;
   top: 50%;
   left: 50%;
