@@ -1857,10 +1857,7 @@ export function isValidCPF(cpf) {
   return secondCheck === parseInt(cpf.charAt(10));
 }
 
-export function verifyTeacherPermissionsForCourses(
-  isOriginal,
-  createdBy
-) {
+export function verifyTeacherPermissionsForCourses(isOriginal, createdBy) {
   const { permissions, id } = JSON.parse(
     localStorage.getItem("loggedIn") || "[]"
   );

@@ -2,12 +2,12 @@ export const levels = () => {
   return [
     {
       level: 1,
-      icon: "fa fa-star",
+      icon: "fa fa-star-o",
       color: "#f8f8f8",
       flashcards25Reviews: 0,
       homeworkAssignmentsDone: 0,
       textcolor: "black",
-      backgroundcolor: "#f4f4f4",
+      backgroundcolor: "#000",
       card: "https://ik.imagekit.io/vjz75qw96/cards/1.jpg?updatedAt=1735816547056",
       text: "White Belt",
       discount: "0%",
@@ -106,7 +106,7 @@ export const levels = () => {
     },
     {
       level: 7,
-      icon: "fa fa-moon-o",
+      icon: "fa fa-moon",
       color: "#40004B",
       backgroundcolor: "#502070",
       textcolor: "white",

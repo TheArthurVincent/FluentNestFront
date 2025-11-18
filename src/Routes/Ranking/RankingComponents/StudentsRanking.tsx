@@ -355,7 +355,6 @@ export default function StudentsRanking({
           display: isVisible ? "block" : "none",
           padding: "1rem",
         }}
-        onClick={() => handleSeeModal()}
       />
       <div
         style={{

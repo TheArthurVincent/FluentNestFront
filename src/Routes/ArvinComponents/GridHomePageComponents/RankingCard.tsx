@@ -3,6 +3,7 @@ import { partnerColor } from "../../../Styles/Styles";
 import axios from "axios";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { TrophyIcon } from "@phosphor-icons/react";
+import StudentsRanking from "./RankingItems/RankingItems";
 interface RankingCardProps {
   appLoaded?: boolean;
   actualHeaders?: any;
@@ -14,7 +15,6 @@ export const RankingCard: FC<RankingCardProps> = ({
   actualHeaders,
   isDesktop,
 }) => {
-
   return (
     <>
       <span
@@ -40,7 +40,9 @@ export const RankingCard: FC<RankingCardProps> = ({
           <span>Ranking</span>
         </span>
       </span>
-      <div></div>
+      <div>
+        <StudentsRanking headers={actualHeaders} />
+      </div>
     </>
   );
 };
