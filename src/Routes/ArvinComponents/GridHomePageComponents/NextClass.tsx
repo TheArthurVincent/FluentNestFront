@@ -42,7 +42,6 @@ export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
       if (response.data.permissions) {
         setPermissions(response.data.permissions);
       }
-      console.log("NEXT CLASS DATA:", response.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);

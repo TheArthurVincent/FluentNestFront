@@ -29,8 +29,6 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
         }
       );
 
-      console.log("Last class data:", response.data);
-
       const courseTitleResp = response.data?.classDetails?.title || "";
       const courseResp = response.data?.classDetails?.courseId || "";
       const theImg =
