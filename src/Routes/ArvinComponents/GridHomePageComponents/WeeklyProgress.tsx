@@ -77,7 +77,7 @@ export const WeeklyProgress: FC<WeeklyProgressProps> = ({
   useEffect(() => {
     fetchProgress();
     // eslint-disable-next-line
-  }, [studentId]);
+  }, [studentId, appLoaded]);
 
   // Mapear dias da semana para datas recebidas
   const weekDays = ["SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM"];
