@@ -40,6 +40,7 @@ import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
 import LoginComponent from "./Routes/LoginComponent/LoginComponent";
 import ArvinNewHomePage from "./Routes/ArvinNewHomePage";
+import { Students } from "./Routes/ArvinComponents/Students/Students";
 
 export var currentUrl = window.location.href;
 export var isLocalHost = currentUrl.includes("localhost");
@@ -285,23 +286,6 @@ function App() {
         }
       })(),
     },
-    // {
-    //   path: "/newhp",
-    //   element: (() => {
-    //     try {
-    //       return isArvinLandingPage ? (
-    //         <Redirect to={"/lp"} />
-    //       ) : verifyToken() ? (
-    //         <ArvinNewHomePage headers={headers} />
-    //       ) : (
-    //         <Redirect to={"/login"} />
-    //       );
-    //     } catch (err) {
-    //       console.error("[App] Erro ao definir rota /*:", err);
-    //       return <NotFound />;
-    //     }
-    //   })(),
-    // },
     {
       path: "/lp",
       element: (() => {

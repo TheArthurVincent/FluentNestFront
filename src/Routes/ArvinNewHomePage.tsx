@@ -49,6 +49,8 @@ import {
 } from "./ArvinComponents/ArvinTopSideBar/SideDownBar/menuItems";
 import { DotsThreeCircleIcon } from "@phosphor-icons/react";
 import MyHomePage from "./ArvinComponents/NewHomePageArvin/NewHomePageArvin";
+import Students from "./ArvinComponents/Students/Students";
+import Grupos from "./ArvinComponents/Groups/Groups";
 
 export const useIsDesktop = (breakpoint = 700) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -390,6 +392,34 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: (
         <MyProfile headers={headers} change={change} setChange={setChange} />
+      ),
+    },
+    {
+      title: "Alunos",
+      path: "/students",
+      showLeftBar: true,
+      component: (
+        <Students
+          headers={headers}
+          actualHeaders={headers}
+          change={change}
+          setChange={setChange}
+          isDesktop={isDesktop}
+        />
+      ),
+    },
+    {
+      title: "Grupos",
+      path: "/groups",
+      showLeftBar: true,
+      component: (
+        <Grupos
+          headers={headers}
+          actualHeaders={headers}
+          change={change}
+          setChange={setChange}
+          isDesktop={isDesktop}
+        />
       ),
     },
     {

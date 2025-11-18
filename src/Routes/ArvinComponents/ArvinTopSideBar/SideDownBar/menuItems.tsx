@@ -8,10 +8,12 @@ import {
   SparkleIcon,
   TrophyIcon,
   UserCircleIcon,
+  UsersIcon,
 } from "@phosphor-icons/react";
 import React, { FC } from "react";
 import { onLoggOut } from "../../../../Resources/UniversalComponents";
 import { Link } from "react-router-dom";
+import { UserIcon } from "@phosphor-icons/react/dist/ssr";
 
 export type MenuItem = {
   label: string;
@@ -152,6 +154,7 @@ export const menuItems: MenuItem[] = [
     path: "/my-homework-and-lessons",
     isMobile: false,
   },
+
   {
     label: "Ranking",
     showInBottomBar: true,
@@ -197,6 +200,26 @@ export const menuItems: MenuItem[] = [
     justBottom: true,
     showInBottomBar: true,
     admin: true,
+  },
+  {
+    showInBottomBar: true,
+    justBottom: false,
+    label: "Alunos",
+    orderSideBar: 9,
+    admin: true,
+    Icon: UserIcon,
+    path: "/students",
+    isMobile: false,
+  },
+  {
+    showInBottomBar: true,
+    justBottom: false,
+    label: "Grupos",
+    orderSideBar: 9,
+    admin: true,
+    Icon: UsersIcon,
+    path: "/groups",
+    isMobile: false,
   },
   {
     label: "Sair",

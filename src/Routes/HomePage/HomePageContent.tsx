@@ -11,6 +11,7 @@ import { MyHeadersType } from "../../Resources/types.universalInterfaces";
 import Helmets from "../../Resources/Helmets";
 import BlogPosts from "./BlogPosts";
 import { isArthurVincent } from "../../App";
+import { Students } from "../ArvinComponents/Students/Students";
 
 interface BlogProps {
   headers: MyHeadersType | null;
