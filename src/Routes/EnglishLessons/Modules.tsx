@@ -98,11 +98,10 @@ const injectBaseStyles = () => {
     .lesson-card {
       position: relative;
       display: block;
-      width: 100%;
       border-radius: 16px;
       background: linear-gradient(135deg, #f8fafc, #ffffff);
       border: 1px solid #e2e8f0;
-      padding: 10px 12px;
+      padding: 10px;
       transition:
         transform .12s ease-out,
         box-shadow .12s ease-out,
@@ -469,17 +468,6 @@ export default function Modules({
     setDisplayRouteDiv(isRootOfCourse);
   }, [loc.pathname]);
 
-  /* ===== estilos “estilinho” comuns ===== */
-  const pageWrapStyle: React.CSSProperties = {
-    backgroundColor: "#ffffff",
-    padding: 12,
-    borderRadius: 16,
-    border: "1px solid #E3E8F0",
-    maxWidth: "min(1200px, 96vw)",
-    margin: "0 auto",
-    marginTop: "max(8px, env(safe-area-inset-top))",
-  };
-
   const headerRowStyle: React.CSSProperties = {
     display: "flex",
     flexWrap: "wrap",
@@ -526,7 +514,7 @@ export default function Modules({
         <>
           <div
             style={{
-              margin: !isDesktop ? "4.5rem auto" : "16px 0",
+              margin: !isDesktop ? "4.5rem auto" : "24px 0",
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 600,
               fontStyle: "SemiBold",
@@ -534,7 +522,7 @@ export default function Modules({
               backgroundColor: "#ffffff",
               borderRadius: "12px",
               border: "1px solid #e8eaed",
-              padding: "2rem",
+              padding: "1rem",
               width: isDesktop ? "90%" : "",
             }}
           >
@@ -648,7 +636,11 @@ export default function Modules({
 
                 return (
                   <div key={module.id || moduleIdx} style={{ marginTop: 8 }}>
-                    <HThreeModule
+                    <h3
+                      style={{
+                        fontWeight: 600,
+                        fontSize: 16,
+                      }}
                       onClick={() =>
                         setVisibleModules((prev) => {
                           const n = prev.slice();
@@ -669,7 +661,7 @@ export default function Modules({
                           onChanged={getModules}
                         />
                       )}{" "}
-                    </HThreeModule>
+                    </h3>
 
                     {visibleModules[moduleIdx] && (
                       <div style={lessonsListWrap}>
