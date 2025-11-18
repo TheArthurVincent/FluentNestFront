@@ -513,7 +513,7 @@ export default function Modules({
         <>
           <div
             style={{
-              margin: !isDesktop ? "4.5rem auto" : "12px auto",
+              margin: "12px auto",
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 600,
               fontStyle: "SemiBold",

@@ -316,7 +316,7 @@ export function MyProfile({
   return (
     <div
       style={{
-        margin: !isDesktop ? "4.5rem auto" : "auto",
+        margin: "auto",
         fontFamily: "Plus Jakarta Sans",
         fontWeight: 600,
         fontStyle: "SemiBold",

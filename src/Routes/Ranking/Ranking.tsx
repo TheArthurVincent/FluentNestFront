@@ -63,7 +63,7 @@ export default function Ranking({ headers, isDesktop }: Props) {
   return (
     <div
       style={{
-        margin: !isDesktop ? "4.5rem auto" : "16px auto",
+        margin: "16px auto",
         fontFamily: "Plus Jakarta Sans",
         fontWeight: 600,
         fontStyle: "SemiBold",
