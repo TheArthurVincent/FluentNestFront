@@ -77,7 +77,7 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
         border: `1px solid ${partnerColor()}50`,
         backgroundImage: `linear-gradient(180deg, ${partnerColor()}15 70%, ${partnerColor()}05 100%)`,
         borderRadius: "16px",
-        marginTop: isDesktop ? 0 : 85,
+        marginTop: isDesktop ? 0 : 16,
         display: "flex",
         justifyContent: "space-between",
       }}

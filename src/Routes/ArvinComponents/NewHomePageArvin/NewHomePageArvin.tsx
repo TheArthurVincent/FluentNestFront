@@ -180,7 +180,7 @@ export function MyHomePage({
   return (
     <div
       style={{
-        margin: !isDesktop ? "16px" : "0px 16px 0px 0px",
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
       }}
     >
       {isDesktop && (

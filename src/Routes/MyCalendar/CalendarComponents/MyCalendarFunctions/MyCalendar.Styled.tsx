@@ -15,18 +15,25 @@ export const CoursesList = styled.div`
   }
 `;
 export const StyledDiv = styled.div`
-  padding: 0px 0px 10px 0px;
-  margin: 10px auto;
+  padding: 0 0 10px 0;
+  margin: 8px 6px;
+  border-radius: 12px;
+  background: #f9fafb;
   border: 1px solid ${lightGreyColor()};
-  width: 10vw;
-  height: 61vh;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 420px;
+  display: flex;
+  flex-direction: column;
   overflow-y: auto;
   overflow-x: hidden;
-  @media (max-width: 1000px) {
-    min-width: 20vw;
-  }
+  scroll-behavior: smooth;
   @media (max-width: 900px) {
-    min-width: 30vw;
+    width: 80vw;
+    min-width: 80vw;
+    max-width: 80vw;
+    height: 380px;
   }
 `;
 export const CourseItem = styled.div`

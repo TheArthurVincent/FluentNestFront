@@ -564,7 +564,6 @@ function MyCalendar({
       } else if (newStatus === "realizada") {
         mappedStatus = "Realized";
       }
-      console.log(homeworkAdded, "homeworkAdded");
       setCategory(newCategory);
       setDuration(newDuration);
       setFlashcardsAdded(newFlashcardsAdded);
@@ -1304,7 +1303,6 @@ function MyCalendar({
   };
 
   const handleSeeModal = (e) => {
-    fetchStudents();
     const checkIfNew = e ? false : true;
     setIsVisible(true);
     setLoadingInfo(true);
@@ -1628,7 +1626,7 @@ function MyCalendar({
       {headers ? (
         <div
           style={{
-            margin: !isDesktop ? "4.5rem auto" : "16px auto",
+            margin: "16px auto",
             fontFamily: "Plus Jakarta Sans",
             fontWeight: 600,
             fontStyle: "SemiBold",
@@ -2028,7 +2026,7 @@ function MyCalendar({
               </div>
             </div>
           )}
-          <HOne>{UniversalTexts.calendar}</HOne>
+          {!isVisible && <HOne>{UniversalTexts.calendar}</HOne>}{" "}
           {loading ? (
             <CircularProgress style={{ color: partnerColor() }} />
           ) : (
@@ -2039,9 +2037,9 @@ function MyCalendar({
               }}
               style={{
                 display: !isVisible ? "flex" : "none",
-                gap: "5px",
+                gap: "12px",
                 overflowX: "auto",
-                padding: "1rem 0",
+                padding: "8px 4px 4px",
                 scrollbarWidth: "thin",
                 scrollbarColor: `${partnerColor()} transparent`,
               }}
@@ -2449,12 +2447,11 @@ function MyCalendar({
           {/*Modal de nossos/edição de eventos particulares */}
           {/*Modal de nossos/edição de eventos particulares */}
           {/*Modal de nossos/edição de eventos particulares */}
-
           <div
-            className="modal box-shadow-white"
             style={{
               display: isVisible ? "block" : "none",
               maxWidth: "90vw",
+              margin: "0 auto",
             }}
           >
             {loadingModalInfo ? (
@@ -5289,7 +5286,6 @@ function MyCalendar({
           </div>
           {/*Modal de nossos/edição de eventos particulares */}
           {/*Modal de nossos/edição de eventos particulares */}
-
           <>
             <div
               style={{
