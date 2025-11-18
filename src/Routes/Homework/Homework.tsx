@@ -28,7 +28,12 @@ interface HWProps {
   isDesktop: boolean;
 }
 
-export default function Homework({ headers, setChange, change,isDesktop }: HWProps) {
+export default function Homework({
+  headers,
+  setChange,
+  change,
+  isDesktop,
+}: HWProps) {
   const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
   const [isGroupClass, setIsGroupClass] = useState<boolean>(false);
   const [both, setBoth] = useState<boolean>(true);
@@ -433,10 +438,9 @@ export default function Homework({ headers, setChange, change,isDesktop }: HWPro
 
   const isAllowed = myPermissions == "superadmin" || myPermissions == "teacher";
   return (
-    
-       <div
+    <div
       style={{
-        margin: !isDesktop ? "4.5rem auto" : "16px auto",
+        margin: "16px auto",
         fontFamily: "Plus Jakarta Sans",
         fontWeight: 600,
         fontStyle: "SemiBold",
