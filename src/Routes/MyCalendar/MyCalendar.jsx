@@ -2036,13 +2036,13 @@ function MyCalendar({
             {loading ? (
               <CircularProgress style={{ color: partnerColor() }} />
             ) : (
-              <div
+             <div
                 ref={calendarRef}
                 onScroll={() => {
                   setShouldScrollToToday(false);
                 }}
                 style={{
-                  display: "flex",
+                  display: !isVisible ? "flex" : "none",
                   gap: "5px",
                   overflowX: "auto",
                   padding: "1rem 0",
@@ -2456,34 +2456,16 @@ function MyCalendar({
             )}
           </div>
           {/*Modal de nossos/edição de eventos particulares */}
-          <div>
-            <div
-              style={{
-                backgroundColor: transparentWhite(),
-                width: "10000px",
-                height: "10000px",
-                top: "0",
-                left: "0",
-                position: "fixed",
-                borderRadius: "4px",
-                zIndex: 98,
-                display: isVisible ? "block" : "none",
-              }}
-            />
+          {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
+      
             <div
               className="modal box-shadow-white"
               style={{
-                position: "fixed",
                 display: isVisible ? "block" : "none",
-                zIndex: 100,
                 backgroundColor: alwaysWhite(),
-                width: "500px",
-maxWidth: "90vw",
-                height: "90vh",
-                overflowY: "auto",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
+                maxWidth: "90vw",
               }}
             >
               {loadingModalInfo ? (
@@ -5383,7 +5365,9 @@ maxWidth: "90vw",
                 </div>
               )}
             </div>
-          </div>
+          {/*Modal de nossos/edição de eventos particulares */}
+          {/*Modal de nossos/edição de eventos particulares */}
+
           <>
             <div
               style={{
@@ -6822,7 +6806,7 @@ maxWidth: "90vw",
               )}
             </div>
           </>
-          <div
+  {!isVisible &&        <div
             style={{
               marginBottom: "1rem",
               borderRadius: "4px",
@@ -6936,7 +6920,7 @@ maxWidth: "90vw",
                 />
               </div>
 
-              <div style={{ display: "grid", gap: "5px" }}>
+       {!isVisible &&       <div style={{ display: "grid", gap: "5px" }}>
                 {/* Ações rápidas - Compactas */}
 
                 <div
@@ -7006,9 +6990,9 @@ maxWidth: "90vw",
                     </button>
                   )}
                 </div>
-              </div>
+              </div>}
             </div>
-          </div>
+          </div>}
         </div>
       ) : (
         <RouteSizeControlBox>
