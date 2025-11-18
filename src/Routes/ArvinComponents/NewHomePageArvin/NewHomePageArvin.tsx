@@ -137,6 +137,7 @@ export function MyHomePage({
       showToTeacher: false,
       component: (
         <WeeklyProgress
+          studentId={id}
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
           appLoaded={true}
