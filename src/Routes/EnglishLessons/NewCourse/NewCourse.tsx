@@ -144,6 +144,11 @@ const NewCourseButton: React.FC<NewCourseButtonProps> = ({
           style={{
             position: "fixed",
             inset: 0,
+            top: 0,
+            left: 0,
+            margin: "0 auto",
+            width: "90vw",
+            height: "100vh",
             background: "rgba(17,24,39,0.45)",
             display: "grid",
             placeItems: "center",

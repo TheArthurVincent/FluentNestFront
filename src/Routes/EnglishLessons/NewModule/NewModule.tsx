@@ -14,7 +14,21 @@ const injectKeyframes = () => {
   const style = document.createElement("style");
   style.id = "modal-styles";
   style.innerHTML = `
-  .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000}
+  .modal-backdrop{position:fixed;
+  
+  
+  
+          top: 0;
+            left: 0;
+            margin: 0 auto;
+            width: 90vw;
+            height: 100vh;
+  
+  
+  
+  
+  
+  inset:0;background:rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;z-index:1000}
   .modal{width:100%;max-width:480px;background:#fff;border-radius:10px;box-shadow:0 10px 25px rgba(0,0,0,0.2);overflow:hidden}
   .modal-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid #eee;font-weight:600}
   .modal-content{padding:16px;display:flex;flex-direction:column;gap:12px}

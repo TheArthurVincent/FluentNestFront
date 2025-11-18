@@ -6,9 +6,9 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 type HeadersType = any;
 
 type ModuleMeta = {
-  id: string;      // _id do módulo
-  title: string;   // título do módulo
-  order: number;   // ordem
+  id: string; // _id do módulo
+  title: string; // título do módulo
+  order: number; // ordem
 };
 
 interface Props {
@@ -41,6 +41,11 @@ const ReorderModulesButton: React.FC<Props> = ({
   };
   const overlayStyle: React.CSSProperties = {
     position: "fixed",
+    top: "0",
+    left: "0",
+    margin: "0 auto",
+    width: "100vw",
+    height: "100vh",
     inset: 0,
     background: "rgba(0,0,0,0.45)",
     display: "flex",
@@ -51,6 +56,7 @@ const ReorderModulesButton: React.FC<Props> = ({
   const modalStyle: React.CSSProperties = {
     width: "min(92vw, 560px)",
     background: "#fff",
+    height: "70vh",
     borderRadius: 8,
     boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
     overflow: "hidden",
@@ -133,7 +139,9 @@ const ReorderModulesButton: React.FC<Props> = ({
       fetchMeta();
     } else if (open && initialList?.length) {
       // normaliza/ordena inicial
-      const arr = initialList.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      const arr = initialList
+        .slice()
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
       setList(arr);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -183,13 +191,22 @@ const ReorderModulesButton: React.FC<Props> = ({
 
   return (
     <>
-      <button style={btnStyle} onClick={() => setOpen(true)} title="Reordenar módulos">
+      <button
+        style={btnStyle}
+        onClick={() => setOpen(true)}
+        title="Reordenar módulos"
+      >
         <i className="fa fa-arrows-v" aria-hidden="true" /> Reordenar Módulos
       </button>
 
       {open && (
         <div style={overlayStyle} onClick={() => setOpen(false)}>
-          <div style={modalStyle} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+          <div
+            style={modalStyle}
+            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+          >
             <div style={headerStyle}>
               <strong style={{ fontSize: 14 }}>Reordenar Módulos</strong>
               <button
@@ -256,7 +273,13 @@ const ReorderModulesButton: React.FC<Props> = ({
                         </div>
                       </div>
 
-                      <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: 6,
+                          justifyContent: "flex-end",
+                        }}
+                      >
                         <button
                           onClick={() => move(idx, -1)}
                           disabled={idx === 0}
@@ -281,7 +304,9 @@ const ReorderModulesButton: React.FC<Props> = ({
                             padding: "4px 8px",
                             borderRadius: 6,
                             cursor:
-                              idx === preview.length - 1 ? "not-allowed" : "pointer",
+                              idx === preview.length - 1
+                                ? "not-allowed"
+                                : "pointer",
                           }}
                         >
                           ▼
