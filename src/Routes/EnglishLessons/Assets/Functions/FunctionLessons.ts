@@ -102,6 +102,3 @@ export const readText = async (
     console.error("Erro TTS:", error);
   }
 };
-
-
-

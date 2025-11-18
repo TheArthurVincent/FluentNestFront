@@ -3567,7 +3567,7 @@ export default function EnglishClassCourse2({
                   {!exercise ? (
                     <div
                       style={{
-                        maxWidth: "1200px",
+                        maxWidth: "780%",
                         margin: "0 auto",
                         background: "#ffffff",
                         position: "relative",
@@ -4331,8 +4331,10 @@ export default function EnglishClassCourse2({
                                 </div>
 
                                 {currentAudio.type === "audio" ? (
-                                  <AudioFile hideText element={currentAudio}
-                                  selectedVoice={selectedVoice  }
+                                  <AudioFile
+                                    hideText
+                                    element={currentAudio}
+                                    selectedVoice={selectedVoice}
                                   />
                                 ) : (
                                   <AudioSoundTrack
