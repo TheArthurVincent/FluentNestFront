@@ -10,7 +10,6 @@ import {
 import axios from "axios";
 
 import { HOne } from "../../Resources/Components/RouteBox";
-import { HThreeModule } from "../MyClasses/MyClasses.Styled";
 import { partnerColor, darkGreyColor, logoPartner } from "../../Styles/Styles";
 import {
   backDomain,
@@ -81,7 +80,7 @@ const injectBaseStyles = () => {
 
     .card-row {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr;
       align-items: stretch;
       gap: 8px;
     }
@@ -514,7 +513,7 @@ export default function Modules({
         <>
           <div
             style={{
-              margin: !isDesktop ? "4.5rem auto" : "24px 0",
+              margin: !isDesktop ? "4.5rem auto" : "12px auto",
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 600,
               fontStyle: "SemiBold",
@@ -523,7 +522,7 @@ export default function Modules({
               borderRadius: "12px",
               border: "1px solid #e8eaed",
               padding: "1rem",
-              width: isDesktop ? "90%" : "",
+              width: isDesktop ? "95%" : "",
             }}
           >
             <HOne>{title}</HOne>
@@ -638,6 +637,13 @@ export default function Modules({
                   <div key={module.id || moduleIdx} style={{ marginTop: 8 }}>
                     <h3
                       style={{
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        justifyContent: "space-between",
+                        borderBottom: "1px solid #e2e8f0",
+                        paddingBottom: 4,
                         fontWeight: 600,
                         fontSize: 16,
                       }}
@@ -649,9 +655,11 @@ export default function Modules({
                         })
                       }
                     >
-                      {moduleIdx + 1} |{" "}
-                      {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
-                      {sorted.length} Lessons
+                      <>
+                        {moduleIdx + 1} |{" "}
+                        {module.moduleTitle ?? `Module #${moduleIdx}`} -{" "}
+                        {sorted.length} Lessons
+                      </>{" "}
                       {canEditCourse && (
                         <ModuleActions
                           moduleId={module.id}

@@ -65,7 +65,7 @@ export const useIsDesktop = (breakpoint = 700) => {
 };
 
 export function ArvinNewHomePage({ headers }: HeadersProps) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // <- NOVO
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   var [loading, setLoading] = useState<boolean>(true);
   var [thePermissions, setPermissions] = useState<string>("");
   var [admin, setAdmin] = useState<boolean>(false);
@@ -292,7 +292,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     {
       title: "My Calendar Ref",
       showLeftBar: true,
-
       component: (
         <MyCalendarNew
           change={change}
@@ -426,12 +425,11 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   const curr = pathname.replace(/\/+$/, "") || "/";
 
   const isActivePath = (targetPath?: string) => {
-    if (!targetPath) return false; // sem path, nunca ativo
+    if (!targetPath) return false;
     const target = normalize(targetPath) || "/";
 
-    if (target === "/") return curr === "/"; // Home só é ativo em "/"
+    if (target === "/") return curr === "/";
 
-    // Ativo se é exatamente o alvo OU se está dentro dele (alvo + "/...")
     return curr === target || curr.startsWith(`${target}/`);
   };
   return !loading ? (
@@ -441,13 +439,12 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         flexDirection: isDesktop ? "row" : "column",
         justifyContent: isDesktop ? "space-between" : "flex-start",
         height: "100vh",
-        width: "100%", // em vez de "99vw"
+        width: "100%",
       }}
     >
       <Routes>
         {appRoutes.map((component, index) => {
           const showLeftBar = component.showLeftBar !== false;
-
           return (
             <Route
               key={index}
@@ -460,8 +457,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                     {showLeftBar && (
                       <div
                         style={{
-                          // padding: "16px 20px 16px 16px",
-                          margin: isDesktop ? "16px" : "0px",
+                          margin: isDesktop ? "16px" : "0px 0px 70px 0px",
                           zIndex: 10,
                         }}
                       >
@@ -470,23 +466,21 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                           isDesktop={isDesktop}
                           admin={admin || teacher}
                           appLoaded={appLoaded}
-                          collapsed={sidebarCollapsed} // <- NOVO
-                          onToggleCollapsed={
-                            () => setSidebarCollapsed((prev) => !prev) // <- NOVO
+                          collapsed={sidebarCollapsed}
+                          onToggleCollapsed={() =>
+                            setSidebarCollapsed((prev) => !prev)
                           }
                         />
                       </div>
                     )}
-
                     <div
                       style={{
                         width: "100%",
-                        // aqui o truque: conteúdo “reage” à largura do sidebar fixo
                         marginLeft:
                           isDesktop && showLeftBar
                             ? sidebarCollapsed
-                              ? 88 // 72 do aside + um respiro
-                              : 280 // 260 do aside + um respiro
+                              ? 88
+                              : 280
                             : 0,
                         transition: "margin-left 0.2s ease-in-out",
                         transform: isDesktop
@@ -496,7 +490,9 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
                     >
                       {component.component}
                       {isDesktop ? null : (
-                        <span style={{ marginBottom: isDesktop ? 0 : 10000 }} />
+                        <span style={{ paddingBottom: isDesktop ? 20 : 100 }}>
+                          .
+                        </span>
                       )}
                     </div>
                   </>
@@ -530,7 +526,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
         className="footer-arvin-mobile"
       >
         {menuItems
-          .filter((it) => it.isMobile && !!it.path) // garante path válido
+          .filter((it) => it.isMobile && !!it.path)
           .sort((a, b) => (a.orderMobile ?? 9999) - (b.orderMobile ?? 9999))
           .map((item) => {
             const active = isActivePath(item.path);
@@ -586,7 +582,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
             padding: "8px",
             justifyContent: "center",
             fontSize: 12,
-            // pinta o ativo e “desmarca” os outros
+
             background: seeMenuDown ? `${partnerColor()}14` : "transparent",
             opacity: seeMenuDown ? 1 : 0.6,
             transform: seeMenuDown ? "translateY(-2px)" : "none",

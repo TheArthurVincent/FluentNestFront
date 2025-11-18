@@ -648,7 +648,7 @@ export default function EnglishCourses({
     <div
       style={{
         display: "flex",
-        marginTop: !isDesktop ? "3rem" : "0",
+        marginTop: "0",
         flexDirection: "column",
         gap: "1rem",
         width: "100%",
