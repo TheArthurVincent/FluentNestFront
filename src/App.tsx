@@ -40,7 +40,6 @@ import InstallPWA from "./Components/InstallPWA";
 import NotificationManager from "./Components/NotificationManager";
 import LoginComponent from "./Routes/LoginComponent/LoginComponent";
 import ArvinNewHomePage from "./Routes/ArvinNewHomePage";
-import { Students } from "./Routes/ArvinComponents/Students/Students";
 import StudentPage from "./Routes/ArvinComponents/Students/TheStudent/TheStudent";
 
 export var currentUrl = window.location.href;

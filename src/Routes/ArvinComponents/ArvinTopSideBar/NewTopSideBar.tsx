@@ -55,7 +55,9 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
           {/* Logo só aparece quando NÃO está colapsado */}
           {!collapsed && (
             <img
+              onClick={() => window.location.assign("/")}
               style={{
+                cursor: "pointer",
                 height: 48,
                 width: "auto",
                 maxWidth: "100%",
@@ -142,8 +144,10 @@ export const ArvinTopBar: FC<ArvinTopBarProps> = ({
         }}
       >
         <img
+          onClick={() => window.location.assign("/")}
           style={{
             height: "48px",
+            cursor: "pointer",
             width: "auto",
             maxWidth: "100%",
             objectFit: "contain",

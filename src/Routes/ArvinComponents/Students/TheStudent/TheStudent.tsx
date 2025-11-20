@@ -113,9 +113,9 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
   const [student, setStudent] = useState<StudentItem | null>(null);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     if (!studentId) return;
-
     const fetchStudent = async () => {
       try {
         const res = await axios.get(

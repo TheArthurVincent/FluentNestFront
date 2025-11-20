@@ -40,6 +40,28 @@ export function ListOfStudentsToClick({
   const [search, setSearch] = useState("");
   const [ID, setID] = useState("");
 
+  // ====== FUNÇÃO PARA BUSCAR EVENTOS DE UM DIA ======
+  const getDayEvents = async (userid: any, date: Date) => {
+    const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
+
+    try {
+      const response = await axios.get(
+        `${backDomain}/api/v1/events-today/${userid}`,
+        {
+          headers: actualHeaders ? { ...actualHeaders } : {},
+          params: { today: dateStr },
+        }
+      );
+
+      const data = response.data || {};
+      const events = data.events || [];
+
+      console.log("EVENTS FOR", dateStr, data, events);
+    } catch (error) {
+      console.log("Erro ao buscar eventos do dia:", error);
+    }
+  };
+
   const fetchStudents = async () => {
     const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
     setID(user.id || user._id);
@@ -52,6 +74,8 @@ export function ListOfStudentsToClick({
       );
 
       setStudents(response.data.listOfStudents || response.data || []);
+
+      getDayEvents(user.id || user._id, new Date());
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     } finally {
@@ -62,6 +86,7 @@ export function ListOfStudentsToClick({
   useEffect(() => {
     fetchStudents();
   }, []);
+
   const filteredStudents = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return students;
