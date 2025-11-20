@@ -295,7 +295,6 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
     <div
       style={{
         padding: 0,
-        maxWidth: 1100,
         margin: "0 auto",
         fontFamily:
           "Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
@@ -450,6 +449,8 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
       <div
         style={{
           padding: 16,
+          margin: "auto",
+          maxWidth: 1300,
           paddingTop: 12,
           display: "flex",
           flexDirection: "column",
