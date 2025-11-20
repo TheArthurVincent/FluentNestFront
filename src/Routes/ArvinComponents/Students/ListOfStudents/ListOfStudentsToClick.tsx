@@ -31,6 +31,37 @@ type StudentItem = {
   username: string;
 };
 
+type EventToday = {
+  event: {
+    _id: string;
+    studentID: string;
+    tutoringID?: string;
+    edited?: boolean;
+    duration?: number;
+    student?: string;
+    status?: string;
+    link?: string;
+    description?: string | null;
+    category?: string;
+    date: string; // "2025-11-20"
+    time: string; // "08:00"
+  };
+  student?: {
+    _id: string;
+    name: string;
+    lastname: string;
+    picture?: string;
+    email?: string;
+  };
+};
+
+type EventMap = {
+  [studentId: string]: {
+    time: string;
+    link: string;
+  };
+};
+
 export function ListOfStudentsToClick({
   actualHeaders,
   isDesktop,
@@ -39,24 +70,26 @@ export function ListOfStudentsToClick({
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState("");
   const [ID, setID] = useState("");
+  const [eventsForToday, setEventsForToday] = useState<EventToday[]>([]);
 
   // ====== FUNÇÃO PARA BUSCAR EVENTOS DE UM DIA ======
-  const getDayEvents = async (userid: any, date: Date) => {
+  const getDayEvents = async (userid: string, date: Date) => {
     const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/events-today/${userid}`,
+        `${backDomain}/api/v1/students-events-today/${userid}`,
         {
           headers: actualHeaders ? { ...actualHeaders } : {},
           params: { today: dateStr },
         }
       );
 
-      const data = response.data || {};
-      const events = data.events || [];
+      const events: EventToday[] = response.data.events || response.data || [];
 
-      console.log("EVENTS FOR", dateStr, data, events);
+      setEventsForToday(events || []);
+
+      console.log("EVENTS FOR", dateStr, events);
     } catch (error) {
       console.log("Erro ao buscar eventos do dia:", error);
     }
@@ -64,18 +97,20 @@ export function ListOfStudentsToClick({
 
   const fetchStudents = async () => {
     const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-    setID(user.id || user._id);
+    const userId = user.id || user._id;
+    setID(userId || "");
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/students-ids/${user.id || user._id}`,
+        `${backDomain}/api/v1/students-ids/${userId}`,
         {
           headers: actualHeaders,
         }
       );
 
       setStudents(response.data.listOfStudents || response.data || []);
-
-      getDayEvents(user.id || user._id, new Date());
+      if (userId) {
+        getDayEvents(userId, new Date());
+      }
     } catch (error) {
       notifyAlert("Erro ao encontrar alunos");
     } finally {
@@ -85,6 +120,7 @@ export function ListOfStudentsToClick({
 
   useEffect(() => {
     fetchStudents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const filteredStudents = useMemo(() => {
@@ -104,11 +140,60 @@ export function ListOfStudentsToClick({
     });
   }, [students, search]);
 
+  // Mapa: studentId -> { time, link } (menor horário se tiver mais de um evento)
+  const eventsMap: EventMap = useMemo(() => {
+    const map: EventMap = {};
+
+    (eventsForToday || []).forEach((item) => {
+      const studentId = item.student?._id || item.event.studentID || "";
+
+      if (!studentId) return;
+
+      const time = item.event.time || "23:59";
+      const link = item.event.link || "";
+
+      if (!map[studentId] || time < map[studentId].time) {
+        map[studentId] = { time, link };
+      }
+    });
+
+    return map;
+  }, [eventsForToday]);
+
+  const hasEventsToday = useMemo(
+    () => Object.keys(eventsMap).length > 0,
+    [eventsMap]
+  );
+
+  const studentsWithEventToday = useMemo(() => {
+    if (!hasEventsToday) return [];
+
+    const list = filteredStudents.filter((s) => !!eventsMap[s.id]);
+
+    // ordenar por horário do evento
+    return list.sort((a, b) => {
+      const timeA = eventsMap[a.id]?.time || "23:59";
+      const timeB = eventsMap[b.id]?.time || "23:59";
+      return timeA.localeCompare(timeB);
+    });
+  }, [filteredStudents, eventsMap, hasEventsToday]);
+
+  const studentsWithoutEventToday = useMemo(() => {
+    if (!hasEventsToday) return filteredStudents;
+    return filteredStudents.filter((s) => !eventsMap[s.id]);
+  }, [filteredStudents, eventsMap, hasEventsToday]);
+
+  const listToRender = hasEventsToday
+    ? studentsWithoutEventToday
+    : filteredStudents;
+
   return (
     <>
       {loading && <p>Loading...</p>}
       {!loading && students.length === 0 && <p>No students found.</p>}
+
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 12 }}>
+        {/* Barra de busca + novo aluno */}
         <div
           style={{
             display: "flex",
@@ -121,7 +206,6 @@ export function ListOfStudentsToClick({
             marginBottom: isDesktop ? 4 : 12,
           }}
         >
-          {" "}
           <input
             type="text"
             placeholder="🔍 Buscar aluno por nome, usuário ou e-mail..."
@@ -139,7 +223,142 @@ export function ListOfStudentsToClick({
           />
           <NewStudentModal id={ID} headers={actualHeaders} />
         </div>
-        {filteredStudents.map((st) => (
+
+        {/* Seção: alunos com aula hoje */}
+        {hasEventsToday && studentsWithEventToday.length > 0 && (
+          <div style={{ display: "grid", gap: 8, marginBottom: 8 }}>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 600,
+                color: "#475569",
+                padding: "2px 4px",
+              }}
+            >
+              Alunos com aula hoje
+            </div>
+
+            {studentsWithEventToday.map((st) => {
+              const info = eventsMap[st.id];
+              return (
+                <div
+                  key={`today-${st.id}`}
+                  style={{
+                    textDecoration: "none",
+                    color: "#222",
+                    background: "white",
+                    padding: "12px 16px",
+                    borderRadius: 12,
+                    border: "1px solid #e4e6ea",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 12,
+                    transition: "0.2s",
+                    fontFamily: "Plus Jakarta Sans",
+                  }}
+                >
+                  {/* Bloco esquerdo: foto + info do aluno (com link pro perfil) */}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 12,
+                      minWidth: 0,
+                    }}
+                  >
+                    <img
+                      src={
+                        st.picture ||
+                        "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+                      }
+                      alt={st.name}
+                      style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: "50%",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        minWidth: 0,
+                      }}
+                    >
+                      <Link
+                        to={`/students/${st.id}`}
+                        style={{
+                          fontSize: 15,
+                          fontWeight: 600,
+                          color: "#111827",
+                          textDecoration: "none",
+                          marginBottom: 2,
+                        }}
+                      >
+                        {st.name} {st.lastname}
+                      </Link>
+                      <span
+                        style={{
+                          fontSize: 11,
+                          opacity: 0.7,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {st.email}
+                      </span>
+                      {info?.time && (
+                        <span
+                          style={{
+                            fontSize: 11,
+                            marginTop: 4,
+                            padding: "2px 8px",
+                            borderRadius: 999,
+                            backgroundColor: "#EFF6FF",
+                            color: "#1D4ED8",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                          }}
+                        >
+                          🕒 Hoje às {info.time}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Bloco direito: botão Entrar na aula */}
+                  {info?.link && (
+                    <a
+                      href={info.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        fontSize: 12,
+                        borderRadius: 999,
+                        padding: "6px 12px",
+                        border: "1px solid #3B82F6",
+                        color: "#1D4ED8",
+                        background:
+                          "linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%)",
+                        textDecoration: "none",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      Entrar na aula
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Lista normal (ou restante da lista) */}
+        {listToRender.map((st) => (
           <Link
             key={st.id}
             to={`/students/${st.id}`}
@@ -157,7 +376,6 @@ export function ListOfStudentsToClick({
               fontFamily: "Plus Jakarta Sans",
             }}
           >
-            {/* Foto */}
             <img
               src={
                 st.picture ||
@@ -171,7 +389,6 @@ export function ListOfStudentsToClick({
                 objectFit: "cover",
               }}
             />
-            {/* Informações */}
             <div style={{ display: "flex", flexDirection: "column" }}>
               <span style={{ fontSize: 15, fontWeight: 600 }}>
                 {st.name} {st.lastname}
