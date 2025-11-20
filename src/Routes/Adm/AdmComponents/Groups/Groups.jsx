@@ -344,7 +344,7 @@ export function Groups({ headers, id }) {
       setClassesGroup(response.data.classesGroup);
       setLoadingGroupClasses(false);
     } catch (error) {
-      notifyAlert("Erro ao encontrar aulas dos grupos");
+      notifyAlert("Erro ao encontrar aulas dos Turmas");
       setLoadingGroupClasses(false);
     }
   };
@@ -359,7 +359,7 @@ export function Groups({ headers, id }) {
       }}
     >
       <section style={{ marginBottom: 32 }}>
-        <HOne>Meus grupos</HOne>
+        <HOne>Minhas Turmas</HOne>
         <ul
           style={{
             padding: 10,
@@ -503,7 +503,7 @@ export function Groups({ headers, id }) {
                       color: textpartnerColorContrast(),
                     }}
                   >
-                    Voltar aos grupos
+                    Voltar aos Turmas
                   </button>
                   <button
                     onClick={() => setShowDeleteConfirm(true)}

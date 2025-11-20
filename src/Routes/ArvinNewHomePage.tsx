@@ -50,7 +50,7 @@ import {
 import { DotsThreeCircleIcon } from "@phosphor-icons/react";
 import MyHomePage from "./ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 import Students from "./ArvinComponents/Students/Students";
-import Grupos from "./ArvinComponents/Groups/Groups";
+import Turmas from "./ArvinComponents/Groups/Groups";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -409,11 +409,11 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       ),
     },
     {
-      title: "Grupos",
+      title: "Turmas",
       path: "/groups",
       showLeftBar: true,
       component: (
-        <Grupos
+        <Turmas
           headers={headers}
           actualHeaders={headers}
           change={change}

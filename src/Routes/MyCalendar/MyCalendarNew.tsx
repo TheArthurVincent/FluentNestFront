@@ -61,9 +61,9 @@ function MyCalendarNew({
 
   const { UniversalTexts } = useUserContext();
 
-  // Função para carregar estudantes e grupos
+  // Função para carregar estudantes e Turmas
 
-  // Buscar estudantes e grupos
+  // Buscar estudantes e Turmas
   const fetchStudents = async () => {
     try {
       const response = await axios.get(
@@ -73,7 +73,7 @@ function MyCalendarNew({
       const res = response.data.listOfStudents;
       setStudentsList(res || []);
     } catch (error: any) {
-      console.log(error, "Erro ao buscar estudantes e grupos");
+      console.log(error, "Erro ao buscar estudantes e Turmas");
     }
   };
   const fetchGroups = async () => {
@@ -84,7 +84,7 @@ function MyCalendarNew({
       const res = response.data.groups;
       setGroupsList(res || []);
     } catch (error: any) {
-      console.log(error, "Erro ao buscar estudantes e grupos");
+      console.log(error, "Erro ao buscar estudantes e Turmas");
     }
   };
 

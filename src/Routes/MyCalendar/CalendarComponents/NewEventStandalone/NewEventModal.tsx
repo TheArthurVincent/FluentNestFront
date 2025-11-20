@@ -58,7 +58,7 @@ function NewEventModal({
 
   const { UniversalTexts } = useUserContext();
 
-  // Buscar estudantes e grupos
+  // Buscar estudantes e Turmas
   const fetchStudents = async () => {
     try {
       const response = await axios.get(
@@ -69,7 +69,7 @@ function NewEventModal({
       setStudentsList(res || []);
       console.log("Estudantes buscados:", res);
     } catch (error: any) {
-      console.log(error, "Erro ao buscar estudantes e grupos");
+      console.log(error, "Erro ao buscar estudantes e Turmas");
     }
   };
   const fetchGroups = async () => {
@@ -79,9 +79,9 @@ function NewEventModal({
       });
       const res = response.data.groups;
       setGroupsList(res || []);
-      console.log(res, "Grupos buscados");
+      console.log(res, "Turmas buscados");
     } catch (error: any) {
-      console.log(error, "Erro ao buscar estudantes e grupos");
+      console.log(error, "Erro ao buscar estudantes e Turmas");
     }
   };
 

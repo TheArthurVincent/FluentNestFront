@@ -148,7 +148,7 @@ export const menuItems: MenuItem[] = [
   {
     showInBottomBar: true,
     justBottom: false,
-    label: "Grupos",
+    label: "Turmas",
     orderSideBar: 3,
     admin: true,
     Icon: UsersIcon,

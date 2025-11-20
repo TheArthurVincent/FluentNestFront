@@ -350,7 +350,7 @@ function MyCalendar({
         const res = response.data.groups;
         setGroupsList(res);
       } catch (error) {
-        console.log(error, "Erro ao encontrar grupos");
+        console.log(error, "Erro ao encontrar Turmas");
       }
     }
   };

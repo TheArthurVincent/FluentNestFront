@@ -9,7 +9,7 @@ import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import ListOfGroupsToClick from "./ListOfGroupsToClick/ListOfGroupsToClick";
 
-type GruposProps = HeadersProps & {
+type TurmasProps = HeadersProps & {
   change?: boolean;
   setChange?: any;
   isDesktop: boolean;
@@ -24,12 +24,12 @@ export var newArvinTitleStyle = {
   letterSpacing: "0%",
 };
 
-export function Grupos({
+export function Turmas({
   actualHeaders,
   change,
   setChange,
   isDesktop,
-}: GruposProps) {
+}: TurmasProps) {
   return (
     <div
       style={{
@@ -55,7 +55,7 @@ export function Grupos({
               fontSize: "1.5rem",
             }}
           >
-            <span style={newArvinTitleStyle}>Grupos</span>
+            <span style={newArvinTitleStyle}>Turmas</span>
           </section>
         </div>
       )}
@@ -79,4 +79,4 @@ export function Grupos({
   );
 }
 
-export default Grupos;
+export default Turmas;

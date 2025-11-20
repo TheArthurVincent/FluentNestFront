@@ -32,7 +32,7 @@ export function Adm({ headers }: HeadersProps) {
       component: <AllStudents id={id} headers={headers} plan={plan} />,
     },
     {
-      title: "Grupos",
+      title: "Turmas",
       displayArthur: "block",
       value: "1",
       tooltip:
