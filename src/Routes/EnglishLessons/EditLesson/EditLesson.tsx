@@ -351,19 +351,16 @@ export default function EditLesson({
 
   // ===================== ESTILOS BASE (MOBILE-FIRST) =====================
   const outerWrapStyle: React.CSSProperties = {
-    width: "100%",
-    maxWidth: 1100,
+    width: "98%",
     margin: "0 auto",
-    padding: isMobile ? 12 : 16,
+    padding: 12,
     boxSizing: "border-box",
     borderRadius: 12,
   };
 
   const sectionCard: React.CSSProperties = {
-    borderRadius: 12,
-    padding: isMobile ? 10 : 14,
+    padding: 10,
     boxSizing: "border-box",
-    border: "1px solid #e2e8f0",
   };
 
   const labelStyle: React.CSSProperties = {
