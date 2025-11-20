@@ -156,7 +156,6 @@ export const NewStudentModal: FC<NewStudentModalProps> = ({ headers, id }) => {
     <>
       {/* Botão que abre o modal */}
       <Button
-        variant="contained"
         onClick={() => setOpen(true)}
         style={{
           backgroundColor: partnerColor(),

@@ -87,11 +87,13 @@ export function ListOfStudentsToClick({
         <div
           style={{
             display: "flex",
-            alignItems: "center",
+            alignItems: !isDesktop ? "flex-end" : "center",
+            padding: "8px 0",
+            flexDirection: isDesktop ? "row" : "column",
             fontSize: 12,
             color: "#555",
             gap: 8,
-            marginBottom: 4,
+            marginBottom: isDesktop ? 4 : 12,
           }}
         >
           {" "}
