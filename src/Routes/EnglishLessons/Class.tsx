@@ -3103,16 +3103,15 @@ export default function EnglishClassCourse2({
   return (
     <div
       style={{
-        margin: !isDesktop ? "1.6rem auto" : "16px auto",
+        margin: "auto",
+        padding: "1rem",
+        minHeight: "80vh",
         fontFamily: "Plus Jakarta Sans",
         fontWeight: 600,
         fontStyle: "SemiBold",
         fontSize: "14px",
         backgroundColor: "#ffffff",
         borderRadius: "12px",
-        width: "95%",
-        border: "1px solid #e8eaed",
-        padding: "10px",
       }}
     >
       <Helmets text={classTitle} />
@@ -3133,7 +3132,7 @@ export default function EnglishClassCourse2({
                 <Link
                   style={{
                     textDecoration: "none",
-                    fontSize: "10px",
+                    fontSize: "14px",
                     color: "#000",
                   }}
                   to="/teaching-materials"
@@ -3144,7 +3143,7 @@ export default function EnglishClassCourse2({
                 <Link
                   style={{
                     textDecoration: "none",
-                    fontSize: "10px",
+                    fontSize: "14px",
                     color: "#000",
                   }}
                   to={`/teaching-materials/${pathGenerator(courseTitle || "")}`}
@@ -3156,7 +3155,8 @@ export default function EnglishClassCourse2({
                   style={{
                     textDecoration: "none",
                     fontStyle: "italic",
-                    fontSize: "10px",
+                    fontSize: "14px",
+                    fontWeight: "700",
                     color: partnerColor(),
                   }}
                 >

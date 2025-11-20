@@ -513,19 +513,16 @@ export default function Modules({
         <>
           <div
             style={{
-              margin: "12px auto",
+              margin: "auto",
+              padding: "10px",
               fontFamily: "Plus Jakarta Sans",
               fontWeight: 600,
               fontStyle: "SemiBold",
               fontSize: "14px",
-              backgroundColor: "#ffffff",
               borderRadius: "12px",
-              border: "1px solid #e8eaed",
-              padding: "1rem",
               width: isDesktop ? "95%" : "",
             }}
           >
-            <HOne>{title}</HOne>
             {loading ? (
               <Spinner />
             ) : (
@@ -537,7 +534,7 @@ export default function Modules({
                   >
                     <span
                       style={{
-                        fontSize: 11,
+                        fontSize: 14,
                         cursor: "pointer",
                         color: darkGreyColor(),
                       }}
@@ -552,6 +549,7 @@ export default function Modules({
                       style={{
                         color: partnerColor(),
                         fontSize: 11,
+                        fontWeight: 700,
                         fontStyle: "italic",
                         display: "inline-flex",
                         gap: 8,
@@ -559,14 +557,6 @@ export default function Modules({
                       }}
                     >
                       {title}
-                      {(thePermissions === "teacher" ||
-                        thePermissions === "superadmin") && (
-                        <span style={{ color: "#64748b", fontSize: 10 }}>
-                          {canEditCourse
-                            ? "(Editing Enabled)"
-                            : "(Editing Disabled)"}
-                        </span>
-                      )}
                     </span>
                   </div>
 
