@@ -5,16 +5,17 @@ import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 import { Link } from "react-router-dom";
 import NewStudentModal from "../NewStudent/NewStudent";
+import { partnerColor } from "../../../../Styles/Styles";
 
 type ListOfStudentsToClickProps = HeadersProps & {
   change?: boolean;
-  setChange?: any;
+  setChange?: (value: boolean) => void;
   isDesktop: boolean;
-  actualHeaders?: any;
+  actualHeaders?: Record<string, string>;
   myId?: string;
 };
 
-export var newArvinTitleStyle = {
+export const newArvinTitleStyle = {
   fontFamily: "Plus Jakarta Sans",
   fontWeight: 600,
   fontStyle: "SemiBold",
@@ -72,7 +73,7 @@ export function ListOfStudentsToClick({
   const [ID, setID] = useState("");
   const [eventsForToday, setEventsForToday] = useState<EventToday[]>([]);
 
-  // ====== FUNÇÃO PARA BUSCAR EVENTOS DE UM DIA ======
+  // ====== BUSCAR EVENTOS DO DIA ======
   const getDayEvents = async (userid: string, date: Date) => {
     const dateStr = date.toISOString().split("T")[0]; // YYYY-MM-DD
 
@@ -86,24 +87,23 @@ export function ListOfStudentsToClick({
       );
 
       const events: EventToday[] = response.data.events || response.data || [];
-
       setEventsForToday(events || []);
-
-      console.log("EVENTS FOR", dateStr, events);
     } catch (error) {
       console.log("Erro ao buscar eventos do dia:", error);
     }
   };
 
   const fetchStudents = async () => {
-    const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
-    const userId = user.id || user._id;
-    setID(userId || "");
+    setLoading(true);
     try {
+      const user = JSON.parse(localStorage.getItem("loggedIn") || "{}");
+      const userId = user.id || user._id;
+      setID(userId || "");
+
       const response = await axios.get(
         `${backDomain}/api/v1/students-ids/${userId}`,
         {
-          headers: actualHeaders,
+          headers: actualHeaders ? { ...actualHeaders } : {},
         }
       );
 
@@ -112,6 +112,7 @@ export function ListOfStudentsToClick({
         getDayEvents(userId, new Date());
       }
     } catch (error) {
+      console.error(error);
       notifyAlert("Erro ao encontrar alunos");
     } finally {
       setLoading(false);
@@ -123,6 +124,7 @@ export function ListOfStudentsToClick({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ====== FILTRO DE BUSCA ======
   const filteredStudents = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return students;
@@ -140,13 +142,12 @@ export function ListOfStudentsToClick({
     });
   }, [students, search]);
 
-  // Mapa: studentId -> { time, link } (menor horário se tiver mais de um evento)
+  // ====== MAPA DE EVENTOS (studentId -> menor horário) ======
   const eventsMap: EventMap = useMemo(() => {
     const map: EventMap = {};
 
     (eventsForToday || []).forEach((item) => {
       const studentId = item.student?._id || item.event.studentID || "";
-
       if (!studentId) return;
 
       const time = item.event.time || "23:59";
@@ -170,7 +171,7 @@ export function ListOfStudentsToClick({
 
     const list = filteredStudents.filter((s) => !!eventsMap[s.id]);
 
-    // ordenar por horário do evento
+    // Ordenar por horário
     return list.sort((a, b) => {
       const timeA = eventsMap[a.id]?.time || "23:59";
       const timeB = eventsMap[b.id]?.time || "23:59";
@@ -292,7 +293,7 @@ export function ListOfStudentsToClick({
                         style={{
                           fontSize: 15,
                           fontWeight: 600,
-                          color: "#111827",
+                          color: `${partnerColor()}`,
                           textDecoration: "none",
                           marginBottom: 2,
                         }}
@@ -317,8 +318,8 @@ export function ListOfStudentsToClick({
                             marginTop: 4,
                             padding: "2px 8px",
                             borderRadius: 999,
-                            backgroundColor: "#EFF6FF",
-                            color: "#1D4ED8",
+                            backgroundColor: `${partnerColor()}10`,
+                            color: `${partnerColor()}`,
                             display: "inline-flex",
                             alignItems: "center",
                             gap: 4,
@@ -340,15 +341,15 @@ export function ListOfStudentsToClick({
                         fontSize: 12,
                         borderRadius: 999,
                         padding: "6px 12px",
-                        border: "1px solid #3B82F6",
-                        color: "#1D4ED8",
+                        border: `1px solid ${partnerColor()}70`,
+                        color: `${partnerColor()}`,
                         background:
                           "linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%)",
                         textDecoration: "none",
                         whiteSpace: "nowrap",
                       }}
                     >
-                      Entrar na aula
+                      Entrar
                     </a>
                   )}
                 </div>
