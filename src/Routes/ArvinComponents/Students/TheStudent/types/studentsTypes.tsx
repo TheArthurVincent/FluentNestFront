@@ -1,0 +1,94 @@
+// Routes/ArvinComponents/Students/StudentPage.types.ts
+export type TutoringDay = {
+  day: string;
+  time: string;
+  link: string;
+  duration?: number;
+  id: string;
+  endDate: string;
+};
+
+export type FinancialReport = {
+  _id: string;
+  studentId: string;
+  description: string;
+  typeOfItem: string;
+  teacherId: string;
+  paidFor: boolean;
+  accountFor: boolean;
+  amount: number;
+  paidSoFar: number;
+  month: string;
+  discount: number;
+  createdAt: string;
+  updatedAt: string;
+  __v?: number;
+};
+
+export type StudentItem = {
+  id: string;
+  theId: string;
+  username: string;
+  permissions: string;
+  supreme: boolean;
+  name: string;
+  lastname: string;
+  fullname: string;
+  email: string;
+  doc: string;
+  dateOfBirth: string;
+  phoneNumber: string;
+  address: string;
+  picture?: string;
+  language: string;
+  teacherID: string;
+  lastClassId: string;
+  level: string;
+  weeklyClasses: number;
+  tutoree: boolean;
+  tutoringDays: TutoringDay[];
+  totalScore: number;
+  monthlyScore: number;
+  homeworkAssignmentsDone: number;
+  flashCards: any[];
+  flashCardsReviewRate: number;
+  flashCardsReviewsToday: number;
+  flashcards25Reviews: number;
+  flashcardsStreak: number;
+  flashcardsLongestStreak: number;
+  flashCardsTodayAccountedFor: boolean;
+  lastDayFlashcardReview?: string;
+  flashcardsStreakLastDay?: string;
+  package1: boolean;
+  package2: boolean;
+  package3: boolean;
+  classesToReplenish: number;
+  replenishTarget: boolean;
+  fee: number;
+  feeUpToDate: boolean;
+  creditCardPayment: boolean;
+  paymentId: string;
+  subscriptionAsaas: string;
+  pagseguroSubscriptionCode: string;
+  plan: string;
+  promoCode: string;
+  onHold: boolean;
+  askedToCancel: boolean;
+  limitDate: string;
+  limitCancelDate: string;
+  changedPasswordBeforeLogInAgain: boolean;
+  googleDriveLink: string;
+  createdAt: string;
+  updatedAt: string;
+  financialReports?: FinancialReport[];
+};
+
+export type TodayClass = {
+  id: string;
+  title: string;
+  time: string;
+  day: string;
+  type: string;
+  status: string;
+  link: string;
+};
