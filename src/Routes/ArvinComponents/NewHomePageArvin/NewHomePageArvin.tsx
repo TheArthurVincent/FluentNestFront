@@ -47,10 +47,11 @@ export function MyHomePage({
   const [id, setId] = useState<string>("");
 
   const [level, setLevel] = useState<number>(9);
-
+  const [appLoaded, setAppLoaded] = useState<boolean>(false);
   const seeScore = async (id: string) => {
     try {
       updateInfo(id, headers);
+      setAppLoaded(!appLoaded);
     } catch (e) {
       console.log(e);
     }
@@ -100,7 +101,7 @@ export function MyHomePage({
         <RankingCard
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
-          appLoaded={true}
+          appLoaded={appLoaded}
         />
       ),
     },
@@ -116,7 +117,7 @@ export function MyHomePage({
         <PracticalTipsTarget
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
-          appLoaded={true}
+          appLoaded={appLoaded}
         />
       ),
     },
@@ -128,7 +129,7 @@ export function MyHomePage({
           isDesktop={isDesktop}
           studentId={id}
           actualHeaders={actualHeaders}
-          appLoaded={true}
+          appLoaded={appLoaded}
         />
       ),
     },
@@ -151,7 +152,7 @@ export function MyHomePage({
           studentId={id}
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
-          appLoaded={true}
+          appLoaded={appLoaded}
         />
       ),
     },
@@ -163,7 +164,7 @@ export function MyHomePage({
           studentId={id}
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
-          appLoaded={true}
+          appLoaded={appLoaded}
         />
       ),
     },

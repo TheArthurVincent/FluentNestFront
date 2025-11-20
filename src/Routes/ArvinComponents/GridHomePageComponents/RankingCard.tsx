@@ -41,7 +41,7 @@ export const RankingCard: FC<RankingCardProps> = ({
         </span>
       </span>
       <div>
-        <StudentsRanking headers={actualHeaders} />
+        <StudentsRanking appLoaded={appLoaded} headers={actualHeaders} />
       </div>
       <div>
         <a
