@@ -31,7 +31,16 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const [editDoc, setEditDoc] = useState((student as any).doc || "");
   const [editDateOfBirth, setEditDateOfBirth] = useState<string>("");
 
+  // ====== estados pro modal de senha ======
+  const [openPwd, setOpenPwd] = useState(false);
+  const [savingPwd, setSavingPwd] = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
+  const [pwdSuccess, setPwdSuccess] = useState<string | null>(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
   const firstFocusableRef = useRef<HTMLInputElement | null>(null);
+  const firstPwdRef = useRef<HTMLInputElement | null>(null);
 
   // Inicializa a data de nascimento em formato yyyy-MM-dd (para <input type="date" />)
   useEffect(() => {
@@ -49,23 +58,29 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   // ESC para fechar e Ctrl+Enter / Cmd+Enter para salvar
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && open && !saving) setOpen(false);
-      if (
-        (e.ctrlKey || e.metaKey) &&
-        e.key.toLowerCase() === "enter" &&
-        open &&
-        !saving
-      ) {
-        handleSave();
+      if (e.key === "Escape") {
+        if (open && !saving) setOpen(false);
+        if (openPwd && !savingPwd) setOpenPwd(false);
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "enter") {
+        if (open && !saving) {
+          handleSave();
+        }
+        if (openPwd && !savingPwd) {
+          handleSavePassword();
+        }
       }
     };
     document.addEventListener("keydown", onKey);
     if (open) {
       setTimeout(() => firstFocusableRef.current?.focus(), 0);
     }
+    if (openPwd) {
+      setTimeout(() => firstPwdRef.current?.focus(), 0);
+    }
     return () => document.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, saving]);
+  }, [open, saving, openPwd, savingPwd]);
 
   const openModal = () => {
     setErrorMsg(null);
@@ -74,7 +89,6 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     setEditEmail(student.email || "");
     setEditPhone(student.phoneNumber || "");
     setEditDoc((student as any).doc || "");
-    // date já vem do useEffect
     setOpen(true);
   };
 
@@ -121,6 +135,71 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     } finally {
       setSaving(false);
       window.location.reload();
+    }
+  };
+
+  // ====== PASSWORD MODAL HANDLERS ======
+  const openPasswordModal = () => {
+    setPwdError(null);
+    setPwdSuccess(null);
+    setNewPassword("");
+    setConfirmPassword("");
+    setOpenPwd(true);
+  };
+
+  const closePasswordModal = () => {
+    if (savingPwd) return;
+    setOpenPwd(false);
+  };
+
+  const handleSavePassword = async () => {
+    try {
+      setPwdError(null);
+      setPwdSuccess(null);
+
+      if (!newPassword || !confirmPassword) {
+        setPwdError("Preencha os dois campos de senha.");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        setPwdError("As senhas não conferem.");
+        return;
+      }
+      if (newPassword.length < 6) {
+        setPwdError("A senha deve ter pelo menos 6 caracteres.");
+        return;
+      }
+
+      setSavingPwd(true);
+
+      // Ajuste essa URL para o path real da sua rota
+      const url = `${backDomain}/api/v1/studentpassword/${student.id}`;
+
+      const response = await axios.put(
+        url,
+        { newPassword },
+        {
+          headers: headers ? { ...headers } : {},
+        }
+      );
+
+      const msg = response.data?.message || "Senha editada com sucesso.";
+      setPwdSuccess(msg);
+
+      // Fecha depois de um pequeno delay
+      setTimeout(() => {
+        setOpenPwd(false);
+      }, 800);
+    } catch (err: any) {
+      console.error(err);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Erro ao editar senha do aluno.";
+      setPwdError(msg);
+    } finally {
+      setSavingPwd(false);
     }
   };
 
@@ -347,6 +426,191 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     return createPortal(modal, document.body);
   };
 
+  const renderPasswordModal = () => {
+    if (typeof document === "undefined") return null;
+    if (!openPwd) return null;
+
+    const modal = (
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-password-title"
+        onClick={(e) => {
+          if (e.target === e.currentTarget && !savingPwd) closePasswordModal();
+        }}
+        style={{
+          position: "fixed",
+          inset: 0,
+          top: 0,
+          left: 0,
+          margin: "0 auto",
+          width: "100vw",
+          height: "100vh",
+          background: "rgba(17,24,39,0.45)",
+          display: "grid",
+          placeItems: "center",
+          zIndex: 99999,
+          padding: "16px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "420px",
+            background: "#fff",
+            borderRadius: "12px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+            overflow: "hidden",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              borderBottom: "1px solid #eef2f7",
+              background: "#f8fafc",
+            }}
+          >
+            <h3
+              id="edit-password-title"
+              style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}
+            >
+              Editar senha
+            </h3>
+            <button
+              onClick={() => !savingPwd && closePasswordModal()}
+              aria-label="Fechar"
+              style={{
+                border: "none",
+                background: "transparent",
+                cursor: savingPwd ? "not-allowed" : "pointer",
+                padding: "6px",
+                color: "#64748b",
+              }}
+            >
+              <i className="fa fa-times" />
+            </button>
+          </div>
+
+          {/* Body */}
+          <div style={{ padding: "16px", display: "grid", gap: "12px" }}>
+            {pwdError && (
+              <div
+                role="alert"
+                style={{
+                  background: "#fef2f2",
+                  color: "#991b1b",
+                  border: "1px solid #fecaca",
+                  borderRadius: "8px",
+                  padding: "10px 12px",
+                  fontSize: "13px",
+                }}
+              >
+                {pwdError}
+              </div>
+            )}
+            {pwdSuccess && (
+              <div
+                role="status"
+                style={{
+                  background: "#ecfdf3",
+                  color: "#166534",
+                  border: "1px solid #bbf7d0",
+                  borderRadius: "8px",
+                  padding: "10px 12px",
+                  fontSize: "13px",
+                }}
+              >
+                {pwdSuccess}
+              </div>
+            )}
+
+            <Field
+              label="Nova senha"
+              ref={firstPwdRef}
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              disabled={savingPwd}
+            />
+            <Field
+              label="Confirmar nova senha"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={savingPwd}
+            />
+          </div>
+
+          {/* Footer */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "8px",
+              padding: "12px 16px",
+              borderTop: "1px solid #eef2f7",
+              background: "#fafafa",
+            }}
+          >
+            <button
+              onClick={closePasswordModal}
+              disabled={savingPwd}
+              style={{
+                padding: "10px 14px",
+                borderRadius: "8px",
+                border: "1px solid #e2e8f0",
+                background: "#ffffff",
+                color: "#334155",
+                cursor: savingPwd ? "not-allowed" : "pointer",
+                fontSize: "14px",
+              }}
+            >
+              Cancelar
+            </button>
+
+            <button
+              onClick={handleSavePassword}
+              disabled={savingPwd}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 14px",
+                borderRadius: "8px",
+                border: `1px solid ${partnerColor()}`,
+                background: savingPwd
+                  ? `${partnerColor()}50`
+                  : `${partnerColor()}`,
+                color: "white",
+                cursor: savingPwd ? "not-allowed" : "pointer",
+                fontSize: "14px",
+              }}
+            >
+              {savingPwd ? (
+                <>
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-key" aria-hidden="true" />
+                  Salvar senha
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+
+    return createPortal(modal, document.body);
+  };
+
   return (
     <>
       <div style={cardBase}>
@@ -487,24 +751,25 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
           </button>
           <button
             type="button"
+            onClick={openPasswordModal}
             style={{
               borderRadius: 8,
               padding: "8px 16px",
               border: "none",
-              backgroundColor: "#E5E7EB",
-              color: "#6B7280",
+              backgroundColor: `${partnerColor()}30`,
+              color: "#000",
               fontSize: 13,
               fontWeight: 600,
-              cursor: "not-allowed",
+              cursor: "pointer",
             }}
-            disabled
           >
-            Editar senha do aluno
+            Editar senha
           </button>
         </div>
       </div>
 
       {renderModal()}
+      {renderPasswordModal()}
     </>
   );
 };
