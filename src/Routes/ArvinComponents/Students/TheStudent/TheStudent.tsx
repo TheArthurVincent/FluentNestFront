@@ -8,7 +8,6 @@ import { partnerColor } from "../../../../Styles/Styles";
 import {
   MoneyIcon,
   UserCheckIcon,
-  WalletIcon,
   ChartBarIcon,
   GraduationCapIcon,
 } from "@phosphor-icons/react";
@@ -16,16 +15,18 @@ import {
   menuItems,
   MenuItem,
 } from "../../ArvinTopSideBar/SideDownBar/menuItems";
+import { newArvinTitleStyle } from "../Students";
 
 type StudentPageProps = {
   headers: MyHeadersType;
+  isDesktop?: boolean;
 };
 
 type TutoringDay = {
   day: string;
   time: string;
   link: string;
-  duration: number;
+  duration?: number;
   id: string;
   endDate: string;
 };
@@ -105,7 +106,7 @@ type StudentItem = {
   financialReports?: FinancialReport[];
 };
 
-const StudentPage: FC<StudentPageProps> = ({ headers }) => {
+const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
   const { studentId } = useParams<{ studentId: string }>();
   const location = useLocation();
   const [student, setStudent] = useState<StudentItem | null>(null);
@@ -121,7 +122,6 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
           `${backDomain}/api/v1/student/${studentId}`,
           { headers: headers as any }
         );
-        console.log("Student raw:", res.data);
         setStudent(res.data.formattedStudentData as StudentItem);
       } catch (err) {
         console.error("Erro ao carregar aluno", err);
@@ -133,6 +133,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
     fetchStudent();
   }, [studentId, headers]);
 
+  // fechar menu ao clicar fora / ESC
   useEffect(() => {
     if (!menuOpen) return;
 
@@ -158,8 +159,8 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
     };
   }, [menuOpen]);
 
+  // fecha o menu quando a rota muda
   useEffect(() => {
-    // fecha o menu quando a rota muda
     setMenuOpen(false);
   }, [location.pathname]);
 
@@ -196,91 +197,65 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
     return d.toLocaleDateString("pt-BR");
   };
 
-  const cardTitleStyle: React.CSSProperties = {
-    display: "flex",
-    marginLeft: "4px",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "12px",
-    marginBottom: "12px",
+  const formatDay = (day: string) => {
+    const map: Record<string, string> = {
+      Mon: "Seg",
+      Tue: "Ter",
+      Wed: "Qua",
+      Thu: "Qui",
+      Fri: "Sex",
+      Sat: "Sáb",
+      Sun: "Dom",
+    };
+    return map[day] || day;
   };
 
-  const cardHeaderLeftStyle: React.CSSProperties = {
-    display: "flex",
-    gap: "8px",
-    justifyContent: "space-between",
-    alignItems: "center",
-    fontWeight: 600,
-    color: "#030303",
-    fontFamily: "Plus Jakarta Sans",
+  const cardBase: React.CSSProperties = {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 8,
+    padding: 18,
+    boxShadow: "0 18px 40px rgba(15, 23, 42, 0.06)",
+    border: "1px solid #E5E7EB",
   };
 
-  const cardTitleTextStyle: React.CSSProperties = {
+  const cardTitle: React.CSSProperties = {
     fontFamily: "Plus Jakarta Sans",
     fontWeight: 700,
-    fontSize: "15px",
-    lineHeight: "100%",
-    color: "#030303",
-    letterSpacing: "0%",
+    fontSize: 14,
+    color: "#111827",
+    marginBottom: 10,
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
   };
 
-  const cardContainerStyle: React.CSSProperties = {
-    marginTop: "16px",
-    borderLeft: `4px solid ${partnerColor()}`,
-    padding: "0px 12px 12px 12px",
-  };
-
-  const baseCardStyle: React.CSSProperties = {
-    ...cardContainerStyle,
-    border: "2px solid #E5E7EB",
-    padding: 16,
-    borderRadius: 12,
-    backgroundColor: "#FFFFFF",
-    boxShadow: "0 10px 30px rgba(15, 23, 42, 0.04)",
-  };
-
-  const menuBoxStyle: React.CSSProperties = {
-    position: "absolute",
-    top: 48,
-    right: 16,
-    minWidth: 220,
-    backgroundColor: "#ffffff",
-    borderRadius: 12,
-    border: "1px solid #E5E7EB",
-    boxShadow:
-      "0 18px 45px rgba(15, 23, 42, 0.17), 0 0 0 1px rgba(148, 163, 184, 0.2)",
-    padding: 8,
-    zIndex: 999,
-  };
-
-  const menuButtonStyle: React.CSSProperties = {
-    borderRadius: 999,
-    border: "1px solid #E5E7EB",
-    padding: "6px 10px",
-    fontSize: 12,
+  const pillStatus: React.CSSProperties = {
+    fontSize: 11,
     fontWeight: 600,
-    fontFamily: "Plus Jakarta Sans",
-    backgroundColor: "#F9FAFB",
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
+    padding: "4px 10px",
+    borderRadius: 8,
+    backgroundColor: "#EEF2FF",
+    color: partnerColor(),
   };
 
-  const topBarStyle: React.CSSProperties = {
-    position: "sticky",
-    top: 0,
-    zIndex: 50,
-    background:
-      "linear-gradient(180deg, rgba(255,255,255,0.97) 0%, rgba(255,255,255,0.94) 100%)",
-    backdropFilter: "blur(10px)",
-    borderBottom: "1px solid #E5E7EB",
-    padding: "8px 16px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 12,
+  const statCardBase: React.CSSProperties = {
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: "#EEF2FF",
+    display: "grid",
+    gap: 4,
+  };
+
+  const statLabel: React.CSSProperties = {
+    fontSize: 11,
+    color: "#4B5563",
+    fontWeight: 500,
+  };
+
+  const statValue: React.CSSProperties = {
+    fontSize: 16,
+    fontWeight: 700,
+    color: "#111827",
   };
 
   const itemsForMenu: MenuItem[] = menuItems
@@ -291,503 +266,620 @@ const StudentPage: FC<StudentPageProps> = ({ headers }) => {
         (b.orderSideBar || b.orderMobile || 0)
     );
 
+  // ===== MOCK "Aulas de hoje" (arquitetura) =====
+  const mockTodayClasses =
+    student.tutoree && student.tutoringDays?.length
+      ? student.tutoringDays.map((td) => ({
+          id: td.id,
+          title: "Tutoria de Inglês",
+          time: td.time,
+          day: formatDay(td.day),
+          type: "Tutoria",
+          status: "Agendada",
+          link: td.link,
+        }))
+      : [];
+
   return (
     <div
       style={{
-        padding: 0,
-        margin: "0 auto",
-        fontFamily:
-          "Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-        display: "flex",
-        flexDirection: "column",
-        gap: 24,
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
       }}
     >
-      {/* TOPBAR FIXA */}
-      <div style={topBarStyle}>
+      {isDesktop && (
         <div
           style={{
+            paddingTop: 29,
+            paddingBottom: 17,
             display: "flex",
             alignItems: "center",
-            gap: 10,
-            minWidth: 0,
           }}
         >
-          {student.picture && (
-            <img
-              src={student.picture}
-              alt={student.fullname}
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: "50%",
-                objectFit: "cover",
-                border: `2px solid ${partnerColor()}`,
-                flexShrink: 0,
-              }}
-            />
-          )}
-          <div
+          <section
             style={{
-              display: "grid",
-              gap: 2,
-              minWidth: 0,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "8px",
+              width: "100%",
+              fontSize: "1.5rem",
             }}
           >
-            <span
-              style={{
-                fontSize: 15,
-                fontWeight: 700,
-                color: "#030303",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {student.fullname}
+            <span style={newArvinTitleStyle}>
+              {student.name + " " + student.lastname}
             </span>
-            <span
-              style={{
-                fontSize: 12,
-                color: "#6B7280",
-                fontWeight: 500,
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {student.email}
-            </span>
-          </div>
+          </section>
         </div>
-        <div
-          style={{ position: "relative", display: "flex", gap: 8 }}
-          ref={menuRef}
-        >
-          <button
-            type="button"
-            onClick={() => window.location.assign("/students")}
-            style={menuButtonStyle}
-          >
-            Voltar aos Alunos
-          </button>
-          <button
-            type="button"
-            onClick={() => setMenuOpen((prev) => !prev)}
-            style={menuButtonStyle}
-          >
-            <span>Menu</span>
-            <span
-              style={{
-                fontSize: 16,
-                lineHeight: 1,
-                transform: menuOpen ? "rotate(180deg)" : "rotate(0deg)",
-                transition: "transform 0.15s ease",
-              }}
-            >
-              ▾
-            </span>
-          </button>
+      )}
 
-          {menuOpen && (
-            <div style={menuBoxStyle}>
-              <ul
-                style={{
-                  listStyle: "none",
-                  margin: 0,
-                  padding: 0,
-                  display: "grid",
-                  gap: 2,
-                }}
-              >
-                {itemsForMenu.map((item) => {
-                  const isActive =
-                    location.pathname === item.path ||
-                    location.pathname.startsWith(item.path + "/");
-
-                  return (
-                    <li
-                      style={{
-                        listStyle: "none",
-                      }}
-                      key={item.path}
-                    >
-                      <Link
-                        to={item.path}
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                          padding: "8px 10px",
-                          borderRadius: 8,
-                          textDecoration: "none",
-                          fontSize: 13,
-                          fontWeight: 500,
-                          color: isActive ? "#0F172A" : "#4B5563",
-                          backgroundColor: isActive
-                            ? "rgba(59,130,246,0.08)"
-                            : "transparent",
-                        }}
-                      >
-                        <item.Icon
-                          size={18}
-                          weight="bold"
-                          color={isActive ? partnerColor() : "#6B7280"}
-                        />
-                        <span>{item.label}</span>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* CONTEÚDO PRINCIPAL (cards) */}
       <div
         style={{
-          padding: 16,
-          margin: "auto",
-          maxWidth: 1300,
-          paddingTop: 12,
-          display: "flex",
-          flexDirection: "column",
+          fontFamily:
+            "Plus Jakarta Sans, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+          display: "grid",
+          gridTemplateColumns: isDesktop ? "1fr 1fr 1fr" : "1fr",
           gap: 24,
         }}
       >
-        {/* GRID DOS CARDS */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: 24,
-          }}
-        >
-          {/* CARD: DADOS PRINCIPAIS */}
-          <div>
-            <span style={cardTitleStyle}>
-              <span style={cardHeaderLeftStyle}>
-                <UserCheckIcon size={20} weight="bold" color={"#030303"} />
-                <span style={cardTitleTextStyle}>Dados principais</span>
-              </span>
-            </span>
-            <div style={baseCardStyle}>
+        {/* ================= COLUNA ESQUERDA ================= */}
+        <div style={{ display: "grid", gap: 16 }}>
+          {/* CARD PRINCIPAL DO ALUNO */}
+          <div style={cardBase}>
+            <div
+              style={{
+                display: "flex",
+                gap: 16,
+                alignItems: "center",
+                marginBottom: 12,
+              }}
+            >
               <div
                 style={{
-                  display: "grid",
-                  gap: 6,
-                  fontSize: 13,
-                  color: "#606060",
+                  width: 72,
+                  height: 72,
+                  borderRadius: 8,
+                  background:
+                    "linear-gradient(135deg, #E0ECFF 0%, #F4E8FF 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  overflow: "hidden",
+                  flexShrink: 0,
                 }}
               >
-                <span>
-                  <strong>ID:</strong> {student.id}
-                </span>
-                <span>
-                  <strong>Email:</strong> {student.email}
-                </span>
-                <span>
-                  <strong>Telefone:</strong> {student.phoneNumber}
-                </span>
-                <span>
-                  <strong>CPF/Doc:</strong> {student.doc}
-                </span>
-                <span>
-                  <strong>Data de nascimento:</strong>{" "}
-                  {formatDate(student.dateOfBirth)}
-                </span>
-                <span>
-                  <strong>Endereço:</strong> {student.address}
-                </span>
-                <span>
-                  <strong>Idioma:</strong> {student.language}
-                </span>
-                <span>
-                  <strong>Teacher ID:</strong> {student.teacherID}
-                </span>
-                <span>
-                  <strong>Google Drive:</strong>{" "}
-                  <a
-                    href={student.googleDriveLink}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      color: partnerColor(),
-                      textDecoration: "none",
-                      fontWeight: 600,
-                    }}
-                  >
-                    Abrir pasta
-                  </a>
-                </span>
-                <span>
-                  <strong>Aulas semanais:</strong> {student.weeklyClasses}
-                </span>
-                <span>
-                  <strong>Fee:</strong> R$ {student.fee}
-                </span>
-                <span>
-                  <strong>Fee em dia?</strong>{" "}
-                  {student.feeUpToDate ? "✅ Sim" : "⚠️ Não"}
-                </span>
-                <span>
-                  <strong>Pagamento via cartão?</strong>{" "}
-                  {student.creditCardPayment ? "Sim" : "Não"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* CARD: PLANO & STATUS */}
-          <div>
-            <span style={cardTitleStyle}>
-              <span style={cardHeaderLeftStyle}>
-                <WalletIcon size={20} weight="bold" color={"#030303"} />
-                <span style={cardTitleTextStyle}>Plano & Status</span>
-              </span>
-            </span>
-            <div style={baseCardStyle}>
-              <div
-                style={{
-                  display: "grid",
-                  gap: 6,
-                  fontSize: 13,
-                  color: "#606060",
-                }}
-              >
-                <span>
-                  <strong>Criado em:</strong> {formatDate(student.createdAt)}
-                </span>
-                <span>
-                  <strong>Atualizado em:</strong>{" "}
-                  {formatDate(student.updatedAt)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* CARD: SCORES & FLASHCARDS */}
-          <div>
-            <span style={cardTitleStyle}>
-              <span style={cardHeaderLeftStyle}>
-                <ChartBarIcon size={20} weight="bold" color={"#030303"} />
-                <span style={cardTitleTextStyle}>Scores & Flashcards</span>
-              </span>
-            </span>
-            <div style={baseCardStyle}>
-              <div
-                style={{
-                  display: "grid",
-                  gap: 6,
-                  fontSize: 13,
-                  color: "#606060",
-                }}
-              >
-                <span>
-                  <strong>Total Score:</strong> {student.totalScore}
-                </span>
-                <span>
-                  <strong>Monthly Score:</strong> {student.monthlyScore}
-                </span>
-                <span>
-                  <strong>Lições feitas:</strong>{" "}
-                  {student.homeworkAssignmentsDone}
-                </span>
-                <span>
-                  <strong>Último dia de review:</strong>{" "}
-                  {formatDate(student.lastDayFlashcardReview)}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* CARD: TUTORIA */}
-          <div>
-            <span style={cardTitleStyle}>
-              <span style={cardHeaderLeftStyle}>
-                <GraduationCapIcon size={20} weight="bold" color={"#030303"} />
-                <span style={cardTitleTextStyle}>Tutoria</span>
-              </span>
-            </span>
-            <div style={baseCardStyle}>
-              {student.tutoree && student.tutoringDays?.length > 0 ? (
-                <ul
-                  style={{
-                    paddingLeft: 18,
-                    margin: 0,
-                    fontSize: 13,
-                    color: "#606060",
-                  }}
-                >
-                  {student.tutoringDays.map((td) => (
-                    <li key={td.id} style={{ marginBottom: 6 }}>
-                      <strong>{td.day}</strong> às <strong>{td.time}</strong> —{" "}
-                      {td.duration} min •{" "}
-                      <a
-                        href={td.link}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          fontWeight: 600,
-                        }}
-                      >
-                        Link da aula
-                      </a>{" "}
-                      • até {formatDate(td.endDate)}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <span
-                  style={{
-                    fontSize: 13,
-                    color: "#606060",
-                  }}
-                >
-                  Nenhum dia de tutoria cadastrado.
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* CARD: FINANCIAL REPORTS (full width) */}
-          <div style={{ gridColumn: "1 / -1" }}>
-            <span style={cardTitleStyle}>
-              <span style={cardHeaderLeftStyle}>
-                <MoneyIcon size={20} weight="bold" color={"#030303"} />
-                <span style={cardTitleTextStyle}>Financial Reports</span>
-              </span>
-            </span>
-            <div style={baseCardStyle}>
-              {student.financialReports &&
-              student.financialReports.length > 0 ? (
-                <div
-                  style={{
-                    width: "100%",
-                    overflowX: "auto",
-                  }}
-                >
-                  <table
+                {student.picture ? (
+                  <img
+                    src={student.picture}
+                    alt={student.fullname}
                     style={{
                       width: "100%",
-                      borderCollapse: "collapse",
-                      fontSize: 12,
-                      color: "#4A5568",
-                      minWidth: 480,
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: 8,
+                    }}
+                  />
+                ) : (
+                  <span
+                    style={{
+                      fontSize: 26,
+                      fontWeight: 700,
+                      color: partnerColor(),
                     }}
                   >
-                    <thead>
-                      <tr>
-                        <th
-                          style={{
-                            textAlign: "left",
-                            padding: "6px 4px",
-                            borderBottom: "2px solid #E2E8F0",
-                          }}
-                        >
-                          Mês
-                        </th>
-                        <th
-                          style={{
-                            textAlign: "left",
-                            padding: "6px 4px",
-                            borderBottom: "2px solid #E2E8F0",
-                          }}
-                        >
-                          Descrição
-                        </th>
-                        <th
-                          style={{
-                            textAlign: "left",
-                            padding: "6px 4px",
-                            borderBottom: "2px solid #E2E8F0",
-                          }}
-                        >
-                          Valor
-                        </th>
-                        <th
-                          style={{
-                            textAlign: "left",
-                            padding: "6px 4px",
-                            borderBottom: "2px solid #E2E8F0",
-                          }}
-                        >
-                          Pago
-                        </th>
-                        <th
-                          style={{
-                            textAlign: "left",
-                            padding: "6px 4px",
-                            borderBottom: "2px solid #E2E8F0",
-                          }}
-                        >
-                          Criado em
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {student.financialReports.map((fr) => (
-                        <tr key={fr._id}>
-                          <td
-                            style={{
-                              padding: "6px 4px",
-                              borderBottom: "2px solid #EDF2F7",
-                            }}
-                          >
-                            {fr.month}
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 4px",
-                              borderBottom: "2px solid #EDF2F7",
-                            }}
-                          >
-                            {fr.description}
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 4px",
-                              borderBottom: "2px solid #EDF2F7",
-                            }}
-                          >
-                            R$ {fr.amount}
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 4px",
-                              borderBottom: "2px solid #EDF2F7",
-                            }}
-                          >
-                            {fr.paidFor ? "✅" : "⚠️"}
-                          </td>
-                          <td
-                            style={{
-                              padding: "6px 4px",
-                              borderBottom: "2px solid #EDF2F7",
-                            }}
-                          >
-                            {formatDate(fr.createdAt)}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
+                    {student.name?.[0]}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
+                <span
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 700,
+                    color: "#111827",
+                  }}
+                >
+                  {student.fullname}
+                </span>
                 <span
                   style={{
                     fontSize: 13,
-                    color: "#606060",
+                    color: "#6B7280",
                   }}
                 >
-                  Nenhum lançamento financeiro registrado.
+                  Plano {student.plan?.toUpperCase()} · Nível{" "}
+                  {student.level || "-"}
                 </span>
-              )}
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  ID: {student.id}
+                </span>
+              </div>
             </div>
+
+            <div
+              style={{
+                marginTop: 8,
+                paddingTop: 10,
+                borderTop: "1px dashed #E5E7EB",
+                display: "grid",
+                gap: 8,
+                fontSize: 13,
+                color: "#4B5563",
+              }}
+            >
+              <div style={{ display: "flex", gap: 8 }}>
+                <span
+                  style={{
+                    width: 60,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  Email
+                </span>
+                <span style={{ flex: 1 }}>{student.email}</span>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span
+                  style={{
+                    width: 60,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  Telefone
+                </span>
+                <span style={{ flex: 1 }}>{student.phoneNumber || "-"}</span>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span
+                  style={{
+                    width: 60,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  Endereço
+                </span>
+                <span style={{ flex: 1 }}>{student.address || "-"}</span>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span
+                  style={{
+                    width: 60,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  Idioma
+                </span>
+                <span style={{ flex: 1 }}>{student.language || "-"}</span>
+              </div>
+              <div style={{ display: "flex", gap: 8 }}>
+                <span
+                  style={{
+                    width: 60,
+                    fontWeight: 600,
+                    color: "#9CA3AF",
+                  }}
+                >
+                  Drive
+                </span>
+                <span style={{ flex: 1 }}>
+                  {student.googleDriveLink ? (
+                    <a
+                      href={student.googleDriveLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        color: partnerColor(),
+                        textDecoration: "none",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Abrir pasta
+                    </a>
+                  ) : (
+                    "-"
+                  )}
+                </span>
+              </div>
+            </div>
+
+            <div
+              style={{
+                marginTop: 14,
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
+              <button
+                type="button"
+                style={{
+                  borderRadius: 8,
+                  padding: "8px 16px",
+                  border: "none",
+                  backgroundColor: partnerColor(),
+                  color: "#FFFFFF",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+              >
+                Editar aluno
+              </button>
+            </div>
+          </div>
+
+          {/* CARD – AULAS DE HOJE (MOCK) */}
+          <div style={cardBase}>
+            <div style={cardTitle}>
+              <GraduationCapIcon size={18} weight="bold" color="#111827" />
+              <span>Aulas de hoje</span>
+            </div>
+
+            {mockTodayClasses.length === 0 ? (
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "#6B7280",
+                }}
+              >
+                Nenhuma aula cadastrada para hoje. (Mock – depois conectar à
+                API)
+              </span>
+            ) : (
+              <div
+                style={{
+                  display: "grid",
+                  gap: 10,
+                  fontSize: 13,
+                }}
+              >
+                {mockTodayClasses.map((cls) => (
+                  <div
+                    key={cls.id}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: 10,
+                      borderRadius: 8,
+                      backgroundColor: "#F3F4FF",
+                    }}
+                  >
+                    <div style={{ display: "grid", gap: 2 }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          color: "#111827",
+                        }}
+                      >
+                        {cls.time} · {cls.type}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: "#6B7280",
+                        }}
+                      >
+                        {cls.day} · Online
+                      </span>
+                    </div>
+                    <span style={pillStatus}>{cls.status}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ================= COLUNA CENTRAL ================= */}
+        <div style={{ display: "grid", gap: 16 }}>
+          {/* FAIXA DE STATS (CARDS ROXOS) */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+              gap: 12,
+            }}
+          >
+            <div style={statCardBase}>
+              <span style={statLabel}>Score total</span>
+              <span style={statValue}>{student.totalScore}</span>
+            </div>
+            <div style={statCardBase}>
+              <span style={statLabel}>Score mensal</span>
+              <span style={statValue}>{student.monthlyScore}</span>
+            </div>
+            <div style={statCardBase}>
+              <span style={statLabel}>Lições feitas</span>
+              <span style={statValue}>
+                {student.homeworkAssignmentsDone || 0}
+              </span>
+            </div>
+            <div style={statCardBase}>
+              <span style={statLabel}>Reviews hoje</span>
+              <span style={statValue}>
+                {student.flashCardsReviewsToday || 0}
+              </span>
+            </div>
+          </div>
+
+          {/* CARD – SOBRE O ALUNO */}
+          <div style={cardBase}>
+            <div style={cardTitle}>
+              <UserCheckIcon size={18} weight="bold" color="#111827" />
+              <span>Sobre o aluno</span>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gap: 12,
+                fontSize: 13,
+                color: "#4B5563",
+              }}
+            >
+              <div>
+                <strong style={{ fontSize: 12, color: "#9CA3AF" }}>
+                  Descrição
+                </strong>
+                <p
+                  style={{
+                    margin: "4px 0 0 0",
+                    lineHeight: 1.5,
+                  }}
+                >
+                  {student.fullname} é aluno do plano{" "}
+                  {student.plan?.toUpperCase()} com {student.weeklyClasses || 0}{" "}
+                  aula(s) por semana. Nível {student.level || "—"} e idioma de
+                  estudo {student.language || "—"}.
+                </p>
+              </div>
+
+              <div>
+                <strong style={{ fontSize: 12, color: "#9CA3AF" }}>
+                  Educação / Plano
+                </strong>
+                <ul
+                  style={{
+                    margin: "6px 0 0 16px",
+                    padding: 0,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <li>Plano: {student.plan?.toUpperCase()}</li>
+                  <li>Nível atual: {student.level || "—"}</li>
+                  <li>Aulas semanais: {student.weeklyClasses || 0}</li>
+                </ul>
+              </div>
+
+              <div>
+                <strong style={{ fontSize: 12, color: "#9CA3AF" }}>
+                  Experiências / Progresso
+                </strong>
+                <ul
+                  style={{
+                    margin: "6px 0 0 16px",
+                    padding: 0,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <li>Total de pontos: {student.totalScore}</li>
+                  <li>
+                    Maior streak de flashcards:{" "}
+                    {student.flashcardsLongestStreak || 0} dia(s)
+                  </li>
+                  <li>
+                    Último dia de review:{" "}
+                    {formatDate(student.lastDayFlashcardReview)}
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <strong style={{ fontSize: 12, color: "#9CA3AF" }}>
+                  Informações financeiras
+                </strong>
+                <ul
+                  style={{
+                    margin: "6px 0 0 16px",
+                    padding: 0,
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <li>Mensalidade: R$ {student.fee}</li>
+                  <li>
+                    Fee em dia: {student.feeUpToDate ? "Sim ✅" : "Não ⚠️"}
+                  </li>
+                  <li>
+                    Pagamento via cartão:{" "}
+                    {student.creditCardPayment ? "Sim" : "Não"}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ================= COLUNA DIREITA ================= */}
+        <div style={{ display: "grid", gap: 16 }}>
+          {/* CARD: SCORES & FLASHCARDS */}
+          <div style={cardBase}>
+            <div style={cardTitle}>
+              <ChartBarIcon size={18} weight="bold" color="#111827" />
+              <span>Scores & Flashcards</span>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gap: 6,
+                fontSize: 13,
+                color: "#4B5563",
+              }}
+            >
+              <span>
+                <strong>Total Score:</strong> {student.totalScore}
+              </span>
+              <span>
+                <strong>Monthly Score:</strong> {student.monthlyScore}
+              </span>
+              <span>
+                <strong>Lições feitas:</strong>{" "}
+                {student.homeworkAssignmentsDone}
+              </span>
+              <span>
+                <strong>Taxa de acerto (reviews):</strong>{" "}
+                {student.flashCardsReviewRate}%
+              </span>
+              <span>
+                <strong>Reviews hoje:</strong> {student.flashCardsReviewsToday}
+              </span>
+              <span>
+                <strong>Streak atual:</strong> {student.flashcardsStreak} dia
+                (s)
+              </span>
+              <span>
+                <strong>Maior streak:</strong> {student.flashcardsLongestStreak}{" "}
+                dia(s)
+              </span>
+            </div>
+          </div>
+
+          {/* CARD: FINANCIAL REPORTS */}
+          <div style={cardBase}>
+            <div style={cardTitle}>
+              <MoneyIcon size={18} weight="bold" color="#111827" />
+              <span>Financial Reports</span>
+            </div>
+            {student.financialReports && student.financialReports.length > 0 ? (
+              <div
+                style={{
+                  width: "100%",
+                  overflowX: "auto",
+                }}
+              >
+                <table
+                  style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    fontSize: 12,
+                    color: "#4A5568",
+                    minWidth: 480,
+                  }}
+                >
+                  <thead>
+                    <tr>
+                      <th
+                        style={{
+                          textAlign: "left",
+                          padding: "6px 4px",
+                          borderBottom: "2px solid #E2E8F0",
+                        }}
+                      >
+                        Mês
+                      </th>
+                      <th
+                        style={{
+                          textAlign: "left",
+                          padding: "6px 4px",
+                          borderBottom: "2px solid #E2E8F0",
+                        }}
+                      >
+                        Descrição
+                      </th>
+                      <th
+                        style={{
+                          textAlign: "left",
+                          padding: "6px 4px",
+                          borderBottom: "2px solid #E2E8F0",
+                        }}
+                      >
+                        Valor
+                      </th>
+                      <th
+                        style={{
+                          textAlign: "left",
+                          padding: "6px 4px",
+                          borderBottom: "2px solid #E2E8F0",
+                        }}
+                      >
+                        Pago
+                      </th>
+                      <th
+                        style={{
+                          textAlign: "left",
+                          padding: "6px 4px",
+                          borderBottom: "2px solid #E2E8F0",
+                        }}
+                      >
+                        Criado em
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {student.financialReports.map((fr) => (
+                      <tr key={fr._id}>
+                        <td
+                          style={{
+                            padding: "6px 4px",
+                            borderBottom: "1px solid #EDF2F7",
+                          }}
+                        >
+                          {fr.month}
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 4px",
+                            borderBottom: "1px solid #EDF2F7",
+                          }}
+                        >
+                          {fr.description}
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 4px",
+                            borderBottom: "1px solid #EDF2F7",
+                          }}
+                        >
+                          R$ {fr.amount}
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 4px",
+                            borderBottom: "1px solid #EDF2F7",
+                          }}
+                        >
+                          {fr.paidFor ? "✅" : "⚠️"}
+                        </td>
+                        <td
+                          style={{
+                            padding: "6px 4px",
+                            borderBottom: "1px solid #EDF2F7",
+                          }}
+                        >
+                          {formatDate(fr.createdAt)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "#6B7280",
+                }}
+              >
+                Nenhum lançamento financeiro registrado.
+              </span>
+            )}
           </div>
         </div>
       </div>

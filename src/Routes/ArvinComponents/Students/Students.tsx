@@ -8,6 +8,8 @@ import {
 import axios from "axios";
 import { partnerColor } from "../../../Styles/Styles";
 import ListOfStudentsToClick from "./ListOfStudents/ListOfStudentsToClick";
+import { ArvinTopBar } from "../ArvinTopSideBar/NewTopSideBar";
+import { Outlet } from "react-router-dom";
 
 type StudentsProps = HeadersProps & {
   change?: boolean;
@@ -57,7 +59,7 @@ export function Students({
               fontSize: "1.5rem",
             }}
           >
-            <span style={newArvinTitleStyle}>Students</span>
+            <span style={newArvinTitleStyle}>Alunos</span>
           </section>
         </div>
       )}
@@ -82,6 +84,15 @@ export function Students({
           isDesktop={isDesktop}
         />
       </div>
+      {isDesktop && (
+        <div
+          style={{
+            minHeight: 300,
+          }}
+        >
+          <Outlet />
+        </div>
+      )}
     </div>
   );
 }
