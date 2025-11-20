@@ -52,7 +52,7 @@ import MyHomePage from "./ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 import Students from "./ArvinComponents/Students/Students";
 import Grupos from "./ArvinComponents/Groups/Groups";
 
-export const useIsDesktop = (breakpoint = 700) => {
+export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
     typeof window !== "undefined" ? window.innerWidth > breakpoint : false
   );
@@ -211,7 +211,7 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
     }, 150);
   }, []);
 
-  const isDesktop = useIsDesktop(1000);
+  const isDesktop = useIsDesktop(1150);
 
   var appRoutes = [
     {

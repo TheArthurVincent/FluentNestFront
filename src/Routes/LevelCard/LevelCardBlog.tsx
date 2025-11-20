@@ -105,7 +105,13 @@ export function LevelCardBlog({
           src={items[level].image}
           alt="card"
         />{" "}
-        <LevelCardPhotoBlogLevel src={pictureStudent} alt="Profile Picture" />{" "}
+        <LevelCardPhotoBlogLevel
+          src={
+            pictureStudent ||
+            "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+          }
+          alt="Profile Picture"
+        />{" "}
       </DivCardBlogLevel>{" "}
       <TextLevelBlogCard>
         <div style={{ display: showCard }}>

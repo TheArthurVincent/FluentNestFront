@@ -72,7 +72,10 @@ export function AvatarUpload({
     >
       {/* Avatar clicável */}
       <LevelCardBlog
-        picture={user.picture}
+        picture={
+          user.picture ||
+          "https://ik.imagekit.io/vjz75qw96/logos/myp?updatedAt=1752031657485"
+        }
         change={change ?? false}
         headers={headers}
         _StudentId={user.id}
