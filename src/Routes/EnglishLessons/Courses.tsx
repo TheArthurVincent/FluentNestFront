@@ -647,177 +647,205 @@ export default function EnglishCourses({
   return (
     <div
       style={{
-        display: "flex",
-        marginTop: "0",
-        flexDirection: "column",
-        gap: "1rem",
-        width: "100%",
-        maxWidth: "100%",
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
       }}
     >
-      {/* Rotas específicas por curso (slug) e rota genérica por :courseKey */}
-      <Routes>
-        {listOfCoursesFromDatabase.map((route) => (
-          <Route
-            key={`old-${route._id}`}
-            path={`${pathGenerator(route.title)}/*`}
-            element={
-              <Modules
-                setChange={setChange}
-                change={change}
-                isDesktop={isDesktop}
-                canEditCourse={computeCanEdit(route)}
-                headers={actualHeaders}
-                courseId={route._id}
-                title={route.title}
+      {isDesktop && (
+        <div
+          style={{
+            paddingTop: 29,
+            paddingBottom: 17,
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <section
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "8px",
+              width: "100%",
+              fontSize: "1.5rem",
+            }}
+          >
+            <span style={newArvinTitleStyle}>Materiais de Aula e Cursos</span>
+          </section>
+        </div>
+      )}
+      <div
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          fontStyle: "SemiBold",
+          fontSize: "14px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          width: "95%",
+          border: "1px solid #e8eaed",
+          padding: "10px",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            marginTop: "0",
+            flexDirection: "column",
+            gap: "1rem",
+            width: "100%",
+            maxWidth: "100%",
+          }}
+        >
+          {/* Rotas específicas por curso (slug) e rota genérica por :courseKey */}
+          <Routes>
+            {listOfCoursesFromDatabase.map((route) => (
+              <Route
+                key={`old-${route._id}`}
+                path={`${pathGenerator(route.title)}/*`}
+                element={
+                  <Modules
+                    setChange={setChange}
+                    change={change}
+                    isDesktop={isDesktop}
+                    canEditCourse={computeCanEdit(route)}
+                    headers={actualHeaders}
+                    courseId={route._id}
+                    title={route.title}
+                  />
+                }
               />
-            }
-          />
-        ))}
-        <Route
-          path=":courseKey/*"
-          element={
-            <CourseRouter
-              headers={actualHeaders}
-              courses={listOfCoursesFromDatabase}
-              permissions={permissions}
-              studentID={studentID}
+            ))}
+            <Route
+              path=":courseKey/*"
+              element={
+                <CourseRouter
+                  headers={actualHeaders}
+                  courses={listOfCoursesFromDatabase}
+                  permissions={permissions}
+                  studentID={studentID}
+                />
+              }
             />
-          }
-        />
-      </Routes>
+          </Routes>
 
-      <Helmets text="Courses" />
+          <Helmets text="Courses" />
 
-      {/* Listagem (só na raiz teaching-materials) */}
-      {isRootPath && (
-        <div>
-          {loading ? (
-            <Spinner />
-          ) : (
-            <div
-              style={{
-                margin: !isDesktop ? "1rem auto" : "16px 0",
-                fontFamily: "Plus Jakarta Sans",
-                fontWeight: 600,
-                fontStyle: "SemiBold",
-                fontSize: "14px",
-                backgroundColor: "#ffffff",
-                borderRadius: "12px",
-                border: "1px solid #e8eaed",
-                padding: "1rem",
-                width: isDesktop ? "90%" : "",
-              }}
-            >
-              {/* Header igual ao MyHomePage */}
-              <div
-              // style={headerAll}
-              >
-                <section style={headerLeftStyle}>
-                  <span style={newArvinTitleStyle}>Cursos</span>
-                </section>
-
-                {/* Mantive apenas visual – sem lógica de busca */}
+          {/* Listagem (só na raiz teaching-materials) */}
+          {isRootPath && (
+            <div>
+              {loading ? (
+                <Spinner />
+              ) : (
                 <div
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginTop: 10,
+                    padding: "1rem",
                   }}
                 >
-                  <div style={headerRightStyle}>
-                    {(permissions === "superadmin" ||
-                      permissions === "teacher") && (
-                      <NewCourseButton
-                        studentId={studentID}
-                        headers={actualHeaders}
-                      />
-                    )}
+                  {/* Header igual ao MyHomePage */}
+                  <div>
+                    {/* Mantive apenas visual – sem lógica de busca */}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        marginTop: 10,
+                      }}
+                    >
+                      <div style={headerRightStyle}>
+                        {(permissions === "superadmin" ||
+                          permissions === "teacher") && (
+                          <NewCourseButton
+                            studentId={studentID}
+                            headers={actualHeaders}
+                          />
+                        )}
+                      </div>
+
+                      <Link
+                        style={{
+                          marginLeft: 16,
+                          marginBottom: -10,
+                          fontSize: 14,
+                          cursor: "pointer",
+                          color: partnerColor(),
+                          textDecoration: "none",
+                          fontFamily: "Plus Jakarta Sans", // style-only
+                        }}
+                        to="/"
+                      >
+                        Voltar para Home Page
+                      </Link>
+                    </div>
                   </div>
 
-                  <Link
-                    style={{
-                      marginLeft: 16,
-                      marginBottom: -10,
-                      fontSize: 14,
-                      cursor: "pointer",
-                      color: partnerColor(),
-                      textDecoration: "none",
-                      fontFamily: "Plus Jakarta Sans", // style-only
-                    }}
-                    to="/"
-                  >
-                    Voltar para Home Page
-                  </Link>
+                  {/* Primeira categoria — cursos NÃO originais (ignorando idioma) */}
+                  {(allowedNonOriginal.length > 0 ||
+                    nonAllowedNonOriginal.length > 0) && (
+                    <LangSection
+                      title={
+                        permissions === "superadmin"
+                          ? "Materiais de Outros Criadores"
+                          : permissions === "teacher"
+                          ? `Materiais de ${teacherName}`
+                          : "Materiais disponíveis"
+                      }
+                      allowed={allowedNonOriginal}
+                      nonAllowed={nonAllowedNonOriginal}
+                      computeCanEdit={computeCanEdit}
+                      onEdit={openEdit}
+                    />
+                  )}
+
+                  {/* Originais por idioma */}
+                  <LangSection
+                    title="English"
+                    allowed={groupedAllowed.en}
+                    nonAllowed={groupedNonAllowed.en}
+                    computeCanEdit={computeCanEdit}
+                    onEdit={openEdit}
+                  />
+                  <LangSection
+                    title="Español"
+                    allowed={groupedAllowed.es}
+                    nonAllowed={groupedNonAllowed.es}
+                    computeCanEdit={computeCanEdit}
+                    onEdit={openEdit}
+                  />
+                  <LangSection
+                    title="Français"
+                    allowed={groupedAllowed.fr}
+                    nonAllowed={groupedNonAllowed.fr}
+                    computeCanEdit={computeCanEdit}
+                    onEdit={openEdit}
+                  />
+                  {(groupedAllowed.other.length > 0 ||
+                    groupedNonAllowed.other.length > 0) && (
+                    <LangSection
+                      title="🌐 Outros idiomas"
+                      allowed={groupedAllowed.other}
+                      nonAllowed={groupedNonAllowed.other}
+                      computeCanEdit={computeCanEdit}
+                      onEdit={openEdit}
+                    />
+                  )}
                 </div>
-              </div>
-
-              {/* Primeira categoria — cursos NÃO originais (ignorando idioma) */}
-              {(allowedNonOriginal.length > 0 ||
-                nonAllowedNonOriginal.length > 0) && (
-                <LangSection
-                  title={
-                    permissions === "superadmin"
-                      ? "Materiais de Outros Criadores"
-                      : permissions === "teacher"
-                      ? `Materiais de ${teacherName}`
-                      : "Materiais disponíveis"
-                  }
-                  allowed={allowedNonOriginal}
-                  nonAllowed={nonAllowedNonOriginal}
-                  computeCanEdit={computeCanEdit}
-                  onEdit={openEdit}
-                />
-              )}
-
-              {/* Originais por idioma */}
-              <LangSection
-                title="English"
-                allowed={groupedAllowed.en}
-                nonAllowed={groupedNonAllowed.en}
-                computeCanEdit={computeCanEdit}
-                onEdit={openEdit}
-              />
-              <LangSection
-                title="Español"
-                allowed={groupedAllowed.es}
-                nonAllowed={groupedNonAllowed.es}
-                computeCanEdit={computeCanEdit}
-                onEdit={openEdit}
-              />
-              <LangSection
-                title="Français"
-                allowed={groupedAllowed.fr}
-                nonAllowed={groupedNonAllowed.fr}
-                computeCanEdit={computeCanEdit}
-                onEdit={openEdit}
-              />
-              {(groupedAllowed.other.length > 0 ||
-                groupedNonAllowed.other.length > 0) && (
-                <LangSection
-                  title="🌐 Outros idiomas"
-                  allowed={groupedAllowed.other}
-                  nonAllowed={groupedNonAllowed.other}
-                  computeCanEdit={computeCanEdit}
-                  onEdit={openEdit}
-                />
               )}
             </div>
           )}
+
+          <Outlet />
+
+          {/* Modal de edição (isolado) */}
+          <EditCourseModal
+            open={editOpen}
+            onClose={() => setEditOpen(false)}
+            course={courseToEdit as Course}
+            headers={actualHeaders}
+            onSaved={getCourses}
+            studentId={studentID}
+          />
         </div>
-      )}
-
-      <Outlet />
-
-      {/* Modal de edição (isolado) */}
-      <EditCourseModal
-        open={editOpen}
-        onClose={() => setEditOpen(false)}
-        course={courseToEdit as Course}
-        headers={actualHeaders}
-        onSaved={getCourses}
-        studentId={studentID}
-      />
+      </div>
     </div>
   );
 }

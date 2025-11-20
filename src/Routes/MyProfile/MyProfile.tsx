@@ -18,6 +18,7 @@ import Countdown from "../Ranking/RankingComponents/Countdown";
 import { AvatarUpload } from "./Pic";
 import { HOne } from "../../Resources/Components/RouteBox";
 import RankingTimelineArvin from "./RankingHistory/RankingTimelineArvin";
+import { newArvinTitleStyle } from "../ArvinComponents/Groups/Groups";
 
 const styles = {
   container: {
@@ -110,7 +111,6 @@ export function MyProfile({
     border: "1px solid #e5e7eb",
     background: "#fff",
     color: "#111827",
-    padding: isDesktop ? "6px 10px" : "10px 16px",
     borderRadius: 4,
     fontSize: isDesktop ? 12 : 14,
     cursor: "pointer",
@@ -314,511 +314,550 @@ export function MyProfile({
   };
 
   return (
-    <div
-      style={{
-        margin: "auto",
-        fontFamily: "Plus Jakarta Sans",
-        fontWeight: 600,
-        fontStyle: "SemiBold",
-        fontSize: "14px",
-      }}
-    >
-      {/* Modal de alterar senha */}
-      {showPasswordModal && (
+    <div>
+      {isDesktop && (
         <div
           style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
+            paddingTop: 29,
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
-            zIndex: 1002,
           }}
         >
-          <div
+          <section
             style={{
-              background: "#fff",
-              padding: "32px 24px",
-              borderRadius: "12px",
-              width: "90%",
-              maxWidth: "400px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
             }}
           >
-            <h2
-              style={{
-                marginBottom: "18px",
-                fontSize: "18px",
-                fontWeight: 600,
-              }}
-            >
-              Alterar Senha
-            </h2>
-
-            <form
-              onSubmit={(e) => {
-                e.preventDefault();
-                editStudentPassword();
-                setShowPasswordModal(false);
-              }}
-              style={{ display: "grid", gap: "14px" }}
-            >
-              <TextField
-                value={newPassword}
-                onChange={(event) => setNewPassword(event.target.value)}
-                label={UniversalTexts.newPassword}
-                type="password"
-                required
-                fullWidth
-                size="small"
-              />
-              <TextField
-                value={confirmPassword}
-                onChange={(event) => setConfirmPassword(event.target.value)}
-                label={UniversalTexts.confirmNewPassword}
-                type="password"
-                required
-                fullWidth
-                size="small"
-              />
-              <div
-                style={{
-                  display: "flex",
-                  gap: isDesktop ? "12px" : 0,
-                  marginTop: "10px",
-                  justifyContent: "center",
-                  flexDirection: isDesktop ? "row" : "column",
-                  width: "100%",
-                }}
-              >
-                <button
-                  type="button"
-                  onClick={() => setShowPasswordModal(false)}
-                  style={{
-                    ...baseBtnStyle,
-                    background: "#6c757d",
-                    border: "1px solid #6c757d",
-                    color: "#fff",
-                  }}
-                >
-                  Cancelar
-                </button>
-                <button type="submit" style={basePrimaryBtnStyle}>
-                  Salvar
-                </button>
-              </div>
-            </form>
-          </div>
+            <span style={newArvinTitleStyle}>Meu Perfil</span>
+          </section>
         </div>
       )}
-
-      {headers ? (
-        // @ts-ignore
+      <div
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+        }}
+      >
         <div
-          style={{ padding: "16px", margin: "0 auto", marginBottom: "40px" }}
+          style={{
+            margin: "auto",
+            fontFamily: "Plus Jakarta Sans",
+            fontWeight: 600,
+            fontStyle: "SemiBold",
+            fontSize: "14px",
+          }}
         >
-          <Helmets text="My Profile" />
-          {loading ? (
+          {/* Modal de alterar senha */}
+          {showPasswordModal && (
+            <div
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0,0,0,0.5)",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1002,
+              }}
+            >
+              <div
+                style={{
+                  background: "#fff",
+                  padding: "32px 24px",
+                  borderRadius: "12px",
+                  width: "90%",
+                  maxWidth: "400px",
+                }}
+              >
+                <h2
+                  style={{
+                    marginBottom: "18px",
+                    fontSize: "18px",
+                    fontWeight: 600,
+                  }}
+                >
+                  Alterar Senha
+                </h2>
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    editStudentPassword();
+                    setShowPasswordModal(false);
+                  }}
+                  style={{ display: "grid", gap: "14px" }}
+                >
+                  <TextField
+                    value={newPassword}
+                    onChange={(event) => setNewPassword(event.target.value)}
+                    label={UniversalTexts.newPassword}
+                    type="password"
+                    required
+                    fullWidth
+                    size="small"
+                  />
+                  <TextField
+                    value={confirmPassword}
+                    onChange={(event) => setConfirmPassword(event.target.value)}
+                    label={UniversalTexts.confirmNewPassword}
+                    type="password"
+                    required
+                    fullWidth
+                    size="small"
+                  />
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: isDesktop ? "12px" : 0,
+                      marginTop: "10px",
+                      justifyContent: "center",
+                      flexDirection: isDesktop ? "row" : "column",
+                      width: "100%",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setShowPasswordModal(false)}
+                      style={{
+                        ...baseBtnStyle,
+                        background: "#6c757d",
+                        border: "1px solid #6c757d",
+                        color: "#fff",
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                    <button type="submit" style={basePrimaryBtnStyle}>
+                      Salvar
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {headers ? (
+            // @ts-ignore
+            <div
+              style={{
+                padding: "16px 0",
+                marginBottom: "40px",
+              }}
+            >
+              <Helmets text="My Profile" />
+              {loading ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: "200px",
+                  }}
+                >
+                  <CircularProgress style={{ color: partnerColor() }} />
+                </div>
+              ) : (
+                <>
+                  <div style={styles.modernSection}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: isDesktop ? "center" : "flex-start",
+                        gap: 12,
+                        flexDirection: isDesktop ? "row" : "column",
+                      }}
+                    >
+                      {showEditModal && (
+                        <div
+                          style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(0,0,0,0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 1001,
+                          }}
+                        >
+                          <div
+                            style={{
+                              background: "#fff",
+                              padding: "32px 24px",
+                              borderRadius: "12px",
+                              width: "90%",
+                              maxWidth: "400px",
+                            }}
+                          >
+                            <h2
+                              style={{
+                                marginBottom: "18px",
+                                fontSize: "18px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              Editar Dados Pessoais
+                            </h2>
+                            <form
+                              onSubmit={(e) => {
+                                e.preventDefault();
+                                saveEditProfile();
+                              }}
+                              style={{ display: "grid", gap: "14px" }}
+                            >
+                              <TextField
+                                label="Nome"
+                                name="name"
+                                value={editData.name}
+                                onChange={handleEditChange}
+                                fullWidth
+                                size="small"
+                              />
+                              <TextField
+                                label="Sobrenome"
+                                name="lastname"
+                                value={editData.lastname}
+                                onChange={handleEditChange}
+                                fullWidth
+                                size="small"
+                              />
+                              <TextField
+                                label="Telefone"
+                                name="phoneNumber"
+                                value={editData.phoneNumber}
+                                onChange={handleEditChange}
+                                fullWidth
+                                size="small"
+                              />
+                              <TextField
+                                label="Email"
+                                name="email"
+                                value={editData.email}
+                                onChange={handleEditChange}
+                                fullWidth
+                                size="small"
+                              />
+                              <TextField
+                                label="Nascimento"
+                                name="dateOfBirth"
+                                type="date"
+                                value={editData.dateOfBirth}
+                                onChange={handleEditChange}
+                                fullWidth
+                                size="small"
+                                InputLabelProps={{ shrink: true }}
+                              />
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: isDesktop ? "12px" : 0,
+                                  marginTop: "10px",
+                                  justifyContent: "center",
+                                  flexDirection: isDesktop ? "row" : "column",
+                                  width: "100%",
+                                }}
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => setShowEditModal(false)}
+                                  style={{
+                                    ...baseBtnStyle,
+                                    background: "#6c757d",
+                                    border: "1px solid #6c757d",
+                                    color: "#fff",
+                                  }}
+                                >
+                                  Cancelar
+                                </button>
+                                <button
+                                  type="submit"
+                                  style={basePrimaryBtnStyle}
+                                >
+                                  Salvar
+                                </button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      )}
+                      <div>
+                        <p
+                          style={{
+                            color: "#6c757d",
+                            fontSize: "14px",
+                            margin: "0",
+                          }}
+                        >
+                          Gerencie suas informações pessoais
+                        </p>
+                      </div>
+
+                      {/* Botão Atualizar com o mesmo padrão responsivo */}
+                      <div
+                        style={{
+                          display: "flex",
+                          width: isDesktop ? "auto" : "100%",
+                          justifyContent: isDesktop ? "flex-end" : "stretch",
+                        }}
+                      >
+                        <button
+                          onClick={() => {
+                            alert("Atualizando Perfil");
+                            updateInfo(user.id, headers);
+                            window.location.reload();
+                          }}
+                          style={basePrimaryBtnStyle}
+                          title="Atualizar"
+                        >
+                          <i
+                            className="fa fa-refresh"
+                            aria-hidden="true"
+                            style={{ marginRight: "6px" }}
+                          />
+                          Atualizar
+                        </button>
+                      </div>
+                    </div>
+
+                    <AvatarUpload
+                      user={user}
+                      setUser={setUser}
+                      change={change}
+                      headers={headers}
+                      _StudentId={user.id}
+                      uploadStudentPhoto={uploadStudentPhoto}
+                    />
+                  </div>
+
+                  {/* Profile Information */}
+                  <div style={styles.modernSection}>
+                    <h2
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "600",
+                        color: "#2c3e50",
+                        margin: "0 0 20px 0",
+                      }}
+                    >
+                      Informações Pessoais
+                    </h2>
+
+                    <div>
+                      {myProfileList.map((item, index) => (
+                        <div key={index} style={styles.profileItem}>
+                          <span style={styles.profileLabel}>{item.title}</span>
+                          <span style={styles.profileValue}>{item.data}</span>
+                        </div>
+                      ))}
+
+                      <div style={styles.profileItem}>
+                        <span style={styles.profileLabel}>
+                          Aluno Particular
+                        </span>
+                        <span
+                          style={{
+                            ...styles.profileValue,
+                            padding: "4px 8px",
+                            borderRadius: "12px",
+                            fontSize: "12px",
+                            backgroundColor: user.tutoree
+                              ? "#e8f5e8"
+                              : "#f1f3f5",
+                            color: user.tutoree ? "#388e3c" : "#6c757d",
+                          }}
+                        >
+                          {user.tutoree ? "Sim" : "Não"}
+                        </span>
+                      </div>
+
+                      {showModal && (
+                        <div
+                          style={{
+                            position: "fixed",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            zIndex: 1000,
+                          }}
+                        >
+                          <div
+                            style={{
+                              background: "#fff",
+                              padding: "32px",
+                              borderRadius: "12px",
+                              width: "90%",
+                              maxWidth: "400px",
+                              textAlign: "center",
+                            }}
+                          >
+                            <h2
+                              style={{
+                                marginBottom: "24px",
+                                color: "#dc3545",
+                                fontSize: "18px",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Tem certeza que deseja cancelar sua assinatura?
+                            </h2>
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: isDesktop ? "12px" : 0,
+                                flexDirection: isDesktop ? "row" : "column",
+                                width: "100%",
+                              }}
+                            >
+                              <button
+                                onClick={() => setShowModal(false)}
+                                style={{
+                                  ...baseBtnStyle,
+                                  background: "#28a745",
+                                  border: "1px solid #28a745",
+                                  color: "#fff",
+                                }}
+                              >
+                                Não
+                              </button>
+                              <button
+                                onClick={cancelSubscription}
+                                style={{
+                                  ...baseBtnStyle,
+                                  background: "#dc3545",
+                                  border: "1px solid #dc3545",
+                                  color: "#fff",
+                                }}
+                              >
+                                Sim
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+
+                      {user.permissions == "teacher" && (
+                        <div
+                          style={{
+                            ...styles.profileItem,
+                            borderBottom: "none",
+                          }}
+                        >
+                          <span style={styles.profileLabel}>Google Drive</span>
+                          <a
+                            href={user.googleDriveLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              color: partnerColor(),
+                              textDecoration: "none",
+                              fontSize: "14px",
+                              fontWeight: "500",
+                            }}
+                          >
+                            Acessar Drive →
+                          </a>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* AÇÃO: Editar / Alterar Senha — mesmo padrão responsivo */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: isDesktop ? "flex-end" : "stretch",
+                        gap: isDesktop ? 6 : 10,
+                        marginTop: "16px",
+                        flexDirection: isDesktop ? "row" : "column",
+                        width: "100%",
+                      }}
+                    >
+                      <button
+                        onClick={() => setShowEditModal(true)}
+                        style={{
+                          ...basePrimaryBtnStyle,
+                          background: partnerColor(),
+                          border: `1px solid ${partnerColor()}`,
+                          color: textpartnerColorContrast(),
+                        }}
+                      >
+                        Editar Dados
+                      </button>
+
+                      <button
+                        onClick={() => setShowPasswordModal(true)}
+                        style={{
+                          ...baseBtnStyle,
+                          background: "#2c3e50",
+                          border: "1px solid #2c3e50",
+                          color: "#fff",
+                        }}
+                      >
+                        Alterar Senha
+                      </button>
+                    </div>
+                  </div>
+
+                  {user.askedToCancel && (
+                    <div style={styles.modernSection}>
+                      <div style={styles.container}>
+                        <div style={styles.card}>
+                          <button
+                            onClick={() =>
+                              window.location.assign(
+                                "https://wa.me/5511972369299"
+                              )
+                            }
+                            style={styles.button}
+                          >
+                            Solicite a reativação do seu cadastro
+                          </button>
+                          <Countdown
+                            targetDate={new Date(user.limitDate)}
+                            text={`Você e seus alunos podem continuar acessando o Arvin até ${formatDateBrWithHour(
+                              user.limitDate
+                            )}`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+              <RankingTimelineArvin
+                headers={headers}
+                id={user.id}
+                name={user.name}
+                permissions={user.permissions}
+              />
+            </div>
+          ) : (
             <div
               style={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
-                minHeight: "200px",
+                minHeight: "50vh",
+                color: "#6c757d",
               }}
             >
-              <CircularProgress style={{ color: partnerColor() }} />
+              Nenhum usuário logado
             </div>
-          ) : (
-            <>
-              <div style={styles.modernSection}>
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: isDesktop ? "center" : "flex-start",
-                    marginBottom: "20px",
-                    gap: 12,
-                    flexDirection: isDesktop ? "row" : "column",
-                  }}
-                >
-                  {showEditModal && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1001,
-                      }}
-                    >
-                      <div
-                        style={{
-                          background: "#fff",
-                          padding: "32px 24px",
-                          borderRadius: "12px",
-                          width: "90%",
-                          maxWidth: "400px",
-                        }}
-                      >
-                        <h2
-                          style={{
-                            marginBottom: "18px",
-                            fontSize: "18px",
-                            fontWeight: 600,
-                          }}
-                        >
-                          Editar Dados Pessoais
-                        </h2>
-                        <form
-                          onSubmit={(e) => {
-                            e.preventDefault();
-                            saveEditProfile();
-                          }}
-                          style={{ display: "grid", gap: "14px" }}
-                        >
-                          <TextField
-                            label="Nome"
-                            name="name"
-                            value={editData.name}
-                            onChange={handleEditChange}
-                            fullWidth
-                            size="small"
-                          />
-                          <TextField
-                            label="Sobrenome"
-                            name="lastname"
-                            value={editData.lastname}
-                            onChange={handleEditChange}
-                            fullWidth
-                            size="small"
-                          />
-                          <TextField
-                            label="Telefone"
-                            name="phoneNumber"
-                            value={editData.phoneNumber}
-                            onChange={handleEditChange}
-                            fullWidth
-                            size="small"
-                          />
-                          <TextField
-                            label="Email"
-                            name="email"
-                            value={editData.email}
-                            onChange={handleEditChange}
-                            fullWidth
-                            size="small"
-                          />
-                          <TextField
-                            label="Nascimento"
-                            name="dateOfBirth"
-                            type="date"
-                            value={editData.dateOfBirth}
-                            onChange={handleEditChange}
-                            fullWidth
-                            size="small"
-                            InputLabelProps={{ shrink: true }}
-                          />
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: isDesktop ? "12px" : 0,
-                              marginTop: "10px",
-                              justifyContent: "center",
-                              flexDirection: isDesktop ? "row" : "column",
-                              width: "100%",
-                            }}
-                          >
-                            <button
-                              type="button"
-                              onClick={() => setShowEditModal(false)}
-                              style={{
-                                ...baseBtnStyle,
-                                background: "#6c757d",
-                                border: "1px solid #6c757d",
-                                color: "#fff",
-                              }}
-                            >
-                              Cancelar
-                            </button>
-                            <button type="submit" style={basePrimaryBtnStyle}>
-                              Salvar
-                            </button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
-                  )}
-
-                  <div>
-                    <HOne>{UniversalTexts.myProfile}</HOne>
-                    <p
-                      style={{
-                        color: "#6c757d",
-                        fontSize: "14px",
-                        margin: "0",
-                      }}
-                    >
-                      Gerencie suas informações pessoais
-                    </p>
-                  </div>
-
-                  {/* Botão Atualizar com o mesmo padrão responsivo */}
-                  <div
-                    style={{
-                      display: "flex",
-                      width: isDesktop ? "auto" : "100%",
-                      justifyContent: isDesktop ? "flex-end" : "stretch",
-                    }}
-                  >
-                    <button
-                      onClick={() => {
-                        alert("Atualizando Perfil");
-                        updateInfo(user.id, headers);
-                        window.location.reload();
-                      }}
-                      style={basePrimaryBtnStyle}
-                      title="Atualizar"
-                    >
-                      <i
-                        className="fa fa-refresh"
-                        aria-hidden="true"
-                        style={{ marginRight: "6px" }}
-                      />
-                      Atualizar
-                    </button>
-                  </div>
-                </div>
-
-                <AvatarUpload
-                  user={user}
-                  setUser={setUser}
-                  change={change}
-                  headers={headers}
-                  _StudentId={user.id}
-                  uploadStudentPhoto={uploadStudentPhoto}
-                />
-              </div>
-
-              {/* Profile Information */}
-              <div style={styles.modernSection}>
-                <h2
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    color: "#2c3e50",
-                    margin: "0 0 20px 0",
-                  }}
-                >
-                  Informações Pessoais
-                </h2>
-
-                <div>
-                  {myProfileList.map((item, index) => (
-                    <div key={index} style={styles.profileItem}>
-                      <span style={styles.profileLabel}>{item.title}</span>
-                      <span style={styles.profileValue}>{item.data}</span>
-                    </div>
-                  ))}
-
-                  <div style={styles.profileItem}>
-                    <span style={styles.profileLabel}>Aluno Particular</span>
-                    <span
-                      style={{
-                        ...styles.profileValue,
-                        padding: "4px 8px",
-                        borderRadius: "12px",
-                        fontSize: "12px",
-                        backgroundColor: user.tutoree ? "#e8f5e8" : "#f1f3f5",
-                        color: user.tutoree ? "#388e3c" : "#6c757d",
-                      }}
-                    >
-                      {user.tutoree ? "Sim" : "Não"}
-                    </span>
-                  </div>
-
-                  {showModal && (
-                    <div
-                      style={{
-                        position: "fixed",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        zIndex: 1000,
-                      }}
-                    >
-                      <div
-                        style={{
-                          background: "#fff",
-                          padding: "32px",
-                          borderRadius: "12px",
-                          width: "90%",
-                          maxWidth: "400px",
-                          textAlign: "center",
-                        }}
-                      >
-                        <h2
-                          style={{
-                            marginBottom: "24px",
-                            color: "#dc3545",
-                            fontSize: "18px",
-                            fontWeight: "600",
-                          }}
-                        >
-                          Tem certeza que deseja cancelar sua assinatura?
-                        </h2>
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            gap: isDesktop ? "12px" : 0,
-                            flexDirection: isDesktop ? "row" : "column",
-                            width: "100%",
-                          }}
-                        >
-                          <button
-                            onClick={() => setShowModal(false)}
-                            style={{
-                              ...baseBtnStyle,
-                              background: "#28a745",
-                              border: "1px solid #28a745",
-                              color: "#fff",
-                            }}
-                          >
-                            Não
-                          </button>
-                          <button
-                            onClick={cancelSubscription}
-                            style={{
-                              ...baseBtnStyle,
-                              background: "#dc3545",
-                              border: "1px solid #dc3545",
-                              color: "#fff",
-                            }}
-                          >
-                            Sim
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {user.permissions == "teacher" && (
-                    <div
-                      style={{ ...styles.profileItem, borderBottom: "none" }}
-                    >
-                      <span style={styles.profileLabel}>Google Drive</span>
-                      <a
-                        href={user.googleDriveLink}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          fontSize: "14px",
-                          fontWeight: "500",
-                        }}
-                      >
-                        Acessar Drive →
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                {/* AÇÃO: Editar / Alterar Senha — mesmo padrão responsivo */}
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: isDesktop ? "flex-end" : "stretch",
-                    gap: isDesktop ? 6 : 10,
-                    marginTop: "16px",
-                    flexDirection: isDesktop ? "row" : "column",
-                    width: "100%",
-                  }}
-                >
-                  <button
-                    onClick={() => setShowEditModal(true)}
-                    style={{
-                      ...basePrimaryBtnStyle,
-                      background: partnerColor(),
-                      border: `1px solid ${partnerColor()}`,
-                      color: textpartnerColorContrast(),
-                    }}
-                  >
-                    Editar Dados
-                  </button>
-
-                  <button
-                    onClick={() => setShowPasswordModal(true)}
-                    style={{
-                      ...baseBtnStyle,
-                      background: "#2c3e50",
-                      border: "1px solid #2c3e50",
-                      color: "#fff",
-                    }}
-                  >
-                    Alterar Senha
-                  </button>
-                </div>
-              </div>
-
-              {user.askedToCancel && (
-                <div style={styles.modernSection}>
-                  <div style={styles.container}>
-                    <div style={styles.card}>
-                      <button
-                        onClick={() =>
-                          window.location.assign("https://wa.me/5511972369299")
-                        }
-                        style={styles.button}
-                      >
-                        Solicite a reativação do seu cadastro
-                      </button>
-                      <Countdown
-                        targetDate={new Date(user.limitDate)}
-                        text={`Você e seus alunos podem continuar acessando o Arvin até ${formatDateBrWithHour(
-                          user.limitDate
-                        )}`}
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
-            </>
           )}
-          <RankingTimelineArvin
-            headers={headers}
-            id={user.id}
-            name={user.name}
-            permissions={user.permissions}
-          />
         </div>
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "50vh",
-            color: "#6c757d",
-          }}
-        >
-          Nenhum usuário logado
-        </div>
-      )}
+      </div>
     </div>
   );
 }

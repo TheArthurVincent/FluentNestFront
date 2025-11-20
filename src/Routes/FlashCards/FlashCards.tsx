@@ -172,7 +172,6 @@ const FlashCards = ({
         <div
           style={{
             paddingTop: 29,
-            paddingBottom: 17,
             display: "flex",
             alignItems: "center",
           }}
