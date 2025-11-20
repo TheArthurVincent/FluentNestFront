@@ -1,158 +1,511 @@
 // Routes/ArvinComponents/Students/sections/StudentMainCard.tsx
-import React, { FC } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { createPortal } from "react-dom";
+
 import { StudentItem } from "../types/studentsTypes";
 import { cardBase } from "../types/studentPage.styles";
 import { partnerColor } from "../../../../../Styles/Styles";
+import { backDomain } from "../../../../../Resources/UniversalComponents";
 
 interface StudentMainCardProps {
   student: StudentItem;
+  headers?: Record<string, string>;
+  /** opcional: atualiza o aluno no pai após salvar */
+  onStudentUpdated?: (student: StudentItem) => void;
 }
 
-export const StudentMainCard: FC<StudentMainCardProps> = ({ student }) => {
-  return (
-    <div style={cardBase}>
+export const StudentMainCard: FC<StudentMainCardProps> = ({
+  student,
+  headers,
+  onStudentUpdated,
+}) => {
+  const [open, setOpen] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const [editName, setEditName] = useState(student.name || "");
+  const [editLastname, setEditLastname] = useState(student.lastname || "");
+  const [editEmail, setEditEmail] = useState(student.email || "");
+  const [editPhone, setEditPhone] = useState(student.phoneNumber || "");
+  const [editDoc, setEditDoc] = useState((student as any).doc || "");
+  const [editDateOfBirth, setEditDateOfBirth] = useState<string>("");
+
+  const firstFocusableRef = useRef<HTMLInputElement | null>(null);
+
+  // Inicializa a data de nascimento em formato yyyy-MM-dd (para <input type="date" />)
+  useEffect(() => {
+    const raw = (student as any).dateOfBirth;
+    if (!raw) return;
+    const d = new Date(raw);
+    if (!isNaN(d.getTime())) {
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const dd = String(d.getDate()).padStart(2, "0");
+      setEditDateOfBirth(`${yyyy}-${mm}-${dd}`);
+    }
+  }, [student]);
+
+  // ESC para fechar e Ctrl+Enter / Cmd+Enter para salvar
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && open && !saving) setOpen(false);
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        e.key.toLowerCase() === "enter" &&
+        open &&
+        !saving
+      ) {
+        handleSave();
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    if (open) {
+      setTimeout(() => firstFocusableRef.current?.focus(), 0);
+    }
+    return () => document.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, saving]);
+
+  const openModal = () => {
+    setErrorMsg(null);
+    setEditName(student.name || "");
+    setEditLastname(student.lastname || "");
+    setEditEmail(student.email || "");
+    setEditPhone(student.phoneNumber || "");
+    setEditDoc((student as any).doc || "");
+    // date já vem do useEffect
+    setOpen(true);
+  };
+
+  const closeModal = () => {
+    if (saving) return;
+    setOpen(false);
+  };
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      setErrorMsg(null);
+
+      const payload: any = {
+        name: editName,
+        lastname: editLastname,
+        email: editEmail,
+        phoneNumber: editPhone,
+        dateOfBirth: editDateOfBirth || null,
+        doc: editDoc, // CPF (backend ainda pode ignorar, mas já mandamos)
+      };
+
+      const url = `${backDomain}/api/v1/students/${student.id}`;
+
+      const response = await axios.put(url, payload, {
+        headers: headers ? { ...headers } : {},
+      });
+
+      const updatedUser = response.data?.updatedUser || null;
+
+      if (updatedUser && onStudentUpdated) {
+        onStudentUpdated(updatedUser);
+      }
+
+      setOpen(false);
+    } catch (err: any) {
+      console.error(err);
+      const msg =
+        err?.response?.data?.message ||
+        err?.response?.data?.error ||
+        err?.message ||
+        "Erro ao salvar alterações do aluno.";
+      setErrorMsg(msg);
+    } finally {
+      setSaving(false);
+      window.location.reload();
+    }
+  };
+
+  const renderModal = () => {
+    // segurança para SSR
+    if (typeof document === "undefined") return null;
+    if (!open) return null;
+
+    const modal = (
       <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="edit-student-title"
+        onClick={(e) => {
+          if (e.target === e.currentTarget && !saving) closeModal();
+        }}
         style={{
-          display: "flex",
-          gap: 16,
-          alignItems: "center",
-          marginBottom: 12,
+          position: "fixed",
+          inset: 0,
+          top: 0,
+          left: 0,
+          margin: "0 auto",
+          width: "100vw",
+          height: "100vh",
+          background: "rgba(17,24,39,0.45)",
+          display: "grid",
+          placeItems: "center",
+          zIndex: 99999,
+          padding: "16px",
         }}
       >
         <div
           style={{
-            width: 72,
-            height: 72,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #E0ECFF 0%, #F4E8FF 100%)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            width: "100%",
+            maxWidth: "560px",
+            background: "#fff",
+            borderRadius: "12px",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
             overflow: "hidden",
-            flexShrink: 0,
           }}
+          onClick={(e) => e.stopPropagation()}
         >
-          {student.picture ? (
-            <img
-              src={student.picture}
-              alt={student.fullname}
+          {/* Header */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "14px 16px",
+              borderBottom: "1px solid #eef2f7",
+              background: "#f8fafc",
+            }}
+          >
+            <h3
+              id="edit-student-title"
+              style={{ margin: 0, fontSize: "16px", color: "#0f172a" }}
+            >
+              Editar aluno
+            </h3>
+            <button
+              onClick={() => !saving && closeModal()}
+              aria-label="Fechar"
               style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                borderRadius: 8,
-              }}
-            />
-          ) : (
-            <span
-              style={{
-                fontSize: 26,
-                fontWeight: 700,
-                color: partnerColor(),
+                border: "none",
+                background: "transparent",
+                cursor: saving ? "not-allowed" : "pointer",
+                padding: "6px",
+                color: "#64748b",
               }}
             >
-              {student.name?.[0]}
-            </span>
-          )}
-        </div>
-        <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
-          <span
-            style={{
-              fontSize: 18,
-              fontWeight: 700,
-              color: "#111827",
-            }}
-          >
-            {student.fullname}
-          </span>
-          <span
-            style={{
-              fontSize: 13,
-              color: "#6B7280",
-            }}
-          >
-            Plano {student.plan?.toUpperCase()} · Nível {student.level || "-"}
-          </span>
-          <span
-            style={{
-              fontSize: 11,
-              color: "#9CA3AF",
-            }}
-          >
-            ID: {student.id}
-          </span>
-        </div>
-      </div>
+              <i className="fa fa-times" />
+            </button>
+          </div>
 
-      <div
-        style={{
-          marginTop: 8,
-          paddingTop: 10,
-          borderTop: "1px dashed #E5E7EB",
-          display: "grid",
-          gap: 8,
-          fontSize: 13,
-          color: "#4B5563",
-        }}
-      >
-        <Row label="Email" value={student.email} />
-        <Row label="Telefone" value={student.phoneNumber || "-"} />
-        <Row label="Endereço" value={student.address || "-"} />
-        <div style={{ display: "flex", gap: 8 }}>
-          <span
-            style={{
-              width: 60,
-              fontWeight: 600,
-              color: "#9CA3AF",
-            }}
-          >
-            Drive
-          </span>
-          <span style={{ flex: 1 }}>
-            {student.googleDriveLink ? (
-              <a
-                href={student.googleDriveLink}
-                target="_blank"
-                rel="noreferrer"
+          {/* Body */}
+          <div style={{ padding: "16px", display: "grid", gap: "12px" }}>
+            {errorMsg && (
+              <div
+                role="alert"
                 style={{
-                  color: partnerColor(),
-                  textDecoration: "none",
-                  fontWeight: 600,
+                  background: "#fef2f2",
+                  color: "#991b1b",
+                  border: "1px solid #fecaca",
+                  borderRadius: "8px",
+                  padding: "10px 12px",
+                  fontSize: "13px",
                 }}
               >
-                Abrir pasta
-              </a>
-            ) : (
-              "-"
+                {errorMsg}
+              </div>
             )}
-          </span>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "12px",
+              }}
+            >
+              <Field
+                label="Nome"
+                ref={firstFocusableRef}
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                disabled={saving}
+                placeholder="Nome"
+              />
+              <Field
+                label="Sobrenome"
+                type="text"
+                value={editLastname}
+                onChange={(e) => setEditLastname(e.target.value)}
+                disabled={saving}
+                placeholder="Sobrenome"
+              />
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+                gap: "12px",
+              }}
+            >
+              <Field
+                label="Data de nascimento"
+                type="date"
+                value={editDateOfBirth}
+                onChange={(e) => setEditDateOfBirth(e.target.value)}
+                disabled={saving}
+              />
+              <Field
+                label="CPF"
+                type="text"
+                value={editDoc}
+                onChange={(e) => setEditDoc(e.target.value)}
+                disabled={saving}
+                placeholder="000.000.000-00"
+              />
+            </div>
+
+            <Field
+              label="Email"
+              type="email"
+              value={editEmail}
+              onChange={(e) => setEditEmail(e.target.value)}
+              disabled={saving}
+              placeholder="email@exemplo.com"
+            />
+
+            <Field
+              label="Telefone"
+              type="tel"
+              value={editPhone}
+              onChange={(e) => setEditPhone(e.target.value)}
+              disabled={saving}
+              placeholder="(11) 99999-9999"
+            />
+          </div>
+
+          {/* Footer */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "8px",
+              padding: "12px 16px",
+              borderTop: "1px solid #eef2f7",
+              background: "#fafafa",
+            }}
+          >
+            <button
+              onClick={closeModal}
+              disabled={saving}
+              style={{
+                padding: "10px 14px",
+                borderRadius: "8px",
+                border: "1px solid #e2e8f0",
+                background: "#ffffff",
+                color: "#334155",
+                cursor: saving ? "not-allowed" : "pointer",
+                fontSize: "14px",
+              }}
+            >
+              Cancelar
+            </button>
+
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "10px 14px",
+                borderRadius: "8px",
+                border: `1px solid ${partnerColor()}`,
+                background: saving
+                  ? `${partnerColor()}50`
+                  : `${partnerColor()}`,
+                color: "white",
+                cursor: saving ? "not-allowed" : "pointer",
+                fontSize: "14px",
+              }}
+            >
+              {saving ? (
+                <>
+                  <i className="fa fa-spinner fa-spin" aria-hidden="true" />
+                  Salvando...
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-check" aria-hidden="true" />
+                  Salvar alterações
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+
+    return createPortal(modal, document.body);
+  };
+
+  return (
+    <>
+      <div style={cardBase}>
+        <div
+          style={{
+            display: "flex",
+            gap: 16,
+            alignItems: "center",
+            marginBottom: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, #E0ECFF 0%, #F4E8FF 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden",
+              flexShrink: 0,
+            }}
+          >
+            {student.picture ? (
+              <img
+                src={student.picture}
+                alt={student.fullname}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: 8,
+                }}
+              />
+            ) : (
+              <span
+                style={{
+                  fontSize: 26,
+                  fontWeight: 700,
+                  color: partnerColor(),
+                }}
+              >
+                {student.name?.[0]}
+              </span>
+            )}
+          </div>
+          <div style={{ display: "grid", gap: 4, minWidth: 0 }}>
+            <span
+              style={{
+                fontSize: 18,
+                fontWeight: 700,
+                color: "#111827",
+              }}
+            >
+              {student.fullname}
+            </span>
+            <span
+              style={{
+                fontSize: 11,
+                color: "#9CA3AF",
+              }}
+            >
+              {student.email}
+            </span>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 8,
+            paddingTop: 10,
+            borderTop: "1px dashed #E5E7EB",
+            display: "grid",
+            gap: 8,
+            fontSize: 13,
+            color: "#4B5563",
+          }}
+        >
+          <Row label="Telefone" value={student.phoneNumber || "-"} />
+          <Row label="Endereço" value={student.address || "-"} />
+          <div style={{ display: "flex", gap: 8 }}>
+            <span
+              style={{
+                width: 60,
+                fontWeight: 600,
+                color: "#9CA3AF",
+              }}
+            >
+              Drive
+            </span>
+            <span style={{ flex: 1 }}>
+              {student.googleDriveLink ? (
+                <a
+                  href={student.googleDriveLink}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    color: partnerColor(),
+                    textDecoration: "none",
+                    fontWeight: 600,
+                  }}
+                >
+                  Abrir pasta
+                </a>
+              ) : (
+                "-"
+              )}
+            </span>
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 14,
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: 8,
+            alignContent: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <button
+            type="button"
+            onClick={openModal}
+            style={{
+              borderRadius: 8,
+              padding: "8px 16px",
+              border: "none",
+              backgroundColor: partnerColor(),
+              color: "#FFFFFF",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Editar aluno
+          </button>
+          <button
+            type="button"
+            style={{
+              borderRadius: 8,
+              padding: "8px 16px",
+              border: "none",
+              backgroundColor: "#E5E7EB",
+              color: "#6B7280",
+              fontSize: 13,
+              fontWeight: 600,
+              cursor: "not-allowed",
+            }}
+            disabled
+          >
+            Editar senha do aluno
+          </button>
         </div>
       </div>
 
-      <div
-        style={{
-          marginTop: 14,
-          display: "flex",
-          justifyContent: "flex-end",
-        }}
-      >
-        <button
-          type="button"
-          style={{
-            borderRadius: 8,
-            padding: "8px 16px",
-            border: "none",
-            backgroundColor: partnerColor(),
-            color: "#FFFFFF",
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: "pointer",
-          }}
-        >
-          Editar aluno
-        </button>
-      </div>
-    </div>
+      {renderModal()}
+    </>
   );
 };
 
@@ -170,3 +523,36 @@ const Row: FC<{ label: string; value: string }> = ({ label, value }) => (
     <span style={{ flex: 1 }}>{value}</span>
   </div>
 );
+
+interface FieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label: string;
+}
+
+const Field = React.forwardRef<HTMLInputElement, FieldProps>(
+  ({ label, ...inputProps }, ref) => (
+    <label
+      style={{
+        display: "grid",
+        gap: "6px",
+        fontSize: "13px",
+        color: "#334155",
+      }}
+    >
+      {label}
+      <input
+        ref={ref}
+        {...inputProps}
+        style={{
+          width: "100%",
+          padding: "10px 12px",
+          borderRadius: "8px",
+          border: "1px solid #e2e8f0",
+          outline: "none",
+          boxSizing: "border-box",
+          ...(inputProps.style || {}),
+        }}
+      />
+    </label>
+  )
+);
+Field.displayName = "Field";
