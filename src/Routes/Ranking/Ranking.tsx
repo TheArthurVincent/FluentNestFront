@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { HOne, RouteDiv } from "../../Resources/Components/RouteBox";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { Tab } from "@mui/material";
 import { alwaysWhite, partnerColor } from "../../Styles/Styles";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
-import { HeadersProps } from "../../Resources/types.universalInterfaces";
 import RankingExplanation from "./RankingComponents/RankingExplanation";
-import RankingTimeline from "./RankingComponents/RankingTimeline";
 import StudentsRankingTotal from "./RankingComponents/StudentsRankingTotal";
 import Helmets from "../../Resources/Helmets";
 import StudentsRanking from "./RankingComponents/StudentsRanking";
 import Countdown from "./RankingComponents/Countdown";
 import { monthInQuestion } from "./RankingComponents/RankingComponents";
 import { onLoggOut } from "../../Resources/UniversalComponents";
+import { newArvinTitleStyle } from "../ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 
 type Props = {
   headers: any;
@@ -63,78 +61,106 @@ export default function Ranking({ headers, isDesktop }: Props) {
   return (
     <div
       style={{
-        margin: "16px auto",
-        fontFamily: "Plus Jakarta Sans",
-        fontWeight: 600,
-        fontStyle: "SemiBold",
-        fontSize: "14px",
-        backgroundColor: "#ffffff",
-        borderRadius: "12px",
-        border: "1px solid #e8eaed",
-        padding: isDesktop ? "2rem" : "5px 1rem ",
-        maxWidth: isDesktop ? "800px" : "95vw",
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
       }}
     >
-      <Helmets text="Ranking" />
-      <HOne>Ranking</HOne>
-      <TabContext value={value}>
+      {isDesktop && (
         <div
           style={{
+            paddingTop: 29,
+            paddingBottom: 17,
             display: "flex",
             alignItems: "center",
-            backgroundColor: alwaysWhite(),
-            justifyContent: "space-between",
           }}
         >
-          <TabList
-            onChange={handleChange}
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="scrollable auto tabs example"
-            sx={{
-              color: partnerColor(),
-              "& .MuiTab-root": {
-                color: partnerColor(),
-              },
-              "& .Mui-selected": {
-                color: partnerColor(),
-              },
-              "& .MuiTabs-indicator": {
-                backgroundColor: partnerColor(),
-              },
+          <section
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "8px",
+              width: "100%",
+              fontSize: "1.5rem",
             }}
           >
-            {componentsToRender.map((component, index) => {
-              return (
-                <Tab
-                  key={index + component.value}
-                  style={{
-                    color: partnerColor(),
-                    fontWeight: (index + 1).toString() === value ? 800 : 500,
-                  }}
-                  label={component.title}
-                  value={component.value}
-                />
-              );
-            })}
-          </TabList>
+            <span style={newArvinTitleStyle}>Ranking</span>
+          </section>
         </div>
-        <Countdown targetDate={targetDate} text={""} />
-        {componentsToRender.map((component, index) => {
-          return (
-            <TabPanel
-              style={{
-                padding: 0,
-                margin: "1rem auto",
+      )}
+      <div
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+
+          fontStyle: "SemiBold",
+          fontSize: "14px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          width: "95%",
+          border: "1px solid #e8eaed",
+          padding: "12px",
+        }}
+      >
+        <Helmets text="Ranking" />
+        <TabContext value={value}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              backgroundColor: alwaysWhite(),
+              justifyContent: "space-between",
+            }}
+          >
+            <TabList
+              onChange={handleChange}
+              variant="scrollable"
+              scrollButtons="auto"
+              aria-label="scrollable auto tabs example"
+              sx={{
+                color: partnerColor(),
+                "& .MuiTab-root": {
+                  color: partnerColor(),
+                },
+                "& .Mui-selected": {
+                  color: partnerColor(),
+                },
+                "& .MuiTabs-indicator": {
+                  backgroundColor: partnerColor(),
+                },
               }}
-              key={index + component.value}
-              value={component.value}
             >
-              {component.component}
-            </TabPanel>
-          );
-        })}
-      </TabContext>
+              {componentsToRender.map((component, index) => {
+                return (
+                  <Tab
+                    key={index + component.value}
+                    style={{
+                      color: partnerColor(),
+                      fontWeight: (index + 1).toString() === value ? 800 : 500,
+                    }}
+                    label={component.title}
+                    value={component.value}
+                  />
+                );
+              })}
+            </TabList>
+          </div>
+          <Countdown targetDate={targetDate} text={""} />
+          {componentsToRender.map((component, index) => {
+            return (
+              <TabPanel
+                style={{
+                  padding: 0,
+                  margin: "1rem auto",
+                }}
+                key={index + component.value}
+                value={component.value}
+              >
+                {component.component}
+              </TabPanel>
+            );
+          })}
+        </TabContext>
+      </div>
     </div>
   );
 }

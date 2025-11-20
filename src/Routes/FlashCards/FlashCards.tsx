@@ -11,6 +11,7 @@ import { onLoggOut, backDomain } from "../../Resources/UniversalComponents";
 import { useUserContext } from "../../Application/SelectLanguage/SelectLanguage";
 import "./flashcards.css";
 import axios from "axios";
+import { newArvinTitleStyle } from "../ArvinComponents/Groups/Groups";
 
 interface FlashCardsProps {
   headers: MyHeadersType | null;
@@ -164,156 +165,184 @@ const FlashCards = ({
   return (
     <div
       style={{
-        margin: "16px auto",
-        fontFamily: "Plus Jakarta Sans",
-        fontWeight: 600,
-        fontStyle: "SemiBold",
-        fontSize: "14px",
-        backgroundColor: "#ffffff",
-        borderRadius: "12px",
-        border: "1px solid #e8eaed",
-        padding: "2rem",
-        width: isDesktop ? "70vw" : "",
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
       }}
     >
-      <Helmets text="Flashcards" />
-      {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+      {isDesktop && (
         <div
           style={{
-            padding: "1rem",
-            backgroundColor: alwaysWhite(),
-            borderBottom: "1px solid #e2e8f0",
+            paddingTop: 29,
+            paddingBottom: 17,
             display: "flex",
             alignItems: "center",
-            gap: "0.5rem",
-            justifyContent: "center",
           }}
         >
-          {loadingStudents ? (
-            <CircularProgress size={20} style={{ color: partnerColor() }} />
-          ) : (
-            <select
-              onChange={(e) => {
-                handleStudentChange(e);
-                const studentSelected = students.find(
-                  (student) => student.id === e.target.value
-                );
-                if (studentSelected) {
-                  setSelectedStudent(
-                    (studentSelected.name || "") +
-                      " " +
-                      (studentSelected.lastname || "")
-                  );
-                } else {
-                  setSelectedStudent("");
-                }
-              }}
-              value={selectedStudentId}
-              style={{
-                borderRadius: "4px",
-                border: "1px solid #e2e8f0",
-                backgroundColor: "#f8fafc",
-                fontSize: "13px",
-                fontWeight: "400",
-                color: "#64748b",
-                padding: "6px 8px",
-                minWidth: isDesktop ? "200px" : "unset",
-                maxWidth: isDesktop ? "300px" : "unset",
-                width: isDesktop ? "auto" : "100%",
-                outline: "none",
-                cursor: "pointer",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = partnerColor();
-                e.target.style.backgroundColor = "#ffffff";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = "#e2e8f0";
-                e.target.style.backgroundColor = "#f8fafc";
-              }}
-            >
-              <option value="">
-                {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
-              </option>
-              {students.map((student) => (
-                <option
-                  key={student.id || student.theId}
-                  value={student.id || student.theId}
-                >
-                  {student.name} {student.lastname}
-                </option>
-              ))}
-            </select>
-          )}
+          <section
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "8px",
+              width: "100%",
+              fontSize: "1.5rem",
+            }}
+          >
+            <span style={newArvinTitleStyle}>Flashcards</span>
+          </section>
         </div>
       )}
-
-      <TabContext value={value}>
-        <TabList
-          onChange={handleChange}
-          variant="scrollable"
-          scrollButtons="auto"
-          aria-label="scrollable auto tabs example"
-          sx={() => {
-            const color = partnerColor();
-            return {
-              width: "100%",
-              fontFamily: "Plus Jakarta Sans",
-              fontWeight: 600,
-              fontStyle: "SemiBold",
-              justifyContent: "space-between",
+      <div
+        style={{
+          margin: "16px auto",
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          fontStyle: "SemiBold",
+          fontSize: "14px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          border: "1px solid #e8eaed",
+          padding: "2rem",
+        }}
+      >
+        <Helmets text="Flashcards" />
+        {(myPermissions === "superadmin" || myPermissions === "teacher") && (
+          <div
+            style={{
+              padding: "1rem",
+              backgroundColor: alwaysWhite(),
+              borderBottom: "1px solid #e2e8f0",
               display: "flex",
-              color,
-              "& .MuiTab-root": {
-                color,
-                padding: 0, // mantém seu padding original
-                minHeight: 44,
-              },
-              "& .Mui-selected": {
-                color,
-                padding: 0, // mantém seu padding original
-              },
-              "& .MuiTabs-indicator": {
-                backgroundColor: color,
-                height: 2,
-              },
-            };
-          }}
-        >
-          {componentsToRender.map((component, index) => {
-            const color = partnerColor();
-            return (
-              <Tab
-                key={index + component.value}
-                style={{
-                  color,
-                  fontWeight: (index + 1).toString() === value ? 800 : 500,
-                  display: component.adm === false ? "block" : displayIsAdm,
-                  // RESPONSIVO: tabs mais “clicáveis” no mobile
-                  flex: isDesktop ? "0 0 auto" : "1 0 auto",
+              alignItems: "center",
+              gap: "0.5rem",
+              justifyContent: "center",
+            }}
+          >
+            {loadingStudents ? (
+              <CircularProgress size={20} style={{ color: partnerColor() }} />
+            ) : (
+              <select
+                onChange={(e) => {
+                  handleStudentChange(e);
+                  const studentSelected = students.find(
+                    (student) => student.id === e.target.value
+                  );
+                  if (studentSelected) {
+                    setSelectedStudent(
+                      (studentSelected.name || "") +
+                        " " +
+                        (studentSelected.lastname || "")
+                    );
+                  } else {
+                    setSelectedStudent("");
+                  }
                 }}
-                label={component.title}
+                value={selectedStudentId}
+                style={{
+                  borderRadius: "4px",
+                  border: "1px solid #e2e8f0",
+                  backgroundColor: "#f8fafc",
+                  fontSize: "13px",
+                  fontWeight: "400",
+                  color: "#64748b",
+                  padding: "6px 8px",
+                  minWidth: isDesktop ? "200px" : "unset",
+                  maxWidth: isDesktop ? "300px" : "unset",
+                  width: isDesktop ? "auto" : "100%",
+                  outline: "none",
+                  cursor: "pointer",
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = partnerColor();
+                  e.target.style.backgroundColor = "#ffffff";
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = "#e2e8f0";
+                  e.target.style.backgroundColor = "#f8fafc";
+                }}
+              >
+                <option value="">
+                  {UniversalTexts?.selectAStudent || "Selecione um aluno..."}
+                </option>
+                {students.map((student) => (
+                  <option
+                    key={student.id || student.theId}
+                    value={student.id || student.theId}
+                  >
+                    {student.name} {student.lastname}
+                  </option>
+                ))}
+              </select>
+            )}
+          </div>
+        )}
+
+        <TabContext value={value}>
+          <TabList
+            onChange={handleChange}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label="scrollable auto tabs example"
+            sx={() => {
+              const color = partnerColor();
+              return {
+                width: "100%",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontStyle: "SemiBold",
+                justifyContent: "space-between",
+                display: "flex",
+                color,
+                "& .MuiTab-root": {
+                  color,
+                  padding: 0, // mantém seu padding original
+                  minHeight: 44,
+                },
+                "& .Mui-selected": {
+                  color,
+                  padding: 0, // mantém seu padding original
+                },
+                "& .MuiTabs-indicator": {
+                  backgroundColor: color,
+                  height: 2,
+                },
+              };
+            }}
+          >
+            {componentsToRender.map((component, index) => {
+              const color = partnerColor();
+              return (
+                <Tab
+                  key={index + component.value}
+                  style={{
+                    color,
+                    fontWeight: (index + 1).toString() === value ? 800 : 500,
+                    display: component.adm === false ? "block" : displayIsAdm,
+                    // RESPONSIVO: tabs mais “clicáveis” no mobile
+                    flex: isDesktop ? "0 0 auto" : "1 0 auto",
+                  }}
+                  label={component.title}
+                  value={component.value}
+                />
+              );
+            })}
+          </TabList>
+
+          {componentsToRender.map((component, index) => {
+            return (
+              <TabPanel
+                style={{
+                  padding: 0,
+                  margin: isDesktop ? "1rem auto" : "0.75rem auto",
+                }}
+                key={index + component.value}
                 value={component.value}
-              />
+              >
+                {component.component}
+              </TabPanel>
             );
           })}
-        </TabList>
-
-        {componentsToRender.map((component, index) => {
-          return (
-            <TabPanel
-              style={{
-                padding: 0,
-                margin: isDesktop ? "1rem auto" : "0.75rem auto",
-              }}
-              key={index + component.value}
-              value={component.value}
-            >
-              {component.component}
-            </TabPanel>
-          );
-        })}
-      </TabContext>
+        </TabContext>
+      </div>
     </div>
   );
 };

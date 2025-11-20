@@ -56,6 +56,7 @@ import {
   updateButton,
 } from "./CalendarComponents/MyCalendarFunctions/MyCalendarFunctions.Styles";
 import { display, fontSize } from "@mui/system";
+import { newArvinTitleStyle } from "../ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 
 function MyCalendar({
   headers,
@@ -1622,1560 +1623,1281 @@ function MyCalendar({
     thePermissions === "superadmin" || thePermissions === "teacher";
 
   return (
-    <>
-      {headers ? (
+    <div
+      style={{
+        margin: !isDesktop ? "0px" : "0px 16px 0px 0px",
+      }}
+    >
+      {isDesktop && (
         <div
           style={{
-            margin: "16px auto",
-            fontFamily: "Plus Jakarta Sans",
-            fontWeight: 600,
-            fontStyle: "SemiBold",
-            fontSize: "14px",
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            border: "1px solid #e8eaed",
-            padding: isDesktop ? "1rem" : "5px 1rem ",
-            maxWidth: isDesktop ? "80vw" : "95vw",
+            paddingTop: 29,
+            paddingBottom: 17,
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          {modalEditTodo && (
+          <section
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingLeft: "8px",
+              width: "100%",
+            }}
+          >
+            <span style={newArvinTitleStyle}>Calendário</span>
+          </section>
+        </div>
+      )}
+      <div
+        style={{
+          fontFamily: "Plus Jakarta Sans",
+          fontWeight: 600,
+          fontStyle: "SemiBold",
+          fontSize: "14px",
+          backgroundColor: "#ffffff",
+          borderRadius: "12px",
+          width: "95%",
+          border: "1px solid #e8eaed",
+        }}
+      >
+        <>
+          {headers ? (
             <div
-              className="todo-modal"
               style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                zIndex: 2000,
-                width: "100vw",
-                height: "100vh",
-                background: "rgba(0,0,0,0.25)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-              onClick={() => {
-                loadGeneral(new Date(task.date));
+                margin: "16px auto",
+                fontFamily: "Plus Jakarta Sans",
+                fontWeight: 600,
+                fontStyle: "SemiBold",
+                fontSize: "14px",
+                padding: isDesktop ? "1rem" : "5px 1rem ",
+                maxWidth: isDesktop ? "80vw" : "95vw",
               }}
             >
-              <div
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  background: "#fff",
-                  borderRadius: "4px",
-                  boxShadow: "0 8px 32px #0002",
-                  minWidth: "340px",
-                  maxWidth: "95vw",
-                  padding: "1rem",
-                  position: "relative",
-                }}
-              >
-                <button
+              {modalEditTodo && (
+                <div
+                  className="todo-modal"
+                  style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    zIndex: 2000,
+                    width: "100vw",
+                    height: "100vh",
+                    background: "rgba(0,0,0,0.25)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                   onClick={() => {
                     loadGeneral(new Date(task.date));
                   }}
-                  style={{
-                    position: "absolute",
-                    top: "18px",
-                    right: "18px",
-                    border: "none",
-                    borderRadius: "50%",
-                    cursor: "pointer",
-                    fontSize: "1rem",
-                    fontWeight: "900",
-                    transition: "background 0.2s",
-                  }}
-                  title="Fechar"
                 >
-                  ×
-                </button>
-                <HTwo>{task.description || "ToDo"}</HTwo>
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "1rem",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  <span
+                  <div
+                    onClick={(e) => e.stopPropagation()}
                     style={{
-                      background: "#f3f4f6",
-                      color: "#555",
+                      background: "#fff",
                       borderRadius: "4px",
-                      padding: "4px 12px",
-                      fontWeight: 500,
+                      boxShadow: "0 8px 32px #0002",
+                      minWidth: "340px",
+                      maxWidth: "95vw",
+                      padding: "1rem",
+                      position: "relative",
                     }}
                   >
-                    {task.category}
-                  </span>
-                  <span
-                    style={{
-                      background: "#f3f4f6",
-                      color: "#555",
-                      borderRadius: "4px",
-                      padding: "4px 12px",
-                      fontWeight: 500,
-                    }}
-                  >
-                    {task.date}
-                  </span>
-                  <button
-                    onClick={() => {
-                      setEditCategory(task.category);
-                      setEditDate(task.date);
-                      setEditDescription(task.description);
-                      setShowEditSection(true);
-                    }}
-                    style={{
-                      background: partnerColor(),
-                      color: textpartnerColorContrast(),
-                      border: "none",
-                      borderRadius: "4px",
-                      padding: "6px 16px",
-                      fontWeight: 600,
-                      marginLeft: "8px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    {UniversalTexts.edit}
-                  </button>
-                </div>
-                <div>
-                  {showEditSection && (
+                    <button
+                      onClick={() => {
+                        loadGeneral(new Date(task.date));
+                      }}
+                      style={{
+                        position: "absolute",
+                        top: "18px",
+                        right: "18px",
+                        border: "none",
+                        borderRadius: "50%",
+                        cursor: "pointer",
+                        fontSize: "1rem",
+                        fontWeight: "900",
+                        transition: "background 0.2s",
+                      }}
+                      title="Fechar"
+                    >
+                      ×
+                    </button>
+                    <HTwo>{task.description || "ToDo"}</HTwo>
                     <div
                       style={{
-                        marginTop: "1rem",
-                        background: "#f6f6f6",
-                        borderRadius: "4px",
-                        padding: "1rem",
-                        boxShadow: "0 2px 8px #0001",
                         display: "flex",
-                        flexDirection: "column",
-                        gap: "10px",
-                        maxWidth: "320px",
+                        gap: "1rem",
+                        marginBottom: "1rem",
                       }}
                     >
-                      <input
-                        type="text"
-                        value={editDescription}
-                        onChange={(e) => setEditDescription(e.target.value)}
-                        placeholder="Descrição"
+                      <span
                         style={{
-                          padding: "8px",
+                          background: "#f3f4f6",
+                          color: "#555",
                           borderRadius: "4px",
-                          border: "1px solid #ddd",
-                        }}
-                      />
-                      <input
-                        type="date"
-                        value={editDate}
-                        onChange={(e) => setEditDate(e.target.value)}
-                        style={{
-                          padding: "8px",
-                          borderRadius: "4px",
-                          border: "1px solid #ddd",
-                        }}
-                      />
-                      <select
-                        value={editCategory}
-                        onChange={(e) => setEditCategory(e.target.value)}
-                        style={{
-                          padding: "8px",
-                          borderRadius: "4px",
-                          border: "1px solid #ddd",
+                          padding: "4px 12px",
+                          fontWeight: 500,
                         }}
                       >
-                        <option value="">Selecione a categoria</option>
-                        <option value="personal">Vida pessoal</option>
-                        <option value="finance">Financeiro</option>
-                        <option value="work">Trabalho</option>
-                        <option value="study">Estudos</option>
-                        <option value="health">Saúde</option>
-                        <option value="family">Família</option>
-                        <option value="other">Outro</option>
-                      </select>
-                      {!showDeleteEventConfirmation && (
+                        {task.category}
+                      </span>
+                      <span
+                        style={{
+                          background: "#f3f4f6",
+                          color: "#555",
+                          borderRadius: "4px",
+                          padding: "4px 12px",
+                          fontWeight: 500,
+                        }}
+                      >
+                        {task.date}
+                      </span>
+                      <button
+                        onClick={() => {
+                          setEditCategory(task.category);
+                          setEditDate(task.date);
+                          setEditDescription(task.description);
+                          setShowEditSection(true);
+                        }}
+                        style={{
+                          background: partnerColor(),
+                          color: textpartnerColorContrast(),
+                          border: "none",
+                          borderRadius: "4px",
+                          padding: "6px 16px",
+                          fontWeight: 600,
+                          marginLeft: "8px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {UniversalTexts.edit}
+                      </button>
+                    </div>
+                    <div>
+                      {showEditSection && (
                         <div
                           style={{
+                            marginTop: "1rem",
+                            background: "#f6f6f6",
+                            borderRadius: "4px",
+                            padding: "1rem",
+                            boxShadow: "0 2px 8px #0001",
                             display: "flex",
-                            gap: "1rem",
-                            justifyContent: "flex-end",
-                            marginTop: "10px",
-                          }}
-                        >
-                          <button
-                            onClick={() => {
-                              setShowDeleteEventConfirmation(true);
-                            }}
-                            style={{
-                              background: "red",
-                              color: "white",
-                              border: "none",
-                              borderRadius: "4px",
-                              padding: "6px 16px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {UniversalTexts.delete}
-                          </button>
-
-                          <button
-                            onClick={() => setShowEditSection(false)}
-                            style={{
-                              background: "#eee",
-                              color: "#333",
-                              border: "none",
-                              borderRadius: "4px",
-                              padding: "6px 16px",
-                              fontWeight: 500,
-                            }}
-                          >
-                            {UniversalTexts.cancel}
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              handleUpdateInfoTask(task._id);
-                            }}
-                            style={{
-                              background: partnerColor(),
-                              color: textpartnerColorContrast(),
-                              border: "none",
-                              borderRadius: "4px",
-                              padding: "6px 16px",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {UniversalTexts.save}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-                <div
-                  style={{
-                    display: showDeleteEventConfirmation ? "block" : "none",
-                    background: "#f9fafb",
-                    borderRadius: "4px",
-                    padding: "12px 16px",
-                    boxShadow: "0 2px 8px #0001",
-                    border: "1px solid #e5e7eb",
-                  }}
-                >
-                  {UniversalTexts.deleteConfirm}
-                  <div
-                    style={{
-                      display: "flex",
-                      margin: "2px",
-                    }}
-                  >
-                    <button
-                      onClick={() => {
-                        setShowDeleteEventConfirmation(false);
-                      }}
-                      style={{
-                        background: "blue",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        padding: "6px 16px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {UniversalTexts.cancel}
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleDeleteTask(task._id);
-                      }}
-                      style={{
-                        background: "red",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "4px",
-                        padding: "6px 16px",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {UniversalTexts.delete}
-                    </button>
-                  </div>
-                </div>
-                <div style={{ marginBottom: "1.2rem" }}>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      fontSize: "1.05rem",
-                    }}
-                  >
-                    Checklist
-                  </span>
-
-                  <ul
-                    style={{
-                      listStyle: "none",
-                      padding: 0,
-                      margin: "10px 0 0 0",
-                      background: "#f9fafb",
-                      borderRadius: "4px",
-                      boxShadow: "0 2px 8px #0001",
-                      border: "1px solid #e5e7eb",
-                      maxWidth: "320px",
-                    }}
-                  >
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
-                      const item = task[`checkList${i}`];
-                      const isEditing = editingIndex === i;
-                      if (!item || (!item.description && !isEditing)) {
-                        return null;
-                      }
-                      return (
-                        <li
-                          key={i}
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            padding: "8px 12px",
-                            borderBottom: i < 5 ? "1px solid #eee" : "none",
-                            transition: "background 0.2s",
-                            background: item.checked
-                              ? "#e6fbe8"
-                              : "transparent",
+                            flexDirection: "column",
+                            gap: "10px",
+                            maxWidth: "320px",
                           }}
                         >
                           <input
-                            type="checkbox"
-                            checked={item.checked}
-                            onChange={() => updateChecklistTask(i, task._id)}
+                            type="text"
+                            value={editDescription}
+                            onChange={(e) => setEditDescription(e.target.value)}
+                            placeholder="Descrição"
                             style={{
-                              accentColor: item.checked ? "#22c55e" : "#ddd",
-                              width: "15px",
-                              height: "15px",
-                              marginRight: "12px",
-                              cursor: "pointer",
-                              boxShadow: item.checked
-                                ? "0 0 0 2px #22c55e33"
-                                : "none",
+                              padding: "8px",
+                              borderRadius: "4px",
+                              border: "1px solid #ddd",
                             }}
                           />
-
-                          {!isEditing ? (
-                            <span
-                              onClick={() => {
-                                setEditingIndex(i);
-                                setDescriptionChecklistToEdit(
-                                  item.description || ""
-                                );
+                          <input
+                            type="date"
+                            value={editDate}
+                            onChange={(e) => setEditDate(e.target.value)}
+                            style={{
+                              padding: "8px",
+                              borderRadius: "4px",
+                              border: "1px solid #ddd",
+                            }}
+                          />
+                          <select
+                            value={editCategory}
+                            onChange={(e) => setEditCategory(e.target.value)}
+                            style={{
+                              padding: "8px",
+                              borderRadius: "4px",
+                              border: "1px solid #ddd",
+                            }}
+                          >
+                            <option value="">Selecione a categoria</option>
+                            <option value="personal">Vida pessoal</option>
+                            <option value="finance">Financeiro</option>
+                            <option value="work">Trabalho</option>
+                            <option value="study">Estudos</option>
+                            <option value="health">Saúde</option>
+                            <option value="family">Família</option>
+                            <option value="other">Outro</option>
+                          </select>
+                          {!showDeleteEventConfirmation && (
+                            <div
+                              style={{
+                                display: "flex",
+                                gap: "1rem",
+                                justifyContent: "flex-end",
+                                marginTop: "10px",
                               }}
                             >
-                              {item.description}
-                            </span>
-                          ) : (
-                            <span>
-                              <input
-                                type="text"
-                                value={descriptionChecklistToEdit}
-                                autoFocus
-                                onChange={(e) =>
-                                  setDescriptionChecklistToEdit(e.target.value)
-                                }
-                                onBlur={() => {
-                                  const value =
-                                    descriptionChecklistToEdit.trim();
-                                  updateChecklistTaskDescripton(
-                                    i,
-                                    task._id,
-                                    value
-                                  );
-                                  setEditingIndex(null);
+                              <button
+                                onClick={() => {
+                                  setShowDeleteEventConfirmation(true);
                                 }}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") e.currentTarget.blur();
-                                  if (e.key === "Escape") {
+                                style={{
+                                  background: "red",
+                                  color: "white",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  padding: "6px 16px",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                {UniversalTexts.delete}
+                              </button>
+
+                              <button
+                                onClick={() => setShowEditSection(false)}
+                                style={{
+                                  background: "#eee",
+                                  color: "#333",
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  padding: "6px 16px",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {UniversalTexts.cancel}
+                              </button>
+
+                              <button
+                                onClick={() => {
+                                  handleUpdateInfoTask(task._id);
+                                }}
+                                style={{
+                                  background: partnerColor(),
+                                  color: textpartnerColorContrast(),
+                                  border: "none",
+                                  borderRadius: "4px",
+                                  padding: "6px 16px",
+                                  fontWeight: 600,
+                                }}
+                              >
+                                {UniversalTexts.save}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        display: showDeleteEventConfirmation ? "block" : "none",
+                        background: "#f9fafb",
+                        borderRadius: "4px",
+                        padding: "12px 16px",
+                        boxShadow: "0 2px 8px #0001",
+                        border: "1px solid #e5e7eb",
+                      }}
+                    >
+                      {UniversalTexts.deleteConfirm}
+                      <div
+                        style={{
+                          display: "flex",
+                          margin: "2px",
+                        }}
+                      >
+                        <button
+                          onClick={() => {
+                            setShowDeleteEventConfirmation(false);
+                          }}
+                          style={{
+                            background: "blue",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            padding: "6px 16px",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {UniversalTexts.cancel}
+                        </button>
+                        <button
+                          onClick={() => {
+                            handleDeleteTask(task._id);
+                          }}
+                          style={{
+                            background: "red",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "4px",
+                            padding: "6px 16px",
+                            fontWeight: 600,
+                          }}
+                        >
+                          {UniversalTexts.delete}
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ marginBottom: "1.2rem" }}>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          fontSize: "1.05rem",
+                        }}
+                      >
+                        Checklist
+                      </span>
+
+                      <ul
+                        style={{
+                          listStyle: "none",
+                          padding: 0,
+                          margin: "10px 0 0 0",
+                          background: "#f9fafb",
+                          borderRadius: "4px",
+                          boxShadow: "0 2px 8px #0001",
+                          border: "1px solid #e5e7eb",
+                          maxWidth: "320px",
+                        }}
+                      >
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
+                          const item = task[`checkList${i}`];
+                          const isEditing = editingIndex === i;
+                          if (!item || (!item.description && !isEditing)) {
+                            return null;
+                          }
+                          return (
+                            <li
+                              key={i}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                padding: "8px 12px",
+                                borderBottom: i < 5 ? "1px solid #eee" : "none",
+                                transition: "background 0.2s",
+                                background: item.checked
+                                  ? "#e6fbe8"
+                                  : "transparent",
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={item.checked}
+                                onChange={() =>
+                                  updateChecklistTask(i, task._id)
+                                }
+                                style={{
+                                  accentColor: item.checked
+                                    ? "#22c55e"
+                                    : "#ddd",
+                                  width: "15px",
+                                  height: "15px",
+                                  marginRight: "12px",
+                                  cursor: "pointer",
+                                  boxShadow: item.checked
+                                    ? "0 0 0 2px #22c55e33"
+                                    : "none",
+                                }}
+                              />
+
+                              {!isEditing ? (
+                                <span
+                                  onClick={() => {
+                                    setEditingIndex(i);
                                     setDescriptionChecklistToEdit(
                                       item.description || ""
                                     );
-                                    setEditingIndex(null);
-                                  }
-                                }}
-                              />
-                            </span>
-                          )}
-                        </li>
-                      );
-                    })}
-                  </ul>
-                  {hasEmptySlot && (
-                    <button
-                      type="button"
-                      onClick={handleAddChecklistItem}
-                      style={{
-                        padding: "8px 12px",
-                        borderRadius: 8,
-                        border: "1px solid #e5e7eb",
-                        background: "#fff",
-                        boxShadow: "0 1px 3px #0001",
-                        cursor: "pointer",
-                        marginTop: 8,
-                      }}
-                    >
-                      + Add
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-          {!isVisible && <HOne>{UniversalTexts.calendar}</HOne>}{" "}
-          {loading ? (
-            <CircularProgress style={{ color: partnerColor() }} />
-          ) : (
-            <div
-              ref={calendarRef}
-              onScroll={() => {
-                setShouldScrollToToday(false);
-              }}
-              style={{
-                display: !isVisible ? "flex" : "none",
-                gap: "12px",
-                overflowX: "auto",
-                padding: "8px 4px 4px",
-                scrollbarWidth: "thin",
-                scrollbarColor: `${partnerColor()} transparent`,
-              }}
-            >
-              {futureDates.map((date, index) => {
-                const hj = new Date();
-                const isToday =
-                  hj.getDate() === date.getDate() &&
-                  hj.getMonth() === date.getMonth() &&
-                  hj.getFullYear() === date.getFullYear();
-
-                return (
-                  <StyledDiv
-                    className={isToday ? "glowing" : "none"}
-                    ref={isToday ? todayRef : null}
-                    style={{
-                      fontSize: "10px",
-                      border: isToday
-                        ? `3px solid ${partnerColor()}`
-                        : "1px solid #e0e0e0",
-                      borderRadius: "4px",
-                      backgroundColor: isToday ? "rgba(0,0,0,0.02)" : "white",
-                      boxShadow: isToday
-                        ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
-                        : "0 2px 8px rgba(0,0,0,0.08)",
-                      transition: "all 0.3s ease",
-                      minWidth: "200px",
-                    }}
-                    key={index}
-                  >
-                    <div
-                      style={{
-                        padding: "6px",
-                        position: "sticky",
-                        zIndex: 1,
-                        top: 0,
-                        fontWeight: 700,
-                        textAlign: "center",
-                        background: isToday
-                          ? partnerColor()
-                          : "linear-gradient(135deg, #111, #555)",
-                        color: alwaysWhite(),
-                        marginBottom: "5px",
-                        letterSpacing: "0.5px",
-                        textShadow: "0 1px 2px rgba(0,0,0,0.2)",
-                      }}
-                    >
-                      <div
-                        style={{
-                          marginBottom: "2px",
-                        }}
-                      >
-                        {date.toLocaleDateString("en-US", {
-                          weekday: "long",
+                                  }}
+                                >
+                                  {item.description}
+                                </span>
+                              ) : (
+                                <span>
+                                  <input
+                                    type="text"
+                                    value={descriptionChecklistToEdit}
+                                    autoFocus
+                                    onChange={(e) =>
+                                      setDescriptionChecklistToEdit(
+                                        e.target.value
+                                      )
+                                    }
+                                    onBlur={() => {
+                                      const value =
+                                        descriptionChecklistToEdit.trim();
+                                      updateChecklistTaskDescripton(
+                                        i,
+                                        task._id,
+                                        value
+                                      );
+                                      setEditingIndex(null);
+                                    }}
+                                    onKeyDown={(e) => {
+                                      if (e.key === "Enter")
+                                        e.currentTarget.blur();
+                                      if (e.key === "Escape") {
+                                        setDescriptionChecklistToEdit(
+                                          item.description || ""
+                                        );
+                                        setEditingIndex(null);
+                                      }
+                                    }}
+                                  />
+                                </span>
+                              )}
+                            </li>
+                          );
                         })}
-                      </div>
-                      <div>
-                        {date.toLocaleDateString("en-US", {
-                          month: "short",
-                          day: "numeric",
-                          year: "numeric",
-                        })}
-                      </div>
+                      </ul>
+                      {hasEmptySlot && (
+                        <button
+                          type="button"
+                          onClick={handleAddChecklistItem}
+                          style={{
+                            padding: "8px 12px",
+                            borderRadius: 8,
+                            border: "1px solid #e5e7eb",
+                            background: "#fff",
+                            boxShadow: "0 1px 3px #0001",
+                            cursor: "pointer",
+                            marginTop: 8,
+                          }}
+                        >
+                          + Add
+                        </button>
+                      )}
                     </div>
+                  </div>
+                </div>
+              )}
+              {loading ? (
+                <CircularProgress style={{ color: partnerColor() }} />
+              ) : (
+                <div
+                  ref={calendarRef}
+                  onScroll={() => {
+                    setShouldScrollToToday(false);
+                  }}
+                  style={{
+                    display: !isVisible ? "flex" : "none",
+                    gap: "12px",
+                    overflowX: "auto",
+                    padding: "8px 4px 4px",
+                    scrollbarWidth: "thin",
+                    scrollbarColor: `${partnerColor()} transparent`,
+                  }}
+                >
+                  {futureDates.map((date, index) => {
+                    const hj = new Date();
+                    const isToday =
+                      hj.getDate() === date.getDate() &&
+                      hj.getMonth() === date.getMonth() &&
+                      hj.getFullYear() === date.getFullYear();
 
-                    <div>
-                      {todoList && todoList.length > 0 && (
-                        <div style={{ margin: "8px 4px" }}>
-                          {todoList
+                    return (
+                      <StyledDiv
+                        className={isToday ? "glowing" : "none"}
+                        ref={isToday ? todayRef : null}
+                        style={{
+                          fontSize: "10px",
+                          border: isToday
+                            ? `3px solid ${partnerColor()}`
+                            : "1px solid #e0e0e0",
+                          borderRadius: "4px",
+                          backgroundColor: isToday
+                            ? "rgba(0,0,0,0.02)"
+                            : "white",
+                          boxShadow: isToday
+                            ? `0 8px 25px rgba(0,0,0,0.15), 0 0 0 1px ${partnerColor()}20`
+                            : "0 2px 8px rgba(0,0,0,0.08)",
+                          transition: "all 0.3s ease",
+                          minWidth: "200px",
+                        }}
+                        key={index}
+                      >
+                        <div
+                          style={{
+                            padding: "6px",
+                            position: "sticky",
+                            zIndex: 1,
+                            top: 0,
+                            fontWeight: 700,
+                            textAlign: "center",
+                            background: isToday
+                              ? partnerColor()
+                              : "linear-gradient(135deg, #111, #555)",
+                            color: alwaysWhite(),
+                            marginBottom: "5px",
+                            letterSpacing: "0.5px",
+                            textShadow: "0 1px 2px rgba(0,0,0,0.2)",
+                          }}
+                        >
+                          <div
+                            style={{
+                              marginBottom: "2px",
+                            }}
+                          >
+                            {date.toLocaleDateString("en-US", {
+                              weekday: "long",
+                            })}
+                          </div>
+                          <div>
+                            {date.toLocaleDateString("en-US", {
+                              month: "short",
+                              day: "numeric",
+                              year: "numeric",
+                            })}
+                          </div>
+                        </div>
+
+                        <div>
+                          {todoList && todoList.length > 0 && (
+                            <div style={{ margin: "8px 4px" }}>
+                              {todoList
+                                .filter(
+                                  (event) =>
+                                    event.date.toDateString() ===
+                                    date.toDateString()
+                                )
+                                .map((todo, idx) => (
+                                  <div
+                                    key={todo._id || idx}
+                                    onClick={() => {
+                                      fetchTodo(todo._id);
+                                    }}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      margin: "2px",
+                                      cursor: "pointer",
+                                      backgroundColor:
+                                        todo.category == "personal"
+                                          ? "rgba(215, 192, 192, 0.7)"
+                                          : todo.category == "finance"
+                                          ? "rgba(234, 215, 191, 0.7)"
+                                          : todo.category == "work"
+                                          ? "rgba(234, 234, 191, 0.7)"
+                                          : todo.category == "study"
+                                          ? "rgba(215, 234, 191, 0.7)"
+                                          : todo.category == "health"
+                                          ? "rgba(191, 234, 212, 0.7)"
+                                          : todo.category == "family"
+                                          ? "rgba(191, 201, 234, 0.7)"
+                                          : todo.category == "other"
+                                          ? "rgba(216, 191, 234, 0.7)"
+                                          : "rgba(234, 191, 215, 0.7)",
+                                      borderRadius: "4px",
+                                      padding: "5px",
+                                      boxShadow: "0 1px 2px #b8b8b8ff",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontSize: "10px",
+                                      }}
+                                    >
+                                      {todo.description &&
+                                        truncateString(todo.description, 5)}
+                                    </span>
+                                    <span
+                                      style={{
+                                        display: "flex",
+                                        gap: "4px",
+                                        marginLeft: "8px",
+                                      }}
+                                    >
+                                      {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+                                        (i) => {
+                                          const check = todo[`checkList${i}`];
+                                          if (!check || !check.description)
+                                            return null;
+                                          return (
+                                            <span
+                                              key={i}
+                                              title={check.description}
+                                              style={{
+                                                display: "inline-block",
+                                                width: "8px",
+                                                height: "8px",
+                                                borderRadius: "50%",
+                                                background: check.checked
+                                                  ? "#22c55e"
+                                                  : "#ddd",
+                                                border: "1px solid #bbb",
+                                              }}
+                                            />
+                                          );
+                                        }
+                                      )}
+                                    </span>
+                                  </div>
+                                ))}
+                            </div>
+                          )}
+                        </div>
+                        <div style={{ padding: "0 5px 1rem" }}>
+                          {events
                             .filter(
                               (event) =>
                                 event.date.toDateString() ===
                                 date.toDateString()
                             )
-                            .map((todo, idx) => (
-                              <div
-                                key={todo._id || idx}
-                                onClick={() => {
-                                  fetchTodo(todo._id);
-                                }}
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  margin: "2px",
-                                  cursor: "pointer",
-                                  backgroundColor:
-                                    todo.category == "personal"
-                                      ? "rgba(215, 192, 192, 0.7)"
-                                      : todo.category == "finance"
-                                      ? "rgba(234, 215, 191, 0.7)"
-                                      : todo.category == "work"
-                                      ? "rgba(234, 234, 191, 0.7)"
-                                      : todo.category == "study"
-                                      ? "rgba(215, 234, 191, 0.7)"
-                                      : todo.category == "health"
-                                      ? "rgba(191, 234, 212, 0.7)"
-                                      : todo.category == "family"
-                                      ? "rgba(191, 201, 234, 0.7)"
-                                      : todo.category == "other"
-                                      ? "rgba(216, 191, 234, 0.7)"
-                                      : "rgba(234, 191, 215, 0.7)",
-                                  borderRadius: "4px",
-                                  padding: "5px",
-                                  boxShadow: "0 1px 2px #b8b8b8ff",
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontSize: "10px",
-                                  }}
-                                >
-                                  {todo.description &&
-                                    truncateString(todo.description, 5)}
-                                </span>
-                                <span
-                                  style={{
-                                    display: "flex",
-                                    gap: "4px",
-                                    marginLeft: "8px",
-                                  }}
-                                >
-                                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => {
-                                    const check = todo[`checkList${i}`];
-                                    if (!check || !check.description)
-                                      return null;
-                                    return (
-                                      <span
-                                        key={i}
-                                        title={check.description}
-                                        style={{
-                                          display: "inline-block",
-                                          width: "8px",
-                                          height: "8px",
-                                          borderRadius: "50%",
-                                          background: check.checked
-                                            ? "#22c55e"
-                                            : "#ddd",
-                                          border: "1px solid #bbb",
-                                        }}
-                                      />
-                                    );
-                                  })}
-                                </span>
-                              </div>
-                            ))}
-                        </div>
-                      )}
-                    </div>
-                    <div style={{ padding: "0 5px 1rem" }}>
-                      {events
-                        .filter(
-                          (event) =>
-                            event.date.toDateString() === date.toDateString()
-                        )
-                        .sort((a, b) => {
-                          const timeA =
-                            parseInt(a.time.split(":")[0]) * 60 +
-                            parseInt(a.time.split(":")[1]);
-                          const timeB =
-                            parseInt(b.time.split(":")[0]) * 60 +
-                            parseInt(b.time.split(":")[1]);
-                          return timeA - timeB;
-                        })
-                        .map((event, eventIndex) => {
-                          const categoryColors = {
-                            "Group Class": { bg: "#614338ff", text: "#fff" },
-                            "Established Group Class": {
-                              bg: "#003f7eff",
-                              text: "#fff",
-                            },
-                            Rep: { bg: "grey", text: "#fff" },
-                            Tutoring: { bg: "#1e007eff", text: "#fff" },
-                            "Prize Class": { bg: "#27ae60", text: "#fff" },
-                            Standalone: { bg: "#48145fff", text: "#fff" },
-                            Test: { bg: "#34495e", text: "#fff" },
-                            "Marcar Reposição": {
-                              bg: "#2a7db4ff",
-                              text: "#fff",
-                            },
-                          };
+                            .sort((a, b) => {
+                              const timeA =
+                                parseInt(a.time.split(":")[0]) * 60 +
+                                parseInt(a.time.split(":")[1]);
+                              const timeB =
+                                parseInt(b.time.split(":")[0]) * 60 +
+                                parseInt(b.time.split(":")[1]);
+                              return timeA - timeB;
+                            })
+                            .map((event, eventIndex) => {
+                              const categoryColors = {
+                                "Group Class": {
+                                  bg: "#614338ff",
+                                  text: "#fff",
+                                },
+                                "Established Group Class": {
+                                  bg: "#003f7eff",
+                                  text: "#fff",
+                                },
+                                Rep: { bg: "grey", text: "#fff" },
+                                Tutoring: { bg: "#1e007eff", text: "#fff" },
+                                "Prize Class": { bg: "#27ae60", text: "#fff" },
+                                Standalone: { bg: "#48145fff", text: "#fff" },
+                                Test: { bg: "#34495e", text: "#fff" },
+                                "Marcar Reposição": {
+                                  bg: "#2a7db4ff",
+                                  text: "#fff",
+                                },
+                              };
 
-                          const statusColors = {
-                            desmarcado: {
-                              bg: "#ffebee",
-                              text: "#c62828",
-                              border: "#ef5350",
-                            },
-                            marcado: {
-                              bg: "#e3f2fd",
-                              text: "#1565c0",
-                              border: "#42a5f5",
-                            },
-                            realizada: {
-                              bg: "#e8f5e8",
-                              text: "#2e7d32",
-                              border: "#66bb6a",
-                            },
-                          };
-                          const categoryColor = categoryColors[
-                            event.category
-                          ] || { bg: "#000", text: "#fff" };
-                          const statusColor = statusColors[event.status] || {
-                            bg: "#f5f5f5",
-                            text: "#333",
-                            border: "#ddd",
-                          };
-                          return (
-                            <div
-                              key={`${event._id}-${eventIndex}`}
-                              style={{
-                                marginBottom: "5px",
-                                borderRadius: "4px",
-                                overflow: "hidden",
-                                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-                                transition: "all 0.2s ease",
-                                cursor: "pointer",
-                                border: `1px solid ${statusColor.border}`,
-                              }}
-                              onMouseEnter={(e) => {
-                                e.currentTarget.style.transform =
-                                  "translateY(-2px)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 4px 12px rgba(0,0,0,0.15)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.currentTarget.style.transform =
-                                  "translateY(0)";
-                                e.currentTarget.style.boxShadow =
-                                  "0 2px 8px rgba(0,0,0,0.1)";
-                              }}
-                              onClick={() => handleSeeModal(event)}
-                            >
-                              {/* Live Event Indicator */}
-                              {event.status !== "desmarcado" &&
-                                isEventTimeNowConsideringDuration(
-                                  event,
-                                  hj,
-                                  date,
-                                  event.duration
-                                ) && (
-                                  <div
-                                    style={{
-                                      background: "green",
-                                      padding: "2px",
-                                      position: "relative",
-                                      overflow: "hidden",
-                                    }}
-                                  >
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        color: "white",
-                                        fontWeight: "600",
-                                        textTransform: "uppercase",
-                                        letterSpacing: "0.5px",
-                                      }}
-                                    >
-                                      <span
-                                        style={{
-                                          width: "6px",
-                                          height: "6px",
-                                          backgroundColor: "white",
-                                          borderRadius: "4px",
-                                          marginRight: "5px",
-                                          animation: "pulse 2s infinite",
-                                        }}
-                                      />
-                                      Live Now
-                                    </div>
-                                  </div>
-                                )}
-                              <div
-                                style={{
-                                  background: categoryColor.bg,
-                                  color: categoryColor.text,
-                                  padding: "5px",
-                                  position: "relative",
-                                  paddingBottom: `${event.duration / 5}px`,
-                                }}
-                              >
+                              const statusColors = {
+                                desmarcado: {
+                                  bg: "#ffebee",
+                                  text: "#c62828",
+                                  border: "#ef5350",
+                                },
+                                marcado: {
+                                  bg: "#e3f2fd",
+                                  text: "#1565c0",
+                                  border: "#42a5f5",
+                                },
+                                realizada: {
+                                  bg: "#e8f5e8",
+                                  text: "#2e7d32",
+                                  border: "#66bb6a",
+                                },
+                              };
+                              const categoryColor = categoryColors[
+                                event.category
+                              ] || { bg: "#000", text: "#fff" };
+                              const statusColor = statusColors[
+                                event.status
+                              ] || {
+                                bg: "#f5f5f5",
+                                text: "#333",
+                                border: "#ddd",
+                              };
+                              return (
                                 <div
+                                  key={`${event._id}-${eventIndex}`}
                                   style={{
-                                    position: "absolute",
-                                    top: "5px",
-                                    right: "5px",
-                                    backgroundColor: "rgba(255,255,255,0.2)",
-                                    color: categoryColor.text,
-                                    padding: "2px 5px",
-                                    borderRadius: "4px",
-                                    fontWeight: "600",
-                                    textTransform: "uppercase",
-                                    letterSpacing: "0.3px",
-                                  }}
-                                >
-                                  <i className="fa fa-clock-o" style={{}} />
-
-                                  {formatTimeRange(event.time, event.duration)}
-                                </div>
-
-                                {/* Event Title/Description */}
-                                <div
-                                  style={{
-                                    fontWeight: "600",
                                     marginBottom: "5px",
-                                    lineHeight: "1.3",
-                                    paddingRight: "4rem",
-                                  }}
-                                >
-                                  {event.groupName
-                                    ? truncateString(event.groupName, 11)
-                                    : event.student
-                                    ? truncateString(event.student, 11)
-                                    : event.description
-                                    ? truncateString(event.description, 10)
-                                    : "No description"}
-                                </div>
-                              </div>
-
-                              {/* Status Footer */}
-                              <div
-                                style={{
-                                  backgroundColor: statusColor.bg,
-                                  color: statusColor.text,
-                                  padding: "5px 5px",
-                                  fontWeight: "600",
-                                  textAlign: "center",
-                                  textTransform: "uppercase",
-                                  letterSpacing: "0.5px",
-                                  borderTop: `1px solid ${statusColor.border}`,
-                                }}
-                              >
-                                {(event.status === "desmarcado" ||
-                                  event.status === "Canceled") && (
-                                  <>
-                                    <i
-                                      className="fa fa-times-circle"
-                                      style={{ marginRight: "2px" }}
-                                    />
-                                    {categoryList.find(
-                                      (cat) => cat.value === event.category
-                                    )?.text || event.category}
-                                  </>
-                                )}
-                                {(event.status === "marcado" ||
-                                  event.status === "Scheduled") && (
-                                  <>
-                                    <i
-                                      className="fa fa-calendar-check-o"
-                                      style={{ marginRight: "2px" }}
-                                    />
-                                    {categoryList.find(
-                                      (cat) => cat.value === event.category
-                                    )?.text || event.category}
-                                  </>
-                                )}
-                                {(event.status === "realizada" ||
-                                  event.status === "Completed") && (
-                                  <>
-                                    <i
-                                      className="fa fa-check-circle"
-                                      style={{ marginRight: "2px" }}
-                                    />
-
-                                    {categoryList.find(
-                                      (cat) => cat.value === event.category
-                                    )?.text || event.category}
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          );
-                        })}
-
-                      {/* Empty State */}
-                      {events.filter(
-                        (event) =>
-                          event.date.toDateString() === date.toDateString()
-                      ).length === 0 && (
-                        <div
-                          style={{
-                            textAlign: "center",
-                            padding: "2rem 1rem",
-                            color: "#94a3b8",
-                          }}
-                        >
-                          <i
-                            className="fa fa-calendar-o"
-                            style={{
-                              marginBottom: "5px",
-                              display: "block",
-                            }}
-                          />
-                          No events scheduled
-                        </div>
-                      )}
-                    </div>
-                  </StyledDiv>
-                );
-              })}
-            </div>
-          )}
-          {/*Modal de nossos/edição de eventos particulares */}
-          {/*Modal de nossos/edição de eventos particulares */}
-          {/*Modal de nossos/edição de eventos particulares */}
-          {/*Modal de nossos/edição de eventos particulares */}
-          <div
-            style={{
-              display: isVisible ? "block" : "none",
-              maxWidth: "90vw",
-              margin: "0 auto",
-            }}
-          >
-            {loadingModalInfo ? (
-              <CircularProgress style={{ color: partnerColor() }} />
-            ) : (
-              <div
-                style={{
-                  padding: "1rem",
-                  maxHeight: "40rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                }}
-              >
-                {/* Header */}
-                <div
-                  style={{
-                    display: "flex",
-                    height: "10px",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  {name && (
-                    <HOne
-                      style={{
-                        fontWeight: "700",
-                        fontSize: "1rem",
-                      }}
-                    >
-                      {name}
-                      {theTime && ` - ${theTime}`}
-                    </HOne>
-                  )}
-                  {!loadingInfo && (
-                    <span
-                      onClick={() => handleCloseModal(date)}
-                      style={{
-                        cursor: "pointer",
-                        color: "#998",
-                        fontSize: "1rem",
-                        fontWeight: "800",
-                        transition: "color 0.2s",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.target.style.color = partnerColor())
-                      }
-                      onMouseLeave={(e) => (e.target.style.color = "#998")}
-                    >
-                      ×
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-            {/* Event Information */}
-            <div
-              style={{
-                fontSize: "12px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.8rem",
-              }}
-            >
-              {!postNew && (
-                <div
-                  style={{
-                    display: "grid",
-                    gap: "1rem",
-                  }}
-                >
-                  {/* Admin Section */}
-                  {authorizeOrNot && (
-                    <div>
-                      <div
-                        style={{
-                          borderTop: "2px solid #e9ecef",
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "center",
-                          gap: "1rem",
-                        }}
-                      >
-                        {!postNew && !showEditForm && (
-                          <div
-                            style={{
-                              margin: "1rem",
-
-                              textAlign: "center",
-                            }}
-                          >
-                            <button
-                              onClick={() => {
-                                setShowEditForm(true);
-                                setPOSTNEWINFOCLASS(true);
-                                getClasses();
-                              }}
-                              style={{
-                                padding: "0.5rem 1rem",
-                                backgroundColor: partnerColor(),
-                                color: "white",
-                                border: "none",
-                                borderRadius: "4px",
-                                cursor: "pointer",
-                                transition: "all 0.3s ease",
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                margin: "0 auto",
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.transform = "translateY(-2px)";
-                                e.target.style.boxShadow =
-                                  "0 6px 20px rgba(0,0,0,0.2)";
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.transform = "translateY(0)";
-                                e.target.style.boxShadow =
-                                  "0 4px 12px rgba(0,0,0,0.15)";
-                              }}
-                            >
-                              <i className="fa fa-edit" />
-                              {UniversalTexts.edit}
-                            </button>
-                            {!postNew && (
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  gap: "1rem",
-                                  padding: "0.5rem",
-
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => updateScheduled(newEventId)}
-                                >
-                                  <i
-                                    className="fa fa-clock-o"
-                                    style={{
-                                      fontSize:
-                                        status == "Scheduled" ||
-                                        status == "marcado"
-                                          ? "24px"
-                                          : "18px",
-                                      color:
-                                        status == "Scheduled" ||
-                                        status == "marcado"
-                                          ? "#007bff"
-                                          : "#6c757d",
-                                      transition: "all 0.2s",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      color:
-                                        status == "Scheduled" ||
-                                        status == "marcado"
-                                          ? "#007bff"
-                                          : "#6c757d",
-                                      marginTop: "2px",
-                                    }}
-                                  >
-                                    {UniversalTexts.calendarModal.scheduled}
-                                  </div>
-                                </div>
-
-                                <div
-                                  style={{
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() =>
-                                    updateRealizedClass(newEventId)
-                                  }
-                                >
-                                  <i
-                                    className="fa fa-check-circle"
-                                    style={{
-                                      fontSize:
-                                        status == "Realized" ||
-                                        status == "realizado"
-                                          ? "24px"
-                                          : "18px",
-                                      color:
-                                        status == "Realized" ||
-                                        status == "realizado"
-                                          ? "#28a745"
-                                          : "#6c757d",
-                                      transition: "all 0.2s",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      color:
-                                        status == "Realized" ||
-                                        status == "realizado"
-                                          ? "#28a745"
-                                          : "#6c757d",
-                                      marginTop: "2px",
-                                    }}
-                                  >
-                                    {UniversalTexts.calendarModal.realized}
-                                  </div>
-                                </div>
-
-                                <div
-                                  style={{
-                                    textAlign: "center",
-                                    cursor: "pointer",
-                                  }}
-                                  onClick={() => updateUnscheduled(newEventId)}
-                                >
-                                  <i
-                                    className="fa fa-times-circle-o"
-                                    style={{
-                                      fontSize:
-                                        status == "Canceled" ||
-                                        status == "desmarcado"
-                                          ? "24px"
-                                          : "18px",
-                                      color:
-                                        status == "Canceled" ||
-                                        status == "desmarcado"
-                                          ? "#dc3545"
-                                          : "#6c757d",
-                                      transition: "all 0.2s",
-                                    }}
-                                  />
-                                  <div
-                                    style={{
-                                      color:
-                                        status == "Canceled" ||
-                                        status == "desmarcado"
-                                          ? "#dc3545"
-                                          : "#6c757d",
-                                      marginTop: "2px",
-                                    }}
-                                  >
-                                    {UniversalTexts.calendarModal.canceled}
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        )}
-
-                        {/* Formulário de Edição - só aparece quando showEditForm é true */}
-                        {(showEditForm || postNew) && (
-                          <>
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                marginBottom: "1rem",
-                                width: "80%",
-                              }}
-                            >
-                              <HTwo
-                                style={{ margin: 0, color: partnerColor() }}
-                              >
-                                {UniversalTexts.calendarModal.scheduleOneClass}
-                              </HTwo>
-                              {!loadingInfo && (
-                                <button
-                                  onClick={() => {
-                                    setShowEditForm(false);
-                                    setPOSTNEWINFOCLASS(false);
-                                  }}
-                                  style={{
-                                    padding: "0.5rem 1rem",
-                                    backgroundColor: "#6c757d",
-                                    color: "white",
-                                    border: "none",
-                                    marginLeft: "auto",
                                     borderRadius: "4px",
-                                    fontSize: "0.9rem",
-                                    cursor: "pointer",
+                                    overflow: "hidden",
+                                    boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
                                     transition: "all 0.2s ease",
+                                    cursor: "pointer",
+                                    border: `1px solid ${statusColor.border}`,
                                   }}
                                   onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = "#5a6268";
+                                    e.currentTarget.style.transform =
+                                      "translateY(-2px)";
+                                    e.currentTarget.style.boxShadow =
+                                      "0 4px 12px rgba(0,0,0,0.15)";
                                   }}
                                   onMouseLeave={(e) => {
-                                    e.target.style.backgroundColor = "#6c757d";
+                                    e.currentTarget.style.transform =
+                                      "translateY(0)";
+                                    e.currentTarget.style.boxShadow =
+                                      "0 2px 8px rgba(0,0,0,0.1)";
                                   }}
+                                  onClick={() => handleSeeModal(event)}
                                 >
-                                  <i
-                                    className="fa fa-times"
-                                    style={{ marginRight: "0.5rem" }}
-                                  />
-                                </button>
-                              )}
-                            </div>
-
-                            {loadingInfo ? (
-                              <div
-                                style={{
-                                  textAlign: "center",
-                                  padding: "2rem",
-                                  color: partnerColor(),
-                                  fontWeight: "800",
-                                  fontStyle: "italic",
-                                }}
-                              >
-                                <CircularProgress
-                                  style={{ color: partnerColor() }}
-                                />
-                                <br />
-                                <br />
-                                {alternateText}
-                              </div>
-                            ) : (
-                              <>
-                                {/* Form */}
-                                <form
-                                  style={{
-                                    width: "80%",
-                                    display: "grid",
-                                    gap: "1rem",
-                                    borderRadius: "4px",
-                                    padding: "8px",
-                                  }}
-                                >
-                                  {/* Seção para Aulas Realizadas */}
-                                  {status == "marcado" ||
-                                  status == "Realized" ? (
-                                    <div
-                                      style={{
-                                        boxSizing: "border-box",
-                                        borderRadius: "4px",
-                                        marginTop: "0.5rem",
-                                      }}
-                                    >
+                                  {/* Live Event Indicator */}
+                                  {event.status !== "desmarcado" &&
+                                    isEventTimeNowConsideringDuration(
+                                      event,
+                                      hj,
+                                      date,
+                                      event.duration
+                                    ) && (
                                       <div
                                         style={{
-                                          display: "flex",
-                                          alignItems: "center",
-                                          gap: "0.75rem",
-                                          marginBottom: "1rem",
-                                          borderBottom: "1px solid #e5e7eb",
+                                          background: "green",
+                                          padding: "2px",
+                                          position: "relative",
+                                          overflow: "hidden",
                                         }}
                                       >
                                         <div
                                           style={{
-                                            borderRadius: "4px",
                                             display: "flex",
                                             alignItems: "center",
                                             justifyContent: "center",
+                                            color: "white",
+                                            fontWeight: "600",
+                                            textTransform: "uppercase",
+                                            letterSpacing: "0.5px",
                                           }}
                                         >
-                                          <i
-                                            className="fa fa-check"
+                                          <span
                                             style={{
-                                              color: "#059669",
+                                              width: "6px",
+                                              height: "6px",
+                                              backgroundColor: "white",
+                                              borderRadius: "4px",
+                                              marginRight: "5px",
+                                              animation: "pulse 2s infinite",
                                             }}
                                           />
+                                          Live Now
                                         </div>
-                                        <h3
-                                          style={{
-                                            margin: 0,
-                                            color: "#374151",
-                                            fontWeight: "500",
-                                            fontSize: "1rem",
-                                          }}
-                                        >
-                                          Conteúdo da Aula Realizada - Aluno:
-                                          <strong>{name}</strong>
-                                        </h3>
                                       </div>
-                                      {/* Descrição */}
-                                      <div>
-                                        <label
+                                    )}
+                                  <div
+                                    style={{
+                                      background: categoryColor.bg,
+                                      color: categoryColor.text,
+                                      padding: "5px",
+                                      position: "relative",
+                                      paddingBottom: `${event.duration / 5}px`,
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        position: "absolute",
+                                        top: "5px",
+                                        right: "5px",
+                                        backgroundColor:
+                                          "rgba(255,255,255,0.2)",
+                                        color: categoryColor.text,
+                                        padding: "2px 5px",
+                                        borderRadius: "4px",
+                                        fontWeight: "600",
+                                        textTransform: "uppercase",
+                                        letterSpacing: "0.3px",
+                                      }}
+                                    >
+                                      <i className="fa fa-clock-o" style={{}} />
+
+                                      {formatTimeRange(
+                                        event.time,
+                                        event.duration
+                                      )}
+                                    </div>
+
+                                    {/* Event Title/Description */}
+                                    <div
+                                      style={{
+                                        fontWeight: "600",
+                                        marginBottom: "5px",
+                                        lineHeight: "1.3",
+                                        paddingRight: "4rem",
+                                      }}
+                                    >
+                                      {event.groupName
+                                        ? truncateString(event.groupName, 11)
+                                        : event.student
+                                        ? truncateString(event.student, 11)
+                                        : event.description
+                                        ? truncateString(event.description, 10)
+                                        : "No description"}
+                                    </div>
+                                  </div>
+
+                                  {/* Status Footer */}
+                                  <div
+                                    style={{
+                                      backgroundColor: statusColor.bg,
+                                      color: statusColor.text,
+                                      padding: "5px 5px",
+                                      fontWeight: "600",
+                                      textAlign: "center",
+                                      textTransform: "uppercase",
+                                      letterSpacing: "0.5px",
+                                      borderTop: `1px solid ${statusColor.border}`,
+                                    }}
+                                  >
+                                    {(event.status === "desmarcado" ||
+                                      event.status === "Canceled") && (
+                                      <>
+                                        <i
+                                          className="fa fa-times-circle"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        {categoryList.find(
+                                          (cat) => cat.value === event.category
+                                        )?.text || event.category}
+                                      </>
+                                    )}
+                                    {(event.status === "marcado" ||
+                                      event.status === "Scheduled") && (
+                                      <>
+                                        <i
+                                          className="fa fa-calendar-check-o"
+                                          style={{ marginRight: "2px" }}
+                                        />
+                                        {categoryList.find(
+                                          (cat) => cat.value === event.category
+                                        )?.text || event.category}
+                                      </>
+                                    )}
+                                    {(event.status === "realizada" ||
+                                      event.status === "Completed") && (
+                                      <>
+                                        <i
+                                          className="fa fa-check-circle"
+                                          style={{ marginRight: "2px" }}
+                                        />
+
+                                        {categoryList.find(
+                                          (cat) => cat.value === event.category
+                                        )?.text || event.category}
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              );
+                            })}
+
+                          {/* Empty State */}
+                          {events.filter(
+                            (event) =>
+                              event.date.toDateString() === date.toDateString()
+                          ).length === 0 && (
+                            <div
+                              style={{
+                                textAlign: "center",
+                                padding: "2rem 1rem",
+                                color: "#94a3b8",
+                              }}
+                            >
+                              <i
+                                className="fa fa-calendar-o"
+                                style={{
+                                  marginBottom: "5px",
+                                  display: "block",
+                                }}
+                              />
+                              No events scheduled
+                            </div>
+                          )}
+                        </div>
+                      </StyledDiv>
+                    );
+                  })}
+                </div>
+              )}
+              {/*Modal de nossos/edição de eventos particulares */}
+              {/*Modal de nossos/edição de eventos particulares */}
+              {/*Modal de nossos/edição de eventos particulares */}
+              {/*Modal de nossos/edição de eventos particulares */}
+              <div
+                style={{
+                  display: isVisible ? "block" : "none",
+                  maxWidth: "90vw",
+                  margin: "0 auto",
+                }}
+              >
+                {loadingModalInfo ? (
+                  <CircularProgress style={{ color: partnerColor() }} />
+                ) : (
+                  <div
+                    style={{
+                      padding: "1rem",
+                      maxHeight: "40rem",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "1rem",
+                    }}
+                  >
+                    {/* Header */}
+                    <div
+                      style={{
+                        display: "flex",
+                        height: "10px",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      {name && (
+                        <HOne
+                          style={{
+                            fontWeight: "700",
+                            fontSize: "1rem",
+                          }}
+                        >
+                          {name}
+                          {theTime && ` - ${theTime}`}
+                        </HOne>
+                      )}
+                      {!loadingInfo && (
+                        <span
+                          onClick={() => handleCloseModal(date)}
+                          style={{
+                            cursor: "pointer",
+                            color: "#998",
+                            fontSize: "1rem",
+                            fontWeight: "800",
+                            transition: "color 0.2s",
+                          }}
+                          onMouseEnter={(e) =>
+                            (e.target.style.color = partnerColor())
+                          }
+                          onMouseLeave={(e) => (e.target.style.color = "#998")}
+                        >
+                          ×
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Event Information */}
+                <div
+                  style={{
+                    fontSize: "12px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "0.8rem",
+                  }}
+                >
+                  {!postNew && (
+                    <div
+                      style={{
+                        display: "grid",
+                        gap: "1rem",
+                      }}
+                    >
+                      {/* Admin Section */}
+                      {authorizeOrNot && (
+                        <div>
+                          <div
+                            style={{
+                              borderTop: "2px solid #e9ecef",
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "center",
+                              gap: "1rem",
+                            }}
+                          >
+                            {!postNew && !showEditForm && (
+                              <div
+                                style={{
+                                  margin: "1rem",
+
+                                  textAlign: "center",
+                                }}
+                              >
+                                <button
+                                  onClick={() => {
+                                    setShowEditForm(true);
+                                    setPOSTNEWINFOCLASS(true);
+                                    getClasses();
+                                  }}
+                                  style={{
+                                    padding: "0.5rem 1rem",
+                                    backgroundColor: partnerColor(),
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: "pointer",
+                                    transition: "all 0.3s ease",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                    margin: "0 auto",
+                                  }}
+                                  onMouseEnter={(e) => {
+                                    e.target.style.transform =
+                                      "translateY(-2px)";
+                                    e.target.style.boxShadow =
+                                      "0 6px 20px rgba(0,0,0,0.2)";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    e.target.style.transform = "translateY(0)";
+                                    e.target.style.boxShadow =
+                                      "0 4px 12px rgba(0,0,0,0.15)";
+                                  }}
+                                >
+                                  <i className="fa fa-edit" />
+                                  {UniversalTexts.edit}
+                                </button>
+                                {!postNew && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                      gap: "1rem",
+                                      padding: "0.5rem",
+
+                                      borderRadius: "4px",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        updateScheduled(newEventId)
+                                      }
+                                    >
+                                      <i
+                                        className="fa fa-clock-o"
+                                        style={{
+                                          fontSize:
+                                            status == "Scheduled" ||
+                                            status == "marcado"
+                                              ? "24px"
+                                              : "18px",
+                                          color:
+                                            status == "Scheduled" ||
+                                            status == "marcado"
+                                              ? "#007bff"
+                                              : "#6c757d",
+                                          transition: "all 0.2s",
+                                        }}
+                                      />
+                                      <div
+                                        style={{
+                                          color:
+                                            status == "Scheduled" ||
+                                            status == "marcado"
+                                              ? "#007bff"
+                                              : "#6c757d",
+                                          marginTop: "2px",
+                                        }}
+                                      >
+                                        {UniversalTexts.calendarModal.scheduled}
+                                      </div>
+                                    </div>
+
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        updateRealizedClass(newEventId)
+                                      }
+                                    >
+                                      <i
+                                        className="fa fa-check-circle"
+                                        style={{
+                                          fontSize:
+                                            status == "Realized" ||
+                                            status == "realizado"
+                                              ? "24px"
+                                              : "18px",
+                                          color:
+                                            status == "Realized" ||
+                                            status == "realizado"
+                                              ? "#28a745"
+                                              : "#6c757d",
+                                          transition: "all 0.2s",
+                                        }}
+                                      />
+                                      <div
+                                        style={{
+                                          color:
+                                            status == "Realized" ||
+                                            status == "realizado"
+                                              ? "#28a745"
+                                              : "#6c757d",
+                                          marginTop: "2px",
+                                        }}
+                                      >
+                                        {UniversalTexts.calendarModal.realized}
+                                      </div>
+                                    </div>
+
+                                    <div
+                                      style={{
+                                        textAlign: "center",
+                                        cursor: "pointer",
+                                      }}
+                                      onClick={() =>
+                                        updateUnscheduled(newEventId)
+                                      }
+                                    >
+                                      <i
+                                        className="fa fa-times-circle-o"
+                                        style={{
+                                          fontSize:
+                                            status == "Canceled" ||
+                                            status == "desmarcado"
+                                              ? "24px"
+                                              : "18px",
+                                          color:
+                                            status == "Canceled" ||
+                                            status == "desmarcado"
+                                              ? "#dc3545"
+                                              : "#6c757d",
+                                          transition: "all 0.2s",
+                                        }}
+                                      />
+                                      <div
+                                        style={{
+                                          color:
+                                            status == "Canceled" ||
+                                            status == "desmarcado"
+                                              ? "#dc3545"
+                                              : "#6c757d",
+                                          marginTop: "2px",
+                                        }}
+                                      >
+                                        {UniversalTexts.calendarModal.canceled}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Formulário de Edição - só aparece quando showEditForm é true */}
+                            {(showEditForm || postNew) && (
+                              <>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    marginBottom: "1rem",
+                                    width: "80%",
+                                  }}
+                                >
+                                  <HTwo
+                                    style={{ margin: 0, color: partnerColor() }}
+                                  >
+                                    {
+                                      UniversalTexts.calendarModal
+                                        .scheduleOneClass
+                                    }
+                                  </HTwo>
+                                  {!loadingInfo && (
+                                    <button
+                                      onClick={() => {
+                                        setShowEditForm(false);
+                                        setPOSTNEWINFOCLASS(false);
+                                      }}
+                                      style={{
+                                        padding: "0.5rem 1rem",
+                                        backgroundColor: "#6c757d",
+                                        color: "white",
+                                        border: "none",
+                                        marginLeft: "auto",
+                                        borderRadius: "4px",
+                                        fontSize: "0.9rem",
+                                        cursor: "pointer",
+                                        transition: "all 0.2s ease",
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.target.style.backgroundColor =
+                                          "#5a6268";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.target.style.backgroundColor =
+                                          "#6c757d";
+                                      }}
+                                    >
+                                      <i
+                                        className="fa fa-times"
+                                        style={{ marginRight: "0.5rem" }}
+                                      />
+                                    </button>
+                                  )}
+                                </div>
+
+                                {loadingInfo ? (
+                                  <div
+                                    style={{
+                                      textAlign: "center",
+                                      padding: "2rem",
+                                      color: partnerColor(),
+                                      fontWeight: "800",
+                                      fontStyle: "italic",
+                                    }}
+                                  >
+                                    <CircularProgress
+                                      style={{ color: partnerColor() }}
+                                    />
+                                    <br />
+                                    <br />
+                                    {alternateText}
+                                  </div>
+                                ) : (
+                                  <>
+                                    {/* Form */}
+                                    <form
+                                      style={{
+                                        width: "80%",
+                                        display: "grid",
+                                        gap: "1rem",
+                                        borderRadius: "4px",
+                                        padding: "8px",
+                                      }}
+                                    >
+                                      {/* Seção para Aulas Realizadas */}
+                                      {status == "marcado" ||
+                                      status == "Realized" ? (
+                                        <div
                                           style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "500",
-                                            color: "#374151",
-                                            fontSize: "0.875rem",
+                                            boxSizing: "border-box",
+                                            borderRadius: "4px",
+                                            marginTop: "0.5rem",
                                           }}
                                         >
-                                          {
-                                            UniversalTexts.calendarModal
-                                              .classDescription
-                                          }
-                                        </label>
-                                        {loadingDescription ? (
-                                          <CircularProgress
-                                            style={{
-                                              color: partnerColor(),
-                                              fontSize: "0.5rem",
-                                            }}
-                                          />
-                                        ) : (
                                           <div
                                             style={{
                                               display: "flex",
-                                              justifyContent: "space-between",
                                               alignItems: "center",
+                                              gap: "0.75rem",
+                                              marginBottom: "1rem",
+                                              borderBottom: "1px solid #e5e7eb",
                                             }}
                                           >
-                                            <input
-                                              type="text"
-                                              value={description}
-                                              onChange={(e) =>
-                                                setDescription(e.target.value)
-                                              }
-                                              placeholder={
-                                                UniversalTexts.calendarModal
-                                                  .classDescriptionPlaceholder
-                                              }
-                                              style={{
-                                                width: "90%",
-                                                padding: "0.75rem",
-                                                borderRadius: "4px",
-                                                border: "1px solid #d1d5db",
-                                                fontSize: "0.875rem",
-                                                lineHeight: "1.5",
-                                                backgroundColor: "#ffffff",
-                                                transition:
-                                                  "border-color 0.2s ease",
-                                              }}
-                                              onFocus={(e) => {
-                                                e.target.style.borderColor =
-                                                  partnerColor();
-                                                e.target.style.outline = "none";
-                                                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                              }}
-                                              onBlur={(e) => {
-                                                e.target.style.borderColor =
-                                                  "#d1d5db";
-                                                e.target.style.boxShadow =
-                                                  "none";
-                                              }}
-                                              required
-                                            />
-                                            <button
-                                              title="-5"
-                                              style={{
-                                                fontSize: "1rem",
-                                                border: "null",
-                                                padding: "0",
-                                                backgroundColor: "transparent",
-                                                cursor:
-                                                  loadingDescription ||
-                                                  !description
-                                                    ? "not-allowed"
-                                                    : "pointer",
-                                                opacity:
-                                                  loadingDescription ||
-                                                  !description
-                                                    ? 0.5
-                                                    : 1,
-                                              }}
-                                              disabled={
-                                                loadingDescription ||
-                                                !description
-                                              }
-                                              onClick={handleClassSummary}
-                                            >
-                                              ✨ (-5)
-                                            </button>
-                                          </div>
-                                        )}
-                                      </div>
-
-                                      <div
-                                        style={{
-                                          display: "grid",
-                                          gap: "1rem",
-                                        }}
-                                      >
-                                        {/* Vídeo */}
-                                        <div>
-                                          <label
-                                            style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "500",
-                                              width: "90%",
-                                              color: "#374151",
-                                              fontSize: "0.875rem",
-                                            }}
-                                          >
-                                            {UniversalTexts.calendarModal.video}
-                                          </label>
-                                          <input
-                                            value={video}
-                                            onChange={(e) =>
-                                              setVideo(e.target.value)
-                                            }
-                                            placeholder="https://youtube.com/... ou https://vimeo.com/..."
-                                            type="url"
-                                            style={{
-                                              width: "90%",
-                                              padding: "0.75rem",
-                                              borderRadius: "4px",
-                                              border: "1px solid #d1d5db",
-                                              fontSize: "0.875rem",
-                                              backgroundColor: "#ffffff",
-                                              lineHeight: "1.5",
-                                              transition:
-                                                "border-color 0.2s ease",
-                                            }}
-                                            onFocus={(e) => {
-                                              e.target.style.borderColor =
-                                                partnerColor();
-                                              e.target.style.outline = "none";
-                                              e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                            }}
-                                            onBlur={(e) => {
-                                              e.target.style.borderColor =
-                                                "#d1d5db";
-                                              e.target.style.boxShadow = "none";
-                                            }}
-                                          />
-                                        </div>
-                                        {/* Important Link Class */}
-                                        <div>
-                                          <label
-                                            style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "500",
-                                              width: "90%",
-                                              color: "#374151",
-                                              fontSize: "0.875rem",
-                                            }}
-                                          >
-                                            Important link
-                                          </label>
-                                          <input
-                                            placeholder="https://... .com/..."
-                                            value={googleDriveLink}
-                                            onChange={(e) =>
-                                              setGoogleDriveLink(e.target.value)
-                                            }
-                                            type="url"
-                                            style={{
-                                              width: "90%",
-                                              padding: "0.75rem",
-                                              borderRadius: "4px",
-                                              border: "1px solid #d1d5db",
-                                              fontSize: "0.875rem",
-                                              backgroundColor: "#ffffff",
-                                              lineHeight: "1.5",
-                                              transition:
-                                                "border-color 0.2s ease",
-                                            }}
-                                            onFocus={(e) => {
-                                              e.target.style.borderColor =
-                                                partnerColor();
-                                              e.target.style.outline = "none";
-                                              e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                            }}
-                                            onBlur={(e) => {
-                                              e.target.style.borderColor =
-                                                "#d1d5db";
-                                              e.target.style.boxShadow = "none";
-                                            }}
-                                          />
-                                          <div>
-                                            <label
-                                              style={{
-                                                display: "block",
-                                                marginBottom: "0.5rem",
-                                                fontWeight: "500",
-                                                width: "90%",
-                                                color: "#374151",
-                                                fontSize: "0.875rem",
-                                              }}
-                                            >
-                                              Aula Usada
-                                            </label>
-                                            <select
-                                              onChange={handleLessonChange}
-                                              value={
-                                                theLesson?.id
-                                                  ? String(theLesson.id)
-                                                  : ""
-                                              } // garanta string
-                                              style={{
-                                                width: "100%",
-                                                padding: "0.75rem",
-                                                borderRadius: 8,
-                                                border: "1px solid #ced4da",
-                                                fontSize: "0.9rem",
-                                                backgroundColor: "white",
-                                              }}
-                                            >
-                                              <option value="" hidden>
-                                                Select lesson...
-                                              </option>
-
-                                              {Object.entries(grouped).map(
-                                                ([course, modules]) => (
-                                                  <optgroup
-                                                    key={course}
-                                                    label={course}
-                                                  >
-                                                    {Object.entries(
-                                                      modules
-                                                    ).map(([module, ls]) => (
-                                                      <React.Fragment
-                                                        key={`${course}-${module}`}
-                                                      >
-                                                        <option
-                                                          value={`sep:${course}:${module}`}
-                                                          disabled
-                                                        >
-                                                          — {module} —
-                                                        </option>
-                                                        {ls.map((l) => (
-                                                          <option
-                                                            key={l.id}
-                                                            value={String(l.id)}
-                                                          >
-                                                            {l.title}
-                                                          </option>
-                                                        ))}
-                                                      </React.Fragment>
-                                                    ))}
-                                                  </optgroup>
-                                                )
-                                              )}
-                                            </select>
                                             <div
                                               style={{
-                                                border: "1px solid #e0e0e0",
                                                 borderRadius: "4px",
-                                                padding: "1rem",
-                                                backgroundColor: "#f9fafb",
-                                                marginTop: "1rem",
-                                                boxShadow:
-                                                  "0 2px 6px rgba(0,0,0,0.08)",
-                                                maxWidth: "400px",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
                                               }}
                                             >
-                                              <p
+                                              <i
+                                                className="fa fa-check"
                                                 style={{
-                                                  marginBottom: "0.75rem",
-                                                  color: "#374151",
+                                                  color: "#059669",
                                                 }}
-                                              >
-                                                🎓 Aula Selecionada
-                                              </p>
-
-                                              {theLesson ? (
-                                                <>
-                                                  <p>
-                                                    <strong>Título:</strong>
-
-                                                    {theLesson.title}
-                                                  </p>
-                                                  <p>
-                                                    <strong>Curso:</strong>
-
-                                                    {theLesson.course}
-                                                  </p>
-                                                  <p>
-                                                    <strong>Módulo:</strong>
-                                                    {theLesson.module}
-                                                  </p>
-                                                </>
-                                              ) : (
-                                                <p style={{ color: "#6b7280" }}>
-                                                  Nenhuma aula selecionada.
-                                                </p>
-                                              )}
+                                              />
                                             </div>
+                                            <h3
+                                              style={{
+                                                margin: 0,
+                                                color: "#374151",
+                                                fontWeight: "500",
+                                                fontSize: "1rem",
+                                              }}
+                                            >
+                                              Conteúdo da Aula Realizada -
+                                              Aluno:
+                                              <strong>{name}</strong>
+                                            </h3>
                                           </div>
-                                        </div>
-                                        {!homeworkAdded && (
-                                          <button
-                                            type="button"
-                                            onClick={() =>
-                                              setShowHomework(!showHomework)
-                                            }
-                                            style={{
-                                              padding: "6px 12px",
-                                              fontSize: "13px",
-                                              fontWeight: "500",
-                                              color: "#6c757d",
-                                              backgroundColor: "transparent",
-                                              border: "1px solid #e9ecef",
-                                              borderRadius: "4px",
-                                              cursor: "pointer",
-                                              transition: "all 0.2s ease",
-                                              marginBottom: "8px",
-                                              display: "inline-flex",
-                                              alignItems: "center",
-                                              gap: "4px",
-                                            }}
-                                            onMouseEnter={(e) => {
-                                              e.target.style.backgroundColor =
-                                                "#f8f9fa";
-                                              e.target.style.borderColor =
-                                                "#dee2e6";
-                                              e.target.style.color = "#495057";
-                                            }}
-                                            onMouseLeave={(e) => {
-                                              e.target.style.backgroundColor =
-                                                "transparent";
-                                              e.target.style.borderColor =
-                                                "#e9ecef";
-                                              e.target.style.color = "#6c757d";
-                                            }}
-                                          >
-                                            <span style={{ fontSize: "10px" }}>
-                                              {showHomework ? "📝" : "➕"}
-                                            </span>
-                                            {showHomework
-                                              ? "Hide Homework"
-                                              : "Add Homework"}
-                                          </button>
-                                        )}
-                                        {showHomework && (
+                                          {/* Descrição */}
                                           <div>
                                             <label
                                               style={{
@@ -3188,214 +2910,124 @@ function MyCalendar({
                                             >
                                               {
                                                 UniversalTexts.calendarModal
-                                                  .homework
+                                                  .classDescription
                                               }
                                             </label>
-                                            {!loadingHWDescription ? (
-                                              <>
-                                                {" "}
-                                                <div
-                                                  style={{
-                                                    backgroundColor: "white",
-                                                    borderRadius: "4px",
-                                                    border: "1px solid #ced4da",
-                                                    overflow: "hidden",
-                                                  }}
-                                                >
-                                                  {!showAIGENERATED ? (
-                                                    <span>
-                                                      <HTMLEditor
-                                                        onChange={
-                                                          handleHomeworkChange
-                                                        }
-                                                        initialContent={"Type"}
-                                                      />
-                                                    </span>
-                                                  ) : (
-                                                    <div
-                                                      dangerouslySetInnerHTML={{
-                                                        __html: homework,
-                                                      }}
-                                                    />
-                                                  )}
-                                                </div>
-                                                <div
-                                                  style={{
-                                                    margin: "1rem",
-                                                  }}
-                                                />
-                                                {showAIGENERATED ? (
-                                                  <button
-                                                    style={{
-                                                      fontSize: "0.75rem",
-                                                      cursor: "pointer",
-                                                    }}
-                                                    onClick={(e) => {
-                                                      e.preventDefault();
-                                                      setShowAIGENERATED(false);
-                                                    }}
-                                                  >
-                                                    Voltar ao editor (isto
-                                                    excluirá a descrição gerada)
-                                                  </button>
-                                                ) : (
-                                                  <button
-                                                    title="-15"
-                                                    style={{
-                                                      fontSize: "0.75rem",
-                                                      cursor: "pointer",
-                                                    }}
-                                                    onClick={
-                                                      handleHWDescription
-                                                    }
-                                                  >
-                                                    ✨Ajude-me com a descrição
-                                                    do homework (-15)
-                                                  </button>
-                                                )}
-                                              </>
-                                            ) : (
+                                            {loadingDescription ? (
                                               <CircularProgress
                                                 style={{
                                                   color: partnerColor(),
+                                                  fontSize: "0.5rem",
                                                 }}
                                               />
-                                            )}
-                                            {studentsInGroup.length > 1 && (
+                                            ) : (
                                               <div
                                                 style={{
-                                                  marginTop: "1rem",
+                                                  display: "flex",
+                                                  justifyContent:
+                                                    "space-between",
+                                                  alignItems: "center",
                                                 }}
                                               >
-                                                <label
+                                                <input
+                                                  type="text"
+                                                  value={description}
+                                                  onChange={(e) =>
+                                                    setDescription(
+                                                      e.target.value
+                                                    )
+                                                  }
+                                                  placeholder={
+                                                    UniversalTexts.calendarModal
+                                                      .classDescriptionPlaceholder
+                                                  }
                                                   style={{
-                                                    display: "block",
-                                                    marginBottom: "0.5rem",
-                                                    fontWeight: "600",
-                                                    color: "#495057",
-                                                    fontSize: "0.9rem",
+                                                    width: "90%",
+                                                    padding: "0.75rem",
+                                                    borderRadius: "4px",
+                                                    border: "1px solid #d1d5db",
+                                                    fontSize: "0.875rem",
+                                                    lineHeight: "1.5",
+                                                    backgroundColor: "#ffffff",
+                                                    transition:
+                                                      "border-color 0.2s ease",
                                                   }}
+                                                  onFocus={(e) => {
+                                                    e.target.style.borderColor =
+                                                      partnerColor();
+                                                    e.target.style.outline =
+                                                      "none";
+                                                    e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                  }}
+                                                  onBlur={(e) => {
+                                                    e.target.style.borderColor =
+                                                      "#d1d5db";
+                                                    e.target.style.boxShadow =
+                                                      "none";
+                                                  }}
+                                                  required
+                                                />
+                                                <button
+                                                  title="-5"
+                                                  style={{
+                                                    fontSize: "1rem",
+                                                    border: "null",
+                                                    padding: "0",
+                                                    backgroundColor:
+                                                      "transparent",
+                                                    cursor:
+                                                      loadingDescription ||
+                                                      !description
+                                                        ? "not-allowed"
+                                                        : "pointer",
+                                                    opacity:
+                                                      loadingDescription ||
+                                                      !description
+                                                        ? 0.5
+                                                        : 1,
+                                                  }}
+                                                  disabled={
+                                                    loadingDescription ||
+                                                    !description
+                                                  }
+                                                  onClick={handleClassSummary}
                                                 >
-                                                  📝 Descrição individual para
-                                                  cada aluno.
-                                                </label>
-                                                {studentsInGroup.map(
-                                                  (student, index) => (
-                                                    <div
-                                                      key={student._id || index}
-                                                    >
-                                                      {student.name +
-                                                        " " +
-                                                        student.lastname}
-                                                      <input
-                                                        type="text"
-                                                        value={
-                                                          comments[index]
-                                                            ?.comment || ""
-                                                        }
-                                                        onChange={(e) =>
-                                                          handleStudentDescriptionChange(
-                                                            index,
-                                                            e.target.value
-                                                          )
-                                                        }
-                                                        placeholder="Comentário para o aluno"
-                                                        style={{
-                                                          width: "100%",
-                                                          padding: "0.75rem",
-                                                          borderRadius: "6px",
-                                                          border:
-                                                            "1px solid #ced4da",
-                                                          fontSize: "0.9rem",
-                                                          marginTop: "0.5rem",
-                                                        }}
-                                                      />
-                                                    </div>
-                                                  )
-                                                )}
+                                                  ✨ (-5)
+                                                </button>
                                               </div>
                                             )}
                                           </div>
-                                        )}
-                                        {/* Due Date */}
-                                        {!homeworkAdded && showHomework && (
-                                          <div>
-                                            <label
-                                              style={{
-                                                display: "block",
-                                                marginBottom: "0.5rem",
-                                                fontWeight: "500",
-                                                color: "#374151",
-                                                fontSize: "0.875rem",
-                                              }}
-                                            >
-                                              📅 Data de Entrega
-                                            </label>
 
-                                            <input
-                                              value={
-                                                dueDate
-                                                  ? dueDate.split("T")[0]
-                                                  : ""
-                                              }
-                                              onChange={(e) =>
-                                                setDueDate(e.target.value)
-                                              }
-                                              type="date"
-                                              style={{
-                                                width: "90%",
-                                                padding: "0.75rem",
-                                                borderRadius: "4px",
-                                                border: "1px solid #d1d5db",
-                                                fontSize: "0.875rem",
-                                                backgroundColor: "#ffffff",
-                                                lineHeight: "1.5",
-                                                transition:
-                                                  "border-color 0.2s ease",
-                                              }}
-                                              onFocus={(e) => {
-                                                e.target.style.borderColor =
-                                                  partnerColor();
-                                                e.target.style.outline = "none";
-                                                e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                              }}
-                                              onBlur={(e) => {
-                                                e.target.style.borderColor =
-                                                  "#d1d5db";
-                                                e.target.style.boxShadow =
-                                                  "none";
-                                              }}
-                                            />
-                                          </div>
-                                        )}
-
-                                        {/* File Upload */}
-
-                                        {!homeworkAdded &&
-                                          showHomework &&
-                                          category !== "Group Class" &&
-                                          category !== "Standalone" &&
-                                          category !== "Aula experimental" &&
-                                          category !== "Aula única" &&
-                                          category !==
-                                            "Horário vazio para reposição" && (
+                                          <div
+                                            style={{
+                                              display: "grid",
+                                              gap: "1rem",
+                                            }}
+                                          >
+                                            {/* Vídeo */}
                                             <div>
                                               <label
                                                 style={{
                                                   display: "block",
                                                   marginBottom: "0.5rem",
                                                   fontWeight: "500",
+                                                  width: "90%",
                                                   color: "#374151",
                                                   fontSize: "0.875rem",
                                                 }}
                                               >
-                                                📎 Anexar Arquivo
+                                                {
+                                                  UniversalTexts.calendarModal
+                                                    .video
+                                                }
                                               </label>
-
                                               <input
-                                                type="file"
-                                                onChange={handleFileChange}
-                                                accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                                                value={video}
+                                                onChange={(e) =>
+                                                  setVideo(e.target.value)
+                                                }
+                                                placeholder="https://youtube.com/... ou https://vimeo.com/..."
+                                                type="url"
                                                 style={{
                                                   width: "90%",
                                                   padding: "0.75rem",
@@ -3403,61 +3035,545 @@ function MyCalendar({
                                                   border: "1px solid #d1d5db",
                                                   fontSize: "0.875rem",
                                                   backgroundColor: "#ffffff",
-                                                  cursor: "pointer",
+                                                  lineHeight: "1.5",
+                                                  transition:
+                                                    "border-color 0.2s ease",
+                                                }}
+                                                onFocus={(e) => {
+                                                  e.target.style.borderColor =
+                                                    partnerColor();
+                                                  e.target.style.outline =
+                                                    "none";
+                                                  e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                }}
+                                                onBlur={(e) => {
+                                                  e.target.style.borderColor =
+                                                    "#d1d5db";
+                                                  e.target.style.boxShadow =
+                                                    "none";
                                                 }}
                                               />
-
-                                              {uploading && (
-                                                <div
+                                            </div>
+                                            {/* Important Link Class */}
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  width: "90%",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                Important link
+                                              </label>
+                                              <input
+                                                placeholder="https://... .com/..."
+                                                value={googleDriveLink}
+                                                onChange={(e) =>
+                                                  setGoogleDriveLink(
+                                                    e.target.value
+                                                  )
+                                                }
+                                                type="url"
+                                                style={{
+                                                  width: "90%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "4px",
+                                                  border: "1px solid #d1d5db",
+                                                  fontSize: "0.875rem",
+                                                  backgroundColor: "#ffffff",
+                                                  lineHeight: "1.5",
+                                                  transition:
+                                                    "border-color 0.2s ease",
+                                                }}
+                                                onFocus={(e) => {
+                                                  e.target.style.borderColor =
+                                                    partnerColor();
+                                                  e.target.style.outline =
+                                                    "none";
+                                                  e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                }}
+                                                onBlur={(e) => {
+                                                  e.target.style.borderColor =
+                                                    "#d1d5db";
+                                                  e.target.style.boxShadow =
+                                                    "none";
+                                                }}
+                                              />
+                                              <div>
+                                                <label
                                                   style={{
-                                                    fontSize: "0.8rem",
-                                                    color: "#666",
-                                                    marginTop: "0.5rem",
-                                                    fontStyle: "italic",
+                                                    display: "block",
+                                                    marginBottom: "0.5rem",
+                                                    fontWeight: "500",
+                                                    width: "90%",
+                                                    color: "#374151",
+                                                    fontSize: "0.875rem",
                                                   }}
                                                 >
-                                                  Processando arquivo...
-                                                </div>
-                                              )}
-
-                                              {selectedFile && !uploading && (
-                                                <div
+                                                  Aula Usada
+                                                </label>
+                                                <select
+                                                  onChange={handleLessonChange}
+                                                  value={
+                                                    theLesson?.id
+                                                      ? String(theLesson.id)
+                                                      : ""
+                                                  } // garanta string
                                                   style={{
-                                                    fontSize: "0.8rem",
-                                                    color: "#28a745",
-                                                    marginTop: "0.5rem",
-                                                    fontStyle: "italic",
+                                                    width: "100%",
+                                                    padding: "0.75rem",
+                                                    borderRadius: 8,
+                                                    border: "1px solid #ced4da",
+                                                    fontSize: "0.9rem",
+                                                    backgroundColor: "white",
                                                   }}
                                                 >
-                                                  ✅ {selectedFile.name}
-                                                  <button
-                                                    type="button"
-                                                    onClick={clearFile}
+                                                  <option value="" hidden>
+                                                    Select lesson...
+                                                  </option>
+
+                                                  {Object.entries(grouped).map(
+                                                    ([course, modules]) => (
+                                                      <optgroup
+                                                        key={course}
+                                                        label={course}
+                                                      >
+                                                        {Object.entries(
+                                                          modules
+                                                        ).map(
+                                                          ([module, ls]) => (
+                                                            <React.Fragment
+                                                              key={`${course}-${module}`}
+                                                            >
+                                                              <option
+                                                                value={`sep:${course}:${module}`}
+                                                                disabled
+                                                              >
+                                                                — {module} —
+                                                              </option>
+                                                              {ls.map((l) => (
+                                                                <option
+                                                                  key={l.id}
+                                                                  value={String(
+                                                                    l.id
+                                                                  )}
+                                                                >
+                                                                  {l.title}
+                                                                </option>
+                                                              ))}
+                                                            </React.Fragment>
+                                                          )
+                                                        )}
+                                                      </optgroup>
+                                                    )
+                                                  )}
+                                                </select>
+                                                <div
+                                                  style={{
+                                                    border: "1px solid #e0e0e0",
+                                                    borderRadius: "4px",
+                                                    padding: "1rem",
+                                                    backgroundColor: "#f9fafb",
+                                                    marginTop: "1rem",
+                                                    boxShadow:
+                                                      "0 2px 6px rgba(0,0,0,0.08)",
+                                                    maxWidth: "400px",
+                                                  }}
+                                                >
+                                                  <p
                                                     style={{
-                                                      marginLeft: "0.5rem",
-                                                      background: "none",
-                                                      border: "none",
-                                                      color: "#dc3545",
-                                                      cursor: "pointer",
-                                                      fontSize: "0.8rem",
+                                                      marginBottom: "0.75rem",
+                                                      color: "#374151",
                                                     }}
                                                   >
-                                                    ❌ Remover
-                                                  </button>
+                                                    🎓 Aula Selecionada
+                                                  </p>
+
+                                                  {theLesson ? (
+                                                    <>
+                                                      <p>
+                                                        <strong>Título:</strong>
+
+                                                        {theLesson.title}
+                                                      </p>
+                                                      <p>
+                                                        <strong>Curso:</strong>
+
+                                                        {theLesson.course}
+                                                      </p>
+                                                      <p>
+                                                        <strong>Módulo:</strong>
+                                                        {theLesson.module}
+                                                      </p>
+                                                    </>
+                                                  ) : (
+                                                    <p
+                                                      style={{
+                                                        color: "#6b7280",
+                                                      }}
+                                                    >
+                                                      Nenhuma aula selecionada.
+                                                    </p>
+                                                  )}
+                                                </div>
+                                              </div>
+                                            </div>
+                                            {!homeworkAdded && (
+                                              <button
+                                                type="button"
+                                                onClick={() =>
+                                                  setShowHomework(!showHomework)
+                                                }
+                                                style={{
+                                                  padding: "6px 12px",
+                                                  fontSize: "13px",
+                                                  fontWeight: "500",
+                                                  color: "#6c757d",
+                                                  backgroundColor:
+                                                    "transparent",
+                                                  border: "1px solid #e9ecef",
+                                                  borderRadius: "4px",
+                                                  cursor: "pointer",
+                                                  transition: "all 0.2s ease",
+                                                  marginBottom: "8px",
+                                                  display: "inline-flex",
+                                                  alignItems: "center",
+                                                  gap: "4px",
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                  e.target.style.backgroundColor =
+                                                    "#f8f9fa";
+                                                  e.target.style.borderColor =
+                                                    "#dee2e6";
+                                                  e.target.style.color =
+                                                    "#495057";
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                  e.target.style.backgroundColor =
+                                                    "transparent";
+                                                  e.target.style.borderColor =
+                                                    "#e9ecef";
+                                                  e.target.style.color =
+                                                    "#6c757d";
+                                                }}
+                                              >
+                                                <span
+                                                  style={{ fontSize: "10px" }}
+                                                >
+                                                  {showHomework ? "📝" : "➕"}
+                                                </span>
+                                                {showHomework
+                                                  ? "Hide Homework"
+                                                  : "Add Homework"}
+                                              </button>
+                                            )}
+                                            {showHomework && (
+                                              <div>
+                                                <label
+                                                  style={{
+                                                    display: "block",
+                                                    marginBottom: "0.5rem",
+                                                    fontWeight: "500",
+                                                    color: "#374151",
+                                                    fontSize: "0.875rem",
+                                                  }}
+                                                >
+                                                  {
+                                                    UniversalTexts.calendarModal
+                                                      .homework
+                                                  }
+                                                </label>
+                                                {!loadingHWDescription ? (
+                                                  <>
+                                                    {" "}
+                                                    <div
+                                                      style={{
+                                                        backgroundColor:
+                                                          "white",
+                                                        borderRadius: "4px",
+                                                        border:
+                                                          "1px solid #ced4da",
+                                                        overflow: "hidden",
+                                                      }}
+                                                    >
+                                                      {!showAIGENERATED ? (
+                                                        <span>
+                                                          <HTMLEditor
+                                                            onChange={
+                                                              handleHomeworkChange
+                                                            }
+                                                            initialContent={
+                                                              "Type"
+                                                            }
+                                                          />
+                                                        </span>
+                                                      ) : (
+                                                        <div
+                                                          dangerouslySetInnerHTML={{
+                                                            __html: homework,
+                                                          }}
+                                                        />
+                                                      )}
+                                                    </div>
+                                                    <div
+                                                      style={{
+                                                        margin: "1rem",
+                                                      }}
+                                                    />
+                                                    {showAIGENERATED ? (
+                                                      <button
+                                                        style={{
+                                                          fontSize: "0.75rem",
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={(e) => {
+                                                          e.preventDefault();
+                                                          setShowAIGENERATED(
+                                                            false
+                                                          );
+                                                        }}
+                                                      >
+                                                        Voltar ao editor (isto
+                                                        excluirá a descrição
+                                                        gerada)
+                                                      </button>
+                                                    ) : (
+                                                      <button
+                                                        title="-15"
+                                                        style={{
+                                                          fontSize: "0.75rem",
+                                                          cursor: "pointer",
+                                                        }}
+                                                        onClick={
+                                                          handleHWDescription
+                                                        }
+                                                      >
+                                                        ✨Ajude-me com a
+                                                        descrição do homework
+                                                        (-15)
+                                                      </button>
+                                                    )}
+                                                  </>
+                                                ) : (
+                                                  <CircularProgress
+                                                    style={{
+                                                      color: partnerColor(),
+                                                    }}
+                                                  />
+                                                )}
+                                                {studentsInGroup.length > 1 && (
+                                                  <div
+                                                    style={{
+                                                      marginTop: "1rem",
+                                                    }}
+                                                  >
+                                                    <label
+                                                      style={{
+                                                        display: "block",
+                                                        marginBottom: "0.5rem",
+                                                        fontWeight: "600",
+                                                        color: "#495057",
+                                                        fontSize: "0.9rem",
+                                                      }}
+                                                    >
+                                                      📝 Descrição individual
+                                                      para cada aluno.
+                                                    </label>
+                                                    {studentsInGroup.map(
+                                                      (student, index) => (
+                                                        <div
+                                                          key={
+                                                            student._id || index
+                                                          }
+                                                        >
+                                                          {student.name +
+                                                            " " +
+                                                            student.lastname}
+                                                          <input
+                                                            type="text"
+                                                            value={
+                                                              comments[index]
+                                                                ?.comment || ""
+                                                            }
+                                                            onChange={(e) =>
+                                                              handleStudentDescriptionChange(
+                                                                index,
+                                                                e.target.value
+                                                              )
+                                                            }
+                                                            placeholder="Comentário para o aluno"
+                                                            style={{
+                                                              width: "100%",
+                                                              padding:
+                                                                "0.75rem",
+                                                              borderRadius:
+                                                                "6px",
+                                                              border:
+                                                                "1px solid #ced4da",
+                                                              fontSize:
+                                                                "0.9rem",
+                                                              marginTop:
+                                                                "0.5rem",
+                                                            }}
+                                                          />
+                                                        </div>
+                                                      )
+                                                    )}
+                                                  </div>
+                                                )}
+                                              </div>
+                                            )}
+                                            {/* Due Date */}
+                                            {!homeworkAdded && showHomework && (
+                                              <div>
+                                                <label
+                                                  style={{
+                                                    display: "block",
+                                                    marginBottom: "0.5rem",
+                                                    fontWeight: "500",
+                                                    color: "#374151",
+                                                    fontSize: "0.875rem",
+                                                  }}
+                                                >
+                                                  📅 Data de Entrega
+                                                </label>
+
+                                                <input
+                                                  value={
+                                                    dueDate
+                                                      ? dueDate.split("T")[0]
+                                                      : ""
+                                                  }
+                                                  onChange={(e) =>
+                                                    setDueDate(e.target.value)
+                                                  }
+                                                  type="date"
+                                                  style={{
+                                                    width: "90%",
+                                                    padding: "0.75rem",
+                                                    borderRadius: "4px",
+                                                    border: "1px solid #d1d5db",
+                                                    fontSize: "0.875rem",
+                                                    backgroundColor: "#ffffff",
+                                                    lineHeight: "1.5",
+                                                    transition:
+                                                      "border-color 0.2s ease",
+                                                  }}
+                                                  onFocus={(e) => {
+                                                    e.target.style.borderColor =
+                                                      partnerColor();
+                                                    e.target.style.outline =
+                                                      "none";
+                                                    e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                  }}
+                                                  onBlur={(e) => {
+                                                    e.target.style.borderColor =
+                                                      "#d1d5db";
+                                                    e.target.style.boxShadow =
+                                                      "none";
+                                                  }}
+                                                />
+                                              </div>
+                                            )}
+
+                                            {/* File Upload */}
+
+                                            {!homeworkAdded &&
+                                              showHomework &&
+                                              category !== "Group Class" &&
+                                              category !== "Standalone" &&
+                                              category !==
+                                                "Aula experimental" &&
+                                              category !== "Aula única" &&
+                                              category !==
+                                                "Horário vazio para reposição" && (
+                                                <div>
+                                                  <label
+                                                    style={{
+                                                      display: "block",
+                                                      marginBottom: "0.5rem",
+                                                      fontWeight: "500",
+                                                      color: "#374151",
+                                                      fontSize: "0.875rem",
+                                                    }}
+                                                  >
+                                                    📎 Anexar Arquivo
+                                                  </label>
+
+                                                  <input
+                                                    type="file"
+                                                    onChange={handleFileChange}
+                                                    accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
+                                                    style={{
+                                                      width: "90%",
+                                                      padding: "0.75rem",
+                                                      borderRadius: "4px",
+                                                      border:
+                                                        "1px solid #d1d5db",
+                                                      fontSize: "0.875rem",
+                                                      backgroundColor:
+                                                        "#ffffff",
+                                                      cursor: "pointer",
+                                                    }}
+                                                  />
+
+                                                  {uploading && (
+                                                    <div
+                                                      style={{
+                                                        fontSize: "0.8rem",
+                                                        color: "#666",
+                                                        marginTop: "0.5rem",
+                                                        fontStyle: "italic",
+                                                      }}
+                                                    >
+                                                      Processando arquivo...
+                                                    </div>
+                                                  )}
+
+                                                  {selectedFile &&
+                                                    !uploading && (
+                                                      <div
+                                                        style={{
+                                                          fontSize: "0.8rem",
+                                                          color: "#28a745",
+                                                          marginTop: "0.5rem",
+                                                          fontStyle: "italic",
+                                                        }}
+                                                      >
+                                                        ✅ {selectedFile.name}
+                                                        <button
+                                                          type="button"
+                                                          onClick={clearFile}
+                                                          style={{
+                                                            marginLeft:
+                                                              "0.5rem",
+                                                            background: "none",
+                                                            border: "none",
+                                                            color: "#dc3545",
+                                                            cursor: "pointer",
+                                                            fontSize: "0.8rem",
+                                                          }}
+                                                        >
+                                                          ❌ Remover
+                                                        </button>
+                                                      </div>
+                                                    )}
                                                 </div>
                                               )}
-                                            </div>
-                                          )}
 
-                                        {category !== "Group Class" &&
-                                          category !== "Standalone" &&
-                                          category !== "Aula experimental" &&
-                                          category !== "Aula única" &&
-                                          category !==
-                                            "Horário vazio para reposição" && (
-                                            <div>
-                                              {/* Flashcards */}
-                                              {/* {!flashcardsAdded && (
+                                            {category !== "Group Class" &&
+                                              category !== "Standalone" &&
+                                              category !==
+                                                "Aula experimental" &&
+                                              category !== "Aula única" &&
+                                              category !==
+                                                "Horário vazio para reposição" && (
+                                                <div>
+                                                  {/* Flashcards */}
+                                                  {/* {!flashcardsAdded && (
                                                   <button
                                                     type="button"
                                                     onClick={() =>
@@ -3516,3408 +3632,3508 @@ function MyCalendar({
                                                   </button>
                                                 )} */}
 
-                                              {!flashcardsAdded &&
-                                                showFlashcards && (
-                                                  <div>
-                                                    <label
-                                                      style={{
-                                                        display: "block",
-                                                        marginBottom: "0.5rem",
-                                                        fontWeight: "500",
-                                                        color: "#374151",
-                                                        fontSize: "0.875rem",
-                                                      }}
-                                                    >
-                                                      🃏
-                                                      {
-                                                        UniversalTexts
-                                                          .calendarModal
-                                                          .uploadFlashcards
-                                                      }
-                                                    </label>
-                                                    <textarea
-                                                      value={flashcards || ""}
-                                                      onChange={(e) => {
-                                                        const newValue =
-                                                          e.target.value;
-                                                        if (
-                                                          newValue.length <=
-                                                          2000
-                                                        ) {
-                                                          setFlashcards(
-                                                            newValue
-                                                          );
-                                                        }
-                                                      }}
-                                                      placeholder={
-                                                        UniversalTexts
-                                                          .calendarModal
-                                                          .enterFlashcards
-                                                      }
-                                                      rows={4}
-                                                      maxLength={2000}
-                                                      style={{
-                                                        width: "90%",
-                                                        padding: "0.75rem",
-                                                        borderRadius: "4px",
-                                                        border:
-                                                          "1px solid #d1d5db",
-                                                        fontSize: "0.875rem",
-                                                        backgroundColor:
-                                                          "#ffffff",
-                                                        lineHeight: "1.5",
-                                                        transition:
-                                                          "border-color 0.2s ease",
-                                                        resize: "vertical",
-                                                      }}
-                                                      onFocus={(e) => {
-                                                        e.target.style.borderColor =
-                                                          partnerColor();
-                                                        e.target.style.outline =
-                                                          "none";
-                                                        e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
-                                                      }}
-                                                      onBlur={(e) => {
-                                                        e.target.style.borderColor =
-                                                          "#d1d5db";
-                                                        e.target.style.boxShadow =
-                                                          "none";
-                                                      }}
-                                                    />
-                                                    <div
-                                                      style={{
-                                                        fontSize: "0.75rem",
-                                                        color:
-                                                          flashcards &&
-                                                          flashcards.length >
-                                                            900
-                                                            ? "#dc3545"
-                                                            : "#6c757d",
-                                                        marginTop: "0.25rem",
-                                                        textAlign: "right",
-                                                        width: "90%",
-                                                      }}
-                                                    >
-                                                      {flashcards
-                                                        ? `${flashcards.length}/2000 caracteres`
-                                                        : "0/2000 caracteres"}
-
-                                                      <br />
-                                                      {flashcards.length >
-                                                        1900 &&
-                                                        "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
-                                                    </div>
-                                                  </div>
-                                                )}
-                                            </div>
-                                          )}
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <span>
-                                      {/* Categoria */}
-                                      <div>
-                                        <label
-                                          style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "600",
-                                            color: "#495057",
-                                            fontSize: "0.9rem",
-                                          }}
-                                        >
-                                          📋
-                                          {
-                                            UniversalTexts.calendarModal
-                                              .selectCategory
-                                          }
-                                        </label>
-                                        <select
-                                          onChange={handleCategoryChange}
-                                          name="category"
-                                          value={category}
-                                          style={{
-                                            width: "100%",
-                                            padding: "0.75rem",
-                                            borderRadius: "4px",
-                                            border: "1px solid #ced4da",
-                                            fontSize: "0.9rem",
-                                            backgroundColor: "white",
-                                          }}
-                                        >
-                                          <option value="category" hidden>
-                                            Select category...
-                                          </option>
-                                          {categoryList.map((cat, index) => (
-                                            <option
-                                              key={index}
-                                              value={cat.value}
-                                            >
-                                              {cat.text}
-                                            </option>
-                                          ))}
-                                        </select>
-                                      </div>
-
-                                      {/* Estudante (se for tutoring) */}
-                                      {isTutoring && (
-                                        <div>
-                                          <label
-                                            style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "600",
-                                              color: "#495057",
-                                              fontSize: "0.9rem",
-                                            }}
-                                          >
-                                            👤
-                                            {
-                                              UniversalTexts.calendarModal
-                                                .selectStudent
-                                            }
-                                          </label>
-                                          <select
-                                            onChange={handleStudentChange}
-                                            name="students"
-                                            value={newStudentId}
-                                            style={{
-                                              width: "100%",
-                                              padding: "0.75rem",
-                                              borderRadius: "4px",
-                                              border: "1px solid #ced4da",
-                                              fontSize: "0.9rem",
-                                              backgroundColor: "white",
-                                            }}
-                                          >
-                                            <option value="category" hidden>
-                                              Select student...
-                                            </option>
-                                            {studentsList.map(
-                                              (student, index) => (
-                                                <option
-                                                  key={index}
-                                                  value={student.id}
-                                                >
-                                                  {student.name +
-                                                    " " +
-                                                    student.lastname}
-                                                </option>
-                                              )
-                                            )}
-                                          </select>
-                                        </div>
-                                      )}
-
-                                      {/* Data e Hora */}
-                                      <div
-                                        style={{
-                                          display: "grid",
-                                          gridTemplateColumns:
-                                            window.innerWidth < 768
-                                              ? "1fr"
-                                              : "1fr 1fr",
-                                          gap: "1rem",
-                                        }}
-                                      >
-                                        <div>
-                                          <label
-                                            style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "600",
-                                              color: "#495057",
-                                              fontSize: "0.9rem",
-                                            }}
-                                          >
-                                            📅 Date
-                                          </label>
-                                          <input
-                                            value={date}
-                                            onChange={(e) =>
-                                              setDate(e.target.value)
-                                            }
-                                            type="date"
-                                            style={{
-                                              width: "100%",
-                                              padding: "0.75rem",
-                                              borderRadius: "4px",
-                                              border: "1px solid #ced4da",
-                                              fontSize: "0.9rem",
-                                            }}
-                                            required
-                                          />
-                                        </div>
-                                        <div>
-                                          <label
-                                            style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "600",
-                                              color: "#495057",
-                                              fontSize: "0.9rem",
-                                            }}
-                                          >
-                                            ⏰ Time
-                                          </label>
-                                          <input
-                                            value={theTime}
-                                            onChange={(e) =>
-                                              setTheTime(e.target.value)
-                                            }
-                                            type="time"
-                                            style={{
-                                              width: "100%",
-                                              padding: "0.75rem",
-                                              borderRadius: "4px",
-                                              border: "1px solid #ced4da",
-                                              fontSize: "0.9rem",
-                                            }}
-                                            required
-                                          />
-                                        </div>
-                                        <div>
-                                          <label
-                                            style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "500",
-                                              width: "90%",
-                                              color: "#374151",
-                                              fontSize: "0.875rem",
-                                            }}
-                                          >
-                                            Aula Usada
-                                          </label>
-                                          <select
-                                            onChange={handleLessonChange}
-                                            value={
-                                              theLesson?.id
-                                                ? String(theLesson.id)
-                                                : ""
-                                            } // garanta string
-                                            style={{
-                                              width: "100%",
-                                              padding: "0.75rem",
-                                              borderRadius: 8,
-                                              border: "1px solid #ced4da",
-                                              fontSize: "0.9rem",
-                                              backgroundColor: "white",
-                                            }}
-                                          >
-                                            <option value="" hidden>
-                                              Select lesson...
-                                            </option>
-
-                                            {Object.entries(grouped).map(
-                                              ([course, modules]) => (
-                                                <optgroup
-                                                  key={course}
-                                                  label={course}
-                                                >
-                                                  {Object.entries(modules).map(
-                                                    ([module, ls]) => (
-                                                      <React.Fragment
-                                                        key={`${course}-${module}`}
-                                                      >
-                                                        <option
-                                                          value={`sep:${course}:${module}`}
-                                                          disabled
+                                                  {!flashcardsAdded &&
+                                                    showFlashcards && (
+                                                      <div>
+                                                        <label
+                                                          style={{
+                                                            display: "block",
+                                                            marginBottom:
+                                                              "0.5rem",
+                                                            fontWeight: "500",
+                                                            color: "#374151",
+                                                            fontSize:
+                                                              "0.875rem",
+                                                          }}
                                                         >
-                                                          — {module} —
-                                                        </option>
-                                                        {ls.map((l) => (
-                                                          <option
-                                                            key={l.id}
-                                                            value={String(l.id)}
-                                                          >
-                                                            {l.title}
-                                                          </option>
-                                                        ))}
-                                                      </React.Fragment>
-                                                    )
-                                                  )}
-                                                </optgroup>
-                                              )
-                                            )}
-                                          </select>
-                                          <div
-                                            style={{
-                                              border: "1px solid #e0e0e0",
-                                              borderRadius: "4px",
-                                              padding: "1rem",
-                                              backgroundColor: "#f9fafb",
-                                              marginTop: "1rem",
-                                              maxWidth: "400px",
-                                            }}
-                                          >
-                                            <p
-                                              style={{
-                                                marginBottom: "0.75rem",
-                                                color: "#374151",
-                                              }}
-                                            >
-                                              🎓 Aula Selecionada
-                                            </p>
+                                                          🃏
+                                                          {
+                                                            UniversalTexts
+                                                              .calendarModal
+                                                              .uploadFlashcards
+                                                          }
+                                                        </label>
+                                                        <textarea
+                                                          value={
+                                                            flashcards || ""
+                                                          }
+                                                          onChange={(e) => {
+                                                            const newValue =
+                                                              e.target.value;
+                                                            if (
+                                                              newValue.length <=
+                                                              2000
+                                                            ) {
+                                                              setFlashcards(
+                                                                newValue
+                                                              );
+                                                            }
+                                                          }}
+                                                          placeholder={
+                                                            UniversalTexts
+                                                              .calendarModal
+                                                              .enterFlashcards
+                                                          }
+                                                          rows={4}
+                                                          maxLength={2000}
+                                                          style={{
+                                                            width: "90%",
+                                                            padding: "0.75rem",
+                                                            borderRadius: "4px",
+                                                            border:
+                                                              "1px solid #d1d5db",
+                                                            fontSize:
+                                                              "0.875rem",
+                                                            backgroundColor:
+                                                              "#ffffff",
+                                                            lineHeight: "1.5",
+                                                            transition:
+                                                              "border-color 0.2s ease",
+                                                            resize: "vertical",
+                                                          }}
+                                                          onFocus={(e) => {
+                                                            e.target.style.borderColor =
+                                                              partnerColor();
+                                                            e.target.style.outline =
+                                                              "none";
+                                                            e.target.style.boxShadow = `0 0 0 3px ${partnerColor()}20`;
+                                                          }}
+                                                          onBlur={(e) => {
+                                                            e.target.style.borderColor =
+                                                              "#d1d5db";
+                                                            e.target.style.boxShadow =
+                                                              "none";
+                                                          }}
+                                                        />
+                                                        <div
+                                                          style={{
+                                                            fontSize: "0.75rem",
+                                                            color:
+                                                              flashcards &&
+                                                              flashcards.length >
+                                                                900
+                                                                ? "#dc3545"
+                                                                : "#6c757d",
+                                                            marginTop:
+                                                              "0.25rem",
+                                                            textAlign: "right",
+                                                            width: "90%",
+                                                          }}
+                                                        >
+                                                          {flashcards
+                                                            ? `${flashcards.length}/2000 caracteres`
+                                                            : "0/2000 caracteres"}
 
-                                            {theLesson ? (
-                                              <>
-                                                <p>
-                                                  <strong>Título:</strong>
-
-                                                  {theLesson.title}
-                                                </p>
-                                                <p>
-                                                  <strong>Curso:</strong>
-
-                                                  {theLesson.course}
-                                                </p>
-                                                <p>
-                                                  <strong>Módulo:</strong>
-
-                                                  {theLesson.module}
-                                                </p>
-                                              </>
-                                            ) : (
-                                              <p style={{ color: "#6b7280" }}>
-                                                Nenhuma aula selecionada.
-                                              </p>
-                                            )}
+                                                          <br />
+                                                          {flashcards.length >
+                                                            1900 &&
+                                                            "Você pode adicionar mais flashcards para este aluno na aba 'Flashcards - Add"}
+                                                        </div>
+                                                      </div>
+                                                    )}
+                                                </div>
+                                              )}
                                           </div>
                                         </div>
-                                        <div>
-                                          <label
+                                      ) : (
+                                        <span>
+                                          {/* Categoria */}
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              📋
+                                              {
+                                                UniversalTexts.calendarModal
+                                                  .selectCategory
+                                              }
+                                            </label>
+                                            <select
+                                              onChange={handleCategoryChange}
+                                              name="category"
+                                              value={category}
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "4px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                                backgroundColor: "white",
+                                              }}
+                                            >
+                                              <option value="category" hidden>
+                                                Select category...
+                                              </option>
+                                              {categoryList.map(
+                                                (cat, index) => (
+                                                  <option
+                                                    key={index}
+                                                    value={cat.value}
+                                                  >
+                                                    {cat.text}
+                                                  </option>
+                                                )
+                                              )}
+                                            </select>
+                                          </div>
+
+                                          {/* Estudante (se for tutoring) */}
+                                          {isTutoring && (
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "600",
+                                                  color: "#495057",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                              >
+                                                👤
+                                                {
+                                                  UniversalTexts.calendarModal
+                                                    .selectStudent
+                                                }
+                                              </label>
+                                              <select
+                                                onChange={handleStudentChange}
+                                                name="students"
+                                                value={newStudentId}
+                                                style={{
+                                                  width: "100%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "4px",
+                                                  border: "1px solid #ced4da",
+                                                  fontSize: "0.9rem",
+                                                  backgroundColor: "white",
+                                                }}
+                                              >
+                                                <option value="category" hidden>
+                                                  Select student...
+                                                </option>
+                                                {studentsList.map(
+                                                  (student, index) => (
+                                                    <option
+                                                      key={index}
+                                                      value={student.id}
+                                                    >
+                                                      {student.name +
+                                                        " " +
+                                                        student.lastname}
+                                                    </option>
+                                                  )
+                                                )}
+                                              </select>
+                                            </div>
+                                          )}
+
+                                          {/* Data e Hora */}
+                                          <div
                                             style={{
-                                              display: "block",
-                                              marginBottom: "0.5rem",
-                                              fontWeight: "600",
-                                              color: "#495057",
-                                              fontSize: "0.9rem",
+                                              display: "grid",
+                                              gridTemplateColumns:
+                                                window.innerWidth < 768
+                                                  ? "1fr"
+                                                  : "1fr 1fr",
+                                              gap: "1rem",
                                             }}
                                           >
-                                            ⏰ Duration in minutes:
-                                            {duration < 60
-                                              ? `${duration} min`
-                                              : duration === 60
-                                              ? "1h"
-                                              : duration % 60 === 0
-                                              ? `${Math.floor(duration / 60)}h`
-                                              : `${Math.floor(
-                                                  duration / 60
-                                                )}h ${duration % 60}min`}
-                                          </label>
-                                          <input
-                                            value={duration}
-                                            onChange={(e) =>
-                                              setDuration(e.target.value)
-                                            }
-                                            type="number"
-                                            style={{
-                                              width: "100%",
-                                              padding: "0.75rem",
-                                              borderRadius: "4px",
-                                              border: "1px solid #ced4da",
-                                              fontSize: "0.9rem",
-                                            }}
-                                            required
-                                          />
-                                        </div>
-                                      </div>
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "600",
+                                                  color: "#495057",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                              >
+                                                📅 Date
+                                              </label>
+                                              <input
+                                                value={date}
+                                                onChange={(e) =>
+                                                  setDate(e.target.value)
+                                                }
+                                                type="date"
+                                                style={{
+                                                  width: "100%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "4px",
+                                                  border: "1px solid #ced4da",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                                required
+                                              />
+                                            </div>
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "600",
+                                                  color: "#495057",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                              >
+                                                ⏰ Time
+                                              </label>
+                                              <input
+                                                value={theTime}
+                                                onChange={(e) =>
+                                                  setTheTime(e.target.value)
+                                                }
+                                                type="time"
+                                                style={{
+                                                  width: "100%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "4px",
+                                                  border: "1px solid #ced4da",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                                required
+                                              />
+                                            </div>
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "500",
+                                                  width: "90%",
+                                                  color: "#374151",
+                                                  fontSize: "0.875rem",
+                                                }}
+                                              >
+                                                Aula Usada
+                                              </label>
+                                              <select
+                                                onChange={handleLessonChange}
+                                                value={
+                                                  theLesson?.id
+                                                    ? String(theLesson.id)
+                                                    : ""
+                                                } // garanta string
+                                                style={{
+                                                  width: "100%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: 8,
+                                                  border: "1px solid #ced4da",
+                                                  fontSize: "0.9rem",
+                                                  backgroundColor: "white",
+                                                }}
+                                              >
+                                                <option value="" hidden>
+                                                  Select lesson...
+                                                </option>
 
-                                      {/* Link da Reunião */}
-                                      <div>
-                                        <label
-                                          style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "600",
-                                            color: "#495057",
-                                            fontSize: "0.9rem",
-                                          }}
-                                        >
-                                          🔗
-                                          {UniversalTexts.calendarModal.link}
-                                        </label>
-                                        <input
-                                          value={link}
-                                          onChange={(e) =>
-                                            setLink(e.target.value)
-                                          }
-                                          placeholder="https://meet.google.com/..."
-                                          type="url"
-                                          style={{
-                                            width: "100%",
-                                            padding: "0.75rem",
-                                            borderRadius: "4px",
-                                            border: "1px solid #ced4da",
-                                            fontSize: "0.9rem",
-                                          }}
-                                          required
-                                        />
-                                      </div>
-                                      {/* Descrição */}
-                                      <div>
-                                        <label
-                                          style={{
-                                            display: "block",
-                                            marginBottom: "0.5rem",
-                                            fontWeight: "600",
-                                            color: "#495057",
-                                            fontSize: "0.9rem",
-                                          }}
-                                        >
-                                          📝
-                                          {
-                                            UniversalTexts.calendarModal
-                                              .classDescription
-                                          }
-                                        </label>
-                                        <input
-                                          type="text"
-                                          value={description}
-                                          onChange={(e) =>
-                                            setDescription(e.target.value)
-                                          }
-                                          placeholder={
-                                            UniversalTexts.calendarModal
-                                              .classDescriptionPlaceholder
-                                          }
-                                          style={{
-                                            width: "100%",
-                                            padding: "0.75rem",
-                                            borderRadius: "4px",
-                                            border: "1px solid #ced4da",
-                                            fontSize: "0.9rem",
-                                            lineHeight: "1.5",
-                                          }}
-                                          required
-                                        />
-                                      </div>
-                                    </span>
-                                  )}
-                                </form>
-                              </>
-                            )}
-                            {!loadingInfo && (
-                              <>
-                                {/* Action Buttons */}
-                                {!deleteVisible ? (
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      gap: "1rem",
-                                      justifyContent: "center",
-                                      paddingTop: "1rem",
-                                    }}
-                                  >
-                                    {[
-                                      {
-                                        text: "Delete",
-                                        color: "red",
-                                        onClick: seeDelete,
-                                        visible: !postNew,
-                                      },
-                                      {
-                                        text: "Cancel",
-                                        color: "blue",
-                                        onClick: () => setShowEditForm(false),
-                                        visible: true,
-                                      },
-                                      {
-                                        text: "Save",
-                                        color: "green",
-                                        onClick: postNew
-                                          ? postNewEvent
-                                          : editInside,
-                                        visible: true,
-                                      },
-                                    ].map(
-                                      (item, index) =>
-                                        item.visible && (
-                                          <button
-                                            key={index}
-                                            color={item.color}
-                                            onClick={item.onClick}
-                                            style={{
-                                              padding: "5px 1rem",
+                                                {Object.entries(grouped).map(
+                                                  ([course, modules]) => (
+                                                    <optgroup
+                                                      key={course}
+                                                      label={course}
+                                                    >
+                                                      {Object.entries(
+                                                        modules
+                                                      ).map(([module, ls]) => (
+                                                        <React.Fragment
+                                                          key={`${course}-${module}`}
+                                                        >
+                                                          <option
+                                                            value={`sep:${course}:${module}`}
+                                                            disabled
+                                                          >
+                                                            — {module} —
+                                                          </option>
+                                                          {ls.map((l) => (
+                                                            <option
+                                                              key={l.id}
+                                                              value={String(
+                                                                l.id
+                                                              )}
+                                                            >
+                                                              {l.title}
+                                                            </option>
+                                                          ))}
+                                                        </React.Fragment>
+                                                      ))}
+                                                    </optgroup>
+                                                  )
+                                                )}
+                                              </select>
+                                              <div
+                                                style={{
+                                                  border: "1px solid #e0e0e0",
+                                                  borderRadius: "4px",
+                                                  padding: "1rem",
+                                                  backgroundColor: "#f9fafb",
+                                                  marginTop: "1rem",
+                                                  maxWidth: "400px",
+                                                }}
+                                              >
+                                                <p
+                                                  style={{
+                                                    marginBottom: "0.75rem",
+                                                    color: "#374151",
+                                                  }}
+                                                >
+                                                  🎓 Aula Selecionada
+                                                </p>
 
-                                              fontWeight: "500",
-                                              width: "80px",
-                                            }}
-                                          >
-                                            {item.text}
-                                          </button>
-                                        )
-                                    )}
-                                  </div>
-                                ) : (
-                                  <div
-                                    style={{
-                                      backgroundColor: "#f8d7da",
-                                      padding: "1rem",
-                                      borderRadius: "4px",
-                                      border: "1px solid #f5c6cb",
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    <p
-                                      style={{
-                                        margin: "0 0 1rem 0",
+                                                {theLesson ? (
+                                                  <>
+                                                    <p>
+                                                      <strong>Título:</strong>
 
-                                        fontWeight: "500",
-                                        color: "#721c24",
-                                      }}
-                                    >
-                                      ⚠️
-                                      {
-                                        UniversalTexts.calendarModal
-                                          .deleteConfirmation
-                                      }
-                                    </p>
-                                    <div
-                                      style={{
-                                        display: "flex",
-                                        gap: "1rem",
-                                        justifyContent: "center",
-                                      }}
-                                    >
-                                      <button
-                                        onClick={seeDelete}
-                                        style={{
-                                          padding: "5px 1rem",
-                                          backgroundColor: partnerColor(),
-                                          color: "white",
-                                          border: "none",
-                                          borderRadius: "4px",
-                                          cursor: "pointer",
+                                                      {theLesson.title}
+                                                    </p>
+                                                    <p>
+                                                      <strong>Curso:</strong>
 
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        {UniversalTexts.calendarModal.noCancel}
-                                      </button>
-                                      <button
-                                        onClick={deleteOneMaterialInside}
-                                        style={{
-                                          padding: "5px 1rem",
-                                          backgroundColor: "#dc3545",
-                                          color: "white",
-                                          border: "none",
-                                          borderRadius: "4px",
-                                          cursor: "pointer",
-                                          fontWeight: "500",
-                                        }}
-                                      >
-                                        {UniversalTexts.calendarModal.yesDelete}
-                                      </button>
-                                    </div>
-                                  </div>
+                                                      {theLesson.course}
+                                                    </p>
+                                                    <p>
+                                                      <strong>Módulo:</strong>
+
+                                                      {theLesson.module}
+                                                    </p>
+                                                  </>
+                                                ) : (
+                                                  <p
+                                                    style={{ color: "#6b7280" }}
+                                                  >
+                                                    Nenhuma aula selecionada.
+                                                  </p>
+                                                )}
+                                              </div>
+                                            </div>
+                                            <div>
+                                              <label
+                                                style={{
+                                                  display: "block",
+                                                  marginBottom: "0.5rem",
+                                                  fontWeight: "600",
+                                                  color: "#495057",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                              >
+                                                ⏰ Duration in minutes:
+                                                {duration < 60
+                                                  ? `${duration} min`
+                                                  : duration === 60
+                                                  ? "1h"
+                                                  : duration % 60 === 0
+                                                  ? `${Math.floor(
+                                                      duration / 60
+                                                    )}h`
+                                                  : `${Math.floor(
+                                                      duration / 60
+                                                    )}h ${duration % 60}min`}
+                                              </label>
+                                              <input
+                                                value={duration}
+                                                onChange={(e) =>
+                                                  setDuration(e.target.value)
+                                                }
+                                                type="number"
+                                                style={{
+                                                  width: "100%",
+                                                  padding: "0.75rem",
+                                                  borderRadius: "4px",
+                                                  border: "1px solid #ced4da",
+                                                  fontSize: "0.9rem",
+                                                }}
+                                                required
+                                              />
+                                            </div>
+                                          </div>
+
+                                          {/* Link da Reunião */}
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              🔗
+                                              {
+                                                UniversalTexts.calendarModal
+                                                  .link
+                                              }
+                                            </label>
+                                            <input
+                                              value={link}
+                                              onChange={(e) =>
+                                                setLink(e.target.value)
+                                              }
+                                              placeholder="https://meet.google.com/..."
+                                              type="url"
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "4px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                              }}
+                                              required
+                                            />
+                                          </div>
+                                          {/* Descrição */}
+                                          <div>
+                                            <label
+                                              style={{
+                                                display: "block",
+                                                marginBottom: "0.5rem",
+                                                fontWeight: "600",
+                                                color: "#495057",
+                                                fontSize: "0.9rem",
+                                              }}
+                                            >
+                                              📝
+                                              {
+                                                UniversalTexts.calendarModal
+                                                  .classDescription
+                                              }
+                                            </label>
+                                            <input
+                                              type="text"
+                                              value={description}
+                                              onChange={(e) =>
+                                                setDescription(e.target.value)
+                                              }
+                                              placeholder={
+                                                UniversalTexts.calendarModal
+                                                  .classDescriptionPlaceholder
+                                              }
+                                              style={{
+                                                width: "100%",
+                                                padding: "0.75rem",
+                                                borderRadius: "4px",
+                                                border: "1px solid #ced4da",
+                                                fontSize: "0.9rem",
+                                                lineHeight: "1.5",
+                                              }}
+                                              required
+                                            />
+                                          </div>
+                                        </span>
+                                      )}
+                                    </form>
+                                  </>
                                 )}
-                              </>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {!showEditForm && (
-                    <span>
-                      {/* Link de Acesso */}
-
-                      {!showEditForm && (
-                        <span>
-                          {/* Link de Acesso */}
-                          {link &&
-                          (status === "marcado" || status === "Scheduled") ? (
-                            <div style={{ textAlign: "center" }}>
-                              <Link
-                                to={link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                  display: "inline-block",
-                                  color: partnerColor(),
-                                  textDecoration: "none",
-                                  padding: "0.75rem 1rem",
-                                  backgroundColor: "white",
-                                  border: `2px solid ${partnerColor()}`,
-                                  borderRadius: "4px",
-                                  textAlign: "center",
-                                  transition: "all 0.3s ease",
-                                  maxWidth: "70%",
-                                }}
-                                onMouseEnter={(e) => {
-                                  const el = e.currentTarget;
-                                  el.style.backgroundColor = partnerColor();
-                                  el.style.color = "white";
-                                  el.style.transform = "translateY(-2px)";
-                                  el.style.boxShadow =
-                                    "0 4px 8px rgba(0,0,0,0.15)";
-                                }}
-                                onMouseLeave={(e) => {
-                                  const el = e.currentTarget;
-                                  el.style.backgroundColor = "white";
-                                  el.style.color = partnerColor();
-                                  el.style.transform = "translateY(0)";
-                                  el.style.boxShadow =
-                                    "0 2px 4px rgba(0,0,0,0.1)";
-                                }}
-                              >
-                                {
-                                  UniversalTexts.calendarModal
-                                    .clickToAccessClass
-                                }
-                              </Link>
-                            </div>
-                          ) : googleDriveLink ? (
-                            <div
-                              style={{
-                                textAlign: "center",
-                                marginTop: "2rem",
-                              }}
-                            >
-                              <Link
-                                to={googleDriveLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{
-                                  display: "inline-block",
-                                  color: partnerColor(),
-                                  textDecoration: "none",
-                                  padding: "0.75rem 1rem",
-                                  backgroundColor: "white",
-                                  border: `2px solid ${partnerColor()}`,
-                                  borderRadius: "4px",
-                                  textAlign: "center",
-                                  transition: "all 0.3s ease",
-                                  minWidth: "70%",
-                                }}
-                                onMouseEnter={(e) => {
-                                  const el = e.currentTarget;
-                                  el.style.backgroundColor = partnerColor();
-                                  el.style.color = "white";
-                                  el.style.transform = "translateY(-2px)";
-                                  el.style.boxShadow =
-                                    "0 4px 8px rgba(0,0,0,0.15)";
-                                }}
-                                onMouseLeave={(e) => {
-                                  const el = e.currentTarget;
-                                  el.style.backgroundColor = "white";
-                                  el.style.color = partnerColor();
-                                  el.style.transform = "translateY(0)";
-                                  el.style.boxShadow =
-                                    "0 2px 4px rgba(0,0,0,0.1)";
-                                }}
-                              >
-                                <b>Important Link:</b>{" "}
-                                {truncateString(googleDriveLink, 40)}
-                              </Link>
-                            </div>
-                          ) : null}
-                        </span>
-                      )}
-
-                      {/* Descrição */}
-                      <div
-                        style={{
-                          display: "grid",
-                          maxWidth: "85%",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          margin: "auto",
-                        }}
-                      >
-                        {description && (
-                          <div
-                            style={{
-                              backgroundColor: "white",
-                              marginTop: "2rem",
-                              padding: "10px",
-                              borderRadius: "4px",
-                              border: "1px solid #dee2e6",
-                              borderLeft: `4px solid ${partnerColor()}`,
-                            }}
-                          >
-                            <p
-                              style={{
-                                margin: 0,
-                                color: "#495057",
-                              }}
-                            >
-                              {description}
-                            </p>
-                          </div>
-                        )}
-                        {theLesson && theLesson.course && theLesson.id && (
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "center",
-                              marginTop: "0.75rem",
-                            }}
-                          >
-                            <a
-                              target="_blank"
-                              href={`/teaching-materials/${theLesson.course
-                                .toLowerCase()
-                                .replace(/\s+/g, "-")
-                                .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
-                              style={{
-                                gap: "5px",
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                color: partnerColor(),
-                                textDecoration: "none",
-
-                                padding: "10px",
-                                borderRadius: "4px",
-                                backgroundColor: textpartnerColorContrast(),
-                              }}
-                              onMouseOver={(e) =>
-                                (e.currentTarget.style.textDecoration =
-                                  "underline")
-                              }
-                              onMouseOut={(e) =>
-                                (e.currentTarget.style.textDecoration = "none")
-                              }
-                            >
-                              <span>Aula relacionada</span>
-                              <span>
-                                <strong>
-                                  {theLesson.title} | {theLesson.course}
-                                </strong>
-                              </span>
-                            </a>
-                          </div>
-                        )}
-                      </div>
-
-                      {lastFew.length > 0 &&
-                        category !== "Test Class" &&
-                        category !== "Standalone" &&
-                        category !== "Group Class" &&
-                        category !== "Established Group Class" &&
-                        category !== "Marcar Reposição" && (
-                          <div
-                            style={{
-                              display: "flex",
-                              margin: "1rem",
-                              marginTop: "2rem",
-                              justifySelf: "center",
-                              flexDirection: "column",
-                              textAlign: "center",
-                              display: "block",
-                              width: "90%",
-                            }}
-                          >
-                            {!showLastFew && (
-                              <span
-                                style={{
-                                  fontSize: "0.75rem",
-                                  color: "#6c757d",
-                                  margin: " 10px 0",
-                                  fontWeight: "500",
-                                  cursor: "pointer",
-                                  display: "block",
-                                  width: "100%",
-                                  borderRadius: "4px",
-                                  fontWeight: 600,
-                                  padding: "8px",
-                                  border: `1px solid ${partnerColor()}`,
-                                  backgroundColor: "transparent",
-                                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-                                  transition:
-                                    "background-color 120ms ease, box-shadow 120ms ease",
-                                }}
-                                onMouseOver={(e) =>
-                                  (e.currentTarget.style.backgroundColor =
-                                    "#fff")
-                                }
-                                onMouseOut={(e) =>
-                                  (e.currentTarget.style.backgroundColor =
-                                    "transparent")
-                                }
-                                onClick={() => setShowLastFew(!showLastFew)}
-                              >
-                                Histórico de aulas dadas
-                              </span>
-                            )}
-                            {showLastFew && (
-                              <ul
-                                style={{
-                                  padding: 0,
-                                  margin: "8px 0",
-                                  listStyle: "none",
-                                }}
-                              >
-                                {lastFew.map((evt, idx) => (
-                                  <li
-                                    key={evt._id || evt.id}
-                                    style={{
-                                      backgroundColor: "#fff",
-                                      border: "1px solid #e5e7eb",
-                                      borderLeft: `3px solid ${
-                                        partnerColor?.() || "#829ad1"
-                                      }`,
-                                      borderRadius: "4px",
-                                      padding: "8px 12px",
-                                      marginTop: "8px",
-                                      marginBottom: "8px",
-                                      fontSize: "12px",
-                                      display: "grid",
-                                      gridTemplateColumns: "1fr",
-                                      gap: "6px",
-                                      alignItems: "start",
-                                      textAlign: "left",
-                                      transition:
-                                        "box-shadow 120ms ease, border-color 120ms ease",
-                                    }}
-                                    onMouseEnter={(e) =>
-                                      (e.currentTarget.style.boxShadow =
-                                        "0 2px 6px rgba(0,0,0,0.08)")
-                                    }
-                                    onMouseLeave={(e) =>
-                                      (e.currentTarget.style.boxShadow =
-                                        "0 1px 2px rgba(0,0,0,0.04)")
-                                    }
-                                  >
-                                    {idx == 0 && (
-                                      <span
-                                        style={{
-                                          cursor: "pointer",
-                                          display: "flex",
-                                          flexDirection: "row-reverse",
-                                          marginBottom: "8px",
-                                          fontWeight: "600",
-                                          fontSize: "14px",
-                                        }}
-                                        onMouseOver={(e) =>
-                                          (e.currentTarget.style.color =
-                                            partnerColor())
-                                        }
-                                        onMouseDown={(e) =>
-                                          (e.currentTarget.style.color =
-                                            "black")
-                                        }
-                                        onClick={() => setShowLastFew(false)}
-                                      >
-                                        x
-                                      </span>
-                                    )}
-                                    <span
-                                      style={{
-                                        fontWeight: 600,
-                                        alignSelf: "start",
-                                        display: "inline-block",
-                                        justifyContent: "space-between",
-                                        padding: "2px 6px",
-                                        display: "flex",
-                                        borderRadius: "4px",
-                                        backgroundColor: "#f3f4f6",
-                                        color: "#111827",
-                                        border: "1px solid #e5e7eb",
-                                      }}
-                                    >
-                                      <span>
-                                        {formatDateBr(evt.date) || "Sem data"}
-                                      </span>
-                                    </span>
-                                    <span
-                                      style={{
-                                        opacity: 0.95,
-                                        lineHeight: 1.5,
-                                        color: "#374151",
-                                      }}
-                                    >
-                                      {evt.description || "Sem descrição"}
-                                    </span>
-
-                                    <span
-                                      style={{
-                                        display: "block",
-                                        opacity: 0.95,
-                                        color: "#374151",
-                                      }}
-                                    >
-                                      <strong style={{ fontWeight: 600 }}>
-                                        Homework:
-                                      </strong>
+                                {!loadingInfo && (
+                                  <>
+                                    {/* Action Buttons */}
+                                    {!deleteVisible ? (
                                       <div
                                         style={{
-                                          marginTop: "6px",
-                                          backgroundColor: "#ffffff",
-                                          padding: "0.75rem",
-                                          borderRadius: "4px",
-                                          border: "1px solid #e5e7eb",
-                                          fontSize: "0.85rem",
-                                          color: "#374151",
-                                          lineHeight: 1.5,
-                                          maxHeight: "150px",
-                                          overflowY: "auto",
-                                          whiteSpace: "pre-wrap",
+                                          display: "flex",
+                                          gap: "1rem",
+                                          justifyContent: "center",
+                                          paddingTop: "1rem",
                                         }}
-                                        dangerouslySetInnerHTML={{
-                                          __html: evt.homework,
-                                        }}
-                                      />
-                                    </span>
+                                      >
+                                        {[
+                                          {
+                                            text: "Delete",
+                                            color: "red",
+                                            onClick: seeDelete,
+                                            visible: !postNew,
+                                          },
+                                          {
+                                            text: "Cancel",
+                                            color: "blue",
+                                            onClick: () =>
+                                              setShowEditForm(false),
+                                            visible: true,
+                                          },
+                                          {
+                                            text: "Save",
+                                            color: "green",
+                                            onClick: postNew
+                                              ? postNewEvent
+                                              : editInside,
+                                            visible: true,
+                                          },
+                                        ].map(
+                                          (item, index) =>
+                                            item.visible && (
+                                              <button
+                                                key={index}
+                                                color={item.color}
+                                                onClick={item.onClick}
+                                                style={{
+                                                  padding: "5px 1rem",
 
-                                    {theLessonLast &&
-                                      theLessonLast.course &&
-                                      theLessonLast.id && (
+                                                  fontWeight: "500",
+                                                  width: "80px",
+                                                }}
+                                              >
+                                                {item.text}
+                                              </button>
+                                            )
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <div
+                                        style={{
+                                          backgroundColor: "#f8d7da",
+                                          padding: "1rem",
+                                          borderRadius: "4px",
+                                          border: "1px solid #f5c6cb",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        <p
+                                          style={{
+                                            margin: "0 0 1rem 0",
+
+                                            fontWeight: "500",
+                                            color: "#721c24",
+                                          }}
+                                        >
+                                          ⚠️
+                                          {
+                                            UniversalTexts.calendarModal
+                                              .deleteConfirmation
+                                          }
+                                        </p>
                                         <div
                                           style={{
                                             display: "flex",
-                                            justifyContent: "flex-start",
-                                            marginTop: "4px",
+                                            gap: "1rem",
+                                            justifyContent: "center",
                                           }}
                                         >
-                                          <a
-                                            target="_blank"
-                                            href={`/teaching-materials/${theLessonLast.course
-                                              .toLowerCase()
-                                              .replace(/\s+/g, "-")
-                                              .replace(/[^\w\-]+/g, "")}/${
-                                              theLessonLast.id
-                                            }`}
+                                          <button
+                                            onClick={seeDelete}
                                             style={{
-                                              display: "inline-flex",
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                              gap: "6px",
-                                              color: partnerColor(),
-                                              textDecoration: "none",
-                                              padding: "8px 10px",
+                                              padding: "5px 1rem",
+                                              backgroundColor: partnerColor(),
+                                              color: "white",
+                                              border: "none",
                                               borderRadius: "4px",
-                                              border: `1px solid ${
-                                                partnerColor?.() || "#829ad1"
-                                              }`,
-                                              backgroundColor:
-                                                textpartnerColorContrast(),
-                                              transition:
-                                                "box-shadow 120ms ease, text-decoration-color 120ms ease",
+                                              cursor: "pointer",
+
+                                              fontWeight: "500",
                                             }}
-                                            onMouseOver={(e) =>
-                                              (e.currentTarget.style.textDecoration =
-                                                "underline")
-                                            }
-                                            onMouseOut={(e) =>
-                                              (e.currentTarget.style.textDecoration =
-                                                "none")
-                                            }
                                           >
-                                            <span style={{ fontWeight: 500 }}>
-                                              Aula relacionada
-                                            </span>
-                                            <span>
-                                              <strong>
-                                                {theLessonLast.title} |{" "}
-                                                {theLessonLast.course}
-                                              </strong>
-                                            </span>
-                                          </a>
+                                            {
+                                              UniversalTexts.calendarModal
+                                                .noCancel
+                                            }
+                                          </button>
+                                          <button
+                                            onClick={deleteOneMaterialInside}
+                                            style={{
+                                              padding: "5px 1rem",
+                                              backgroundColor: "#dc3545",
+                                              color: "white",
+                                              border: "none",
+                                              borderRadius: "4px",
+                                              cursor: "pointer",
+                                              fontWeight: "500",
+                                            }}
+                                          >
+                                            {
+                                              UniversalTexts.calendarModal
+                                                .yesDelete
+                                            }
+                                          </button>
                                         </div>
-                                      )}
-                                  </li>
-                                ))}
-                              </ul>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </>
                             )}
                           </div>
-                        )}
-
-                      {duration && (
-                        <div
-                          style={{
-                            marginTop: "0.5rem",
-                            padding: "0.5rem 0.75rem",
-                            borderRadius: "4px",
-                            border: "1px solid #e9ecef",
-                            display: "flex",
-                            alignItems: "center",
-                            gap: "0.5rem",
-                          }}
-                        >
-                          <span
-                            style={{
-                              fontSize: "0.9rem",
-                              opacity: 0.7,
-                            }}
-                          >
-                            ⏱️
-                          </span>
-                          <span
-                            style={{
-                              fontSize: "0.85rem",
-                              color: "#6c757d",
-                              fontWeight: "500",
-                            }}
-                          >
-                            Duração:
-                            {duration < 60
-                              ? `${duration} min`
-                              : duration === 60
-                              ? "1h"
-                              : duration % 60 === 0
-                              ? `${Math.floor(duration / 60)}h`
-                              : `${Math.floor(duration / 60)}h ${
-                                  duration % 60
-                                }min`}
-                          </span>
                         </div>
                       )}
+                      {!showEditForm && (
+                        <span>
+                          {/* Link de Acesso */}
 
-                      {/* Informações do Evento */}
-                      <div
-                        style={{
-                          backgroundColor: "white",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #e9ecef",
-                        }}
-                      >
-                        {/* Container flex para Informações + Vídeo */}
-                        {video ? (
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "1rem",
-                              flexWrap: "wrap",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            {/* Coluna das Informações */}
-                            <div style={{ flex: "1", minWidth: "250px" }}>
-                              {/* Categoria */}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  marginBottom: "0.5rem",
-                                  flexWrap: "wrap",
-                                  gap: "0.5rem",
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontWeight: "600",
-                                    color: "#6c757d",
-                                    fontSize: "0.8rem",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.25rem",
-                                  }}
-                                >
-                                  📋 {UniversalTexts.calendarModal.category}
-                                </span>
-                                <span
-                                  style={{
-                                    backgroundColor: partnerColor(),
-                                    color: "white",
-                                    padding: "0.2rem 0.75rem",
-                                    borderRadius: "4px",
-                                    fontWeight: "500",
-                                    fontSize: "0.75rem",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {category === "Test"
-                                    ? "Test Class"
-                                    : category === "Standalone"
-                                    ? "Standalone Class"
-                                    : category === "Group Class"
-                                    ? "Group Class"
-                                    : category === "Rep"
-                                    ? "Marcar Reposição"
-                                    : category === "Marcar Reposição"
-                                    ? "Janela de Marcar Reposição"
-                                    : category === "Prize Class"
-                                    ? "Prize Class"
-                                    : category === "Tutoring"
-                                    ? "Tutoring: Private Class"
-                                    : ""}
-                                </span>
-                              </div>
-
-                              {/* Data e Hora */}
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  gap: "0.5rem",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      fontWeight: "600",
-                                      color: "#6c757d",
-                                      fontSize: "0.8rem",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "0.25rem",
-                                    }}
-                                  >
-                                    📅 {newFormatDate(date)}
-                                  </span>
-                                </div>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                  }}
-                                >
-                                  <span
-                                    style={{
-                                      fontWeight: "600",
-                                      color: "#6c757d",
-                                      fontSize: "0.8rem",
-                                      display: "flex",
-                                      alignItems: "center",
-                                      gap: "0.25rem",
-                                    }}
-                                  >
-                                    ⏰ {theTime}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                            <div
-                              style={{
-                                flex: "1",
-                                minWidth: "300px",
-                                maxWidth: "400px",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  marginBottom: "0.5rem",
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontWeight: "600",
-                                    color: "#6c757d",
-                                    fontSize: "0.8rem",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.25rem",
-                                  }}
-                                >
-                                  🎥 {UniversalTexts.calendarModal.video}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  padding: "0.5rem",
-                                  borderRadius: "4px",
-                                  border: "1px solid #dee2e6",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    position: "relative",
-                                    paddingBottom: "56.25%",
-                                    height: 0,
-                                    overflow: "hidden",
-                                    borderRadius: "4px",
-                                    backgroundColor: "#000",
-                                  }}
-                                >
-                                  <iframe
-                                    src={getEmbedUrl(video)}
-                                    style={{
-                                      position: "absolute",
-                                      top: 0,
-                                      left: 0,
-                                      width: "100%",
-                                      height: "100%",
-                                      border: "none",
-                                      borderRadius: "4px",
-                                    }}
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowFullScreen
-                                    title="Class Video"
-                                  />
-                                </div>
-                                <div
-                                  style={{
-                                    marginTop: "0.5rem",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  <a
-                                    href={video}
+                          {!showEditForm && (
+                            <span>
+                              {/* Link de Acesso */}
+                              {link &&
+                              (status === "marcado" ||
+                                status === "Scheduled") ? (
+                                <div style={{ textAlign: "center" }}>
+                                  <Link
+                                    to={link}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     style={{
+                                      display: "inline-block",
                                       color: partnerColor(),
                                       textDecoration: "none",
-                                      fontWeight: "500",
-                                      fontSize: "0.75rem",
-                                      display: "inline-flex",
-                                      alignItems: "center",
-                                      gap: "0.25rem",
+                                      padding: "0.75rem 1rem",
+                                      backgroundColor: "white",
+                                      border: `2px solid ${partnerColor()}`,
+                                      borderRadius: "4px",
+                                      textAlign: "center",
+                                      transition: "all 0.3s ease",
+                                      maxWidth: "70%",
                                     }}
                                     onMouseEnter={(e) => {
-                                      e.target.style.textDecoration =
-                                        "underline";
+                                      const el = e.currentTarget;
+                                      el.style.backgroundColor = partnerColor();
+                                      el.style.color = "white";
+                                      el.style.transform = "translateY(-2px)";
+                                      el.style.boxShadow =
+                                        "0 4px 8px rgba(0,0,0,0.15)";
                                     }}
                                     onMouseLeave={(e) => {
-                                      e.target.style.textDecoration = "none";
+                                      const el = e.currentTarget;
+                                      el.style.backgroundColor = "white";
+                                      el.style.color = partnerColor();
+                                      el.style.transform = "translateY(0)";
+                                      el.style.boxShadow =
+                                        "0 2px 4px rgba(0,0,0,0.1)";
                                     }}
                                   >
-                                    <i className="fa fa-external-link" />
-                                    {video.includes("youtube.com") ||
-                                    video.includes("youtu.be")
-                                      ? "YouTube"
-                                      : video.includes("vimeo.com")
-                                      ? "Vimeo"
-                                      : "Vídeo"}
-                                  </a>
+                                    {
+                                      UniversalTexts.calendarModal
+                                        .clickToAccessClass
+                                    }
+                                  </Link>
                                 </div>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                marginBottom: "0.5rem",
-                                flexWrap: "wrap",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontWeight: "600",
-                                  color: "#6c757d",
-                                  fontSize: "0.8rem",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.25rem",
-                                }}
-                              >
-                                {UniversalTexts.calendarModal.category}
-                              </span>
-                              <span
-                                style={{
-                                  backgroundColor: partnerColor(),
-                                  color: "white",
-                                  padding: "0.2rem 0.75rem",
-                                  borderRadius: "4px",
-                                  fontWeight: "500",
-                                  fontSize: "0.75rem",
-                                  textAlign: "center",
-                                }}
-                              >
-                                {category === "Test"
-                                  ? "Test Class"
-                                  : category === "Standalone"
-                                  ? "Standalone Class"
-                                  : category === "Group Class"
-                                  ? "Group Class"
-                                  : category === "Rep"
-                                  ? "Marcar Reposição"
-                                  : category === "Marcar Reposição"
-                                  ? "Janela de Marcar Reposição"
-                                  : category === "Prize Class"
-                                  ? "Prize Class"
-                                  : category === "Established Group Class"
-                                  ? `Aula do grupo: ${groupName}`
-                                  : category === "Tutoring"
-                                  ? "Tutoring: Private Class"
-                                  : ""}
-                              </span>
-                            </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.5rem",
-                                }}
-                              >
-                                <span
+                              ) : googleDriveLink ? (
+                                <div
                                   style={{
-                                    fontWeight: "600",
-                                    color: "#6c757d",
-                                    fontSize: "0.8rem",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.25rem",
+                                    textAlign: "center",
+                                    marginTop: "2rem",
                                   }}
                                 >
-                                  {newFormatDate(date)}
-                                </span>
-                              </div>
-                              <div
-                                style={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.5rem",
-                                }}
-                              >
-                                <span
-                                  style={{
-                                    fontWeight: "600",
-                                    color: "#6c757d",
-                                    fontSize: "0.8rem",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.25rem",
-                                  }}
-                                >
-                                  {theTime}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {eventFull.homeworkDetails && (
-                        <div
-                          style={{
-                            backgroundColor: "#f8fafc",
-                            padding: "1rem",
-                            borderRadius: "4px",
-                            border: "1px solid #e2e8f0",
-                            marginTop: "1rem",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.5rem",
-                              marginBottom: "1rem",
-                              borderBottom: "1px solid #e2e8f0",
-                              paddingBottom: "0.5rem",
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: "grid",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                                marginBottom: "0.5rem",
-                              }}
-                            >
-                              <span
-                                style={{
-                                  fontWeight: "600",
-                                  color: "#6c757d",
-                                  fontSize: "0.8rem",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: "0.25rem",
-                                }}
-                              >
-                                📝 {UniversalTexts.calendarModal.homework}
-                              </span>
-                            </div>
-                            <span
-                              style={{
-                                fontSize: "0.75rem",
-                                color: "#6b7280",
-                                backgroundColor:
-                                  eventFull.homeworkDetails.status === "pending"
-                                    ? "#fef3c7"
-                                    : "#dcfce7",
-                                padding: "2px 8px",
-                                borderRadius: "4px",
-                                fontWeight: "500",
-                              }}
-                            >
-                              {eventFull.homeworkDetails.status === "pending"
-                                ? "Pendente"
-                                : "Concluído"}
+                                  <Link
+                                    to={googleDriveLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{
+                                      display: "inline-block",
+                                      color: partnerColor(),
+                                      textDecoration: "none",
+                                      padding: "0.75rem 1rem",
+                                      backgroundColor: "white",
+                                      border: `2px solid ${partnerColor()}`,
+                                      borderRadius: "4px",
+                                      textAlign: "center",
+                                      transition: "all 0.3s ease",
+                                      minWidth: "70%",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      const el = e.currentTarget;
+                                      el.style.backgroundColor = partnerColor();
+                                      el.style.color = "white";
+                                      el.style.transform = "translateY(-2px)";
+                                      el.style.boxShadow =
+                                        "0 4px 8px rgba(0,0,0,0.15)";
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      const el = e.currentTarget;
+                                      el.style.backgroundColor = "white";
+                                      el.style.color = partnerColor();
+                                      el.style.transform = "translateY(0)";
+                                      el.style.boxShadow =
+                                        "0 2px 4px rgba(0,0,0,0.1)";
+                                    }}
+                                  >
+                                    <b>Important Link:</b>{" "}
+                                    {truncateString(googleDriveLink, 40)}
+                                  </Link>
+                                </div>
+                              ) : null}
                             </span>
-                          </div>
-                          <Link
-                            to="/my-homework-and-lessons"
-                            target="_blank"
-                            style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              marginBottom: "1rem",
-                              gap: "0.5rem",
-                              backgroundColor: partnerColor(),
-                              color: "white",
-                              textDecoration: "none",
-                              padding: "0.5rem 1rem",
-                              borderRadius: "4px",
-                              fontSize: "10px",
-                            }}
-                            onMouseEnter={(e) => {
-                              e.target.style.transform = "translateY(-1px)";
-                              e.target.style.boxShadow =
-                                "0 4px 8px rgba(0, 0, 0, 0.15)";
-                            }}
-                            onMouseLeave={(e) => {
-                              e.target.style.transform = "translateY(0px)";
-                              e.target.style.boxShadow =
-                                "0 2px 4px rgba(0, 0, 0, 0.1)";
-                            }}
-                          >
-                            <i className="fa fa-external-link" />
-                            {UniversalTexts.seeOnHomeworkPage}
-                          </Link>
+                          )}
+
+                          {/* Descrição */}
                           <div
                             style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "0.75rem",
+                              display: "grid",
+                              maxWidth: "85%",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              margin: "auto",
                             }}
                           >
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <i
-                                className="fa fa-calendar"
+                            {description && (
+                              <div
                                 style={{
-                                  color: "#6b7280",
-                                  fontSize: "0.8rem",
-                                }}
-                              />
-                              <span
-                                style={{
-                                  fontSize: "0.8rem",
-                                  color: "#6b7280",
+                                  backgroundColor: "white",
+                                  marginTop: "2rem",
+                                  padding: "10px",
+                                  borderRadius: "4px",
+                                  border: "1px solid #dee2e6",
+                                  borderLeft: `4px solid ${partnerColor()}`,
                                 }}
                               >
-                                <strong>Data de Entrega:</strong>
-
-                                {new Date(
-                                  eventFull.homeworkDetails.dueDate
-                                ).toLocaleDateString("pt-BR")}
-                              </span>
-                            </div>
-                            <div
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "0.5rem",
-                              }}
-                            >
-                              <i
-                                className="fa fa-tag"
-                                style={{
-                                  color: "#6b7280",
-                                  fontSize: "0.8rem",
-                                }}
-                              />
-                              <span
-                                style={{
-                                  fontSize: "0.8rem",
-                                  color: "#6b7280",
-                                }}
-                              >
-                                <strong>Categoria:</strong>
-
-                                {eventFull.homeworkDetails.category}
-                              </span>
-                            </div>
-                            {eventFull.homeworkDetails.description && (
-                              <div style={{ marginTop: "0.5rem" }}>
-                                <div
+                                <p
                                   style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                    marginBottom: "0.5rem",
+                                    margin: 0,
+                                    color: "#495057",
                                   }}
                                 >
-                                  <i
-                                    className="fa fa-file-text-o"
-                                    style={{
-                                      color: "#6b7280",
-                                      fontSize: "0.8rem",
-                                    }}
-                                  />
-                                  <span
-                                    style={{
-                                      fontSize: "0.8rem",
-                                      color: "#6b7280",
-                                      fontWeight: "600",
-                                    }}
-                                  >
-                                    Descrição:
-                                  </span>
-                                </div>
-                                <div
-                                  style={{
-                                    backgroundColor: "white",
-                                    padding: "0.75rem",
-                                    borderRadius: "4px",
-                                    border: "1px solid #e5e7eb",
-                                    fontSize: "0.85rem",
-                                    color: "#374151",
-                                    lineHeight: "1.5",
-                                    maxHeight: "150px",
-                                    overflowY: "auto",
-                                  }}
-                                  dangerouslySetInnerHTML={{
-                                    __html:
-                                      eventFull.homeworkDetails.description,
-                                  }}
-                                />
+                                  {description}
+                                </p>
                               </div>
                             )}
-                            {eventFull.homeworkDetails.attachments && (
-                              <div style={{ marginTop: "0.5rem" }}>
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "0.5rem",
-                                    marginBottom: "0.5rem",
-                                  }}
-                                >
-                                  <i
-                                    className="fa fa-paperclip"
-                                    style={{
-                                      color: "#6b7280",
-                                      fontSize: "0.8rem",
-                                    }}
-                                  />
-                                  <span
-                                    style={{
-                                      fontSize: "0.8rem",
-                                      color: "#6b7280",
-                                      fontWeight: "600",
-                                    }}
-                                  >
-                                    Material Anexo:
-                                  </span>
-                                </div>
+                            {theLesson && theLesson.course && theLesson.id && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  marginTop: "0.75rem",
+                                }}
+                              >
                                 <a
-                                  href={eventFull.homeworkDetails.attachments}
                                   target="_blank"
-                                  rel="noopener noreferrer"
+                                  href={`/teaching-materials/${theLesson.course
+                                    .toLowerCase()
+                                    .replace(/\s+/g, "-")
+                                    .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
                                   style={{
-                                    display: "inline-flex",
+                                    gap: "5px",
+                                    display: "flex",
+                                    flexDirection: "column",
                                     alignItems: "center",
-                                    gap: "0.5rem",
-                                    color: "#0ea5e9",
+                                    justifyContent: "center",
+                                    color: partnerColor(),
                                     textDecoration: "none",
-                                    fontSize: "0.8rem",
-                                    fontWeight: "500",
-                                    padding: "0.5rem 0.75rem",
-                                    backgroundColor: "white",
-                                    border: "1px solid #0ea5e920",
+
+                                    padding: "10px",
                                     borderRadius: "4px",
-                                    transition: "all 0.2s ease",
+                                    backgroundColor: textpartnerColorContrast(),
                                   }}
-                                  onMouseEnter={(e) => {
-                                    e.target.style.backgroundColor = "#f0f9ff";
-                                    e.target.style.borderColor = "#0ea5e940";
-                                  }}
-                                  onMouseLeave={(e) => {
-                                    e.target.style.backgroundColor = "white";
-                                    e.target.style.borderColor = "#0ea5e920";
-                                  }}
+                                  onMouseOver={(e) =>
+                                    (e.currentTarget.style.textDecoration =
+                                      "underline")
+                                  }
+                                  onMouseOut={(e) =>
+                                    (e.currentTarget.style.textDecoration =
+                                      "none")
+                                  }
                                 >
-                                  <i className="fa fa-download" />
-                                  Baixar Material
+                                  <span>Aula relacionada</span>
+                                  <span>
+                                    <strong>
+                                      {theLesson.title} | {theLesson.course}
+                                    </strong>
+                                  </span>
                                 </a>
                               </div>
                             )}
                           </div>
-                        </div>
-                      )}
-                      {fileName && (
-                        <div
-                          style={{
-                            backgroundColor: "white",
-                            padding: "0.75rem",
-                            borderRadius: "4px",
-                            border: "1px solid #e9ecef",
-                            marginTop: "0.5rem",
-                          }}
-                        >
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "0.5rem",
-                              marginBottom: "0.5rem",
-                            }}
-                          >
-                            <span
+
+                          {lastFew.length > 0 &&
+                            category !== "Test Class" &&
+                            category !== "Standalone" &&
+                            category !== "Group Class" &&
+                            category !== "Established Group Class" &&
+                            category !== "Marcar Reposição" && (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  margin: "1rem",
+                                  marginTop: "2rem",
+                                  justifySelf: "center",
+                                  flexDirection: "column",
+                                  textAlign: "center",
+                                  display: "block",
+                                  width: "90%",
+                                }}
+                              >
+                                {!showLastFew && (
+                                  <span
+                                    style={{
+                                      fontSize: "0.75rem",
+                                      color: "#6c757d",
+                                      margin: " 10px 0",
+                                      fontWeight: "500",
+                                      cursor: "pointer",
+                                      display: "block",
+                                      width: "100%",
+                                      borderRadius: "4px",
+                                      fontWeight: 600,
+                                      padding: "8px",
+                                      border: `1px solid ${partnerColor()}`,
+                                      backgroundColor: "transparent",
+                                      boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                                      transition:
+                                        "background-color 120ms ease, box-shadow 120ms ease",
+                                    }}
+                                    onMouseOver={(e) =>
+                                      (e.currentTarget.style.backgroundColor =
+                                        "#fff")
+                                    }
+                                    onMouseOut={(e) =>
+                                      (e.currentTarget.style.backgroundColor =
+                                        "transparent")
+                                    }
+                                    onClick={() => setShowLastFew(!showLastFew)}
+                                  >
+                                    Histórico de aulas dadas
+                                  </span>
+                                )}
+                                {showLastFew && (
+                                  <ul
+                                    style={{
+                                      padding: 0,
+                                      margin: "8px 0",
+                                      listStyle: "none",
+                                    }}
+                                  >
+                                    {lastFew.map((evt, idx) => (
+                                      <li
+                                        key={evt._id || evt.id}
+                                        style={{
+                                          backgroundColor: "#fff",
+                                          border: "1px solid #e5e7eb",
+                                          borderLeft: `3px solid ${
+                                            partnerColor?.() || "#829ad1"
+                                          }`,
+                                          borderRadius: "4px",
+                                          padding: "8px 12px",
+                                          marginTop: "8px",
+                                          marginBottom: "8px",
+                                          fontSize: "12px",
+                                          display: "grid",
+                                          gridTemplateColumns: "1fr",
+                                          gap: "6px",
+                                          alignItems: "start",
+                                          textAlign: "left",
+                                          transition:
+                                            "box-shadow 120ms ease, border-color 120ms ease",
+                                        }}
+                                        onMouseEnter={(e) =>
+                                          (e.currentTarget.style.boxShadow =
+                                            "0 2px 6px rgba(0,0,0,0.08)")
+                                        }
+                                        onMouseLeave={(e) =>
+                                          (e.currentTarget.style.boxShadow =
+                                            "0 1px 2px rgba(0,0,0,0.04)")
+                                        }
+                                      >
+                                        {idx == 0 && (
+                                          <span
+                                            style={{
+                                              cursor: "pointer",
+                                              display: "flex",
+                                              flexDirection: "row-reverse",
+                                              marginBottom: "8px",
+                                              fontWeight: "600",
+                                              fontSize: "14px",
+                                            }}
+                                            onMouseOver={(e) =>
+                                              (e.currentTarget.style.color =
+                                                partnerColor())
+                                            }
+                                            onMouseDown={(e) =>
+                                              (e.currentTarget.style.color =
+                                                "black")
+                                            }
+                                            onClick={() =>
+                                              setShowLastFew(false)
+                                            }
+                                          >
+                                            x
+                                          </span>
+                                        )}
+                                        <span
+                                          style={{
+                                            fontWeight: 600,
+                                            alignSelf: "start",
+                                            display: "inline-block",
+                                            justifyContent: "space-between",
+                                            padding: "2px 6px",
+                                            display: "flex",
+                                            borderRadius: "4px",
+                                            backgroundColor: "#f3f4f6",
+                                            color: "#111827",
+                                            border: "1px solid #e5e7eb",
+                                          }}
+                                        >
+                                          <span>
+                                            {formatDateBr(evt.date) ||
+                                              "Sem data"}
+                                          </span>
+                                        </span>
+                                        <span
+                                          style={{
+                                            opacity: 0.95,
+                                            lineHeight: 1.5,
+                                            color: "#374151",
+                                          }}
+                                        >
+                                          {evt.description || "Sem descrição"}
+                                        </span>
+
+                                        <span
+                                          style={{
+                                            display: "block",
+                                            opacity: 0.95,
+                                            color: "#374151",
+                                          }}
+                                        >
+                                          <strong style={{ fontWeight: 600 }}>
+                                            Homework:
+                                          </strong>
+                                          <div
+                                            style={{
+                                              marginTop: "6px",
+                                              backgroundColor: "#ffffff",
+                                              padding: "0.75rem",
+                                              borderRadius: "4px",
+                                              border: "1px solid #e5e7eb",
+                                              fontSize: "0.85rem",
+                                              color: "#374151",
+                                              lineHeight: 1.5,
+                                              maxHeight: "150px",
+                                              overflowY: "auto",
+                                              whiteSpace: "pre-wrap",
+                                            }}
+                                            dangerouslySetInnerHTML={{
+                                              __html: evt.homework,
+                                            }}
+                                          />
+                                        </span>
+
+                                        {theLessonLast &&
+                                          theLessonLast.course &&
+                                          theLessonLast.id && (
+                                            <div
+                                              style={{
+                                                display: "flex",
+                                                justifyContent: "flex-start",
+                                                marginTop: "4px",
+                                              }}
+                                            >
+                                              <a
+                                                target="_blank"
+                                                href={`/teaching-materials/${theLessonLast.course
+                                                  .toLowerCase()
+                                                  .replace(/\s+/g, "-")
+                                                  .replace(/[^\w\-]+/g, "")}/${
+                                                  theLessonLast.id
+                                                }`}
+                                                style={{
+                                                  display: "inline-flex",
+                                                  alignItems: "center",
+                                                  justifyContent: "center",
+                                                  gap: "6px",
+                                                  color: partnerColor(),
+                                                  textDecoration: "none",
+                                                  padding: "8px 10px",
+                                                  borderRadius: "4px",
+                                                  border: `1px solid ${
+                                                    partnerColor?.() ||
+                                                    "#829ad1"
+                                                  }`,
+                                                  backgroundColor:
+                                                    textpartnerColorContrast(),
+                                                  transition:
+                                                    "box-shadow 120ms ease, text-decoration-color 120ms ease",
+                                                }}
+                                                onMouseOver={(e) =>
+                                                  (e.currentTarget.style.textDecoration =
+                                                    "underline")
+                                                }
+                                                onMouseOut={(e) =>
+                                                  (e.currentTarget.style.textDecoration =
+                                                    "none")
+                                                }
+                                              >
+                                                <span
+                                                  style={{ fontWeight: 500 }}
+                                                >
+                                                  Aula relacionada
+                                                </span>
+                                                <span>
+                                                  <strong>
+                                                    {theLessonLast.title} |{" "}
+                                                    {theLessonLast.course}
+                                                  </strong>
+                                                </span>
+                                              </a>
+                                            </div>
+                                          )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                )}
+                              </div>
+                            )}
+
+                          {duration && (
+                            <div
                               style={{
-                                fontWeight: "600",
-                                color: "#6c757d",
-                                fontSize: "0.8rem",
+                                marginTop: "0.5rem",
+                                padding: "0.5rem 0.75rem",
+                                borderRadius: "4px",
+                                border: "1px solid #e9ecef",
                                 display: "flex",
                                 alignItems: "center",
-                                gap: "0.25rem",
+                                gap: "0.5rem",
                               }}
                             >
-                              📎 Arquivo Anexado
-                            </span>
-                          </div>
+                              <span
+                                style={{
+                                  fontSize: "0.9rem",
+                                  opacity: 0.7,
+                                }}
+                              >
+                                ⏱️
+                              </span>
+                              <span
+                                style={{
+                                  fontSize: "0.85rem",
+                                  color: "#6c757d",
+                                  fontWeight: "500",
+                                }}
+                              >
+                                Duração:
+                                {duration < 60
+                                  ? `${duration} min`
+                                  : duration === 60
+                                  ? "1h"
+                                  : duration % 60 === 0
+                                  ? `${Math.floor(duration / 60)}h`
+                                  : `${Math.floor(duration / 60)}h ${
+                                      duration % 60
+                                    }min`}
+                              </span>
+                            </div>
+                          )}
+
+                          {/* Informações do Evento */}
                           <div
                             style={{
-                              padding: "1rem",
+                              backgroundColor: "white",
+                              padding: "0.75rem",
                               borderRadius: "4px",
-                              border: "1px solid #dee2e6",
-                              lineHeight: "1.6",
-                              fontSize: "0.9rem",
-                              color: "#495057",
-                              cursor: base64String ? "pointer" : "default",
-                            }}
-                            onClick={() => {
-                              if (base64String) {
-                                const link = document.createElement("a");
-                                link.href = `data:${fileType};base64,${base64String}`;
-                                link.download = fileName;
-                                link.click();
-                              }
+                              border: "1px solid #e9ecef",
                             }}
                           >
-                            {fileName}
-
-                            {base64String && "👆 Clique para baixar"}
-                          </div>
-                        </div>
-                      )}
-                    </span>
-                  )}
-                </div>
-              )}
-            </div>
-            {category == "Marcar Reposição" && (
-              <div
-                style={{
-                  backgroundColor: "#fff3cd",
-                  padding: "1.2rem",
-                  borderRadius: "4px",
-                  border: "1px solid #ffeaa7",
-                }}
-              >
-                <div style={{ display: !seeReplenish ? "block" : "none" }}>
-                  <button
-                    onClick={() => setSeeReplenish(true)}
-                    style={{
-                      width: "100%",
-                      padding: "5px",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {UniversalTexts.calendarModal.reserveTimeForReplacement}
-                  </button>
-                </div>
-                <div
-                  style={{
-                    display: seeReplenish ? "block" : "none",
-                    backgroundColor: "#6c757d",
-                    color: "white",
-                    padding: "1.2rem",
-                    borderRadius: "4px",
-                    textAlign: "center",
-                  }}
-                >
-                  <p
-                    style={{
-                      margin: "0 0 1rem 0",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {UniversalTexts.calendarModal.replaceClassConfirmation}
-                  </p>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      justifyContent: "center",
-                      marginTop: "1rem",
-                    }}
-                  >
-                    <button
-                      onClick={() => setSeeReplenish(false)}
-                      color="red"
-                      style={{
-                        padding: "5px 1rem",
-                        fontWeight: "500",
-                      }}
-                    >
-                      ❌ Não
-                    </button>
-                    <button
-                      onClick={handleScheduleReplenish}
-                      color="green"
-                      style={{
-                        padding: "5px 1rem",
-                        fontWeight: "500",
-                      }}
-                    >
-                      ✅ Sim
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          {/*Modal de nossos/edição de eventos particulares */}
-          {/*Modal de nossos/edição de eventos particulares */}
-          <>
-            <div
-              style={{
-                width: "10000px",
-                height: "10000px",
-                top: "0",
-                left: "0",
-                position: "fixed",
-                zIndex: 99,
-                display: isModalOfTutoringsVisible ? "block" : "none",
-                padding: "0.5rem",
-              }}
-              onClick={handleCloseModalOfTutorings}
-            />
-            <div
-              className="modal box-shadow-white"
-              style={{
-                position: "fixed",
-                display: isModalOfTutoringsVisible ? "block" : "none",
-                zIndex: 100,
-                padding: "1rem",
-                width: window.innerWidth <= 768 ? "90vw" : "28rem",
-                maxHeight: "80vh",
-                overflow: "auto",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                borderRadius: "4px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "1rem",
-                }}
-              >
-                <HTwo
-                  style={{
-                    margin: 0,
-                    color: partnerColor(),
-                  }}
-                >
-                  {UniversalTexts.editTurorings}
-                </HTwo>
-                <Xp
-                  onClick={handleCloseModalOfTutorings}
-                  style={{
-                    cursor: "pointer",
-                    color: "#998",
-                    transition: "color 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.target.style.color = partnerColor())}
-                  onMouseLeave={(e) => (e.target.style.color = "#998")}
-                >
-                  ✕
-                </Xp>
-              </div>
-              {loadingModalTutoringsInfo ? (
-                <div style={{ textAlign: "center", padding: "2rem" }}>
-                  <CircularProgress style={{ color: partnerColor() }} />
-                </div>
-              ) : (
-                <div style={{ marginBottom: "1rem" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div
-                      style={{
-                        borderRadius: "1rem 1rem 0 0",
-                        padding: "10px",
-                      }}
-                    >
-                      <button
-                        style={{
-                          backgroundColor: showStudentsRecurring
-                            ? partnerColor()
-                            : "grey",
-                          color: "white",
-                          padding: "5px 1rem",
-                          borderRadius: "4px",
-                          border: "none",
-                          cursor: "pointer",
-                          marginBottom: "1rem",
-                        }}
-                        onClick={() => {
-                          setShowStudentsRecurring(true);
-                          setShowGroupsRecurring(false);
-                        }}
-                      >
-                        Selecionar Aluno
-                      </button>
-                    </div>
-                    <div
-                      style={{
-                        borderRadius: "1rem 1rem 0 0",
-                        padding: "10px",
-                      }}
-                    >
-                      <button
-                        style={{
-                          color: "white",
-                          padding: "5px 1rem",
-                          borderRadius: "4px",
-                          border: "none",
-                          cursor: "pointer",
-                          marginBottom: "1rem",
-                        }}
-                        onClick={() => {
-                          setShowStudentsRecurring(false);
-                          setShowGroupsRecurring(true);
-                        }}
-                      >
-                        Selecionar Grupo
-                      </button>
-                    </div>
-                  </div>
-                  {showStudentsRecurring && (
-                    <div
-                      style={{
-                        borderRadius: " 0 0 1rem 1rem",
-                        padding: "10px",
-                      }}
-                    >
-                      {/*Seleção do aluno para aulas recorrentes*/}
-                      <select
-                        onChange={(e) => {
-                          fetchOneSetOfTutoringsInside(e);
-                        }}
-                        value={newStudentId}
-                        style={{
-                          width: "100%",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #ced4da",
-                          fontSize: "0.9rem",
-                          backgroundColor: "white",
-                        }}
-                      >
-                        <option value="category" hidden>
-                          Select student
-                        </option>
-                        {studentsList.map((student, index) => {
-                          return (
-                            <option key={index} value={student.id}>
-                              {student.name + " " + student.lastname}
-                            </option>
-                          );
-                        })}
-                      </select>
-                    </div>
-                  )}
-                  {showGroupsRecurring && (
-                    <>
-                      {/*Seleção do grupo para aulas recorrentes*/}
-                      <div
-                        style={{
-                          borderRadius: " 0 0 1rem 1rem",
-                          padding: "10px",
-                        }}
-                      >
-                        <select
-                          value={newGroupId}
-                          onChange={(e) => {
-                            fetchOneSetOfGroupClassesInside(e);
-                          }}
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                            fontSize: "0.9rem",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="" hidden>
-                            Selecione o grupo...
-                          </option>
-                          {groupsList.map((group, index) => (
-                            <option key={index} value={group._id}>
-                              {group.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-              {loadingTutoringDays ? (
-                <div style={{ textAlign: "center", padding: "2rem" }}>
-                  <CircularProgress style={{ color: partnerColor() }} />
-                </div>
-              ) : (
-                <div style={{ marginBottom: "1rem" }}>
-                  {showClasses &&
-                    tutoringsListOfOneStudentOrGroup.length > 0 && (
-                      <div>
-                        <h4
-                          style={{
-                            color: partnerColor(),
-                            marginBottom: "1rem",
-                          }}
-                        >
-                          {UniversalTexts.calendarModal.currentClasses}
-                        </h4>
-                        <div style={{ display: "grid", gap: "5px" }}>
-                          {tutoringsListOfOneStudentOrGroup
-                            .sort(
-                              (a, b) =>
-                                moment(a.day, "dddd").day() -
-                                moment(b.day, "dddd").day()
-                            )
-                            .map((item, index) => {
-                              const isExpiring =
-                                isTutoringExpiringWithinMonth(item);
-                              const daysLeft = getDaysUntilExpiration(item);
-
-                              return (
-                                <div
-                                  key={index}
-                                  style={{
-                                    backgroundColor: isExpiring
-                                      ? "#ffebee"
-                                      : "#f8f9fa",
-                                    padding: "0.5rem",
-                                    borderRadius: "4px",
-                                    border: isExpiring
-                                      ? "2px solid #f44336"
-                                      : "1px solid #dee2e6",
-                                    boxShadow: isExpiring
-                                      ? "0 2px 8px rgba(244, 67, 54, 0.2)"
-                                      : "none",
-                                  }}
-                                >
-                                  {isExpiring && (
-                                    <div
-                                      style={{
-                                        backgroundColor: "#f44336",
-                                        color: "white",
-                                        padding: "4px 8px",
-                                        borderRadius: "4px",
-                                        fontSize: "11px",
-                                        fontWeight: "600",
-                                        marginBottom: "8px",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        gap: "4px",
-                                      }}
-                                    >
-                                      ⚠️
-                                      {daysLeft > 0
-                                        ? `${
-                                            UniversalTexts.endsIn
-                                          } ${daysLeft} dia${
-                                            daysLeft > 1 ? "s" : ""
-                                          } (${new Date(
-                                            item.endDate
-                                          ).toLocaleDateString("pt-BR")})`
-                                        : `${UniversalTexts.expired} ${new Date(
-                                            item.endDate
-                                          ).toLocaleDateString("pt-BR")}`}
-                                      {UniversalTexts.tutoringExpiring}
-                                    </div>
-                                  )}
-
+                            {/* Container flex para Informações + Vídeo */}
+                            {video ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "1rem",
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                {/* Coluna das Informações */}
+                                <div style={{ flex: "1", minWidth: "250px" }}>
+                                  {/* Categoria */}
                                   <div
                                     style={{
                                       display: "flex",
-                                      justifyContent: "space-between",
                                       alignItems: "center",
+                                      justifyContent: "space-between",
+                                      marginBottom: "0.5rem",
                                       flexWrap: "wrap",
-                                      gap: "5px",
+                                      gap: "0.5rem",
                                     }}
                                   >
-                                    <div>
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#6c757d",
+                                        fontSize: "0.8rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                    >
+                                      📋 {UniversalTexts.calendarModal.category}
+                                    </span>
+                                    <span
+                                      style={{
+                                        backgroundColor: partnerColor(),
+                                        color: "white",
+                                        padding: "0.2rem 0.75rem",
+                                        borderRadius: "4px",
+                                        fontWeight: "500",
+                                        fontSize: "0.75rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      {category === "Test"
+                                        ? "Test Class"
+                                        : category === "Standalone"
+                                        ? "Standalone Class"
+                                        : category === "Group Class"
+                                        ? "Group Class"
+                                        : category === "Rep"
+                                        ? "Marcar Reposição"
+                                        : category === "Marcar Reposição"
+                                        ? "Janela de Marcar Reposição"
+                                        : category === "Prize Class"
+                                        ? "Prize Class"
+                                        : category === "Tutoring"
+                                        ? "Tutoring: Private Class"
+                                        : ""}
+                                    </span>
+                                  </div>
+
+                                  {/* Data e Hora */}
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "space-between",
+                                      gap: "0.5rem",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                      }}
+                                    >
                                       <span
                                         style={{
                                           fontWeight: "600",
-                                          color: "#495057",
-                                        }}
-                                      >
-                                        {UniversalTexts.Class} #{index + 1}
-                                      </span>
-                                      <div
-                                        style={{
                                           color: "#6c757d",
-                                          marginTop: "2px",
+                                          fontSize: "0.8rem",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: "0.25rem",
                                         }}
                                       >
-                                        {item.day} - {item.time}
-                                        <Link
-                                          target="_blank"
-                                          to={item.link}
-                                          style={{
-                                            color: partnerColor(),
-                                            textDecoration: "none",
-                                            marginLeft: "5px",
-                                          }}
-                                        >
-                                          {UniversalTexts.accessClass}
-                                        </Link>
-                                        {item.endDate && (
-                                          <span
-                                            style={{
-                                              marginLeft: "5px",
-                                              color: "#6c757d",
-                                            }}
-                                          >
-                                            (Ends on:
-                                            {moment(item.endDate).format(
-                                              "DD/MM/YYYY"
-                                            )}
-                                            )
-                                          </span>
-                                        )}
-                                      </div>
+                                        📅 {newFormatDate(date)}
+                                      </span>
                                     </div>
                                     <div
-                                      style={{ display: "flex", gap: "5px" }}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                      }}
                                     >
-                                      <button
-                                        onClick={() => {
-                                          seeEditOneTutoring(item);
-                                        }}
+                                      <span
                                         style={{
-                                          padding: "5px 1rem",
-                                          backgroundColor: partnerColor(),
-                                          color: "white",
-                                          border: "none",
-                                          borderRadius: "4px",
-                                          cursor: "pointer",
+                                          fontWeight: "600",
+                                          color: "#6c757d",
+                                          fontSize: "0.8rem",
+                                          display: "flex",
+                                          alignItems: "center",
+                                          gap: "0.25rem",
                                         }}
                                       >
-                                        Edit
-                                      </button>
-                                      <button
-                                        onClick={() => deleteTutoring(item)}
-                                        style={{
-                                          padding: "5px 1rem",
-                                          backgroundColor: "#dc3545",
-                                          color: "white",
-                                          border: "none",
-                                          borderRadius: "4px",
-                                          cursor: "pointer",
-                                        }}
-                                      >
-                                        Delete
-                                      </button>
+                                        ⏰ {theTime}
+                                      </span>
                                     </div>
                                   </div>
                                 </div>
-                              );
-                            })}
-                        </div>
-                      </div>
-                    )}
-                </div>
-              )}
-              <div
-                style={{
-                  display: seeEditTutoring ? "block" : "none",
-                  backgroundColor: "#fff3cd",
-                  padding: "1rem",
-                  borderRadius: "4px",
-                  border: "1px solid #ffeaa7",
-                  marginBottom: "1rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  <h4 style={{ margin: 0, color: "#856404" }}>
-                    {UniversalTexts.calendarModal.editClass}
-                  </h4>
-                  <button
-                    onClick={closeEditOneTutoring}
-                    style={{
-                      backgroundColor: "#dc3545",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      padding: "5px 1rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Cancel
-                  </button>
-                </div>
-                <div style={{ display: "grid", gap: "1rem" }}>
-                  <select
-                    onChange={handleWeekDayChange}
-                    value={weekDay}
-                    style={{
-                      padding: "5px",
-                      borderRadius: "4px",
-                      border: "1px solid #ced4da",
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <option value="select week day" hidden>
-                      {UniversalTexts.calendarModal.selectWeekDay}
-                    </option>
-                    {weekDays.map((weekDay, index) => {
-                      return (
-                        <option key={index} value={weekDay}>
-                          {weekDay}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <select
-                    onChange={handleTimeChange}
-                    value={timeOfTutoring}
-                    style={{
-                      padding: "5px",
-                      borderRadius: "4px",
-                      border: "1px solid #ced4da",
-                      backgroundColor: "white",
-                    }}
-                  >
-                    <option value="select time" hidden>
-                      {UniversalTexts.calendarModal.selectTime}
-                    </option>
-                    {times.map((time, index) => {
-                      return (
-                        <option key={index} value={time}>
-                          {time}
-                        </option>
-                      );
-                    })}
-                  </select>
-                  <input
-                    value={link}
-                    onChange={(e) => {
-                      setLink(e.target.value);
-                    }}
-                    placeholder={UniversalTexts.calendarModal.meetingLink}
-                    type="text"
-                    style={{
-                      padding: "5px",
-                      borderRadius: "4px",
-                      border: "1px solid #ced4da",
-                    }}
-                    required
-                  />
-                  <input
-                    value={duration}
-                    onChange={(e) => {
-                      const value = e.target.value;
-                      if (
-                        value === "" ||
-                        (value.length <= 3 &&
-                          Number(value) >= 0 &&
-                          Number(value) <= 300)
-                      ) {
-                        setDuration(value);
-                      }
-                    }}
-                    placeholder={UniversalTexts.duration}
-                    type="number"
-                    min="1"
-                    max="300"
-                    style={{
-                      padding: "5px",
-                      borderRadius: "4px",
-                      border: "1px solid #ced4da",
-                      maxWidth: "80px",
-                      textAlign: "center",
-                    }}
-                    required
-                  />
-                  <button
-                    onClick={updateOneTutoring}
-                    style={{
-                      padding: "5px 1rem",
-                      backgroundColor: "#28a745",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontWeight: "500",
-                    }}
-                  >
-                    {UniversalTexts.calendarModal.saveChanges}
-                  </button>
-                </div>
-              </div>
-              {(newStudentId !== "" || newGroupId !== "") && (
-                <button
-                  onClick={() => setShowSeeEditTutoring(!showSeeEditTutoring)}
-                  style={{
-                    padding: "8px 1rem",
-                    marginBottom: "5px",
-                    borderRadius: "4px",
-                    backgroundColor: !showSeeEditTutoring
-                      ? "#f0f9f0"
-                      : "#fdf2f2",
-                    border: !showSeeEditTutoring
-                      ? "1px solid #d4e6d4"
-                      : "1px solid #f5c6c6",
-                    color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
-                    cursor: "pointer",
-                    fontWeight: "500",
-                    transition: "all 0.2s ease",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = !showSeeEditTutoring
-                      ? "#e8f5e8"
-                      : "#fce8e8";
-                    e.target.style.transform = "translateY(-1px)";
-                    e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = !showSeeEditTutoring
-                      ? "#f0f9f0"
-                      : "#fdf2f2";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
-                  }}
-                >
-                  {showSeeEditTutoring
-                    ? UniversalTexts.hideShowClasses
-                    : UniversalTexts.showShowClasses}
-                </button>
-              )}
-              {(newStudentId !== "" || newGroupId !== "") &&
-                showSeeEditTutoring && (
-                  <div style={{ display: !seeEditTutoring ? "block" : "none" }}>
-                    <div
-                      style={{
-                        padding: "1rem",
-                        borderRadius: "4px",
-                        backgroundColor: "#d4edda",
-                        border: "1px solid #c3e6cb",
-                      }}
-                    >
-                      <h4 style={{ margin: "0 0 1rem 0", color: "#155724" }}>
-                        {UniversalTexts.calendarModal.addNewClass}
-                      </h4>
-                      <div style={{ display: "grid", gap: "1rem" }}>
-                        <select
-                          onChange={handleTheNewWeekDayChange}
-                          value={theNewWeekDay}
-                          style={{
-                            padding: "5px",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option hidden value="select week day">
-                            {UniversalTexts.calendarModal.selectWeekDayOption}
-                          </option>
-                          {weekDays.map((weekDay, index) => {
-                            return (
-                              <option key={index} value={weekDay}>
-                                {weekDay}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <select
-                          onChange={handleTheNewTimeChange}
-                          value={theNewTimeOfTutoring}
-                          style={{
-                            padding: "5px",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option hidden value="Select Time">
-                            {UniversalTexts.calendarModal.selectTimeOption}
-                          </option>
-                          {times.map((time, index) => {
-                            return (
-                              <option key={index} value={time}>
-                                {time}
-                              </option>
-                            );
-                          })}
-                        </select>
-                        <input
-                          placeholder={UniversalTexts.calendarModal.meetingLink}
-                          value={theNewLink}
-                          onChange={(e) => {
-                            setTheNewLink(e.target.value);
-                          }}
-                          type="text"
-                          style={{
-                            padding: "5px",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                          }}
-                          required
-                        />
-                        <div>
-                          <p
-                            style={{
-                              display: "block",
-                              marginBottom: "5px",
-                              fontSize: "12px",
-                              color: "#6c757d",
-                              fontWeight: "500",
-                              margin: "0 0 5px 0",
-                            }}
-                          >
-                            {UniversalTexts.repeatFor}:
-                          </p>
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "4px",
-                              marginBottom: "8px",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            {[
-                              { label: "1m", weeks: 4, tooltip: "1 mês" },
-                              { label: "3m", weeks: 12, tooltip: "3 meses" },
-                              { label: "6m", weeks: 24, tooltip: "6 meses" },
-                              { label: "1a", weeks: 52, tooltip: "1 ano" },
-                              { label: "2a", weeks: 104, tooltip: "2 anos" },
-                            ].map(({ label, weeks, tooltip }) => (
-                              <button
-                                key={label}
-                                title={tooltip}
-                                style={{
-                                  backgroundColor:
-                                    numberOfWeeks == weeks
-                                      ? "#e3f2fd"
-                                      : "#f8f9fa",
-                                  border:
-                                    numberOfWeeks == weeks
-                                      ? "1px solid #2196f3"
-                                      : "1px solid #e0e0e0",
-                                  cursor: "pointer",
-                                  padding: "2px 6px",
-                                  borderRadius: "4px",
-                                  fontSize: "10px",
-                                  fontWeight: "500",
-                                  color:
-                                    numberOfWeeks == weeks
-                                      ? "#1976d2"
-                                      : "#6c757d",
-                                  transition: "all 0.2s ease",
-                                  minWidth: "24px",
-                                  height: "20px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                                onClick={() => setNumberOfWeeks(weeks)}
-                                onMouseEnter={(e) => {
-                                  if (numberOfWeeks != weeks) {
-                                    e.target.style.backgroundColor = "#f0f0f0";
-                                    e.target.style.borderColor = "#bdbdbd";
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (numberOfWeeks != weeks) {
-                                    e.target.style.backgroundColor = "#f8f9fa";
-                                    e.target.style.borderColor = "#e0e0e0";
-                                  }
-                                }}
-                              >
-                                {label}
-                              </button>
-                            ))}
-
-                            <input
-                              placeholder="Ex: 8"
-                              value={numberOfWeeks}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (
-                                  value === "" ||
-                                  (value.length <= 2 &&
-                                    Number(value) >= 0 &&
-                                    Number(value) <= 99)
-                                ) {
-                                  setNumberOfWeeks(value);
-                                }
-                              }}
-                              type="number"
-                              min="1"
-                              max="99"
-                              style={{
-                                padding: "6px",
-                                maxWidth: "60px",
-                                borderRadius: "4px",
-                                border: "1px solid #ced4da",
-                                fontSize: "12px",
-                                textAlign: "center",
-                              }}
-                              required
-                            />
-
-                            <p
-                              style={{
-                                display: "block",
-                                marginBottom: "5px",
-                                fontSize: "12px",
-                                color: "#6c757d",
-                                fontWeight: "500",
-                                margin: "0 0 5px 0",
-                              }}
-                            >
-                              {UniversalTexts.duration}:
-                            </p>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              gap: "4px",
-                              marginBottom: "8px",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            {[
-                              {
-                                label: "30min",
-                                minutes: 30,
-                                tooltip: "30 minutos",
-                              },
-                              {
-                                label: "45min",
-                                minutes: 45,
-                                tooltip: "45 minutos",
-                              },
-                              { label: "1h", minutes: 60, tooltip: "1 hora" },
-                              {
-                                label: "1h30min",
-                                minutes: 90,
-                                tooltip: "1 hora e 30 minutos",
-                              },
-                              { label: "2h", minutes: 120, tooltip: "2 horas" },
-                            ].map(({ label, minutes, tooltip }) => (
-                              <button
-                                key={label}
-                                title={tooltip}
-                                style={{
-                                  backgroundColor:
-                                    duration == minutes ? "#e3f2fd" : "#f8f9fa",
-                                  border:
-                                    duration == minutes
-                                      ? "1px solid #2196f3"
-                                      : "1px solid #e0e0e0",
-                                  cursor: "pointer",
-                                  padding: "2px 6px",
-                                  borderRadius: "4px",
-                                  fontSize: "10px",
-                                  fontWeight: "500",
-                                  color:
-                                    duration == minutes ? "#1976d2" : "#6c757d",
-                                  transition: "all 0.2s ease",
-                                  minWidth: "24px",
-                                  height: "20px",
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                }}
-                                onClick={() => setDuration(minutes)}
-                                onMouseEnter={(e) => {
-                                  if (duration != minutes) {
-                                    e.target.style.backgroundColor = "#f0f0f0";
-                                    e.target.style.borderColor = "#bdbdbd";
-                                  }
-                                }}
-                                onMouseLeave={(e) => {
-                                  if (duration != minutes) {
-                                    e.target.style.backgroundColor = "#f8f9fa";
-                                    e.target.style.borderColor = "#e0e0e0";
-                                  }
-                                }}
-                              >
-                                {label}
-                              </button>
-                            ))}
-
-                            <input
-                              placeholder="Ex: 55"
-                              value={duration}
-                              onChange={(e) => {
-                                const value = e.target.value;
-                                if (
-                                  value === "" ||
-                                  (value.length <= 3 &&
-                                    Number(value) >= 0 &&
-                                    Number(value) <= 300)
-                                ) {
-                                  setDuration(value);
-                                }
-                              }}
-                              type="number"
-                              min="1"
-                              max="300"
-                              style={{
-                                padding: "6px",
-                                maxWidth: "60px",
-                                borderRadius: "4px",
-                                border: "1px solid #ced4da",
-                                fontSize: "12px",
-                                textAlign: "center",
-                              }}
-                              required
-                            />
-                          </div>
-                          <div
-                            style={{
-                              marginTop: "8px",
-                              padding: "6px 8px",
-
-                              border: "1px solid #e9ecef",
-                              borderRadius: "4px",
-                              fontSize: "11px",
-                              color: "#6c757d",
-                              lineHeight: "1.3",
-                            }}
-                          >
-                            {numberOfWeeks && numberOfWeeks > 0 ? (
-                              <div>
-                                {(() => {
-                                  const today = new Date();
-                                  const nextWeekDay = new Date(today);
-                                  const dayOfWeek = today.getDay();
-                                  const daysUntilMonday =
-                                    dayOfWeek === 0 ? 1 : (8 - dayOfWeek) % 7;
-                                  nextWeekDay.setDate(
-                                    today.getDate() + daysUntilMonday
-                                  );
-                                  const endDate = new Date(nextWeekDay);
-                                  endDate.setDate(
-                                    nextWeekDay.getDate() +
-                                      numberOfWeeks * 7 -
-                                      1
-                                  );
-
-                                  const formatDate = (date) => {
-                                    return date.toLocaleDateString("pt-BR", {
-                                      day: "2-digit",
-                                      month: "2-digit",
-                                      year: "numeric",
-                                    });
-                                  };
-
-                                  return `${formatDate(
-                                    nextWeekDay
-                                  )} até ${formatDate(
-                                    endDate
-                                  )} (${numberOfWeeks} semana${
-                                    numberOfWeeks > 1 ? "s" : ""
-                                  })`;
-                                })()}
+                                <div
+                                  style={{
+                                    flex: "1",
+                                    minWidth: "300px",
+                                    maxWidth: "400px",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      marginBottom: "0.5rem",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#6c757d",
+                                        fontSize: "0.8rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                    >
+                                      🎥 {UniversalTexts.calendarModal.video}
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      padding: "0.5rem",
+                                      borderRadius: "4px",
+                                      border: "1px solid #dee2e6",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        position: "relative",
+                                        paddingBottom: "56.25%",
+                                        height: 0,
+                                        overflow: "hidden",
+                                        borderRadius: "4px",
+                                        backgroundColor: "#000",
+                                      }}
+                                    >
+                                      <iframe
+                                        src={getEmbedUrl(video)}
+                                        style={{
+                                          position: "absolute",
+                                          top: 0,
+                                          left: 0,
+                                          width: "100%",
+                                          height: "100%",
+                                          border: "none",
+                                          borderRadius: "4px",
+                                        }}
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        title="Class Video"
+                                      />
+                                    </div>
+                                    <div
+                                      style={{
+                                        marginTop: "0.5rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      <a
+                                        href={video}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{
+                                          color: partnerColor(),
+                                          textDecoration: "none",
+                                          fontWeight: "500",
+                                          fontSize: "0.75rem",
+                                          display: "inline-flex",
+                                          alignItems: "center",
+                                          gap: "0.25rem",
+                                        }}
+                                        onMouseEnter={(e) => {
+                                          e.target.style.textDecoration =
+                                            "underline";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                          e.target.style.textDecoration =
+                                            "none";
+                                        }}
+                                      >
+                                        <i className="fa fa-external-link" />
+                                        {video.includes("youtube.com") ||
+                                        video.includes("youtu.be")
+                                          ? "YouTube"
+                                          : video.includes("vimeo.com")
+                                          ? "Vimeo"
+                                          : "Vídeo"}
+                                      </a>
+                                    </div>
+                                  </div>
+                                </div>
                               </div>
                             ) : (
                               <div>
-                                {
-                                  UniversalTexts.calendarModal
-                                    .selectNumberOfWeeks
-                                }
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    marginBottom: "0.5rem",
+                                    flexWrap: "wrap",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#6c757d",
+                                      fontSize: "0.8rem",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    {UniversalTexts.calendarModal.category}
+                                  </span>
+                                  <span
+                                    style={{
+                                      backgroundColor: partnerColor(),
+                                      color: "white",
+                                      padding: "0.2rem 0.75rem",
+                                      borderRadius: "4px",
+                                      fontWeight: "500",
+                                      fontSize: "0.75rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    {category === "Test"
+                                      ? "Test Class"
+                                      : category === "Standalone"
+                                      ? "Standalone Class"
+                                      : category === "Group Class"
+                                      ? "Group Class"
+                                      : category === "Rep"
+                                      ? "Marcar Reposição"
+                                      : category === "Marcar Reposição"
+                                      ? "Janela de Marcar Reposição"
+                                      : category === "Prize Class"
+                                      ? "Prize Class"
+                                      : category === "Established Group Class"
+                                      ? `Aula do grupo: ${groupName}`
+                                      : category === "Tutoring"
+                                      ? "Tutoring: Private Class"
+                                      : ""}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#6c757d",
+                                        fontSize: "0.8rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                    >
+                                      {newFormatDate(date)}
+                                    </span>
+                                  </div>
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.5rem",
+                                    }}
+                                  >
+                                    <span
+                                      style={{
+                                        fontWeight: "600",
+                                        color: "#6c757d",
+                                        fontSize: "0.8rem",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.25rem",
+                                      }}
+                                    >
+                                      {theTime}
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             )}
                           </div>
-                        </div>
-                        {(() => {
-                          const isFormIncomplete =
-                            !theNewWeekDay ||
-                            !theNewTimeOfTutoring ||
-                            !theNewLink ||
-                            !numberOfWeeks ||
-                            numberOfWeeks <= 0 ||
-                            duration <= 0;
 
-                          return (
-                            <button
-                              onClick={newTutoring}
-                              disabled={isFormIncomplete}
+                          {eventFull.homeworkDetails && (
+                            <div
                               style={{
-                                padding: "5px 1rem",
-                                backgroundColor: isFormIncomplete
-                                  ? "#6c757d"
-                                  : partnerColor(),
-                                color: "white",
-                                border: "none",
+                                backgroundColor: "#f8fafc",
+                                padding: "1rem",
                                 borderRadius: "4px",
-                                cursor: isFormIncomplete
-                                  ? "not-allowed"
-                                  : "pointer",
-                                fontWeight: "500",
-                                opacity: isFormIncomplete ? 0.6 : 1,
-                                transition: "all 0.2s ease",
+                                border: "1px solid #e2e8f0",
+                                marginTop: "1rem",
                               }}
-                              title={
-                                isFormIncomplete
-                                  ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas"
-                                  : "Clique para criar a tutoria recorrente"
-                              }
                             >
-                              {UniversalTexts.calendarModal.addNewClass}
-                            </button>
-                          );
-                        })()}
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                  marginBottom: "1rem",
+                                  borderBottom: "1px solid #e2e8f0",
+                                  paddingBottom: "0.5rem",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "grid",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                    marginBottom: "0.5rem",
+                                  }}
+                                >
+                                  <span
+                                    style={{
+                                      fontWeight: "600",
+                                      color: "#6c757d",
+                                      fontSize: "0.8rem",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: "0.25rem",
+                                    }}
+                                  >
+                                    📝 {UniversalTexts.calendarModal.homework}
+                                  </span>
+                                </div>
+                                <span
+                                  style={{
+                                    fontSize: "0.75rem",
+                                    color: "#6b7280",
+                                    backgroundColor:
+                                      eventFull.homeworkDetails.status ===
+                                      "pending"
+                                        ? "#fef3c7"
+                                        : "#dcfce7",
+                                    padding: "2px 8px",
+                                    borderRadius: "4px",
+                                    fontWeight: "500",
+                                  }}
+                                >
+                                  {eventFull.homeworkDetails.status ===
+                                  "pending"
+                                    ? "Pendente"
+                                    : "Concluído"}
+                                </span>
+                              </div>
+                              <Link
+                                to="/my-homework-and-lessons"
+                                target="_blank"
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                  marginBottom: "1rem",
+                                  gap: "0.5rem",
+                                  backgroundColor: partnerColor(),
+                                  color: "white",
+                                  textDecoration: "none",
+                                  padding: "0.5rem 1rem",
+                                  borderRadius: "4px",
+                                  fontSize: "10px",
+                                }}
+                                onMouseEnter={(e) => {
+                                  e.target.style.transform = "translateY(-1px)";
+                                  e.target.style.boxShadow =
+                                    "0 4px 8px rgba(0, 0, 0, 0.15)";
+                                }}
+                                onMouseLeave={(e) => {
+                                  e.target.style.transform = "translateY(0px)";
+                                  e.target.style.boxShadow =
+                                    "0 2px 4px rgba(0, 0, 0, 0.1)";
+                                }}
+                              >
+                                <i className="fa fa-external-link" />
+                                {UniversalTexts.seeOnHomeworkPage}
+                              </Link>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  gap: "0.75rem",
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <i
+                                    className="fa fa-calendar"
+                                    style={{
+                                      color: "#6b7280",
+                                      fontSize: "0.8rem",
+                                    }}
+                                  />
+                                  <span
+                                    style={{
+                                      fontSize: "0.8rem",
+                                      color: "#6b7280",
+                                    }}
+                                  >
+                                    <strong>Data de Entrega:</strong>
+
+                                    {new Date(
+                                      eventFull.homeworkDetails.dueDate
+                                    ).toLocaleDateString("pt-BR")}
+                                  </span>
+                                </div>
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.5rem",
+                                  }}
+                                >
+                                  <i
+                                    className="fa fa-tag"
+                                    style={{
+                                      color: "#6b7280",
+                                      fontSize: "0.8rem",
+                                    }}
+                                  />
+                                  <span
+                                    style={{
+                                      fontSize: "0.8rem",
+                                      color: "#6b7280",
+                                    }}
+                                  >
+                                    <strong>Categoria:</strong>
+
+                                    {eventFull.homeworkDetails.category}
+                                  </span>
+                                </div>
+                                {eventFull.homeworkDetails.description && (
+                                  <div style={{ marginTop: "0.5rem" }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        marginBottom: "0.5rem",
+                                      }}
+                                    >
+                                      <i
+                                        className="fa fa-file-text-o"
+                                        style={{
+                                          color: "#6b7280",
+                                          fontSize: "0.8rem",
+                                        }}
+                                      />
+                                      <span
+                                        style={{
+                                          fontSize: "0.8rem",
+                                          color: "#6b7280",
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        Descrição:
+                                      </span>
+                                    </div>
+                                    <div
+                                      style={{
+                                        backgroundColor: "white",
+                                        padding: "0.75rem",
+                                        borderRadius: "4px",
+                                        border: "1px solid #e5e7eb",
+                                        fontSize: "0.85rem",
+                                        color: "#374151",
+                                        lineHeight: "1.5",
+                                        maxHeight: "150px",
+                                        overflowY: "auto",
+                                      }}
+                                      dangerouslySetInnerHTML={{
+                                        __html:
+                                          eventFull.homeworkDetails.description,
+                                      }}
+                                    />
+                                  </div>
+                                )}
+                                {eventFull.homeworkDetails.attachments && (
+                                  <div style={{ marginTop: "0.5rem" }}>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        marginBottom: "0.5rem",
+                                      }}
+                                    >
+                                      <i
+                                        className="fa fa-paperclip"
+                                        style={{
+                                          color: "#6b7280",
+                                          fontSize: "0.8rem",
+                                        }}
+                                      />
+                                      <span
+                                        style={{
+                                          fontSize: "0.8rem",
+                                          color: "#6b7280",
+                                          fontWeight: "600",
+                                        }}
+                                      >
+                                        Material Anexo:
+                                      </span>
+                                    </div>
+                                    <a
+                                      href={
+                                        eventFull.homeworkDetails.attachments
+                                      }
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "0.5rem",
+                                        color: "#0ea5e9",
+                                        textDecoration: "none",
+                                        fontSize: "0.8rem",
+                                        fontWeight: "500",
+                                        padding: "0.5rem 0.75rem",
+                                        backgroundColor: "white",
+                                        border: "1px solid #0ea5e920",
+                                        borderRadius: "4px",
+                                        transition: "all 0.2s ease",
+                                      }}
+                                      onMouseEnter={(e) => {
+                                        e.target.style.backgroundColor =
+                                          "#f0f9ff";
+                                        e.target.style.borderColor =
+                                          "#0ea5e940";
+                                      }}
+                                      onMouseLeave={(e) => {
+                                        e.target.style.backgroundColor =
+                                          "white";
+                                        e.target.style.borderColor =
+                                          "#0ea5e920";
+                                      }}
+                                    >
+                                      <i className="fa fa-download" />
+                                      Baixar Material
+                                    </a>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
+                          {fileName && (
+                            <div
+                              style={{
+                                backgroundColor: "white",
+                                padding: "0.75rem",
+                                borderRadius: "4px",
+                                border: "1px solid #e9ecef",
+                                marginTop: "0.5rem",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "0.5rem",
+                                  marginBottom: "0.5rem",
+                                }}
+                              >
+                                <span
+                                  style={{
+                                    fontWeight: "600",
+                                    color: "#6c757d",
+                                    fontSize: "0.8rem",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "0.25rem",
+                                  }}
+                                >
+                                  📎 Arquivo Anexado
+                                </span>
+                              </div>
+                              <div
+                                style={{
+                                  padding: "1rem",
+                                  borderRadius: "4px",
+                                  border: "1px solid #dee2e6",
+                                  lineHeight: "1.6",
+                                  fontSize: "0.9rem",
+                                  color: "#495057",
+                                  cursor: base64String ? "pointer" : "default",
+                                }}
+                                onClick={() => {
+                                  if (base64String) {
+                                    const link = document.createElement("a");
+                                    link.href = `data:${fileType};base64,${base64String}`;
+                                    link.download = fileName;
+                                    link.click();
+                                  }
+                                }}
+                              >
+                                {fileName}
+
+                                {base64String && "👆 Clique para baixar"}
+                              </div>
+                            </div>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+                {category == "Marcar Reposição" && (
+                  <div
+                    style={{
+                      backgroundColor: "#fff3cd",
+                      padding: "1.2rem",
+                      borderRadius: "4px",
+                      border: "1px solid #ffeaa7",
+                    }}
+                  >
+                    <div style={{ display: !seeReplenish ? "block" : "none" }}>
+                      <button
+                        onClick={() => setSeeReplenish(true)}
+                        style={{
+                          width: "100%",
+                          padding: "5px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {UniversalTexts.calendarModal.reserveTimeForReplacement}
+                      </button>
+                    </div>
+                    <div
+                      style={{
+                        display: seeReplenish ? "block" : "none",
+                        backgroundColor: "#6c757d",
+                        color: "white",
+                        padding: "1.2rem",
+                        borderRadius: "4px",
+                        textAlign: "center",
+                      }}
+                    >
+                      <p
+                        style={{
+                          margin: "0 0 1rem 0",
+                          fontWeight: "500",
+                        }}
+                      >
+                        {UniversalTexts.calendarModal.replaceClassConfirmation}
+                      </p>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "1rem",
+                          justifyContent: "center",
+                          marginTop: "1rem",
+                        }}
+                      >
+                        <button
+                          onClick={() => setSeeReplenish(false)}
+                          color="red"
+                          style={{
+                            padding: "5px 1rem",
+                            fontWeight: "500",
+                          }}
+                        >
+                          ❌ Não
+                        </button>
+                        <button
+                          onClick={handleScheduleReplenish}
+                          color="green"
+                          style={{
+                            padding: "5px 1rem",
+                            fontWeight: "500",
+                          }}
+                        >
+                          ✅ Sim
+                        </button>
                       </div>
                     </div>
                   </div>
                 )}
-            </div>
-          </>
-          {/* Nova Seção: Criar Nova Aula */}
-          <>
-            <div
-              style={{
-                backgroundColor: transparentWhite(),
-                width: "10000px",
-                height: "10000px",
-                top: "0",
-                left: "0",
-                position: "fixed",
-                zIndex: 99,
-                display: showNewClassForm ? "block" : "none",
-              }}
-              onClick={handleCloseNewClassForm}
-            />
-            <div
-              className="modal box-shadow-white"
-              style={{
-                position: "fixed",
-                display: showNewClassForm ? "block" : "none",
-                zIndex: 100,
-                backgroundColor: alwaysWhite(),
-                width: "90vw",
-                maxWidth: "800px",
-                maxHeight: "90vh",
-                overflowY: "auto",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                borderRadius: "4px",
-                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
-              }}
-            >
-              {loadingNewClass ? (
-                <div style={{ textAlign: "center", padding: "3rem" }}>
-                  <CircularProgress style={{ color: partnerColor() }} />
-                  <p style={{ marginTop: "1rem", color: "#666" }}>
-                    Criando nova aula...
-                  </p>
-                </div>
-              ) : (
-                <div style={{ padding: "2rem" }}>
-                  {/* Header */}
+              </div>
+              {/*Modal de nossos/edição de eventos particulares */}
+              {/*Modal de nossos/edição de eventos particulares */}
+              <>
+                <div
+                  style={{
+                    width: "10000px",
+                    height: "10000px",
+                    top: "0",
+                    left: "0",
+                    position: "fixed",
+                    zIndex: 99,
+                    display: isModalOfTutoringsVisible ? "block" : "none",
+                    padding: "0.5rem",
+                  }}
+                  onClick={handleCloseModalOfTutorings}
+                />
+                <div
+                  className="modal box-shadow-white"
+                  style={{
+                    position: "fixed",
+                    display: isModalOfTutoringsVisible ? "block" : "none",
+                    zIndex: 100,
+                    padding: "1rem",
+                    width: window.innerWidth <= 768 ? "90vw" : "28rem",
+                    maxHeight: "80vh",
+                    overflow: "auto",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    borderRadius: "4px",
+                  }}
+                >
                   <div
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      marginBottom: "2rem",
-                      paddingBottom: "1rem",
-                      borderBottom: "2px solid #e9ecef",
+                      marginBottom: "1rem",
                     }}
                   >
                     <HTwo
                       style={{
                         margin: 0,
                         color: partnerColor(),
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem",
                       }}
                     >
-                      <i className="fa fa-plus-circle" />
-                      Criar Nova Aula
+                      {UniversalTexts.editTurorings}
                     </HTwo>
-                    <button
-                      onClick={handleCloseNewClassForm}
+                    <Xp
+                      onClick={handleCloseModalOfTutorings}
                       style={{
-                        background: "none",
-                        border: "none",
-                        fontSize: "1rem",
-                        color: "#998",
                         cursor: "pointer",
-                        padding: "0.5rem",
-                        borderRadius: "50%",
-                        transition: "all 0.2s",
+                        color: "#998",
+                        transition: "color 0.2s",
                       }}
-                      onMouseEnter={(e) => {
-                        e.target.style.backgroundColor = "#f8f9fa";
-                        e.target.style.color = partnerColor();
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.backgroundColor = "transparent";
-                        e.target.style.color = "#998";
-                      }}
+                      onMouseEnter={(e) =>
+                        (e.target.style.color = partnerColor())
+                      }
+                      onMouseLeave={(e) => (e.target.style.color = "#998")}
                     >
-                      ×
-                    </button>
+                      ✕
+                    </Xp>
                   </div>
-
-                  {/* Form */}
-                  <div
-                    style={{
-                      display: "grid",
-                      gap: "1rem",
-                    }}
-                  >
-                    {/* Categoria */}
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.5rem",
-                          fontWeight: "600",
-                          color: "#495057",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        📋 Categoria da Aula
-                      </label>
-                      <select
-                        value={newClass.category}
-                        onChange={handleNewClassCategoryChange}
-                        style={{
-                          width: "100%",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #ced4da",
-                          fontSize: "0.9rem",
-                          backgroundColor: "white",
-                        }}
-                      >
-                        <option value="" hidden>
-                          Selecione a categoria...
-                        </option>
-                        {categoryList.map((cat, index) => (
-                          <option key={index} value={cat.value}>
-                            {cat.text}
-                          </option>
-                        ))}
-                      </select>
+                  {loadingModalTutoringsInfo ? (
+                    <div style={{ textAlign: "center", padding: "2rem" }}>
+                      <CircularProgress style={{ color: partnerColor() }} />
                     </div>
-
-                    {/* Student Selection (if tutoring) */}
-                    {(newClass.category === "Tutoring" ||
-                      newClass.category === "Prize Class" ||
-                      newClass.category === "Rep") && (
-                      <div>
-                        <label
-                          style={{
-                            display: "block",
-                            marginBottom: "0.5rem",
-                            fontWeight: "600",
-                            color: "#495057",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          👤 Selecionar Aluno
-                        </label>
-                        <select
-                          value={newClass.studentId}
-                          onChange={(e) =>
-                            handleNewClassChange("studentId", e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                            fontSize: "0.9rem",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="" hidden>
-                            Selecione o aluno...
-                          </option>
-                          {studentsList.map((student, index) => (
-                            <option key={index} value={student.id}>
-                              {student.name} {student.lastname}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-                    {/* Student Selection (if tutoring) */}
-                    {newClass.category === "Established Group Class" && (
-                      <div>
-                        <label
-                          style={{
-                            display: "block",
-                            marginBottom: "0.5rem",
-                            fontWeight: "600",
-                            color: "#495057",
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          👤 Selecionar Grupo
-                        </label>
-                        <select
-                          value={newClass.group}
-                          onChange={(e) =>
-                            handleNewClassChange("group", e.target.value)
-                          }
-                          style={{
-                            width: "100%",
-                            padding: "0.75rem",
-                            borderRadius: "4px",
-                            border: "1px solid #ced4da",
-                            fontSize: "0.9rem",
-                            backgroundColor: "white",
-                          }}
-                        >
-                          <option value="" hidden>
-                            Selecione o grupo...
-                          </option>
-                          {groupsList.map((group, index) => (
-                            <option key={index} value={group._id}>
-                              {group.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
-
-                    {/* Data e Hora */}
-
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.5rem",
-                          fontWeight: "600",
-                          color: "#495057",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        📅 Data
-                      </label>
-                      <input
-                        type="date"
-                        value={newClass.date}
-                        onChange={(e) =>
-                          handleNewClassChange("date", e.target.value)
-                        }
-                        style={{
-                          width: "100%",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #ced4da",
-                          fontSize: "0.9rem",
-                        }}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.5rem",
-                          fontWeight: "600",
-                          color: "#495057",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        ⏰ Horário
-                      </label>
-                      <input
-                        type="time"
-                        value={newClass.time}
-                        onChange={(e) =>
-                          handleNewClassChange("time", e.target.value)
-                        }
-                        style={{
-                          width: "100%",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #ced4da",
-                          fontSize: "0.9rem",
-                        }}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.3rem",
-                          fontWeight: "500",
-                          color: "#6c757d",
-                          fontSize: "0.8rem",
-                        }}
-                      >
-                        Duração
-                      </label>
+                  ) : (
+                    <div style={{ marginBottom: "1rem" }}>
                       <div
                         style={{
                           display: "flex",
-                          gap: "0.25rem",
-                          marginBottom: "0.5rem",
-                          flexWrap: "wrap",
+                          gap: "1rem",
+                          justifyContent: "space-between",
                         }}
                       >
-                        {[30, 45, 60, 90, 120].map((minutes) => (
-                          <button
-                            key={minutes}
-                            type="button"
-                            onClick={() =>
-                              handleNewClassChange("duration", minutes)
-                            }
-                            style={{
-                              padding: "0.25rem 0.5rem",
-                              border: `1px solid ${
-                                newClass.duration == minutes
-                                  ? "#adb5bd"
-                                  : "#e9ecef"
-                              }`,
-                              backgroundColor:
-                                newClass.duration == minutes
-                                  ? "#f8f9fa"
-                                  : "white",
-                              color:
-                                newClass.duration == minutes
-                                  ? "#495057"
-                                  : "#6c757d",
-                              borderRadius: "4px",
-                              cursor: "pointer",
-                              fontSize: "0.75rem",
-                              fontWeight: "400",
-                              transition: "all 0.15s ease",
-                              minWidth: "auto",
-                            }}
-                          >
-                            {minutes < 60
-                              ? `${minutes}min`
-                              : `${minutes / 60}h${
-                                  minutes % 60 ? ` ${minutes % 60}min` : ""
-                                }`}
-                          </button>
-                        ))}
-                        <input
-                          type="number"
-                          value={newClass.duration}
-                          onChange={(e) =>
-                            handleNewClassChange(
-                              "duration",
-                              parseInt(e.target.value) || 60
-                            )
-                          }
-                          min="15"
-                          max="240"
+                        <div
                           style={{
-                            width: "50px",
-                            padding: "0.25rem",
-                            borderRadius: "4px",
-                            border: "1px solid #e9ecef",
-                            fontSize: "0.75rem",
-                            textAlign: "center",
-                            marginLeft: "0.25rem",
-                          }}
-                        />
-                        <span
-                          style={{
-                            fontSize: "0.75rem",
-                            color: "#adb5bd",
-                            alignSelf: "center",
+                            borderRadius: "1rem 1rem 0 0",
+                            padding: "10px",
                           }}
                         >
-                          min
-                        </span>
+                          <button
+                            style={{
+                              backgroundColor: showStudentsRecurring
+                                ? partnerColor()
+                                : "grey",
+                              color: "white",
+                              padding: "5px 1rem",
+                              borderRadius: "4px",
+                              border: "none",
+                              cursor: "pointer",
+                              marginBottom: "1rem",
+                            }}
+                            onClick={() => {
+                              setShowStudentsRecurring(true);
+                              setShowGroupsRecurring(false);
+                            }}
+                          >
+                            Selecionar Aluno
+                          </button>
+                        </div>
+                        <div
+                          style={{
+                            borderRadius: "1rem 1rem 0 0",
+                            padding: "10px",
+                          }}
+                        >
+                          <button
+                            style={{
+                              color: "white",
+                              padding: "5px 1rem",
+                              borderRadius: "4px",
+                              border: "none",
+                              cursor: "pointer",
+                              marginBottom: "1rem",
+                            }}
+                            onClick={() => {
+                              setShowStudentsRecurring(false);
+                              setShowGroupsRecurring(true);
+                            }}
+                          >
+                            Selecionar Grupo
+                          </button>
+                        </div>
                       </div>
+                      {showStudentsRecurring && (
+                        <div
+                          style={{
+                            borderRadius: " 0 0 1rem 1rem",
+                            padding: "10px",
+                          }}
+                        >
+                          {/*Seleção do aluno para aulas recorrentes*/}
+                          <select
+                            onChange={(e) => {
+                              fetchOneSetOfTutoringsInside(e);
+                            }}
+                            value={newStudentId}
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                              backgroundColor: "white",
+                            }}
+                          >
+                            <option value="category" hidden>
+                              Select student
+                            </option>
+                            {studentsList.map((student, index) => {
+                              return (
+                                <option key={index} value={student.id}>
+                                  {student.name + " " + student.lastname}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      )}
+                      {showGroupsRecurring && (
+                        <>
+                          {/*Seleção do grupo para aulas recorrentes*/}
+                          <div
+                            style={{
+                              borderRadius: " 0 0 1rem 1rem",
+                              padding: "10px",
+                            }}
+                          >
+                            <select
+                              value={newGroupId}
+                              onChange={(e) => {
+                                fetchOneSetOfGroupClassesInside(e);
+                              }}
+                              style={{
+                                width: "100%",
+                                padding: "0.75rem",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                                fontSize: "0.9rem",
+                                backgroundColor: "white",
+                              }}
+                            >
+                              <option value="" hidden>
+                                Selecione o grupo...
+                              </option>
+                              {groupsList.map((group, index) => (
+                                <option key={index} value={group._id}>
+                                  {group.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </>
+                      )}
                     </div>
-                    {/* Link */}
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.5rem",
-                          fontWeight: "600",
-                          color: "#495057",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        🔗 Link da Reunião
-                      </label>
-                      <input
-                        type="url"
-                        value={newClass.link}
-                        onChange={(e) =>
-                          handleNewClassChange("link", e.target.value)
-                        }
-                        placeholder="https://meet.google.com/..."
-                        style={{
-                          width: "100%",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #ced4da",
-                          fontSize: "0.9rem",
-                        }}
-                        required
-                      />
+                  )}
+                  {loadingTutoringDays ? (
+                    <div style={{ textAlign: "center", padding: "2rem" }}>
+                      <CircularProgress style={{ color: partnerColor() }} />
                     </div>
+                  ) : (
+                    <div style={{ marginBottom: "1rem" }}>
+                      {showClasses &&
+                        tutoringsListOfOneStudentOrGroup.length > 0 && (
+                          <div>
+                            <h4
+                              style={{
+                                color: partnerColor(),
+                                marginBottom: "1rem",
+                              }}
+                            >
+                              {UniversalTexts.calendarModal.currentClasses}
+                            </h4>
+                            <div style={{ display: "grid", gap: "5px" }}>
+                              {tutoringsListOfOneStudentOrGroup
+                                .sort(
+                                  (a, b) =>
+                                    moment(a.day, "dddd").day() -
+                                    moment(b.day, "dddd").day()
+                                )
+                                .map((item, index) => {
+                                  const isExpiring =
+                                    isTutoringExpiringWithinMonth(item);
+                                  const daysLeft = getDaysUntilExpiration(item);
 
-                    {/* Descrição */}
-                    <div>
-                      <label
-                        style={{
-                          display: "block",
-                          marginBottom: "0.5rem",
-                          fontWeight: "600",
-                          color: "#495057",
-                          fontSize: "0.9rem",
-                        }}
-                      >
-                        📝 Descrição da Aula
-                      </label>
-                      <input
-                        type="text"
-                        value={newClass.description}
-                        onChange={(e) =>
-                          handleNewClassChange("description", e.target.value)
-                        }
-                        placeholder="Descreva o conteúdo da aula..."
-                        style={{
-                          width: "100%",
-                          padding: "0.75rem",
-                          borderRadius: "4px",
-                          border: "1px solid #ced4da",
-                          fontSize: "0.9rem",
-                        }}
-                        required
-                      />
-                    </div>
+                                  return (
+                                    <div
+                                      key={index}
+                                      style={{
+                                        backgroundColor: isExpiring
+                                          ? "#ffebee"
+                                          : "#f8f9fa",
+                                        padding: "0.5rem",
+                                        borderRadius: "4px",
+                                        border: isExpiring
+                                          ? "2px solid #f44336"
+                                          : "1px solid #dee2e6",
+                                        boxShadow: isExpiring
+                                          ? "0 2px 8px rgba(244, 67, 54, 0.2)"
+                                          : "none",
+                                      }}
+                                    >
+                                      {isExpiring && (
+                                        <div
+                                          style={{
+                                            backgroundColor: "#f44336",
+                                            color: "white",
+                                            padding: "4px 8px",
+                                            borderRadius: "4px",
+                                            fontSize: "11px",
+                                            fontWeight: "600",
+                                            marginBottom: "8px",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            gap: "4px",
+                                          }}
+                                        >
+                                          ⚠️
+                                          {daysLeft > 0
+                                            ? `${
+                                                UniversalTexts.endsIn
+                                              } ${daysLeft} dia${
+                                                daysLeft > 1 ? "s" : ""
+                                              } (${new Date(
+                                                item.endDate
+                                              ).toLocaleDateString("pt-BR")})`
+                                            : `${
+                                                UniversalTexts.expired
+                                              } ${new Date(
+                                                item.endDate
+                                              ).toLocaleDateString("pt-BR")}`}
+                                          {UniversalTexts.tutoringExpiring}
+                                        </div>
+                                      )}
 
-                    {/* Botões */}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          justifyContent: "space-between",
+                                          alignItems: "center",
+                                          flexWrap: "wrap",
+                                          gap: "5px",
+                                        }}
+                                      >
+                                        <div>
+                                          <span
+                                            style={{
+                                              fontWeight: "600",
+                                              color: "#495057",
+                                            }}
+                                          >
+                                            {UniversalTexts.Class} #{index + 1}
+                                          </span>
+                                          <div
+                                            style={{
+                                              color: "#6c757d",
+                                              marginTop: "2px",
+                                            }}
+                                          >
+                                            {item.day} - {item.time}
+                                            <Link
+                                              target="_blank"
+                                              to={item.link}
+                                              style={{
+                                                color: partnerColor(),
+                                                textDecoration: "none",
+                                                marginLeft: "5px",
+                                              }}
+                                            >
+                                              {UniversalTexts.accessClass}
+                                            </Link>
+                                            {item.endDate && (
+                                              <span
+                                                style={{
+                                                  marginLeft: "5px",
+                                                  color: "#6c757d",
+                                                }}
+                                              >
+                                                (Ends on:
+                                                {moment(item.endDate).format(
+                                                  "DD/MM/YYYY"
+                                                )}
+                                                )
+                                              </span>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <div
+                                          style={{
+                                            display: "flex",
+                                            gap: "5px",
+                                          }}
+                                        >
+                                          <button
+                                            onClick={() => {
+                                              seeEditOneTutoring(item);
+                                            }}
+                                            style={{
+                                              padding: "5px 1rem",
+                                              backgroundColor: partnerColor(),
+                                              color: "white",
+                                              border: "none",
+                                              borderRadius: "4px",
+                                              cursor: "pointer",
+                                            }}
+                                          >
+                                            Edit
+                                          </button>
+                                          <button
+                                            onClick={() => deleteTutoring(item)}
+                                            style={{
+                                              padding: "5px 1rem",
+                                              backgroundColor: "#dc3545",
+                                              color: "white",
+                                              border: "none",
+                                              borderRadius: "4px",
+                                              cursor: "pointer",
+                                            }}
+                                          >
+                                            Delete
+                                          </button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        )}
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      display: seeEditTutoring ? "block" : "none",
+                      backgroundColor: "#fff3cd",
+                      padding: "1rem",
+                      borderRadius: "4px",
+                      border: "1px solid #ffeaa7",
+                      marginBottom: "1rem",
+                    }}
+                  >
                     <div
                       style={{
                         display: "flex",
-                        gap: "1rem",
-                        justifyContent: "flex-end",
-                        paddingTop: "1rem",
-                        borderTop: "1px solid #e9ecef",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        marginBottom: "1rem",
                       }}
                     >
+                      <h4 style={{ margin: 0, color: "#856404" }}>
+                        {UniversalTexts.calendarModal.editClass}
+                      </h4>
                       <button
-                        onClick={handleCloseNewClassForm}
+                        onClick={closeEditOneTutoring}
                         style={{
-                          padding: "0.75rem 1rem",
-                          backgroundColor: "#6c757d",
+                          backgroundColor: "#dc3545",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "4px",
+                          padding: "5px 1rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                    <div style={{ display: "grid", gap: "1rem" }}>
+                      <select
+                        onChange={handleWeekDayChange}
+                        value={weekDay}
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          border: "1px solid #ced4da",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <option value="select week day" hidden>
+                          {UniversalTexts.calendarModal.selectWeekDay}
+                        </option>
+                        {weekDays.map((weekDay, index) => {
+                          return (
+                            <option key={index} value={weekDay}>
+                              {weekDay}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <select
+                        onChange={handleTimeChange}
+                        value={timeOfTutoring}
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          border: "1px solid #ced4da",
+                          backgroundColor: "white",
+                        }}
+                      >
+                        <option value="select time" hidden>
+                          {UniversalTexts.calendarModal.selectTime}
+                        </option>
+                        {times.map((time, index) => {
+                          return (
+                            <option key={index} value={time}>
+                              {time}
+                            </option>
+                          );
+                        })}
+                      </select>
+                      <input
+                        value={link}
+                        onChange={(e) => {
+                          setLink(e.target.value);
+                        }}
+                        placeholder={UniversalTexts.calendarModal.meetingLink}
+                        type="text"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          border: "1px solid #ced4da",
+                        }}
+                        required
+                      />
+                      <input
+                        value={duration}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (
+                            value === "" ||
+                            (value.length <= 3 &&
+                              Number(value) >= 0 &&
+                              Number(value) <= 300)
+                          ) {
+                            setDuration(value);
+                          }
+                        }}
+                        placeholder={UniversalTexts.duration}
+                        type="number"
+                        min="1"
+                        max="300"
+                        style={{
+                          padding: "5px",
+                          borderRadius: "4px",
+                          border: "1px solid #ced4da",
+                          maxWidth: "80px",
+                          textAlign: "center",
+                        }}
+                        required
+                      />
+                      <button
+                        onClick={updateOneTutoring}
+                        style={{
+                          padding: "5px 1rem",
+                          backgroundColor: "#28a745",
                           color: "white",
                           border: "none",
                           borderRadius: "4px",
                           cursor: "pointer",
-                          fontSize: "0.9rem",
                           fontWeight: "500",
-                          transition: "all 0.2s ease",
                         }}
                       >
-                        <i
-                          className="fa fa-times"
-                          style={{ marginRight: "0.5rem" }}
-                        />
-                        Cancelar
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleCreateNewClass();
-                        }}
-                        disabled={
-                          !newClass.category ||
-                          !newClass.date ||
-                          !newClass.time ||
-                          !newClass.link ||
-                          !newClass.description
-                        }
-                        style={{
-                          padding: "0.75rem 1rem",
-                          backgroundColor: partnerColor(),
-                          color: "white",
-                          border: "none",
-                          borderRadius: "4px",
-                          cursor:
-                            !newClass.category ||
-                            !newClass.date ||
-                            !newClass.time ||
-                            !newClass.link ||
-                            !newClass.description
-                              ? "not-allowed"
-                              : "pointer",
-                          fontSize: "0.9rem",
-                          fontWeight: "500",
-                          opacity:
-                            !newClass.category ||
-                            !newClass.date ||
-                            !newClass.time ||
-                            !newClass.link ||
-                            !newClass.description
-                              ? 0.6
-                              : 1,
-                          transition: "all 0.2s ease",
-                        }}
-                      >
-                        <i
-                          className="fa fa-plus"
-                          style={{ marginRight: "0.5rem" }}
-                        />
-                        Criar Aula
+                        {UniversalTexts.calendarModal.saveChanges}
                       </button>
                     </div>
+                  </div>
+                  {(newStudentId !== "" || newGroupId !== "") && (
+                    <button
+                      onClick={() =>
+                        setShowSeeEditTutoring(!showSeeEditTutoring)
+                      }
+                      style={{
+                        padding: "8px 1rem",
+                        marginBottom: "5px",
+                        borderRadius: "4px",
+                        backgroundColor: !showSeeEditTutoring
+                          ? "#f0f9f0"
+                          : "#fdf2f2",
+                        border: !showSeeEditTutoring
+                          ? "1px solid #d4e6d4"
+                          : "1px solid #f5c6c6",
+                        color: !showSeeEditTutoring ? "#2d5016" : "#8b2635",
+                        cursor: "pointer",
+                        fontWeight: "500",
+                        transition: "all 0.2s ease",
+                        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.backgroundColor = !showSeeEditTutoring
+                          ? "#e8f5e8"
+                          : "#fce8e8";
+                        e.target.style.transform = "translateY(-1px)";
+                        e.target.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.backgroundColor = !showSeeEditTutoring
+                          ? "#f0f9f0"
+                          : "#fdf2f2";
+                        e.target.style.transform = "translateY(0)";
+                        e.target.style.boxShadow = "0 1px 3px rgba(0,0,0,0.1)";
+                      }}
+                    >
+                      {showSeeEditTutoring
+                        ? UniversalTexts.hideShowClasses
+                        : UniversalTexts.showShowClasses}
+                    </button>
+                  )}
+                  {(newStudentId !== "" || newGroupId !== "") &&
+                    showSeeEditTutoring && (
+                      <div
+                        style={{ display: !seeEditTutoring ? "block" : "none" }}
+                      >
+                        <div
+                          style={{
+                            padding: "1rem",
+                            borderRadius: "4px",
+                            backgroundColor: "#d4edda",
+                            border: "1px solid #c3e6cb",
+                          }}
+                        >
+                          <h4
+                            style={{ margin: "0 0 1rem 0", color: "#155724" }}
+                          >
+                            {UniversalTexts.calendarModal.addNewClass}
+                          </h4>
+                          <div style={{ display: "grid", gap: "1rem" }}>
+                            <select
+                              onChange={handleTheNewWeekDayChange}
+                              value={theNewWeekDay}
+                              style={{
+                                padding: "5px",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                                backgroundColor: "white",
+                              }}
+                            >
+                              <option hidden value="select week day">
+                                {
+                                  UniversalTexts.calendarModal
+                                    .selectWeekDayOption
+                                }
+                              </option>
+                              {weekDays.map((weekDay, index) => {
+                                return (
+                                  <option key={index} value={weekDay}>
+                                    {weekDay}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <select
+                              onChange={handleTheNewTimeChange}
+                              value={theNewTimeOfTutoring}
+                              style={{
+                                padding: "5px",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                                backgroundColor: "white",
+                              }}
+                            >
+                              <option hidden value="Select Time">
+                                {UniversalTexts.calendarModal.selectTimeOption}
+                              </option>
+                              {times.map((time, index) => {
+                                return (
+                                  <option key={index} value={time}>
+                                    {time}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                            <input
+                              placeholder={
+                                UniversalTexts.calendarModal.meetingLink
+                              }
+                              value={theNewLink}
+                              onChange={(e) => {
+                                setTheNewLink(e.target.value);
+                              }}
+                              type="text"
+                              style={{
+                                padding: "5px",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                              }}
+                              required
+                            />
+                            <div>
+                              <p
+                                style={{
+                                  display: "block",
+                                  marginBottom: "5px",
+                                  fontSize: "12px",
+                                  color: "#6c757d",
+                                  fontWeight: "500",
+                                  margin: "0 0 5px 0",
+                                }}
+                              >
+                                {UniversalTexts.repeatFor}:
+                              </p>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "4px",
+                                  marginBottom: "8px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                {[
+                                  { label: "1m", weeks: 4, tooltip: "1 mês" },
+                                  {
+                                    label: "3m",
+                                    weeks: 12,
+                                    tooltip: "3 meses",
+                                  },
+                                  {
+                                    label: "6m",
+                                    weeks: 24,
+                                    tooltip: "6 meses",
+                                  },
+                                  { label: "1a", weeks: 52, tooltip: "1 ano" },
+                                  {
+                                    label: "2a",
+                                    weeks: 104,
+                                    tooltip: "2 anos",
+                                  },
+                                ].map(({ label, weeks, tooltip }) => (
+                                  <button
+                                    key={label}
+                                    title={tooltip}
+                                    style={{
+                                      backgroundColor:
+                                        numberOfWeeks == weeks
+                                          ? "#e3f2fd"
+                                          : "#f8f9fa",
+                                      border:
+                                        numberOfWeeks == weeks
+                                          ? "1px solid #2196f3"
+                                          : "1px solid #e0e0e0",
+                                      cursor: "pointer",
+                                      padding: "2px 6px",
+                                      borderRadius: "4px",
+                                      fontSize: "10px",
+                                      fontWeight: "500",
+                                      color:
+                                        numberOfWeeks == weeks
+                                          ? "#1976d2"
+                                          : "#6c757d",
+                                      transition: "all 0.2s ease",
+                                      minWidth: "24px",
+                                      height: "20px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                    onClick={() => setNumberOfWeeks(weeks)}
+                                    onMouseEnter={(e) => {
+                                      if (numberOfWeeks != weeks) {
+                                        e.target.style.backgroundColor =
+                                          "#f0f0f0";
+                                        e.target.style.borderColor = "#bdbdbd";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (numberOfWeeks != weeks) {
+                                        e.target.style.backgroundColor =
+                                          "#f8f9fa";
+                                        e.target.style.borderColor = "#e0e0e0";
+                                      }
+                                    }}
+                                  >
+                                    {label}
+                                  </button>
+                                ))}
+
+                                <input
+                                  placeholder="Ex: 8"
+                                  value={numberOfWeeks}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (
+                                      value === "" ||
+                                      (value.length <= 2 &&
+                                        Number(value) >= 0 &&
+                                        Number(value) <= 99)
+                                    ) {
+                                      setNumberOfWeeks(value);
+                                    }
+                                  }}
+                                  type="number"
+                                  min="1"
+                                  max="99"
+                                  style={{
+                                    padding: "6px",
+                                    maxWidth: "60px",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ced4da",
+                                    fontSize: "12px",
+                                    textAlign: "center",
+                                  }}
+                                  required
+                                />
+
+                                <p
+                                  style={{
+                                    display: "block",
+                                    marginBottom: "5px",
+                                    fontSize: "12px",
+                                    color: "#6c757d",
+                                    fontWeight: "500",
+                                    margin: "0 0 5px 0",
+                                  }}
+                                >
+                                  {UniversalTexts.duration}:
+                                </p>
+                              </div>
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "4px",
+                                  marginBottom: "8px",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                {[
+                                  {
+                                    label: "30min",
+                                    minutes: 30,
+                                    tooltip: "30 minutos",
+                                  },
+                                  {
+                                    label: "45min",
+                                    minutes: 45,
+                                    tooltip: "45 minutos",
+                                  },
+                                  {
+                                    label: "1h",
+                                    minutes: 60,
+                                    tooltip: "1 hora",
+                                  },
+                                  {
+                                    label: "1h30min",
+                                    minutes: 90,
+                                    tooltip: "1 hora e 30 minutos",
+                                  },
+                                  {
+                                    label: "2h",
+                                    minutes: 120,
+                                    tooltip: "2 horas",
+                                  },
+                                ].map(({ label, minutes, tooltip }) => (
+                                  <button
+                                    key={label}
+                                    title={tooltip}
+                                    style={{
+                                      backgroundColor:
+                                        duration == minutes
+                                          ? "#e3f2fd"
+                                          : "#f8f9fa",
+                                      border:
+                                        duration == minutes
+                                          ? "1px solid #2196f3"
+                                          : "1px solid #e0e0e0",
+                                      cursor: "pointer",
+                                      padding: "2px 6px",
+                                      borderRadius: "4px",
+                                      fontSize: "10px",
+                                      fontWeight: "500",
+                                      color:
+                                        duration == minutes
+                                          ? "#1976d2"
+                                          : "#6c757d",
+                                      transition: "all 0.2s ease",
+                                      minWidth: "24px",
+                                      height: "20px",
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
+                                    onClick={() => setDuration(minutes)}
+                                    onMouseEnter={(e) => {
+                                      if (duration != minutes) {
+                                        e.target.style.backgroundColor =
+                                          "#f0f0f0";
+                                        e.target.style.borderColor = "#bdbdbd";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (duration != minutes) {
+                                        e.target.style.backgroundColor =
+                                          "#f8f9fa";
+                                        e.target.style.borderColor = "#e0e0e0";
+                                      }
+                                    }}
+                                  >
+                                    {label}
+                                  </button>
+                                ))}
+
+                                <input
+                                  placeholder="Ex: 55"
+                                  value={duration}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    if (
+                                      value === "" ||
+                                      (value.length <= 3 &&
+                                        Number(value) >= 0 &&
+                                        Number(value) <= 300)
+                                    ) {
+                                      setDuration(value);
+                                    }
+                                  }}
+                                  type="number"
+                                  min="1"
+                                  max="300"
+                                  style={{
+                                    padding: "6px",
+                                    maxWidth: "60px",
+                                    borderRadius: "4px",
+                                    border: "1px solid #ced4da",
+                                    fontSize: "12px",
+                                    textAlign: "center",
+                                  }}
+                                  required
+                                />
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: "8px",
+                                  padding: "6px 8px",
+
+                                  border: "1px solid #e9ecef",
+                                  borderRadius: "4px",
+                                  fontSize: "11px",
+                                  color: "#6c757d",
+                                  lineHeight: "1.3",
+                                }}
+                              >
+                                {numberOfWeeks && numberOfWeeks > 0 ? (
+                                  <div>
+                                    {(() => {
+                                      const today = new Date();
+                                      const nextWeekDay = new Date(today);
+                                      const dayOfWeek = today.getDay();
+                                      const daysUntilMonday =
+                                        dayOfWeek === 0
+                                          ? 1
+                                          : (8 - dayOfWeek) % 7;
+                                      nextWeekDay.setDate(
+                                        today.getDate() + daysUntilMonday
+                                      );
+                                      const endDate = new Date(nextWeekDay);
+                                      endDate.setDate(
+                                        nextWeekDay.getDate() +
+                                          numberOfWeeks * 7 -
+                                          1
+                                      );
+
+                                      const formatDate = (date) => {
+                                        return date.toLocaleDateString(
+                                          "pt-BR",
+                                          {
+                                            day: "2-digit",
+                                            month: "2-digit",
+                                            year: "numeric",
+                                          }
+                                        );
+                                      };
+
+                                      return `${formatDate(
+                                        nextWeekDay
+                                      )} até ${formatDate(
+                                        endDate
+                                      )} (${numberOfWeeks} semana${
+                                        numberOfWeeks > 1 ? "s" : ""
+                                      })`;
+                                    })()}
+                                  </div>
+                                ) : (
+                                  <div>
+                                    {
+                                      UniversalTexts.calendarModal
+                                        .selectNumberOfWeeks
+                                    }
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            {(() => {
+                              const isFormIncomplete =
+                                !theNewWeekDay ||
+                                !theNewTimeOfTutoring ||
+                                !theNewLink ||
+                                !numberOfWeeks ||
+                                numberOfWeeks <= 0 ||
+                                duration <= 0;
+
+                              return (
+                                <button
+                                  onClick={newTutoring}
+                                  disabled={isFormIncomplete}
+                                  style={{
+                                    padding: "5px 1rem",
+                                    backgroundColor: isFormIncomplete
+                                      ? "#6c757d"
+                                      : partnerColor(),
+                                    color: "white",
+                                    border: "none",
+                                    borderRadius: "4px",
+                                    cursor: isFormIncomplete
+                                      ? "not-allowed"
+                                      : "pointer",
+                                    fontWeight: "500",
+                                    opacity: isFormIncomplete ? 0.6 : 1,
+                                    transition: "all 0.2s ease",
+                                  }}
+                                  title={
+                                    isFormIncomplete
+                                      ? "Preencha todos os campos: estudante, dia da semana, horário, link e número de semanas"
+                                      : "Clique para criar a tutoria recorrente"
+                                  }
+                                >
+                                  {UniversalTexts.calendarModal.addNewClass}
+                                </button>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                </div>
+              </>
+              {/* Nova Seção: Criar Nova Aula */}
+              <>
+                <div
+                  style={{
+                    backgroundColor: transparentWhite(),
+                    width: "10000px",
+                    height: "10000px",
+                    top: "0",
+                    left: "0",
+                    position: "fixed",
+                    zIndex: 99,
+                    display: showNewClassForm ? "block" : "none",
+                  }}
+                  onClick={handleCloseNewClassForm}
+                />
+                <div
+                  className="modal box-shadow-white"
+                  style={{
+                    position: "fixed",
+                    display: showNewClassForm ? "block" : "none",
+                    zIndex: 100,
+                    backgroundColor: alwaysWhite(),
+                    width: "90vw",
+                    maxWidth: "800px",
+                    maxHeight: "90vh",
+                    overflowY: "auto",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    borderRadius: "4px",
+                    boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  {loadingNewClass ? (
+                    <div style={{ textAlign: "center", padding: "3rem" }}>
+                      <CircularProgress style={{ color: partnerColor() }} />
+                      <p style={{ marginTop: "1rem", color: "#666" }}>
+                        Criando nova aula...
+                      </p>
+                    </div>
+                  ) : (
+                    <div style={{ padding: "2rem" }}>
+                      {/* Header */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "2rem",
+                          paddingBottom: "1rem",
+                          borderBottom: "2px solid #e9ecef",
+                        }}
+                      >
+                        <HTwo
+                          style={{
+                            margin: 0,
+                            color: partnerColor(),
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.5rem",
+                          }}
+                        >
+                          <i className="fa fa-plus-circle" />
+                          Criar Nova Aula
+                        </HTwo>
+                        <button
+                          onClick={handleCloseNewClassForm}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            fontSize: "1rem",
+                            color: "#998",
+                            cursor: "pointer",
+                            padding: "0.5rem",
+                            borderRadius: "50%",
+                            transition: "all 0.2s",
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = "#f8f9fa";
+                            e.target.style.color = partnerColor();
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = "transparent";
+                            e.target.style.color = "#998";
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+
+                      {/* Form */}
+                      <div
+                        style={{
+                          display: "grid",
+                          gap: "1rem",
+                        }}
+                      >
+                        {/* Categoria */}
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "600",
+                              color: "#495057",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            📋 Categoria da Aula
+                          </label>
+                          <select
+                            value={newClass.category}
+                            onChange={handleNewClassCategoryChange}
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                              backgroundColor: "white",
+                            }}
+                          >
+                            <option value="" hidden>
+                              Selecione a categoria...
+                            </option>
+                            {categoryList.map((cat, index) => (
+                              <option key={index} value={cat.value}>
+                                {cat.text}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        {/* Student Selection (if tutoring) */}
+                        {(newClass.category === "Tutoring" ||
+                          newClass.category === "Prize Class" ||
+                          newClass.category === "Rep") && (
+                          <div>
+                            <label
+                              style={{
+                                display: "block",
+                                marginBottom: "0.5rem",
+                                fontWeight: "600",
+                                color: "#495057",
+                                fontSize: "0.9rem",
+                              }}
+                            >
+                              👤 Selecionar Aluno
+                            </label>
+                            <select
+                              value={newClass.studentId}
+                              onChange={(e) =>
+                                handleNewClassChange(
+                                  "studentId",
+                                  e.target.value
+                                )
+                              }
+                              style={{
+                                width: "100%",
+                                padding: "0.75rem",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                                fontSize: "0.9rem",
+                                backgroundColor: "white",
+                              }}
+                            >
+                              <option value="" hidden>
+                                Selecione o aluno...
+                              </option>
+                              {studentsList.map((student, index) => (
+                                <option key={index} value={student.id}>
+                                  {student.name} {student.lastname}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        {/* Student Selection (if tutoring) */}
+                        {newClass.category === "Established Group Class" && (
+                          <div>
+                            <label
+                              style={{
+                                display: "block",
+                                marginBottom: "0.5rem",
+                                fontWeight: "600",
+                                color: "#495057",
+                                fontSize: "0.9rem",
+                              }}
+                            >
+                              👤 Selecionar Grupo
+                            </label>
+                            <select
+                              value={newClass.group}
+                              onChange={(e) =>
+                                handleNewClassChange("group", e.target.value)
+                              }
+                              style={{
+                                width: "100%",
+                                padding: "0.75rem",
+                                borderRadius: "4px",
+                                border: "1px solid #ced4da",
+                                fontSize: "0.9rem",
+                                backgroundColor: "white",
+                              }}
+                            >
+                              <option value="" hidden>
+                                Selecione o grupo...
+                              </option>
+                              {groupsList.map((group, index) => (
+                                <option key={index} value={group._id}>
+                                  {group.name}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+
+                        {/* Data e Hora */}
+
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "600",
+                              color: "#495057",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            📅 Data
+                          </label>
+                          <input
+                            type="date"
+                            value={newClass.date}
+                            onChange={(e) =>
+                              handleNewClassChange("date", e.target.value)
+                            }
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                            }}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "600",
+                              color: "#495057",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            ⏰ Horário
+                          </label>
+                          <input
+                            type="time"
+                            value={newClass.time}
+                            onChange={(e) =>
+                              handleNewClassChange("time", e.target.value)
+                            }
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                            }}
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.3rem",
+                              fontWeight: "500",
+                              color: "#6c757d",
+                              fontSize: "0.8rem",
+                            }}
+                          >
+                            Duração
+                          </label>
+                          <div
+                            style={{
+                              display: "flex",
+                              gap: "0.25rem",
+                              marginBottom: "0.5rem",
+                              flexWrap: "wrap",
+                            }}
+                          >
+                            {[30, 45, 60, 90, 120].map((minutes) => (
+                              <button
+                                key={minutes}
+                                type="button"
+                                onClick={() =>
+                                  handleNewClassChange("duration", minutes)
+                                }
+                                style={{
+                                  padding: "0.25rem 0.5rem",
+                                  border: `1px solid ${
+                                    newClass.duration == minutes
+                                      ? "#adb5bd"
+                                      : "#e9ecef"
+                                  }`,
+                                  backgroundColor:
+                                    newClass.duration == minutes
+                                      ? "#f8f9fa"
+                                      : "white",
+                                  color:
+                                    newClass.duration == minutes
+                                      ? "#495057"
+                                      : "#6c757d",
+                                  borderRadius: "4px",
+                                  cursor: "pointer",
+                                  fontSize: "0.75rem",
+                                  fontWeight: "400",
+                                  transition: "all 0.15s ease",
+                                  minWidth: "auto",
+                                }}
+                              >
+                                {minutes < 60
+                                  ? `${minutes}min`
+                                  : `${minutes / 60}h${
+                                      minutes % 60 ? ` ${minutes % 60}min` : ""
+                                    }`}
+                              </button>
+                            ))}
+                            <input
+                              type="number"
+                              value={newClass.duration}
+                              onChange={(e) =>
+                                handleNewClassChange(
+                                  "duration",
+                                  parseInt(e.target.value) || 60
+                                )
+                              }
+                              min="15"
+                              max="240"
+                              style={{
+                                width: "50px",
+                                padding: "0.25rem",
+                                borderRadius: "4px",
+                                border: "1px solid #e9ecef",
+                                fontSize: "0.75rem",
+                                textAlign: "center",
+                                marginLeft: "0.25rem",
+                              }}
+                            />
+                            <span
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "#adb5bd",
+                                alignSelf: "center",
+                              }}
+                            >
+                              min
+                            </span>
+                          </div>
+                        </div>
+                        {/* Link */}
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "600",
+                              color: "#495057",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            🔗 Link da Reunião
+                          </label>
+                          <input
+                            type="url"
+                            value={newClass.link}
+                            onChange={(e) =>
+                              handleNewClassChange("link", e.target.value)
+                            }
+                            placeholder="https://meet.google.com/..."
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                            }}
+                            required
+                          />
+                        </div>
+
+                        {/* Descrição */}
+                        <div>
+                          <label
+                            style={{
+                              display: "block",
+                              marginBottom: "0.5rem",
+                              fontWeight: "600",
+                              color: "#495057",
+                              fontSize: "0.9rem",
+                            }}
+                          >
+                            📝 Descrição da Aula
+                          </label>
+                          <input
+                            type="text"
+                            value={newClass.description}
+                            onChange={(e) =>
+                              handleNewClassChange(
+                                "description",
+                                e.target.value
+                              )
+                            }
+                            placeholder="Descreva o conteúdo da aula..."
+                            style={{
+                              width: "100%",
+                              padding: "0.75rem",
+                              borderRadius: "4px",
+                              border: "1px solid #ced4da",
+                              fontSize: "0.9rem",
+                            }}
+                            required
+                          />
+                        </div>
+
+                        {/* Botões */}
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "1rem",
+                            justifyContent: "flex-end",
+                            paddingTop: "1rem",
+                            borderTop: "1px solid #e9ecef",
+                          }}
+                        >
+                          <button
+                            onClick={handleCloseNewClassForm}
+                            style={{
+                              padding: "0.75rem 1rem",
+                              backgroundColor: "#6c757d",
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              fontSize: "0.9rem",
+                              fontWeight: "500",
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            <i
+                              className="fa fa-times"
+                              style={{ marginRight: "0.5rem" }}
+                            />
+                            Cancelar
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleCreateNewClass();
+                            }}
+                            disabled={
+                              !newClass.category ||
+                              !newClass.date ||
+                              !newClass.time ||
+                              !newClass.link ||
+                              !newClass.description
+                            }
+                            style={{
+                              padding: "0.75rem 1rem",
+                              backgroundColor: partnerColor(),
+                              color: "white",
+                              border: "none",
+                              borderRadius: "4px",
+                              cursor:
+                                !newClass.category ||
+                                !newClass.date ||
+                                !newClass.time ||
+                                !newClass.link ||
+                                !newClass.description
+                                  ? "not-allowed"
+                                  : "pointer",
+                              fontSize: "0.9rem",
+                              fontWeight: "500",
+                              opacity:
+                                !newClass.category ||
+                                !newClass.date ||
+                                !newClass.time ||
+                                !newClass.link ||
+                                !newClass.description
+                                  ? 0.6
+                                  : 1,
+                              transition: "all 0.2s ease",
+                            }}
+                          >
+                            <i
+                              className="fa fa-plus"
+                              style={{ marginRight: "0.5rem" }}
+                            />
+                            Criar Aula
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+              {!isVisible && (
+                <div
+                  style={{
+                    marginBottom: "1rem",
+                    borderRadius: "4px",
+                    marginTop: "12px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      flexWrap: "wrap",
+                      gap: "8px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        background: "#f8f9fa",
+                        borderRadius: "4px",
+                        padding: "2px",
+                      }}
+                    >
+                      <button
+                        disabled={!disabledAvoid}
+                        style={{
+                          width: "28px",
+                          height: "28px",
+                          background: !disabledAvoid ? "#e9ecef" : "#ffffff",
+                          border: "1px solid #dee2e6",
+                          borderRadius: "4px",
+                          color: !disabledAvoid ? "#adb5bd" : "#495057",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          transition: "all 0.15s ease",
+                          fontSize: "12px",
+                        }}
+                        onClick={() => handleChangeWeek(-7)}
+                      >
+                        <i className="fa fa-chevron-left" />
+                      </button>
+
+                      <div
+                        style={{
+                          padding: "0 12px",
+                          fontWeight: "500",
+                          color: "#495057",
+                          fontSize: "13px",
+                          minWidth: "80px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {today.toLocaleDateString("pt-BR", {
+                          month: "short",
+                          year: "numeric",
+                        })}
+                      </div>
+
+                      <button
+                        disabled={!disabledAvoid}
+                        style={{
+                          width: "28px",
+                          height: "28px",
+                          background: !disabledAvoid ? "#e9ecef" : "#ffffff",
+                          border: "1px solid #dee2e6",
+                          borderRadius: "4px",
+                          color: !disabledAvoid ? "#adb5bd" : "#495057",
+                          cursor: !disabledAvoid ? "not-allowed" : "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          transition: "all 0.15s ease",
+                          fontSize: "12px",
+                        }}
+                        onClick={() => handleChangeWeek(7)}
+                      >
+                        <i className="fa fa-chevron-right" />
+                      </button>
+                    </div>
+
+                    {/* Seletor de Data - Minimalista */}
+
+                    <div
+                      style={{
+                        background: "#f8f9fa",
+                        borderRadius: "4px",
+                        border: "1px solid #e9ecef",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <input
+                        type="date"
+                        onChange={handleDateChange}
+                        value={today.toISOString().split("T")[0]}
+                        disabled={loading}
+                        style={{
+                          padding: "6px 32px 6px 10px",
+                          border: "none",
+                          outline: "none",
+                          fontSize: "13px",
+                          fontWeight: "400",
+                          color: loading ? "#adb5bd" : "#495057",
+                          backgroundColor: "transparent",
+                          cursor: loading ? "not-allowed" : "pointer",
+                          opacity: loading ? 0.6 : 1,
+                        }}
+                      />
+                    </div>
+
+                    {!isVisible && (
+                      <div style={{ display: "grid", gap: "5px" }}>
+                        {/* Ações rápidas - Compactas */}
+
+                        <div
+                          style={{
+                            display: "grid",
+                            gridTemplateColumns: isDesktop
+                              ? "auto auto auto auto"
+                              : "auto auto",
+                            gridAutoFlow: isDesktop ? "column" : "row",
+                            gap: "6px",
+                            alignItems: "center",
+                          }}
+                        >
+                          {/* Botão Hoje */}
+
+                          <button
+                            disabled={!disabledAvoid}
+                            onClick={() => {
+                              loadGeneral(new Date());
+                            }}
+                          >
+                            <i
+                              className="fa fa-refresh"
+                              style={{ fontSize: "10px" }}
+                            />
+
+                            <span>{UniversalTexts.calendarModal.today}</span>
+                          </button>
+
+                          {/* Botão Recorrentes */}
+
+                          {authorizeOrNot && (
+                            <button
+                              disabled={!disabledAvoid}
+                              onClick={() => {
+                                handleSeeModalOfTutorings();
+                                setSeePlusButtons(false);
+                              }}
+                            >
+                              <i
+                                className="fa fa-repeat"
+                                style={{ fontSize: "10px" }}
+                              />
+
+                              <span>
+                                {UniversalTexts.calendarModal.recurringClasses}
+                              </span>
+                            </button>
+                          )}
+
+                          {authorizeOrNot && (
+                            <ToDoAddButton
+                              userId={myId}
+                              onCreated={() => {
+                                setAlternateBoolean(!alternateBoolean);
+                              }}
+                            />
+                          )}
+
+                          {/* Botão Nova Aula */}
+
+                          {authorizeOrNot && (
+                            <button
+                              onClick={() => {
+                                handleSeeModalNew();
+                                setSeePlusButtons(false);
+                              }}
+                            >
+                              +
+                              <span>
+                                {UniversalTexts.calendarModal.singleClass}
+                              </span>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
             </div>
-          </>
-          {!isVisible && (
-            <div
-              style={{
-                marginBottom: "1rem",
-                borderRadius: "4px",
-                marginTop: "12px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  flexWrap: "wrap",
-                  gap: "8px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    background: "#f8f9fa",
-                    borderRadius: "4px",
-                    padding: "2px",
-                  }}
-                >
-                  <button
-                    disabled={!disabledAvoid}
-                    style={{
-                      width: "28px",
-                      height: "28px",
-                      background: !disabledAvoid ? "#e9ecef" : "#ffffff",
-                      border: "1px solid #dee2e6",
-                      borderRadius: "4px",
-                      color: !disabledAvoid ? "#adb5bd" : "#495057",
-                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "all 0.15s ease",
-                      fontSize: "12px",
-                    }}
-                    onClick={() => handleChangeWeek(-7)}
-                  >
-                    <i className="fa fa-chevron-left" />
-                  </button>
-
-                  <div
-                    style={{
-                      padding: "0 12px",
-                      fontWeight: "500",
-                      color: "#495057",
-                      fontSize: "13px",
-                      minWidth: "80px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {today.toLocaleDateString("pt-BR", {
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </div>
-
-                  <button
-                    disabled={!disabledAvoid}
-                    style={{
-                      width: "28px",
-                      height: "28px",
-                      background: !disabledAvoid ? "#e9ecef" : "#ffffff",
-                      border: "1px solid #dee2e6",
-                      borderRadius: "4px",
-                      color: !disabledAvoid ? "#adb5bd" : "#495057",
-                      cursor: !disabledAvoid ? "not-allowed" : "pointer",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      transition: "all 0.15s ease",
-                      fontSize: "12px",
-                    }}
-                    onClick={() => handleChangeWeek(7)}
-                  >
-                    <i className="fa fa-chevron-right" />
-                  </button>
-                </div>
-
-                {/* Seletor de Data - Minimalista */}
-
-                <div
-                  style={{
-                    background: "#f8f9fa",
-                    borderRadius: "4px",
-                    border: "1px solid #e9ecef",
-                    overflow: "hidden",
-                  }}
-                >
-                  <input
-                    type="date"
-                    onChange={handleDateChange}
-                    value={today.toISOString().split("T")[0]}
-                    disabled={loading}
-                    style={{
-                      padding: "6px 32px 6px 10px",
-                      border: "none",
-                      outline: "none",
-                      fontSize: "13px",
-                      fontWeight: "400",
-                      color: loading ? "#adb5bd" : "#495057",
-                      backgroundColor: "transparent",
-                      cursor: loading ? "not-allowed" : "pointer",
-                      opacity: loading ? 0.6 : 1,
-                    }}
-                  />
-                </div>
-
-                {!isVisible && (
-                  <div style={{ display: "grid", gap: "5px" }}>
-                    {/* Ações rápidas - Compactas */}
-
-                    <div
-                      style={{
-                        display: "grid",
-                        gridTemplateColumns: isDesktop
-                          ? "auto auto auto auto"
-                          : "auto auto",
-                        gridAutoFlow: isDesktop ? "column" : "row",
-                        gap: "6px",
-                        alignItems: "center",
-                      }}
-                    >
-                      {/* Botão Hoje */}
-
-                      <button
-                        disabled={!disabledAvoid}
-                        onClick={() => {
-                          loadGeneral(new Date());
-                        }}
-                      >
-                        <i
-                          className="fa fa-refresh"
-                          style={{ fontSize: "10px" }}
-                        />
-
-                        <span>{UniversalTexts.calendarModal.today}</span>
-                      </button>
-
-                      {/* Botão Recorrentes */}
-
-                      {authorizeOrNot && (
-                        <button
-                          disabled={!disabledAvoid}
-                          onClick={() => {
-                            handleSeeModalOfTutorings();
-                            setSeePlusButtons(false);
-                          }}
-                        >
-                          <i
-                            className="fa fa-repeat"
-                            style={{ fontSize: "10px" }}
-                          />
-
-                          <span>
-                            {UniversalTexts.calendarModal.recurringClasses}
-                          </span>
-                        </button>
-                      )}
-
-                      {authorizeOrNot && (
-                        <ToDoAddButton
-                          userId={myId}
-                          onCreated={() => {
-                            setAlternateBoolean(!alternateBoolean);
-                          }}
-                        />
-                      )}
-
-                      {/* Botão Nova Aula */}
-
-                      {authorizeOrNot && (
-                        <button
-                          onClick={() => {
-                            handleSeeModalNew();
-                            setSeePlusButtons(false);
-                          }}
-                        >
-                          +
-                          <span>
-                            {UniversalTexts.calendarModal.singleClass}
-                          </span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
+          ) : (
+            <RouteSizeControlBox>
+              {UniversalTexts.calendarModal.noLoggedUser}
+            </RouteSizeControlBox>
           )}
-        </div>
-      ) : (
-        <RouteSizeControlBox>
-          {UniversalTexts.calendarModal.noLoggedUser}
-        </RouteSizeControlBox>
-      )}
-      <Helmets text="Calendar" />
-    </>
+          <Helmets text="Calendar" />
+        </>
+      </div>
+    </div>
   );
 }
 
