@@ -234,14 +234,14 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
     fontWeight: 600,
     padding: "4px 10px",
     borderRadius: 8,
-    backgroundColor: "#EEF2FF",
+    backgroundColor: `${partnerColor()}20`,
     color: partnerColor(),
   };
 
   const statCardBase: React.CSSProperties = {
     borderRadius: 8,
     padding: 12,
-    backgroundColor: "#EEF2FF",
+    backgroundColor: `${partnerColor()}20`,
     display: "grid",
     gap: 4,
   };
@@ -337,7 +337,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
                 style={{
                   width: 72,
                   height: 72,
-                  borderRadius: 8,
+                  borderRadius: "50%",
                   background:
                     "linear-gradient(135deg, #E0ECFF 0%, #F4E8FF 100%)",
                   display: "flex",
@@ -447,7 +447,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
                 </span>
                 <span style={{ flex: 1 }}>{student.address || "-"}</span>
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
+              {/* <div style={{ display: "flex", gap: 8 }}>
                 <span
                   style={{
                     width: 60,
@@ -458,7 +458,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
                   Idioma
                 </span>
                 <span style={{ flex: 1 }}>{student.language || "-"}</span>
-              </div>
+              </div> */}
               <div style={{ display: "flex", gap: 8 }}>
                 <span
                   style={{
@@ -549,7 +549,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
                       alignItems: "center",
                       padding: 10,
                       borderRadius: 8,
-                      backgroundColor: "#F3F4FF",
+                      backgroundColor: `${partnerColor()}10`,
                     }}
                   >
                     <div style={{ display: "grid", gap: 2 }}>
