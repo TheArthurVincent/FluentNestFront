@@ -12,39 +12,41 @@ interface FlashcardsReviewProps {
 export const FlashcardsReview: FC<FlashcardsReviewProps> = ({
   actualHeaders,
 }) => {
-  const [flashcardsToday, setFlashcardsToday] = useState<any>(0);
+  const [flashcardsToday, setFlashcardsToday] = useState<number>(0);
   const [seeConf, setSeeConf] = useState<boolean>(false);
 
   const seeCardsToReview = async () => {
     const student = JSON.parse(localStorage.getItem("loggedIn") || "0");
-    var selectedStudentId;
+    let selectedStudentId: string | undefined;
 
     if (student.id) {
       selectedStudentId = student.id;
       updateInfo(selectedStudentId, actualHeaders);
+    } else {
+      return;
     }
 
     try {
       const response = await axios.get(
-        `${backDomain}/api/v1/flashcards/${selectedStudentId}`,
+        `${backDomain}/api/v1/flashcards-today/${selectedStudentId}`,
         {
           headers: actualHeaders,
           params: { category: null, lang: "en" },
         }
       );
+      console.log(response.data);
 
       setFlashcardsToday(response.data.flashcardsToday);
+      // se quiser usar isso pra algo:
+      setSeeConf(!seeConf);
     } catch (error) {
       notifyAlert("Erro ao enviar cards");
     }
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      seeCardsToReview();
-      setSeeConf(seeConf);
-    }, 1000);
-  }, [flashcardsToday]);
+    seeCardsToReview();
+  }, [actualHeaders]); // ou [] se não mudar
 
   return (
     <>
