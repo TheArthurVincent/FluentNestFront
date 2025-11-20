@@ -95,6 +95,30 @@ export function MyHomePage({
       component: <NextClass studentId={id} actualHeaders={actualHeaders} />,
     },
     {
+      showToStudent: true,
+      showToTeacher: false,
+      component: (
+        <WeeklyProgress
+          studentId={id}
+          isDesktop={isDesktop}
+          actualHeaders={actualHeaders}
+          appLoaded={appLoaded}
+        />
+      ),
+    },
+    {
+      showToTeacher: false,
+      showToStudent: true,
+      component: (
+        <HomeworkCard
+          isDesktop={isDesktop}
+          studentId={id}
+          actualHeaders={actualHeaders}
+          appLoaded={appLoaded}
+        />
+      ),
+    },
+    {
       showToTeacher: true,
       showToStudent: true,
       component: (
@@ -122,18 +146,6 @@ export function MyHomePage({
       ),
     },
     {
-      showToTeacher: false,
-      showToStudent: true,
-      component: (
-        <HomeworkCard
-          isDesktop={isDesktop}
-          studentId={id}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
-        />
-      ),
-    },
-    {
       showToStudent: false,
       showToTeacher: true,
       component: (
@@ -141,18 +153,6 @@ export function MyHomePage({
           studentId={id}
           isDesktop={isDesktop}
           actualHeaders={actualHeaders}
-        />
-      ),
-    },
-    {
-      showToStudent: true,
-      showToTeacher: false,
-      component: (
-        <WeeklyProgress
-          studentId={id}
-          isDesktop={isDesktop}
-          actualHeaders={actualHeaders}
-          appLoaded={appLoaded}
         />
       ),
     },
