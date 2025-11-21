@@ -8,6 +8,16 @@ import {
 } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
 
+// ⚠️ Ajuste o caminho se estiver diferente na sua estrutura
+import {
+  cardBase,
+  cardTitle,
+  pillStatus,
+  statCardBase,
+  statLabel,
+  statValue,
+} from "../Students/TheStudent/types/studentPage.styles";
+
 type EventProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
@@ -24,7 +34,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       const res = await axios.get(`${backDomain}/api/v1/event/${eventId}`, {
         headers: headers as any,
       });
-      setEventData(res.data);
+      setEventData(res.data.event); // o objeto é exatamente o evento que você mandou
       console.log(res.data);
     } catch (err) {
       console.error("Error fetching event data", err);
@@ -35,26 +45,13 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
     fetchEventData();
   }, [eventId]);
 
-  const getStatusColor = (status?: string) => {
-    if (!status) return "#64748B";
-    const s = status.toLowerCase();
-    if (s === "marcado") return "#0F9D58";
-    if (s === "realizada") return "#2563EB";
-    if (s === "desmarcado") return "#EF4444";
-    return "#64748B";
-  };
+  const event = eventData; // atalho
+  const lastLesson = eventData?.recentUnmarkedEvents?.[0] || null;
 
-  const getStatusBg = (status?: string) => {
-    if (!status) return "#E2E8F0";
-    const s = status.toLowerCase();
-    if (s === "marcado") return "#DCFCE7";
-    if (s === "realizada") return "#DBEAFE";
-    if (s === "desmarcado") return "#FEE2E2";
-    return "#E2E8F0";
+  const renderStatusPill = (status?: string) => {
+    if (!status) return null;
+    return <span style={pillStatus}>{status}</span>;
   };
-
-  const event = eventData?.event || null;
-  const lastLesson = event?.recentUnmarkedEvents?.[0] || null;
 
   return (
     <div
@@ -83,18 +80,16 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           >
             <span style={newArvinTitleStyle}>
               {event
-                ? event.student +
-                  " - " +
-                  formatDateBr(event.date) +
-                  " - " +
-                  event.time
+                ? `${event.student} - ${formatDateBr(event.date)} - ${
+                    event.time
+                  }`
                 : "Evento"}
             </span>
           </section>
         </div>
       )}
 
-      {/* WRAPPER DOS CARDS */}
+      {/* WRAPPER PRINCIPAL (semelhante ao Students) */}
       <div
         style={{
           fontFamily: "Plus Jakarta Sans",
@@ -108,7 +103,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           padding: "14px",
           display: "flex",
           flexDirection: "column",
-          gap: "12px",
+          gap: 12,
         }}
       >
         {!event && (
@@ -125,121 +120,58 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
         {event && (
           <>
-            {/* CARD: INFORMAÇÕES PRINCIPAIS */}
-            <div
-              style={{
-                borderRadius: "10px",
-                border: "1px solid #E2E8F0",
-                padding: "10px 12px",
-                background:
-                  "linear-gradient(135deg, #F8FAFC 0%, #FFFFFF 40%, #F8FAFC 100%)",
-                display: "flex",
-                flexDirection: "column",
-                gap: 8,
-              }}
-            >
+            {/* CARD 1 – Próxima aula */}
+            <div style={cardBase}>
               <div
                 style={{
-                  display: "flex",
+                  ...cardTitle,
+                  marginBottom: 12,
                   justifyContent: "space-between",
-                  alignItems: "center",
-                  gap: 8,
                 }}
               >
-                <span
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 600,
-                    letterSpacing: 0.5,
-                    textTransform: "uppercase",
-                    color: "#94A3B8",
-                  }}
-                >
-                  Próxima aula
-                </span>
-
-                <span
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 600,
-                    borderRadius: 999,
-                    padding: "4px 10px",
-                    backgroundColor: getStatusBg(event.status),
-                    color: getStatusColor(event.status),
-                  }}
-                >
-                  {event.status}
-                </span>
+                <span>Próxima aula</span>
+                {renderStatusPill(event.status)}
               </div>
 
-              <div
-                style={{
-                  fontSize: 15,
-                  fontWeight: 600,
-                  color: "#0F172A",
-                }}
-              >
-                {event.student}
-              </div>
-
+              {/* Stats principais */}
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-                  gap: 6,
-                  marginTop: 4,
+                  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+                  gap: 10,
                 }}
               >
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#475569",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}
-                >
-                  <span style={{ fontWeight: 500, color: "#94A3B8" }}>
-                    Data
-                  </span>
-                  <span>
+                <div style={statCardBase}>
+                  <span style={statLabel}>Aluno</span>
+                  <span style={statValue}>{event.student}</span>
+                </div>
+
+                <div style={statCardBase}>
+                  <span style={statLabel}>Data e horário</span>
+                  <span style={statValue}>
                     {formatDateBr(event.date)} - {event.time}
                   </span>
                 </div>
 
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#475569",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}
-                >
-                  <span style={{ fontWeight: 500, color: "#94A3B8" }}>
-                    Duração
-                  </span>
-                  <span>{event.duration} minutos</span>
+                <div style={statCardBase}>
+                  <span style={statLabel}>Duração</span>
+                  <span style={statValue}>{event.duration} min</span>
                 </div>
 
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#475569",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}
-                >
-                  <span style={{ fontWeight: 500, color: "#94A3B8" }}>
-                    Categoria
-                  </span>
-                  <span>{event.category || "—"}</span>
+                <div style={statCardBase}>
+                  <span style={statLabel}>Categoria</span>
+                  <span style={statValue}>{event.category || "—"}</span>
                 </div>
               </div>
 
               {event.link && (
-                <div style={{ marginTop: 8 }}>
+                <div
+                  style={{
+                    marginTop: 14,
+                    display: "flex",
+                    justifyContent: "flex-start",
+                  }}
+                >
                   <a
                     href={event.link}
                     target="_blank"
@@ -247,54 +179,31 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     style={{
                       fontSize: 12,
                       fontWeight: 600,
+                      padding: "8px 14px",
                       borderRadius: 999,
-                      padding: "6px 12px",
                       backgroundColor: "#0F9D58",
-                      color: "#ffffff",
+                      color: "#FFFFFF",
                       textDecoration: "none",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
                     }}
                   >
                     Entrar na sala
-                    <span style={{ fontSize: 12 }}>↗</span>
                   </a>
                 </div>
               )}
             </div>
 
-            {/* CARD: CHECKLIST DO EVENTO */}
-            <div
-              style={{
-                borderRadius: "10px",
-                border: "1px dashed #E2E8F0",
-                padding: "10px 12px",
-                backgroundColor: "#F9FAFB",
-                display: "flex",
-                flexDirection: "column",
-                gap: 6,
-              }}
-            >
-              <span
-                style={{
-                  fontSize: 12,
-                  fontWeight: 600,
-                  letterSpacing: 0.5,
-                  textTransform: "uppercase",
-                  color: "#94A3B8",
-                }}
-              >
-                Checklist do evento
-              </span>
+            {/* CARD 2 – Checklist do evento */}
+            <div style={cardBase}>
+              <div style={cardTitle}>Checklist do evento</div>
 
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                   gap: 6,
                   fontSize: 12,
-                  color: "#475569",
+                  fontWeight: 500,
+                  color: "#4B5563",
                 }}
               >
                 <span>{event.emailSent ? "✅" : "⬜"} E-mail enviado</span>
@@ -310,85 +219,51 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               </div>
             </div>
 
-            {/* CARD: ÚLTIMA AULA REALIZADA */}
+            {/* CARD 3 – Última aula realizada */}
             {lastLesson && (
-              <div
-                style={{
-                  borderRadius: "10px",
-                  border: "1px solid #E2E8F0",
-                  padding: "10px 12px",
-                  backgroundColor: "#F8FAFC",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 8,
-                }}
-              >
+              <div style={cardBase}>
                 <div
                   style={{
-                    display: "flex",
+                    ...cardTitle,
+                    marginBottom: 12,
                     justifyContent: "space-between",
-                    alignItems: "center",
-                    gap: 8,
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      letterSpacing: 0.5,
-                      textTransform: "uppercase",
-                      color: "#94A3B8",
-                    }}
-                  >
-                    Última aula realizada
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 11,
-                      fontWeight: 600,
-                      borderRadius: 999,
-                      padding: "4px 10px",
-                      backgroundColor: getStatusBg(lastLesson.status),
-                      color: getStatusColor(lastLesson.status),
-                    }}
-                  >
-                    {lastLesson.status}
-                  </span>
+                  <span>Última aula realizada</span>
+                  {renderStatusPill(lastLesson.status)}
                 </div>
 
                 <div
                   style={{
-                    fontSize: 14,
-                    fontWeight: 600,
-                    color: "#0F172A",
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fit, minmax(180px, 1fr))",
+                    gap: 10,
+                    marginBottom: 10,
                   }}
                 >
-                  {lastLesson.theLesson?.title || "Sem título do material"}
-                </div>
+                  <div style={statCardBase}>
+                    <span style={statLabel}>Material</span>
+                    <span style={statValue}>
+                      {lastLesson.theLesson?.title || "Sem título"}
+                    </span>
+                  </div>
 
-                <div
-                  style={{
-                    fontSize: 12,
-                    color: "#475569",
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: 2,
-                  }}
-                >
-                  <span style={{ fontWeight: 500, color: "#94A3B8" }}>
-                    Quando foi
-                  </span>
-                  <span>
-                    {formatDateBr(lastLesson.date)} - {lastLesson.time}
-                  </span>
+                  <div style={statCardBase}>
+                    <span style={statLabel}>Quando foi</span>
+                    <span style={statValue}>
+                      {formatDateBr(lastLesson.date)} - {lastLesson.time}
+                    </span>
+                  </div>
                 </div>
 
                 {lastLesson.description && (
                   <div
                     style={{
                       fontSize: 12,
-                      color: "#475569",
-                      marginTop: 4,
+                      fontWeight: 500,
+                      color: "#4B5563",
+                      marginBottom: 10,
                     }}
                   >
                     {lastLesson.description}
@@ -400,7 +275,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     display: "flex",
                     flexWrap: "wrap",
                     gap: 8,
-                    marginTop: 6,
+                    marginTop: 4,
                   }}
                 >
                   {lastLesson.video && (
@@ -411,9 +286,9 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       style={{
                         fontSize: 12,
                         fontWeight: 600,
+                        padding: "6px 12px",
                         borderRadius: 999,
-                        padding: "6px 10px",
-                        backgroundColor: "#0F172A",
+                        backgroundColor: "#111827",
                         color: "#FFFFFF",
                         textDecoration: "none",
                       }}
@@ -430,8 +305,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                       style={{
                         fontSize: 12,
                         fontWeight: 600,
+                        padding: "6px 12px",
                         borderRadius: 999,
-                        padding: "6px 10px",
                         backgroundColor: "#1D4ED8",
                         color: "#FFFFFF",
                         textDecoration: "none",
@@ -441,24 +316,25 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     </a>
                   )}
 
-                  {lastLesson.importantLink && !lastLesson.googleDriveLink && (
-                    <a
-                      href={lastLesson.importantLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        borderRadius: 999,
-                        padding: "6px 10px",
-                        backgroundColor: "#1D4ED8",
-                        color: "#FFFFFF",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Link importante
-                    </a>
-                  )}
+                  {lastLesson.importantLink &&
+                    !lastLesson.googleDriveLink && (
+                      <a
+                        href={lastLesson.importantLink}
+                        target="_blank"
+                        rel="noreferrer"
+                        style={{
+                          fontSize: 12,
+                          fontWeight: 600,
+                          padding: "6px 12px",
+                          borderRadius: 999,
+                          backgroundColor: "#1D4ED8",
+                          color: "#FFFFFF",
+                          textDecoration: "none",
+                        }}
+                      >
+                        Link importante
+                      </a>
+                    )}
                 </div>
               </div>
             )}
