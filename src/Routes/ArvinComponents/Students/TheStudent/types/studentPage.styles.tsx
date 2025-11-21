@@ -6,7 +6,6 @@ export const cardBase: React.CSSProperties = {
   backgroundColor: "#FFFFFF",
   borderRadius: 8,
   padding: 18,
-  boxShadow: "0 18px 40px rgba(15, 23, 42, 0.06)",
   border: "1px solid #E5E7EB",
 };
 
