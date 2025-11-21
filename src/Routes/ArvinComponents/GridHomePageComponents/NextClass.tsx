@@ -184,7 +184,7 @@ export const NextClass: FC<NextClassProps> = ({ actualHeaders, studentId }) => {
         )}
       </div>
       <a
-        href={NXTCLASS ? NXTCLASS.link : "/my-calendar"}
+        href={NXTCLASS ? `my-calendar/event/${NXTCLASS._id}` : "/my-calendar"}
         style={{
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 700,
