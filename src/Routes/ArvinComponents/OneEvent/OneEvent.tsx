@@ -424,7 +424,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             />
 
             {/* CARD 2 – Checklist do evento */}
-            <div style={cardBase}>
+            {/* <div style={cardBase}>
               <div style={cardTitle}>Checklist do evento</div>
 
               <div
@@ -448,7 +448,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   {event.notificationSent ? "✅" : "⬜"} Notificação enviada
                 </span>
               </div>
-            </div>
+            </div> */}
 
             {/* CARD 3 – Última aula realizada */}
             {lastLesson && (
@@ -460,7 +460,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  <span>Última aula realizada</span>
+                  <span>Aula Passada</span>
                   {renderStatusPill(lastLesson.status)}
                 </div>
 

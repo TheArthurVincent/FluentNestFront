@@ -354,7 +354,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             }}
           >
             <i className="fa fa-external-link" />
-            Entrar na Aula
+            Link da Sala
           </a>
         )}
         <div
