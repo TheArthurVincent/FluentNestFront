@@ -197,33 +197,41 @@ export const categoryList = [
   {
     text: "Aula Experimental",
     value: "Test",
+    forStudent: false,
   },
   {
     text: "Aula Única",
+    forStudent: false,
     value: "Standalone",
   },
   {
     text: "Aula Geral",
     value: "Group Class",
+    forStudent: false,
   },
   {
     text: "Aula De Um Grupo",
     value: "Established Group Class",
+    forStudent: false,
   },
   {
     text: "Aula De Reposição",
     value: "Rep",
+    forStudent: true,
   },
   {
     text: "Aula Prêmio",
     value: "Prize Class",
+    forStudent: true,
   },
   {
     text: "Aula De Tutoria",
     value: "Tutoring",
+    forStudent: true,
   },
   {
     text: "Horário Vazio Para Reposição",
     value: "Marcar Reposição",
+    forStudent: false,
   },
 ];

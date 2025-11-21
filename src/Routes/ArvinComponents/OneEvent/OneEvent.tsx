@@ -25,6 +25,7 @@ import {
 import { IFrameAsaas, IFrameVideoBlog } from "../../HomePage/Blog.Styled";
 import { partnerColor } from "../../../Styles/Styles";
 import EventVideo from "./sessions/VideoClass";
+import MainInfoClass from "./sessions/MainInfoClass";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -306,125 +307,14 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 </div>
               </div>
             </div>
-            <div style={cardBase}>
-              <div
-                style={{
-                  marginTop: 12,
-                  borderLeft: `4px solid ${partnerColor()}`,
-                  paddingLeft: 12,
-                  display: "grid",
-                  gap: 8,
-                }}
-              >
-                {/* Aluno (somente mobile) */}
-                {!isDesktop && (
-                  <div style={{ display: "grid" }}>
-                    <span
-                      style={{
-                        fontWeight: 600,
-                        color: "#030303",
-                        fontSize: 14,
-                      }}
-                    >
-                      {event.student}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: 12,
-                        color: "#606060",
-                      }}
-                    >
-                      Aluno
-                    </span>
-                  </div>
-                )}
+            <MainInfoClass
+              event={event}
+              headers={headers}
+              isDesktop={isDesktop}
+              fetchEventData={fetchEventData}
+              evendId={event._id}
+            />
 
-                {/* Data e horário */}
-                <div style={{ display: "grid" }}>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: "#606060",
-                    }}
-                  >
-                    Data e horário
-                  </span>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      color: "#030303",
-                      fontSize: 14,
-                    }}
-                  >
-                    {event.date} ({event.time})
-                  </span>
-                </div>
-
-                {/* Duração */}
-                <div style={{ display: "grid" }}>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: "#606060",
-                    }}
-                  >
-                    Duração
-                  </span>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      color: "#030303",
-                      fontSize: 14,
-                    }}
-                  >
-                    {event.duration} min
-                  </span>
-                </div>
-
-                {/* Categoria */}
-                <div style={{ display: "grid" }}>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: "#606060",
-                    }}
-                  >
-                    Categoria
-                  </span>
-                  <span
-                    style={{
-                      fontWeight: 600,
-                      color: "#030303",
-                      fontSize: 14,
-                    }}
-                  >
-                    {categoryList.find((c) => c.value === event.category)
-                      ?.text || "-"}
-                  </span>
-                </div>
-              </div>
-              {event.link && (
-                <a
-                  href={event.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  style={{
-                    marginTop: 14,
-                    display: "flex",
-                    fontWeight: 700,
-                    color: partnerColor(),
-                    textDecoration: "none",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    alignItems: "center",
-                    gap: 6,
-                  }}
-                >
-                  Entrar na sala
-                  <i className="fa fa-chevron-right" />
-                </a>
-              )}
-            </div>
             {/* CARD 2 – Checklist do evento */}
             <div style={cardBase}>
               <div style={cardTitle}>Checklist do evento</div>
