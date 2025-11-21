@@ -27,6 +27,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
   const [editName, setEditName] = useState(student.name || "");
   const [editLastname, setEditLastname] = useState(student.lastname || "");
   const [editEmail, setEditEmail] = useState(student.email || "");
+  const [editAddress, setEditAddress] = useState(student.email || "");
   const [editPhone, setEditPhone] = useState(student.phoneNumber || "");
   const [editDoc, setEditDoc] = useState((student as any).doc || "");
   const [editDateOfBirth, setEditDateOfBirth] = useState<string>("");
@@ -87,6 +88,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
     setEditName(student.name || "");
     setEditLastname(student.lastname || "");
     setEditEmail(student.email || "");
+    setEditAddress(student.address || "");
     setEditPhone(student.phoneNumber || "");
     setEditDoc((student as any).doc || "");
     setOpen(true);
@@ -106,6 +108,7 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
         name: editName,
         lastname: editLastname,
         email: editEmail,
+        address: editAddress,
         phoneNumber: editPhone,
         dateOfBirth: editDateOfBirth || null,
         doc: editDoc, // CPF (backend ainda pode ignorar, mas já mandamos)
@@ -341,7 +344,14 @@ export const StudentMainCard: FC<StudentMainCardProps> = ({
                 placeholder="000.000.000-00"
               />
             </div>
-
+            <Field
+              label="Endereço"
+              type="text"
+              value={editAddress}
+              onChange={(e) => setEditAddress(e.target.value)}
+              disabled={saving}
+              placeholder="Rua, número, bairro, cidade"
+            />
             <Field
               label="Email"
               type="email"
