@@ -578,7 +578,7 @@ export function Groups({ headers, id }) {
         {showDeleteConfirm && (
           <div
             style={{
-              margin: "12px 0px",
+              margin: "8px 0px",
               background: "#fff3f3",
               border: "1px solid #e53935",
               borderRadius: 6,

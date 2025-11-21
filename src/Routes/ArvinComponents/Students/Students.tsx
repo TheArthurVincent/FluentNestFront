@@ -87,7 +87,7 @@ export function Students({
       {isDesktop && (
         <div
           style={{
-            minHeight: 300,
+            minHeight: 200,
           }}
         >
           <Outlet />

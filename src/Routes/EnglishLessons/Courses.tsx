@@ -187,7 +187,7 @@ const thumbWrap: React.CSSProperties = {
   background: "#f3f4f6",
   padding: 0,
   overflow: "hidden",
-  borderRadius: "12px 12px 0 0",
+  borderRadius: "12px 8px 0 0",
 };
 
 const titleWrap: React.CSSProperties = { padding: "10px 12px 12px" };

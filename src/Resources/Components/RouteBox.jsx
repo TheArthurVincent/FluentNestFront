@@ -117,7 +117,7 @@ export const HOne = styled.h1`
   font-size: 18px;
   font-weight: 500;
   color: ${partnerColor()};
-  margin: 12px 0;
+  margin: 8px 0;
 `;
 
 export const HTwo = styled.h2`

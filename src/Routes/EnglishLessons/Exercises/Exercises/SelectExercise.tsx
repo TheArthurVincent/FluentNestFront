@@ -143,7 +143,7 @@ export function SelectExercise({
     <Card>
       <div style={{ padding: "16px", maxWidth: "800px", margin: "0 auto" }}>
         {isFinished ? (
-          <div style={{ textAlign: "center", padding: "12px 0" }}>
+          <div style={{ textAlign: "center", padding: "8px 0" }}>
             <div style={{ fontSize: "24px", marginBottom: "8px" }}>🎉</div>
             <h4
               style={{

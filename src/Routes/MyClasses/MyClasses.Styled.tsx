@@ -54,7 +54,7 @@ export const HThree = styled.h3`
 /* Cabeçalho “abrível” de módulo — liso, sem sombra, com borda lateral */
 export const HThreeModule = styled.h3`
   padding: 12px 14px;
-  margin: 12px 0;
+  margin: 8px 0;
   cursor: pointer;
   color: #000;
   background-color: #ffffff;
@@ -149,7 +149,7 @@ export const TransectionMenu = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 8px;
-  margin: 12px 0;
+  margin: 8px 0;
 
   @media (max-width: 1000px) {
     flex-direction: column;

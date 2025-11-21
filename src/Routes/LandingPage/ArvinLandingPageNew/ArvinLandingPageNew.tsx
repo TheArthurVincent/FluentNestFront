@@ -343,7 +343,7 @@ function ArvinLandingPageNew() {
                   alignItems: "center",
                   justifyItems: "center",
                   margin: "0 auto",
-                  padding: "12px 0",
+                  padding: "8px 0",
                 }}
               >
                 <div style={{ width: "100%", maxWidth: 850, margin: "0 auto" }}>
@@ -792,7 +792,7 @@ function ArvinLandingPageNew() {
                           <div>
                             <p
                               style={{
-                                margin: "0 0 12px 0",
+                                margin: "0 0 8px 0",
                                 fontFamily: "Plus Jakarta Sans",
                                 fontWeight: 700,
                                 fontSize: 14,

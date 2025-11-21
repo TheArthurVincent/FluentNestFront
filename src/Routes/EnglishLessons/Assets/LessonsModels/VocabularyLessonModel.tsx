@@ -190,7 +190,6 @@ export default function VocabularyLesson({
     borderRadius: "4px",
     padding: "8px",
     position: "relative",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
     minHeight: "40px",
     display: "flex",
     background: "#fff",
@@ -229,10 +228,6 @@ export default function VocabularyLesson({
             onClick={() => setSeeFront(!seeFront)}
             style={{
               border: `1px solid ${partnerColor()}`,
-              background: match.isMatchMode ? partnerColor() : "#ffffff",
-              color: match.isMatchMode
-                ? textpartnerColorContrast()
-                : partnerColor(),
               padding: "6px 10px",
               borderRadius: 6,
               fontSize: 13,
@@ -243,7 +238,7 @@ export default function VocabularyLesson({
             <i
               className={`fa ${seeFront ? "fa-eye" : "fa-eye-slash"}`}
               aria-hidden="true"
-            ></i>
+            />
           </button>
         )}
 
@@ -284,8 +279,6 @@ export default function VocabularyLesson({
                   borderRadius: "4px",
                   padding: "8px 12px 8px 12px",
                   position: "relative",
-                  boxShadow:
-                    "0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)",
                   minHeight: "40px",
                   display: "flex",
                   flexDirection: "column",

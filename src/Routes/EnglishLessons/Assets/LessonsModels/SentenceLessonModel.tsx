@@ -94,11 +94,9 @@ export default function SentenceLessonModel({
               key={i}
               style={{
                 background: "#fff",
-                border: "1px solid #e3e6ea",
-                borderRadius: "4px",
-                padding: "8px 12px 8px 12px",
+                borderLeft: `3px solid ${partnerColor()}`,
+                paddingLeft: "12px",
                 position: "relative",
-                boxShadow: "0 1px 4px #e3e6ea",
                 minHeight: "40px",
                 display: "flex",
                 flexDirection: "column",

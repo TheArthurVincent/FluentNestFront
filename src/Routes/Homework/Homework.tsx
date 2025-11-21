@@ -699,7 +699,7 @@ export default function Homework({
                                             margin:
                                               window.innerWidth <= 768
                                                 ? "0.75rem 0.5rem"
-                                                : "12px 0",
+                                                : "8px 0",
                                             border: "1px solid #E5E7EB",
                                             borderRadius: 6,
                                             overflow: "hidden",
@@ -1152,7 +1152,7 @@ export default function Homework({
                                                   >
                                                     <h4
                                                       style={{
-                                                        margin: "0 0 12px 0",
+                                                        margin: "0 0 8px 0",
                                                         fontSize:
                                                           window.innerWidth <=
                                                           768
@@ -1983,7 +1983,7 @@ export default function Homework({
                                                   >
                                                     <h4
                                                       style={{
-                                                        margin: "0 0 12px 0",
+                                                        margin: "0 0 8px 0",
                                                         fontSize: "14px",
                                                         fontWeight: "600",
                                                         color: "#374151",
@@ -2174,7 +2174,7 @@ export default function Homework({
                                                 >
                                                   <h4
                                                     style={{
-                                                      margin: "0 0 12px 0",
+                                                      margin: "0 0 8px 0",
                                                       fontSize: "14px",
                                                       fontWeight: "600",
                                                       color: "#0c4a6e",

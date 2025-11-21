@@ -560,7 +560,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       {isDesktop && (
         <div
           style={{
-            minHeight: 300,
+            minHeight: 200,
           }}
         >
           <Outlet />

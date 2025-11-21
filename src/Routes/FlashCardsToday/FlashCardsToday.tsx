@@ -234,7 +234,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                   borderBottom: "1px solid #f0f0f0",
                 }}
               >
@@ -260,7 +260,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                   borderBottom: "1px solid #f0f0f0",
                 }}
               >
@@ -286,7 +286,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                   borderBottom: "1px solid #f0f0f0",
                 }}
               >
@@ -312,7 +312,7 @@ export const ProgressCounter: React.FC<ProgressCounterProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                 }}
               >
                 <div>

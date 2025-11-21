@@ -600,7 +600,7 @@ export default function EditLesson({
               style={{
                 fontSize: "clamp(16px, 3vw, 18px)",
                 textAlign: "center",
-                margin: "0 0 12px 0",
+                margin: "0 0 8px 0",
                 color: "#0f172a",
               }}
             >

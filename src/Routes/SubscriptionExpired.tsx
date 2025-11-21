@@ -69,7 +69,7 @@ export function SubscriptionExpired() {
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      padding: "12px 0",
+      padding: "8px 0",
       borderBottom: "1px solid #f1f3f5",
       fontSize: "14px",
     },

@@ -45,7 +45,7 @@ const rowStyles: React.CSSProperties = {
   marginBottom: 25,
   borderTop: "1px solid #e2e8f0",
   borderBottom: "1px solid #e2e8f0",
-  padding: "12px 0",
+  padding: "8px 0",
 };
 
 const ghostBtnStyle: React.CSSProperties = {

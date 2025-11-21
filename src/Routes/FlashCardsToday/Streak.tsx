@@ -200,7 +200,7 @@ export const Streak: React.FC<StreakProps> = ({
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: "12px 0",
+                    padding: "8px 0",
                     borderBottom: "1px solid #f0f0f0",
                   }}
                 >
@@ -230,7 +230,7 @@ export const Streak: React.FC<StreakProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                   borderBottom: "1px solid #f0f0f0",
                 }}
               >
@@ -257,7 +257,7 @@ export const Streak: React.FC<StreakProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                   borderBottom: "1px solid #f0f0f0",
                 }}
               >
@@ -283,7 +283,7 @@ export const Streak: React.FC<StreakProps> = ({
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "12px 0",
+                  padding: "8px 0",
                 }}
               >
                 <div>
