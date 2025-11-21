@@ -248,8 +248,15 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
             })}
           </div>
         ) : (
-          <span style={{ color: "#606060", fontSize: 14 }}>
-            <>Crie aulas fixas para este aluno</>
+          <span
+            style={{
+              borderLeft: `4px solid ${partnerColor()}`,
+              color: "#606060",
+              fontSize: 14,
+              paddingLeft: 12,
+            }}
+          >
+            Crie aulas fixas para este aluno
           </span>
         )}
       </>
