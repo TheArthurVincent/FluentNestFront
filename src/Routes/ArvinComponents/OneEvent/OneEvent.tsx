@@ -24,6 +24,7 @@ import {
 } from "../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameAsaas, IFrameVideoBlog } from "../../HomePage/Blog.Styled";
 import { partnerColor } from "../../../Styles/Styles";
+import EventVideo from "./sessions/VideoClass";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -177,16 +178,12 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
         {event && (
           <>
-            {event.video && (
-              <div
-                style={{
-                  ...cardBase,
-                  display: "flex",
-                }}
-              >
-                <IFrameVideoBlog style={{}} src={getEmbedUrl(event.video)} />
-              </div>
-            )}
+            <EventVideo
+              fetchEventData={fetchEventData}
+              headers={headers}
+              videoUrl={event.video}
+              evendId={event._id}
+            />
             {/* CARD 1 – Próxima aula */}
             <div style={cardBase}>
               <div
