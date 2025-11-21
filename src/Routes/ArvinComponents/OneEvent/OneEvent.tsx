@@ -22,7 +22,7 @@ import {
   categoryList,
   getEmbedUrl,
 } from "../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
-import { IFrameAsaas } from "../../HomePage/Blog.Styled";
+import { IFrameAsaas, IFrameVideoBlog } from "../../HomePage/Blog.Styled";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -101,8 +101,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           fontStyle: "SemiBold",
           fontSize: "14px",
           borderRadius: "12px",
-          display: "flex",
-          flexDirection: "column",
+          display: "grid",
+          gridAutoColumns: "1fr",
           gap: 12,
         }}
       >
@@ -121,8 +121,13 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         {event && (
           <>
             {event.video && (
-              <div style={{ ...cardBase, alignItems: "center" }}>
-                <IFrameAsaas src={getEmbedUrl(event.video)} />
+              <div
+                style={{
+                  ...cardBase,
+                  display: "flex",
+                }}
+              >
+                <IFrameVideoBlog style={{}} src={getEmbedUrl(event.video)} />
               </div>
             )}
             {/* CARD 1 – Próxima aula */}

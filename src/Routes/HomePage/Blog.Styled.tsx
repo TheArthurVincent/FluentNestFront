@@ -92,8 +92,8 @@ export const IFrameAsaas = styled.iframe`
   min-height: 420px;
   margin-top: 1rem;
   margin-right: auto;
-  box-sizing: border-box;
   margin-left: auto;
+  box-sizing: border-box;
   position: relative;
   border: none;
   @media (max-width: 1500px) {
