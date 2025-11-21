@@ -23,6 +23,7 @@ import {
   getEmbedUrl,
 } from "../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import { IFrameAsaas, IFrameVideoBlog } from "../../HomePage/Blog.Styled";
+import { partnerColor } from "../../../Styles/Styles";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -57,6 +58,61 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const renderStatusPill = (status?: string) => {
     if (!status) return null;
     return <span style={pillStatus}>{status}</span>;
+  };
+
+  const updateScheduled = async (id: string) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/eventstatus/${id}`,
+        {
+          status: "marcado",
+        },
+        {
+          headers: headers as any,
+        }
+      );
+      if (response) {
+        fetchEventData();
+      }
+    } catch (error) {
+      console.log(error, "Erro ao atualizar evento");
+    }
+  };
+  const updateUnscheduled = async (id: string) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/eventstatus/${id}`,
+        {
+          status: "desmarcado",
+        },
+        {
+          headers: headers as any,
+        }
+      );
+      if (response) {
+        fetchEventData();
+      }
+    } catch (error) {
+      console.log(error, "Erro ao atualizar evento");
+    }
+  };
+  const updateRealizedClass = async (id: string) => {
+    try {
+      const response = await axios.put(
+        `${backDomain}/api/v1/eventstatus/${id}`,
+        {
+          status: "realizada",
+        },
+        {
+          headers: headers as any,
+        }
+      );
+      if (response) {
+        fetchEventData();
+      }
+    } catch (error) {
+      console.log(error, "Erro ao atualizar evento");
+    }
   };
 
   return (
@@ -132,70 +188,241 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             )}
             {/* CARD 1 – Próxima aula */}
             <div style={cardBase}>
-              {renderStatusPill(event.status)}
-
-              {/* Stats principais */}
               <div
                 style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-                  gap: 10,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "1rem",
+                  padding: "0.5rem",
+
+                  borderRadius: "4px",
                 }}
               >
+                <div
+                  style={{
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => updateScheduled(event._id)}
+                >
+                  <i
+                    className="fa fa-clock-o"
+                    style={{
+                      fontSize:
+                        event.status == "Scheduled" || event.status == "marcado"
+                          ? "24px"
+                          : "18px",
+                      color:
+                        event.status == "Scheduled" || event.status == "marcado"
+                          ? "#007bff"
+                          : "#6c757d",
+                      transition: "all 0.2s",
+                    }}
+                  />
+                  <div
+                    style={{
+                      color:
+                        event.status == "Scheduled" || event.status == "marcado"
+                          ? "#007bff"
+                          : "#6c757d",
+                      marginTop: "2px",
+                    }}
+                  >
+                    Agendado
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => updateRealizedClass(event._id)}
+                >
+                  <i
+                    className="fa fa-check-circle"
+                    style={{
+                      fontSize:
+                        event.status == "Realized" ||
+                        event.status == "realizada"
+                          ? "24px"
+                          : "18px",
+                      color:
+                        event.status == "Realized" ||
+                        event.status == "realizada"
+                          ? "#28a745"
+                          : "#6c757d",
+                      transition: "all 0.2s",
+                    }}
+                  />
+                  <div
+                    style={{
+                      color:
+                        event.status == "Realized" ||
+                        event.status == "realizada"
+                          ? "#28a745"
+                          : "#6c757d",
+                      marginTop: "2px",
+                    }}
+                  >
+                    Realizado
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    textAlign: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => updateUnscheduled(event._id)}
+                >
+                  <i
+                    className="fa fa-times-circle-o"
+                    style={{
+                      fontSize:
+                        event.status == "Canceled" ||
+                        event.status == "desmarcado"
+                          ? "24px"
+                          : "18px",
+                      color:
+                        event.status == "Canceled" ||
+                        event.status == "desmarcado"
+                          ? "#dc3545"
+                          : "#6c757d",
+                      transition: "all 0.2s",
+                    }}
+                  />
+                  <div
+                    style={{
+                      color:
+                        event.status == "Canceled" ||
+                        event.status == "desmarcado"
+                          ? "#dc3545"
+                          : "#6c757d",
+                      marginTop: "2px",
+                    }}
+                  >
+                    Cancelado
+                  </div>
+                </div>
+              </div>
+              <div
+                style={{
+                  marginTop: 12,
+                  borderLeft: `4px solid ${partnerColor()}`,
+                  paddingLeft: 12,
+                  display: "grid",
+                  gap: 8,
+                }}
+              >
+                {/* Aluno (somente mobile) */}
                 {!isDesktop && (
-                  <div style={statCardBase}>
-                    <span style={statLabel}>Aluno</span>
-                    <span style={statValue}>{event.student}</span>
+                  <div style={{ display: "grid" }}>
+                    <span
+                      style={{
+                        fontWeight: 600,
+                        color: "#030303",
+                        fontSize: 14,
+                      }}
+                    >
+                      {event.student}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#606060",
+                      }}
+                    >
+                      Aluno
+                    </span>
                   </div>
                 )}
 
-                <div style={statCardBase}>
-                  <span style={statLabel}>Data e horário</span>
-                  <span style={statValue}>
+                {/* Data e horário */}
+                <div style={{ display: "grid" }}>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#606060",
+                    }}
+                  >
+                    Data e horário
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: "#030303",
+                      fontSize: 14,
+                    }}
+                  >
                     {event.date} ({event.time})
                   </span>
                 </div>
 
-                <div style={statCardBase}>
-                  <span style={statLabel}>Duração</span>
-                  <span style={statValue}>{event.duration} min</span>
+                {/* Duração */}
+                <div style={{ display: "grid" }}>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#606060",
+                    }}
+                  >
+                    Duração
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: "#030303",
+                      fontSize: 14,
+                    }}
+                  >
+                    {event.duration} min
+                  </span>
                 </div>
 
-                <div style={statCardBase}>
-                  <span style={statLabel}>Categoria</span>
-                  <span style={statValue}>
-                    {categoryList.map((cat) =>
-                      cat.value === event.category ? cat.text : ""
-                    )}
+                {/* Categoria */}
+                <div style={{ display: "grid" }}>
+                  <span
+                    style={{
+                      fontSize: 12,
+                      color: "#606060",
+                    }}
+                  >
+                    Categoria
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: 600,
+                      color: "#030303",
+                      fontSize: 14,
+                    }}
+                  >
+                    {categoryList.find((c) => c.value === event.category)
+                      ?.text || "-"}
                   </span>
                 </div>
               </div>
-
               {event.link && (
-                <div
+                <a
+                  href={event.link}
+                  target="_blank"
+                  rel="noreferrer"
                   style={{
                     marginTop: 14,
                     display: "flex",
-                    justifyContent: "flex-start",
+                    fontWeight: 700,
+                    color: partnerColor(),
+                    textDecoration: "none",
+                    fontSize: 12,
+                    textTransform: "uppercase",
+                    alignItems: "center",
+                    gap: 6,
                   }}
                 >
-                  <a
-                    href={event.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      padding: "8px 14px",
-                      borderRadius: 999,
-                      backgroundColor: "#0F9D58",
-                      color: "#FFFFFF",
-                      textDecoration: "none",
-                    }}
-                  >
-                    Entrar na sala
-                  </a>
-                </div>
+                  Entrar na sala
+                  <i className="fa fa-chevron-right" />
+                </a>
               )}
             </div>
 
