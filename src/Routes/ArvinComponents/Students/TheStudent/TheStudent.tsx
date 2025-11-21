@@ -1,11 +1,9 @@
-// Routes/ArvinComponents/Students/StudentPage.tsx
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../Students";
-
 import { StudentHeader } from "./sections/StudentHeader";
 import { StudentTodayClassesCard } from "./sections/StudentTodayClassesCard";
 import { StudentStatsStrip } from "./sections/StudentStatsStrip";
@@ -139,11 +137,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
         {/* COLUNA ESQUERDA */}
         <div style={{ display: "grid", gap: 16, minWidth: 0 }}>
           <StudentMainCard student={student} />
-          <StudentTodayClassesCard
-            actualHeaders={headers}
-            student={student}
-            classes={mockTodayClasses}
-          />
+          <StudentTodayClassesCard actualHeaders={headers} student={student} />
         </div>
 
         {/* COLUNA CENTRAL */}

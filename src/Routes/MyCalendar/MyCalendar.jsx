@@ -5460,6 +5460,7 @@ function MyCalendar({
                 <div
                   className="modal box-shadow-white"
                   style={{
+                    backgroundColor: "white",
                     position: "fixed",
                     display: isModalOfTutoringsVisible ? "block" : "none",
                     zIndex: 100,
@@ -5551,7 +5552,6 @@ function MyCalendar({
                         >
                           <button
                             style={{
-                              color: "white",
                               padding: "5px 1rem",
                               borderRadius: "4px",
                               border: "none",

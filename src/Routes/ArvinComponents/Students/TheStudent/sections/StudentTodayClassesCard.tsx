@@ -1,4 +1,4 @@
-// StudentTodayClassesCard.tsx
+// Routes/ArvinComponents/Students/sections/StudentTodayClassesCard.tsx
 import React, { FC, useEffect, useState } from "react";
 import { GraduationCapIcon } from "@phosphor-icons/react";
 import { TodayClass } from "../types/studentsTypes";
@@ -9,15 +9,14 @@ import {
   backDomain,
   formatDateBr,
 } from "../../../../../Resources/UniversalComponents";
+import { StudentTutoringEditorModal } from "./StudentsRecurringTutorings/StudentTutoringEditorModal";
 
 interface StudentTodayClassesCardProps {
-  classes: TodayClass[];
   student?: any;
   actualHeaders?: any;
 }
 
 export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
-  classes,
   student,
   actualHeaders,
 }) => {
@@ -29,7 +28,7 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
   const tutoringDays = student?.tutoringDays || [];
 
   // ================================
-  //  FETCH Próxima aula
+  //  Buscar próxima aula (next-event)
   // ================================
   const fetchLastClassId = async () => {
     if (!student?.id) return;
@@ -37,11 +36,17 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
     try {
       const response = await axios.get(
         `${backDomain}/api/v1/next-event/${student.id}`,
-        { headers: actualHeaders }
+        {
+          headers: actualHeaders,
+        }
       );
 
-      if (response.data.nextEvent) setNXTCLASS(response.data.nextEvent);
-      if (response.data.teacherName) setTeacher(response.data.teacherName);
+      if (response.data.nextEvent) {
+        setNXTCLASS(response.data.nextEvent);
+      }
+      if (response.data.teacherName) {
+        setTeacher(response.data.teacherName);
+      }
 
       setLoadingNext(false);
     } catch (error) {
@@ -51,15 +56,17 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
 
   useEffect(() => {
     fetchLastClassId();
+    console.log("Fetching next class for student ID:", student);
   }, [student?.id]);
 
+  // Atualiza “now” para o selo "Ao vivo"
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 30000);
-    return () => clearInterval(t);
+    const interval = setInterval(() => setNow(new Date()), 30_000);
+    return () => clearInterval(interval);
   }, []);
 
   // ================================
-  //  LÓGICA "AO VIVO"
+  //  Lógica "ao vivo" / horário final
   // ================================
   let isLive = false;
   let endTimeStr = "";
@@ -68,15 +75,15 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
     const [Y, M, D] = NXTCLASS.date.split("-").map(Number);
     const [h, m] = NXTCLASS.time.split(":").map(Number);
     const start = new Date(Y, M - 1, D, h, m);
-    const end = new Date(start.getTime() + NXTCLASS.duration * 60000);
-    endTimeStr = `${String(end.getHours()).padStart(2, "0")}:${String(
-      end.getMinutes()
-    ).padStart(2, "0")}`;
+    const end = new Date(start.getTime() + NXTCLASS.duration * 60_000);
+
+    const pad = (n: number) => String(n).padStart(2, "0");
+    endTimeStr = `${pad(end.getHours())}:${pad(end.getMinutes())}`;
     isLive = now >= start && now <= end;
   }
 
   // ================================
-  //  DIA SEMANAL FIXO
+  //  Dia da semana PT-BR
   // ================================
   const dayMap: Record<string, string> = {
     Mon: "Seg",
@@ -90,13 +97,12 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
 
   return (
     <div style={cardBase}>
-      {/* ================================ */}
-      {/*   BLOCO 1 — PRÓXIMA AULA         */}
-      {/* ================================ */}
-
+      {/* ====================================== */}
+      {/*   BLOCO 1 – PRÓXIMA AULA              */}
+      {/* ====================================== */}
       <div style={cardTitle}>
         <GraduationCapIcon size={18} weight="bold" color="#111827" />
-        <span>Próxima aula de {student?.name || "aluno(a)"}</span>
+        <span>Próxima aula</span>
       </div>
 
       <div
@@ -108,17 +114,61 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
           gap: 6,
         }}
       >
-        {!loadingNext && NXTCLASS ? (
+        {loadingNext ? (
+          <span style={{ color: "#606060", fontSize: 14 }}>
+            Carregando próxima aula...
+          </span>
+        ) : NXTCLASS ? (
           <>
-            <span style={{ fontSize: 14, color: "#606060" }}>
+            <span
+              style={{
+                fontWeight: 700,
+                color: "#030303",
+                fontSize: 16,
+              }}
+            >
+              Aula com {teacher || "professor(a)"}{" "}
+            </span>
+
+            <span
+              style={{
+                fontSize: 14,
+                color: "#606060",
+              }}
+            >
               {formatDateBr(NXTCLASS.date)}
               <br />
               {NXTCLASS.time}
               {endTimeStr && ` - ${endTimeStr}`}
             </span>
+
+            {isLive && (
+              <span
+                style={{
+                  marginTop: 4,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  backgroundColor: partnerColor(),
+                  color: "white",
+                  padding: "4px 10px",
+                  borderRadius: 16,
+                  fontSize: 12,
+                  fontWeight: 600,
+                }}
+              >
+                <i
+                  className="fa fa-circle"
+                  style={{ fontSize: 8, marginRight: 2 }}
+                />
+                Ao vivo agora
+              </span>
+            )}
           </>
         ) : (
-          <span style={{ color: "#606060" }}>Carregando próxima aula...</span>
+          <span style={{ color: "#606060", fontSize: 14 }}>
+            Nenhuma próxima aula encontrada.
+          </span>
         )}
       </div>
 
@@ -139,40 +189,38 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
         {NXTCLASS ? "Acessar aula" : "Acessar calendário"}
         <i className="fa fa-chevron-right" />
       </a>
+      <>
+        <div
+          style={{
+            marginTop: 24,
+            ...cardTitle,
+          }}
+        >
+          <GraduationCapIcon size={18} weight="bold" color="#111827" />
+          <span>Aulas fixas</span>
+        </div>
 
-      {/* ================================ */}
-      {/*   BLOCO 2 — AULAS FIXAS         */}
-      {/* ================================ */}
-
-      {tutoringDays.length > 0 && (
-        <>
+        {tutoringDays.length > 0 ? (
           <div
             style={{
-              marginTop: 22,
-              ...cardTitle,
-            }}
-          >
-            <GraduationCapIcon size={18} weight="bold" color="#111827" />
-            <span>Aulas fixas de {student?.name || "aluno(a)"}</span>
-          </div>
-
-          <div
-            style={{
+              marginTop: 12,
+              borderLeft: `4px solid ${partnerColor()}`,
+              paddingLeft: 12,
               display: "grid",
-              gap: 6,
+              gap: 8,
             }}
           >
             {tutoringDays.map((td: any) => {
               const dayName = dayMap[td.day] || td.day;
+
               return (
                 <div
                   key={td.id}
                   style={{
-                    borderLeft: `4px solid ${partnerColor()}`,
-                    marginTop: 12,
-                    paddingLeft: 12,
                     display: "flex",
                     justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: 8,
                   }}
                 >
                   <div style={{ display: "grid" }}>
@@ -186,7 +234,12 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
                       {td.time} · {dayName}
                     </span>
 
-                    <span style={{ fontSize: 12, color: "#606060" }}>
+                    <span
+                      style={{
+                        fontSize: 12,
+                        color: "#606060",
+                      }}
+                    >
                       Duração: {td.duration} min
                     </span>
                   </div>
@@ -194,8 +247,16 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
               );
             })}
           </div>
-        </>
-      )}
+        ) : (
+          <span style={{ color: "#606060", fontSize: 14 }}>
+            <>Crie aulas fixas para este aluno</>
+          </span>
+        )}
+      </>
+      <StudentTutoringEditorModal
+        student={student}
+        actualHeaders={actualHeaders}
+      />
     </div>
   );
 };

@@ -3,10 +3,15 @@ import React, { FC } from "react";
 
 interface StudentHeaderProps {
   title: string;
+  email?: string;
   style?: React.CSSProperties;
 }
 
-export const StudentHeader: FC<StudentHeaderProps> = ({ title, style }) => {
+export const StudentHeader: FC<StudentHeaderProps> = ({
+  title,
+  email,
+  style,
+}) => {
   return (
     <div
       style={{
@@ -27,6 +32,7 @@ export const StudentHeader: FC<StudentHeaderProps> = ({ title, style }) => {
         }}
       >
         <span style={style}>{title}</span>
+        {/* <span>{email}</span> */}
       </section>
     </div>
   );
