@@ -198,7 +198,12 @@ export function HomePage({ headers }: HeadersProps) {
       title: "Homework",
       levelcard: false,
       component: (
-        <Homework change={change} setChange={setChange} headers={headers} />
+        <Homework
+          change={change}
+          setChange={setChange}
+          headers={headers}
+          isDesktop={false}
+        />
       ),
     },
     {
@@ -206,7 +211,12 @@ export function HomePage({ headers }: HeadersProps) {
       title: "Homework",
       levelcard: false,
       component: (
-        <Homework change={change} setChange={setChange} headers={headers} />
+        <Homework
+          change={change}
+          setChange={setChange}
+          headers={headers}
+          isDesktop={false}
+        />
       ),
     },
     {
@@ -214,7 +224,12 @@ export function HomePage({ headers }: HeadersProps) {
       levelcard: false,
       path: "/my-classes",
       component: (
-        <Homework change={change} setChange={setChange} headers={headers} />
+        <Homework
+          change={change}
+          setChange={setChange}
+          headers={headers}
+          isDesktop={false}
+        />
       ),
     },
     {
@@ -226,6 +241,7 @@ export function HomePage({ headers }: HeadersProps) {
           myId={_StudentId}
           thePermissions={thePermissions}
           headers={headers}
+          isDesktop={undefined}
         />
       ),
     },
@@ -256,7 +272,7 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "Ranking",
-      component: <Ranking headers={headers} />,
+      component: <Ranking headers={headers} isDesktop={false} />,
     },
     {
       title: "English Courses",
@@ -265,6 +281,7 @@ export function HomePage({ headers }: HeadersProps) {
           setChange={setChange}
           change={change}
           headers={headers}
+          isDesktop={false}
         />
       ),
     },
@@ -275,6 +292,7 @@ export function HomePage({ headers }: HeadersProps) {
           setChange={setChange}
           change={change}
           headers={headers}
+          isDesktop={false}
         />
       ),
     },
@@ -314,7 +332,15 @@ export function HomePage({ headers }: HeadersProps) {
     },
     {
       title: "My Profile",
-      component: <MyProfile headers={headers} />,
+      component: (
+        <MyProfile
+          headers={headers}
+          change={false}
+          setChange={function (value: React.SetStateAction<boolean>): void {
+            throw new Error("Function not implemented.");
+          }}
+        />
+      ),
     },
     {
       title: "Posts",

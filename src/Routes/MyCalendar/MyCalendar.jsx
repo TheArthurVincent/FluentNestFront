@@ -2324,6 +2324,11 @@ function MyCalendar({
                                       "0 2px 8px rgba(0,0,0,0.1)";
                                   }}
                                   onClick={() => handleSeeModal(event)}
+                                  // onClick={() => {
+                                  //   window.location.assign(
+                                  //     `my-calendar/event/${event._id}`
+                                  //   );
+                                  // }}
                                 >
                                   {/* Live Event Indicator */}
                                   {event.status !== "desmarcado" &&
