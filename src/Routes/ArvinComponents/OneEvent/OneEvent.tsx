@@ -148,6 +148,119 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 : "Evento"}
             </span>
           </section>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "1rem",
+              padding: "0.5rem",
+
+              borderRadius: "4px",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => updateScheduled(event._id)}
+            >
+              <i
+                className="fa fa-clock-o"
+                style={{
+                  fontSize:
+                    event.status == "Scheduled" || event.status == "marcado"
+                      ? "24px"
+                      : "18px",
+                  color:
+                    event.status == "Scheduled" || event.status == "marcado"
+                      ? "#007bff"
+                      : "#6c757d",
+                  transition: "all 0.2s",
+                }}
+              />
+              <div
+                style={{
+                  color:
+                    event.status == "Scheduled" || event.status == "marcado"
+                      ? "#007bff"
+                      : "#6c757d",
+                  marginTop: "2px",
+                }}
+              >
+                Agendado
+              </div>
+            </div>
+
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => updateRealizedClass(event._id)}
+            >
+              <i
+                className="fa fa-check-circle"
+                style={{
+                  fontSize:
+                    event.status == "Realized" || event.status == "realizada"
+                      ? "24px"
+                      : "18px",
+                  color:
+                    event.status == "Realized" || event.status == "realizada"
+                      ? "#28a745"
+                      : "#6c757d",
+                  transition: "all 0.2s",
+                }}
+              />
+              <div
+                style={{
+                  color:
+                    event.status == "Realized" || event.status == "realizada"
+                      ? "#28a745"
+                      : "#6c757d",
+                  marginTop: "2px",
+                }}
+              >
+                Realizado
+              </div>
+            </div>
+
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => updateUnscheduled(event._id)}
+            >
+              <i
+                className="fa fa-times-circle-o"
+                style={{
+                  fontSize:
+                    event.status == "Canceled" || event.status == "desmarcado"
+                      ? "24px"
+                      : "18px",
+                  color:
+                    event.status == "Canceled" || event.status == "desmarcado"
+                      ? "#dc3545"
+                      : "#6c757d",
+                  transition: "all 0.2s",
+                }}
+              />
+              <div
+                style={{
+                  color:
+                    event.status == "Canceled" || event.status == "desmarcado"
+                      ? "#dc3545"
+                      : "#6c757d",
+                  marginTop: "2px",
+                }}
+              >
+                Cancelado
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -165,6 +278,121 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           gap: 12,
         }}
       >
+        {!isDesktop && (
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "1rem",
+              fontSize: "0.8rem",
+              padding: "0.5rem",
+              borderRadius: "4px",
+            }}
+          >
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => updateScheduled(event._id)}
+            >
+              <i
+                className="fa fa-clock-o"
+                style={{
+                  fontSize:
+                    event.status == "Scheduled" || event.status == "marcado"
+                      ? "24px"
+                      : "18px",
+                  color:
+                    event.status == "Scheduled" || event.status == "marcado"
+                      ? "#007bff"
+                      : "#6c757d",
+                  transition: "all 0.2s",
+                }}
+              />
+              <div
+                style={{
+                  color:
+                    event.status == "Scheduled" || event.status == "marcado"
+                      ? "#007bff"
+                      : "#6c757d",
+                  marginTop: "2px",
+                }}
+              >
+                Agendado
+              </div>
+            </div>
+
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => updateRealizedClass(event._id)}
+            >
+              <i
+                className="fa fa-check-circle"
+                style={{
+                  fontSize:
+                    event.status == "Realized" || event.status == "realizada"
+                      ? "24px"
+                      : "18px",
+                  color:
+                    event.status == "Realized" || event.status == "realizada"
+                      ? "#28a745"
+                      : "#6c757d",
+                  transition: "all 0.2s",
+                }}
+              />
+              <div
+                style={{
+                  color:
+                    event.status == "Realized" || event.status == "realizada"
+                      ? "#28a745"
+                      : "#6c757d",
+                  marginTop: "2px",
+                }}
+              >
+                Realizado
+              </div>
+            </div>
+
+            <div
+              style={{
+                textAlign: "center",
+                cursor: "pointer",
+              }}
+              onClick={() => updateUnscheduled(event._id)}
+            >
+              <i
+                className="fa fa-times-circle-o"
+                style={{
+                  fontSize:
+                    event.status == "Canceled" || event.status == "desmarcado"
+                      ? "24px"
+                      : "18px",
+                  color:
+                    event.status == "Canceled" || event.status == "desmarcado"
+                      ? "#dc3545"
+                      : "#6c757d",
+                  transition: "all 0.2s",
+                }}
+              />
+              <div
+                style={{
+                  color:
+                    event.status == "Canceled" || event.status == "desmarcado"
+                      ? "#dc3545"
+                      : "#6c757d",
+                  marginTop: "2px",
+                }}
+              >
+                Cancelado
+              </div>
+            </div>
+          </div>
+        )}
         {!event && (
           <div
             style={{
@@ -186,127 +414,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               evendId={event._id}
             />
             {/* CARD 1 – Próxima aula */}
-            <div style={cardBase}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "1rem",
-                  padding: "0.5rem",
 
-                  borderRadius: "4px",
-                }}
-              >
-                <div
-                  style={{
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => updateScheduled(event._id)}
-                >
-                  <i
-                    className="fa fa-clock-o"
-                    style={{
-                      fontSize:
-                        event.status == "Scheduled" || event.status == "marcado"
-                          ? "24px"
-                          : "18px",
-                      color:
-                        event.status == "Scheduled" || event.status == "marcado"
-                          ? "#007bff"
-                          : "#6c757d",
-                      transition: "all 0.2s",
-                    }}
-                  />
-                  <div
-                    style={{
-                      color:
-                        event.status == "Scheduled" || event.status == "marcado"
-                          ? "#007bff"
-                          : "#6c757d",
-                      marginTop: "2px",
-                    }}
-                  >
-                    Agendado
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => updateRealizedClass(event._id)}
-                >
-                  <i
-                    className="fa fa-check-circle"
-                    style={{
-                      fontSize:
-                        event.status == "Realized" ||
-                        event.status == "realizada"
-                          ? "24px"
-                          : "18px",
-                      color:
-                        event.status == "Realized" ||
-                        event.status == "realizada"
-                          ? "#28a745"
-                          : "#6c757d",
-                      transition: "all 0.2s",
-                    }}
-                  />
-                  <div
-                    style={{
-                      color:
-                        event.status == "Realized" ||
-                        event.status == "realizada"
-                          ? "#28a745"
-                          : "#6c757d",
-                      marginTop: "2px",
-                    }}
-                  >
-                    Realizado
-                  </div>
-                </div>
-
-                <div
-                  style={{
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => updateUnscheduled(event._id)}
-                >
-                  <i
-                    className="fa fa-times-circle-o"
-                    style={{
-                      fontSize:
-                        event.status == "Canceled" ||
-                        event.status == "desmarcado"
-                          ? "24px"
-                          : "18px",
-                      color:
-                        event.status == "Canceled" ||
-                        event.status == "desmarcado"
-                          ? "#dc3545"
-                          : "#6c757d",
-                      transition: "all 0.2s",
-                    }}
-                  />
-                  <div
-                    style={{
-                      color:
-                        event.status == "Canceled" ||
-                        event.status == "desmarcado"
-                          ? "#dc3545"
-                          : "#6c757d",
-                      marginTop: "2px",
-                    }}
-                  >
-                    Cancelado
-                  </div>
-                </div>
-              </div>
-            </div>
             <MainInfoClass
               event={event}
               headers={headers}

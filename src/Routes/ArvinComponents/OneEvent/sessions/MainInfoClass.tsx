@@ -150,16 +150,16 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           {/* Header */}
           <div
             style={{
-              padding: 12,
-              borderBottom: "1px solid #e2e8f0",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              padding: "20px 16px",
+              maxWidth: "fit-content",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: 16,
+              fontWeight: 600,
             }}
           >
-            <strong style={{ fontSize: 14, color: "#0f172a" }}>
-              Editar informações da aula
-            </strong>
+            Editar informações da aula
           </div>
 
           {/* Corpo */}
@@ -327,7 +327,36 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
 
   return (
     <>
-      <div style={cardBase}>
+      <div
+        style={{
+          ...cardBase,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+          position: "relative",
+        }}
+      >
+        {event.link && (
+          <a
+            href={event.link}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              marginTop: 14,
+              display: "flex",
+              fontWeight: 700,
+              color: partnerColor(),
+              textDecoration: "none",
+              fontSize: 18,
+              textTransform: "uppercase",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            <i className="fa fa-external-link" />
+            Entrar na Aula
+          </a>
+        )}
         <div
           style={{
             marginTop: 12,
@@ -424,43 +453,20 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
             </span>
           </div>
         </div>
-
-        {event.link && (
-          <a
-            href={event.link}
-            target="_blank"
-            rel="noreferrer"
-            style={{
-              marginTop: 14,
-              display: "flex",
-              fontWeight: 700,
-              color: partnerColor(),
-              textDecoration: "none",
-              fontSize: 12,
-              textTransform: "uppercase",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            <i className="fa fa-external-link" />
-            Entrar na sala
-          </a>
-        )}
-
         {/* Botão para abrir o modal de edição */}
         <button
           onClick={openModal}
           style={{
-            marginTop: 12,
+            padding: "8px 16px",
+            backgroundColor: partnerColor(),
+            color: "#fff",
+            maxWidth: "fit-content",
+            border: "none",
             marginLeft: "auto",
-            padding: "6px 12px",
-            borderRadius: 999,
-            border: "1px solid #e2e8f0",
-            backgroundColor: "#ffffff",
-            color: "#0f172a",
-            fontSize: 12,
-            fontWeight: 500,
+            borderRadius: "4px",
             cursor: "pointer",
+            fontSize: 13,
+            fontWeight: 600,
           }}
         >
           Editar informações

@@ -111,7 +111,7 @@ const EventVideo: FC<EventVideoProps> = ({
     setIsModalOpen(false);
   };
 
-  // Render do modal via portal (mesmo conceito do SimpleAIGenerator)
+  // Render do modal via portal (usado APENAS quando já existe vídeo)
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null; // segurança SSR
@@ -187,7 +187,7 @@ const EventVideo: FC<EventVideoProps> = ({
             <button
               onClick={handleSave}
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving}
+              disabled={saving || !video.trim()}
             >
               {saving ? "Salvando..." : "Salvar vídeo"}
             </button>
@@ -198,39 +198,101 @@ const EventVideo: FC<EventVideoProps> = ({
     );
   };
 
-  return (
-    <>
-      <div
-        style={{
-          ...cardBase,
-          display: "flex",
-          gap: 16,
-          flexDirection: "column",
-        }}
-      >
-        {videoUrl && <IFrameVideoBlog style={{}} src={getEmbedUrl(videoUrl)} />}
+  const hasVideo = !!videoUrl;
 
-        <button
-          style={{
-            padding: "8px 16px",
-            backgroundColor: partnerColor(),
-            color: "#fff",
-            maxWidth: "fit-content",
-            border: "none",
-            marginLeft: "auto",
-            marginRight: 30,
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-          onClick={openModal}
-        >
-          Editar vídeo
-        </button>
-      </div>
-      {renderModal()}
-    </>
+  return (
+    <div
+      style={{
+        ...cardBase,
+        display: "flex",
+        flexDirection: "column",
+        gap: 16,
+      }}
+    >
+      {hasVideo ? (
+        <>
+          {/* Preview do vídeo existente */}
+          <IFrameVideoBlog src={getEmbedUrl(videoUrl!)} />
+
+          {/* Botão que abre o modal */}
+          <button
+            style={{
+              padding: "8px 16px",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              maxWidth: "fit-content",
+              border: "none",
+              marginLeft: "auto",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+            onClick={openModal}
+          >
+            Editar vídeo
+          </button>
+
+          {renderModal()}
+        </>
+      ) : (
+        <>
+          {/* Sem vídeo → editor inline, sem modal */}
+          <span style={{ fontSize: 13, color: "#64748b" }}>
+            Nenhum vídeo cadastrado para esta aula. Adicione o link abaixo:
+          </span>
+
+          <input
+            disabled={saving}
+            value={video}
+            onChange={(e) => setVideo(e.target.value)}
+            placeholder="https://www.youtube.com/watch?v=..."
+            style={inputStyle}
+          />
+
+          {video && (
+            <div style={{ display: "grid", gap: 6, marginTop: 4 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Pré-visualização
+              </label>
+              <div
+                style={{
+                  borderRadius: 8,
+                  overflow: "hidden",
+                  border: "1px solid #e2e8f0",
+                }}
+              >
+                <IFrameVideoBlog src={getEmbedUrl(video)} />
+              </div>
+            </div>
+          )}
+
+          <div
+            style={{
+              marginTop: 8,
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: 8,
+            }}
+          >
+            <button
+              style={ghostBtnStyle}
+              onClick={() => setVideo("")}
+              disabled={saving}
+            >
+              Limpar
+            </button>
+            <button
+              onClick={handleSave}
+              style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
+              disabled={saving || !video.trim()}
+            >
+              {saving ? "Salvando..." : "Salvar vídeo"}
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
