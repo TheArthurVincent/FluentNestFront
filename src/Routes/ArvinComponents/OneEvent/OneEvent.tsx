@@ -5,6 +5,7 @@ import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import {
   backDomain,
   formatDateBr,
+  getResponsiveEmbedUrl,
 } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
 
@@ -17,6 +18,11 @@ import {
   statLabel,
   statValue,
 } from "../Students/TheStudent/types/studentPage.styles";
+import {
+  categoryList,
+  getEmbedUrl,
+} from "../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
+import { IFrameAsaas } from "../../HomePage/Blog.Styled";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -80,9 +86,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           >
             <span style={newArvinTitleStyle}>
               {event
-                ? `${event.student} - ${formatDateBr(event.date)} - ${
-                    event.time
-                  }`
+                ? `${event.student} ${event.date} (${event.time})`
                 : "Evento"}
             </span>
           </section>
@@ -96,11 +100,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           fontWeight: 600,
           fontStyle: "SemiBold",
           fontSize: "14px",
-          backgroundColor: "#ffffff",
           borderRadius: "12px",
-          width: "95%",
-          border: "1px solid #e8eaed",
-          padding: "14px",
           display: "flex",
           flexDirection: "column",
           gap: 12,
@@ -120,18 +120,14 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
         {event && (
           <>
+            {event.video && (
+              <div style={{ ...cardBase, alignItems: "center" }}>
+                <IFrameAsaas src={getEmbedUrl(event.video)} />
+              </div>
+            )}
             {/* CARD 1 – Próxima aula */}
             <div style={cardBase}>
-              <div
-                style={{
-                  ...cardTitle,
-                  marginBottom: 12,
-                  justifyContent: "space-between",
-                }}
-              >
-                <span>Próxima aula</span>
-                {renderStatusPill(event.status)}
-              </div>
+              {renderStatusPill(event.status)}
 
               {/* Stats principais */}
               <div
@@ -141,15 +137,17 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   gap: 10,
                 }}
               >
-                <div style={statCardBase}>
-                  <span style={statLabel}>Aluno</span>
-                  <span style={statValue}>{event.student}</span>
-                </div>
+                {!isDesktop && (
+                  <div style={statCardBase}>
+                    <span style={statLabel}>Aluno</span>
+                    <span style={statValue}>{event.student}</span>
+                  </div>
+                )}
 
                 <div style={statCardBase}>
                   <span style={statLabel}>Data e horário</span>
                   <span style={statValue}>
-                    {formatDateBr(event.date)} - {event.time}
+                    {event.date} ({event.time})
                   </span>
                 </div>
 
@@ -160,7 +158,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
                 <div style={statCardBase}>
                   <span style={statLabel}>Categoria</span>
-                  <span style={statValue}>{event.category || "—"}</span>
+                  <span style={statValue}>
+                    {categoryList.map((cat) =>
+                      cat.value === event.category ? cat.text : ""
+                    )}
+                  </span>
                 </div>
               </div>
 
@@ -236,8 +238,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns:
-                      "repeat(auto-fit, minmax(180px, 1fr))",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                     gap: 10,
                     marginBottom: 10,
                   }}
@@ -252,7 +253,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   <div style={statCardBase}>
                     <span style={statLabel}>Quando foi</span>
                     <span style={statValue}>
-                      {formatDateBr(lastLesson.date)} - {lastLesson.time}
+                      {lastLesson.date} ({lastLesson.time})
                     </span>
                   </div>
                 </div>
@@ -278,25 +279,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     marginTop: 4,
                   }}
                 >
-                  {lastLesson.video && (
-                    <a
-                      href={lastLesson.video}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        padding: "6px 12px",
-                        borderRadius: 999,
-                        backgroundColor: "#111827",
-                        color: "#FFFFFF",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Ver gravação
-                    </a>
-                  )}
-
                   {lastLesson.googleDriveLink && (
                     <a
                       href={lastLesson.googleDriveLink}
@@ -316,25 +298,24 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                     </a>
                   )}
 
-                  {lastLesson.importantLink &&
-                    !lastLesson.googleDriveLink && (
-                      <a
-                        href={lastLesson.importantLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{
-                          fontSize: 12,
-                          fontWeight: 600,
-                          padding: "6px 12px",
-                          borderRadius: 999,
-                          backgroundColor: "#1D4ED8",
-                          color: "#FFFFFF",
-                          textDecoration: "none",
-                        }}
-                      >
-                        Link importante
-                      </a>
-                    )}
+                  {lastLesson.importantLink && !lastLesson.googleDriveLink && (
+                    <a
+                      href={lastLesson.importantLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{
+                        fontSize: 12,
+                        fontWeight: 600,
+                        padding: "6px 12px",
+                        borderRadius: 999,
+                        backgroundColor: "#1D4ED8",
+                        color: "#FFFFFF",
+                        textDecoration: "none",
+                      }}
+                    >
+                      Link importante
+                    </a>
+                  )}
                 </div>
               </div>
             )}
