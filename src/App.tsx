@@ -322,21 +322,6 @@ function App() {
         }
       })(),
     },
-    //    {
-    //   path: "/students/:studentId",
-    //   element: (() => {
-    //     try {
-    //       return verifyToken() ? (
-    //         <StudentPage headers={headers} />
-    //       ) : (
-    //         <LoginComponent />
-    //       );
-    //     } catch (err) {
-    //       console.error("[App] Erro ao definir rota /students/:studentId:", err);
-    //       return <LoginComponent />;
-    //     }
-    //   })(),
-    // },
     {
       path: "*",
       element: (() => {

@@ -52,6 +52,7 @@ import MyHomePage from "./ArvinComponents/NewHomePageArvin/NewHomePageArvin";
 import Students from "./ArvinComponents/Students/Students";
 import Turmas from "./ArvinComponents/Groups/Groups";
 import StudentPage from "./ArvinComponents/Students/TheStudent/TheStudent";
+import Event from "./ArvinComponents/OneEvent/OneEvent";
 
 export const useIsDesktop = (breakpoint = 1150) => {
   const [isDesktop, setIsDesktop] = useState(
@@ -415,6 +416,16 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       showLeftBar: true,
       component: headers ? (
         <StudentPage isDesktop={isDesktop} headers={headers} />
+      ) : (
+        <div>Loading...</div>
+      ),
+    },
+    {
+      title: "Aula",
+      path: "/my-calendar/event/:eventId",
+      showLeftBar: true,
+      component: headers ? (
+        <Event isDesktop={isDesktop} headers={headers} />
       ) : (
         <div>Loading...</div>
       ),

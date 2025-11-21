@@ -41,6 +41,7 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
         }
       );
 
+      console.log("Next class response:", response.data);
       if (response.data.nextEvent) {
         setNXTCLASS(response.data.nextEvent);
       }
@@ -56,7 +57,6 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
 
   useEffect(() => {
     fetchLastClassId();
-    console.log("Fetching next class for student ID:", student);
   }, [student?.id]);
 
   // Atualiza “now” para o selo "Ao vivo"
@@ -171,9 +171,8 @@ export const StudentTodayClassesCard: FC<StudentTodayClassesCardProps> = ({
           </span>
         )}
       </div>
-
       <a
-        href={NXTCLASS ? NXTCLASS.link : "/my-calendar"}
+        href={NXTCLASS ? "/my-calendar/event/" + NXTCLASS._id : "/my-calendar"}
         style={{
           marginTop: 14,
           display: "flex",
