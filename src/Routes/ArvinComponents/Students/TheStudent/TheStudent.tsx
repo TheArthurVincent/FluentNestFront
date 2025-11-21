@@ -129,7 +129,7 @@ const StudentPage: FC<StudentPageProps> = ({ headers, isDesktop }) => {
             : "minmax(0, 1fr)",
           gap: isDesktop ? 24 : 16,
           alignItems: "flex-start",
-          width: "100%",
+          margin: !isDesktop ? "12px" : "0px",
           maxWidth: "100%",
           boxSizing: "border-box",
         }}

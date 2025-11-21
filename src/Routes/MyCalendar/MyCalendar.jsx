@@ -798,7 +798,6 @@ function MyCalendar({
       console.log(error, "Erro ao atualizar evento");
     }
   };
-
   const updateRealizedClass = async (id) => {
     try {
       const response = await axios.put(
@@ -1658,7 +1657,7 @@ function MyCalendar({
           fontSize: "14px",
           backgroundColor: "#ffffff",
           borderRadius: "12px",
-          width: "95%",
+          margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
         }}
       >

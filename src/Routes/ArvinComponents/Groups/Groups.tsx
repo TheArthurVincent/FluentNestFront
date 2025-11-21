@@ -51,7 +51,7 @@ export function Turmas({
               justifyContent: "space-between",
               alignItems: "center",
               paddingLeft: "8px",
-              width: "100%",
+              margin: !isDesktop ? "12px" : "0px",
               fontSize: "1.5rem",
             }}
           >

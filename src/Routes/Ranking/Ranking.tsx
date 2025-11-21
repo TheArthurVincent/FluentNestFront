@@ -91,12 +91,11 @@ export default function Ranking({ headers, isDesktop }: Props) {
         style={{
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 600,
-
+          margin: !isDesktop ? "12px" : "16px auto",
           fontStyle: "SemiBold",
           fontSize: "14px",
           backgroundColor: "#ffffff",
           borderRadius: "12px",
-          width: "95%",
           border: "1px solid #e8eaed",
           padding: "12px",
         }}

@@ -681,7 +681,7 @@ export default function EnglishCourses({
           fontSize: "14px",
           backgroundColor: "#ffffff",
           borderRadius: "12px",
-          width: "95%",
+          margin: !isDesktop ? "12px" : "0px",
           border: "1px solid #e8eaed",
           padding: "10px",
         }}

@@ -192,10 +192,10 @@ const FlashCards = ({
       )}
       <div
         style={{
-          margin: "16px auto",
           fontFamily: "Plus Jakarta Sans",
           fontWeight: 600,
           fontStyle: "SemiBold",
+          margin: !isDesktop ? "12px" : "16px auto",
           fontSize: "14px",
           backgroundColor: "#ffffff",
           borderRadius: "12px",
