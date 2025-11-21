@@ -307,6 +307,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                   </div>
                 </div>
               </div>
+            </div>
+            <div style={cardBase}>
               <div
                 style={{
                   marginTop: 12,
@@ -425,7 +427,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 </a>
               )}
             </div>
-
             {/* CARD 2 – Checklist do evento */}
             <div style={cardBase}>
               <div style={cardTitle}>Checklist do evento</div>
