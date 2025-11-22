@@ -4,19 +4,10 @@ import { Outlet, useParams } from "react-router-dom";
 import { MyHeadersType } from "../../../Resources/types.universalInterfaces";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { newArvinTitleStyle } from "../NewHomePageArvin/NewHomePageArvin";
-
-import {
-  cardBase,
-  cardTitle,
-  pillStatus,
-  statCardBase,
-  statLabel,
-  statValue,
-} from "../Students/TheStudent/types/studentPage.styles";
-
 import EventVideo from "./sessions/VideoClass";
 import MainInfoClass from "./sessions/MainInfoClass";
 import Description from "./sessions/Description";
+import LastClass from "./sessions/LastEvent";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -47,11 +38,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
   const event = eventData;
   const lastLesson = eventData?.recentUnmarkedEvents?.[0] || null;
-
-  const renderStatusPill = (status?: string) => {
-    if (!status) return null;
-    return <span style={pillStatus}>{status}</span>;
-  };
 
   const updateScheduled = async (id: string) => {
     if (!id) return;
@@ -404,101 +390,11 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               fetchEventData={fetchEventData}
             />
             {lastLesson && (
-              <div style={cardBase}>
-                <div
-                  style={{
-                    ...cardTitle,
-                    marginBottom: 12,
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <span>Aula Passada</span>
-                  {lastLesson.status && renderStatusPill(lastLesson.status)}
-                </div>
-
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-                    gap: 10,
-                    marginBottom: 10,
-                  }}
-                >
-                  <div style={statCardBase}>
-                    <span style={statLabel}>Material</span>
-                    <span style={statValue}>
-                      {lastLesson.theLesson?.title || "Sem título"}
-                    </span>
-                  </div>
-
-                  <div style={statCardBase}>
-                    <span style={statLabel}>Quando foi</span>
-                    <span style={statValue}>
-                      {lastLesson.date} ({lastLesson.time})
-                    </span>
-                  </div>
-                </div>
-
-                {lastLesson.description && (
-                  <div
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: "#4B5563",
-                      marginBottom: 10,
-                    }}
-                  >
-                    {lastLesson.description}
-                  </div>
-                )}
-
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 8,
-                    marginTop: 4,
-                  }}
-                >
-                  {lastLesson.googleDriveLink && (
-                    <a
-                      href={lastLesson.googleDriveLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        padding: "6px 12px",
-                        borderRadius: 999,
-                        backgroundColor: "#1D4ED8",
-                        color: "#FFFFFF",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Material / Drive
-                    </a>
-                  )}
-
-                  {lastLesson.importantLink && !lastLesson.googleDriveLink && (
-                    <a
-                      href={lastLesson.importantLink}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{
-                        fontSize: 12,
-                        fontWeight: 600,
-                        padding: "6px 12px",
-                        borderRadius: 999,
-                        backgroundColor: "#1D4ED8",
-                        color: "#FFFFFF",
-                        textDecoration: "none",
-                      }}
-                    >
-                      Link importante
-                    </a>
-                  )}
-                </div>
-              </div>
+              <LastClass
+                headers={headers}
+                isDesktop={isDesktop}
+                lastLesson={lastLesson}
+              />
             )}
           </>
         )}
