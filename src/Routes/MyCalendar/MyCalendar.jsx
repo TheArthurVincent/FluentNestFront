@@ -4559,7 +4559,6 @@ function MyCalendar({
                                     justifyContent: "center",
                                     color: partnerColor(),
                                     textDecoration: "none",
-
                                     padding: "10px",
                                     borderRadius: "4px",
                                     backgroundColor: textpartnerColorContrast(),
