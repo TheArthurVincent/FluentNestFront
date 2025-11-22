@@ -249,15 +249,6 @@ const EventVideo: FC<EventVideoProps> = ({
         </>
       ) : (
         <>
-          <div
-            style={{
-              ...cardTitle,
-              marginBottom: 12,
-              justifyContent: "space-between",
-            }}
-          >
-            <span>Vídeo</span>
-          </div>
           {/* Sem vídeo → editor inline, sem modal */}
           <span style={{ fontSize: 13, color: "#64748b" }}>
             Nenhum vídeo cadastrado para esta aula. Adicione o link abaixo:
