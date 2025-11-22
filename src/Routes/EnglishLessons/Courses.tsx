@@ -18,7 +18,7 @@ import {
   onLoggOut,
   pathGenerator,
 } from "../../Resources/UniversalComponents";
-import { partnerColor } from "../../Styles/Styles";
+import { logoPartner, partnerColor } from "../../Styles/Styles";
 import Modules from "./Modules";
 import NewCourseButton from "./NewCourse/NewCourse";
 import EditCourseModal, { Course } from "./EditCourse/EditCourse";
@@ -285,7 +285,7 @@ const CourseCard: React.FC<{
   const Thumb = (
     <div style={thumbWrap}>
       <img
-        src={course.image}
+        src={course.image || logoPartner()}
         alt={`${course.title}img`}
         loading="lazy"
         decoding="async"
@@ -741,41 +741,14 @@ export default function EnglishCourses({
                     padding: "1rem",
                   }}
                 >
-                  {/* Header igual ao MyHomePage */}
-                  <div>
-                    {/* Mantive apenas visual – sem lógica de busca */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        marginTop: 10,
-                      }}
-                    >
-                      <div style={headerRightStyle}>
-                        {(permissions === "superadmin" ||
-                          permissions === "teacher") && (
-                          <NewCourseButton
-                            studentId={studentID}
-                            headers={actualHeaders}
-                          />
-                        )}
-                      </div>
-
-                      <Link
-                        style={{
-                          marginLeft: 16,
-                          marginBottom: -10,
-                          fontSize: 14,
-                          cursor: "pointer",
-                          color: partnerColor(),
-                          textDecoration: "none",
-                          fontFamily: "Plus Jakarta Sans", // style-only
-                        }}
-                        to="/"
-                      >
-                        Voltar para Home Page
-                      </Link>
-                    </div>
+                  <div style={headerRightStyle}>
+                    {(permissions === "superadmin" ||
+                      permissions === "teacher") && (
+                      <NewCourseButton
+                        studentId={studentID}
+                        headers={actualHeaders}
+                      />
+                    )}
                   </div>
 
                   {/* Primeira categoria — cursos NÃO originais (ignorando idioma) */}
