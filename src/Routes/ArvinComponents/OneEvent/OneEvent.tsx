@@ -25,7 +25,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         headers: headers as any,
       });
       setEventData(res.data.event);
-      console.log(res.data);
     } catch (err) {
       console.error("Error fetching event data", err);
     }

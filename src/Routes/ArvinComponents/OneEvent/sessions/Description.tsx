@@ -1,13 +1,17 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import {
   cardBase,
   cardTitle,
+  statCardBase,
+  statLabel,
+  statValue,
 } from "../../Students/TheStudent/types/studentPage.styles";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
 type DescriptionProps = {
   headers: MyHeadersType;
@@ -16,7 +20,7 @@ type DescriptionProps = {
   fetchEventData: () => void;
 };
 
-// ---------- estilos reaproveitando a ideia do SimpleAIGenerator ----------
+// ---------- estilos base (mesmos do MainInfoClass) ----------
 const overlayStyle: React.CSSProperties = {
   position: "fixed",
   inset: 0,
@@ -75,17 +79,30 @@ const Description: FC<DescriptionProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Mantém o state sincronizado com a prop (caso o evento mude)
+  const [theLesson, setTheLesson] = useState<{
+    id: string;
+    title: string;
+    module: string;
+    course: string;
+  } | null>(null);
+
+  const [lessonsList, setLessonsList] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+
   useEffect(() => {
     setDescription(theDescription || "");
   }, [theDescription]);
+
+  const hasDescription = !!theDescription && theDescription.trim().length > 0;
+
+  // ================== API ==================
 
   const updateDescription = async (id: string) => {
     try {
       setSaving(true);
       const response = await axios.put(
         `${backDomain}/api/v1/eventdescription/${id}`,
-        { description },
+        { description, theLesson },
         { headers: headers as any }
       );
       if (response) {
@@ -93,9 +110,15 @@ const Description: FC<DescriptionProps> = ({
       }
     } catch (error) {
       console.log(error, "Erro ao atualizar descrição do evento");
+      notifyAlert("Erro ao salvar descrição da aula.", partnerColor());
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleSave = async () => {
+    await updateDescription(evendId);
+    setIsModalOpen(false);
   };
 
   const openModal = () => {
@@ -107,40 +130,184 @@ const Description: FC<DescriptionProps> = ({
     if (!saving) setIsModalOpen(false);
   };
 
-  const handleSave = async () => {
-    await updateDescription(evendId);
-    setIsModalOpen(false);
+  const getClasses = async () => {
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    const myId = logged?.id;
+
+    if (!myId) return;
+
+    if (thePermissions === "superadmin" || thePermissions === "teacher") {
+      try {
+        const response = await axios.get(
+          `${backDomain}/api/v1/courses-organized/${myId}`,
+          { headers: headers as any }
+        );
+        const res = response.data?.lessons ?? [];
+        setLessonsList(res);
+      } catch (error) {
+        console.log(error, "Erro ao encontrar cursos");
+      }
+    }
   };
 
-  // Render do modal via portal (usado APENAS quando já existe descrição)
+  useEffect(() => {
+    getClasses();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ================== filtros / grouping ==================
+
+  const filteredLessonsList = useMemo(() => {
+    if (!searchTerm.trim()) return lessonsList;
+    const q = searchTerm.toLowerCase();
+    return lessonsList.filter((l) => (l.title || "").toLowerCase().includes(q));
+  }, [lessonsList, searchTerm]);
+
+  const grouped = useMemo(() => {
+    const byCourse: Record<string, Record<string, any[]>> = {};
+
+    for (const l of filteredLessonsList) {
+      const courseName = l.course ?? "Sem curso";
+      const moduleName = l.module ?? "Sem módulo";
+
+      if (!byCourse[courseName]) byCourse[courseName] = {};
+      if (!byCourse[courseName][moduleName])
+        byCourse[courseName][moduleName] = [];
+
+      byCourse[courseName][moduleName].push(l);
+    }
+
+    return byCourse;
+  }, [filteredLessonsList]);
+
+  // ================== seleção de aula ==================
+
+  const handleLessonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    if (!id || id.startsWith("sep:")) return;
+
+    const found = lessonsList.find((l) => String(l.id) === id);
+    if (!found) {
+      setTheLesson(null);
+      return;
+    }
+
+    const normalized = {
+      id: String(found.id),
+      title: found.title,
+      module: found.moduleId || found.module,
+      course: found.courseId || found.course,
+    };
+
+    setTheLesson(normalized);
+  };
+
+  // ================== blocos de UI reutilizáveis ==================
+
+  const renderLessonSelectorBlock = () => (
+    <div style={{ display: "grid", gap: 8 }}>
+      <label
+        style={{
+          fontSize: 12,
+          color: "#334155",
+          fontWeight: 500,
+        }}
+      >
+        Aula usada
+      </label>
+
+      <input
+        type="text"
+        placeholder="Pesquisar aula pelo título..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        style={inputStyle}
+      />
+
+      <select
+        onChange={handleLessonChange}
+        value={theLesson?.id ? String(theLesson.id) : ""}
+        style={{
+          ...inputStyle,
+          paddingRight: 24,
+        }}
+      >
+        <option value="" hidden>
+          Selecione a aula...
+        </option>
+
+        {Object.keys(grouped).length === 0 && (
+          <option value="" disabled>
+            Nenhuma aula encontrada para essa busca.
+          </option>
+        )}
+
+        {Object.entries(grouped).map(([courseName, modules]) => (
+          <optgroup key={courseName} label={courseName}>
+            {Object.entries(modules).map(([moduleName, ls]) => (
+              <React.Fragment key={`${courseName}-${moduleName}`}>
+                <option value={`sep:${courseName}:${moduleName}`} disabled>
+                  — {moduleName} —
+                </option>
+                {ls.map((l: any) => (
+                  <option key={l.id} value={String(l.id)}>
+                    {l.title}
+                  </option>
+                ))}
+              </React.Fragment>
+            ))}
+          </optgroup>
+        ))}
+      </select>
+
+      {/* resumo da aula selecionada, no estilo stat cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+          gap: 8,
+          marginTop: 4,
+        }}
+      >
+        <div>
+          <span style={statLabel}>Título</span>
+          <span>{theLesson?.title || "Nenhuma aula selecionada"}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ================== MODAL ==================
+
   const renderModal = () => {
     if (!isModalOpen) return null;
-    if (typeof document === "undefined") return null; // segurança SSR
+    if (typeof document === "undefined") return null;
 
     return createPortal(
       <div style={overlayStyle} onClick={saving ? undefined : closeModal}>
-        <div
-          style={modalStyle}
-          onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro
-        >
-          {/* Header do modal */}
+        <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
+          {/* Header */}
           <div
             style={{
-              padding: 12,
+              padding: "20px 16px",
               borderBottom: "1px solid #e2e8f0",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
+              fontSize: 16,
+              fontWeight: 600,
+              color: "#0f172a",
             }}
           >
-            <strong style={{ fontSize: 14, color: "#0f172a" }}>
-              Editar descrição da aula
-            </strong>
+            Editar descrição da aula
           </div>
 
-          {/* Corpo do modal */}
-          <div style={{ padding: 12, display: "grid", gap: 10 }}>
+          {/* Corpo */}
+          <div style={{ padding: 12, display: "grid", gap: 12 }}>
+            {renderLessonSelectorBlock()}
+
             <div style={{ display: "grid", gap: 6 }}>
+              <label style={{ fontSize: 12, color: "#334155" }}>
+                Descrição da aula
+              </label>
               <textarea
                 disabled={saving}
                 value={description}
@@ -148,14 +315,15 @@ const Description: FC<DescriptionProps> = ({
                 placeholder="Escreva aqui a descrição da aula (o que foi feito, combinados, observações importantes...)"
                 style={{
                   ...inputStyle,
-                  minHeight: 120,
+                  minHeight: 140,
                   resize: "vertical",
+                  fontFamily: "Plus Jakarta Sans",
                 }}
               />
             </div>
           </div>
 
-          {/* Footer do modal */}
+          {/* Footer */}
           <div
             style={{
               padding: 12,
@@ -177,7 +345,7 @@ const Description: FC<DescriptionProps> = ({
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
               disabled={saving || !description.trim()}
             >
-              {saving ? "Salvando..." : "Salvar descrição"}
+              {saving ? "Salvando..." : "Salvar"}
             </button>
           </div>
         </div>
@@ -186,44 +354,100 @@ const Description: FC<DescriptionProps> = ({
     );
   };
 
-  const hasDescription = !!theDescription && theDescription.trim().length > 0;
+  // ================== RENDER PRINCIPAL ==================
 
   return (
-    <div
-      style={{
-        ...cardBase,
-        display: "flex",
-        flexDirection: "column",
-        gap: 16,
-      }}
-    >
+    <>
       <div
         style={{
-          ...cardTitle,
-          marginBottom: 12,
-          justifyContent: "space-between",
+          ...cardBase,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+          position: "relative",
         }}
       >
-        <span>Descrição</span>
-      </div>
-      {hasDescription ? (
-        <>
-          {/* Preview simples da descrição atual */}
-          <div
-            style={{
-              fontSize: 13,
-              color: "#0f172a",
-              backgroundColor: "#f8fafc",
-              borderRadius: 8,
-              padding: 10,
-              whiteSpace: "pre-wrap",
-            }}
-          >
-            {theDescription}
-          </div>
+        <div
+          style={{
+            ...cardTitle,
+            marginBottom: 12,
+            justifyContent: "space-between",
+          }}
+        >
+          <span>Descrição da Aula</span>
+        </div>
 
-          {/* Botão que abre o modal */}
+        {/* BLOCO PRINCIPAL COM LEFT BORDER (igual vibe do MainInfoClass) */}
+        <div
+          style={{
+            marginTop: 4,
+            borderLeft: `4px solid ${partnerColor()}`,
+            paddingLeft: 12,
+            display: "grid",
+            gap: 8,
+          }}
+        >
+          {hasDescription ? (
+            <>
+              <div style={{ display: "grid", gap: 4 }}>
+                <span
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 500,
+                    color: "#4B5563",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {theDescription}
+                </span>
+              </div>
+              <div style={{ display: "grid", gap: 6, marginTop: 8 }}>
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: "#606060",
+                  }}
+                >
+                  Aula vinculada
+                </span>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+                    gap: 8,
+                  }}
+                >
+                  <span>{theLesson?.title || "Não especificado"}</span>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <span
+                style={{
+                  fontSize: 12,
+                  color: "#606060",
+                }}
+              >
+                Nenhuma descrição cadastrada para esta aula.
+              </span>
+              <span
+                style={{
+                  fontSize: 13,
+                  color: "#374151",
+                }}
+              >
+                Use este espaço para registrar rapidamente o que foi visto,
+                combinados, tarefas e observações importantes.
+              </span>
+            </>
+          )}
+        </div>
+
+        {/* BOTÕES / EDIT */}
+        {hasDescription ? (
           <button
+            onClick={openModal}
             style={{
               padding: "8px 16px",
               backgroundColor: partnerColor(),
@@ -236,59 +460,32 @@ const Description: FC<DescriptionProps> = ({
               fontSize: 13,
               fontWeight: 600,
             }}
-            onClick={openModal}
           >
-            Editar descrição
+            Editar descrição e aula
           </button>
-
-          {renderModal()}
-        </>
-      ) : (
-        <>
-          {/* Sem descrição → editor inline, sem modal */}
-          <span style={{ fontSize: 13, color: "#64748b" }}>
-            Nenhuma descrição cadastrada para esta aula. Adicione a descrição
-            abaixo:
-          </span>
-
-          <textarea
-            disabled={saving}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Escreva aqui a descrição da aula (conteúdo, combinados, observações...)"
+        ) : (
+          <button
+            onClick={() => setIsModalOpen(true)}
             style={{
-              ...inputStyle,
-              minHeight: 120,
-              resize: "vertical",
-            }}
-          />
-
-          <div
-            style={{
-              marginTop: 8,
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: 8,
+              padding: "8px 16px",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              maxWidth: "fit-content",
+              border: "none",
+              marginLeft: "auto",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
             }}
           >
-            <button
-              style={ghostBtnStyle}
-              onClick={() => setDescription("")}
-              disabled={saving}
-            >
-              Limpar
-            </button>
-            <button
-              onClick={handleSave}
-              style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving || !description.trim()}
-            >
-              {saving ? "Salvando..." : "Salvar descrição"}
-            </button>
-          </div>
-        </>
-      )}
-    </div>
+            Adicionar descrição
+          </button>
+        )}
+      </div>
+
+      {renderModal()}
+    </>
   );
 };
 
