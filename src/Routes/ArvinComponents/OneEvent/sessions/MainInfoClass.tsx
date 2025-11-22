@@ -2,7 +2,10 @@ import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
 import { categoryList } from "../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
-import { cardBase } from "../../Students/TheStudent/types/studentPage.styles";
+import {
+  cardBase,
+  cardTitle,
+} from "../../Students/TheStudent/types/studentPage.styles";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
@@ -336,6 +339,15 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           position: "relative",
         }}
       >
+        <div
+          style={{
+            ...cardTitle,
+            marginBottom: 12,
+            justifyContent: "space-between",
+          }}
+        >
+          <span>Informações do Evento</span>
+        </div>
         {event.link && (
           <a
             href={event.link}

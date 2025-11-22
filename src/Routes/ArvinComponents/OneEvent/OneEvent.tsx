@@ -16,6 +16,7 @@ import {
 
 import EventVideo from "./sessions/VideoClass";
 import MainInfoClass from "./sessions/MainInfoClass";
+import Description from "./sessions/Description";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -389,7 +390,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               videoUrl={event.video}
               evendId={event._id}
             />
-
             <MainInfoClass
               event={event}
               headers={headers}
@@ -397,7 +397,12 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               fetchEventData={fetchEventData}
               evendId={event._id}
             />
-
+            <Description
+              headers={headers}
+              theDescription={event.description}
+              evendId={event._id}
+              fetchEventData={fetchEventData}
+            />
             {lastLesson && (
               <div style={cardBase}>
                 <div

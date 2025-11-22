@@ -1,8 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import { createPortal } from "react-dom";
-import { IFrameVideoBlog } from "../../../HomePage/Blog.Styled";
-import { getEmbedUrl } from "../../../MyCalendar/CalendarComponents/MyCalendarFunctions/MyCalendarFunctions";
 import {
   cardBase,
   cardTitle,
@@ -11,9 +9,9 @@ import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 
-type EventVideoProps = {
+type DescriptionProps = {
   headers: MyHeadersType;
-  videoUrl?: string;
+  theDescription?: string;
   evendId: string;
   fetchEventData: () => void;
 };
@@ -67,41 +65,41 @@ const primaryBtnStyle: React.CSSProperties = {
   fontWeight: 600,
 };
 
-const EventVideo: FC<EventVideoProps> = ({
+const Description: FC<DescriptionProps> = ({
   headers,
-  videoUrl,
+  theDescription,
   evendId,
   fetchEventData,
 }) => {
-  const [video, setVideo] = useState<string>(videoUrl || "");
+  const [description, setDescription] = useState<string>(theDescription || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // Mantém o state sincronizado com a prop (caso o evento mude)
   useEffect(() => {
-    setVideo(videoUrl || "");
-  }, [videoUrl]);
+    setDescription(theDescription || "");
+  }, [theDescription]);
 
-  const updateVideo = async (id: string) => {
+  const updateDescription = async (id: string) => {
     try {
       setSaving(true);
       const response = await axios.put(
-        `${backDomain}/api/v1/eventvideo/${id}`,
-        { video },
+        `${backDomain}/api/v1/eventdescription/${id}`,
+        { description },
         { headers: headers as any }
       );
       if (response) {
         fetchEventData();
       }
     } catch (error) {
-      console.log(error, "Erro ao atualizar evento");
+      console.log(error, "Erro ao atualizar descrição do evento");
     } finally {
       setSaving(false);
     }
   };
 
   const openModal = () => {
-    setVideo(videoUrl || "");
+    setDescription(theDescription || "");
     setIsModalOpen(true);
   };
 
@@ -110,11 +108,11 @@ const EventVideo: FC<EventVideoProps> = ({
   };
 
   const handleSave = async () => {
-    await updateVideo(evendId);
+    await updateDescription(evendId);
     setIsModalOpen(false);
   };
 
-  // Render do modal via portal (usado APENAS quando já existe vídeo)
+  // Render do modal via portal (usado APENAS quando já existe descrição)
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null; // segurança SSR
@@ -136,38 +134,25 @@ const EventVideo: FC<EventVideoProps> = ({
             }}
           >
             <strong style={{ fontSize: 14, color: "#0f172a" }}>
-              Editar vídeo da aula
+              Editar descrição da aula
             </strong>
           </div>
 
           {/* Corpo do modal */}
           <div style={{ padding: 12, display: "grid", gap: 10 }}>
             <div style={{ display: "grid", gap: 6 }}>
-              <input
+              <textarea
                 disabled={saving}
-                value={video}
-                onChange={(e) => setVideo(e.target.value)}
-                placeholder="https://www.youtube.com/watch?v=..."
-                style={inputStyle}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Escreva aqui a descrição da aula (o que foi feito, combinados, observações importantes...)"
+                style={{
+                  ...inputStyle,
+                  minHeight: 120,
+                  resize: "vertical",
+                }}
               />
             </div>
-
-            {video && (
-              <div style={{ display: "grid", gap: 6, marginTop: 4 }}>
-                <label style={{ fontSize: 12, color: "#334155" }}>
-                  Pré-visualização
-                </label>
-                <div
-                  style={{
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
-                  <IFrameVideoBlog src={getEmbedUrl(video)} />
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Footer do modal */}
@@ -190,9 +175,9 @@ const EventVideo: FC<EventVideoProps> = ({
             <button
               onClick={handleSave}
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving || !video.trim()}
+              disabled={saving || !description.trim()}
             >
-              {saving ? "Salvando..." : "Salvar vídeo"}
+              {saving ? "Salvando..." : "Salvar descrição"}
             </button>
           </div>
         </div>
@@ -201,7 +186,7 @@ const EventVideo: FC<EventVideoProps> = ({
     );
   };
 
-  const hasVideo = !!videoUrl;
+  const hasDescription = !!theDescription && theDescription.trim().length > 0;
 
   return (
     <div
@@ -219,12 +204,23 @@ const EventVideo: FC<EventVideoProps> = ({
           justifyContent: "space-between",
         }}
       >
-        <span>Vídeo</span>
+        <span>Descrição</span>
       </div>
-      {hasVideo ? (
+      {hasDescription ? (
         <>
-          {/* Preview do vídeo existente */}
-          <IFrameVideoBlog src={getEmbedUrl(videoUrl!)} />
+          {/* Preview simples da descrição atual */}
+          <div
+            style={{
+              fontSize: 13,
+              color: "#0f172a",
+              backgroundColor: "#f8fafc",
+              borderRadius: 8,
+              padding: 10,
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {theDescription}
+          </div>
 
           {/* Botão que abre o modal */}
           <button
@@ -242,51 +238,30 @@ const EventVideo: FC<EventVideoProps> = ({
             }}
             onClick={openModal}
           >
-            Editar vídeo
+            Editar descrição
           </button>
 
           {renderModal()}
         </>
       ) : (
         <>
-          <div
-            style={{
-              ...cardTitle,
-              marginBottom: 12,
-              justifyContent: "space-between",
-            }}
-          >
-            <span>Vídeo</span>
-          </div>
-          {/* Sem vídeo → editor inline, sem modal */}
+          {/* Sem descrição → editor inline, sem modal */}
           <span style={{ fontSize: 13, color: "#64748b" }}>
-            Nenhum vídeo cadastrado para esta aula. Adicione o link abaixo:
+            Nenhuma descrição cadastrada para esta aula. Adicione a descrição
+            abaixo:
           </span>
 
-          <input
+          <textarea
             disabled={saving}
-            value={video}
-            onChange={(e) => setVideo(e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
-            style={inputStyle}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Escreva aqui a descrição da aula (conteúdo, combinados, observações...)"
+            style={{
+              ...inputStyle,
+              minHeight: 120,
+              resize: "vertical",
+            }}
           />
-
-          {video && (
-            <div style={{ display: "grid", gap: 6, marginTop: 4 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>
-                Pré-visualização
-              </label>
-              <div
-                style={{
-                  borderRadius: 8,
-                  overflow: "hidden",
-                  border: "1px solid #e2e8f0",
-                }}
-              >
-                <IFrameVideoBlog src={getEmbedUrl(video)} />
-              </div>
-            </div>
-          )}
 
           <div
             style={{
@@ -298,7 +273,7 @@ const EventVideo: FC<EventVideoProps> = ({
           >
             <button
               style={ghostBtnStyle}
-              onClick={() => setVideo("")}
+              onClick={() => setDescription("")}
               disabled={saving}
             >
               Limpar
@@ -306,9 +281,9 @@ const EventVideo: FC<EventVideoProps> = ({
             <button
               onClick={handleSave}
               style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving || !video.trim()}
+              disabled={saving || !description.trim()}
             >
-              {saving ? "Salvando..." : "Salvar vídeo"}
+              {saving ? "Salvando..." : "Salvar descrição"}
             </button>
           </div>
         </>
@@ -317,4 +292,4 @@ const EventVideo: FC<EventVideoProps> = ({
   );
 };
 
-export default EventVideo;
+export default Description;
