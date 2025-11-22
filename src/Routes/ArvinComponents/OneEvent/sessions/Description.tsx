@@ -6,7 +6,10 @@ import {
   cardTitle,
 } from "../../Students/TheStudent/types/studentPage.styles";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import { partnerColor } from "../../../../Styles/Styles";
+import {
+  partnerColor,
+  textpartnerColorContrast,
+} from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -316,7 +319,7 @@ const Description: FC<DescriptionProps> = ({
 
             <div style={{ display: "grid", gap: 6 }}>
               <label style={{ fontSize: 12, color: "#334155" }}>
-                Descrição da aula
+                Dados da aula
               </label>
               <div
                 style={{
@@ -410,7 +413,7 @@ const Description: FC<DescriptionProps> = ({
             justifyContent: "space-between",
           }}
         >
-          <span>Descrição da Aula</span>
+          <span>Dados da Aula</span>
         </div>
 
         {/* BLOCO PRINCIPAL COM LEFT BORDER (igual vibe do MainInfoClass) */}
@@ -425,36 +428,51 @@ const Description: FC<DescriptionProps> = ({
         >
           {hasDescription ? (
             <>
-              <div style={{ display: "grid", gap: 4 }}>
-                <span
-                  style={{
-                    fontSize: 13,
-                    fontWeight: 500,
-                    color: "#4B5563",
-                    whiteSpace: "pre-wrap",
-                  }}
-                >
-                  {theDescription}
-                </span>
+              <div
+                style={{
+                  fontSize: 16,
+                  color: "#606060",
+                }}
+              >
+                {theLesson && theLesson.course && theLesson.id && (
+                  <a
+                    target="_blank"
+                    href={`/teaching-materials/${theLesson.course
+                      .toLowerCase()
+                      .replace(/\s+/g, "-")
+                      .replace(/[^\w\-]+/g, "")}/${theLesson.id}`}
+                    style={{
+                      gap: "5px",
+                      display: "flex",
+                      color: partnerColor(),
+                      textDecoration: "none",
+                      padding: "8px 0px",
+                      borderRadius: "4px",
+                      backgroundColor: "white",
+                    }}
+                    onMouseOver={(e) =>
+                      (e.currentTarget.style.textDecoration = "underline")
+                    }
+                    onMouseOut={(e) =>
+                      (e.currentTarget.style.textDecoration = "none")
+                    }
+                  >
+                    <strong>Aula vinculada - {theLesson.title}</strong>
+                  </a>
+                )}
               </div>
-              <div style={{ display: "grid", gap: 6, marginTop: 8 }}>
-                <span
-                  style={{
-                    fontSize: 12,
-                    color: "#606060",
-                  }}
-                >
-                  Aula vinculada
-                </span>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-                    gap: 8,
-                  }}
-                >
-                  <span>{theLesson?.title || "Não especificado"}</span>
-                </div>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 4,
+                  marginBottom: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#4B5563",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {theDescription}
               </div>
             </>
           ) : (
