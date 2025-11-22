@@ -383,6 +383,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               evendId={event._id}
             />
             <Description
+              status={event.status}
               headers={headers}
               theDescription={event.description}
               evendId={event._id}

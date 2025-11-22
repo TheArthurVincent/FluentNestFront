@@ -4,9 +4,6 @@ import { createPortal } from "react-dom";
 import {
   cardBase,
   cardTitle,
-  statCardBase,
-  statLabel,
-  statValue,
 } from "../../Students/TheStudent/types/studentPage.styles";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import { partnerColor } from "../../../../Styles/Styles";
@@ -18,6 +15,7 @@ type DescriptionProps = {
   theDescription?: string;
   evendId: string;
   fetchEventData: () => void;
+  status: string;
 };
 
 // ---------- estilos base (mesmos do MainInfoClass) ----------
@@ -74,17 +72,44 @@ const Description: FC<DescriptionProps> = ({
   theDescription,
   evendId,
   fetchEventData,
+  status,
 }) => {
   const [description, setDescription] = useState<string>(theDescription || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
-
-  const [theLesson, setTheLesson] = useState<{
+  var [theLesson, setTheLesson] = useState<{
     id: string;
     title: string;
     module: string;
     course: string;
   } | null>(null);
+
+  const [loadingDescription, setLoadingDescription] = useState(false);
+  const [change, setChange] = useState(false);
+
+  const handleClassSummary = async () => {
+    setLoadingDescription(true);
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    const myId = logged?.id;
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/ai-description/${myId}`,
+          { status, description, classTitle: theLesson?.title || "" },
+          { headers: headers as any }
+        );
+        const adapted = response.data.adapted;
+        setDescription(adapted);
+        setLoadingDescription(false);
+        setChange(!change);
+      } catch (error) {
+        setLoadingDescription(false);
+        notifyAlert("Erro", partnerColor());
+        console.log(error, "Erro");
+      }
+    }
+  };
 
   const [lessonsList, setLessonsList] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -260,21 +285,6 @@ const Description: FC<DescriptionProps> = ({
           </optgroup>
         ))}
       </select>
-
-      {/* resumo da aula selecionada, no estilo stat cards */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-          gap: 8,
-          marginTop: 4,
-        }}
-      >
-        <div>
-          <span style={statLabel}>Título</span>
-          <span>{theLesson?.title || "Nenhuma aula selecionada"}</span>
-        </div>
-      </div>
     </div>
   );
 
@@ -308,18 +318,44 @@ const Description: FC<DescriptionProps> = ({
               <label style={{ fontSize: 12, color: "#334155" }}>
                 Descrição da aula
               </label>
-              <textarea
-                disabled={saving}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Escreva aqui a descrição da aula (o que foi feito, combinados, observações importantes...)"
+              <div
                 style={{
-                  ...inputStyle,
-                  minHeight: 140,
-                  resize: "vertical",
-                  fontFamily: "Plus Jakarta Sans",
+                  display: "grid",
+                  gap: 8,
+                  gridTemplateColumns: "1fr auto",
+                  alignItems: "flex-end",
                 }}
-              />
+              >
+                <textarea
+                  disabled={saving || loadingDescription}
+                  value={loadingDescription ? "Carregando..." : description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Escreva aqui a descrição da aula (o que foi feito, combinados, observações importantes...)"
+                  style={{
+                    ...inputStyle,
+                    minHeight: 140,
+                    resize: "vertical",
+                    fontFamily: "Plus Jakarta Sans",
+                  }}
+                />
+                <button
+                  onClick={handleClassSummary}
+                  disabled={saving || loadingDescription}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "fit-content",
+                    height: 32,
+                    borderRadius: 6,
+                    border: "1px solid #cbd5e1",
+                    backgroundColor: "#f8fafc",
+                    cursor: "pointer",
+                  }}
+                >
+                  ✨ (-5)
+                </button>
+              </div>
             </div>
           </div>
 
