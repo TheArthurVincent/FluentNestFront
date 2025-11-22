@@ -781,7 +781,6 @@ export function Groups({ headers, id }) {
                         <div style={styles.label}>🎥 Vídeo</div>
                         <a
                           href={event.video}
-                          target="_blank"
                           rel="noopener noreferrer"
                           style={styles.link}
                         >
@@ -795,7 +794,6 @@ export function Groups({ headers, id }) {
                         <div style={styles.label}>🔗 Link Importante</div>
                         <a
                           href={event.importantLink}
-                          target="_blank"
                           rel="noopener noreferrer"
                           style={styles.link}
                         >

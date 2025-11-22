@@ -1,6 +1,7 @@
 import React, { useState, useRef, useMemo, useEffect } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import { partnerColor } from "../../Styles/Styles";
 
 function HTMLEditor({ onChange, initialContent }) {
   const editorRef = useRef(null);
@@ -92,6 +93,8 @@ function HTMLEditor({ onChange, initialContent }) {
           width: "100%",
           direction: "ltr",
           textAlign: "left",
+          border: `1px solid ${partnerColor()}55`,
+          borderRadius: "8px",
           boxSizing: "border-box",
           overflow: "auto",
           maxHeight: "85vh",

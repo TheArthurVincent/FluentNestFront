@@ -8,6 +8,7 @@ import EventVideo from "./sessions/VideoClass";
 import MainInfoClass from "./sessions/MainInfoClass";
 import Description from "./sessions/Description";
 import LastClass from "./sessions/LastEvent";
+import Board from "./sessions/BoardLesson";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -384,10 +385,17 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             />
             <Description
               status={event.status}
+              lesson={event.theLesson}
               headers={headers}
               theDescription={event.description}
               evendId={event._id}
               fetchEventData={fetchEventData}
+            />
+            <Board
+              headers={headers}
+              date={event.date}
+              theBoard={event.board}
+              evendId={event._id}
             />
             {lastLesson && (
               <LastClass

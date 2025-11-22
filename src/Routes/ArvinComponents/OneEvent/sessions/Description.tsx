@@ -6,10 +6,7 @@ import {
   cardTitle,
 } from "../../Students/TheStudent/types/studentPage.styles";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
-import {
-  partnerColor,
-  textpartnerColorContrast,
-} from "../../../../Styles/Styles";
+import { partnerColor } from "../../../../Styles/Styles";
 import { backDomain } from "../../../../Resources/UniversalComponents";
 import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
 
@@ -17,6 +14,7 @@ type DescriptionProps = {
   headers: MyHeadersType;
   theDescription?: string;
   evendId: string;
+  lesson?: any;
   fetchEventData: () => void;
   status: string;
 };
@@ -75,6 +73,7 @@ const Description: FC<DescriptionProps> = ({
   theDescription,
   evendId,
   fetchEventData,
+  lesson,
   status,
 }) => {
   const [description, setDescription] = useState<string>(theDescription || "");
@@ -85,7 +84,7 @@ const Description: FC<DescriptionProps> = ({
     title: string;
     module: string;
     course: string;
-  } | null>(null);
+  } | null>(lesson || null);
 
   const [loadingDescription, setLoadingDescription] = useState(false);
   const [change, setChange] = useState(false);
@@ -436,7 +435,6 @@ const Description: FC<DescriptionProps> = ({
               >
                 {theLesson && theLesson.course && theLesson.id && (
                   <a
-                    target="_blank"
                     href={`/teaching-materials/${theLesson.course
                       .toLowerCase()
                       .replace(/\s+/g, "-")

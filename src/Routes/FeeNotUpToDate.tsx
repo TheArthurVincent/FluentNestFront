@@ -41,7 +41,6 @@ export function FeeNotUpToDate() {
       </p>
       <a
         href="https://wa.me/5511915857807"
-        target="_blank"
         rel="noreferrer"
         style={{
           marginTop: "30px",

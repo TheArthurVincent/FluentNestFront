@@ -877,7 +877,6 @@ export function FindStudent({
                 {selectedStudent.googleDriveLink ? (
                   <a
                     href={selectedStudent.googleDriveLink}
-                    target="_blank"
                     rel="noopener noreferrer"
                     style={{
                       color: partnerColor(),
@@ -2014,7 +2013,6 @@ export function FindStudent({
                                       📝 LIÇÃO RELACIONADA
                                     </div>
                                     <a
-                                      target="_blank"
                                       href={`/teaching-materials/${event.theLesson.course
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")
@@ -2341,7 +2339,6 @@ export function FindStudent({
                                       📝 LIÇÃO RELACIONADA
                                     </div>
                                     <a
-                                      target="_blank"
                                       href={`/teaching-materials/${event.theLesson.course
                                         .toLowerCase()
                                         .replace(/\s+/g, "-")

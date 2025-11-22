@@ -98,7 +98,6 @@ export default function AudioSoundTrack({
         <a
           href="https://soundcloud.com/arthur-r-cardoso"
           title="-"
-          target="_blank"
           rel="noopener noreferrer"
           style={{ color: "#cccccc", textDecoration: "none" }}
         >
@@ -107,7 +106,6 @@ export default function AudioSoundTrack({
         <a
           href={link}
           title={subtitle}
-          target="_blank"
           rel="noopener noreferrer"
           style={{ color: "#cccccc", textDecoration: "none" }}
         >

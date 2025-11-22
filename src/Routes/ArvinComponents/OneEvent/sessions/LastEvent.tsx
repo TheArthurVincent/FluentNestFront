@@ -102,7 +102,6 @@ const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
                 {lastLesson.googleDriveLink && (
                   <a
                     href={lastLesson.googleDriveLink}
-                    target="_blank"
                     rel="noreferrer"
                     style={{
                       fontSize: 12,
@@ -120,7 +119,6 @@ const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
                 {lastLesson.importantLink && !lastLesson.googleDriveLink && (
                   <a
                     href={lastLesson.importantLink}
-                    target="_blank"
                     rel="noreferrer"
                     style={{
                       fontSize: 12,
