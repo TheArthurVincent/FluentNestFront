@@ -3740,7 +3740,7 @@ export default function EnglishClassCourse2({
                                   <SentenceLessonModel
                                     mainTag={theclass.mainTag}
                                     element={element}
-                                    studentId={studentID}
+                                    studentId={mainStudentID || studentID}
                                     headers={headers}
                                     selectedVoice={selectedVoice}
                                   />
@@ -3748,7 +3748,7 @@ export default function EnglishClassCourse2({
                                   <VocabularyLesson
                                     mainTag={theclass.mainTag}
                                     element={element}
-                                    studentId={studentID}
+                                    studentId={mainStudentID || studentID}
                                     headers={headers}
                                     selectedVoice={selectedVoice}
                                   />
