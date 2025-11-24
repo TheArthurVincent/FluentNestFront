@@ -3234,7 +3234,7 @@ export default function EnglishClassCourse2({
           )}
           {!exercise && (
             <>
-              {canEditCourse && !seeBoard && (
+              {canEditCourse && !seeBoard && thePermissions !== "student" &&(
                 <div
                   style={{
                     display: "flex",
