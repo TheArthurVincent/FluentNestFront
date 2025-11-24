@@ -42,7 +42,7 @@ const Board: FC<BoardProps> = ({
         { headers: headers as any }
       );
       setLoading(false);
-      notifyAlert("Lousa salva com sucesso!", partnerColor());
+      notifyAlert("Notas salva com sucesso!", partnerColor());
     } catch (error) {
       setLoading(false);
       console.error(error, "Erro ao buscar comentários");
@@ -50,7 +50,7 @@ const Board: FC<BoardProps> = ({
   };
 
   useEffect(() => {
-    // ao clicar ctrl + s, salvar a lousa
+    // ao clicar ctrl + s, salvar a Notas
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.ctrlKey && event.key === "s") {
         event.preventDefault();
@@ -117,7 +117,7 @@ const Board: FC<BoardProps> = ({
               fontWeight: 600,
             }}
           >
-            {loading ? "Salvando..." : "Salvar lousa"}
+            {loading ? "Salvando..." : "Salvar Notas"}
           </button>
         )}
       </div>
