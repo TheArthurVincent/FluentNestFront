@@ -88,7 +88,6 @@ export default function ImportElementsEditor({
     const subtitle = el.subtitle || `(Elemento ${index + 1})`;
 
     if (el.type === "vocabulary") {
-      console.log("el sentences:", el.sentences);
       return (
         <div key={index} style={baseStyle}>
           <div
@@ -126,7 +125,6 @@ export default function ImportElementsEditor({
     }
 
     if (el.type === "sentences") {
-      console.log("el sentences:", el.sentences);
       return (
         <div key={index} style={baseStyle}>
           <div
