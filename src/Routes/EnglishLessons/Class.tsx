@@ -44,7 +44,6 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import ExerciseRunner from "./Exercises/Exercises";
 import EditLesson from "./EditLesson/EditLesson";
 import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
-import ImportElementsEditor from "./EditLesson/ImportNewElements/SelectExercise/ImportNewElements";
 
 interface EnglishClassCourse2ModelProps {
   headers: any;
@@ -92,8 +91,8 @@ export default function EnglishClassCourse2({
     margin: isDesktop ? "0 4px" : "4px 0",
     width: isDesktop ? "auto" : "100%",
   };
-  const [studentID, setStudentID] = useState<string>("");
-  const [myId, setId] = useState<string>("");
+  const [studentID, setStudentID] = useState<string>(mainStudentID || "");
+  const [myId, setId] = useState<string>(mainStudentID || "");
   const [thePermissions, setPermissions] = useState<string>("");
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
   const [newHWDescription, setNewHWDescription] = useState("");

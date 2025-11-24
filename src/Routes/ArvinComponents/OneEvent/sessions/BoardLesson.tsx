@@ -65,7 +65,7 @@ const Board: FC<BoardProps> = ({
             justifyContent: "space-between",
           }}
         >
-          <span>Lousa da Aula</span>
+          <span>Anotações da Aula</span>
         </div>
         {allowedToEdit ? (
           <div
