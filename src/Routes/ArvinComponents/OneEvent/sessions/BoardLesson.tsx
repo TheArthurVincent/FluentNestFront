@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import axios from "axios";
 import {
   cardBase,
@@ -48,6 +48,23 @@ const Board: FC<BoardProps> = ({
       console.error(error, "Erro ao buscar comentários");
     }
   };
+
+  useEffect(() => {
+    // ao clicar ctrl + s, salvar a lousa
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === "s") {
+        event.preventDefault();
+        if (allowedToEdit) {
+          handleSaveBoard();
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [theBoard, allowedToEdit, newHWDescription]);
 
   return (
     <>
