@@ -14,7 +14,6 @@ type BoardProps = {
   headers: MyHeadersType;
   theBoard?: string;
   evendId: string;
-  date?: string;
   allowedToEdit?: boolean;
 };
 
@@ -22,7 +21,6 @@ const Board: FC<BoardProps> = ({
   headers,
   theBoard,
   evendId,
-  date,
   allowedToEdit,
 }) => {
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
