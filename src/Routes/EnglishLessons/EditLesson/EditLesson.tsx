@@ -928,7 +928,6 @@ export default function EditLesson({
                 Pesquise aulas por título ou tags e copie elementos prontos
                 diretamente para esta aula.
               </p>
-
               <ImportElementsEditor
                 lessonId={classId}
                 onChange={setChange}
