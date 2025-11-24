@@ -30,65 +30,46 @@ import { partnerColor } from "../../../Styles/Styles";
 import DeleteClassButton from "./DeleteLesson/DeleteLesson";
 import ImportElementsEditor from "./ImportNewElements/SelectExercise/ImportNewElements";
 
+type ElementBase = {
+  subtitle?: string;
+  grid?: number;
+};
+
 type ElementItem =
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+  | (ElementBase & {
       type: "video";
       video?: string;
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "sentences" | "vocabulary";
       sentences: Array<any>;
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "exercise";
       items: string[];
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "images";
       images: ImageEntry[];
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "audio";
       text: string;
       link: string;
       image?: string;
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "dialogue";
       dialogue: string[];
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "selectexercise";
       options: SelectExerciseBlock["options"];
-    }
-  | {
-      subtitle?: string;
-      order?: number;
-      grid?: number;
+    })
+  | (ElementBase & {
       type: "singleimages";
       images: string[];
-    }
+    })
   | ExplanationBlock
   | Record<string, any>;
 
@@ -100,7 +81,7 @@ interface ClassDetails {
   language: string;
   module: string;
   moduleId?: string;
-  order: number;
+  order: number; // só aqui continua
   title?: string;
   tags?: string[];
   [k: string]: any;
@@ -194,13 +175,21 @@ export default function EditLesson({
         throw new Error("Resposta sem dados de aula (classDetails).");
       }
 
+      // Sanitiza elements removendo qualquer `order` que venha do back
+      const sanitizedElements: ElementItem[] = Array.isArray(data.elements)
+        ? data.elements.map((el: any) => {
+            const { order: _ignored, ...rest } = el;
+            return rest;
+          })
+        : [];
+
       setLesson(data);
       setTitle(data.title ?? "");
       setDescription(data.description ?? "");
       setImage(data.image ?? "");
       setOrder(Number(data.order ?? 0));
       setTags(Array.isArray(data.tags) ? data.tags : []);
-      setElements(Array.isArray(data.elements) ? data.elements : []);
+      setElements(sanitizedElements);
       setOpen(true);
     } catch (err: any) {
       console.error(err);
@@ -221,14 +210,20 @@ export default function EditLesson({
     setSaving(true);
     setError(null);
 
+    // Remove o campo `order` de cada element antes de enviar
+    const sanitizedElements: ElementItem[] = (elements || []).map((el: any) => {
+      const { order: _ignored, ...rest } = el;
+      return rest;
+    });
+
     const payload: ClassDetails = {
       ...lesson,
       title,
       description,
       image,
-      order: Number(order),
+      order: Number(order), // order só na aula
       tags,
-      elements,
+      elements: sanitizedElements,
     };
 
     try {
@@ -241,10 +236,21 @@ export default function EditLesson({
       const updated: ClassDetails =
         res?.data?.classDetails || res?.data || res?.data?.data || payload;
 
+      // Sanitiza de novo caso o back devolva `order` nos elements
+      const updatedSanitizedElements: ElementItem[] = Array.isArray(
+        updated.elements
+      )
+        ? updated.elements.map((el: any) => {
+            const { order: _ignored, ...rest } = el;
+            return rest;
+          })
+        : [];
+
       setLesson(updated);
       if (updated?.image) setImage(updated.image);
       setTitle(updated?.title ?? title);
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
+      setElements(updatedSanitizedElements);
       onUpdated?.(updated);
 
       window.location.reload();
@@ -311,10 +317,8 @@ export default function EditLesson({
   const moveElementDown = (index: number) => moveElement(index, index + 1);
 
   // ---------- Adicionar novo bloco ----------
-  const getNextOrder = () => (elements?.length ?? 0) + 1;
-
   const makeEmptyBlock = (type: NewBlockType): ElementItem => {
-    const base = { subtitle: "", order: getNextOrder() } as any;
+    const base: any = { subtitle: "" }; // sem order
 
     switch (type) {
       case "singleimages":
