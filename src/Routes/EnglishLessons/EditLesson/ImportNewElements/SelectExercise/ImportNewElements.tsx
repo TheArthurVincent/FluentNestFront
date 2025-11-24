@@ -70,7 +70,7 @@ export default function ImportElementsEditor({
     setImporting(false);
     setImportMsg(null);
     // ❌ antes recarregava a página
-    // window.location.reload();
+    window.location.reload();
   };
 
   // ============================================
@@ -343,9 +343,6 @@ export default function ImportElementsEditor({
           mode,
         });
       }
-
-      // 👉 Agora, em vez de dar reload, apenas fecha o modal.
-      closeModal();
     } catch (error: any) {
       console.error("Erro ao importar elementos:", error);
       setImporting(false);
