@@ -16,6 +16,7 @@ type MainInfoClassProps = {
   fetchEventData: () => void;
   isDesktop?: boolean;
   event?: any;
+  allowedToEdit?: boolean;
 };
 
 // ---------- estilos reaproveitando a ideia do SimpleAIGenerator ----------
@@ -73,6 +74,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
   isDesktop,
   event,
   fetchEventData,
+  allowedToEdit,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -296,30 +298,32 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           </div>
 
           {/* Footer */}
-          <div
-            style={{
-              padding: 12,
-              borderTop: "1px solid #e2e8f0",
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: 8,
-            }}
-          >
-            <button
-              style={ghostBtnStyle}
-              onClick={closeModal}
-              disabled={saving}
+          {allowedToEdit && (
+            <div
+              style={{
+                padding: 12,
+                borderTop: "1px solid #e2e8f0",
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 8,
+              }}
             >
-              Cancelar
-            </button>
-            <button
-              onClick={handleSave}
-              style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving}
-            >
-              {saving ? "Salvando..." : "Salvar"}
-            </button>
-          </div>
+              <button
+                style={ghostBtnStyle}
+                onClick={closeModal}
+                disabled={saving}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleSave}
+                style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
+                disabled={saving}
+              >
+                {saving ? "Salvando..." : "Salvar"}
+              </button>
+            </div>
+          )}
         </div>
       </div>,
       document.body
@@ -466,23 +470,25 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
           </div>
         </div>
         {/* Botão para abrir o modal de edição */}
-        <button
-          onClick={openModal}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: partnerColor(),
-            color: "#fff",
-            maxWidth: "fit-content",
-            border: "none",
-            marginLeft: "auto",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-        >
-          Editar informações
-        </button>
+        {allowedToEdit && (
+          <button
+            onClick={openModal}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: partnerColor(),
+              color: "#fff",
+              maxWidth: "fit-content",
+              border: "none",
+              marginLeft: "auto",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            Editar informações
+          </button>
+        )}
       </div>
 
       {renderModal()}

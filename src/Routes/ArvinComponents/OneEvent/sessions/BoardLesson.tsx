@@ -15,9 +15,16 @@ type BoardProps = {
   theBoard?: string;
   evendId: string;
   date?: string;
+  allowedToEdit?: boolean;
 };
 
-const Board: FC<BoardProps> = ({ headers, theBoard, evendId, date }) => {
+const Board: FC<BoardProps> = ({
+  headers,
+  theBoard,
+  evendId,
+  date,
+  allowedToEdit,
+}) => {
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
   const [editorContent, setEditorContent] = useState<string>(theBoard || ``);
   const [newHWDescription, setNewHWDescription] = useState(theBoard || ``);
@@ -60,36 +67,42 @@ const Board: FC<BoardProps> = ({ headers, theBoard, evendId, date }) => {
         >
           <span>Lousa da Aula</span>
         </div>
-        <div
-          style={{
-            marginBottom: 10,
-            height: 300,
-          }}
-        >
-          <HTMLEditor
-            key={editorKey}
-            initialContent={editorContent}
-            onChange={handleHWDescriptionChange}
-          />
-        </div>
-        <button
-          onClick={handleSaveBoard}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: loading ? "#6c757d" : partnerColor(),
-            color: "#fff",
-            marginTop: 18,
-            maxWidth: "fit-content",
-            border: "none",
-            marginLeft: "auto",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: 13,
-            fontWeight: 600,
-          }}
-        >
-          {loading ? "Salvando..." : "Salvar lousa"}
-        </button>
+        {allowedToEdit ? (
+          <div
+            style={{
+              marginBottom: 10,
+              height: 300,
+            }}
+          >
+            <HTMLEditor
+              key={editorKey}
+              initialContent={editorContent}
+              onChange={handleHWDescriptionChange}
+            />
+          </div>
+        ) : (
+          <div dangerouslySetInnerHTML={{ __html: editorContent }} />
+        )}
+        {allowedToEdit && (
+          <button
+            onClick={handleSaveBoard}
+            style={{
+              padding: "8px 16px",
+              backgroundColor: loading ? "#6c757d" : partnerColor(),
+              color: "#fff",
+              marginTop: 18,
+              maxWidth: "fit-content",
+              border: "none",
+              marginLeft: "auto",
+              borderRadius: "4px",
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            {loading ? "Salvando..." : "Salvar lousa"}
+          </button>
+        )}
       </div>
     </>
   );

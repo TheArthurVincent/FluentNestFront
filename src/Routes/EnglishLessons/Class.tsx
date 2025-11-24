@@ -3257,7 +3257,7 @@ export default function EnglishClassCourse2({
                     style={{
                       display: "grid",
                       zIndex: 2,
-                      position: "sticky",
+                      // position: "sticky",
                       top: "-10px",
                       boxSizing: "border-box",
                     }}
@@ -3673,7 +3673,7 @@ export default function EnglishClassCourse2({
                                   element.type !== "selectexercise" && (
                                     <div
                                       style={{
-                                        position: "sticky",
+                                        // position: "sticky",
                                         display: element.subtitle
                                           ? "block"
                                           : "none",
@@ -3862,7 +3862,7 @@ export default function EnglishClassCourse2({
                     {/* Header */}
                     <div
                       style={{
-                        position: "sticky",
+                        // position: "sticky",
                         top: 0,
                         zIndex: 5,
                         display: "flex",

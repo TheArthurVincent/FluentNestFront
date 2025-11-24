@@ -16,6 +16,7 @@ type EventVideoProps = {
   videoUrl?: string;
   evendId: string;
   fetchEventData: () => void;
+  allowedToEdit: boolean;
 };
 
 // ---------- estilos reaproveitando a ideia do SimpleAIGenerator ----------
@@ -71,6 +72,7 @@ const EventVideo: FC<EventVideoProps> = ({
   headers,
   videoUrl,
   evendId,
+  allowedToEdit,
   fetchEventData,
 }) => {
   const [video, setVideo] = useState<string>(videoUrl || "");
@@ -227,23 +229,25 @@ const EventVideo: FC<EventVideoProps> = ({
           <IFrameVideoBlog src={getEmbedUrl(videoUrl!)} />
 
           {/* Botão que abre o modal */}
-          <button
-            style={{
-              padding: "8px 16px",
-              backgroundColor: partnerColor(),
-              color: "#fff",
-              maxWidth: "fit-content",
-              border: "none",
-              marginLeft: "auto",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-            onClick={openModal}
-          >
-            Editar vídeo
-          </button>
+          {allowedToEdit && (
+            <button
+              style={{
+                padding: "8px 16px",
+                backgroundColor: partnerColor(),
+                color: "#fff",
+                maxWidth: "fit-content",
+                border: "none",
+                marginLeft: "auto",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+              onClick={openModal}
+            >
+              Editar vídeo
+            </button>
+          )}
 
           {renderModal()}
         </>
@@ -279,29 +283,31 @@ const EventVideo: FC<EventVideoProps> = ({
             </div>
           )}
 
-          <div
-            style={{
-              marginTop: 8,
-              display: "flex",
-              justifyContent: "flex-end",
-              gap: 8,
-            }}
-          >
-            <button
-              style={ghostBtnStyle}
-              onClick={() => setVideo("")}
-              disabled={saving}
+          {allowedToEdit && (
+            <div
+              style={{
+                marginTop: 8,
+                display: "flex",
+                justifyContent: "flex-end",
+                gap: 8,
+              }}
             >
-              Limpar
-            </button>
-            <button
-              onClick={handleSave}
-              style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
-              disabled={saving || !video.trim()}
-            >
-              {saving ? "Salvando..." : "Salvar vídeo"}
-            </button>
-          </div>
+              <button
+                style={ghostBtnStyle}
+                onClick={() => setVideo("")}
+                disabled={saving}
+              >
+                Limpar
+              </button>
+              <button
+                onClick={handleSave}
+                style={{ ...primaryBtnStyle, opacity: saving ? 0.7 : 1 }}
+                disabled={saving || !video.trim()}
+              >
+                {saving ? "Salvando..." : "Salvar vídeo"}
+              </button>
+            </div>
+          )}
         </>
       )}
     </div>

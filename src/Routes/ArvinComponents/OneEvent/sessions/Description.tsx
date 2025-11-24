@@ -14,6 +14,7 @@ type DescriptionProps = {
   headers: MyHeadersType;
   theDescription?: string;
   evendId: string;
+  allowedToEdit?: boolean;
   lesson?: any;
   fetchEventData: () => void;
   status: string;
@@ -70,6 +71,7 @@ const primaryBtnStyle: React.CSSProperties = {
 
 const Description: FC<DescriptionProps> = ({
   headers,
+  allowedToEdit,
   theDescription,
   evendId,
   fetchEventData,
@@ -113,9 +115,6 @@ const Description: FC<DescriptionProps> = ({
     }
   };
 
-  const [lessonsList, setLessonsList] = useState<any[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
   useEffect(() => {
     setDescription(theDescription || "");
   }, [theDescription]);
@@ -157,141 +156,6 @@ const Description: FC<DescriptionProps> = ({
     if (!saving) setIsModalOpen(false);
   };
 
-  const getClasses = async () => {
-    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
-    const thePermissions = logged?.permissions;
-    const myId = logged?.id;
-
-    if (!myId) return;
-
-    if (thePermissions === "superadmin" || thePermissions === "teacher") {
-      try {
-        const response = await axios.get(
-          `${backDomain}/api/v1/courses-organized/${myId}`,
-          { headers: headers as any }
-        );
-        const res = response.data?.lessons ?? [];
-        setLessonsList(res);
-      } catch (error) {
-        console.log(error, "Erro ao encontrar cursos");
-      }
-    }
-  };
-
-  useEffect(() => {
-    getClasses();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // ================== filtros / grouping ==================
-
-  const filteredLessonsList = useMemo(() => {
-    if (!searchTerm.trim()) return lessonsList;
-    const q = searchTerm.toLowerCase();
-    return lessonsList.filter((l) => (l.title || "").toLowerCase().includes(q));
-  }, [lessonsList, searchTerm]);
-
-  const grouped = useMemo(() => {
-    const byCourse: Record<string, Record<string, any[]>> = {};
-
-    for (const l of filteredLessonsList) {
-      const courseName = l.course ?? "Sem curso";
-      const moduleName = l.module ?? "Sem módulo";
-
-      if (!byCourse[courseName]) byCourse[courseName] = {};
-      if (!byCourse[courseName][moduleName])
-        byCourse[courseName][moduleName] = [];
-
-      byCourse[courseName][moduleName].push(l);
-    }
-
-    return byCourse;
-  }, [filteredLessonsList]);
-
-  // ================== seleção de aula ==================
-
-  const handleLessonChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const id = e.target.value;
-    if (!id || id.startsWith("sep:")) return;
-
-    const found = lessonsList.find((l) => String(l.id) === id);
-    if (!found) {
-      setTheLesson(null);
-      return;
-    }
-
-    const normalized = {
-      id: String(found.id),
-      title: found.title,
-      module: found.moduleId || found.module,
-      course: found.courseId || found.course,
-    };
-
-    setTheLesson(normalized);
-  };
-
-  // ================== blocos de UI reutilizáveis ==================
-
-  const renderLessonSelectorBlock = () => (
-    <div style={{ display: "grid", gap: 8 }}>
-      <label
-        style={{
-          fontSize: 12,
-          color: "#334155",
-          fontWeight: 500,
-        }}
-      >
-        Aula usada
-      </label>
-
-      <input
-        type="text"
-        placeholder="Pesquisar aula pelo título..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={inputStyle}
-      />
-
-      <select
-        onChange={handleLessonChange}
-        value={theLesson?.id ? String(theLesson.id) : ""}
-        style={{
-          ...inputStyle,
-          paddingRight: 24,
-        }}
-      >
-        <option value="" hidden>
-          Selecione a aula...
-        </option>
-
-        {Object.keys(grouped).length === 0 && (
-          <option value="" disabled>
-            Nenhuma aula encontrada para essa busca.
-          </option>
-        )}
-
-        {Object.entries(grouped).map(([courseName, modules]) => (
-          <optgroup key={courseName} label={courseName}>
-            {Object.entries(modules).map(([moduleName, ls]) => (
-              <React.Fragment key={`${courseName}-${moduleName}`}>
-                <option value={`sep:${courseName}:${moduleName}`} disabled>
-                  — {moduleName} —
-                </option>
-                {ls.map((l: any) => (
-                  <option key={l.id} value={String(l.id)}>
-                    {l.title}
-                  </option>
-                ))}
-              </React.Fragment>
-            ))}
-          </optgroup>
-        ))}
-      </select>
-    </div>
-  );
-
-  // ================== MODAL ==================
-
   const renderModal = () => {
     if (!isModalOpen) return null;
     if (typeof document === "undefined") return null;
@@ -311,15 +175,8 @@ const Description: FC<DescriptionProps> = ({
           >
             Editar descrição da aula
           </div>
-
-          {/* Corpo */}
           <div style={{ padding: 12, display: "grid", gap: 12 }}>
-            {renderLessonSelectorBlock()}
-
             <div style={{ display: "grid", gap: 6 }}>
-              <label style={{ fontSize: 12, color: "#334155" }}>
-                Dados da aula
-              </label>
               <div
                 style={{
                   display: "grid",
@@ -483,56 +340,50 @@ const Description: FC<DescriptionProps> = ({
               >
                 Nenhuma descrição cadastrada para esta aula.
               </span>
-              <span
-                style={{
-                  fontSize: 13,
-                  color: "#374151",
-                }}
-              >
-                Use este espaço para registrar rapidamente o que foi visto,
-                combinados, tarefas e observações importantes.
-              </span>
             </>
           )}
         </div>
-
-        {/* BOTÕES / EDIT */}
-        {hasDescription ? (
-          <button
-            onClick={openModal}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: partnerColor(),
-              color: "#fff",
-              maxWidth: "fit-content",
-              border: "none",
-              marginLeft: "auto",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            Editar descrição e aula
-          </button>
-        ) : (
-          <button
-            onClick={() => setIsModalOpen(true)}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: partnerColor(),
-              color: "#fff",
-              maxWidth: "fit-content",
-              border: "none",
-              marginLeft: "auto",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: 13,
-              fontWeight: 600,
-            }}
-          >
-            Adicionar descrição
-          </button>
+        {allowedToEdit && (
+          <>
+            {/* BOTÕES / EDIT */}
+            {hasDescription ? (
+              <button
+                onClick={openModal}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  maxWidth: "fit-content",
+                  border: "none",
+                  marginLeft: "auto",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                Editar descrição e aula
+              </button>
+            ) : (
+              <button
+                onClick={() => setIsModalOpen(true)}
+                style={{
+                  padding: "8px 16px",
+                  backgroundColor: partnerColor(),
+                  color: "#fff",
+                  maxWidth: "fit-content",
+                  border: "none",
+                  marginLeft: "auto",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              >
+                Adicionar descrição
+              </button>
+            )}
+          </>
         )}
       </div>
 

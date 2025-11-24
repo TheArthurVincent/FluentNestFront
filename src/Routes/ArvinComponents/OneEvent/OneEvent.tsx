@@ -303,7 +303,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 Agendado
               </div>
             </div>
-
             <div
               style={{ textAlign: "center", cursor: "pointer" }}
               onClick={() => updateRealizedClass(event._id)}
@@ -384,40 +383,54 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           <>
             {(event.video || permissionsUser !== "student") && (
               <EventVideo
+                allowedToEdit={permissionsUser !== "student"}
                 fetchEventData={fetchEventData}
                 headers={headers}
                 videoUrl={event.video}
                 evendId={event._id}
               />
             )}{" "}
-            <MainInfoClass
-              event={event}
-              headers={headers}
-              isDesktop={isDesktop}
-              fetchEventData={fetchEventData}
-              evendId={event._id}
-            />
-            {(event.description || permissionsUser !== "student") && (
-              <Description
-                status={event.status}
-                lesson={event.theLesson}
+            <div
+              style={{
+                display: "grid",
+                gap: 12,
+                gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+              }}
+            >
+              <MainInfoClass
+                event={event}
+                allowedToEdit={permissionsUser !== "student"}
                 headers={headers}
-                theDescription={event.description}
-                evendId={event._id}
+                isDesktop={isDesktop}
                 fetchEventData={fetchEventData}
+                evendId={event._id}
               />
-            )}
-            <Board
-              headers={headers}
-              date={event.date}
-              theBoard={event.board}
-              evendId={event._id}
-            />
+              {(event.description || permissionsUser !== "student") && (
+                <Description
+                  status={event.status}
+                  allowedToEdit={permissionsUser !== "student"}
+                  lesson={event.theLesson}
+                  headers={headers}
+                  theDescription={event.description}
+                  evendId={event._id}
+                  fetchEventData={fetchEventData}
+                />
+              )}
+            </div>
+            {(event.board || permissionsUser !== "student") && (
+              <Board
+                allowedToEdit={permissionsUser !== "student"}
+                headers={headers}
+                date={event.date}
+                theBoard={event.board}
+                evendId={event._id}
+              />
+            )}{" "}
             {(event.theLessonRender || permissionsUser !== "student") && (
               <LessonContent
                 headers={headers}
                 date={event.date}
-                theLessonContent={event.theLessonRender}
+                theLessonRender={event.theLessonRender}
                 eventId={event._id}
                 studentID={event.studentID}
               />
