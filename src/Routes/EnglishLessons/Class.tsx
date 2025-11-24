@@ -44,6 +44,7 @@ import HTMLEditor from "../../Resources/Components/HTMLEditor";
 import ExerciseRunner from "./Exercises/Exercises";
 import EditLesson from "./EditLesson/EditLesson";
 import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
+import ImportElementsEditor from "./EditLesson/ImportNewElements/SelectExercise/ImportNewElements";
 
 interface EnglishClassCourse2ModelProps {
   headers: any;
@@ -3234,16 +3235,25 @@ export default function EnglishClassCourse2({
           {!exercise && (
             <>
               {canEditCourse && !seeBoard && (
-                <EditLesson
-                  setChange={setChange}
-                  change={change}
-                  studentId={myId}
-                  buttonText={"Editar Aula"}
-                  setSeeEdit={setSeeEdit}
-                  headers={actualHeaders}
-                  classId={classId}
-                  language={classLanguage}
-                />
+                <div
+                  style={{
+                    display: "flex",
+                    gap: 8,
+                    alignItems: "center",
+                    marginBottom: 16,
+                  }}
+                >
+                  <EditLesson
+                    setChange={setChange}
+                    change={change}
+                    studentId={myId}
+                    buttonText={"Editar Aula"}
+                    setSeeEdit={setSeeEdit}
+                    headers={actualHeaders}
+                    classId={classId}
+                    language={classLanguage}
+                  />
+                </div>
               )}
             </>
           )}

@@ -222,7 +222,6 @@ const ClassByParam: React.FC<{
       headers={headers}
       canEditCourse={canEditCourse} // << NÃO recalcular
       classId={moduleKey || ""} // << ID da aula via URL
-      course={courseId}
       previousClass={prev}
       nextClass={next}
       courseTitle={courseTitle}
@@ -548,7 +547,7 @@ export default function Modules({
                     <span
                       style={{
                         color: partnerColor(),
-                        fontSize: 11,
+                        fontSize: 14,
                         fontWeight: 700,
                         fontStyle: "italic",
                         display: "inline-flex",

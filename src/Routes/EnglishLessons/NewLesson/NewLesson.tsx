@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { createPortal } from "react-dom";
 import { backDomain } from "../../../Resources/UniversalComponents";
 import { partnerColor } from "../../../Styles/Styles";
 
@@ -28,7 +29,7 @@ export default function CreateClassButton({
 
     try {
       setLoading(true);
-      const response = await axios.post(
+      await axios.post(
         `${backDomain}/api/v1/courseclass`,
         {
           newClass: {
@@ -38,7 +39,7 @@ export default function CreateClassButton({
             module: moduleId,
           },
         },
-        headers
+        headers // se precisar, aqui pode virar { headers }
       );
 
       setShowModal(false);
@@ -50,6 +51,101 @@ export default function CreateClassButton({
       setLoading(false);
     }
   };
+
+  const modal =
+    showModal &&
+    createPortal(
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          backgroundColor: "rgba(0,0,0,0.5)",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          zIndex: 1000,
+        }}
+        onClick={() => !loading && setShowModal(false)}
+      >
+        <div
+          style={{
+            backgroundColor: "white",
+            padding: "20px",
+            borderRadius: "10px",
+            width: "90%",
+            maxWidth: "400px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+          }}
+          onClick={(e) => e.stopPropagation()} // não fechar ao clicar dentro
+        >
+          <h3 style={{ margin: 0, color: "#333" }}>Criar Nova Aula</h3>
+          <input
+            type="text"
+            placeholder="Título da aula..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{
+              padding: "8px",
+              borderRadius: "6px",
+              border: "1px solid #ccc",
+              fontSize: "14px",
+            }}
+            disabled={loading}
+          />
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              gap: "10px",
+            }}
+          >
+            <button
+              onClick={() => setShowModal(false)}
+              disabled={loading}
+              style={{
+                backgroundColor: "#ddd",
+                border: "none",
+                borderRadius: "6px",
+                padding: "8px 12px",
+                cursor: "pointer",
+              }}
+            >
+              <i className="fa fa-times" /> Cancel
+            </button>
+
+            <button
+              onClick={handleCreateClass}
+              disabled={loading}
+              style={{
+                backgroundColor: partnerColor(),
+                color: "white",
+                border: "none",
+                borderRadius: "6px",
+                padding: "8px 12px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+              }}
+            >
+              {loading ? (
+                <>
+                  <i className="fa fa-spinner fa-spin" /> Creating...
+                </>
+              ) : (
+                <>
+                  <i className="fa fa-check" /> Create
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>,
+      document.body
+    );
 
   return (
     <>
@@ -78,95 +174,7 @@ export default function CreateClassButton({
         Nova Aula
       </button>
 
-      {/* Modal */}
-      {showModal && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            backgroundColor: "rgba(0,0,0,0.5)",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            zIndex: 1000,
-          }}
-        >
-          <div
-            style={{
-              backgroundColor: "white",
-              padding: "20px",
-              borderRadius: "10px",
-              width: "90%",
-              maxWidth: "400px",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.3)",
-              display: "flex",
-              flexDirection: "column",
-              gap: "16px",
-            }}
-          >
-            <h3 style={{ margin: 0, color: "#333" }}>Criar Nova Aula</h3>
-            <input
-              type="text"
-              placeholder="Título da aula..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              style={{
-                padding: "8px",
-                borderRadius: "6px",
-                border: "1px solid #ccc",
-                fontSize: "14px",
-              }}
-            />
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                gap: "10px",
-              }}
-            >
-              <button
-                onClick={() => setShowModal(false)}
-                disabled={loading}
-                style={{
-                  backgroundColor: "#ddd",
-                  border: "none",
-                  borderRadius: "6px",
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                }}
-              >
-                <i className="fa fa-times" /> Cancel
-              </button>
-
-              <button
-                onClick={handleCreateClass}
-                disabled={loading}
-                style={{
-                  backgroundColor: partnerColor(),
-                  color: "white",
-                  border: "none",
-                  borderRadius: "6px",
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                }}
-              >
-                {loading ? (
-                  <>
-                    <i className="fa fa-spinner fa-spin" /> Creating...
-                  </>
-                ) : (
-                  <>
-                    <i className="fa fa-check" /> Create
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {modal}
     </>
   );
 }

@@ -28,6 +28,7 @@ import SingleImagesEditor, {
 } from "./SingleImagesEditor/SingleImagesEditor";
 import { partnerColor } from "../../../Styles/Styles";
 import DeleteClassButton from "./DeleteLesson/DeleteLesson";
+import ImportElementsEditor from "./ImportNewElements/SelectExercise/ImportNewElements";
 
 type ElementItem =
   | {
@@ -111,7 +112,7 @@ interface EditLessonModelProps {
   headers?: any;
   buttonText?: any;
   onUpdated?: (updated: ClassDetails) => void;
-  studentId?: string;
+  studentId?: string | any;
   setChange?: any;
   change?: any;
   language: string;
@@ -128,6 +129,8 @@ type NewBlockType =
   | "selectexercise"
   | "explanation"
   | "singleimages";
+
+type ActiveTab = "edit" | "import";
 
 export default function EditLesson({
   classId,
@@ -159,6 +162,9 @@ export default function EditLesson({
 
   // --- Responsividade simples (mobile)
   const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  // --- Aba ativa: "edit" (editor completo) OU "import" (ImportElementsEditor) ---
+  const [activeTab, setActiveTab] = useState<ActiveTab>("edit");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -241,7 +247,6 @@ export default function EditLesson({
       setTags(Array.isArray(updated?.tags) ? updated.tags : tags);
       onUpdated?.(updated);
 
-      // mantém teu comportamento atual
       window.location.reload();
     } catch (err: any) {
       console.error(err);
@@ -349,7 +354,7 @@ export default function EditLesson({
     );
   };
 
-  // ===================== ESTILOS BASE (MOBILE-FIRST) =====================
+  // ===================== ESTILOS BASE =====================
   const outerWrapStyle: React.CSSProperties = {
     width: "98%",
     margin: "0 auto",
@@ -387,6 +392,7 @@ export default function EditLesson({
     fontSize: 13,
     width: "100%",
     boxSizing: "border-box",
+    backgroundColor: "#f9fafb",
   };
 
   const primaryButton: React.CSSProperties = {
@@ -395,6 +401,28 @@ export default function EditLesson({
     color: "white",
     fontWeight: 600,
     border: "none",
+  };
+
+  const tabsWrapper: React.CSSProperties = {
+    display: "flex",
+    gap: 4,
+    borderRadius: 999,
+    background: "#e5e7eb40",
+    padding: 3,
+    margin: "8px auto 12px",
+    maxWidth: 360,
+  };
+
+  const tabButtonBase: React.CSSProperties = {
+    flex: 1,
+    borderRadius: 999,
+    border: "none",
+    padding: "6px 10px",
+    fontSize: 13,
+    cursor: "pointer",
+    background: "transparent",
+    color: "#6b7280",
+    fontWeight: 500,
   };
 
   // =====================================================================
@@ -594,94 +622,135 @@ export default function EditLesson({
             </div>
           </div>
 
-          {/* CONTEÚDO DA AULA / BLOCOS */}
-          <div style={{ ...sectionCard, marginBottom: 12 }}>
-            <h3
+          {/* TABS: EDITAR AULA vs IMPORTAR ELEMENTOS */}
+          <div style={tabsWrapper}>
+            <button
+              type="button"
+              onClick={() => setActiveTab("edit")}
               style={{
-                fontSize: "clamp(16px, 3vw, 18px)",
-                textAlign: "center",
-                margin: "0 0 8px 0",
-                color: "#0f172a",
+                ...tabButtonBase,
+                background: activeTab === "edit" ? "#ffffff" : "transparent",
+                color: activeTab === "edit" ? "#0f172a" : "#6b7280",
+                boxShadow:
+                  activeTab === "edit"
+                    ? "0 1px 2px rgba(15,23,42,0.15)"
+                    : "none",
               }}
             >
-              Conteúdo da Aula
-            </h3>
-
-            {/* Toolbar de adicionar bloco */}
-            <div
+              Editar elementos da aula
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveTab("import")}
               style={{
-                display: "grid",
-                gridTemplateColumns: isMobile
-                  ? "1fr"
-                  : "minmax(0, 2fr) auto auto",
-                gap: 8,
-                marginBottom: 12,
+                ...tabButtonBase,
+                background: activeTab === "import" ? "#ffffff" : "transparent",
+                color: activeTab === "import" ? "#0f172a" : "#6b7280",
+                boxShadow:
+                  activeTab === "import"
+                    ? "0 1px 2px rgba(15,23,42,0.15)"
+                    : "none",
               }}
             >
-              <select
-                value={newType}
-                onChange={(e) => setNewType(e.target.value as NewBlockType)}
+              Importar elementos de outras aulas
+            </button>
+          </div>
+
+          {/* CONTEÚDO DA AULA / TABS */}
+          {activeTab === "edit" && (
+            <div style={{ ...sectionCard, marginBottom: 12 }}>
+              <h3
                 style={{
-                  ...inputBase,
-                  background: "white",
-                  paddingRight: 24,
+                  fontSize: "clamp(16px, 3vw, 18px)",
+                  textAlign: "center",
+                  margin: "0 0 8px 0",
+                  color: "#0f172a",
                 }}
-                title="Tipo do novo bloco"
               >
-                <option value="explanation">Explanation/Introduction</option>
-                <option value="vocabulary">Vocabulary</option>
-                <option value="singleimages">Single Images</option>
-                <option value="sentences">Sentences</option>
-                <option value="audio">Text + Audio</option>
-                <option value="images">Images (Grid + Audio)</option>
-                <option value="video">Video</option>
-                <option value="exercise">Exercise (List of questions)</option>
-                <option value="dialogue">Dialogue</option>
-                <option value="selectexercise">Select Exercise</option>
-              </select>
+                Conteúdo da Aula
+              </h3>
 
-              <button
-                onClick={() => addBlock("start")}
+              {/* Toolbar de adicionar bloco */}
+              <div
                 style={{
-                  ...fullWidthButton,
-                  width: "100%",
+                  display: "grid",
+                  gridTemplateColumns: isMobile
+                    ? "1fr"
+                    : "minmax(0, 2fr) auto auto",
+                  gap: 8,
+                  marginBottom: 12,
                 }}
-                title="Adicionar no início"
               >
-                + Adicionar no início
-              </button>
-
-              <button
-                onClick={() => addBlock("end")}
-                style={primaryButton}
-                title="Adicionar ao final"
-              >
-                + Adicionar ao final
-              </button>
-            </div>
-
-            {/* Lista de blocos */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {elements.length === 0 && (
-                <div
+                <select
+                  value={newType}
+                  onChange={(e) => setNewType(e.target.value as NewBlockType)}
                   style={{
-                    border: "1px dashed #94a3b8",
-                    borderRadius: 8,
-                    padding: 14,
-                    color: "#64748b",
-                    fontSize: 13,
-                    textAlign: "center",
+                    ...inputBase,
+                    background: "white",
+                    paddingRight: 24,
                   }}
+                  title="Tipo do novo bloco"
                 >
-                  Nenhum elemento cadastrado.
-                </div>
-              )}
+                  <option value="explanation">Explanation/Introduction</option>
+                  <option value="vocabulary">Vocabulary</option>
+                  <option value="singleimages">Single Images</option>
+                  <option value="sentences">Sentences</option>
+                  <option value="audio">Text + Audio</option>
+                  <option value="images">Images (Grid + Audio)</option>
+                  <option value="video">Video</option>
+                  <option value="exercise">Exercise (List of questions)</option>
+                  <option value="dialogue">Dialogue</option>
+                  <option value="selectexercise">Select Exercise</option>
+                </select>
 
-              {elements.map((el, idx) => {
-                if (el?.type === "sentences") {
-                  return (
-                    <div key={idx}>
+                <button
+                  onClick={() => addBlock("start")}
+                  style={{
+                    ...fullWidthButton,
+                    width: "100%",
+                  }}
+                  title="Adicionar no início"
+                >
+                  + Adicionar no início
+                </button>
+
+                <button
+                  onClick={() => addBlock("end")}
+                  style={primaryButton}
+                  title="Adicionar ao final"
+                >
+                  + Adicionar ao final
+                </button>
+              </div>
+
+              {/* Lista de blocos */}
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 10,
+                }}
+              >
+                {elements.length === 0 && (
+                  <div
+                    style={{
+                      border: "1px dashed #94a3b8",
+                      borderRadius: 8,
+                      padding: 14,
+                      color: "#64748b",
+                      fontSize: 13,
+                      textAlign: "center",
+                    }}
+                  >
+                    Nenhum elemento cadastrado.
+                  </div>
+                )}
+
+                {elements.map((el, idx) => {
+                  if (el?.type === "sentences") {
+                    return (
                       <SentencesEditor
+                        key={idx}
                         setChange={setChange}
                         change={change}
                         language={language}
@@ -692,14 +761,13 @@ export default function EditLesson({
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "vocabulary") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "vocabulary") {
+                    return (
                       <VocabularyEditor
+                        key={idx}
                         value={el as SentencesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         change={change}
@@ -713,28 +781,26 @@ export default function EditLesson({
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "video") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "video") {
+                    return (
                       <VideoEditor
+                        key={idx}
                         value={el as VideoBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "exercise") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "exercise") {
+                    return (
                       <ExerciseEditor
+                        key={idx}
                         language={language}
                         studentId={studentId}
                         type="exercises"
@@ -744,14 +810,13 @@ export default function EditLesson({
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "images") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "images") {
+                    return (
                       <ImagesEditor
+                        key={idx}
                         value={el as ImagesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
@@ -759,14 +824,13 @@ export default function EditLesson({
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "audio") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "audio") {
+                    return (
                       <AudioAndTextEditor
+                        key={idx}
                         value={el as AudioBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
@@ -776,14 +840,13 @@ export default function EditLesson({
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "dialogue") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "dialogue") {
+                    return (
                       <DialogueEditor
+                        key={idx}
                         value={el as DialogueBlock}
                         language={language}
                         studentId={studentId}
@@ -792,28 +855,26 @@ export default function EditLesson({
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "selectexercise") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "selectexercise") {
+                    return (
                       <SelectExerciseEditor
+                        key={idx}
                         value={el as SelectExerciseBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
                         onMoveUp={() => moveElementUp(idx)}
                         onMoveDown={() => moveElementDown(idx)}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "explanation") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "explanation") {
+                    return (
                       <ExplanationEditor
+                        key={idx}
                         value={el as ExplanationBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
@@ -821,14 +882,13 @@ export default function EditLesson({
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                if (el?.type === "singleimages") {
-                  return (
-                    <div key={idx}>
+                  if (el?.type === "singleimages") {
+                    return (
                       <SingleImagesEditor
+                        key={idx}
                         value={el as SingleImagesBlock}
                         onChange={(next) => updateElementAt(idx, next)}
                         onRemove={() => removeElementAt(idx)}
@@ -836,14 +896,47 @@ export default function EditLesson({
                         onMoveDown={() => moveElementDown(idx)}
                         headers={headers}
                       />
-                    </div>
-                  );
-                }
+                    );
+                  }
 
-                return null;
-              })}
+                  return null;
+                })}
+              </div>
             </div>
-          </div>
+          )}
+
+          {activeTab === "import" && (
+            <div style={{ ...sectionCard, marginBottom: 12 }}>
+              <h3
+                style={{
+                  fontSize: "clamp(16px, 3vw, 18px)",
+                  textAlign: "center",
+                  margin: "0 0 8px 0",
+                  color: "#0f172a",
+                }}
+              >
+                Importar elementos de outras aulas
+              </h3>
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "#64748b",
+                  margin: "0 0 10px 0",
+                  textAlign: "center",
+                }}
+              >
+                Pesquise aulas por título ou tags e copie elementos prontos
+                diretamente para esta aula.
+              </p>
+
+              <ImportElementsEditor
+                lessonId={classId}
+                onChange={setChange}
+                studentId={studentId}
+                headers={headers}
+              />
+            </div>
+          )}
 
           {/* AÇÕES FINAIS */}
           <div
@@ -855,7 +948,6 @@ export default function EditLesson({
               justifyContent: isMobile ? "stretch" : "flex-end",
             }}
           >
-            {/* Delete sempre visível, mas empilhado no mobile */}
             <div style={{ flex: isMobile ? "unset" : 0 }}>
               <DeleteClassButton
                 classId={classId}
