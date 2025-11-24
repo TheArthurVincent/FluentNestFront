@@ -48,11 +48,11 @@ import ExerciseLessonModel from "./Assets/LessonsModels/ExerciseLessonModel";
 interface EnglishClassCourse2ModelProps {
   headers: any;
   classId: any;
-  course: any;
-  courseTitle: any;
-  previousClass: any;
-  nextClass: any;
+  courseTitle?: any;
+  previousClass?: any;
+  nextClass?: any;
   setChange?: any;
+  mainStudentID?: string;
   change?: any;
   canEditCourse: boolean | undefined;
 }
@@ -65,6 +65,7 @@ export default function EnglishClassCourse2({
   courseTitle,
   setChange,
   change,
+  mainStudentID,
   canEditCourse,
 }: EnglishClassCourse2ModelProps) {
   const [studentsList, setStudentsList] = useState<any>([]);
@@ -524,7 +525,7 @@ export default function EnglishClassCourse2({
         }
       }
 
-      const safeSubtitle = sanitizeText(`${courseTitle}`, 60);
+      const safeSubtitle = sanitizeText(`${courseTitle || ""}`, 60);
       const subtitleY = theclass.image ? 4.2 : 2;
       titleSlide.addText(safeSubtitle, {
         x: 0.5,
@@ -1634,7 +1635,7 @@ export default function EnglishClassCourse2({
       );
 
       // Subtítulo
-      const safeSubtitle = sanitizeText(`${courseTitle}`, 60);
+      const safeSubtitle = sanitizeText(`${courseTitle || ""}`, 60);
       children.push(
         new Paragraph({
           children: [
@@ -2312,7 +2313,7 @@ export default function EnglishClassCourse2({
       yPosition += titleLines.length * 7 + 5;
 
       // Subtítulo do curso
-      const safeSubtitle = sanitizeText(`${courseTitle}`, 60);
+      const safeSubtitle = sanitizeText(`${courseTitle || ""}`, 60);
       pdf.setFontSize(12);
       pdf.setTextColor(100, 100, 100);
       const subtitleLines = splitTextToSize(safeSubtitle, maxWidth, 12);
@@ -2809,13 +2810,17 @@ export default function EnglishClassCourse2({
 
   const NXTClass = () => {
     window.location.assign(
-      `/teaching-materials/${pathGenerator(courseTitle)}/${nextClass}`
+      `/teaching-materials/${pathGenerator(courseTitle || "")}/${
+        nextClass || ""
+      }`
     );
   };
 
   const PVSClass = () => {
     window.location.assign(
-      `/teaching-materials/${pathGenerator(courseTitle)}/${previousClass}`
+      `/teaching-materials/${pathGenerator(courseTitle || "")}/${
+        previousClass || ""
+      }`
     );
   };
 
@@ -3080,7 +3085,7 @@ export default function EnglishClassCourse2({
       setEditorContent(generateInitialBoardContent());
     }
     // eslint-disable-next-line
-  }, [theclass, classTitle, courseTitle]);
+  }, [theclass, classTitle, courseTitle || ""]);
 
   const [hasAudioElement, setHasAudioElement] = useState(false);
   const [currentAudioIndex, setCurrentAudioIndex] = useState(0);
@@ -3114,92 +3119,116 @@ export default function EnglishClassCourse2({
         borderRadius: "12px",
       }}
     >
-      <Helmets text={classTitle} />
-
+      {classTitle && <Helmets text={classTitle || ""} />}
       {loading ? (
         <CircularProgress style={{ color: partnerColor() }} />
       ) : (
         <>
           {!seeEdit && (
             <>
-              <div
-                style={{
-                  display: "flex",
-                  gap: "1rem",
-                  alignItems: "center",
-                }}
-              >
-                <Link
-                  style={{
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    color: "#000",
-                  }}
-                  to="/teaching-materials"
-                >
-                  Materiais de Ensino
-                </Link>{" "}
-                -{" "}
-                <Link
-                  style={{
-                    textDecoration: "none",
-                    fontSize: "14px",
-                    color: "#000",
-                  }}
-                  to={`/teaching-materials/${pathGenerator(courseTitle || "")}`}
-                >
-                  {courseTitle ? truncateString(courseTitle, 25) : "..."}
-                </Link>{" "}
-                <span style={{ color: darkGreyColor() }}>-</span>
-                <span
-                  style={{
-                    textDecoration: "none",
-                    fontStyle: "italic",
-                    fontSize: "14px",
-                    fontWeight: "700",
-                    color: partnerColor(),
-                  }}
-                >
-                  {theclass?.title ? truncateString(theclass.title, 25) : "..."}
-                </span>
-              </div>
-              <div
-                style={{
-                  display: !exercise ? "flex" : "none",
-                  margin: "1rem auto",
-                  padding: "0 1rem",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                }}
-              >
-                <span
-                  style={{
-                    color: previousClass !== "123456" ? partnerColor() : "#eee",
-                    cursor: previousClass !== "123456" ? "pointer" : "default",
-                  }}
-                  onClick={PVSClass}
-                >
-                  <i className="fa fa-arrow-left" aria-hidden="true" />
-                </span>
-                <HOne
-                  style={{
-                    textAlign: "center",
-                    fontSize: "18px",
-                    fontWeight: "600",
-                  }}
-                >
-                  {theclass.title}
-                </HOne>
-                <span
-                  style={{
-                    color: nextClass !== "123456" ? partnerColor() : "#eee",
-                    cursor: nextClass !== "123456" ? "pointer" : "default",
-                  }}
-                  onClick={NXTClass}
-                >
-                  <i className="fa fa-arrow-right" aria-hidden="true" />
-                </span>
-              </div>
+              {!mainStudentID && (
+                <>
+                  {" "}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "1rem",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Link
+                      style={{
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        color: "#000",
+                      }}
+                      to="/teaching-materials"
+                    >
+                      Materiais de Ensino
+                    </Link>{" "}
+                    -{" "}
+                    <Link
+                      style={{
+                        textDecoration: "none",
+                        fontSize: "14px",
+                        color: "#000",
+                      }}
+                      to={`/teaching-materials/${pathGenerator(
+                        courseTitle || "" || ""
+                      )}`}
+                    >
+                      {courseTitle || ""
+                        ? truncateString(courseTitle || "", 25)
+                        : "..."}
+                    </Link>{" "}
+                    <span style={{ color: darkGreyColor() }}>-</span>
+                    <span
+                      style={{
+                        textDecoration: "none",
+                        fontStyle: "italic",
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        color: partnerColor(),
+                      }}
+                    >
+                      {theclass?.title
+                        ? truncateString(theclass.title, 25)
+                        : "..."}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: !exercise ? "flex" : "none",
+                      margin: "1rem auto",
+                      padding: "0 1rem",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <span
+                      style={{
+                        color:
+                          previousClass && previousClass !== "123456"
+                            ? partnerColor()
+                            : "#eee",
+                        cursor:
+                          previousClass && previousClass !== "123456"
+                            ? "pointer"
+                            : "default",
+                      }}
+                      onClick={PVSClass}
+                    >
+                      <i className="fa fa-arrow-left" aria-hidden="true" />
+                    </span>
+                    <HOne
+                      style={{
+                        textAlign: "center",
+                        fontSize: "18px",
+                        fontWeight: "600",
+                      }}
+                    >
+                      {theclass.title}
+                    </HOne>
+                    {nextClass && (
+                      <span
+                        style={{
+                          color:
+                            nextClass && nextClass !== "123456"
+                              ? partnerColor()
+                              : "#eee",
+                          cursor:
+                            nextClass && nextClass !== "123456"
+                              ? "pointer"
+                              : "default",
+                        }}
+                        onClick={NXTClass}
+                      >
+                        <i className="fa fa-arrow-right" aria-hidden="true" />
+                      </span>
+                    )}
+                  </div>
+                </>
+              )}
             </>
           )}
           {!exercise && (
@@ -3255,7 +3284,7 @@ export default function EnglishClassCourse2({
                           gap: "8px",
                         }}
                       >
-                        {!exercise && (
+                        {/* {!exercise && (
                           <button
                             title="Ver Quadro"
                             onClick={() => {
@@ -3281,45 +3310,48 @@ export default function EnglishClassCourse2({
                           >
                             Lousa
                           </button>
-                        )}
+                        )} */}
 
-                        <select
-                          onChange={(e) => handleStudentChange(e)}
-                          value={studentID}
-                          style={{
-                            borderRadius: "4px",
-                            border: "1px solid #e2e8f0",
-                            backgroundColor: "#f8fafc",
-                            fontSize: "11px",
-                            fontWeight: "400",
-                            color: "#64748b",
-                            padding: "4px 6px",
-                            height: "28px",
-                            maxWidth: "70px",
-                            outline: "none",
-                            cursor: "pointer",
-                            display:
-                              thePermissions === "superadmin" ||
-                              thePermissions === "teacher"
-                                ? "block"
-                                : "none",
-                          }}
-                          onFocus={(e) =>
-                            (e.currentTarget.style.borderColor = partnerColor())
-                          }
-                          onBlur={(e) =>
-                            (e.currentTarget.style.borderColor = "#e2e8f0")
-                          }
-                        >
-                          {studentsList.map((student: any, index: number) => (
-                            <option key={index} value={student.id}>
-                              {truncateString(
-                                student.name + " " + student.lastname,
-                                15
-                              )}
-                            </option>
-                          ))}
-                        </select>
+                        {!mainStudentID && (
+                          <select
+                            onChange={(e) => handleStudentChange(e)}
+                            value={studentID}
+                            style={{
+                              borderRadius: "4px",
+                              border: "1px solid #e2e8f0",
+                              backgroundColor: "#f8fafc",
+                              fontSize: "11px",
+                              fontWeight: "400",
+                              color: "#64748b",
+                              padding: "4px 6px",
+                              height: "28px",
+                              maxWidth: "70px",
+                              outline: "none",
+                              cursor: "pointer",
+                              display:
+                                thePermissions === "superadmin" ||
+                                thePermissions === "teacher"
+                                  ? "block"
+                                  : "none",
+                            }}
+                            onFocus={(e) =>
+                              (e.currentTarget.style.borderColor =
+                                partnerColor())
+                            }
+                            onBlur={(e) =>
+                              (e.currentTarget.style.borderColor = "#e2e8f0")
+                            }
+                          >
+                            {studentsList.map((student: any, index: number) => (
+                              <option key={index} value={student.id}>
+                                {truncateString(
+                                  student.name + " " + student.lastname,
+                                  15
+                                )}
+                              </option>
+                            ))}
+                          </select>
+                        )}
                         <Voice
                           maxW="70px"
                           changeB={changeNumber}
@@ -4369,27 +4401,41 @@ export default function EnglishClassCourse2({
                     justifyContent: "space-between",
                   }}
                 >
-                  <span
-                    style={{
-                      color:
-                        previousClass !== "123456" ? partnerColor() : "#eee",
-                      cursor:
-                        previousClass !== "123456" ? "pointer" : "default",
-                    }}
-                    onClick={PVSClass}
-                  >
-                    <i className="fa fa-arrow-left" aria-hidden="true" />
-                  </span>
+                  {previousClass && (
+                    <span
+                      style={{
+                        color:
+                          previousClass && previousClass !== "123456"
+                            ? partnerColor()
+                            : "#eee",
+                        cursor:
+                          previousClass && previousClass !== "123456"
+                            ? "pointer"
+                            : "default",
+                      }}
+                      onClick={PVSClass}
+                    >
+                      <i className="fa fa-arrow-left" aria-hidden="true" />
+                    </span>
+                  )}
 
-                  <span
-                    style={{
-                      color: nextClass !== "123456" ? partnerColor() : "#eee",
-                      cursor: nextClass !== "123456" ? "pointer" : "default",
-                    }}
-                    onClick={NXTClass}
-                  >
-                    <i className="fa fa-arrow-right" aria-hidden="true" />
-                  </span>
+                  {nextClass && (
+                    <span
+                      style={{
+                        color:
+                          nextClass && nextClass !== "123456"
+                            ? partnerColor()
+                            : "#eee",
+                        cursor:
+                          nextClass && nextClass !== "123456"
+                            ? "pointer"
+                            : "default",
+                      }}
+                      onClick={NXTClass}
+                    >
+                      <i className="fa fa-arrow-right" aria-hidden="true" />
+                    </span>
+                  )}
                 </div>
               )}
             </>

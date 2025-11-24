@@ -9,6 +9,7 @@ import MainInfoClass from "./sessions/MainInfoClass";
 import Description from "./sessions/Description";
 import LastClass from "./sessions/LastEvent";
 import Board from "./sessions/BoardLesson";
+import LessonContent from "./sessions/LessonContent";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -19,13 +20,24 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const { eventId } = useParams<{ eventId: string }>();
   const [eventData, setEventData] = useState<any>(null);
 
+  const [permissionsUser, setPermissionsUser] = useState<string>("student");
+
   const fetchEventData = async () => {
+    setPermissionsUser(
+      JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions
+    );
+
+    console.log(
+      "Fetching data for eventId:",
+      JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions
+    );
     if (!eventId) return;
     try {
       const res = await axios.get(`${backDomain}/api/v1/event/${eventId}`, {
         headers: headers as any,
       });
       setEventData(res.data.event);
+      console.log(res.data.event);
     } catch (err) {
       console.error("Error fetching event data", err);
     }
@@ -123,7 +135,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
           {event && (
             <div
               style={{
-                display: "flex",
+                display: permissionsUser !== "student" ? "flex" : "none",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "1rem",
@@ -252,7 +264,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         {!isDesktop && event && event.status && (
           <div
             style={{
-              display: "flex",
+              display: permissionsUser !== "student" ? "flex" : "none",
               alignItems: "center",
               justifyContent: "center",
               gap: "1rem",
@@ -370,12 +382,14 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
 
         {event && (
           <>
-            <EventVideo
-              fetchEventData={fetchEventData}
-              headers={headers}
-              videoUrl={event.video}
-              evendId={event._id}
-            />
+            {(event.video || permissionsUser !== "student") && (
+              <EventVideo
+                fetchEventData={fetchEventData}
+                headers={headers}
+                videoUrl={event.video}
+                evendId={event._id}
+              />
+            )}{" "}
             <MainInfoClass
               event={event}
               headers={headers}
@@ -383,21 +397,32 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               fetchEventData={fetchEventData}
               evendId={event._id}
             />
-            <Description
-              status={event.status}
-              lesson={event.theLesson}
-              headers={headers}
-              theDescription={event.description}
-              evendId={event._id}
-              fetchEventData={fetchEventData}
-            />
+            {(event.description || permissionsUser !== "student") && (
+              <Description
+                status={event.status}
+                lesson={event.theLesson}
+                headers={headers}
+                theDescription={event.description}
+                evendId={event._id}
+                fetchEventData={fetchEventData}
+              />
+            )}
             <Board
               headers={headers}
               date={event.date}
               theBoard={event.board}
               evendId={event._id}
             />
-            {lastLesson && (
+            {(event.theLessonRender || permissionsUser !== "student") && (
+              <LessonContent
+                headers={headers}
+                date={event.date}
+                theLessonContent={event.theLessonRender}
+                eventId={event._id}
+                studentID={event.studentID}
+              />
+            )}
+            {(lastLesson || permissionsUser !== "student") && (
               <LastClass
                 headers={headers}
                 isDesktop={isDesktop}

@@ -19,12 +19,8 @@ type BoardProps = {
 
 const Board: FC<BoardProps> = ({ headers, theBoard, evendId, date }) => {
   const [editorKey, setEditorKey] = useState(0); // Force re-render key
-  const [editorContent, setEditorContent] = useState<string>(
-    theBoard || `Aula do dia ${date}`
-  );
-  const [newHWDescription, setNewHWDescription] = useState(
-    theBoard || `Aula do dia ${date}`
-  );
+  const [editorContent, setEditorContent] = useState<string>(theBoard || ``);
+  const [newHWDescription, setNewHWDescription] = useState(theBoard || ``);
   const [loading, setLoading] = useState(false);
   const handleHWDescriptionChange = (htmlContent: any) => {
     setNewHWDescription(htmlContent);
