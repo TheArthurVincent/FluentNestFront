@@ -372,7 +372,7 @@ export default function EnglishClassCourse2({
 
     try {
       const response = await axios.put(
-        `${backDomain}/api/v1/handlecurrentclass/${loggedInData.id}`,
+        `${backDomain}/api/v1/handlecurrentclass`,
         { classId },
         { headers: actualHeaders }
       );
@@ -2772,8 +2772,8 @@ export default function EnglishClassCourse2({
   useEffect(() => {
     setTimeout(() => {
       handleCurrentClass();
-    }, 5000);
-  }, [studentID]);
+    }, 1000);
+  }, [studentID, mainStudentID]);
 
   useEffect(() => {
     verifyCheck();
@@ -2848,41 +2848,6 @@ export default function EnglishClassCourse2({
   };
 
   const [seeBoard, setSeeBoard] = useState(false);
-
-  // useEffect(() => {
-  //   const handleKeyDown = (event: KeyboardEvent) => {
-  //     // Zoom da lousa com Ctrl + / Ctrl -
-  //     if ((event.ctrlKey || event.metaKey) && seeBoard) {
-  //       if (event.key === "+" || event.key === "=") {
-  //         event.preventDefault();
-  //         setBoardZoom((prev) => Math.min(prev + 10, 200)); // Máximo 200% zoom
-  //         return;
-  //       }
-  //       if (event.key === "-") {
-  //         event.preventDefault();
-  //         setBoardZoom((prev) => Math.max(prev - 10, 100)); // Mínimo 100% zoom
-  //         return;
-  //       }
-  //       if (event.key === "0") {
-  //         event.preventDefault();
-  //         setBoardZoom(100); // Resetar para 100%
-  //         return;
-  //       }
-  //     }
-
-  //     // Salvar lousa com Ctrl+S
-  //     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "s") {
-  //       event.preventDefault();
-
-  //       handleSaveBoard();
-  //       notifyAlert("Lousa salva com sucesso!", partnerColor());
-  //     }
-  //   };
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //   };
-  // }, [seeBoard, thePermissions, newHWDescription, studentID, boardZoom]);
 
   const handleGetBoard = async (id: string) => {
     setLoadingBoard(true);

@@ -18,7 +18,7 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
   );
   const [loadingLESSON, setLoadingLESSON] = React.useState(false);
   const [hasData, setHasData] = React.useState(false);
-
+  const [isRealClass, setIsRealClass] = React.useState(false);
   const fetchLastClassId = async (classid: string) => {
     setLoadingLESSON(true);
     try {
@@ -29,7 +29,11 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
         }
       );
 
-      const courseTitleResp = response.data?.classDetails?.title || "";
+      const courseTitleResp =
+        response.data?.classDetails?.title ||
+        response.data?.classDetails?.student ||
+        "";
+      const isc = response.data?.classDetails?.isClass || false;
       const courseResp = response.data?.classDetails?.courseId || "";
       const theImg =
         response.data?.classDetails?.image ||
@@ -39,7 +43,7 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
       setCourseTitle(courseTitleResp);
       setCourseId(courseResp);
       setClassId(classid);
-
+      setIsRealClass(isc);
       setHasData(true);
       setLoadingLESSON(false);
     } catch (error) {
@@ -67,8 +71,10 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
   }, []);
 
   const href =
-    hasData && courseId && classId
+    hasData && courseId && classId && isRealClass
       ? `/teaching-materials/${courseId}/${classId}`
+      : !isRealClass && classId && hasData
+      ? `/my-calendar/event/${classId}`
       : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b";
 
   return (

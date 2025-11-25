@@ -34,8 +34,6 @@ export const FlashcardsReview: FC<FlashcardsReviewProps> = ({
           params: { category: null, lang: "en" },
         }
       );
-      console.log(response.data);
-
       setFlashcardsToday(response.data.flashcardsToday);
       // se quiser usar isso pra algo:
       setSeeConf(!seeConf);

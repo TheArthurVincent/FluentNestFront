@@ -65,6 +65,7 @@ export function MyHomePage({
       localStorage.getItem("loggedIn") || "{}"
     );
     setPERMISSIONS(permissions || "");
+    console.log("Score data response:", permissions);
 
     try {
       const response = await axios.get(`${backDomain}/api/v1/score/${id}`, {
@@ -72,7 +73,6 @@ export function MyHomePage({
       });
       setMonthlyScore(response.data.monthlyScore);
       setStudentPicture(response.data.picture);
-      setStudentPermissions(response.data.permissions);
       var newValue = updateScore(
         response.data.totalScore,
         response.data.flashcards25Reviews,
@@ -190,11 +190,6 @@ export function MyHomePage({
         headers: headers ? { ...headers } : {},
         params: { month: currentMonthYear },
       });
-      console.log(
-        "response.data.financialReportsOfTheMonth",
-        response.data.financialReportsOfTheMonth,
-        currentMonthYear
-      );
 
       if (response.data.financialReportsOfTheMonth?.length === 0) {
         setFinancialReports(

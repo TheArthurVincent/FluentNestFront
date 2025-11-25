@@ -32,7 +32,6 @@ export const HomeworkCard: FC<HomeworkCardProps> = ({
           headers: actualHeaders ? { ...actualHeaders } : {},
         }
       );
-      console.log(response.data);
       setHomeworkData(response.data.homework[0].description);
     } catch (error) {
       console.error(error);
