@@ -19,6 +19,7 @@ type LastClassProps = {
   lastLesson?: any;
   evendId?: string;
   allowedToEdit?: boolean;
+  replicateLastEvent?: boolean;
 };
 
 const LastClass: FC<LastClassProps> = ({
@@ -27,6 +28,7 @@ const LastClass: FC<LastClassProps> = ({
   lastLesson,
   evendId,
   allowedToEdit,
+  replicateLastEvent,
 }) => {
   const renderStatusPill = (status?: string) => {
     if (!status) return null;
@@ -142,7 +144,7 @@ const LastClass: FC<LastClassProps> = ({
                     Link importante
                   </a>
                 )}
-                {allowedToEdit && (
+                {allowedToEdit && replicateLastEvent && (
                   <button
                     style={{
                       marginTop: 8,

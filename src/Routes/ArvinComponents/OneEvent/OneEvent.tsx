@@ -20,7 +20,7 @@ type EventProps = {
 const Event: FC<EventProps> = ({ headers, isDesktop }) => {
   const { eventId } = useParams<{ eventId: string }>();
   const [eventData, setEventData] = useState<any>(null);
-
+  const [replicateLastEvent, setReplicateLastEvent] = useState<boolean>(false);
   const [permissionsUser, setPermissionsUser] = useState<string>("student");
 
   const fetchEventData = async () => {
@@ -38,7 +38,8 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
         headers: headers as any,
       });
       setEventData(res.data.event);
-      console.log(res.data.event);
+      setReplicateLastEvent(res.data.event.replicateLastEvent);
+      console.log(res.data.event.replicateLastEvent, "replicateLastEvent");
     } catch (err) {
       console.error("Error fetching event data", err);
     }
@@ -437,6 +438,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             )}
             {(lastLesson || permissionsUser !== "student") && (
               <LastClass
+                replicateLastEvent={replicateLastEvent}
                 headers={headers}
                 evendId={event._id}
                 allowedToEdit={permissionsUser !== "student"}
