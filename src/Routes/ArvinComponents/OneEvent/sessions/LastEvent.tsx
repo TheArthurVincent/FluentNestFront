@@ -51,10 +51,6 @@ const LastClass: FC<LastClassProps> = ({
     }
   };
 
-  useEffect(() => {
-    console.log("Last lesson data:", lastLesson);
-  }, [lastLesson]);
-
   return (
     <div
       style={{

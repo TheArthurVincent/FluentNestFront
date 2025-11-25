@@ -83,10 +83,6 @@ const DeleteClass: FC<DeleteClassProps> = ({
     }
   };
 
-  useEffect(() => {
-    console.log("Last lesson data:", lastLesson);
-  }, [lastLesson]);
-
   // -------- MODAL VIA PORTAL (grudado no body) --------
   const deleteModal =
     showDeleteModal &&
