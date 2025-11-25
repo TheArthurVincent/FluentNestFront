@@ -45,6 +45,7 @@ export function MyHomePage({
     "student" | "teacher" | "superadmin" | ""
   >("");
   const [studentPicture, setStudentPicture] = useState("");
+  const [studentPermissions, setStudentPermissions] = useState("");
   const [id, setId] = useState<string>("");
 
   const [level, setLevel] = useState<number>(9);
@@ -69,6 +70,7 @@ export function MyHomePage({
       });
       setMonthlyScore(response.data.monthlyScore);
       setStudentPicture(response.data.picture);
+      setStudentPermissions(response.data.permissions);
       var newValue = updateScore(
         response.data.totalScore,
         response.data.flashcards25Reviews,
@@ -170,6 +172,67 @@ export function MyHomePage({
       ),
     },
   ];
+  const [financialReports, setFinancialReports] = useState<any[]>([]);
+  const [thereAreReports, setThereAreReports] = useState<boolean>(false);
+  const [loadingReports, setLoadingReports] = useState<boolean>(true);
+
+  const seeReports = async () => {
+    //fórmula que pega a data atual e coloca no formato mm-yyyy
+    const currentDate = new Date();
+    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, "0"); // Meses são baseados em zero
+    const currentYear = currentDate.getFullYear();
+    const currentMonthYear = `${currentMonth}-${currentYear}`;
+
+    try {
+      const response = await axios.get(`${backDomain}/api/v1/finance/${id}`, {
+        headers: headers ? { ...headers } : {},
+        params: { currentMonthYear },
+      });
+      console.log(
+        "response.data.financialReportsOfTheMonth",
+        response.data.financialReportsOfTheMonth,
+        currentMonthYear
+      );
+
+      if (response.data.financialReportsOfTheMonth?.length === 0) {
+        setFinancialReports(
+          response.data.financialReportsOfTheMonth?.length > 0
+            ? response.data.financialReportsOfTheMonth
+            : []
+        );
+        setThereAreReports(false);
+      } else {
+        setFinancialReports(response.data.financialReportsOfTheMonth || []);
+        setTimeout(() => {
+          setThereAreReports(true);
+        }, 500);
+      }
+      setLoadingReports(false);
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+  const entradasRecebidas = financialReports
+    .filter(
+      (report) =>
+        report.accountFor &&
+        report.typeOfItem !== "debt" &&
+        (report.paidFor || (report.paidSoFar && report.paidSoFar > 0))
+    )
+    .reduce((total, report) => {
+      // Sempre usar paidSoFar quando disponível, pois pode ser maior que o valor original
+      if (report.paidSoFar && report.paidSoFar > 0) {
+        return total + Math.abs(report.paidSoFar);
+      } else if (report.paidFor) {
+        // Fallback para casos onde paidFor é true mas paidSoFar não está definido
+        return total + (Math.abs(report.amount || 0) - (report.discount || 0));
+      }
+      return total;
+    }, 0);
+
+  useEffect(() => {
+    seeReports();
+  }, []);
 
   const canSee = (item: { showToStudent: boolean; showToTeacher: boolean }) => {
     // Teacher e superadmin usam showToTeacher
@@ -235,44 +298,85 @@ export function MyHomePage({
                   actualHeaders={actualHeaders}
                 />
               </span> */}
-              <span
-                onClick={() => {
-                  seeScore(id);
-                }}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  borderRadius: "80px",
-                  padding: "8px 12px",
-                  backgroundColor: `${partnerColor()}20`,
-                  border: `1px solid ${partnerColor()}50`,
-                }}
-              >
-                <i
-                  className="fa fa-trophy"
-                  style={{
-                    fontSize: "12px",
-                    left: "10px",
-                    top: "50%",
-                    color: partnerColor(),
-                    pointerEvents: "none",
-                  }}
-                />
+              {studentPermissions == "student" ? (
                 <span
+                  onClick={() => {
+                    seeScore(id);
+                  }}
                   style={{
-                    fontFamily: "Plus Jakarta Sans",
-                    fontWeight: 600,
-                    fontStyle: "SemiBold",
-                    fontSize: "14px",
-                    color: partnerColor(),
-                    lineHeight: "100%",
-                    letterSpacing: "0%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    borderRadius: "80px",
+                    padding: "8px 12px",
+                    backgroundColor: `${partnerColor()}20`,
+                    border: `1px solid ${partnerColor()}50`,
                   }}
                 >
-                  {monthlyScore} pts
+                  <i
+                    className="fa fa-trophy"
+                    style={{
+                      fontSize: "12px",
+                      left: "10px",
+                      top: "50%",
+                      color: partnerColor(),
+                      pointerEvents: "none",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 600,
+                      fontStyle: "SemiBold",
+                      fontSize: "14px",
+                      color: partnerColor(),
+                      lineHeight: "100%",
+                      letterSpacing: "0%",
+                    }}
+                  >
+                    {monthlyScore} pts
+                  </span>
                 </span>
-              </span>
+              ) : (
+                <span
+                  onClick={() => {
+                    seeScore(id);
+                  }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    borderRadius: "80px",
+                    padding: "8px 12px",
+                    backgroundColor: `${partnerColor()}20`,
+                    border: `1px solid ${partnerColor()}50`,
+                  }}
+                >
+                  <i
+                    className="fa fa-money"
+                    style={{
+                      fontSize: "12px",
+                      left: "10px",
+                      top: "50%",
+                      color: partnerColor(),
+                      pointerEvents: "none",
+                    }}
+                  />
+                  <span
+                    style={{
+                      fontFamily: "Plus Jakarta Sans",
+                      fontWeight: 600,
+                      fontStyle: "SemiBold",
+                      fontSize: "14px",
+                      color: partnerColor(),
+                      lineHeight: "100%",
+                      letterSpacing: "0%",
+                    }}
+                  >
+                    {entradasRecebidas}
+                  </span>
+                </span>
+              )}
               <img
                 onClick={() => {
                   window.location.assign("/my-profile");
