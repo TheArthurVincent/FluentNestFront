@@ -81,6 +81,21 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
   var [seeMenuDown, setSeeMenuDown] = useState(false);
   var [appLoaded, setAppLoaded] = useState<boolean>(false);
 
+  useEffect(() => {
+    //ao clicar shift+b abrir o menu lateral
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.shiftKey && event.key.toLowerCase() === "b") {
+        event.preventDefault();
+        setSidebarCollapsed((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const location = useLocation();
   const currentPath = location.pathname;
   const bgActive = `${partnerColor()}09`;
