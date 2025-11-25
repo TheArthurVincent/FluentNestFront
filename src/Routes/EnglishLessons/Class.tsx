@@ -3196,17 +3196,32 @@ export default function EnglishClassCourse2({
               )}
             </>
           )}
-
+                     {!exercise && (
+                            <>
+                              {canEditCourse &&
+                                !seeBoard &&
+                                thePermissions !== "student" && (
+                                  <EditLesson
+                                    setChange={setChange}
+                                    change={change}
+                                    studentId={myId}
+                                    buttonText={"Editar Aula"}
+                                    setSeeEdit={setSeeEdit}
+                                    headers={actualHeaders}
+                                    classId={classId}
+                                    language={classLanguage}
+                                  />
+                                )}
+                            </>
+                          )}
           {!seeEdit && (
             <>
               {!seeBoard ? (
                 <>
-                  {" "}
                   <div
                     style={{
                       display: "grid",
                       zIndex: 2,
-                      // position: "sticky",
                       top: "-10px",
                       boxSizing: "border-box",
                     }}
@@ -3233,34 +3248,6 @@ export default function EnglishClassCourse2({
                           gap: "8px",
                         }}
                       >
-                        {/* {!exercise && (
-                          <button
-                            title="Ver Quadro"
-                            onClick={() => {
-                              handleGetBoard(studentID);
-                              setTimeout(() => {
-                                setSeeBoard(!seeBoard);
-                                setConfirm(false);
-                              }, 500);
-                            }}
-                            style={{
-                              borderRadius: "4px",
-                              border: "1px solid #e2e8f0",
-                              backgroundColor: "#f8fafc",
-                              fontSize: "11px",
-                              fontWeight: "400",
-                              color: "#64748b",
-                              padding: "4px 6px",
-                              height: "28px",
-                              maxWidth: "70px",
-                              outline: "none",
-                              cursor: "pointer",
-                            }}
-                          >
-                            Lousa
-                          </button>
-                        )} */}
-
                         {!mainStudentID && (
                           <select
                             onChange={(e) => handleStudentChange(e)}
@@ -3316,24 +3303,7 @@ export default function EnglishClassCourse2({
                               chosenLanguage={classLanguage}
                             />
                           )}
-                          {!exercise && (
-                            <>
-                              {canEditCourse &&
-                                !seeBoard &&
-                                thePermissions !== "student" && (
-                                  <EditLesson
-                                    setChange={setChange}
-                                    change={change}
-                                    studentId={myId}
-                                    buttonText={"Editar Aula"}
-                                    setSeeEdit={setSeeEdit}
-                                    headers={actualHeaders}
-                                    classId={classId}
-                                    language={classLanguage}
-                                  />
-                                )}
-                            </>
-                          )}
+     
                         </span>
                       </div>
                       {theclass?.elements?.length > 0 && (
