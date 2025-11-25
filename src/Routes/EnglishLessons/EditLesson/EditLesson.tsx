@@ -446,7 +446,7 @@ export default function EditLesson({
             fontWeight: 400,
             color: "#64748b",
             padding: "6px 10px",
-            height: 32,
+            height: 18,
             outline: "none",
             cursor: "pointer",
             display: "block",

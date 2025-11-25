@@ -3231,31 +3231,6 @@ export default function EnglishClassCourse2({
               )}
             </>
           )}
-          {!exercise && (
-            <>
-              {canEditCourse && !seeBoard && thePermissions !== "student" && (
-                <div
-                  style={{
-                    display: "flex",
-                    gap: 8,
-                    alignItems: "center",
-                    marginBottom: 16,
-                  }}
-                >
-                  <EditLesson
-                    setChange={setChange}
-                    change={change}
-                    studentId={myId}
-                    buttonText={"Editar Aula"}
-                    setSeeEdit={setSeeEdit}
-                    headers={actualHeaders}
-                    classId={classId}
-                    language={classLanguage}
-                  />
-                </div>
-              )}
-            </>
-          )}
 
           {!seeEdit && (
             <>
@@ -3361,12 +3336,38 @@ export default function EnglishClassCourse2({
                             ))}
                           </select>
                         )}
-                        <Voice
-                          maxW="70px"
-                          changeB={changeNumber}
-                          setChangeB={setChangeNumber}
-                          chosenLanguage={classLanguage}
-                        />
+                        <span
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "8px",
+                          }}
+                        >
+                          <Voice
+                            maxW="70px"
+                            changeB={changeNumber}
+                            setChangeB={setChangeNumber}
+                            chosenLanguage={classLanguage}
+                          />
+                          {!exercise && (
+                            <>
+                              {canEditCourse &&
+                                !seeBoard &&
+                                thePermissions !== "student" && (
+                                  <EditLesson
+                                    setChange={setChange}
+                                    change={change}
+                                    studentId={myId}
+                                    buttonText={"Editar Aula"}
+                                    setSeeEdit={setSeeEdit}
+                                    headers={actualHeaders}
+                                    classId={classId}
+                                    language={classLanguage}
+                                  />
+                                )}
+                            </>
+                          )}
+                        </span>
                       </div>
 
                       <div

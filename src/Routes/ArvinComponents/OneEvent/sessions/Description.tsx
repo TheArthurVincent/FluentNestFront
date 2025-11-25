@@ -78,7 +78,7 @@ const Description: FC<DescriptionProps> = ({
   fetchEventData,
   lesson,
   status,
-  title
+  title,
 }) => {
   const [description, setDescription] = useState<string>(theDescription || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -104,7 +104,9 @@ const Description: FC<DescriptionProps> = ({
           `${backDomain}/api/v1/ai-description/${myId}`,
           {
             status,
-            description: description ? description : `Aula particular de ${title}`,
+            description: description
+              ? description
+              : `Aula particular de ${title}`,
             classTitle: theLesson?.title,
             evendId: evendId || "",
           },
