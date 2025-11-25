@@ -3196,24 +3196,22 @@ export default function EnglishClassCourse2({
               )}
             </>
           )}
-                     {!exercise && (
-                            <>
-                              {canEditCourse &&
-                                !seeBoard &&
-                                thePermissions !== "student" && (
-                                  <EditLesson
-                                    setChange={setChange}
-                                    change={change}
-                                    studentId={myId}
-                                    buttonText={"Editar Aula"}
-                                    setSeeEdit={setSeeEdit}
-                                    headers={actualHeaders}
-                                    classId={classId}
-                                    language={classLanguage}
-                                  />
-                                )}
-                            </>
-                          )}
+          {!exercise && (
+            <>
+              {canEditCourse && !seeBoard && thePermissions !== "student" && (
+                <EditLesson
+                  setChange={setChange}
+                  change={change}
+                  studentId={myId}
+                  buttonText={"Editar Aula"}
+                  setSeeEdit={setSeeEdit}
+                  headers={actualHeaders}
+                  classId={classId}
+                  language={classLanguage}
+                />
+              )}
+            </>
+          )}
           {!seeEdit && (
             <>
               {!seeBoard ? (
@@ -3303,7 +3301,6 @@ export default function EnglishClassCourse2({
                               chosenLanguage={classLanguage}
                             />
                           )}
-     
                         </span>
                       </div>
                       {theclass?.elements?.length > 0 && (

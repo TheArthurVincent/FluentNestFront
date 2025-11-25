@@ -69,7 +69,7 @@ export default function VocabularyLesson({
 }: VocabularyLessonProps) {
   const actualHeaders = headers || {};
   const [clickedButtons, setClickedButtons] = useState<Set<number>>(new Set());
-  const [seeFront, setSeeFront] = useState(true);
+  const [seeFront, setSeeFront] = useState(false);
 
   // ======== ESTADO DO EXERCÍCIO DE MATCH ========
   const [match, setMatch] = useState<MatchState>({
