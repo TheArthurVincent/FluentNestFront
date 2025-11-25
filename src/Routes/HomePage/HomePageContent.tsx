@@ -121,7 +121,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/COURSES%20IMAGES/English%20Grammar.png?updatedAt=1759451593740",
       link: "/teaching-materials",
-    }
+    },
   ];
 
   return (
