@@ -40,7 +40,7 @@ const Board: FC<BoardProps> = ({
         { headers: headers as any }
       );
       setLoading(false);
-      notifyAlert("Notas salva com sucesso!", partnerColor());
+      // notifyAlert("Notas salvas com sucesso!", partnerColor());
     } catch (error) {
       setLoading(false);
       console.error(error, "Erro ao buscar comentários");
