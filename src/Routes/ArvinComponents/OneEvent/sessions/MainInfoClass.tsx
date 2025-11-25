@@ -150,7 +150,7 @@ const MainInfoClass: FC<MainInfoClassProps> = ({
     if (typeof document === "undefined") return null;
 
     return createPortal(
-      <div style={overlayStyle} onClick={saving ? undefined : closeModal}>
+      <div style={overlayStyle}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div

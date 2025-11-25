@@ -157,7 +157,7 @@ const ModuleActions: React.FC<Props> = ({
       </button>
 
       {openEdit && (
-        <div style={overlayStyle} onClick={closeAll}>
+        <div style={overlayStyle}>
           <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
             <div style={headerStyle}>Editar módulo</div>
             <div style={bodyStyle}>

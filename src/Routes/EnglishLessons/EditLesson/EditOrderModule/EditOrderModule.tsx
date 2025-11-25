@@ -200,7 +200,7 @@ const ReorderModulesButton: React.FC<Props> = ({
       </button>
 
       {open && (
-        <div style={overlayStyle} onClick={() => setOpen(false)}>
+        <div style={overlayStyle}>
           <div
             style={modalStyle}
             onClick={(e) => e.stopPropagation()}

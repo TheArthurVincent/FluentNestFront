@@ -334,17 +334,7 @@ export const StudentTutoringEditorModal: FC<
     if (!seeEditTutoring) return null;
 
     return createPortal(
-      <div
-        style={overlayStyle}
-        onClick={(e) => {
-          // fecha ao clicar fora
-          if (e.target === e.currentTarget) {
-            handleCloseModal();
-          }
-        }}
-        role="dialog"
-        aria-modal="true"
-      >
+      <div style={overlayStyle} role="dialog" aria-modal="true">
         <div
           style={modalStyle}
           onClick={(e) => e.stopPropagation()} // não fechar ao clicar dentro

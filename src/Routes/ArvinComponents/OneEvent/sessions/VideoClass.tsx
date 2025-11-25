@@ -122,7 +122,7 @@ const EventVideo: FC<EventVideoProps> = ({
     if (typeof document === "undefined") return null; // segurança SSR
 
     return createPortal(
-      <div style={overlayStyle} onClick={saving ? undefined : closeModal}>
+      <div style={overlayStyle}>
         <div
           style={modalStyle}
           onClick={(e) => e.stopPropagation()} // impede fechar ao clicar dentro

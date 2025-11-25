@@ -100,7 +100,12 @@ const Description: FC<DescriptionProps> = ({
       try {
         const response = await axios.put(
           `${backDomain}/api/v1/ai-description/${myId}`,
-          { status, description, classTitle: theLesson?.title || "" },
+          {
+            status,
+            description,
+            classTitle: theLesson?.title,
+            evendId: evendId || "",
+          },
           { headers: headers as any }
         );
         const adapted = response.data.adapted;
@@ -161,7 +166,7 @@ const Description: FC<DescriptionProps> = ({
     if (typeof document === "undefined") return null;
 
     return createPortal(
-      <div style={overlayStyle} onClick={saving ? undefined : closeModal}>
+      <div style={overlayStyle}>
         <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div
@@ -212,7 +217,7 @@ const Description: FC<DescriptionProps> = ({
                     cursor: "pointer",
                   }}
                 >
-                  ✨ (-5)
+                  ✨ (-10)
                 </button>
               </div>
             </div>

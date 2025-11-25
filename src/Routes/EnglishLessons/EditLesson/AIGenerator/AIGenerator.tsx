@@ -121,7 +121,7 @@ export default function SimpleAIGenerator({
   if (typeof document === "undefined") return null;
 
   return createPortal(
-    <div style={overlayStyle} onClick={loading ? undefined : onClose}>
+    <div style={overlayStyle}>
       <div style={modalStyle} onClick={(e) => e.stopPropagation()}>
         <div
           style={{
