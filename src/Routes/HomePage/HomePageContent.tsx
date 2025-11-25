@@ -121,22 +121,7 @@ export function Blog({ headers, change, setChange }: BlogProps) {
       display: "flex",
       img: "https://ik.imagekit.io/vjz75qw96/COURSES%20IMAGES/English%20Grammar.png?updatedAt=1759451593740",
       link: "/teaching-materials",
-    },
-    {
-      id: "current-lesson",
-      title: NO
-        ? `${UniversalTexts.currentLesson}  - ${lesson}`
-        : "Begin your journey!",
-      description: UniversalTexts.retome,
-      display: !loadingLESSON ? "flex" : "none",
-      img: img,
-      link: NO
-        ? `/teaching-materials/${course
-            .toLowerCase()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w\-]+/g, "")}/${classId}`
-        : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b",
-    },
+    }
   ];
 
   return (

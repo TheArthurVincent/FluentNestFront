@@ -450,7 +450,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 display: "flex",
                 justifyContent: "space-evenly",
                 alignItems: "center",
-                width: "90vw",
+                width: "50vw",
                 gap: 10,
               }}
             >

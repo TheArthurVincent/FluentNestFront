@@ -247,7 +247,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       path: "/dispose",
       title: "My Classes",
       showLeftBar: true,
-
       component: <MyClasses headers={headers} />,
     },
     {
@@ -297,19 +296,6 @@ export function ArvinNewHomePage({ headers }: HeadersProps) {
       component: (
         <MyCalendar
           isDesktop={isDesktop}
-          change={change}
-          setChange={setChange}
-          myId={_StudentId}
-          thePermissions={thePermissions}
-          headers={headers}
-        />
-      ),
-    },
-    {
-      title: "My Calendar Ref",
-      showLeftBar: true,
-      component: (
-        <MyCalendarNew
           change={change}
           setChange={setChange}
           myId={_StudentId}
