@@ -2159,6 +2159,7 @@ export default function Homework({
                                                   </div>
                                                 </div>
                                               )}
+                                              
                                               {/* Class Details Section */}
                                               {homework.eventDetails && (
                                                 <div

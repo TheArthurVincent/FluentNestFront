@@ -12,6 +12,7 @@ import Board from "./sessions/BoardLesson";
 import LessonContent from "./sessions/LessonContent";
 import DeleteClass from "./sessions/DeleteEvent";
 import { partnerColor } from "../../../Styles/Styles";
+import HomeworkClass from "./sessions/HomeworkClass";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -433,6 +434,22 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 theLessonRender={event.theLessonRender}
                 eventId={event._id}
                 studentID={event.studentID}
+              />
+            )}{" "}
+            {(event.homeworkDetails || permissionsUser !== "student") && (
+              <HomeworkClass
+                homeworkID={event.homeworkID}
+                homeworkData={
+                  event.homeworkDetails
+                    ? event.homeworkDetails.description
+                    : "Type here"
+                }
+                headers={headers}
+                evendId={event._id}
+                event={event}
+                isDesktop={isDesktop}
+                fetchEventData={fetchEventData}
+                allowedToEdit={permissionsUser !== "student"}
               />
             )}
             {lastLesson && permissionsUser !== "student" && (
