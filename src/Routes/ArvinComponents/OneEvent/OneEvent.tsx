@@ -447,9 +447,9 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "space-evenly",
                 alignItems: "center",
-                margin: "0 20px ",
+                width: "90vw",
                 gap: 10,
               }}
             >

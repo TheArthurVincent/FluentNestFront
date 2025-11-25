@@ -188,11 +188,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
     );
 
   return (
-    <div
-      style={{
-        display: "flex",
-      }}
-    >
+    <>
       {allowedToEdit && evendId && (
         <button
           style={{
@@ -204,7 +200,6 @@ const DeleteClass: FC<DeleteClassProps> = ({
             maxWidth: "fit-content",
             maxHeight: "fit-content",
             cursor: "pointer",
-            marginLeft: "auto",
             padding: "6px 12px",
             fontSize: 12,
           }}
@@ -213,7 +208,6 @@ const DeleteClass: FC<DeleteClassProps> = ({
           Excluir esta aula
         </button>
       )}
-
       {isDesktop && (
         <div
           style={{
@@ -223,9 +217,8 @@ const DeleteClass: FC<DeleteClassProps> = ({
           <Outlet />
         </div>
       )}
-
       {deleteModal}
-    </div>
+    </>
   );
 };
 
