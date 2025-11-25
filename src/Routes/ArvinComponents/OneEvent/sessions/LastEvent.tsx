@@ -108,8 +108,6 @@ const LastClass: FC<LastClassProps> = ({
                 style={{
                   display: "flex",
                   flexWrap: "wrap",
-                  gap: 8,
-                  marginTop: 4,
                 }}
               >
                 {lastLesson.googleDriveLink && (
@@ -117,12 +115,10 @@ const LastClass: FC<LastClassProps> = ({
                     href={lastLesson.googleDriveLink}
                     rel="noreferrer"
                     style={{
-                      fontSize: 12,
                       fontWeight: 600,
                       padding: "6px 12px",
                       borderRadius: 999,
-                      backgroundColor: partnerColor(),
-                      color: "#FFFFFF",
+                      color: partnerColor(),
                       textDecoration: "none",
                     }}
                   >

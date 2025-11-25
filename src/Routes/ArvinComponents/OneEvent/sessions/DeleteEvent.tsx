@@ -202,6 +202,7 @@ const DeleteClass: FC<DeleteClassProps> = ({
             fontWeight: 600,
             border: "none",
             maxWidth: "fit-content",
+            maxHeight: "fit-content",
             cursor: "pointer",
             marginLeft: "auto",
             padding: "6px 12px",

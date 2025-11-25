@@ -444,13 +444,15 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 lastLesson={lastLesson}
               />
             )}
-            <DeleteClass
-              headers={headers}
-              evendId={event._id}
-              allowedToEdit={permissionsUser !== "student"}
-              isDesktop={isDesktop}
-              lastLesson={lastLesson}
-            />
+            {permissionsUser !== "student" && (
+              <DeleteClass
+                headers={headers}
+                evendId={event._id}
+                allowedToEdit={permissionsUser !== "student"}
+                isDesktop={isDesktop}
+                lastLesson={lastLesson}
+              />
+            )}
           </>
         )}
       </div>
