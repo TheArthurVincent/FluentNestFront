@@ -9,7 +9,7 @@ interface HelmetsTypes {
 const Helmets: FC<HelmetsTypes> = ({ text }) => {
   return (
     <Helmet>
-      <title>{text} | Arvin English Platform</title>
+      <title>{text} | Arvin Platform</title>
     </Helmet>
   );
 };

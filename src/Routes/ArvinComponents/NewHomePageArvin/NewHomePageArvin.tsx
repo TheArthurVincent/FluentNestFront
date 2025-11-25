@@ -18,6 +18,7 @@ import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
 import { RankingCard } from "../GridHomePageComponents/RankingCard";
 import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMaterials";
 import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
+import Helmets from "../../../Resources/Helmets";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -451,6 +452,7 @@ export function MyHomePage({
           );
         })}
       </div>
+      <Helmets text={`Início`} />
     </div>
   );
 }
