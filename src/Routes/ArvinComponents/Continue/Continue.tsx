@@ -33,7 +33,7 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
         response.data?.classDetails?.title ||
         response.data?.classDetails?.student ||
         "";
-      const isc = response.data?.classDetails?.isClass || false;
+      const isc = response.data?.isClass || false;
       const courseResp = response.data?.classDetails?.courseId || "";
       const theImg =
         response.data?.classDetails?.image ||
