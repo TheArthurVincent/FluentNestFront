@@ -28,10 +28,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions
     );
 
-    console.log(
-      "Fetching data for eventId:",
-      JSON.parse(localStorage.getItem("loggedIn") || "{}").permissions
-    );
     if (!eventId) return;
     try {
       const res = await axios.get(`${backDomain}/api/v1/event/${eventId}`, {
@@ -39,7 +35,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       });
       setEventData(res.data.event);
       setReplicateLastEvent(res.data.event.replicateLastEvent);
-      console.log(res.data.event.replicateLastEvent, "replicateLastEvent");
     } catch (err) {
       console.error("Error fetching event data", err);
     }
@@ -409,6 +404,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               />
               {(event.description || permissionsUser !== "student") && (
                 <Description
+                  title={event.student || "Aluno particular"}
                   status={event.status}
                   allowedToEdit={permissionsUser !== "student"}
                   lesson={event.theLesson}

@@ -18,6 +18,7 @@ type DescriptionProps = {
   lesson?: any;
   fetchEventData: () => void;
   status: string;
+  title: string;
 };
 
 // ---------- estilos base (mesmos do MainInfoClass) ----------
@@ -77,6 +78,7 @@ const Description: FC<DescriptionProps> = ({
   fetchEventData,
   lesson,
   status,
+  title
 }) => {
   const [description, setDescription] = useState<string>(theDescription || "");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -102,7 +104,7 @@ const Description: FC<DescriptionProps> = ({
           `${backDomain}/api/v1/ai-description/${myId}`,
           {
             status,
-            description,
+            description: description ? description : `Aula particular de ${title}`,
             classTitle: theLesson?.title,
             evendId: evendId || "",
           },
