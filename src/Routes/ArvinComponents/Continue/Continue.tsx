@@ -19,6 +19,8 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
   const [loadingLESSON, setLoadingLESSON] = React.useState(false);
   const [hasData, setHasData] = React.useState(false);
   const [isRealClass, setIsRealClass] = React.useState(false);
+  const [theLessonRenderID, setTheLessonRenderID] = React.useState<string>("");
+
   const fetchLastClassId = async (classid: string) => {
     setLoadingLESSON(true);
     try {
@@ -29,10 +31,11 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
         }
       );
 
-      const courseTitleResp =
-        response.data?.classDetails?.title ||
-        response.data?.classDetails?.student ||
-        "";
+      const courseTitleResp = response.data?.classDetails?.title
+        ? response.data?.classDetails?.title
+        : response.data?.classDetails?.student
+        ? response.data?.classDetails?.student
+        : "Última aula";
       const isc = response.data?.isClass || false;
       const courseResp = response.data?.classDetails?.courseId || "";
       const theImg =
@@ -44,6 +47,9 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
       setCourseId(courseResp);
       setClassId(classid);
       setIsRealClass(isc);
+      if (!isc) {
+        setTheLessonRenderID(response.data?.classDetails?._id);
+      }
       setHasData(true);
       setLoadingLESSON(false);
     } catch (error) {
@@ -70,12 +76,24 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
     }
   }, []);
 
-  const href =
-    hasData && courseId && classId && isRealClass
-      ? `/teaching-materials/${courseId}/${classId}`
-      : !isRealClass && classId && hasData
-      ? `/my-calendar/event/${classId}`
-      : "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b";
+  const theHref = () => {
+    if (hasData) {
+      if (courseId && classId && isRealClass) {
+        return `/teaching-materials/${courseId}/${classId}`;
+      } else if (!isRealClass && theLessonRenderID) {
+        return `/my-calendar/event/${theLessonRenderID}`;
+      }
+    } else {
+      return "/teaching-materials/english-grammar/667ac39b4b4d6245dc8f385b";
+    }
+  };
+  const href = theHref();
+
+  // hasData && courseId && classId && isRealClass
+  //   ? `/teaching-materials/${courseId}/${classId}`
+  //   : !isRealClass && classId && hasData
+  //   ? `/my-calendar/event/${classId}`
+  //
 
   return (
     <div
@@ -165,7 +183,7 @@ export const Continue: FC<ContinueProps> = ({ actualHeaders, isDesktop }) => {
                     color: "#4B5563",
                   }}
                 >
-                  {courseTitle && <div>Aula: {courseTitle}</div>}
+                  {courseTitle && <div>{courseTitle}</div>}
                 </div>
               )}
 
