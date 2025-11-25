@@ -16,6 +16,7 @@ import { CalendarCard } from "../GridHomePageComponents/CalendarCard";
 import { WeeklyProgress } from "../GridHomePageComponents/WeeklyProgress";
 import { RankingCard } from "../GridHomePageComponents/RankingCard";
 import { RecommendedMaterials } from "../GridHomePageComponents/RecommendedMaterials";
+import { SearchMaterials } from "../SearchMaterials/SearchMaterials";
 
 type MyHomePageProps = HeadersProps & {
   change?: boolean;
@@ -213,7 +214,7 @@ export function MyHomePage({
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ position: "relative", display: "inline-block" }}>
+              {/* <span style={{ position: "relative", display: "inline-block" }}>
                 <i
                   className="fa fa-search"
                   style={{
@@ -226,18 +227,14 @@ export function MyHomePage({
                     pointerEvents: "none",
                   }}
                 />
-                <input
-                  style={{
-                    width: "312px",
-                    padding: "8px 8px 8px 32px",
-                    borderRadius: "6px",
-                    border: "1px solid #ccc",
-                    outline: "none",
-                  }}
-                  placeholder="Busque materiais, palavras e etc..."
-                  type="text"
+                <SearchMaterials
+                  headers={headers}
+                  change={change}
+                  setChange={setChange}
+                  isDesktop={isDesktop}
+                  actualHeaders={actualHeaders}
                 />
-              </span>
+              </span> */}
               <span
                 onClick={() => {
                   seeScore(id);
