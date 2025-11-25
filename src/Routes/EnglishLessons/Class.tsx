@@ -3110,7 +3110,7 @@ export default function EnglishClassCourse2({
       style={{
         margin: "auto",
         padding: mainStudentID ? 0 : "1rem",
-        minHeight: "80vh",
+        minHeight: theclass?.elements?.length > 0 ? "80vh" : "none",
         fontFamily: "Plus Jakarta Sans",
         fontWeight: 600,
         fontStyle: "SemiBold",
@@ -3343,12 +3343,14 @@ export default function EnglishClassCourse2({
                             gap: "8px",
                           }}
                         >
-                          <Voice
-                            maxW="70px"
-                            changeB={changeNumber}
-                            setChangeB={setChangeNumber}
-                            chosenLanguage={classLanguage}
-                          />
+                          {theclass?.elements?.length > 0 && (
+                            <Voice
+                              maxW="70px"
+                              changeB={changeNumber}
+                              setChangeB={setChangeNumber}
+                              chosenLanguage={classLanguage}
+                            />
+                          )}
                           {!exercise && (
                             <>
                               {canEditCourse &&
@@ -3369,472 +3371,482 @@ export default function EnglishClassCourse2({
                           )}
                         </span>
                       </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "8px",
-                        }}
-                      >
-                        <button
-                          onClick={() => setExercise(!exercise)}
-                          style={{
-                            borderRadius: "4px",
-                            border: "1px solid #e2e8f0",
-                            backgroundColor: "#f8fafc",
-                            fontSize: "11px",
-                            fontWeight: "400",
-                            color: "#64748b",
-                            padding: "4px 6px",
-                            height: "28px",
-                            outline: "none",
-                            cursor: "pointer",
-                            display: "block",
-                          }}
-                        >
-                          {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
-                        </button>
-                        {!exercise && (
-                          <div
-                            className="isMobileDisapear"
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                            }}
-                          >
-                            <button
-                              title="Gerar PowerPoint"
-                              style={{
-                                all: "unset",
-                                cursor: "pointer",
-                                padding: "4px 6px",
-                                backgroundColor: "#f8fafc",
-                                borderRadius: "4px",
-                              }}
-                              onClick={generatePPT}
-                              onMouseEnter={(e) => {
-                                const target = e.target as HTMLElement;
-                                target.style.background = "#f1f5f9";
-                              }}
-                              onMouseLeave={(e) => {
-                                const target = e.target as HTMLElement;
-                                target.style.background = "#f8fafc";
-                              }}
-                            >
-                              <img
-                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
-                                alt="PowerPoint"
-                                style={{ width: "12px", height: "12px" }}
-                              />
-                            </button>
-                            <button
-                              title="Gerar Word"
-                              style={{
-                                all: "unset",
-                                cursor: "pointer",
-                                padding: "4px 6px",
-                                backgroundColor: "#f8fafc",
-                                borderRadius: "4px",
-                              }}
-                              onClick={generateWord}
-                              onMouseEnter={(e) => {
-                                const target = e.target as HTMLElement;
-                                target.style.background = "#f1f5f9";
-                              }}
-                              onMouseLeave={(e) => {
-                                const target = e.target as HTMLElement;
-                                target.style.background = "#f8fafc";
-                              }}
-                            >
-                              <img
-                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
-                                alt="Word"
-                                style={{ width: "12px", height: "12px" }}
-                              />
-                            </button>
-                            <button
-                              title="Gerar PDF"
-                              style={{
-                                all: "unset",
-                                cursor: "pointer",
-                                padding: "4px 6px",
-                                backgroundColor: "#f8fafc",
-                                borderRadius: "4px",
-                              }}
-                              onClick={generatePDF}
-                              onMouseEnter={(e) => {
-                                const target = e.target as HTMLElement;
-                                target.style.background = "#f1f5f9";
-                              }}
-                              onMouseLeave={(e) => {
-                                const target = e.target as HTMLElement;
-                                target.style.background = "#f8fafc";
-                              }}
-                            >
-                              <img
-                                src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
-                                alt="PDF"
-                                style={{ width: "12px", height: "12px" }}
-                              />
-                            </button>
-                            <label
-                              style={{
-                                display: "flex",
-                                alignItems: "center",
-                                gap: "6px",
-                                cursor: "pointer",
-                                fontSize: "11px",
-                                fontWeight: "400",
-                                color: "#64748b",
-                              }}
-                            >
-                              <input
-                                style={{
-                                  cursor: "pointer",
-                                  width: "12px",
-                                  height: "12px",
-                                  accentColor: partnerColor(),
-                                }}
-                                type="checkbox"
-                                checked={isCompleted}
-                                onChange={handleToggle}
-                                disabled={loading}
-                              />
-                            </label>
-                          </div>
-                        )}
-                      </div>
-                    </span>
-
-                    {!seeBoard && !exercise && (
-                      <span
-                        style={{
-                          backgroundColor: "#fff",
-                          padding: "2px ",
-                          display: "block",
-                          width: "100%",
-                          boxSizing: "border-box",
-                          borderRadius: "6px",
-                          overflowX: "auto",
-                        }}
-                      >
-                        <span
-                          style={{
-                            display: "block",
-                          }}
-                        >
-                          <div
-                            ref={scrollerRef}
-                            onMouseDown={onMouseDown}
-                            onMouseLeave={onMouseLeave}
-                            onMouseUp={onMouseUp}
-                            onMouseMove={onMouseMove}
-                            onWheel={onWheel}
-                            style={{
-                              display: "flex",
-                              flexWrap: "nowrap",
-                              alignItems: "center",
-                              overflowX: "auto",
-                              minWidth: 0, // ⬅️ permite encolher e criar overflow
-                              gap: "5px",
-                              padding: "2px",
-                              scrollbarWidth: "none",
-                              msOverflowStyle: "none",
-                              touchAction: "pan-x", // ⬅️ melhora no touch
-                              overscrollBehaviorX: "contain", // ⬅️ evita “puxar” a página
-                            }}
-                            className="topbar-sections"
-                          >
-                            <style>{`.topbar-sections::-webkit-scrollbar { display: none; }`}</style>
-                            {sectionElems.map((s: any, i: number) => {
-                              // Só renderiza se tiver subtitle e não for exercise/selectexercise
-                              if (!s.subtitle || s.type === "selectexercise")
-                                return null;
-
-                              const id = makeId(s.subtitle, i);
-                              const isActive = id === activeId;
-
-                              return (
-                                <button
-                                  key={i}
-                                  style={{
-                                    all: "unset", // ok manter
-                                    display: "inline-flex", // importante p/ flex container
-                                    alignItems: "center",
-                                    flex: "0 0 auto", // não encolher (gera overflow)
-                                    cursor: "pointer",
-                                    fontWeight: isActive ? "600" : "500",
-                                    borderBottom: isActive
-                                      ? `1px solid ${partnerColor()}`
-                                      : "1px solid transparent",
-                                    color: isActive ? "grey" : "#64748b",
-                                    padding: "4px 6px", // área de clique
-                                    textTransform: "uppercase",
-                                    fontSize: "10px", // (8px pode ficar minúsculo)
-                                  }}
-                                  onMouseOver={(e) => {
-                                    (e.target as HTMLElement).style.color =
-                                      partnerColor();
-                                    (
-                                      e.target as HTMLElement
-                                    ).style.backgroundColor = "#eeeeeeb4";
-                                  }}
-                                  onMouseOut={(e) => {
-                                    (e.target as HTMLElement).style.color =
-                                      isActive ? "grey" : "#64748b";
-                                    (
-                                      e.target as HTMLElement
-                                    ).style.backgroundColor = "transparent";
-                                  }}
-                                  onClick={() => scrollToSection(id)}
-                                >
-                                  {truncateString(s.subtitle, 12)}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </span>
-                      </span>
-                    )}
-                  </div>
-                  {!exercise ? (
-                    <div
-                      style={{
-                        maxWidth: "780%",
-                        margin: "0 auto",
-                        background: "#ffffff",
-                        position: "relative",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: "40px",
-                          height: "40px",
-                          background: `${partnerColor()}05`,
-                          borderRadius: "50%",
-                          zIndex: 0,
-                          opacity: 0.3,
-                        }}
-                      />
-                      {theclass.image && (
-                        <ImgLesson
-                          src={theclass.image}
-                          alt={theclass.subtitle}
-                        />
-                      )}
-
-                      {theclass.description && (
-                        <div
-                          style={{
-                            margin: "1rem auto",
-                            maxWidth: "800px",
-                            fontSize: "16px",
-                            textAlign: "center",
-                            color: darkGreyColor(),
-                            lineHeight: 1.5,
-                          }}
-                        >
-                          {theclass.description}
-                        </div>
-                      )}
-                      {theclass.video && isArthurVincent && (
+                      {theclass?.elements?.length > 0 && (
                         <div
                           style={{
                             display: "flex",
-                            justifyContent: "center",
-                            marginTop: "1rem",
+                            alignItems: "center",
+                            gap: "8px",
                           }}
                         >
-                          <IFrameVideoBlog
-                            src={getVideoEmbedUrl(theclass.video)}
-                          />
-                        </div>
-                      )}
-                      <div
-                        style={{
-                          position: "relative",
-                          zIndex: 1,
-                          paddingBottom: "40px",
-                        }}
-                      >
-                        {theclass.elements &&
-                          theclass.elements
-                            .sort((a: any, b: any) => a.order - b.order)
-                            .map((element: any, index: number) => (
-                              <div
-                                key={index}
-                                id={makeId(element.subtitle, index)}
+                          <button
+                            onClick={() => setExercise(!exercise)}
+                            style={{
+                              borderRadius: "4px",
+                              border: "1px solid #e2e8f0",
+                              backgroundColor: "#f8fafc",
+                              fontSize: "11px",
+                              fontWeight: "400",
+                              color: "#64748b",
+                              padding: "4px 6px",
+                              height: "28px",
+                              outline: "none",
+                              cursor: "pointer",
+                              display: "block",
+                            }}
+                          >
+                            {exercise ? "Voltar à Aula" : "Fazer Exercícios"}
+                          </button>
+                          {!exercise && (
+                            <div
+                              className="isMobileDisapear"
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: "8px",
+                              }}
+                            >
+                              <button
+                                title="Gerar PowerPoint"
                                 style={{
-                                  margin: "24px 0",
-                                  position: "relative",
-                                  scrollMarginTop: `${barOffset + 4}px`,
+                                  all: "unset",
+                                  cursor: "pointer",
+                                  padding: "4px 6px",
+                                  backgroundColor: "#f8fafc",
+                                  borderRadius: "4px",
+                                }}
+                                onClick={generatePPT}
+                                onMouseEnter={(e) => {
+                                  const target = e.target as HTMLElement;
+                                  target.style.background = "#f1f5f9";
+                                }}
+                                onMouseLeave={(e) => {
+                                  const target = e.target as HTMLElement;
+                                  target.style.background = "#f8fafc";
                                 }}
                               >
-                                {element.subtitle &&
-                                  element.type !== "selectexercise" && (
-                                    <div
-                                      style={{
-                                        // position: "sticky",
-                                        display: element.subtitle
-                                          ? "block"
-                                          : "none",
-                                        top: "4rem",
-                                        zIndex: 4,
-                                        marginBottom: 8,
-                                        background: "rgba(255,255,255,0.98)",
-                                        backdropFilter:
-                                          "saturate(1.1) blur(6px)",
-                                        borderBottom: `2px solid ${partnerColor()}15`,
-                                        borderRadius: 4,
-                                      }}
-                                    >
-                                      <h2
+                                <img
+                                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/ppticon.png?updatedAt=1753531551291"
+                                  alt="PowerPoint"
+                                  style={{ width: "12px", height: "12px" }}
+                                />
+                              </button>
+                              <button
+                                title="Gerar Word"
+                                style={{
+                                  all: "unset",
+                                  cursor: "pointer",
+                                  padding: "4px 6px",
+                                  backgroundColor: "#f8fafc",
+                                  borderRadius: "4px",
+                                }}
+                                onClick={generateWord}
+                                onMouseEnter={(e) => {
+                                  const target = e.target as HTMLElement;
+                                  target.style.background = "#f1f5f9";
+                                }}
+                                onMouseLeave={(e) => {
+                                  const target = e.target as HTMLElement;
+                                  target.style.background = "#f8fafc";
+                                }}
+                              >
+                                <img
+                                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/wordicon.png?updatedAt=1753531551302"
+                                  alt="Word"
+                                  style={{ width: "12px", height: "12px" }}
+                                />
+                              </button>
+                              <button
+                                title="Gerar PDF"
+                                style={{
+                                  all: "unset",
+                                  cursor: "pointer",
+                                  padding: "4px 6px",
+                                  backgroundColor: "#f8fafc",
+                                  borderRadius: "4px",
+                                }}
+                                onClick={generatePDF}
+                                onMouseEnter={(e) => {
+                                  const target = e.target as HTMLElement;
+                                  target.style.background = "#f1f5f9";
+                                }}
+                                onMouseLeave={(e) => {
+                                  const target = e.target as HTMLElement;
+                                  target.style.background = "#f8fafc";
+                                }}
+                              >
+                                <img
+                                  src="https://ik.imagekit.io/vjz75qw96/assets/icons/pdficon?updatedAt=1754086801314"
+                                  alt="PDF"
+                                  style={{ width: "12px", height: "12px" }}
+                                />
+                              </button>
+                              <label
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: "6px",
+                                  cursor: "pointer",
+                                  fontSize: "11px",
+                                  fontWeight: "400",
+                                  color: "#64748b",
+                                }}
+                              >
+                                <input
+                                  style={{
+                                    cursor: "pointer",
+                                    width: "12px",
+                                    height: "12px",
+                                    accentColor: partnerColor(),
+                                  }}
+                                  type="checkbox"
+                                  checked={isCompleted}
+                                  onChange={handleToggle}
+                                  disabled={loading}
+                                />
+                              </label>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </span>
+
+                    {!seeBoard &&
+                      !exercise &&
+                      theclass?.elements?.length > 0 && (
+                        <span
+                          style={{
+                            backgroundColor: "#fff",
+                            padding: "2px ",
+                            display: "block",
+                            width: "100%",
+                            boxSizing: "border-box",
+                            borderRadius: "6px",
+                            overflowX: "auto",
+                          }}
+                        >
+                          <span
+                            style={{
+                              display: "block",
+                            }}
+                          >
+                            <div
+                              ref={scrollerRef}
+                              onMouseDown={onMouseDown}
+                              onMouseLeave={onMouseLeave}
+                              onMouseUp={onMouseUp}
+                              onMouseMove={onMouseMove}
+                              onWheel={onWheel}
+                              style={{
+                                display: "flex",
+                                flexWrap: "nowrap",
+                                alignItems: "center",
+                                overflowX: "auto",
+                                minWidth: 0, // ⬅️ permite encolher e criar overflow
+                                gap: "5px",
+                                padding: "2px",
+                                scrollbarWidth: "none",
+                                msOverflowStyle: "none",
+                                touchAction: "pan-x", // ⬅️ melhora no touch
+                                overscrollBehaviorX: "contain", // ⬅️ evita “puxar” a página
+                              }}
+                              className="topbar-sections"
+                            >
+                              <style>{`.topbar-sections::-webkit-scrollbar { display: none; }`}</style>
+                              {sectionElems.map((s: any, i: number) => {
+                                // Só renderiza se tiver subtitle e não for exercise/selectexercise
+                                if (!s.subtitle || s.type === "selectexercise")
+                                  return null;
+
+                                const id = makeId(s.subtitle, i);
+                                const isActive = id === activeId;
+
+                                return (
+                                  <button
+                                    key={i}
+                                    style={{
+                                      all: "unset", // ok manter
+                                      display: "inline-flex", // importante p/ flex container
+                                      alignItems: "center",
+                                      flex: "0 0 auto", // não encolher (gera overflow)
+                                      cursor: "pointer",
+                                      fontWeight: isActive ? "600" : "500",
+                                      borderBottom: isActive
+                                        ? `1px solid ${partnerColor()}`
+                                        : "1px solid transparent",
+                                      color: isActive ? "grey" : "#64748b",
+                                      padding: "4px 6px", // área de clique
+                                      textTransform: "uppercase",
+                                      fontSize: "10px", // (8px pode ficar minúsculo)
+                                    }}
+                                    onMouseOver={(e) => {
+                                      (e.target as HTMLElement).style.color =
+                                        partnerColor();
+                                      (
+                                        e.target as HTMLElement
+                                      ).style.backgroundColor = "#eeeeeeb4";
+                                    }}
+                                    onMouseOut={(e) => {
+                                      (e.target as HTMLElement).style.color =
+                                        isActive ? "grey" : "#64748b";
+                                      (
+                                        e.target as HTMLElement
+                                      ).style.backgroundColor = "transparent";
+                                    }}
+                                    onClick={() => scrollToSection(id)}
+                                  >
+                                    {truncateString(s.subtitle, 12)}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </span>
+                        </span>
+                      )}
+                  </div>
+                  {!exercise ? (
+                    <>
+                      {theclass?.elements?.length > 0 && (
+                        <div
+                          style={{
+                            maxWidth: "780%",
+                            margin: "0 auto",
+                            background: "#ffffff",
+                            position: "relative",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              background: `${partnerColor()}05`,
+                              borderRadius: "50%",
+                              zIndex: 0,
+                              opacity: 0.3,
+                            }}
+                          />
+                          {theclass.image && (
+                            <ImgLesson
+                              src={theclass.image}
+                              alt={theclass.subtitle}
+                            />
+                          )}
+
+                          {theclass.description && (
+                            <div
+                              style={{
+                                margin: "1rem auto",
+                                maxWidth: "800px",
+                                fontSize: "16px",
+                                textAlign: "center",
+                                color: darkGreyColor(),
+                                lineHeight: 1.5,
+                              }}
+                            >
+                              {theclass.description}
+                            </div>
+                          )}
+                          {theclass.video && isArthurVincent && (
+                            <div
+                              style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                marginTop: "1rem",
+                              }}
+                            >
+                              <IFrameVideoBlog
+                                src={getVideoEmbedUrl(theclass.video)}
+                              />
+                            </div>
+                          )}
+                          <div
+                            style={{
+                              position: "relative",
+                              zIndex: 1,
+                              paddingBottom: "40px",
+                            }}
+                          >
+                            {theclass.elements &&
+                              theclass.elements
+                                .sort((a: any, b: any) => a.order - b.order)
+                                .map((element: any, index: number) => (
+                                  <div
+                                    key={index}
+                                    id={makeId(element.subtitle, index)}
+                                    style={{
+                                      margin: "24px 0",
+                                      position: "relative",
+                                      scrollMarginTop: `${barOffset + 4}px`,
+                                    }}
+                                  >
+                                    {element.subtitle &&
+                                      element.type !== "selectexercise" && (
+                                        <div
+                                          style={{
+                                            // position: "sticky",
+                                            display: element.subtitle
+                                              ? "block"
+                                              : "none",
+                                            top: "4rem",
+                                            zIndex: 4,
+                                            marginBottom: 8,
+                                            background:
+                                              "rgba(255,255,255,0.98)",
+                                            backdropFilter:
+                                              "saturate(1.1) blur(6px)",
+                                            borderBottom: `2px solid ${partnerColor()}15`,
+                                            borderRadius: 4,
+                                          }}
+                                        >
+                                          <h2
+                                            style={{
+                                              margin: 0,
+                                              padding: "10px",
+                                              fontSize: "18px",
+                                              fontWeight: 600,
+                                              color: partnerColor(),
+                                              textAlign: "center",
+                                            }}
+                                          >
+                                            {element.subtitle}
+                                          </h2>
+                                        </div>
+                                      )}
+                                    {element.image && element.subtitle && (
+                                      <ImgLesson
+                                        src={element.image}
+                                        alt={element.subtitle}
+                                      />
+                                    )}
+                                    {element.video &&
+                                      element.subtitle &&
+                                      isArthurVincent && (
+                                        <VideoLessonModel element={element} />
+                                      )}
+
+                                    {element.comments && (
+                                      <p
                                         style={{
-                                          margin: 0,
-                                          padding: "10px",
-                                          fontSize: "18px",
-                                          fontWeight: 600,
-                                          color: partnerColor(),
+                                          padding: "0.5rem",
                                           textAlign: "center",
+                                          backgroundColor: "#f6f6f6",
+                                          borderRadius: "4px",
+                                          margin: "0.5rem 0",
+                                          fontStyle: "italic",
                                         }}
                                       >
-                                        {element.subtitle}
-                                      </h2>
-                                    </div>
-                                  )}
-                                {element.image && element.subtitle && (
-                                  <ImgLesson
-                                    src={element.image}
-                                    alt={element.subtitle}
-                                  />
-                                )}
-                                {element.video &&
-                                  element.subtitle &&
-                                  isArthurVincent && (
-                                    <VideoLessonModel element={element} />
-                                  )}
-
-                                {element.comments && (
-                                  <p
-                                    style={{
-                                      padding: "0.5rem",
-                                      textAlign: "center",
-                                      backgroundColor: "#f6f6f6",
-                                      borderRadius: "4px",
-                                      margin: "0.5rem 0",
-                                      fontStyle: "italic",
-                                    }}
-                                  >
-                                    {element.comments}
-                                  </p>
-                                )}
-                                {element.type === "sentences" ? (
-                                  <SentenceLessonModel
-                                    mainTag={theclass.mainTag}
-                                    element={element}
-                                    studentId={mainStudentID || studentID}
-                                    headers={headers}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                ) : element.type === "vocabulary" ? (
-                                  <VocabularyLesson
-                                    mainTag={theclass.mainTag}
-                                    element={element}
-                                    studentId={mainStudentID || studentID}
-                                    headers={headers}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                ) : element.type === "nfsentences" ? (
-                                  <NoFlashcardsSentenceLessonModel
-                                    element={element}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                ) : element.type === "audio" ? (
-                                  <AudioFile
-                                    selectedVoice={selectedVoice}
-                                    element={element}
-                                  />
-                                ) : element.type === "text" ? (
-                                  <TextLessonModel
-                                    headers={headers}
-                                    text={element.text ? element.text : ""}
-                                    image={element.image ? element.image : ""}
-                                  />
-                                ) : element.type === "html" ? (
-                                  <div
-                                    style={{
-                                      padding: "1rem",
-                                      justifyContent: "center",
-                                    }}
-                                  >
-                                    <div
-                                      dangerouslySetInnerHTML={{
-                                        __html: element.text,
-                                      }}
-                                    />
+                                        {element.comments}
+                                      </p>
+                                    )}
+                                    {element.type === "sentences" ? (
+                                      <SentenceLessonModel
+                                        mainTag={theclass.mainTag}
+                                        element={element}
+                                        studentId={mainStudentID || studentID}
+                                        headers={headers}
+                                        selectedVoice={selectedVoice}
+                                      />
+                                    ) : element.type === "vocabulary" ? (
+                                      <VocabularyLesson
+                                        mainTag={theclass.mainTag}
+                                        element={element}
+                                        studentId={mainStudentID || studentID}
+                                        headers={headers}
+                                        selectedVoice={selectedVoice}
+                                      />
+                                    ) : element.type === "nfsentences" ? (
+                                      <NoFlashcardsSentenceLessonModel
+                                        element={element}
+                                        selectedVoice={selectedVoice}
+                                      />
+                                    ) : element.type === "audio" ? (
+                                      <AudioFile
+                                        selectedVoice={selectedVoice}
+                                        element={element}
+                                      />
+                                    ) : element.type === "text" ? (
+                                      <TextLessonModel
+                                        headers={headers}
+                                        text={element.text ? element.text : ""}
+                                        image={
+                                          element.image ? element.image : ""
+                                        }
+                                      />
+                                    ) : element.type === "html" ? (
+                                      <div
+                                        style={{
+                                          padding: "1rem",
+                                          justifyContent: "center",
+                                        }}
+                                      >
+                                        <div
+                                          dangerouslySetInnerHTML={{
+                                            __html: element.text,
+                                          }}
+                                        />
+                                      </div>
+                                    ) : element.type === "multipletexts" ? (
+                                      <MultipleTextsLessonModel
+                                        headers={headers}
+                                        element={element}
+                                      />
+                                    ) : // ) : element.type === "selectexercise" ? (
+                                    //   <SelectExercise
+                                    //     headers={headers}
+                                    //     element={element}
+                                    //     selectedVoice={selectedVoice}
+                                    //   />
+                                    element.type === "images" ? (
+                                      <ImageLessonModel
+                                        studentId={studentID}
+                                        mainTag={theclass.mainTag}
+                                        id={myId}
+                                        headers={headers}
+                                        element={element}
+                                        selectedVoice={selectedVoice}
+                                      />
+                                    ) : element.type === "explanation" ? (
+                                      <ExplanationLesson
+                                        headers={headers}
+                                        element={element}
+                                      />
+                                    ) : element.type === "audiosoundtrack" ? (
+                                      <AudioSoundTrack
+                                        headers={headers}
+                                        text={element.text}
+                                        src={element.src}
+                                        studentId={studentID}
+                                        mainTag={theclass.mainTag}
+                                        element={element}
+                                        link={element.link}
+                                        subtitle={element.subtitle}
+                                        selectedVoice={selectedVoice}
+                                      />
+                                    ) : element.type === "dialogue" ? (
+                                      <DialogueLessonModel
+                                        headers={headers}
+                                        element={element}
+                                        language={classLanguage}
+                                      />
+                                    ) : element.type === "singleimages" ? (
+                                      <SingleImageLessonModel
+                                        headers={headers}
+                                        element={element}
+                                      />
+                                    ) : element.type === "exercise" ? (
+                                      <ExerciseLessonModel
+                                        headers={headers}
+                                        item={element.items}
+                                      />
+                                    ) : (
+                                      <></>
+                                    )}
                                   </div>
-                                ) : element.type === "multipletexts" ? (
-                                  <MultipleTextsLessonModel
-                                    headers={headers}
-                                    element={element}
-                                  />
-                                ) : // ) : element.type === "selectexercise" ? (
-                                //   <SelectExercise
-                                //     headers={headers}
-                                //     element={element}
-                                //     selectedVoice={selectedVoice}
-                                //   />
-                                element.type === "images" ? (
-                                  <ImageLessonModel
-                                    studentId={studentID}
-                                    mainTag={theclass.mainTag}
-                                    id={myId}
-                                    headers={headers}
-                                    element={element}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                ) : element.type === "explanation" ? (
-                                  <ExplanationLesson
-                                    headers={headers}
-                                    element={element}
-                                  />
-                                ) : element.type === "audiosoundtrack" ? (
-                                  <AudioSoundTrack
-                                    headers={headers}
-                                    text={element.text}
-                                    src={element.src}
-                                    studentId={studentID}
-                                    mainTag={theclass.mainTag}
-                                    element={element}
-                                    link={element.link}
-                                    subtitle={element.subtitle}
-                                    selectedVoice={selectedVoice}
-                                  />
-                                ) : element.type === "dialogue" ? (
-                                  <DialogueLessonModel
-                                    headers={headers}
-                                    element={element}
-                                    language={classLanguage}
-                                  />
-                                ) : element.type === "singleimages" ? (
-                                  <SingleImageLessonModel
-                                    headers={headers}
-                                    element={element}
-                                  />
-                                ) : element.type === "exercise" ? (
-                                  <ExerciseLessonModel
-                                    headers={headers}
-                                    item={element.items}
-                                  />
-                                ) : (
-                                  <></>
-                                )}
-                              </div>
-                            ))}
-                      </div>
-                    </div>
+                                ))}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <ExerciseRunner
                       key={`exercises-${studentID}`} // Force re-render when student changes

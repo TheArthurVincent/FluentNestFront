@@ -368,6 +368,7 @@ const Description: FC<DescriptionProps> = ({
                   whiteSpace: "pre-wrap",
                 }}
               >
+                <b>Comentários da aula:</b>
                 {theDescription}
               </div>
             </>
@@ -402,6 +403,21 @@ const Description: FC<DescriptionProps> = ({
                   marginBottom: 8,
                   fontSize: 13,
                   fontWeight: 500,
+                  fontStyle: "italic",
+                  color: "#4B5563",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                <b>Seus comentários para esta aula (invisível para o aluno):</b>
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 4,
+                  marginBottom: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  fontStyle: "italic",
                   color: "#4B5563",
                   whiteSpace: "pre-wrap",
                 }}
