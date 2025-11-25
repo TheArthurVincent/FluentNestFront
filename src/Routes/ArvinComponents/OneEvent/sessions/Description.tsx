@@ -13,6 +13,7 @@ import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLe
 type DescriptionProps = {
   headers: MyHeadersType;
   theDescription?: string;
+  theTeacherDescription?: string;
   evendId: string;
   allowedToEdit?: boolean;
   lesson?: any;
@@ -78,9 +79,13 @@ const Description: FC<DescriptionProps> = ({
   fetchEventData,
   lesson,
   status,
+  theTeacherDescription,
   title,
 }) => {
   const [description, setDescription] = useState<string>(theDescription || "");
+  const [teacherDescription, setTeacherDescription] = useState<string>(
+    theTeacherDescription || ""
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   var [theLesson, setTheLesson] = useState<{
@@ -113,7 +118,9 @@ const Description: FC<DescriptionProps> = ({
           { headers: headers as any }
         );
         const adapted = response.data.adapted;
+        console.log(adapted);
         setDescription(adapted);
+        setTeacherDescription(response.data.teacherDescription);
         setLoadingDescription(false);
         setChange(!change);
       } catch (error) {
@@ -137,7 +144,7 @@ const Description: FC<DescriptionProps> = ({
       setSaving(true);
       const response = await axios.put(
         `${backDomain}/api/v1/eventdescription/${id}`,
-        { description, theLesson },
+        { description, theLesson, teacherDescription },
         { headers: headers as any }
       );
       if (response) {
@@ -182,10 +189,11 @@ const Description: FC<DescriptionProps> = ({
               color: "#0f172a",
             }}
           >
-            Editar descrição da aula
+            Editar descrições
           </div>
           <div style={{ padding: 12, display: "grid", gap: 12 }}>
             <div style={{ display: "grid", gap: 6 }}>
+              Descrição geral (visível para aluno):
               <div
                 style={{
                   display: "grid",
@@ -223,6 +231,30 @@ const Description: FC<DescriptionProps> = ({
                 >
                   ✨ (-10)
                 </button>
+              </div>
+              Descrição do professor (invisível para aluno):
+              <div
+                style={{
+                  display: "grid",
+                  gap: 8,
+                  gridTemplateColumns: "1fr auto",
+                  alignItems: "flex-end",
+                }}
+              >
+                <textarea
+                  disabled={saving || loadingDescription}
+                  value={
+                    loadingDescription ? "Carregando..." : teacherDescription
+                  }
+                  onChange={(e) => setTeacherDescription(e.target.value)}
+                  placeholder="Tome notas particulares sobre a aula aqui (invisível para o aluno). Esta área é útil para te lembrar de pontos importantes, dificuldades do aluno, ou qualquer outro detalhe que queira guardar para as próximas aulas."
+                  style={{
+                    ...inputStyle,
+                    minHeight: 140,
+                    resize: "vertical",
+                    fontFamily: "Plus Jakarta Sans",
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -352,6 +384,33 @@ const Description: FC<DescriptionProps> = ({
             </>
           )}
         </div>
+        <div
+          style={{
+            marginTop: 4,
+            borderLeft: `4px solid ${partnerColor()}`,
+            paddingLeft: 12,
+            display: "grid",
+            gap: 8,
+          }}
+        >
+          {allowedToEdit && theTeacherDescription && (
+            <>
+              <div
+                style={{
+                  display: "grid",
+                  gap: 4,
+                  marginBottom: 8,
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: "#4B5563",
+                  whiteSpace: "pre-wrap",
+                }}
+              >
+                {theTeacherDescription}
+              </div>
+            </>
+          )}
+        </div>
         {allowedToEdit && (
           <>
             {/* BOTÕES / EDIT */}
@@ -371,7 +430,7 @@ const Description: FC<DescriptionProps> = ({
                   fontWeight: 600,
                 }}
               >
-                Editar descrição e aula
+                Editar descrições
               </button>
             ) : (
               <button
