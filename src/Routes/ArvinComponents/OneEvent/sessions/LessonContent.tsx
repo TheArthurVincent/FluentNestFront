@@ -26,7 +26,10 @@ const LessonContent: FC<LessonContentProps> = ({
     <>
       <div
         style={{
-          ...cardBase,
+          backgroundColor: "#FFFFFF",
+          borderRadius: 8,
+          padding: 18,
+          border: "1px solid #E5E7EB",
           display: "flex",
           flexDirection: "column",
           position: "relative",

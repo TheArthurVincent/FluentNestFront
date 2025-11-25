@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { MyHeadersType } from "../../../../Resources/types.universalInterfaces";
 import {
@@ -9,17 +9,51 @@ import {
   statLabel,
   statValue,
 } from "../../Students/TheStudent/types/studentPage.styles";
+import axios from "axios";
+import { backDomain } from "../../../../Resources/UniversalComponents";
+import { notifyAlert } from "../../../EnglishLessons/Assets/Functions/FunctionLessons";
+import { partnerColor } from "../../../../Styles/Styles";
 type LastClassProps = {
   headers: MyHeadersType;
   isDesktop?: boolean;
   lastLesson?: any;
+  evendId?: string;
+  allowedToEdit?: boolean;
 };
 
-const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
+const LastClass: FC<LastClassProps> = ({
+  headers,
+  isDesktop,
+  lastLesson,
+  evendId,
+  allowedToEdit,
+}) => {
   const renderStatusPill = (status?: string) => {
     if (!status) return null;
     return <span style={pillStatus}>{status}</span>;
   };
+
+  const handleClassSummary = async () => {
+    const logged = JSON.parse(localStorage.getItem("loggedIn") || "null");
+    const thePermissions = logged?.permissions;
+    if (thePermissions == "superadmin" || thePermissions == "teacher") {
+      try {
+        const response = await axios.put(
+          `${backDomain}/api/v1/replicate-last-event/${evendId}`,
+          { lastLesson: lastLesson._id },
+          { headers: headers as any }
+        );
+        window.location.reload();
+      } catch (error) {
+        notifyAlert("Erro", partnerColor());
+        console.log(error, "Erro");
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log("Last lesson data:", lastLesson);
+  }, [lastLesson]);
 
   return (
     <div
@@ -54,43 +88,26 @@ const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
                 <span>Aula Passada</span>
                 {lastLesson.status && renderStatusPill(lastLesson.status)}
               </div>
-
               <div
                 style={{
                   display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
                   gap: 10,
                   marginBottom: 10,
                 }}
               >
                 <div style={statCardBase}>
-                  <span style={statLabel}>Material</span>
-                  <span style={statValue}>
-                    {lastLesson.theLesson?.title || "Sem título"}
-                  </span>
-                </div>
-
-                <div style={statCardBase}>
                   <span style={statLabel}>Quando foi</span>
                   <span style={statValue}>
                     {lastLesson.date} ({lastLesson.time})
                   </span>
-                </div>
+                </div>{" "}
+                <div style={statCardBase}>
+                  <span style={statLabel}>Descrição</span>
+                  <span style={statValue}>
+                    {lastLesson.description || "Sem descrição"}
+                  </span>
+                </div>{" "}
               </div>
-
-              {lastLesson.description && (
-                <div
-                  style={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: "#4B5563",
-                    marginBottom: 10,
-                  }}
-                >
-                  {lastLesson.description}
-                </div>
-              )}
-
               <div
                 style={{
                   display: "flex",
@@ -108,7 +125,7 @@ const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
                       fontWeight: 600,
                       padding: "6px 12px",
                       borderRadius: 999,
-                      backgroundColor: "#1D4ED8",
+                      backgroundColor: partnerColor(),
                       color: "#FFFFFF",
                       textDecoration: "none",
                     }}
@@ -125,7 +142,7 @@ const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
                       fontWeight: 600,
                       padding: "6px 12px",
                       borderRadius: 999,
-                      backgroundColor: "#1D4ED8",
+                      backgroundColor: partnerColor(),
                       color: "#FFFFFF",
                       textDecoration: "none",
                     }}
@@ -133,6 +150,24 @@ const LastClass: FC<LastClassProps> = ({ headers, isDesktop, lastLesson }) => {
                     Link importante
                   </a>
                 )}
+                {allowedToEdit && (
+                  <button
+                    style={{
+                      marginTop: 8,
+                      borderRadius: "8px",
+                      backgroundColor: partnerColor(),
+                      color: "#FFFFFF",
+                      fontWeight: 600,
+                      border: "none",
+                      maxWidth: "fit-content",
+                      cursor: "pointer",
+                      marginLeft: " auto",
+                    }}
+                    onClick={handleClassSummary}
+                  >
+                    Replicar conteúdo da última aula
+                  </button>
+                )}{" "}
               </div>
             </div>
           )}

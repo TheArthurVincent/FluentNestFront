@@ -10,6 +10,7 @@ import Description from "./sessions/Description";
 import LastClass from "./sessions/LastEvent";
 import Board from "./sessions/BoardLesson";
 import LessonContent from "./sessions/LessonContent";
+import DeleteClass from "./sessions/DeleteEvent";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -437,10 +438,19 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
             {(lastLesson || permissionsUser !== "student") && (
               <LastClass
                 headers={headers}
+                evendId={event._id}
+                allowedToEdit={permissionsUser !== "student"}
                 isDesktop={isDesktop}
                 lastLesson={lastLesson}
               />
             )}
+            <DeleteClass
+              headers={headers}
+              evendId={event._id}
+              allowedToEdit={permissionsUser !== "student"}
+              isDesktop={isDesktop}
+              lastLesson={lastLesson}
+            />
           </>
         )}
       </div>

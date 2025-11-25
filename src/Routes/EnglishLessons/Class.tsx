@@ -3109,7 +3109,7 @@ export default function EnglishClassCourse2({
     <div
       style={{
         margin: "auto",
-        padding: "1rem",
+        padding: mainStudentID ? 0 : "1rem",
         minHeight: "80vh",
         fontFamily: "Plus Jakarta Sans",
         fontWeight: 600,

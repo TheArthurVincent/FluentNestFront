@@ -32,7 +32,7 @@ export const pillStatus: React.CSSProperties = {
 export const statCardBase: React.CSSProperties = {
   borderRadius: 8,
   padding: 12,
-  backgroundColor: `${partnerColor()}20`,
+  backgroundColor: `${partnerColor()}10`,
   display: "grid",
   gap: 4,
 };
