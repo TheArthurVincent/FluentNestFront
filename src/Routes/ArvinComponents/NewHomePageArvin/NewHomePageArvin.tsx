@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { HeadersProps } from "../../../Resources/types.universalInterfaces";
 import {
   backDomain,
+  formatNumber,
   updateInfo,
   updateScore,
 } from "../../../Resources/UniversalComponents";
@@ -186,7 +187,7 @@ export function MyHomePage({
     try {
       const response = await axios.get(`${backDomain}/api/v1/finance/${id}`, {
         headers: headers ? { ...headers } : {},
-        params: { currentMonthYear },
+        params: { month: currentMonthYear },
       });
       console.log(
         "response.data.financialReportsOfTheMonth",
@@ -242,6 +243,7 @@ export function MyHomePage({
     // Qualquer outro caso (student / vazio) usa showToStudent
     return item.showToStudent;
   };
+  const [showMoney, setShowMoney] = useState<boolean>(false);
 
   return (
     <div
@@ -357,12 +359,14 @@ export function MyHomePage({
                     style={{
                       fontSize: "12px",
                       left: "10px",
+                      marginTop: "2px",
                       top: "50%",
                       color: partnerColor(),
                       pointerEvents: "none",
                     }}
                   />
                   <span
+                    onClick={() => setShowMoney(!showMoney)}
                     style={{
                       fontFamily: "Plus Jakarta Sans",
                       fontWeight: 600,
@@ -373,7 +377,28 @@ export function MyHomePage({
                       letterSpacing: "0%",
                     }}
                   >
-                    {entradasRecebidas}
+                    {!showMoney ? (
+                      <i
+                        style={{
+                          color: partnerColor(),
+                        }}
+                        className="fa fa-eye"
+                      />
+                    ) : (
+                      <span
+                        style={{
+                          fontFamily: "Plus Jakarta Sans",
+                          fontWeight: 600,
+                          color: partnerColor(),
+                          fontStyle: "SemiBold",
+                          fontSize: "14px",
+                          lineHeight: "100%",
+                          letterSpacing: "0%",
+                        }}
+                      >
+                        {formatNumber(entradasRecebidas)}
+                      </span>
+                    )}
                   </span>
                 </span>
               )}
