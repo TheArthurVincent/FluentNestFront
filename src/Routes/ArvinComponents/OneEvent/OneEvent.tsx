@@ -421,7 +421,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
               <Board
                 allowedToEdit={permissionsUser !== "student"}
                 headers={headers}
-                date={event.date}
                 theBoard={event.board}
                 evendId={event._id}
               />
