@@ -21,7 +21,6 @@ export default function ExerciseLessonModel({
       <div
         style={{
           display: "grid",
-          gap: "8px",
           gridTemplateColumns: "1fr",
         }}
       >
@@ -30,11 +29,9 @@ export default function ExerciseLessonModel({
             <div
               key={index}
               style={{
-                borderRadius: "4px",
                 padding: "8px",
                 transition: "all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)",
-                boxShadow:
-                  "0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08)",
+                borderBottom: `1px solid ${partnerColor()}50`,
               }}
             >
               {/* Header com número e texto do exercício */}
