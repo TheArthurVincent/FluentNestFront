@@ -34,7 +34,6 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
       const res = await axios.get(`${backDomain}/api/v1/event/${eventId}`, {
         headers: headers as any,
       });
-      console.log(res.data.event);
       setEventData(res.data.event);
       setReplicateLastEvent(res.data.event.replicateLastEvent);
     } catch (err) {

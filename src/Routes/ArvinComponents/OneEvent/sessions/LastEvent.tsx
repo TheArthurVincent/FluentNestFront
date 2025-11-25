@@ -105,6 +105,12 @@ const LastClass: FC<LastClassProps> = ({
                     {lastLesson.description || "Sem descrição"}
                   </span>
                 </div>{" "}
+                <div style={statCardBase}>
+                  <span style={statLabel}> Descrição do Professor </span>
+                  <span style={statValue}>
+                    {lastLesson.teacherDescription || "Sem descrição"}
+                  </span>
+                </div>{" "}
               </div>
               <div
                 style={{
@@ -124,7 +130,7 @@ const LastClass: FC<LastClassProps> = ({
                       textDecoration: "none",
                     }}
                   >
-                    Material / Drive
+                    Important Link
                   </a>
                 )}
                 {lastLesson.importantLink && !lastLesson.googleDriveLink && (
