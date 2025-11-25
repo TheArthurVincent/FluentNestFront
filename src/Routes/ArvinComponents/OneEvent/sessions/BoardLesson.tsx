@@ -86,7 +86,7 @@ const Board: FC<BoardProps> = ({
           <div
             style={{
               marginBottom: 10,
-              height: 300,
+              height: 500,
             }}
           >
             <HTMLEditor
