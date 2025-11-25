@@ -3233,7 +3233,7 @@ export default function EnglishClassCourse2({
           )}
           {!exercise && (
             <>
-              {canEditCourse && !seeBoard && thePermissions !== "student" &&(
+              {canEditCourse && !seeBoard && thePermissions !== "student" && (
                 <div
                   style={{
                     display: "flex",
@@ -3512,10 +3512,8 @@ export default function EnglishClassCourse2({
                         style={{
                           backgroundColor: "#fff",
                           padding: "2px ",
-                          display: "block", // ⬅️ adicionado
+                          display: "block",
                           width: "100%",
-                          boxShadow:
-                            "inset 6px 2px 8px rgba(197, 197, 197, 0.35)",
                           boxSizing: "border-box",
                           borderRadius: "6px",
                           overflowX: "auto",
@@ -3523,8 +3521,7 @@ export default function EnglishClassCourse2({
                       >
                         <span
                           style={{
-                            // backgroundColor: "#eee",
-                            display: "block", // ⬅️ adicionado
+                            display: "block",
                           }}
                         >
                           <div
@@ -3568,13 +3565,9 @@ export default function EnglishClassCourse2({
                                     flex: "0 0 auto", // não encolher (gera overflow)
                                     cursor: "pointer",
                                     fontWeight: isActive ? "600" : "500",
-                                    borderRadius: "4px",
                                     borderBottom: isActive
                                       ? `1px solid ${partnerColor()}`
                                       : "1px solid transparent",
-                                    backgroundColor: isActive
-                                      ? "#eeeeee58"
-                                      : "transparent",
                                     color: isActive ? "grey" : "#64748b",
                                     padding: "4px 6px", // área de clique
                                     textTransform: "uppercase",
