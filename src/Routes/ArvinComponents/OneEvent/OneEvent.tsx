@@ -11,6 +11,7 @@ import LastClass from "./sessions/LastEvent";
 import Board from "./sessions/BoardLesson";
 import LessonContent from "./sessions/LessonContent";
 import DeleteClass from "./sessions/DeleteEvent";
+import { partnerColor } from "../../../Styles/Styles";
 
 type EventProps = {
   headers: MyHeadersType;
@@ -434,7 +435,7 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 studentID={event.studentID}
               />
             )}
-            {(lastLesson || permissionsUser !== "student") && (
+            {lastLesson && permissionsUser !== "student" && (
               <LastClass
                 replicateLastEvent={replicateLastEvent}
                 headers={headers}
@@ -444,15 +445,47 @@ const Event: FC<EventProps> = ({ headers, isDesktop }) => {
                 lastLesson={lastLesson}
               />
             )}
-            {permissionsUser !== "student" && (
-              <DeleteClass
-                headers={headers}
-                evendId={event._id}
-                allowedToEdit={permissionsUser !== "student"}
-                isDesktop={isDesktop}
-                lastLesson={lastLesson}
-              />
-            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                margin: "0 20px ",
+                gap: 10,
+              }}
+            >
+              <button
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  color: partnerColor(),
+                  maxWidth: "fit-content",
+                  maxHeight: "fit-content",
+                  padding: "6px 12px",
+                }}
+                onClick={() =>
+                  window.location.assign(`/my-calendar/event/${lastLesson._id}`)
+                }
+              >
+                <i
+                  style={{
+                    marginTop: 3,
+                  }}
+                  className="fa fa-arrow-left"
+                />
+                Aula anterior
+              </button>
+              {permissionsUser !== "student" && (
+                <DeleteClass
+                  headers={headers}
+                  evendId={event._id}
+                  allowedToEdit={permissionsUser !== "student"}
+                  isDesktop={isDesktop}
+                  lastLesson={lastLesson}
+                />
+              )}
+            </div>
           </>
         )}
       </div>
