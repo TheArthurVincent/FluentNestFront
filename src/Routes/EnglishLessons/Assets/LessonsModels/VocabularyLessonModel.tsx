@@ -420,7 +420,7 @@ export default function VocabularyLesson({
                     ...(isDone
                       ? {
                           backgroundColor: isDone
-                            ? `${color}40`
+                            ? `${color}30`
                             : "transparent",
                         }
                       : {}),
@@ -429,16 +429,8 @@ export default function VocabularyLesson({
                     onPickFront(idx);
                     readText(s.english, true, "en", selectedVoice);
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? "#f0fff4"
-                      : "#f3f3f3ff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? "#f0fff4"
-                      : "#fff";
-                  }}
+             
+                  
                 >
                   <div
                     style={{
@@ -515,21 +507,17 @@ export default function VocabularyLesson({
                     ...cardStyle,
                     border: `3px solid ${isDone ? color : "transparent"}`, // borda colorida do par
                     position: "relative",
-                    ...(isDone ? matchedStyle : {}),
+                    ...(isDone ? {
+                          backgroundColor: isDone
+                            ? `${color}30`
+                            : "transparent",
+                        } : {}),
                   }}
                   onClick={() => {
                     if (!isDone) onPickBack(slot);
                   }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? "#f0fff4"
-                      : "#f3f3f3ff";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = isDone
-                      ? "#f0fff4"
-                      : "#fff";
-                  }}
+             
+                  
                 >
                   <div
                     style={{
